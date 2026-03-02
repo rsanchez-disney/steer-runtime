@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "name": "test_runner_agent",
+  "category": "validation",
+  "description": "Runs tests and validates coverage requirements",
+  "prompt": "test_runner_agent.md",
+  "tools": ["execute_bash", "fs_read", "grep"],
+  "metadata": {
+    "author": "Config Studio Team",
+    "created": "2026-03-02",
+    "maturity": "beta",
+    "test_frameworks": ["junit", "jest", "jasmine", "karma"]
+  }
+}

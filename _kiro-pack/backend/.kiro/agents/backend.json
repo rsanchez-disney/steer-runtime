@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "description": "Config Studio Backend specialist (Java services)",
+  "prompt": "../prompts/backend.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "src/**",
+        "pom.xml",
+        "build.gradle*",
+        "gradle.properties",
+        "application*.yml",
+        "application*.yaml"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

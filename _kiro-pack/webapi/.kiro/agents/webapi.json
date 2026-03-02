@@ -1,0 +1,26 @@
+{
+  "name": "webapi",
+  "description": "Config Studio WebAPI specialist (Node gateway)",
+  "prompt": "../prompts/webapi.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "src/**",
+        "package.json",
+        "tsconfig*.json",
+        ".eslintrc*",
+        "jest.config*"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

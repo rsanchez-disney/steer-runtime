@@ -1,0 +1,27 @@
+{
+  "name": "ui",
+  "description": "Config Studio UI specialist (Angular)",
+  "prompt": "../prompts/ui.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "src/**",
+        "projects/**",
+        "package.json",
+        "angular.json",
+        ".eslintrc*",
+        "tsconfig*.json"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}
