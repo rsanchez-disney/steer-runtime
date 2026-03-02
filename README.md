@@ -14,38 +14,53 @@ Transform a Jira story link into a production-ready GitHub PR using pure Kiro ag
 git clone <repo-url> ~/steer-runtime
 ```
 
-### 2. Navigate to Your Project
+### 2. Setup Kiro Agents
+
+```bash
+cd ~/steer-runtime
+./setup-kiro.sh
+```
+
+This copies all agents to `~/.kiro/` without overwriting existing content.
+
+**To update agents later**:
+```bash
+./setup-kiro.sh --sync
+```
+
+### 3. Navigate to Your Project
 
 ```bash
 cd ~/my-project  # Your actual project directory
 ```
 
-### 3. Start Orchestrator
+### 4. Start Orchestrator
 
 ```bash
-kiro-cli chat --agent ~/steer-runtime/.kiro/agents/orchestrator_agent.json
+kiro-cli chat --agent orchestrator_agent
 ```
 
-### 4. Provide Jira Link
+### 5. Provide Jira Link
 
 ```
 > Implement https://jira.disney.com/browse/DPAY-14337
 ```
 
-### 5. Approve Plan
+### 6. Approve Plan
 
-The orchestrator will analyze the story, explore your codebase, create a plan, and ask for approval.
+The orchestrator will analyze the story, explore your codebase, discuss preferences, create a plan, and ask for approval.
 
 ```
 Do you approve this plan? (yes/no/modify)
 > yes
 ```
 
-### 6. Watch It Work
+### 7. Watch It Work
 
 The orchestrator delegates to specialized agents:
 - `story_analyzer_agent` - Fetches Jira story
 - `codebase_explorer_agent` - Explores your code
+- `discussion_agent` - Captures your preferences
 - `planner_agent` - Creates implementation plan
 - `backend_agent`, `ui_agent`, `webapi_agent` - Implement changes
 - `test_runner_agent` - Runs tests
@@ -61,6 +76,7 @@ User: "Implement https://jira.disney.com/browse/DPAY-14337"
 orchestrator_agent
     ├─→ story_analyzer_agent (fetch Jira story)
     ├─→ codebase_explorer_agent (explore code)
+    ├─→ discussion_agent (capture preferences)
     ├─→ planner_agent (create plan)
     ├─→ [User Approval Gate]
     ├─→ backend_agent (implement backend)
@@ -82,6 +98,9 @@ Fetches Jira stories via MCP. Extracts scope, ACs, type, priority, components.
 
 ### codebase_explorer_agent
 Explores your codebase. Finds relevant files, patterns, dependencies, test locations.
+
+### discussion_agent
+Captures your preferences before planning. Asks about layout, interactions, storage, etc.
 
 ### planner_agent
 Creates implementation plans. Breaks down into tasks with dependencies and estimates.
@@ -107,6 +126,15 @@ Orchestrator: 🔍 Analyzing story...
 
 Orchestrator: 🔍 Exploring codebase...
 ✓ Found: ExportService.java, export.component.ts, export.controller.ts
+
+Orchestrator: 💬 Let's discuss implementation preferences...
+> How should the progress be displayed?
+User: Progress bar at the top of the modal
+> Should we use polling or WebSockets?
+User: Polling is fine, keep it simple
+> Where should we store progress state?
+User: Redis cache, it's temporary data
+✓ Preferences captured
 
 Orchestrator: 📋 Creating implementation plan...
 
@@ -228,6 +256,7 @@ steer-runtime/
 │   │   ├── orchestrator_agent.json
 │   │   ├── story_analyzer_agent.json
 │   │   ├── codebase_explorer_agent.json
+│   │   ├── discussion_agent.json
 │   │   ├── planner_agent.json
 │   │   ├── backend_agent.json
 │   │   ├── ui_agent.json
@@ -238,25 +267,23 @@ steer-runtime/
 │   ├── prompts/
 │   │   └── [Agent prompts]
 │   │
-│   ├── skills/
-│   │   └── [Reusable skills]
-│   │
 │   └── context/
-│       ├── golden_rules.md
-│       └── coding_standards.md
+│       └── golden_rules.md
 │
-└── README_KIRO_NATIVE.md (this file)
+├── setup-kiro.sh            (setup script)
+├── README.md                (this file)
+└── DESIGN.md                (architecture details)
 ```
 
 ---
 
 ## Status
 
-**Phase**: Kiro-Native Design  
-**Agents Created**: orchestrator, story_analyzer, codebase_explorer, planner  
-**Next**: Create implementation agents (backend, ui, webapi, test_runner, pr_creator)
+**Phase**: Production Ready  
+**Agents**: 10 specialized agents  
+**Enhancements**: GSD-inspired discussion step and XML task structure  
 
 ---
 
-**Version**: Kiro-Native v1.0  
+**Version**: Kiro-Native v1.1  
 **Last Updated**: 2026-03-02

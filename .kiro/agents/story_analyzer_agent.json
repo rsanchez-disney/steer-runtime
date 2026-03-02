@@ -1,16 +1,10 @@
 {
-  "version": "1.0.0",
   "name": "story_analyzer_agent",
-  "category": "integration",
   "description": "Fetches and analyzes Jira stories. Extracts scope, acceptance criteria, and metadata.",
   "prompt": "story_analyzer_agent.md",
-  "tools": ["read", "write", "shell"],
-  "dependencies": {
-    "mcp_servers": ["jira"]
-  },
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta"
-  }
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ]
 }

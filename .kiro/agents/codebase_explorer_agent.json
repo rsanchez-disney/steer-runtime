@@ -1,13 +1,11 @@
 {
-  "version": "1.0.0",
   "name": "codebase_explorer_agent",
-  "category": "analysis",
   "description": "Explores codebase to find relevant files, patterns, and dependencies for implementation",
   "prompt": "codebase_explorer_agent.md",
-  "tools": ["code", "grep", "fs_read", "glob"],
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta"
-  }
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "glob"
+  ]
 }

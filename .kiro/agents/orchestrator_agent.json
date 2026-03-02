@@ -1,22 +1,10 @@
 {
-  "version": "1.0.0",
   "name": "orchestrator_agent",
-  "category": "orchestration",
   "description": "Main workflow orchestrator for automated SDLC. Coordinates story analysis, planning, implementation, and PR creation.",
   "prompt": "orchestrator_agent.md",
-  "tools": ["use_subagent", "fs_read", "fs_write"],
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta",
-    "workflow_stages": [
-      "story_analysis",
-      "codebase_exploration",
-      "planning",
-      "approval_gate",
-      "implementation",
-      "testing",
-      "pr_creation"
-    ]
-  }
+  "tools": [
+    "use_subagent",
+    "fs_read",
+    "fs_write"
+  ]
 }

@@ -1,15 +1,12 @@
 {
-  "version": "1.0.0",
   "name": "backend_agent",
-  "category": "implementation",
   "description": "Implements backend changes in Java/Spring codebases",
   "prompt": "backend_agent.md",
-  "tools": ["code", "fs_read", "fs_write", "grep", "execute_bash"],
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta",
-    "languages": ["java", "kotlin"],
-    "frameworks": ["spring-boot", "spring-mvc"]
-  }
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "execute_bash"
+  ]
 }

@@ -1,15 +1,12 @@
 {
-  "version": "1.0.0",
   "name": "ui_agent",
-  "category": "implementation",
   "description": "Implements UI changes in Angular/TypeScript codebases",
   "prompt": "ui_agent.md",
-  "tools": ["code", "fs_read", "fs_write", "grep", "execute_bash"],
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta",
-    "languages": ["typescript", "html", "css"],
-    "frameworks": ["angular"]
-  }
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "execute_bash"
+  ]
 }

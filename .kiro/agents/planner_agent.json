@@ -1,13 +1,8 @@
 {
-  "version": "1.0.0",
   "name": "planner_agent",
-  "category": "planning",
   "description": "Creates detailed implementation plans with tasks, dependencies, and test strategy",
   "prompt": "planner_agent.md",
-  "tools": ["fs_read"],
-  "metadata": {
-    "author": "Config Studio Team",
-    "created": "2026-03-02",
-    "maturity": "beta"
-  }
+  "tools": [
+    "fs_read"
+  ]
 }
