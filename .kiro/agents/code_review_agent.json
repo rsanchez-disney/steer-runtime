@@ -1,0 +1,14 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
+  "prompt": "code_review_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://~/.kiro/context/golden_rules.md"
+  ]
+}

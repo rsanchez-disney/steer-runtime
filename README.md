@@ -64,6 +64,7 @@ The orchestrator delegates to specialized agents:
 - `planner_agent` - Creates implementation plan
 - `backend_agent`, `ui_agent`, `webapi_agent` - Implement changes
 - `test_runner_agent` - Runs tests
+- `code_review_agent` - Reviews code for security & quality
 - `pr_creator_agent` - Creates GitHub PR
 
 ---
@@ -83,6 +84,7 @@ orchestrator_agent
     ├─→ ui_agent (implement UI)
     ├─→ webapi_agent (implement WebAPI)
     ├─→ test_runner_agent (run tests)
+    ├─→ code_review_agent (review code)
     └─→ pr_creator_agent (create PR)
 ```
 
@@ -110,6 +112,9 @@ Implement code changes. Follow patterns from codebase exploration.
 
 ### test_runner_agent
 Runs tests and checks coverage ≥90%.
+
+### code_review_agent
+Reviews code for security, quality, performance, and testing issues. Auto-fixes minor issues.
 
 ### pr_creator_agent
 Creates GitHub PRs via MCP with proper description and labels.
@@ -198,6 +203,12 @@ Orchestrator: 🧪 Running tests...
 ✓ Integration tests: 12/12 passed
 ✓ Coverage: 94%
 
+Orchestrator: 🔍 Running code review...
+✓ Security: No issues
+✓ Quality: All checks passed
+✓ Performance: No regressions
+✓ Testing: Coverage ≥90%
+
 Orchestrator: 📝 Creating PR...
 ✓ Branch: feature/DPAY-14337-export-progress
 ✓ PR: https://github.com/disney/config-services/pull/1234
@@ -262,13 +273,15 @@ steer-runtime/
 │   │   ├── ui_agent.json
 │   │   ├── webapi_agent.json
 │   │   ├── test_runner_agent.json
+│   │   ├── code_review_agent.json
 │   │   └── pr_creator_agent.json
 │   │
 │   ├── prompts/
 │   │   └── [Agent prompts]
 │   │
 │   └── context/
-│       └── golden_rules.md
+│       ├── golden_rules.md
+│       └── project_mappings.md
 │
 ├── setup-kiro.sh            (setup script)
 ├── README.md                (this file)
@@ -280,10 +293,10 @@ steer-runtime/
 ## Status
 
 **Phase**: Production Ready  
-**Agents**: 10 specialized agents  
-**Enhancements**: GSD-inspired discussion step and XML task structure  
+**Agents**: 11 specialized agents  
+**Enhancements**: GSD-inspired discussion step, XML task structure, code review automation  
 
 ---
 
-**Version**: Kiro-Native v1.1  
+**Version**: Kiro-Native v1.2  
 **Last Updated**: 2026-03-02
