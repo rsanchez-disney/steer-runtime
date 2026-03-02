@@ -6,5 +6,9 @@
     "use_subagent",
     "fs_read",
     "fs_write"
+  ],
+  "resources": [
+    "file://~/.kiro/context/golden_rules.md",
+    "file://~/.kiro/context/project_mappings.md"
   ]
 }

@@ -4,5 +4,8 @@
   "prompt": "planner_agent.md",
   "tools": [
     "fs_read"
+  ],
+  "resources": [
+    "file://~/.kiro/context/project_mappings.md"
   ]
 }
