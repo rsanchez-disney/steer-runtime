@@ -166,6 +166,33 @@ Wait for response with codebase analysis.
 
 Wait for user preferences, then continue.
 
+### 3.5 Architecture Review (Optional)
+
+**If the story involves complex design decisions or new patterns, invoke `architecture_agent`**:
+
+```json
+{
+  "command": "InvokeSubagents",
+  "content": {
+    "subagents": [
+      {
+        "agent_name": "architecture_agent",
+        "query": "Review architecture for: <story title>. Context: <story details> + <codebase exploration>. Recommend patterns, identify affected components, evaluate trade-offs."
+      }
+    ]
+  }
+}
+```
+
+Use architecture_agent when:
+- New feature with unclear design
+- Multiple implementation approaches possible
+- Cross-component integration needed
+- Performance/scalability concerns
+- Pattern selection required
+
+Wait for architecture recommendations, then continue.
+
 ### 4. Implementation Planning
 
 **Invoke `planner_agent` as a subagent**:
