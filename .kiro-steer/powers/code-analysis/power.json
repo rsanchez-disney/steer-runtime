@@ -1,0 +1,63 @@
+{
+  "name": "code-analysis",
+  "version": "1.0.0",
+  "description": "Code analysis and search utilities",
+  "tools": [
+    {
+      "name": "find_files",
+      "description": "Find files by pattern or extension",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "File pattern (e.g., '*.java', 'Controller.ts')"
+          },
+          "path": {
+            "type": "string",
+            "description": "Directory to search in",
+            "default": "."
+          }
+        },
+        "required": ["pattern"]
+      }
+    },
+    {
+      "name": "search_code",
+      "description": "Search for text/regex in code files",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query or regex"
+          },
+          "path": {
+            "type": "string",
+            "description": "Directory to search",
+            "default": "."
+          },
+          "file_type": {
+            "type": "string",
+            "description": "File extension filter (e.g., 'java', 'ts')"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "count_lines",
+      "description": "Count lines of code by file type",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory to analyze",
+            "default": "."
+          }
+        }
+      }
+    }
+  ]
+}

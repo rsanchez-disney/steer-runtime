@@ -1,0 +1,12 @@
+{
+  "name": "ui_agent",
+  "description": "Implements UI changes in Angular/TypeScript codebases",
+  "prompt": "ui_agent.md",
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "execute_bash"
+  ]
+}

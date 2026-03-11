@@ -1,0 +1,12 @@
+{
+  "name": "webapi_agent",
+  "description": "Implements WebAPI changes in Node/Express/TypeScript codebases",
+  "prompt": "webapi_agent.md",
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "execute_bash"
+  ]
+}

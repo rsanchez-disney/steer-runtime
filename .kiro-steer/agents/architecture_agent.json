@@ -1,0 +1,15 @@
+{
+  "name": "architecture_agent",
+  "description": "Provides architecture guidance, design patterns, and technical decisions for implementation",
+  "prompt": "architecture_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://.kiro-steer/context/golden_rules.md",
+    "file://.kiro-steer/context/project_mappings.md"
+  ]
+}

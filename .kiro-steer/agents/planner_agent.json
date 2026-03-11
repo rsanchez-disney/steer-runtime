@@ -1,0 +1,11 @@
+{
+  "name": "planner_agent",
+  "description": "Creates detailed implementation plans with tasks, dependencies, and test strategy",
+  "prompt": "planner_agent.md",
+  "tools": [
+    "fs_read"
+  ],
+  "resources": [
+    "file://.kiro-steer/context/project_mappings.md"
+  ]
+}

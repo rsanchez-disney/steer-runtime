@@ -1,0 +1,12 @@
+{
+  "name": "backend_agent",
+  "description": "Implements backend changes in Java/Spring codebases",
+  "prompt": "backend_agent.md",
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "execute_bash"
+  ]
+}
