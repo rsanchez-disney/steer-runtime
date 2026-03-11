@@ -1,0 +1,28 @@
+# MCP configuration with tokens
+mcp-config.json
+~/.kiro/config.json
+
+# Backup files
+*.backup
+*.bak
+*.bak2
+*.bak3
+*.bak4
+*.bak5
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Distribution packages
+dist/
+*.zip
+
+# MCP servers (if you want to keep them private)
+# mcp-servers/

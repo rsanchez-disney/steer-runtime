@@ -149,3 +149,18 @@ describe('ExportController.getProgress', () => {
 3. **Handle errors gracefully** - Return structured errors
 4. **Return JSON** - Structured response
 5. **Be minimal** - Only necessary changes
+
+## Atomic Commits
+
+After completing each task, create an atomic commit:
+
+1. **Stage changes**: `git add <files>`
+2. **Commit with format**: `git commit -m "feat(T2): add progress endpoint to WebAPI"`
+3. **Verify**: `git log -1 --oneline`
+
+**Commit message format**: `<type>(T<number>): <description>`
+- Types: `feat`, `fix`, `refactor`, `test`, `docs`
+- Include task number from plan
+- Keep description concise
+
+This enables git bisect to find exact failing task.

@@ -61,7 +61,7 @@ Analyze Jira story https://myjira.disney.com/browse/DPAY-14337
 
 ## Your Task
 
-1. **Try to fetch the story** using web_fetch or MCP
+1. **Try to fetch the story** using Jira MCP or web_fetch
 2. **If that fails**, ask user for story details
 3. **Extract key information**:
    - Title/Summary
@@ -71,11 +71,49 @@ Analyze Jira story https://myjira.disney.com/browse/DPAY-14337
    - Priority (P0/P1/P2/P3)
    - Components (backend/ui/webapi/mobile/shared)
 
-4. **Return ONLY valid JSON** (no markdown, no extra text):
+4. **CRITICAL: Validate Completeness**
+
+Before returning, check if the story is complete and implementable:
+
+**Required Fields** (MUST have):
+- ✓ Title (clear and specific)
+- ✓ Description (explains what and why)
+- ✓ Acceptance Criteria (at least 1, testable)
+- ✓ Priority (P0/P1/P2/P3)
+
+**Quality Checks**:
+- Description is not just a title repeat
+- Acceptance criteria are specific and testable
+- No placeholders like "TBD", "TODO", "To be determined"
+- Technical details provided if needed (APIs, data models, etc.)
+
+**If Story is INCOMPLETE**, return JSON with `incomplete: true`:
 
 ```json
 {
   "story_id": "DPAY-14337",
+  "incomplete": true,
+  "missing_fields": ["acceptance_criteria", "technical_details"],
+  "issues": [
+    "No acceptance criteria defined",
+    "Description is vague - doesn't specify which export format",
+    "Missing technical details about data source"
+  ],
+  "questions": [
+    "What format should the export be? (CSV, Excel, JSON?)",
+    "What data should be exported?",
+    "What should happen if export fails?",
+    "Should there be a size limit?"
+  ]
+}
+```
+
+**If Story is COMPLETE**, return normal JSON:
+
+```json
+{
+  "story_id": "DPAY-14337",
+  "incomplete": false,
   "title": "Add export progress indicator",
   "description": "As a user, I want to see progress when exporting data...",
   "acceptance_criteria": [
@@ -88,6 +126,8 @@ Analyze Jira story https://myjira.disney.com/browse/DPAY-14337
   "components": ["backend", "ui", "webapi"]
 }
 ```
+
+5. **Return ONLY valid JSON** (no markdown, no extra text)
 
 ### Acceptance Criteria
 - Look for "Acceptance Criteria" or "Definition of Done" sections

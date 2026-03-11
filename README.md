@@ -21,32 +21,41 @@ cd ~/steer-runtime
 ./setup-kiro.sh
 ```
 
-This copies all agents to `~/.kiro/` without overwriting existing content.
+This validates dependencies and copies all agents to `~/.kiro/`.
 
 **To update agents later**:
 ```bash
 ./setup-kiro.sh --sync
 ```
 
-### 3. Navigate to Your Project
+### 3. Configure MCP Servers
+
+```bash
+./setup-mcp-cli.sh
+# Edit ~/.kiro/config.json and add your tokens
+```
+
+See **MCP_SETUP.md** for detailed instructions.
+
+### 4. Navigate to Your Project
 
 ```bash
 cd ~/my-project  # Your actual project directory
 ```
 
-### 4. Start Orchestrator
+### 5. Start Orchestrator
 
 ```bash
 kiro-cli chat --agent orchestrator_agent
 ```
 
-### 5. Provide Jira Link
+### 6. Provide Jira Link
 
 ```
 > Implement https://jira.disney.com/browse/DPAY-14337
 ```
 
-### 6. Approve Plan
+### 7. Approve at Gates
 
 The orchestrator will analyze the story, explore your codebase, discuss preferences, create a plan, and ask for approval.
 
@@ -54,18 +63,6 @@ The orchestrator will analyze the story, explore your codebase, discuss preferen
 Do you approve this plan? (yes/no/modify)
 > yes
 ```
-
-### 7. Watch It Work
-
-The orchestrator delegates to specialized agents:
-- `story_analyzer_agent` - Fetches Jira story
-- `codebase_explorer_agent` - Explores your code
-- `discussion_agent` - Captures your preferences
-- `planner_agent` - Creates implementation plan
-- `backend_agent`, `ui_agent`, `webapi_agent` - Implement changes
-- `test_runner_agent` - Runs tests
-- `code_review_agent` - Reviews code for security & quality
-- `pr_creator_agent` - Creates GitHub PR
 
 ---
 
@@ -79,224 +76,153 @@ orchestrator_agent
     ├─→ codebase_explorer_agent (explore code)
     ├─→ discussion_agent (capture preferences)
     ├─→ planner_agent (create plan)
-    ├─→ [User Approval Gate]
-    ├─→ backend_agent (implement backend)
-    ├─→ ui_agent (implement UI)
-    ├─→ webapi_agent (implement WebAPI)
+    ├─→ [Approval Gate #1]
+    ├─→ backend_agent / ui_agent / webapi_agent (implement)
     ├─→ test_runner_agent (run tests)
     ├─→ code_review_agent (review code)
+    ├─→ security_scanner_agent (scan vulnerabilities)
+    ├─→ performance_agent (benchmark performance)
+    ├─→ compliance_agent (check compliance)
+    ├─→ [Approval Gate #2: Quality Report]
     └─→ pr_creator_agent (create PR)
 ```
 
 ---
 
-## Agents
+## Agents (16 Total)
 
-### orchestrator_agent
-Main coordinator. Delegates to specialized agents and manages approval gates.
+### Core Orchestration
+- **orchestrator_agent** - Main coordinator with 14-step workflow
 
-### story_analyzer_agent
-Fetches Jira stories via MCP. Extracts scope, ACs, type, priority, components.
+### Story & Planning
+- **story_analyzer_agent** - Fetches Jira stories via MCP
+- **codebase_explorer_agent** - Explores code structure
+- **discussion_agent** - Captures user preferences
+- **architecture_agent** - Provides architecture guidance
+- **planner_agent** - Creates implementation plans with XML tasks
 
-### codebase_explorer_agent
-Explores your codebase. Finds relevant files, patterns, dependencies, test locations.
+### Implementation
+- **backend_agent** - Java/Spring changes (atomic commits)
+- **ui_agent** - Angular/TypeScript changes (atomic commits)
+- **webapi_agent** - Node/Express changes (atomic commits)
 
-### discussion_agent
-Captures your preferences before planning. Asks about layout, interactions, storage, etc.
+### Quality & Security
+- **test_runner_agent** - Runs tests, checks coverage ≥90%
+- **code_review_agent** - Reviews security, quality, performance
+- **security_scanner_agent** - Scans vulnerabilities, secrets
+- **performance_agent** - Benchmarks API, DB, bundle size
+- **compliance_agent** - Checks PII/PCI-DSS/GDPR, accessibility
 
-### planner_agent
-Creates implementation plans. Breaks down into tasks with dependencies and estimates.
+### PR Creation
+- **pr_creator_agent** - Creates GitHub PRs via MCP
 
-### backend_agent, ui_agent, webapi_agent
-Implement code changes. Follow patterns from codebase exploration.
-
-### test_runner_agent
-Runs tests and checks coverage ≥90%.
-
-### code_review_agent
-Reviews code for security, quality, performance, and testing issues. Auto-fixes minor issues.
-
-### pr_creator_agent
-Creates GitHub PRs via MCP with proper description and labels.
-
----
-
-## Example Session
-
-```
-User: Implement https://jira.disney.com/browse/DPAY-14337
-
-Orchestrator: 🔍 Analyzing story...
-✓ Story analyzed: Add export progress indicator (P1, feature)
-
-Orchestrator: 🔍 Exploring codebase...
-✓ Found: ExportService.java, export.component.ts, export.controller.ts
-
-Orchestrator: 💬 Let's discuss implementation preferences...
-> How should the progress be displayed?
-User: Progress bar at the top of the modal
-> Should we use polling or WebSockets?
-User: Polling is fine, keep it simple
-> Where should we store progress state?
-User: Redis cache, it's temporary data
-✓ Preferences captured
-
-Orchestrator: 📋 Creating implementation plan...
-
-═══════════════════════════════════════════════════════════
-IMPLEMENTATION PLAN FOR DPAY-14337
-═══════════════════════════════════════════════════════════
-
-Story: Add export progress indicator
-Type: feature | Priority: P1
-
-Tasks:
-  Task T1: Add progress tracking to ExportService
-    Files: src/service/ExportService.java
-    Agent: backend_agent
-    Estimated: 2 hours
-  
-  Task T2: Add progress endpoint to WebAPI
-    Files: src/controllers/export.controller.ts
-    Agent: webapi_agent
-    Dependencies: T1
-    Estimated: 1 hour
-  
-  Task T3: Add progress indicator component
-    Files: src/app/export/export.component.ts
-    Agent: ui_agent
-    Dependencies: T2
-    Estimated: 2 hours
-
-Test Strategy:
-  - Unit tests for ExportService
-  - Integration tests for progress endpoint
-  - E2E tests for UI component
-
-Golden Rules Applied:
-  ✓ Backward compatibility preserved
-  ✓ Test coverage ≥90%
-  ✓ No secrets in code
-
-═══════════════════════════════════════════════════════════
-
-Do you approve this plan? (yes/no/modify)
-
-User: yes
-
-Orchestrator: ✅ Plan approved. Starting implementation...
-
-Orchestrator: 🔧 Task T1: Backend implementation
-✓ Modified: src/service/ExportService.java
-✓ Created: src/test/ExportServiceTest.java
-
-Orchestrator: 🔧 Task T2: WebAPI implementation
-✓ Modified: src/controllers/export.controller.ts
-✓ Created: src/controllers/export.controller.test.ts
-
-Orchestrator: 🔧 Task T3: UI implementation
-✓ Modified: src/app/export/export.component.ts
-✓ Created: src/app/export/export.component.spec.ts
-
-Orchestrator: 🧪 Running tests...
-✓ Unit tests: 45/45 passed
-✓ Integration tests: 12/12 passed
-✓ Coverage: 94%
-
-Orchestrator: 🔍 Running code review...
-✓ Security: No issues
-✓ Quality: All checks passed
-✓ Performance: No regressions
-✓ Testing: Coverage ≥90%
-
-Orchestrator: 📝 Creating PR...
-✓ Branch: feature/DPAY-14337-export-progress
-✓ PR: https://github.com/disney/config-services/pull/1234
-
-═══════════════════════════════════════════════════════════
-✅ WORKFLOW COMPLETED
-═══════════════════════════════════════════════════════════
-
-PR: https://github.com/disney/config-services/pull/1234
-Duration: 8m 32s
-Files changed: 6
-Tests added: 3
-Coverage: 94%
-
-Ready for review!
-```
+See **AGENTS_OVERVIEW.md** for complete reference.
 
 ---
 
-## Benefits
+## Features
 
-✅ **No Python scripts** - Pure Kiro agents  
-✅ **Natural conversation** - Just talk to the orchestrator  
-✅ **Kiro manages state** - No custom state management  
-✅ **Approval gates built-in** - Agent asks, you respond  
-✅ **Subagent delegation** - Kiro's native capability  
-✅ **Portable** - Works in any project directory  
-✅ **Extensible** - Add new agents easily  
+### Phase 1 (Complete)
+✅ Core workflow with 16 agents  
+✅ Discussion agent for preference capture  
+✅ XML task structure in planner  
+✅ Jira completeness validation  
+✅ Code review automation  
+✅ Security scanning  
+
+### Phase 2 (Complete)
+✅ Performance benchmarking  
+✅ Compliance checking  
+✅ Atomic git commits per task  
+✅ 5 quality checks (tests, review, security, performance, compliance)  
+
+### Phase 3 (Planned)
+- Verification loop (interactive testing with auto-fix)
+- Wave execution (parallel task execution)
+- Multi-repo orchestration
 
 ---
 
 ## Requirements
 
-- Kiro CLI installed
-- MCP servers configured (Jira, GitHub)
-- Project with existing codebase
+- **Node.js 18+** - For MCP servers
+- **npm** - For dependencies
+- **kiro-cli** - For running agents
+- **git** - For workflow operations
+- **Jira & GitHub access** - For MCP servers
+
+The setup script validates and helps install missing dependencies.
 
 ---
 
-## Real-World Example
+## Using with Kiro UI
 
-See a complete example of Kiro in action:
+### Setup for UI
 
-📖 **[Kiro - Engineering Guide](https://confluence.disney.com/pages/viewpage.action?pageId=2068867192&spaceKey=Payments&title=Kiro%2B-%2BEngineering%2BGuide)**
+In your target project:
+```bash
+cd ~/my-project
+~/steer-runtime/setup-ui.sh
+```
 
-This Confluence page demonstrates a real implementation using Kiro Pack with detailed walkthrough and results.
+This copies all agents to `.kiro-steer/` with UI-compatible paths.
+
+### Usage
+
+1. Open project in Kiro UI
+2. Select `orchestrator_agent` from dropdown
+3. Provide Jira URL
+4. Approve at gates
+5. PR created!
+
+See **KIRO_UI_SETUP.md** for detailed instructions.
 
 ---
 
-## Directory Structure
+## Distribution
 
+To create a distribution package with MCP servers:
+
+```bash
+./create-distribution.sh
 ```
-steer-runtime/
-├── .kiro/
-│   ├── agents/
-│   │   ├── orchestrator_agent.json
-│   │   ├── story_analyzer_agent.json
-│   │   ├── codebase_explorer_agent.json
-│   │   ├── discussion_agent.json
-│   │   ├── planner_agent.json
-│   │   ├── backend_agent.json
-│   │   ├── ui_agent.json
-│   │   ├── webapi_agent.json
-│   │   ├── test_runner_agent.json
-│   │   ├── code_review_agent.json
-│   │   └── pr_creator_agent.json
-│   │
-│   ├── prompts/
-│   │   └── [Agent prompts]
-│   │
-│   └── context/
-│       ├── golden_rules.md
-│       └── project_mappings.md
-│
-├── setup-kiro.sh            (setup script)
-├── README.md                (this file)
-└── DESIGN.md                (architecture details)
-```
+
+Creates `dist/steer-runtime-v1.0.0.zip` with:
+- All 16 agents
+- Custom MCP servers (jira-mcp, github-mcp, etc.)
+- Setup scripts
+- Complete documentation
+- Auto-installer
+
+Recipients just run `./install.sh` after extracting.
+
+See **MCP_DISTRIBUTION.md** for details.
+
+---
+
+## Documentation
+
+- **README.md** - This file (quick start)
+- **DESIGN.md** - Architecture and workflow details
+- **AGENTS_OVERVIEW.md** - Complete agent reference
+- **IMPLEMENTATION_PLAN.md** - Phase 2 & 3 roadmap
+- **GSD_ENHANCEMENTS.md** - GSD-inspired improvements
+- **JIRA_COMPLETENESS_CRITERIA.md** - Story validation rules
+- **KIRO_UI_SETUP.md** - Kiro UI setup guide
+- **MCP_SETUP.md** - MCP server configuration
+- **MCP_DISTRIBUTION.md** - Distribution packaging guide
+- **PHASE2_COMPLETE.md** - Phase 2 implementation summary
 
 ---
 
 ## Status
 
-**Phase**: Production Ready  
-**Agents**: 11 specialized agents  
-**Enhancements**: GSD-inspired discussion step, XML task structure, code review automation  
+**Phase**: 2 Complete ✅  
+**Agents**: 16 specialized agents  
+**Quality Checks**: 5 (tests, review, security, performance, compliance)  
+**Workflow Steps**: 14 with 2 approval gates  
 
 ---
 
-**Version**: Kiro-Native v1.2  
-**Last Updated**: 2026-03-02
+**Version**: v1.0.0  
+**Last Updated**: 2026-03-10

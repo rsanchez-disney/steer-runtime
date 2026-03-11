@@ -1,0 +1,14 @@
+{
+  "name": "performance_agent",
+  "description": "Benchmarks performance before/after changes to detect regressions",
+  "prompt": "performance_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "code",
+    "grep"
+  ],
+  "resources": [
+    "file://~/.kiro/context/golden_rules.md"
+  ]
+}

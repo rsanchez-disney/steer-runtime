@@ -1,0 +1,11 @@
+{
+  "name": "orchestrator_multiagent",
+  "description": "SDLC orchestrator with automatic multi-agent delegation for Jira story implementation",
+  "prompt": "orchestrator_multiagent.md",
+  "tools": ["use_subagent", "execute_bash", "grep", "code"],
+  "resources": [
+    "file://golden_rules.md",
+    "file://project_mappings.md"
+  ],
+  "welcomeMessage": "👋 Ready to implement Jira stories!\n\nJust say: \"Help me implement <JIRA_URL>\"\n\nI'll automatically:\n  1. Fetch & validate story\n  2. Explore codebase\n  3. Review architecture\n  4. Create implementation plan\n  5. Coordinate implementation\n  6. Run quality checks\n  7. Create PR\n\nSupported projects: Config Studio (DPAY-), GCP (GCP-), CAP (TIMON-), Smart Payment Routing (SPR-), TRP|PAP (DPAY-)"
+}

@@ -61,26 +61,13 @@ Invoke `security_scanner_agent` with changed files.
 - If auto-fixable, ask to apply fixes
 - If passed, continue
 
-### 11. Performance Benchmark
-Invoke `performance_agent` with changed files.
-- If regression >15%, ask user to optimize or accept
-- Show before/after metrics
-- If acceptable, continue
-
-### 12. Compliance Check
-Invoke `compliance_agent` with changed files.
-- If PII/PCI-DSS violations, must fix (CRITICAL)
-- If accessibility issues, ask to fix
-- If documentation missing, ask to update
-- If passed, continue
-
-### 13. Quality Report & Approval Gate #2
-Show consolidated report (tests, review, security, performance, compliance).
+### 11. Quality Report & Approval Gate #2
+Show consolidated report (tests, review, security).
 Wait for approval (yes/no).
 - If no: stop workflow
-- If yes: continue to step 14
+- If yes: continue to step 12
 
-### 14. Create PR
+### 12. Create PR
 Invoke `pr_creator_agent` with story + changes + quality report.
 - Returns PR URL
 
