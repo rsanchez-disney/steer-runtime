@@ -1,0 +1,26 @@
+{
+  "name": "example-power",
+  "version": "1.0.0",
+  "description": "Example power demonstrating the system",
+  "tools": [
+    {
+      "name": "echo",
+      "description": "Echoes back the input with a prefix",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message to echo"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Optional prefix",
+            "default": "Echo:"
+          }
+        },
+        "required": ["message"]
+      }
+    }
+  ]
+}

@@ -6,6 +6,9 @@
     "read",
     "shell"
   ],
+  "powers": [
+    "example-power"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md"

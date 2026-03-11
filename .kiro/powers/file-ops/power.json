@@ -1,0 +1,57 @@
+{
+  "name": "file-ops",
+  "version": "1.0.0",
+  "description": "Advanced file operations",
+  "tools": [
+    {
+      "name": "backup_file",
+      "description": "Create a backup of a file with timestamp",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "File path to backup"
+          }
+        },
+        "required": ["file"]
+      }
+    },
+    {
+      "name": "compare_files",
+      "description": "Compare two files and show differences",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file1": {
+            "type": "string",
+            "description": "First file path"
+          },
+          "file2": {
+            "type": "string",
+            "description": "Second file path"
+          }
+        },
+        "required": ["file1", "file2"]
+      }
+    },
+    {
+      "name": "find_duplicates",
+      "description": "Find duplicate files by content hash",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Directory to search",
+            "default": "."
+          },
+          "pattern": {
+            "type": "string",
+            "description": "File pattern to check"
+          }
+        }
+      }
+    }
+  ]
+}
