@@ -39,6 +39,6 @@
     "@github/*"
   ],
   "resources": [
-    "file://~/.kiro/context/project_mappings.md"
+    "file://.kiro/context/project_mappings.md"
   ]
 }

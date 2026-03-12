@@ -1,0 +1,26 @@
+{
+  "name": "ios-native",
+  "description": "iOS native specialist for Swift/Objective-C and platform channels",
+  "prompt": "../prompts/ios-native.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "ios/Runner/**",
+        "ios/Podfile",
+        "ios/Runner.xcodeproj/**",
+        "ios/Runner.xcworkspace/**",
+        "ios/Runner/Info.plist"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

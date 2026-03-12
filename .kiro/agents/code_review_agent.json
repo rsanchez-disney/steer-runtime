@@ -9,6 +9,6 @@
     "execute_bash"
   ],
   "resources": [
-    "file://~/.kiro/context/golden_rules.md"
+    "file://.kiro/context/golden_rules.md"
   ]
 }

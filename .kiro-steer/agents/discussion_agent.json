@@ -1,9 +1,0 @@
-{
-  "name": "discussion_agent",
-  "description": "Captures user preferences and implementation decisions before planning begins",
-  "prompt": "discussion_agent.md",
-  "tools": [
-    "fs_read",
-    "fs_write"
-  ]
-}

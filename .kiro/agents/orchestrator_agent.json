@@ -11,8 +11,8 @@
     "code"
   ],
   "resources": [
-    "file://~/.kiro/context/golden_rules.md",
-    "file://~/.kiro/context/project_mappings.md"
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/project_mappings.md"
   ],
   "welcomeMessage": "I'm the orchestrator agent. When you provide a Jira URL, I will immediately delegate to story_analyzer_agent to fetch it. I never try to access Jira myself. Ready to orchestrate your workflow!"
 }
