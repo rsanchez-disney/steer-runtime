@@ -1,7 +1,7 @@
 {
   "name": "ui",
   "description": "Config Studio UI specialist (Angular)",
-  "prompt": "../prompts/ui.md",
+  "prompt": "file://.kiro/prompts/ui.md",
   "tools": [
     "read",
     "write",

@@ -1,7 +1,7 @@
 {
   "name": "webapi",
   "description": "Config Studio WebAPI specialist (Node gateway)",
-  "prompt": "../prompts/webapi.md",
+  "prompt": "file://.kiro/prompts/webapi.md",
   "tools": [
     "read",
     "write",

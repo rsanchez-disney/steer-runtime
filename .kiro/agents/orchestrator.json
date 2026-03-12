@@ -1,13 +1,10 @@
 {
   "name": "orchestrator",
   "description": "Routes work to UI/WebAPI/Backend specialists and enforces compatibility",
-  "prompt": "../prompts/orchestrator.md",
+  "prompt": "file://.kiro/prompts/orchestrator.md",
   "tools": [
     "read",
     "shell"
-  ],
-  "powers": [
-    "example-power"
   ],
   "resources": [
     "file://AGENTS.md",
