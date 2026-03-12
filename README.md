@@ -36,15 +36,18 @@ Output:
 
 ### 4. Install Profiles
 
+**For Kiro CLI (global):**
 ```bash
-# Install dev profile only
-./setup.sh install dev
+./setup.sh install dev          # Install dev profile
+./setup.sh install ba           # Install BA profile
+./setup.sh install dev ba       # Install both profiles
+```
 
-# Install BA profile only
-./setup.sh install ba
-
-# Install multiple profiles
-./setup.sh install dev ba
+**For Kiro UI (project-specific):**
+```bash
+./setup.sh install dev --project ~/my-project
+./setup.sh install ba --project ~/my-project
+./setup.sh install dev ba --project ~/my-project
 ```
 
 ### 5. Setup MCP Servers
@@ -55,17 +58,16 @@ Output:
 
 ### 6. Use Agents
 
+**With Kiro CLI:**
 ```bash
-# Development agents
 kiro-cli chat --agent orchestrator
-kiro-cli chat --agent backend
-kiro-cli chat --agent ui
-
-# BA/PO agents
 kiro-cli chat --agent scope_definer_agent
-kiro-cli chat --agent feature_writer_agent
 ```
 
+**With Kiro UI:**
+1. Open Kiro UI
+2. Select your project directory
+3. Agents will be available in the UI
 ---
 
 ## Available Profiles
