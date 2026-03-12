@@ -29,7 +29,14 @@ Requires: Node.js 18+, npm, kiro-cli, git
 ./setup.sh cli
 ```
 
-Installs 20 agents and MCP server tools to `~/.kiro/`
+Installs 18 agents and MCP server tools to `~/.kiro/`
+
+**Additional options:**
+```bash
+./setup.sh cli --sync    # Update existing installation
+./setup.sh cli --check   # Validate installation
+./setup.sh cli --clean   # Remove old/duplicate files
+```
 
 ### 4. Install MCP Server Dependencies
 
@@ -60,12 +67,14 @@ kiro-cli chat --agent orchestrator
 
 ## What's Included
 
-### 23 Specialized Agents
+### 18 Specialized Agents
 
-**Orchestration (3 agents)**
-- `orchestrator` - Routes work to specialized agents
-- `orchestrator_agent` - Generic orchestration
-- `orchestrator_multiagent` - Advanced multi-agent patterns
+**Orchestrator (1 agent)**
+- `orchestrator` - SDLC orchestrator with automatic multi-agent delegation
+  - Implements Jira stories end-to-end
+  - Coordinates multi-repo features
+  - Manages mobile development
+  - Full workflow: story → plan → implement → review → PR
 
 **Config Studio Specialists (3 agents)**
 - `backend` - Java services (wdpr-config-services)
@@ -130,6 +139,16 @@ Update existing agents:
 ./setup.sh cli --sync
 ```
 
+Validate installation:
+```bash
+./setup.sh cli --check
+```
+
+Clean old files:
+```bash
+./setup.sh cli --clean
+```
+
 Install MCP server dependencies:
 ```bash
 ./setup.sh mcp-install
@@ -162,23 +181,35 @@ See `docs/MCP_SETUP.md` for details.
 
 ## Usage Examples
 
-### Feature Implementation
+### Implement Jira Story (Automated)
 
 ```bash
 kiro-cli chat --agent orchestrator
-> Review JIRA story DPAY-14561 and create implementation plan
+> Help me implement https://jira.disney.com/browse/DPAY-14561
 ```
 
-Orchestrator coordinates backend, webapi, and ui agents.
+Orchestrator will automatically:
+1. Fetch story details
+2. Explore codebase
+3. Review architecture
+4. Create plan
+5. Coordinate implementation
+6. Run quality checks
+7. Create PR
+
+### Multi-Repo Feature
+
+```bash
+kiro-cli chat --agent orchestrator
+> Implement payment method validation across backend, webapi, and ui
+```
 
 ### Mobile Development
 
 ```bash
 kiro-cli chat --agent orchestrator
-> Add biometric authentication to the Flutter app
+> Add biometric authentication to Flutter app with native platform channels
 ```
-
-Orchestrator coordinates flutter, android_native, and ios_native agents.
 
 ### Code Review
 
@@ -203,7 +234,7 @@ See `docs/PROMPT_GUIDE.md` for effective prompts.
 ```
 steer-runtime/
 ├── .kiro/                  # All configuration
-│   ├── agents/            # 23 agent configs
+│   ├── agents/            # 18 agent configs
 │   ├── prompts/           # Agent prompts
 │   ├── skills/            # Specialized skills
 │   ├── steering/          # Project steering docs
@@ -272,14 +303,14 @@ npm install -g @kiro/cli
 
 ## Features
 
-✅ **23 specialized agents** - Orchestrator, backend, ui, webapi, mobile, utilities
-✅ **Multi-repo coordination** - Seamless work across repositories
-✅ **Mobile development** - Flutter, Android, iOS support
-✅ **MCP server integration** - Jira, Confluence, GitHub, Mermaid
-✅ **Development powers** - Git, code analysis, file ops, testing
-✅ **Unified setup** - Single script for all configurations
-✅ **Interactive credential setup** - Guided token configuration
-✅ **Comprehensive docs** - Guides, examples, troubleshooting
+✅ **18 specialized agents** - Unified orchestrator, domain specialists, utilities  
+✅ **Multi-repo coordination** - Seamless work across repositories  
+✅ **Mobile development** - Flutter, Android, iOS support  
+✅ **MCP server integration** - Jira, Confluence, GitHub, Mermaid  
+✅ **Development powers** - Git, code analysis, file ops, testing  
+✅ **Unified setup** - Single script with check/clean options  
+✅ **Interactive credential setup** - Guided token configuration  
+✅ **Comprehensive docs** - Guides, examples, troubleshooting  
 
 ---
 
@@ -292,6 +323,16 @@ ls ~/.kiro/agents/
 
 # Reinstall
 ./setup.sh cli --sync
+```
+
+### Check installation health
+```bash
+./setup.sh cli --check
+```
+
+### Clean old files
+```bash
+./setup.sh cli --clean
 ```
 
 ### MCP servers not working
@@ -343,7 +384,7 @@ See `docs/SETUP_GUIDE.md` for more troubleshooting.
 
 **Version:** 2.1.0  
 **Last Updated:** March 12, 2026  
-**Agents:** 23  
+**Agents:** 18  
 **Powers:** 4  
 **MCP Servers:** 4  
 **Repositories:** Config Studio (backend, webapi, ui) + Mobile

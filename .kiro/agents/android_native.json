@@ -1,7 +1,7 @@
 {
   "name": "android_native",
   "description": "Android native specialist for Kotlin/Java and platform channels",
-  "prompt": "file://.kiro/prompts/android-native.md",
+  "prompt": "android_native.md",
   "tools": [
     "read",
     "write",

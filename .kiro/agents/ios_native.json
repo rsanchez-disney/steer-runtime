@@ -1,7 +1,7 @@
 {
   "name": "ios_native",
   "description": "iOS native specialist for Swift/Objective-C and platform channels",
-  "prompt": "file://.kiro/prompts/ios-native.md",
+  "prompt": "ios_native.md",
   "tools": [
     "read",
     "write",

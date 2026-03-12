@@ -1,26 +1,29 @@
 # Kiro Agents
 
-Complete reference for all 20 agents in the steer-runtime system.
+Complete reference for all 18 agents in the steer-runtime system.
 
 ---
 
-## Orchestrator Agents (3)
+## Orchestrator (1)
 
 ### orchestrator
 **File:** `.kiro/agents/orchestrator.json`  
-**Purpose:** Routes work to specialized agents (backend, ui, webapi, mobile) and enforces compatibility  
-**Tools:** read, shell  
-**Use for:** Coordinating multi-repo features, contract validation, cross-layer integration
+**Purpose:** SDLC orchestrator with automatic multi-agent delegation for Jira story implementation  
+**Tools:** use_subagent, execute_bash, grep, code, fs_read  
+**Use for:** 
+- Implementing Jira stories end-to-end
+- Coordinating multi-repo features (backend, webapi, ui)
+- Managing mobile development (Flutter + native agents)
+- Full SDLC workflow: story → plan → implement → review → PR
 
-### orchestrator_agent
-**File:** `.kiro/agents/orchestrator_agent.json`  
-**Purpose:** Generic orchestration and task delegation  
-**Use for:** General multi-agent coordination
-
-### orchestrator_multiagent
-**File:** `.kiro/agents/orchestrator_multiagent.json`  
-**Purpose:** Advanced multi-agent orchestration patterns  
-**Use for:** Complex workflows requiring multiple specialized agents
+**Workflow:**
+1. Fetch & validate Jira story
+2. Explore codebase
+3. Review architecture
+4. Create implementation plan
+5. Coordinate implementation across repos
+6. Run quality checks
+7. Create pull request
 
 ---
 
@@ -156,10 +159,10 @@ Complete reference for all 20 agents in the steer-runtime system.
 
 ## Agent Categories Summary
 
-**Total Agents:** 20
+**Total Agents:** 18
 
 **By Category:**
-- Orchestration: 3 agents
+- Orchestration: 1 agent (unified)
 - Config Studio: 3 agents
 - Mobile: 3 agents
 - Planning & Analysis: 4 agents
@@ -174,7 +177,21 @@ Complete reference for all 20 agents in the steer-runtime system.
 
 ## Usage Examples
 
-### Feature Implementation
+### Implement Jira Story (Automated)
+```bash
+kiro-cli chat --agent orchestrator
+> Help me implement https://jira.disney.com/browse/DPAY-14561
+```
+Orchestrator will automatically:
+1. Fetch story details
+2. Explore codebase
+3. Review architecture
+4. Create plan
+5. Coordinate implementation
+6. Run quality checks
+7. Create PR
+
+### Multi-Repo Feature
 ```bash
 kiro-cli chat --agent orchestrator
 > Implement payment method validation across backend, webapi, and ui
@@ -198,15 +215,12 @@ kiro-cli chat --agent story_analyzer_agent
 > Analyze JIRA story DPAY-14561
 ```
 
-### Architecture Review
-```bash
-kiro-cli chat --agent architecture_agent
-> Review the proposed microservices architecture for payment processing
-```
-
 ---
 
 ## Agent Selection Guide
+
+**For Jira story implementation:**
+- Use `orchestrator` - handles everything automatically
 
 **For feature implementation:**
 - Use `orchestrator` for multi-repo coordination
