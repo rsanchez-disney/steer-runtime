@@ -1,20 +1,19 @@
-# Kiro Agents
+# Kiro Agents Reference
 
-Complete reference for all 18 agents in the steer-runtime system.
+Complete reference for all agents across profiles.
 
 ---
 
-## Orchestrator (1)
+## Profile: dev (18 agents)
 
-### orchestrator
-**File:** `.kiro/agents/orchestrator.json`  
-**Purpose:** SDLC orchestrator with automatic multi-agent delegation for Jira story implementation  
-**Tools:** use_subagent, execute_bash, grep, code, fs_read  
-**Use for:** 
-- Implementing Jira stories end-to-end
-- Coordinating multi-repo features (backend, webapi, ui)
-- Managing mobile development (Flutter + native agents)
-- Full SDLC workflow: story → plan → implement → review → PR
+Development agents for backend, webapi, UI, mobile, testing, security, and code review.
+
+### Orchestrator (1)
+
+#### orchestrator
+**File:** `.kiro-dev/agents/orchestrator.json`  
+**Purpose:** SDLC orchestrator with automatic multi-agent delegation  
+**Use for:** Implementing Jira stories end-to-end, coordinating multi-repo features
 
 **Workflow:**
 1. Fetch & validate Jira story
@@ -27,242 +26,225 @@ Complete reference for all 18 agents in the steer-runtime system.
 
 ---
 
-## Config Studio Specialists (3)
+### Config Studio Specialists (3)
 
-### backend
-**File:** `.kiro/agents/backend.json`  
+#### backend
+**File:** `.kiro-dev/agents/backend.json`  
 **Purpose:** Java services specialist for wdpr-config-services  
-**Tools:** read, write, shell  
-**Allowed paths:** src/**, pom.xml, build.gradle*, application*.yml  
 **Use for:** Backend API development, database changes, Java services
 
-### webapi
-**File:** `.kiro/agents/webapi.json`  
-**Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api (BFF layer)  
-**Tools:** read, write, shell  
-**Allowed paths:** src/**, package.json, tsconfig.json  
-**Use for:** API layer, BFF logic, TypeScript interfaces, error handling
+#### webapi
+**File:** `.kiro-dev/agents/webapi.json`  
+**Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
+**Use for:** API layer, BFF logic, TypeScript interfaces
 
-### ui
-**File:** `.kiro/agents/ui.json`  
+#### ui
+**File:** `.kiro-dev/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
-**Tools:** read, write, shell  
-**Allowed paths:** src/**, package.json, angular.json, tsconfig.json  
-**Use for:** Frontend development, Angular components, UI/UX, forms
+**Use for:** Frontend development, components, services, routing
 
 ---
 
-## Mobile Development (3)
+### Mobile Development (3)
 
-### flutter
-**File:** `.kiro/agents/flutter.json`  
-**Purpose:** Flutter/Dart specialist for cross-platform mobile development  
-**Tools:** read, write, shell  
-**Allowed paths:** lib/**, packages/*/lib/**, test/**, pubspec.yaml  
-**Use for:** Flutter UI, state management, platform-agnostic business logic, widget development
+#### flutter
+**File:** `.kiro-dev/agents/flutter.json`  
+**Purpose:** Dart/Flutter cross-platform development  
+**Use for:** Flutter widgets, state management, platform channels
 
-### android_native
-**File:** `.kiro/agents/android_native.json`  
-**Purpose:** Android native specialist (Kotlin/Java) for platform channels  
-**Tools:** read, write, shell  
-**Allowed paths:** android/**, *.gradle*, AndroidManifest.xml  
-**Use for:** Android platform channels, native Android features, Kotlin/Java implementation
+#### android_native
+**File:** `.kiro-dev/agents/android_native.json`  
+**Purpose:** Kotlin/Java platform channels for Android  
+**Use for:** Android-specific implementations, native integrations
 
-### ios_native
-**File:** `.kiro/agents/ios_native.json`  
-**Purpose:** iOS native specialist (Swift/Objective-C) for platform channels  
-**Tools:** read, write, shell  
-**Allowed paths:** ios/**, *.xcodeproj/**, *.xcworkspace/**, Podfile  
-**Use for:** iOS platform channels, native iOS features, Swift/Objective-C implementation
+#### ios_native
+**File:** `.kiro-dev/agents/ios_native.json`  
+**Purpose:** Swift/Obj-C platform channels for iOS  
+**Use for:** iOS-specific implementations, native integrations
 
 ---
 
-## Planning & Analysis (4)
+### Planning & Analysis (4)
 
-### planner_agent
-**File:** `.kiro/agents/planner_agent.json`  
-**Purpose:** Creates detailed implementation plans with tasks, dependencies, and test strategy  
-**Tools:** fs_read  
-**Use for:** Breaking down features into tasks, planning implementation approach
+#### planner_agent
+**File:** `.kiro-dev/agents/planner_agent.json`  
+**Purpose:** Task planning and breakdown  
+**Use for:** Breaking down complex tasks, creating implementation plans
 
-### story_analyzer_agent
-**File:** `.kiro/agents/story_analyzer_agent.json`  
-**Purpose:** Fetches and analyzes Jira stories, extracts scope and acceptance criteria  
-**Tools:** web_fetch, grep, fs_read, @jira/*, @confluence/*, @github/*  
-**MCP Servers:** jira, confluence, github  
-**Use for:** Analyzing Jira stories, extracting requirements, understanding scope
+#### story_analyzer_agent
+**File:** `.kiro-dev/agents/story_analyzer_agent.json`  
+**Purpose:** Jira story analysis and requirements extraction  
+**Use for:** Analyzing Jira stories, extracting requirements
 
-### architecture_agent
-**File:** `.kiro/agents/architecture_agent.json`  
-**Purpose:** Provides architecture guidance, design patterns, and technical decisions  
-**Tools:** code, grep, fs_read, execute_bash  
-**Use for:** Architecture review, design patterns, technical decision-making
+#### architecture_agent
+**File:** `.kiro-dev/agents/architecture_agent.json`  
+**Purpose:** Architecture review and design validation  
+**Use for:** Reviewing architecture decisions, design patterns
 
-### codebase_explorer_agent
-**File:** `.kiro/agents/codebase_explorer_agent.json`  
-**Purpose:** Explores and analyzes codebase structure and patterns  
-**Tools:** code, grep, fs_read, execute_bash  
-**Use for:** Understanding codebase structure, finding patterns, code discovery
+#### codebase_explorer_agent
+**File:** `.kiro-dev/agents/codebase_explorer_agent.json`  
+**Purpose:** Code exploration and navigation  
+**Use for:** Finding relevant code, understanding structure
 
 ---
 
-## Quality & Security (5)
+### Quality & Security (5)
 
-### code_review_agent
-**File:** `.kiro/agents/code_review_agent.json`  
-**Purpose:** Reviews code for security, quality, performance, and testing issues  
-**Tools:** code, grep, fs_read, execute_bash  
-**Use for:** Pre-PR code review, quality checks, identifying issues
+#### code_review_agent
+**File:** `.kiro-dev/agents/code_review_agent.json`  
+**Purpose:** Code review and quality checks  
+**Use for:** Reviewing code changes, identifying issues
 
-### security_scanner_agent
-**File:** `.kiro/agents/security_scanner_agent.json`  
-**Purpose:** Runs automated security scans to detect vulnerabilities and secrets  
-**Tools:** execute_bash, fs_read, grep, code  
-**Use for:** Security scanning, vulnerability detection, secrets detection
+#### security_scanner_agent
+**File:** `.kiro-dev/agents/security_scanner_agent.json`  
+**Purpose:** Security analysis and vulnerability detection  
+**Use for:** Security scans, finding vulnerabilities
 
-### compliance_agent
-**File:** `.kiro/agents/compliance_agent.json`  
-**Purpose:** Validates compliance with coding standards and policies  
-**Tools:** code, grep, fs_read, execute_bash  
-**Use for:** Compliance validation, policy enforcement, standards checking
+#### compliance_agent
+**File:** `.kiro-dev/agents/compliance_agent.json`  
+**Purpose:** Compliance validation (golden rules, standards)  
+**Use for:** Checking compliance with coding standards
 
-### test_runner_agent
-**File:** `.kiro/agents/test_runner_agent.json`  
-**Purpose:** Runs tests and validates coverage requirements  
-**Tools:** execute_bash, fs_read, grep  
-**Use for:** Running tests, checking coverage, validating test results
+#### test_runner_agent
+**File:** `.kiro-dev/agents/test_runner_agent.json`  
+**Purpose:** Test execution and coverage analysis  
+**Use for:** Running tests, checking coverage
 
-### performance_agent
-**File:** `.kiro/agents/performance_agent.json`  
-**Purpose:** Analyzes and optimizes performance issues  
-**Tools:** execute_bash, fs_read, grep, code  
-**Use for:** Performance analysis, optimization recommendations, profiling
+#### performance_agent
+**File:** `.kiro-dev/agents/performance_agent.json`  
+**Purpose:** Performance optimization and analysis  
+**Use for:** Performance profiling, optimization suggestions
 
 ---
 
-## Workflow (2)
+### Workflow (2)
 
-### pr_creator_agent
-**File:** `.kiro/agents/pr_creator_agent.json`  
-**Purpose:** Creates pull requests with proper formatting and context  
-**Tools:** execute_bash, fs_read, grep, @github/*  
-**MCP Servers:** github  
-**Use for:** Creating PRs, formatting PR descriptions, linking issues
+#### pr_creator_agent
+**File:** `.kiro-dev/agents/pr_creator_agent.json`  
+**Purpose:** Pull request creation and management  
+**Use for:** Creating PRs, formatting descriptions
 
-### discussion_agent
-**File:** `.kiro/agents/discussion_agent.json`  
-**Purpose:** Facilitates technical discussions and decision-making  
-**Tools:** fs_read  
-**Use for:** Technical discussions, brainstorming, decision documentation
+#### discussion_agent
+**File:** `.kiro-dev/agents/discussion_agent.json`  
+**Purpose:** Technical discussions and decision support  
+**Use for:** Technical discussions, architecture decisions
 
 ---
 
-## Agent Categories Summary
+## Profile: ba (4 agents)
 
-**Total Agents:** 18
+Business Analyst and Product Owner agents for requirements, scope, and feature definition.
 
-**By Category:**
-- Orchestration: 1 agent (unified)
-- Config Studio: 3 agents
-- Mobile: 3 agents
-- Planning & Analysis: 4 agents
-- Quality & Security: 5 agents
-- Workflow: 2 agents
+### BA Orchestrator (1)
 
-**Naming Convention:**
-- Primary domain agents: Simple names (backend, ui, webapi, flutter, android_native, ios_native, orchestrator)
-- Utility agents: snake_case with _agent suffix
+#### ba_orchestrator_agent
+**File:** `.kiro-ba/agents/ba_orchestrator_agent.json`  
+**Purpose:** Coordinates BA/PO tasks and delegates to specialized agents  
+**Use for:** Complex BA workflows requiring multiple steps
+
+**Capabilities:**
+- Requirements gathering
+- Scope definition
+- Feature specification
+- Stakeholder coordination
+- Documentation management
+
+**Delegates to:**
+- scope_definer_agent
+- feature_writer_agent
+- requirements_analyst_agent
 
 ---
 
-## Usage Examples
+### BA Specialists (3)
 
-### Implement Jira Story (Automated)
+#### scope_definer_agent
+**File:** `.kiro-ba/agents/scope_definer_agent.json`  
+**Purpose:** Defines project and feature scope, boundaries, and constraints  
+**Use for:** 
+- Starting new projects
+- Clarifying scope boundaries
+- Documenting assumptions and dependencies
+- Identifying risks and constraints
+
+**Example:**
 ```bash
-kiro-cli chat --agent orchestrator
-> Help me implement https://jira.disney.com/browse/DPAY-14561
-```
-Orchestrator will automatically:
-1. Fetch story details
-2. Explore codebase
-3. Review architecture
-4. Create plan
-5. Coordinate implementation
-6. Run quality checks
-7. Create PR
-
-### Multi-Repo Feature
-```bash
-kiro-cli chat --agent orchestrator
-> Implement payment method validation across backend, webapi, and ui
+kiro-cli chat --agent scope_definer_agent
+> "Define scope for epic DPAY-500 including in/out of scope and dependencies"
 ```
 
-### Mobile Development
+#### feature_writer_agent
+**File:** `.kiro-ba/agents/feature_writer_agent.json`  
+**Purpose:** Creates user stories, acceptance criteria, and feature specifications  
+**Use for:**
+- Writing user stories
+- Breaking down epics
+- Creating acceptance criteria
+- Refining backlog items
+
+**Example:**
 ```bash
-kiro-cli chat --agent orchestrator
-> Add biometric authentication to Flutter app with native platform channels
+kiro-cli chat --agent feature_writer_agent
+> "Create user stories for payment validation with acceptance criteria"
 ```
 
-### Code Review
-```bash
-kiro-cli chat --agent code_review_agent
-> Review changes in src/app/features/payment/
-```
+#### requirements_analyst_agent
+**File:** `.kiro-ba/agents/requirements_analyst_agent.json`  
+**Purpose:** Analyzes requirements, identifies gaps, validates completeness  
+**Use for:**
+- Reviewing requirements
+- Gap analysis
+- Sprint planning prep
+- Requirements validation
 
-### Story Analysis
+**Example:**
 ```bash
-kiro-cli chat --agent story_analyzer_agent
-> Analyze JIRA story DPAY-14561
+kiro-cli chat --agent requirements_analyst_agent
+> "Review sprint 23 stories and identify gaps or missing information"
 ```
 
 ---
 
-## Agent Selection Guide
+## Quick Reference
 
-**For Jira story implementation:**
-- Use `orchestrator` - handles everything automatically
+### Development Agents
+```bash
+kiro-cli chat --agent orchestrator          # Main dev orchestrator
+kiro-cli chat --agent backend               # Java backend
+kiro-cli chat --agent webapi                # Node.js API
+kiro-cli chat --agent ui                    # Angular frontend
+kiro-cli chat --agent flutter               # Flutter mobile
+kiro-cli chat --agent code_review_agent     # Code review
+```
 
-**For feature implementation:**
-- Use `orchestrator` for multi-repo coordination
-- Use specific agents (backend, ui, webapi) for single-repo work
-
-**For mobile development:**
-- Use `orchestrator` to coordinate flutter + native agents
-- Use `flutter` for Dart/Flutter code
-- Use `android_native` or `ios_native` for platform-specific code
-
-**For planning:**
-- Use `story_analyzer_agent` to understand requirements
-- Use `planner_agent` to create implementation plan
-- Use `architecture_agent` for design decisions
-
-**For quality:**
-- Use `code_review_agent` before creating PR
-- Use `security_scanner_agent` for security checks
-- Use `test_runner_agent` to validate tests
-
-**For workflow:**
-- Use `pr_creator_agent` to create pull requests
-- Use `discussion_agent` for technical discussions
+### BA/PO Agents
+```bash
+kiro-cli chat --agent ba_orchestrator_agent      # BA orchestrator
+kiro-cli chat --agent scope_definer_agent        # Define scope
+kiro-cli chat --agent feature_writer_agent       # Write stories
+kiro-cli chat --agent requirements_analyst_agent # Analyze requirements
+```
 
 ---
 
-## Resources
+## Installation
 
-All agents have access to:
-- Project context files (`.kiro/context/`)
-- Steering documents (`.kiro/steering/`)
-- Project README and documentation
-
-Some agents have MCP server integration:
-- `story_analyzer_agent`: Jira, Confluence, GitHub
-- `pr_creator_agent`: GitHub
+Install specific profiles:
+```bash
+./setup.sh install dev          # Install dev agents only
+./setup.sh install ba           # Install BA agents only
+./setup.sh install dev ba       # Install both profiles
+```
 
 ---
 
-## See Also
+## Documentation
 
-- `README.md` - Quick start guide
-- `docs/PROMPT_GUIDE.md` - How to use agents effectively
-- `.kiro/prompts/` - Individual agent prompts
-- `.kiro/steering/` - Project conventions and guidelines
+- **Dev agents:** See `docs/PROMPT_GUIDE.md`
+- **BA/PO agents:** See `docs/BA_PROMPT_GUIDE.md`
+- **Workflows:** See `docs/BA_WORKFLOWS.md`
+
+---
+
+**Total Agents:** 22 (dev: 18, ba: 4)  
+**Last Updated:** March 12, 2026
