@@ -297,11 +297,11 @@ orchestrator
     │       ├─→ Create BiometricAuth interface
     │       └─→ Define MethodChannel
     ├─→ Phase 2: Android Implementation
-    │   └─→ android-native agent
+    │   └─→ android_native agent
     │       ├─→ Implement BiometricPrompt
     │       └─→ Handle permissions
     ├─→ Phase 3: iOS Implementation
-    │   └─→ ios-native agent
+    │   └─→ ios_native agent
     │       ├─→ Implement LocalAuthentication
     │       └─→ Configure Info.plist
     └─→ Phase 4: Contract Validation
@@ -317,7 +317,7 @@ User: "Add Android widget"
     ↓
 orchestrator
     ├─→ Analyze: Android-only
-    └─→ Delegate to: android-native agent
+    └─→ Delegate to: android_native agent
         ├─→ Implement widget
         ├─→ Configure manifest
         └─→ Document usage
@@ -362,10 +362,10 @@ Is feature mobile-related?
     ├─→ Pure Flutter (UI/logic)?
     │   └─→ Delegate to: flutter agent
     ├─→ Needs native APIs?
-    │   └─→ Coordinate: flutter + android-native + ios-native
+    │   └─→ Coordinate: flutter + android_native + ios_native
     └─→ Platform-specific?
-        ├─→ Android only: android-native agent
-        └─→ iOS only: ios-native agent
+        ├─→ Android only: android_native agent
+        └─→ iOS only: ios_native agent
 ```
 
 ---
@@ -393,4 +393,4 @@ Is feature mobile-related?
 ---
 
 **Updated:** March 12, 2026  
-**Mobile Agents:** flutter, android-native, ios-native
+**Mobile Agents:** flutter, android_native, ios_native

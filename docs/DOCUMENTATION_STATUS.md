@@ -61,7 +61,7 @@ All documents now correctly reference:
 - ✅ `.kiro/` (not _kiro-pack or .kiro-steer)
 - ✅ 23 agents (not 16 or 9)
 - ✅ 4 powers
-- ✅ Mobile agents (flutter, android-native, ios-native)
+- ✅ Mobile agents (flutter, android_native, ios_native)
 
 ---
 

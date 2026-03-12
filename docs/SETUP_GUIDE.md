@@ -73,8 +73,8 @@ See `AGENTS.md` for complete list of 23 agents.
 - `webapi` - Node.js API
 - `ui` - Angular frontend
 - `flutter` - Mobile (Dart/Flutter)
-- `android-native` - Android platform
-- `ios-native` - iOS platform
+- `android_native` - Android platform
+- `ios_native` - iOS platform
 
 **Utility agents:**
 - `planner_agent` - Task planning

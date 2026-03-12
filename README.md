@@ -29,16 +29,25 @@ Requires: Node.js 18+, npm, kiro-cli, git
 ./setup.sh cli
 ```
 
-Installs 23 agents to `~/.kiro/`
+Installs 20 agents and MCP server tools to `~/.kiro/`
 
-### 4. Configure MCP Servers (Optional)
+### 4. Install MCP Server Dependencies
 
 ```bash
-./setup.sh mcp
-# Edit ~/.kiro/config.json with your tokens
+./setup.sh mcp-install
 ```
 
-Required for Jira and GitHub integration.
+Installs npm dependencies and configures credentials for:
+- Jira MCP
+- Confluence MCP
+- GitHub MCP
+- Mermaid Diagram MCP
+
+The script will:
+1. Run `npm install` in each MCP server project
+2. Copy `.env.example` to `.env` for each project
+3. Prompt you to configure credentials interactively
+4. Display token generation URLs for each service
 
 ### 5. Use in Your Project
 
@@ -65,8 +74,8 @@ kiro-cli chat --agent orchestrator
 
 **Mobile Development (3 agents)**
 - `flutter` - Dart/Flutter cross-platform
-- `android-native` - Kotlin/Java platform channels
-- `ios-native` - Swift/Obj-C platform channels
+- `android_native` - Kotlin/Java platform channels
+- `ios_native` - Swift/Obj-C platform channels
 
 **Planning & Analysis (4 agents)**
 - `planner_agent` - Task planning and breakdown
@@ -96,6 +105,15 @@ See `AGENTS.md` for complete reference.
 
 See `.kiro/powers/GUIDE.md` for creating custom powers.
 
+### 4 MCP Servers
+
+- **jira-mcp** - Jira integration for story analysis
+- **confluence-mcp** - Confluence documentation access
+- **github-mcp** - GitHub repository operations
+- **mermaid-diagram-mcp** - Diagram generation
+
+Located in `.kiro/tools/mcp-servers/` with relative path configuration.
+
 ---
 
 ## Setup Options
@@ -111,6 +129,17 @@ Update existing agents:
 ```bash
 ./setup.sh cli --sync
 ```
+
+Install MCP server dependencies:
+```bash
+./setup.sh mcp-install
+```
+
+This will:
+- Install npm packages for each MCP server
+- Create `.env` files from `.env.example`
+- Prompt for credentials with token generation URLs
+- Configure Jira, Confluence, and GitHub access
 
 ### For Kiro UI
 
@@ -149,7 +178,7 @@ kiro-cli chat --agent orchestrator
 > Add biometric authentication to the Flutter app
 ```
 
-Orchestrator coordinates flutter, android-native, and ios-native agents.
+Orchestrator coordinates flutter, android_native, and ios_native agents.
 
 ### Code Review
 
@@ -180,7 +209,12 @@ steer-runtime/
 │   ├── steering/          # Project steering docs
 │   ├── powers/            # Development powers
 │   ├── context/           # Project context
-│   └── tools/             # Utility scripts
+│   └── tools/             # MCP servers
+│       └── mcp-servers/   # MCP server projects
+│           ├── jira-mcp/
+│           ├── confluence-mcp/
+│           ├── github-mcp/
+│           └── mermaid-diagram-mcp/
 ├── docs/                   # Documentation
 │   ├── PROMPT_GUIDE.md
 │   ├── MOBILE_AGENTS_SETUP.md
@@ -241,8 +275,10 @@ npm install -g @kiro/cli
 ✅ **23 specialized agents** - Orchestrator, backend, ui, webapi, mobile, utilities
 ✅ **Multi-repo coordination** - Seamless work across repositories
 ✅ **Mobile development** - Flutter, Android, iOS support
+✅ **MCP server integration** - Jira, Confluence, GitHub, Mermaid
 ✅ **Development powers** - Git, code analysis, file ops, testing
 ✅ **Unified setup** - Single script for all configurations
+✅ **Interactive credential setup** - Guided token configuration
 ✅ **Comprehensive docs** - Guides, examples, troubleshooting
 
 ---
@@ -260,10 +296,15 @@ ls ~/.kiro/agents/
 
 ### MCP servers not working
 ```bash
-# Check config exists
-cat ~/.kiro/config.json
+# Check MCP servers are installed
+ls ~/.kiro/tools/mcp-servers/
 
-# Verify tokens (not placeholders)
+# Reinstall dependencies
+./setup.sh mcp-install
+
+# Verify .env files exist
+ls ~/.kiro/tools/mcp-servers/*/.env
+
 # Test with story analyzer
 kiro-cli chat --agent story_analyzer_agent
 ```
@@ -271,6 +312,17 @@ kiro-cli chat --agent story_analyzer_agent
 ### Dependencies missing
 ```bash
 ./setup.sh check
+```
+
+### MCP server credentials
+```bash
+# Reconfigure credentials
+cd ~/.kiro/tools/mcp-servers/jira-mcp
+nano .env
+
+# Token URLs:
+# Jira/Confluence: https://id.atlassian.com/manage-profile/security/api-tokens
+# GitHub: https://github.com/settings/tokens/new
 ```
 
 See `docs/SETUP_GUIDE.md` for more troubleshooting.
@@ -289,10 +341,11 @@ See `docs/SETUP_GUIDE.md` for more troubleshooting.
 
 ## Version
 
-**Version:** 2.0.0  
+**Version:** 2.1.0  
 **Last Updated:** March 12, 2026  
 **Agents:** 23  
 **Powers:** 4  
+**MCP Servers:** 4  
 **Repositories:** Config Studio (backend, webapi, ui) + Mobile
 
 ---

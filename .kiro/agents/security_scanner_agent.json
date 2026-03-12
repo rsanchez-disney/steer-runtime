@@ -9,6 +9,7 @@
     "code"
   ],
   "resources": [
-    "file://.kiro/context/golden_rules.md"
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
   ]
 }

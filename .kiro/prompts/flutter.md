@@ -131,8 +131,8 @@ class BiometricAuthImpl implements BiometricAuth {
 
 ## Collaboration
 
-- Coordinate with android-native agent for Android platform channels
-- Coordinate with ios-native agent for iOS platform channels
+- Coordinate with android_native agent for Android platform channels
+- Coordinate with ios_native agent for iOS platform channels
 - Follow orchestrator guidance for cross-platform features
 - Validate contracts with native agents
 

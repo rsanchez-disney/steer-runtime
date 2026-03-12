@@ -29,7 +29,7 @@ Three specialized agents for Flutter and native mobile development have been cre
 ---
 
 ### 2. Android Native Agent
-**Location:** `.kiro/mobile/android-native/`
+**Location:** `.kiro/mobile/android_native/`
 
 **Capabilities:**
 - Kotlin/Java development
@@ -39,7 +39,7 @@ Three specialized agents for Flutter and native mobile development have been cre
 - Android permissions and manifest
 - Native module integration
 
-**Configuration:** `android-native.json`
+**Configuration:** `android_native.json`
 - Tools: read, write, shell
 - Allowed paths: android/**, build.gradle, AndroidManifest.xml
 
@@ -49,7 +49,7 @@ Three specialized agents for Flutter and native mobile development have been cre
 ---
 
 ### 3. iOS Native Agent
-**Location:** `.kiro/mobile/ios-native/`
+**Location:** `.kiro/mobile/ios_native/`
 
 **Capabilities:**
 - Swift/Objective-C development
@@ -59,7 +59,7 @@ Three specialized agents for Flutter and native mobile development have been cre
 - iOS permissions and Info.plist
 - Native module integration
 
-**Configuration:** `ios-native.json`
+**Configuration:** `ios_native.json`
 - Tools: read, write, shell
 - Allowed paths: ios/**, Podfile, Info.plist
 
@@ -160,16 +160,16 @@ All agents coordinate on:
 │       │   └── flutter-monorepo-packages.md
 │       └── steering/
 │           └── 20-repo-flutter-monorepo.md
-├── android-native/
+├── android_native/
 │   └── .kiro/
-│       ├── agents/android-native.json
-│       ├── prompts/android-native.md
+│       ├── agents/android_native.json
+│       ├── prompts/android_native.md
 │       └── skills/
 │           └── android-platform-channels.md
-└── ios-native/
+└── ios_native/
     └── .kiro/
-        ├── agents/ios-native.json
-        ├── prompts/ios-native.md
+        ├── agents/ios_native.json
+        ├── prompts/ios_native.md
         └── skills/
             └── ios-platform-channels.md
 ```
@@ -196,8 +196,8 @@ orchestrator
 ├── ui (Angular)
 └── mobile
     ├── flutter (Dart/Flutter)
-    ├── android-native (Kotlin/Java)
-    └── ios-native (Swift/Obj-C)
+    ├── android_native (Kotlin/Java)
+    └── ios_native (Swift/Obj-C)
 ```
 
 All agents coordinate through the orchestrator for cross-platform features.
@@ -206,6 +206,6 @@ All agents coordinate through the orchestrator for cross-platform features.
 
 **Status:** ✅ Ready to use
 **Created:** March 11, 2026
-**Agents:** 3 (flutter, android-native, ios-native)
+**Agents:** 3 (flutter, android_native, ios_native)
 **Skills:** 4 documents
 **Steering:** 2 documents

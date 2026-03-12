@@ -698,4 +698,4 @@ Follow existing Provider patterns in the codebase.
 ---
 
 **Updated:** March 12, 2026  
-**Mobile Agents Added:** flutter, android-native, ios-native
+**Mobile Agents Added:** flutter, android_native, ios_native

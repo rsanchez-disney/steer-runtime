@@ -53,8 +53,8 @@ Implementation Layer
 ├── webapi                     # Node.js API
 ├── ui                         # Angular frontend
 ├── flutter                    # Dart/Flutter
-├── android-native             # Kotlin/Java
-└── ios-native                 # Swift/Obj-C
+├── android_native             # Kotlin/Java
+└── ios_native                 # Swift/Obj-C
 
 Planning & Analysis Layer
 ├── planner_agent              # Task planning
@@ -104,8 +104,8 @@ User: "Add biometric auth to Flutter app"
 orchestrator
     ├─→ planner_agent (plan implementation)
     ├─→ flutter (interface + MethodChannel)
-    ├─→ android-native (BiometricPrompt)
-    ├─→ ios-native (LocalAuthentication)
+    ├─→ android_native (BiometricPrompt)
+    ├─→ ios_native (LocalAuthentication)
     ├─→ [Contract Validation]
     └─→ test_runner_agent (test all platforms)
 ```

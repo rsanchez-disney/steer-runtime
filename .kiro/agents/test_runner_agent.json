@@ -6,5 +6,8 @@
     "execute_bash",
     "fs_read",
     "grep"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
   ]
 }

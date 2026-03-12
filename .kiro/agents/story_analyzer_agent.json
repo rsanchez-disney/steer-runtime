@@ -11,26 +11,32 @@
     "@github/*"
   ],
   "mcpServers": {
+    "kiro": {
+      "url": "https://compass.wdprapps.disney.com/api/mcp/mcp-35f1265c-c382-4a59-aff7-30b764aefe4f",
+      "headers": {
+        "Authorization": "Bearer YOUR_KIRO_API_TOKEN"
+      }
+    },
     "jira": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+        "../tools/mcp-servers/jira-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+      "cwd": "../tools/mcp-servers/jira-mcp"
     },
     "confluence": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+        "../tools/mcp-servers/confluence-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+      "cwd": "../tools/mcp-servers/confluence-mcp"
     },
     "github": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/github-mcp/build/index.js"
+        "../tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/github-mcp"
+      "cwd": "../tools/mcp-servers/github-mcp"
     }
   },
   "allowedTools": [
@@ -39,6 +45,7 @@
     "@github/*"
   ],
   "resources": [
-    "file://.kiro/context/project_mappings.md"
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
   ]
 }
