@@ -144,17 +144,17 @@ BA Orchestrator automatically:
 ## Documentation
 
 ### For Developers
-- 📖 `docs/PROMPT_GUIDE.md` - Development prompts and workflows
-- 📖 `docs/MOBILE_AGENTS_SETUP.md` - Mobile development setup
-- 📖 `docs/DESIGN.md` - System architecture
-- 📖 `docs/MCP_SETUP.md` - MCP server configuration
+- 📖 [Development Prompts & Workflows](docs/PROMPT_GUIDE.md)
+- 📖 [Mobile Development Setup](docs/MOBILE_AGENTS_SETUP.md)
+- 📖 [System Architecture](docs/DESIGN.md)
+- 📖 [MCP Server Configuration](docs/MCP_SETUP.md)
 
 ### For Business Analysts / Product Owners
-- 📖 `docs/BA_PROMPT_GUIDE.md` - 12+ BA/PO workflow examples
-- 📖 `docs/BA_WORKFLOWS.md` - Complete end-to-end workflows
-- 📖 `docs/BA_QUICK_REFERENCE.md` - Printable quick reference
-- 📖 `.kiro-ba/context/ba_guidelines.md` - Best practices
-- 📖 `.kiro-ba/context/story_templates.md` - Story templates
+- 📖 [BA/PO Prompt Guide](docs/BA_PROMPT_GUIDE.md) - 12+ workflow examples
+- 📖 [BA/PO Complete Workflows](docs/BA_WORKFLOWS.md) - End-to-end processes
+- 📖 [BA/PO Quick Reference](docs/BA_QUICK_REFERENCE.md) - Printable reference card
+- 📖 [BA Guidelines](.kiro-ba/context/ba_guidelines.md) - Best practices
+- 📖 [Story Templates](.kiro-ba/context/story_templates.md) - Jira templates
 
 ---
 
