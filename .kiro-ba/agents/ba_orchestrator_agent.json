@@ -1,0 +1,72 @@
+{
+  "name": "ba_orchestrator_agent",
+  "role": "orchestrator",
+  "description": "Orchestrates BA/PO tasks and coordinates specialized agents for requirements, scope, and feature definition",
+  "capabilities": [
+    "requirements_gathering",
+    "scope_definition",
+    "feature_specification",
+    "stakeholder_coordination",
+    "documentation_management"
+  ],
+  "tools": [
+    "create_subagent",
+    "delegate_task",
+    "aggregate_results",
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "subagents": {
+    "scope_definer_agent": {
+      "specialization": "scope_definition",
+      "triggers": [
+        "define scope",
+        "scope analysis",
+        "project boundaries",
+        "constraints"
+      ]
+    },
+    "feature_writer_agent": {
+      "specialization": "feature_specification",
+      "triggers": [
+        "write feature",
+        "create story",
+        "acceptance criteria",
+        "user story"
+      ]
+    },
+    "requirements_analyst_agent": {
+      "specialization": "requirements_analysis",
+      "triggers": [
+        "analyze requirements",
+        "gap analysis",
+        "validate requirements",
+        "requirements review"
+      ]
+    }
+  },
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+    }
+  },
+  "coordination_strategy": {
+    "parallel_execution": true,
+    "max_concurrent_subagents": 2,
+    "timeout_seconds": 300
+  },
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ]
+}

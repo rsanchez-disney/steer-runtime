@@ -1,296 +1,148 @@
 #!/bin/bash
-# Unified setup script for steer-runtime
-# Supports: CLI, UI, and MCP configuration
+# Unified setup for steer-runtime (multi-profile support)
 
 set -e
 
 STEER_ROOT="$(cd "$(dirname "$0")" && pwd)"
 KIRO_ROOT="$HOME/.kiro"
-PROJECT_ROOT=$(pwd)
 
 show_usage() {
     cat << 'USAGE'
 ╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║              steer-runtime Setup Script                     ║
-║                                                              ║
+║           steer-runtime Unified Setup                        ║
 ╚══════════════════════════════════════════════════════════════╝
 
 USAGE:
-  ./setup.sh <command> [options]
+  ./setup.sh <command> [profiles...]
 
 COMMANDS:
-  cli [--sync|--check|--clean]    Setup agents for Kiro CLI in ~/.kiro
-                  --sync: Update existing files
-                  --check: Validate installation
-                  --clean: Remove old files
-  
-  ui              Setup agents for Kiro UI in current project
-  
-  mcp             Setup MCP server configuration for CLI
-  
-  check           Check dependencies and installation status
+  install <profiles>  Install one or more profiles
+  list                List available profiles
+  check               Verify installation
+  mcp-install         Install MCP server dependencies
+  help                Show this help message
+
+PROFILES:
+  dev                 Development (18 agents)
+  ba                  BA/PO (4 agents)
 
 EXAMPLES:
-  ./setup.sh cli              # Install agents for CLI
-  ./setup.sh cli --sync       # Update CLI agents
-  ./setup.sh ui               # Install agents in current project for UI
-  ./setup.sh mcp              # Configure MCP servers
-  ./setup.sh check            # Check dependencies
+  ./setup.sh install dev          # Install dev only
+  ./setup.sh install ba           # Install BA only
+  ./setup.sh install dev ba       # Install both
+  ./setup.sh list                 # Show available profiles
+  ./setup.sh check                # Check installation
+  ./setup.sh mcp-install          # Setup MCP servers
 
 USAGE
 }
 
-check_dependencies() {
-    echo "🔍 Checking dependencies..."
+list_profiles() {
+    echo "📋 Available profiles:"
     echo ""
+    for dir in "$STEER_ROOT"/.kiro-*; do
+        if [ -d "$dir" ]; then
+            profile=$(basename "$dir" | sed 's/^\.kiro-//')
+            agent_count=$(find "$dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+            echo "  • $profile ($agent_count agents)"
+        fi
+    done
+}
+
+install_profile() {
+    local profile=$1
+    local source_dir="$STEER_ROOT/.kiro-$profile"
     
-    local all_ok=true
-    
-    # Check Node.js
-    if command -v node &> /dev/null; then
-        echo "✓ Node.js: $(node --version)"
-    else
-        echo "✗ Node.js: Not found"
-        all_ok=false
-    fi
-    
-    # Check npm
-    if command -v npm &> /dev/null; then
-        echo "✓ npm: $(npm --version)"
-    else
-        echo "✗ npm: Not found"
-        all_ok=false
-    fi
-    
-    # Check kiro-cli
-    if command -v kiro-cli &> /dev/null; then
-        echo "✓ kiro-cli: $(kiro-cli --version 2>/dev/null || echo 'installed')"
-    else
-        echo "✗ kiro-cli: Not found"
-        all_ok=false
-    fi
-    
-    # Check git
-    if command -v git &> /dev/null; then
-        echo "✓ git: $(git --version | cut -d' ' -f3)"
-    else
-        echo "✗ git: Not found"
-        all_ok=false
-    fi
-    
-    echo ""
-    
-    if [ "$all_ok" = false ]; then
-        echo "⚠️  Missing dependencies detected"
-        echo ""
-        echo "Install missing dependencies:"
-        echo "  macOS: brew install node git && npm install -g @kiro/cli"
-        echo "  Linux: apt install nodejs npm git && npm install -g @kiro/cli"
+    if [ ! -d "$source_dir" ]; then
+        echo "❌ Profile not found: $profile"
         return 1
     fi
     
-    echo "✅ All dependencies satisfied"
-    return 0
+    echo "📦 Installing $profile profile..."
+    
+    mkdir -p "$KIRO_ROOT/agents" "$KIRO_ROOT/prompts"
+    
+    cp -r "$source_dir/agents/"* "$KIRO_ROOT/agents/" 2>/dev/null || true
+    cp -r "$source_dir/prompts/"* "$KIRO_ROOT/prompts/" 2>/dev/null || true
+    
+    [ -d "$source_dir/context" ] && {
+        mkdir -p "$KIRO_ROOT/context"
+        cp -r "$source_dir/context/"* "$KIRO_ROOT/context/"
+    }
+    
+    [ -d "$source_dir/powers" ] && {
+        mkdir -p "$KIRO_ROOT/powers"
+        cp -r "$source_dir/powers/"* "$KIRO_ROOT/powers/"
+    }
+    
+    [ -d "$source_dir/skills" ] && {
+        mkdir -p "$KIRO_ROOT/skills"
+        cp -r "$source_dir/skills/"* "$KIRO_ROOT/skills/"
+    }
+    
+    [ -d "$source_dir/steering" ] && {
+        mkdir -p "$KIRO_ROOT/steering"
+        cp -r "$source_dir/steering/"* "$KIRO_ROOT/steering/"
+    }
+    
+    local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    echo "✓ Installed $profile ($agent_count agents)"
 }
 
-setup_cli() {
-    local sync_mode=false
-    if [ "$1" = "--sync" ]; then
-        sync_mode=true
+install_shared() {
+    echo "📦 Installing shared tools..."
+    
+    if [ -d "$STEER_ROOT/.kiro/tools" ]; then
+        mkdir -p "$KIRO_ROOT/tools"
+        cp -r "$STEER_ROOT/.kiro/tools/"* "$KIRO_ROOT/tools/"
+        echo "✓ Installed MCP servers"
     fi
-    
-    echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                                                              ║"
-    echo "║           Setup steer-runtime for Kiro CLI                  ║"
-    if [ "$sync_mode" = true ]; then
-        echo "║                    (SYNC MODE)                               ║"
-    fi
-    echo "║                                                              ║"
-    echo "╚══════════════════════════════════════════════════════════════╝"
-    echo ""
-    
-    check_dependencies || exit 1
-    
-    echo ""
-    echo "📁 Creating Kiro directories..."
-    mkdir -p "$KIRO_ROOT"/{agents,prompts,context,skills,steering}
-    
-    # Copy agents
-    echo ""
-    echo "📦 Copying agents..."
-    for agent in "$STEER_ROOT/.kiro/agents"/*.json; do
-        local agent_name=$(basename "$agent")
-        if [ -f "$KIRO_ROOT/agents/$agent_name" ] && [ "$sync_mode" = false ]; then
-            echo "  ⊙ $agent_name (exists, skipping)"
-        else
-            cp "$agent" "$KIRO_ROOT/agents/"
-            echo "  ✓ $agent_name"
-        fi
-    done
-    
-    # Copy prompts
-    echo ""
-    echo "📝 Copying prompts..."
-    cp "$STEER_ROOT/.kiro/prompts"/*.md "$KIRO_ROOT/prompts/" 2>/dev/null || true
-    echo "  ✓ Prompts copied"
-    
-    # Copy context
-    echo ""
-    echo "📚 Copying context..."
-    cp "$STEER_ROOT/.kiro/context"/*.md "$KIRO_ROOT/context/" 2>/dev/null || true
-    echo "  ✓ Context copied"
-    
-    # Copy skills and steering
-    cp -r "$STEER_ROOT/.kiro/skills"/*.md "$KIRO_ROOT/skills/" 2>/dev/null || true
-    cp -r "$STEER_ROOT/.kiro/steering"/*.md "$KIRO_ROOT/steering/" 2>/dev/null || true
-    
-    echo ""
-    echo "════════════════════════════════════════════════════════════════"
-    echo "✅ CLI setup complete!"
-    echo "════════════════════════════════════════════════════════════════"
-    echo ""
-    echo "📊 Installed: 23 agents"
-    echo "📂 Location: $KIRO_ROOT"
-    echo ""
-    echo "Usage:"
-    echo "  cd ~/my-project"
-    echo "  kiro-cli chat --agent orchestrator"
-    echo ""
-    echo "Next: ./setup.sh mcp  (configure MCP servers)"
-    echo ""
 }
 
-setup_ui() {
-    echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                                                              ║"
-    echo "║           Setup steer-runtime for Kiro UI                   ║"
-    echo "║                                                              ║"
-    echo "╚══════════════════════════════════════════════════════════════╝"
-    echo ""
-    
-    if [ -d "$PROJECT_ROOT/.kiro" ]; then
-        echo "⚠️  .kiro already exists in this project"
-        read -p "   Overwrite? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Aborted."
+case "${1:-help}" in
+    install)
+        shift
+        if [ $# -eq 0 ]; then
+            echo "❌ No profiles specified"
+            echo ""
+            show_usage
             exit 1
         fi
-        rm -rf "$PROJECT_ROOT/.kiro"
-    fi
-    
-    echo "📦 Copying agents to project..."
-    cp -r "$STEER_ROOT/.kiro" "$PROJECT_ROOT/.kiro"
-    
-    echo ""
-    echo "════════════════════════════════════════════════════════════════"
-    echo "✅ UI setup complete!"
-    echo "════════════════════════════════════════════════════════════════"
-    echo ""
-    echo "📂 Agents installed in: .kiro/"
-    echo ""
-    echo "🚀 Next steps:"
-    echo "   1. Open this project in Kiro UI"
-    echo "   2. Select 'orchestrator' from agent dropdown"
-    echo "   3. Configure MCP servers in UI settings"
-    echo ""
-}
-
-setup_mcp() {
-    local kiro_config="$HOME/.kiro/config.json"
-    local template="$STEER_ROOT/.kiro/mcp-config-template.json"
-    
-    echo "╔══════════════════════════════════════════════════════════════╗"
-    echo "║                                                              ║"
-    echo "║          Setup MCP Servers for Kiro CLI                     ║"
-    echo "║                                                              ║"
-    echo "╚══════════════════════════════════════════════════════════════╝"
-    echo ""
-    
-    if [ -f "$kiro_config" ]; then
-        echo "⚠️  $kiro_config already exists"
+        
+        install_shared
+        
+        for profile in "$@"; do
+            install_profile "$profile"
+        done
+        
+        total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
-        echo "To add MCP servers manually:"
-        echo "  1. Edit: $kiro_config"
-        echo "  2. Add mcpServers section from: $template"
-        echo "  3. Replace placeholder tokens"
-        echo ""
-        exit 0
-    fi
-    
-    mkdir -p "$HOME/.kiro"
-    
-    echo "📝 Creating config template..."
-    cp "$template" "$kiro_config"
-    
-    echo ""
-    echo "════════════════════════════════════════════════════════════════"
-    echo "✅ Config template created!"
-    echo "════════════════════════════════════════════════════════════════"
-    echo ""
-    echo "⚠️  IMPORTANT: Add your tokens"
-    echo ""
-    echo "Edit: $kiro_config"
-    echo ""
-    echo "Replace:"
-    echo "  • your.email@disney.com"
-    echo "  • your-jira-api-token"
-    echo "  • your-github-personal-access-token"
-    echo ""
-    echo "Get tokens:"
-    echo "  Jira: https://id.atlassian.com/manage-profile/security/api-tokens"
-    echo "  GitHub: https://github.com/settings/tokens"
-    echo ""
-}
-
-# CLI Check and Clean commands
-if [ "$1" = "cli" ] && [ "$2" = "--check" ]; then
-    echo "Checking ~/.kiro installation..."
-    [ ! -d "$HOME/.kiro" ] && echo "✗ ~/.kiro not found" && exit 1
-    echo "✓ Directory exists"
-    count=$(ls -1 "$HOME/.kiro/agents"/*.json 2>/dev/null | wc -l | tr -d " ")
-    echo "✓ $count agents installed (expected 18)"
-    old_found=0
-    for f in android-native ios-native backend_agent ui_agent webapi_agent orchestrator_agent orchestrator_multiagent; do
-        [ -f "$HOME/.kiro/agents/$f.json" ] && echo "  ⚠️  Old: agents/$f.json" && ((old_found++))
-        [ -f "$HOME/.kiro/prompts/$f.md" ] && echo "  ⚠️  Old: prompts/$f.md" && ((old_found++))
-    done
-    [ $old_found -gt 0 ] && echo "Run: ./setup.sh cli --clean" || echo "✓ No old files"
-    exit 0
-fi
-
-if [ "$1" = "cli" ] && [ "$2" = "--clean" ]; then
-    echo "Cleaning ~/.kiro..."
-    [ ! -d "$HOME/.kiro" ] && echo "Nothing to clean" && exit 0
-    removed=0
-    for f in android-native ios-native backend_agent ui_agent webapi_agent orchestrator_agent orchestrator_multiagent; do
-        [ -f "$HOME/.kiro/agents/$f.json" ] && rm -f "$HOME/.kiro/agents/$f.json" && echo "✓ Removed agents/$f.json" && ((removed++))
-        [ -f "$HOME/.kiro/prompts/$f.md" ] && rm -f "$HOME/.kiro/prompts/$f.md" && echo "✓ Removed prompts/$f.md" && ((removed++))
-    done
-    echo "✅ Removed $removed file(s)"
-    exit 0
-fi
-
-# Main
-case "${1:-}" in
-    cli)
-        setup_cli "$2"
+        echo "✅ Installation complete ($total agents total)"
         ;;
-    ui)
-        setup_ui
-        ;;
-    mcp)
-        setup_mcp
+    list)
+        list_profiles
         ;;
     check)
-        check_dependencies
+        echo "🔍 Installation status:"
+        [ -d "$KIRO_ROOT/agents" ] && echo "✓ Agents directory exists" || echo "❌ No agents"
+        total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        echo "✓ Total agents: $total"
         ;;
-    -h|--help|help|"")
+    mcp-install)
+        echo "📦 Installing MCP dependencies..."
+        for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
+            if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
+                echo "Installing $(basename $mcp)..."
+                (cd "$mcp" && npm install)
+            fi
+        done
+        echo "✅ MCP servers ready"
+        ;;
+    help|--help|-h)
         show_usage
         ;;
     *)
-        echo "Unknown command: $1"
+        echo "❌ Unknown command: $1"
         echo ""
         show_usage
         exit 1

@@ -1,0 +1,34 @@
+{
+  "name": "requirements_analyst_agent",
+  "description": "Analyzes existing requirements, identifies gaps, and ensures completeness",
+  "prompt": "requirements_analyst_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "grep",
+    "fs_read"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+    }
+  },
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ]
+}

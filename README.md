@@ -1,8 +1,8 @@
 # steer-runtime
 
-**Multi-Agent Development System for Config Studio**
+**Unified Multi-Profile Agent System**
 
-Specialized Kiro agents for orchestrating development across backend (Java), webapi (Node.js), UI (Angular), and mobile (Flutter/Android/iOS) repositories.
+Specialized Kiro agents for development, BA/PO work, and more. Easily extensible with new profiles.
 
 ---
 
@@ -15,306 +15,213 @@ git clone <repo-url> ~/steer-runtime
 cd ~/steer-runtime
 ```
 
-### 2. Check Dependencies
+### 2. View Help
 
 ```bash
-./setup.sh check
+./setup.sh
 ```
 
-Requires: Node.js 18+, npm, kiro-cli, git
-
-### 3. Setup for Kiro CLI
+### 3. List Available Profiles
 
 ```bash
-./setup.sh cli
+./setup.sh list
 ```
 
-Installs 18 agents and MCP server tools to `~/.kiro/`
+Output:
+```
+📋 Available profiles:
+  • ba (4 agents)
+  • dev (18 agents)
+```
 
-**Additional options:**
+### 4. Install Profiles
+
 ```bash
-./setup.sh cli --sync    # Update existing installation
-./setup.sh cli --check   # Validate installation
-./setup.sh cli --clean   # Remove old/duplicate files
+# Install dev profile only
+./setup.sh install dev
+
+# Install BA profile only
+./setup.sh install ba
+
+# Install multiple profiles
+./setup.sh install dev ba
 ```
 
-### 4. Install MCP Server Dependencies
+### 5. Setup MCP Servers
 
 ```bash
 ./setup.sh mcp-install
 ```
 
-Installs npm dependencies and configures credentials for:
-- Jira MCP
-- Confluence MCP
-- GitHub MCP
-- Mermaid Diagram MCP
-
-The script will:
-1. Run `npm install` in each MCP server project
-2. Copy `.env.example` to `.env` for each project
-3. Prompt you to configure credentials interactively
-4. Display token generation URLs for each service
-
-### 5. Use in Your Project
+### 6. Use Agents
 
 ```bash
-cd ~/my-project
+# Development agents
 kiro-cli chat --agent orchestrator
+kiro-cli chat --agent backend
+kiro-cli chat --agent ui
+
+# BA/PO agents
+kiro-cli chat --agent scope_definer_agent
+kiro-cli chat --agent feature_writer_agent
 ```
 
 ---
 
-## What's Included
+## Available Profiles
 
-### 18 Specialized Agents
+### dev (18 agents)
+Development agents for backend, webapi, UI, mobile, testing, security, and code review.
 
-**Orchestrator (1 agent)**
-- `orchestrator` - SDLC orchestrator with automatic multi-agent delegation
-  - Implements Jira stories end-to-end
-  - Coordinates multi-repo features
-  - Manages mobile development
-  - Full workflow: story → plan → implement → review → PR
+**Key agents:**
+- `orchestrator` - Main development orchestrator
+- `backend` - Java backend development
+- `webapi` - Node.js API development
+- `ui` - Angular frontend development
+- `flutter`, `android_native`, `ios_native` - Mobile development
+- `code_review_agent`, `security_scanner_agent`, `test_runner_agent` - Quality
 
-**Config Studio Specialists (3 agents)**
-- `backend` - Java services (wdpr-config-services)
-- `webapi` - Node.js API (wdpr-payment-controls-api)
-- `ui` - Angular frontend (wdpr-payment-controls-client)
+**Documentation:** See `docs/PROMPT_GUIDE.md` for dev workflows
 
-**Mobile Development (3 agents)**
-- `flutter` - Dart/Flutter cross-platform
-- `android_native` - Kotlin/Java platform channels
-- `ios_native` - Swift/Obj-C platform channels
+### ba (4 agents)
+Business Analyst and Product Owner agents for requirements, scope, and feature definition.
 
-**Planning & Analysis (4 agents)**
-- `planner_agent` - Task planning and breakdown
-- `story_analyzer_agent` - Jira story analysis
-- `architecture_agent` - Architecture review
-- `codebase_explorer_agent` - Code exploration
+**Key agents:**
+- `ba_orchestrator_agent` - Coordinates BA/PO tasks
+- `scope_definer_agent` - Defines project scope and boundaries
+- `feature_writer_agent` - Creates user stories and acceptance criteria
+- `requirements_analyst_agent` - Analyzes and validates requirements
 
-**Quality & Security (5 agents)**
-- `code_review_agent` - Code review
-- `security_scanner_agent` - Security analysis
-- `compliance_agent` - Compliance validation
-- `test_runner_agent` - Test execution
-- `performance_agent` - Performance optimization
-
-**Workflow (2 agents)**
-- `pr_creator_agent` - Pull request creation
-- `discussion_agent` - Technical discussions
-
-See `AGENTS.md` for complete reference.
-
-### 4 Development Powers
-
-- **git-ops** - Git operations (status, diff, log)
-- **code-analysis** - Find files, search code, count lines
-- **file-ops** - Backup, compare, find duplicates
-- **test-runner** - Run tests, find tests, coverage
-
-See `.kiro/powers/GUIDE.md` for creating custom powers.
-
-### 4 MCP Servers
-
-- **jira-mcp** - Jira integration for story analysis
-- **confluence-mcp** - Confluence documentation access
-- **github-mcp** - GitHub repository operations
-- **mermaid-diagram-mcp** - Diagram generation
-
-Located in `.kiro/tools/mcp-servers/` with relative path configuration.
+**Documentation:** See `docs/BA_PROMPT_GUIDE.md` for BA/PO workflows
 
 ---
 
-## Setup Options
+## Commands
 
-### For Kiro CLI
-
-Install agents globally:
 ```bash
-./setup.sh cli
+./setup.sh                      # Show help
+./setup.sh list                 # List available profiles
+./setup.sh install <profiles>   # Install one or more profiles
+./setup.sh check                # Verify installation
+./setup.sh mcp-install          # Setup MCP servers
 ```
-
-Update existing agents:
-```bash
-./setup.sh cli --sync
-```
-
-Validate installation:
-```bash
-./setup.sh cli --check
-```
-
-Clean old files:
-```bash
-./setup.sh cli --clean
-```
-
-Install MCP server dependencies:
-```bash
-./setup.sh mcp-install
-```
-
-This will:
-- Install npm packages for each MCP server
-- Create `.env` files from `.env.example`
-- Prompt for credentials with token generation URLs
-- Configure Jira, Confluence, and GitHub access
-
-### For Kiro UI
-
-Install agents in project:
-```bash
-cd ~/my-project
-~/steer-runtime/setup.sh ui
-```
-
-### MCP Configuration
-
-Setup Jira and GitHub integration:
-```bash
-./setup.sh mcp
-```
-
-See `docs/MCP_SETUP.md` for details.
 
 ---
 
 ## Usage Examples
 
-### Implement Jira Story (Automated)
+### Development Workflow
 
 ```bash
 kiro-cli chat --agent orchestrator
-> Help me implement https://jira.disney.com/browse/DPAY-14561
+> "Implement Jira story DPAY-14561 for payment validation"
 ```
 
-Orchestrator will automatically:
-1. Fetch story details
-2. Explore codebase
-3. Review architecture
-4. Create plan
-5. Coordinate implementation
-6. Run quality checks
-7. Create PR
+Orchestrator automatically:
+1. Fetches story from Jira
+2. Analyzes requirements
+3. Creates implementation plan
+4. Coordinates backend, webapi, UI agents
+5. Runs tests and quality checks
+6. Creates pull request
 
-### Multi-Repo Feature
+### BA/PO Workflow
 
 ```bash
-kiro-cli chat --agent orchestrator
-> Implement payment method validation across backend, webapi, and ui
+kiro-cli chat --agent ba_orchestrator_agent
+> "Analyze epic DPAY-500 and create complete story breakdown"
 ```
 
-### Mobile Development
-
-```bash
-kiro-cli chat --agent orchestrator
-> Add biometric authentication to Flutter app with native platform channels
-```
-
-### Code Review
-
-```bash
-kiro-cli chat --agent code_review_agent
-> Review changes in src/app/features/
-```
-
-### Architecture Review
-
-```bash
-kiro-cli chat --agent architecture_agent
-> Review the proposed microservices architecture
-```
-
-See `docs/PROMPT_GUIDE.md` for effective prompts.
-
----
-
-## Project Structure
-
-```
-steer-runtime/
-├── .kiro/                  # All configuration
-│   ├── agents/            # 18 agent configs
-│   ├── prompts/           # Agent prompts
-│   ├── skills/            # Specialized skills
-│   ├── steering/          # Project steering docs
-│   ├── powers/            # Development powers
-│   ├── context/           # Project context
-│   └── tools/             # MCP servers
-│       └── mcp-servers/   # MCP server projects
-│           ├── jira-mcp/
-│           ├── confluence-mcp/
-│           ├── github-mcp/
-│           └── mermaid-diagram-mcp/
-├── docs/                   # Documentation
-│   ├── PROMPT_GUIDE.md
-│   ├── MOBILE_AGENTS_SETUP.md
-│   ├── KIRO_CLI_VS_UI.md
-│   └── ...
-├── setup.sh               # Unified setup script
-├── README.md              # This file
-└── AGENTS.md              # Agent reference
-```
+BA Orchestrator automatically:
+1. Fetches epic from Jira
+2. Defines scope and boundaries
+3. Identifies requirements
+4. Creates user stories with acceptance criteria
+5. Documents in Confluence
 
 ---
 
 ## Documentation
 
-**Getting Started**
-- `README.md` - Quick start (this file)
-- `AGENTS.md` - Complete agent reference
-- `docs/SETUP_GUIDE.md` - Detailed setup instructions
+### For Developers
+- 📖 `docs/PROMPT_GUIDE.md` - Development prompts and workflows
+- 📖 `docs/MOBILE_AGENTS_SETUP.md` - Mobile development setup
+- 📖 `docs/DESIGN.md` - System architecture
+- 📖 `docs/MCP_SETUP.md` - MCP server configuration
 
-**Usage Guides**
-- `docs/PROMPT_GUIDE.md` - How to use agents effectively
-- `docs/KIRO_CLI_VS_UI.md` - CLI vs UI comparison
-- `.kiro/powers/GUIDE.md` - Creating custom powers
-
-**Setup & Configuration**
-- `docs/MCP_SETUP.md` - MCP server configuration
-- `docs/KIRO_UI_SETUP.md` - Kiro UI setup
-- `docs/MOBILE_AGENTS_SETUP.md` - Mobile development setup
-
-**Architecture**
-- `docs/DESIGN.md` - System architecture
-- `.kiro/README.md` - Configuration structure
+### For Business Analysts / Product Owners
+- 📖 `docs/BA_PROMPT_GUIDE.md` - 12+ BA/PO workflow examples
+- 📖 `docs/BA_WORKFLOWS.md` - Complete end-to-end workflows
+- 📖 `docs/BA_QUICK_REFERENCE.md` - Printable quick reference
+- 📖 `.kiro-ba/context/ba_guidelines.md` - Best practices
+- 📖 `.kiro-ba/context/story_templates.md` - Story templates
 
 ---
 
-## Requirements
+## Adding New Profiles
 
-- **Node.js 18+** - Runtime for MCP servers
-- **npm** - Package manager
-- **kiro-cli** or **Kiro UI** - Agent runtime
-- **git** - Version control
+1. Create `.kiro-<profile>/` directory
+2. Add `agents/` and `prompts/` subdirectories
+3. Add agent configurations
+4. Run `./setup.sh install <profile>`
 
-Install missing dependencies:
+Example:
 ```bash
-# macOS
-brew install node git
-npm install -g @kiro/cli
+mkdir -p .kiro-qa/agents .kiro-qa/prompts
+# Add agent configs...
+./setup.sh install qa
+```
 
-# Linux
-apt install nodejs npm git
-npm install -g @kiro/cli
+The setup script auto-discovers all `.kiro-*` directories.
+
+---
+
+## Structure
+
+```
+steer-runtime/
+├── .kiro-dev/          # Development profile (18 agents)
+│   ├── agents/
+│   ├── prompts/
+│   ├── powers/
+│   ├── skills/
+│   └── steering/
+├── .kiro-ba/           # BA/PO profile (4 agents)
+│   ├── agents/
+│   ├── prompts/
+│   └── context/
+├── .kiro/              # Shared (MCP servers)
+│   └── tools/
+│       └── mcp-servers/
+├── docs/               # Documentation
+│   ├── PROMPT_GUIDE.md
+│   ├── BA_PROMPT_GUIDE.md
+│   ├── BA_WORKFLOWS.md
+│   └── ...
+├── setup.sh            # Unified setup script
+└── README.md           # This file
 ```
 
 ---
 
-## Features
-
-✅ **18 specialized agents** - Unified orchestrator, domain specialists, utilities  
-✅ **Multi-repo coordination** - Seamless work across repositories  
-✅ **Mobile development** - Flutter, Android, iOS support  
-✅ **MCP server integration** - Jira, Confluence, GitHub, Mermaid  
-✅ **Development powers** - Git, code analysis, file ops, testing  
-✅ **Unified setup** - Single script with check/clean options  
-✅ **Interactive credential setup** - Guided token configuration  
-✅ **Comprehensive docs** - Guides, examples, troubleshooting  
-
----
-
 ## Troubleshooting
+
+### Show help
+```bash
+./setup.sh
+./setup.sh help
+./setup.sh --help
+```
+
+### Check installation
+```bash
+./setup.sh check
+```
+
+### List available profiles
+```bash
+./setup.sh list
+```
 
 ### Agents not found
 ```bash
@@ -322,22 +229,12 @@ npm install -g @kiro/cli
 ls ~/.kiro/agents/
 
 # Reinstall
-./setup.sh cli --sync
-```
-
-### Check installation health
-```bash
-./setup.sh cli --check
-```
-
-### Clean old files
-```bash
-./setup.sh cli --clean
+./setup.sh install dev ba
 ```
 
 ### MCP servers not working
 ```bash
-# Check MCP servers are installed
+# Check MCP servers installed
 ls ~/.kiro/tools/mcp-servers/
 
 # Reinstall dependencies
@@ -345,49 +242,28 @@ ls ~/.kiro/tools/mcp-servers/
 
 # Verify .env files exist
 ls ~/.kiro/tools/mcp-servers/*/.env
-
-# Test with story analyzer
-kiro-cli chat --agent story_analyzer_agent
 ```
-
-### Dependencies missing
-```bash
-./setup.sh check
-```
-
-### MCP server credentials
-```bash
-# Reconfigure credentials
-cd ~/.kiro/tools/mcp-servers/jira-mcp
-nano .env
-
-# Token URLs:
-# Jira/Confluence: https://id.atlassian.com/manage-profile/security/api-tokens
-# GitHub: https://github.com/settings/tokens/new
-```
-
-See `docs/SETUP_GUIDE.md` for more troubleshooting.
 
 ---
 
-## Contributing
+## Features
 
-1. Add new agents to `.kiro/agents/`
-2. Create prompts in `.kiro/prompts/`
-3. Add skills to `.kiro/skills/`
-4. Update `AGENTS.md`
-5. Test with `./setup.sh cli --sync`
+✅ **22 specialized agents** - Dev (18) + BA/PO (4)  
+✅ **Multi-profile support** - Install what you need  
+✅ **Auto-discovery** - Add profiles by creating `.kiro-*` dirs  
+✅ **Unified setup** - Single script for all profiles  
+✅ **MCP integration** - Jira, Confluence, GitHub, Mermaid  
+✅ **Comprehensive docs** - Guides for devs and BAs  
+✅ **Extensible** - Easy to add new profiles  
 
 ---
 
 ## Version
 
-**Version:** 2.1.0  
+**Version:** 3.0.0 (Unified)  
+**Profiles:** dev (18 agents), ba (4 agents)  
+**Total Agents:** 22  
 **Last Updated:** March 12, 2026  
-**Agents:** 18  
-**Powers:** 4  
-**MCP Servers:** 4  
-**Repositories:** Config Studio (backend, webapi, ui) + Mobile
 
 ---
 

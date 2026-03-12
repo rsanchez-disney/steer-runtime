@@ -1,0 +1,35 @@
+{
+  "name": "scope_definer_agent",
+  "description": "Defines project and feature scope by analyzing requirements, stakeholder needs, and constraints",
+  "prompt": "scope_definer_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "grep",
+    "fs_read",
+    "fs_write"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+    }
+  },
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ]
+}

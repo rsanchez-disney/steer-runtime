@@ -1,0 +1,35 @@
+{
+  "name": "feature_writer_agent",
+  "description": "Creates detailed feature specifications, user stories, and acceptance criteria",
+  "prompt": "feature_writer_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "fs_read",
+    "fs_write"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+    }
+  },
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md",
+    "file://.kiro/context/story_templates.md"
+  ]
+}
