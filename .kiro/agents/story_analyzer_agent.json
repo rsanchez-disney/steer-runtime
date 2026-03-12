@@ -20,23 +20,23 @@
     "jira": {
       "command": "node",
       "args": [
-        "../tools/mcp-servers/jira-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
       ],
-      "cwd": "../tools/mcp-servers/jira-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
     },
     "confluence": {
       "command": "node",
       "args": [
-        "../tools/mcp-servers/confluence-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
       ],
-      "cwd": "../tools/mcp-servers/confluence-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
     },
     "github": {
       "command": "node",
       "args": [
-        "../tools/mcp-servers/github-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "../tools/mcp-servers/github-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
     }
   },
   "allowedTools": [
