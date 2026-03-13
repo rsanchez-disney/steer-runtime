@@ -1,0 +1,15 @@
+{
+  "name": "performance_tester_agent",
+  "description": "Creates and executes performance tests, load tests, and analyzes results",
+  "prompt": "performance_tester_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "code"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/performance_patterns.md"
+  ]
+}
