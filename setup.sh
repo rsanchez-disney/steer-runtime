@@ -393,9 +393,26 @@ case "${1:-help}" in
         
     check)
         echo "🔍 Installation status:"
-        [ -d "$KIRO_ROOT/agents" ] && echo "✓ CLI agents directory exists" || echo "❌ No CLI agents"
-        total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
-        echo "✓ Total CLI agents: $total"
+        echo ""
+        
+        # Check CLI installation
+        if [ -d "$KIRO_ROOT/agents" ]; then
+            echo "✓ CLI agents directory exists"
+            
+            # Detect installed profiles
+            installed_profiles=($(detect_installed_profiles "$KIRO_ROOT"))
+            
+            if [ ${#installed_profiles[@]} -gt 0 ]; then
+                echo "✓ Installed profiles: ${installed_profiles[*]}"
+            else
+                echo "⚠️  No profiles detected"
+            fi
+            
+            total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+            echo "✓ Total agents: $total"
+        else
+            echo "❌ No CLI agents installed"
+        fi
         ;;
         
     mcp-install)
