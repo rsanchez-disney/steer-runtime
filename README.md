@@ -31,6 +31,7 @@ Output:
 ```
 📋 Available profiles:
   • ba (4 agents)
+  • qa (6 agents)
   • dev (18 agents)
 ```
 
@@ -40,7 +41,7 @@ Output:
 ```bash
 ./setup.sh install dev          # Install dev profile
 ./setup.sh install ba           # Install BA profile
-./setup.sh install dev ba       # Install both profiles
+./setup.sh install dev ba qa    # Install all three profiles
 ```
 
 **For Kiro UI (project-specific):**
@@ -60,8 +61,17 @@ Output:
 
 **With Kiro CLI:**
 ```bash
+# Development
 kiro-cli chat --agent orchestrator
+kiro-cli chat --agent backend
+
+# BA/PO
 kiro-cli chat --agent scope_definer_agent
+kiro-cli chat --agent feature_writer_agent
+
+# QA
+kiro-cli chat --agent test_planner_agent
+kiro-cli chat --agent test_automation_agent
 ```
 
 **With Kiro UI:**
@@ -96,7 +106,18 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 **Documentation:** See `docs/BA_PROMPT_GUIDE.md` for BA/PO workflows
 
----
+### qa (6 agents)
+Quality Assurance and Test Automation agents for comprehensive testing.
+
+**Key agents:**
+- `qa_orchestrator_agent` - Coordinates QA workflows
+- `test_planner_agent` - Creates test plans and test cases
+- `test_automation_agent` - Writes automated tests (UI, API, integration)
+- `defect_analyst_agent` - Analyzes bugs and root causes
+- `api_tester_agent` - Tests REST APIs and validates contracts
+- `performance_tester_agent` - Load and performance testing
+
+**Documentation:** See `docs/QA_PROMPT_GUIDE.md` for QA workflows
 
 ## Commands
 
@@ -110,6 +131,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
+## Usage Examples
 ## Usage Examples
 
 ### Development Workflow
@@ -141,6 +163,19 @@ BA Orchestrator automatically:
 4. Creates user stories with acceptance criteria
 5. Documents in Confluence
 
+### QA Workflow
+
+```bash
+kiro-cli chat --agent qa_orchestrator_agent
+> "Create complete test suite for feature DPAY-500"
+```
+
+QA Orchestrator automatically:
+1. Creates test plan from requirements
+2. Generates test cases
+3. Writes automated tests (UI + API)
+4. Executes tests and reports results
+5. Documents test coverage
 ---
 
 ## Documentation
