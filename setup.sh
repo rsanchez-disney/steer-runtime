@@ -17,6 +17,8 @@ USAGE:
 
 COMMANDS:
   install <profiles> [--project <dir>]  Install one or more profiles
+  remove <profiles> [--project <dir>]   Remove specific profiles
+  clean [--project <dir>]               Remove ALL profiles and agents
   list                                   List available profiles
   check                                  Verify installation
   mcp-install                            Install MCP server dependencies
@@ -25,19 +27,29 @@ COMMANDS:
 PROFILES:
   dev                 Development (18 agents)
   ba                  BA/PO (4 agents)
+  qa                  QA/Testing (6 agents)
 
 OPTIONS:
-  --project <dir>     Install to project directory (for Kiro UI)
+  --project <dir>     Target project directory (for Kiro UI)
                       Default: ~/.kiro (for Kiro CLI)
 
 EXAMPLES:
+  # Install
   ./setup.sh install dev                    # Install dev to ~/.kiro (CLI)
-  ./setup.sh install ba                     # Install BA to ~/.kiro (CLI)
-  ./setup.sh install dev ba                 # Install both to ~/.kiro (CLI)
-  ./setup.sh install dev --project ~/myapp  # Install dev to ~/myapp/.kiro (UI)
+  ./setup.sh install ba qa                  # Install multiple profiles
+  ./setup.sh install dev --project ~/myapp  # Install to project (UI)
+  
+  # Remove
+  ./setup.sh remove ba                      # Remove BA profile
+  ./setup.sh remove dev ba --project ~/app  # Remove from project
+  
+  # Clean
+  ./setup.sh clean                          # Remove ALL from ~/.kiro
+  ./setup.sh clean --project ~/myapp        # Remove ALL from project
+  
+  # Other
   ./setup.sh list                           # Show available profiles
   ./setup.sh check                          # Check installation
-  ./setup.sh mcp-install                    # Setup MCP servers
 
 USAGE
 }
@@ -52,6 +64,17 @@ list_profiles() {
             echo "  • $profile ($agent_count agents)"
         fi
     done
+}
+
+get_profile_agents() {
+    local profile=$1
+    local source_dir="$STEER_ROOT/.kiro-$profile"
+    
+    if [ ! -d "$source_dir/agents" ]; then
+        return
+    fi
+    
+    find "$source_dir/agents" -name "*.json" -exec basename {} .json \;
 }
 
 install_profile() {
@@ -95,6 +118,60 @@ install_profile() {
     echo "✓ Installed $profile ($agent_count agents)"
 }
 
+remove_profile() {
+    local profile=$1
+    local target_dir=$2
+    
+    echo "🗑️  Removing $profile profile from $target_dir..."
+    
+    # Get list of agents for this profile
+    local agents=$(get_profile_agents "$profile")
+    
+    if [ -z "$agents" ]; then
+        echo "⚠️  No agents found for profile: $profile"
+        return
+    fi
+    
+    local removed=0
+    for agent in $agents; do
+        if [ -f "$target_dir/agents/${agent}.json" ]; then
+            rm -f "$target_dir/agents/${agent}.json"
+            ((removed++))
+        fi
+        if [ -f "$target_dir/prompts/${agent}.md" ]; then
+            rm -f "$target_dir/prompts/${agent}.md"
+        fi
+    done
+    
+    echo "✓ Removed $profile ($removed agents)"
+}
+
+clean_all() {
+    local target_dir=$1
+    
+    echo "🧹 Cleaning ALL profiles from $target_dir..."
+    echo ""
+    read -p "⚠️  This will remove ALL agents and profiles. Continue? (y/N): " confirm
+    
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        echo "❌ Cancelled"
+        exit 0
+    fi
+    
+    local count=0
+    [ -d "$target_dir/agents" ] && count=$(find "$target_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    
+    rm -rf "$target_dir/agents"
+    rm -rf "$target_dir/prompts"
+    rm -rf "$target_dir/context"
+    rm -rf "$target_dir/powers"
+    rm -rf "$target_dir/skills"
+    rm -rf "$target_dir/steering"
+    
+    echo "✓ Removed $count agents"
+    echo "✅ Clean complete"
+}
+
 install_shared() {
     local target_dir=$1
     echo "📦 Installing shared tools to $target_dir..."
@@ -103,6 +180,47 @@ install_shared() {
         mkdir -p "$target_dir/tools"
         cp -r "$STEER_ROOT/.kiro/tools/"* "$target_dir/tools/"
         echo "✓ Installed MCP servers"
+    fi
+}
+
+parse_project_flag() {
+    local -n _profiles=$1
+    local -n _project_dir=$2
+    shift 2
+    
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --project)
+                shift
+                if [ $# -eq 0 ]; then
+                    echo "❌ --project requires a directory argument"
+                    exit 1
+                fi
+                _project_dir="$1"
+                shift
+                ;;
+            *)
+                _profiles+=("$1")
+                shift
+                ;;
+        esac
+    done
+}
+
+get_target_dir() {
+    local project_dir=$1
+    
+    if [ -n "$project_dir" ]; then
+        project_dir="${project_dir/#\~/$HOME}"
+        
+        if [ ! -d "$project_dir" ]; then
+            echo "❌ Project directory does not exist: $project_dir"
+            exit 1
+        fi
+        
+        echo "$project_dir/.kiro"
+    else
+        echo "$KIRO_ROOT"
     fi
 }
 
@@ -116,45 +234,12 @@ case "${1:-help}" in
             exit 1
         fi
         
-        # Parse arguments
         profiles=()
         project_dir=""
+        parse_project_flag profiles project_dir "$@"
         
-        while [ $# -gt 0 ]; do
-            case "$1" in
-                --project)
-                    shift
-                    if [ $# -eq 0 ]; then
-                        echo "❌ --project requires a directory argument"
-                        exit 1
-                    fi
-                    project_dir="$1"
-                    shift
-                    ;;
-                *)
-                    profiles+=("$1")
-                    shift
-                    ;;
-            esac
-        done
-        
-        # Determine target directory
-        if [ -n "$project_dir" ]; then
-            # Expand tilde
-            project_dir="${project_dir/#\~/$HOME}"
-            
-            # Create project directory if it doesn't exist
-            if [ ! -d "$project_dir" ]; then
-                echo "❌ Project directory does not exist: $project_dir"
-                exit 1
-            fi
-            
-            target_root="$project_dir/.kiro"
-            echo "🎯 Target: $target_root (Kiro UI)"
-        else
-            target_root="$KIRO_ROOT"
-            echo "🎯 Target: $target_root (Kiro CLI)"
-        fi
+        target_root=$(get_target_dir "$project_dir")
+        [ -n "$project_dir" ] && echo "🎯 Target: $target_root (Kiro UI)" || echo "🎯 Target: $target_root (Kiro CLI)"
         
         install_shared "$target_root"
         
@@ -165,22 +250,63 @@ case "${1:-help}" in
         total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
         echo "✅ Installation complete ($total agents total)"
-        
-        if [ -n "$project_dir" ]; then
-            echo ""
-            echo "📝 For Kiro UI:"
-            echo "   Open Kiro UI and select: $project_dir"
-        fi
         ;;
+        
+    remove)
+        shift
+        if [ $# -eq 0 ]; then
+            echo "❌ No profiles specified"
+            echo ""
+            show_usage
+            exit 1
+        fi
+        
+        profiles=()
+        project_dir=""
+        parse_project_flag profiles project_dir "$@"
+        
+        target_root=$(get_target_dir "$project_dir")
+        echo "🎯 Target: $target_root"
+        
+        for profile in "${profiles[@]}"; do
+            remove_profile "$profile" "$target_root"
+        done
+        
+        remaining=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        echo ""
+        echo "✅ Removal complete ($remaining agents remaining)"
+        ;;
+        
+    clean)
+        shift
+        project_dir=""
+        
+        if [ "$1" = "--project" ]; then
+            shift
+            if [ $# -eq 0 ]; then
+                echo "❌ --project requires a directory argument"
+                exit 1
+            fi
+            project_dir="$1"
+        fi
+        
+        target_root=$(get_target_dir "$project_dir")
+        echo "🎯 Target: $target_root"
+        
+        clean_all "$target_root"
+        ;;
+        
     list)
         list_profiles
         ;;
+        
     check)
         echo "🔍 Installation status:"
         [ -d "$KIRO_ROOT/agents" ] && echo "✓ CLI agents directory exists" || echo "❌ No CLI agents"
         total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo "✓ Total CLI agents: $total"
         ;;
+        
     mcp-install)
         echo "📦 Installing MCP dependencies..."
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
@@ -191,9 +317,11 @@ case "${1:-help}" in
         done
         echo "✅ MCP servers ready"
         ;;
+        
     help|--help|-h)
         show_usage
         ;;
+        
     *)
         echo "❌ Unknown command: $1"
         echo ""
