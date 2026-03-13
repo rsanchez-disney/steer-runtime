@@ -87,9 +87,13 @@ install_profile() {
         return 1
     fi
     
-    echo "📦 Installing $profile profile to $target_dir..."
+    echo "📦 Installing $profile profile..."
     
     mkdir -p "$target_dir/agents" "$target_dir/prompts"
+    
+    # Count files for progress
+    local total_files=$(find "$source_dir" -type f 2>/dev/null | wc -l | tr -d ' ')
+    echo "   Copying $total_files files..."
     
     cp -r "$source_dir/agents/"* "$target_dir/agents/" 2>/dev/null || true
     cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
@@ -174,12 +178,16 @@ clean_all() {
 
 install_shared() {
     local target_dir=$1
-    echo "📦 Installing shared tools to $target_dir..."
     
     if [ -d "$STEER_ROOT/.kiro/tools" ]; then
+        echo "📦 Installing shared tools..."
         mkdir -p "$target_dir/tools"
-        cp -r "$STEER_ROOT/.kiro/tools/"* "$target_dir/tools/"
-        echo "✓ Installed MCP servers"
+        
+        # Copy excluding node_modules
+        rsync -a --exclude='node_modules' "$STEER_ROOT/.kiro/tools/" "$target_dir/tools/" 2>/dev/null || \
+        find "$STEER_ROOT/.kiro/tools" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec cp -r {} "$target_dir/tools/" \; 2>/dev/null
+        
+        echo "✓ Installed MCP servers (run 'mcp-install' to setup dependencies)"
     fi
 }
 
