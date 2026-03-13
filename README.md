@@ -158,6 +158,14 @@ BA Orchestrator automatically:
 - 📖 [BA Guidelines](.kiro-ba/context/ba_guidelines.md) - Best practices
 - 📖 [Story Templates](.kiro-ba/context/story_templates.md) - Jira templates
 
+### For QA Engineers / Test Automation
+- 📖 [QA Prompt Guide](docs/QA_PROMPT_GUIDE.md) - 12+ testing workflow examples
+- 📖 [QA Complete Workflows](docs/QA_WORKFLOWS.md) - End-to-end testing processes
+- 📖 [QA Quick Reference](docs/QA_QUICK_REFERENCE.md) - Printable reference card
+- 📖 [QA Profile Overview](docs/QA_PROFILE_OVERVIEW.md) - Complete guide
+- 📖 [QA Guidelines](.kiro-qa/context/qa_guidelines.md) - Testing best practices
+- 📖 [Test Templates](.kiro-qa/context/test_templates.md) - Test case templates
+- 📖 [Automation Patterns](.kiro-qa/context/automation_patterns.md) - Code patterns
 ---
 
 ## Adding New Profiles
