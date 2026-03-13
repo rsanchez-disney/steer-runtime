@@ -6,6 +6,34 @@ Specialized Kiro agents for development, BA/PO work, and more. Easily extensible
 
 ---
 
+
+## Prerequisites
+
+### First Time Kiro Setup
+
+If you haven't installed Kiro yet:
+
+1. **Download Kiro**
+   - Visit: https://kiro.dev/downloads/
+   - Download for your operating system
+
+2. **Sign in with Disney SSO**
+   - Click "Sign in with your organization identity"
+   - Select region: **us-east-1**
+   - Input Start URL: `https://twdc-qdeveloper.awsapps.com/start`
+   - Sign in using your **@disney.com** email address
+   - You will be prompted to allow Kiro IDE access
+   - Click "Allow" to grant permissions
+
+3. **Verify Installation**
+   ```bash
+   kiro-cli --version
+   ```
+
+You should now be able to use Kiro CLI and Kiro UI!
+
+---
+
 ## Quick Start
 
 ### 1. Clone Repository
