@@ -17,6 +17,7 @@ USAGE:
 
 COMMANDS:
   install <profiles> [--project <dir>]  Install one or more profiles
+  sync [--project <dir>]                Update installed profiles
   remove <profiles> [--project <dir>]   Remove specific profiles
   clean [--project <dir>]               Remove ALL profiles and agents
   list                                   List available profiles
@@ -38,6 +39,10 @@ EXAMPLES:
   ./setup.sh install dev                    # Install dev to ~/.kiro (CLI)
   ./setup.sh install ba qa                  # Install multiple profiles
   ./setup.sh install dev --project ~/myapp  # Install to project (UI)
+  
+  # Sync (update installed profiles)
+  ./setup.sh sync                           # Update all installed profiles
+  ./setup.sh sync --project ~/myapp         # Update project profiles
   
   # Remove
   ./setup.sh remove ba                      # Remove BA profile
@@ -64,6 +69,35 @@ list_profiles() {
             echo "  • $profile ($agent_count agents)"
         fi
     done
+}
+
+detect_installed_profiles() {
+    local target_dir=$1
+    local installed=()
+    
+    if [ ! -d "$target_dir/agents" ]; then
+        return
+    fi
+    
+    # Check each available profile
+    for dir in "$STEER_ROOT"/.kiro-*; do
+        if [ -d "$dir" ]; then
+            profile=$(basename "$dir" | sed 's/^\.kiro-//')
+            
+            # Get first agent from this profile
+            local first_agent=$(find "$dir/agents" -name "*.json" -print -quit 2>/dev/null)
+            if [ -n "$first_agent" ]; then
+                local agent_name=$(basename "$first_agent" .json)
+                
+                # Check if this agent exists in target
+                if [ -f "$target_dir/agents/${agent_name}.json" ]; then
+                    installed+=("$profile")
+                fi
+            fi
+        fi
+    done
+    
+    echo "${installed[@]}"
 }
 
 get_profile_agents() {
@@ -251,6 +285,45 @@ case "${1:-help}" in
         total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
         echo "✅ Installation complete ($total agents total)"
+        ;;
+        
+    sync)
+        shift
+        project_dir=""
+        
+        if [ "$1" = "--project" ]; then
+            shift
+            if [ $# -eq 0 ]; then
+                echo "❌ --project requires a directory argument"
+                exit 1
+            fi
+            project_dir="$1"
+        fi
+        
+        target_root=$(get_target_dir "$project_dir")
+        echo "🔄 Syncing profiles in $target_root..."
+        echo ""
+        
+        # Detect installed profiles
+        installed_profiles=($(detect_installed_profiles "$target_root"))
+        
+        if [ ${#installed_profiles[@]} -eq 0 ]; then
+            echo "⚠️  No profiles detected. Use 'install' command first."
+            exit 0
+        fi
+        
+        echo "📋 Detected installed profiles: ${installed_profiles[*]}"
+        echo ""
+        
+        install_shared "$target_root"
+        
+        for profile in "${installed_profiles[@]}"; do
+            install_profile "$profile" "$target_root"
+        done
+        
+        total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+        echo ""
+        echo "✅ Sync complete ($total agents total)"
         ;;
         
     remove)
