@@ -7,17 +7,23 @@ Specialized Kiro agents for development, BA/PO work, and more. Easily extensible
 ---
 
 
+
 ## Prerequisites
 
 ### First Time Kiro Setup
 
 If you haven't installed Kiro yet:
 
-1. **Download Kiro**
+1. **Request Access**
+   - Visit: https://developer.disney.com/ai-tools
+   - Request access to **AmazonQ (Kiro)**
+   - Wait for approval (typically 1-2 business days)
+
+2. **Download Kiro**
    - Visit: https://kiro.dev/downloads/
    - Download for your operating system
 
-2. **Sign in with Disney SSO**
+3. **Sign in with Disney SSO**
    - Click "Sign in with your organization identity"
    - Select region: **us-east-1**
    - Input Start URL: `https://twdc-qdeveloper.awsapps.com/start`
@@ -25,7 +31,7 @@ If you haven't installed Kiro yet:
    - You will be prompted to allow Kiro IDE access
    - Click "Allow" to grant permissions
 
-3. **Verify Installation**
+4. **Verify Installation**
    ```bash
    kiro-cli --version
    ```
