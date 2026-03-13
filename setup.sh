@@ -183,30 +183,6 @@ install_shared() {
     fi
 }
 
-parse_project_flag() {
-    local -n _profiles=$1
-    local -n _project_dir=$2
-    shift 2
-    
-    while [ $# -gt 0 ]; do
-        case "$1" in
-            --project)
-                shift
-                if [ $# -eq 0 ]; then
-                    echo "❌ --project requires a directory argument"
-                    exit 1
-                fi
-                _project_dir="$1"
-                shift
-                ;;
-            *)
-                _profiles+=("$1")
-                shift
-                ;;
-        esac
-    done
-}
-
 get_target_dir() {
     local project_dir=$1
     
@@ -236,7 +212,24 @@ case "${1:-help}" in
         
         profiles=()
         project_dir=""
-        parse_project_flag profiles project_dir "$@"
+        
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --project)
+                    shift
+                    if [ $# -eq 0 ]; then
+                        echo "❌ --project requires a directory argument"
+                        exit 1
+                    fi
+                    project_dir="$1"
+                    shift
+                    ;;
+                *)
+                    profiles+=("$1")
+                    shift
+                    ;;
+            esac
+        done
         
         target_root=$(get_target_dir "$project_dir")
         [ -n "$project_dir" ] && echo "🎯 Target: $target_root (Kiro UI)" || echo "🎯 Target: $target_root (Kiro CLI)"
@@ -263,7 +256,24 @@ case "${1:-help}" in
         
         profiles=()
         project_dir=""
-        parse_project_flag profiles project_dir "$@"
+        
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --project)
+                    shift
+                    if [ $# -eq 0 ]; then
+                        echo "❌ --project requires a directory argument"
+                        exit 1
+                    fi
+                    project_dir="$1"
+                    shift
+                    ;;
+                *)
+                    profiles+=("$1")
+                    shift
+                    ;;
+            esac
+        done
         
         target_root=$(get_target_dir "$project_dir")
         echo "🎯 Target: $target_root"
