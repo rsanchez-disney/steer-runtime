@@ -132,25 +132,12 @@ install_profile() {
     cp -r "$source_dir/agents/"* "$target_dir/agents/" 2>/dev/null || true
     cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
     
-    [ -d "$source_dir/context" ] && {
-        mkdir -p "$target_dir/context"
-        cp -r "$source_dir/context/"* "$target_dir/context/"
-    }
-    
-    [ -d "$source_dir/powers" ] && {
-        mkdir -p "$target_dir/powers"
-        cp -r "$source_dir/powers/"* "$target_dir/powers/"
-    }
-    
-    [ -d "$source_dir/skills" ] && {
-        mkdir -p "$target_dir/skills"
-        cp -r "$source_dir/skills/"* "$target_dir/skills/"
-    }
-    
-    [ -d "$source_dir/steering" ] && {
-        mkdir -p "$target_dir/steering"
-        cp -r "$source_dir/steering/"* "$target_dir/steering/"
-    }
+    for subdir in context powers skills steering; do
+        if [ -d "$source_dir/$subdir" ]; then
+            mkdir -p "$target_dir/$subdir"
+            cp -r "$source_dir/$subdir/"* "$target_dir/$subdir/" 2>/dev/null || true
+        fi
+    done
     
     local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
     echo "✓ Installed $profile ($agent_count agents)"
