@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "description": "Config Studio Backend specialist (Java services)",
+  "description": "Backend specialist for Java, Rust, Go, and Python services",
   "prompt": "backend.md",
   "tools": [
     "read",
@@ -15,7 +15,21 @@
         "build.gradle*",
         "gradle.properties",
         "application*.yml",
-        "application*.yaml"
+        "application*.yaml",
+        "Cargo.toml",
+        "Cargo.lock",
+        "go.mod",
+        "go.sum",
+        "*.go",
+        "cmd/**",
+        "internal/**",
+        "pkg/**",
+        "requirements.txt",
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "*.py",
+        "*.rs"
       ]
     }
   },
