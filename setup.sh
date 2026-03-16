@@ -429,18 +429,17 @@ case "${1:-help}" in
             exit 1
         fi
         
-        # Sync npm registry from user's local config (only if Disney internal)
-        local_registry=$(npm config get registry 2>/dev/null)
-        if [ -n "$local_registry" ] && [ "$local_registry" != "undefined" ] && echo "$local_registry" | grep -qi "disney\|dtci"; then
-            echo "🔧 Syncing npm registry: $local_registry"
+        # Copy user's ~/.npmrc if it exists (carries registry + auth tokens)
+        if [ -f "$HOME/.npmrc" ]; then
+            echo "🔧 Copying ~/.npmrc to MCP servers"
             for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
                 if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                    echo "registry=$local_registry" > "$mcp/.npmrc"
+                    cp "$HOME/.npmrc" "$mcp/.npmrc"
                 fi
             done
             echo ""
         else
-            echo "ℹ️  Using bundled .npmrc (Disney internal packages require Nexus registry)"
+            echo "ℹ️  No ~/.npmrc found — using bundled .npmrc (may need Disney Nexus auth)"
         fi
         
         # Install npm dependencies
