@@ -429,8 +429,21 @@ case "${1:-help}" in
             exit 1
         fi
         
-        # Copy user's ~/.npmrc if it exists (carries registry + auth tokens)
-        if [ -f "$HOME/.npmrc" ]; then
+        # Check ~/.npmrc exists (required for Disney Nexus registry auth)
+        if [ ! -f "$HOME/.npmrc" ]; then
+            echo "⚠️  ~/.npmrc not found. MCP servers require Disney Nexus registry access."
+            echo ""
+            echo "  1. Generate a token at: https://nexus3.disney.com/#user/usertoken"
+            echo "  2. Create ~/.npmrc with:"
+            echo ""
+            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-group"
+            echo "     //nexus3.disney.com/repository/:_auth=<your-base64-token>"
+            echo ""
+            read -p "Continue anyway? (y/N): " skip_npmrc
+            if [[ ! "$skip_npmrc" =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        else
             echo "🔧 Copying ~/.npmrc to MCP servers"
             for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
                 if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
@@ -438,8 +451,6 @@ case "${1:-help}" in
                 fi
             done
             echo ""
-        else
-            echo "ℹ️  No ~/.npmrc found — using bundled .npmrc (may need Disney Nexus auth)"
         fi
         
         # Install npm dependencies
