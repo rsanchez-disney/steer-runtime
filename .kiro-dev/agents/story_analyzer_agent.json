@@ -11,24 +11,30 @@
     "@github/*"
   ],
   "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+    },
     "mcp-atlassian": {
       "command": "docker",
       "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "JIRA_URL",
-        "-e",
-        "CONFLUENCE_URL",
-        "-e",
-        "JIRA_SSL_VERIFY",
-        "-e",
-        "CONFLUENCE_SSL_VERIFY",
-        "-e",
-        "JIRA_PERSONAL_TOKEN",
-        "-e",
-        "CONFLUENCE_PERSONAL_TOKEN",
+        "run", "-i", "--rm",
+        "-e", "JIRA_URL",
+        "-e", "CONFLUENCE_URL",
+        "-e", "JIRA_SSL_VERIFY",
+        "-e", "CONFLUENCE_SSL_VERIFY",
+        "-e", "JIRA_PERSONAL_TOKEN",
+        "-e", "CONFLUENCE_PERSONAL_TOKEN",
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
@@ -40,14 +46,14 @@
         "CONFLUENCE_SSL_VERIFY": "false"
       },
       "timeout": 60000,
-      "disabled": false
+      "disabled": true
     },
     "github": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/github-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
     }
   },
   "allowedTools": [
