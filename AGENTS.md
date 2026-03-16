@@ -75,6 +75,7 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 **File:** `.kiro-dev/agents/story_analyzer_agent.json`  
 **Purpose:** Jira story analysis and requirements extraction  
 **Use for:** Analyzing Jira stories, extracting requirements
+**MCP Servers:** jira (local), confluence (local), github (local), mcp-atlassian (Docker, disabled fallback)
 
 #### architecture_agent
 **File:** `.kiro-dev/agents/architecture_agent.json`  
