@@ -531,6 +531,23 @@ CONFEOF
             fi
             echo ""
             
+            # MyWiki token
+            echo "━━━ MyWiki (mywiki.disney.com) ━━━"
+            read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
+            if [ -n "$mywiki_token" ]; then
+                # MyWiki uses the same confluence-mcp binary via agent env block
+                # Store token for reference and for the $HOME expansion step
+                mywiki_env="$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"
+                cat > "$mywiki_env" << MYWIKIEOF
+CONFLUENCE_URL=https://mywiki.disney.com
+CONFLUENCE_PAT=$mywiki_token
+MYWIKIEOF
+                echo "  ✓ Saved to confluence-mcp/.env.mywiki"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+            
             # GitHub token
             echo "━━━ GitHub ━━━"
             read -r -p "Paste your GitHub Personal Access Token (or Enter to skip): " github_token
@@ -555,6 +572,26 @@ GHEOF
                 echo "🔧 Resolved \$HOME in $(basename "$agent_json")"
             fi
         done
+        
+        # Inject mywiki token into agent configs if available
+        if [ -f "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki" ]; then
+            mywiki_pat=$(grep CONFLUENCE_PAT "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2-)
+            if [ -n "$mywiki_pat" ] && [ "$mywiki_pat" != "YOUR_TOKEN" ]; then
+                for agent_json in "$KIRO_ROOT/agents/"*.json; do
+                    if [ -f "$agent_json" ] && grep -q '"mywiki"' "$agent_json"; then
+                        python3 -c "
+import json,sys
+with open('$agent_json') as f: d=json.load(f)
+if 'mywiki' in d.get('mcpServers',{}):
+    d['mcpServers']['mywiki']['env']['CONFLUENCE_PAT']='$mywiki_pat'
+    with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('
+')
+    print(f'  🔧 Injected mywiki token in {sys.argv[0]}')
+" 2>/dev/null
+                    fi
+                done
+            fi
+        fi
         
         echo "✅ MCP servers ready"
         ;;

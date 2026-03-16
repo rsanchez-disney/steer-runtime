@@ -6,6 +6,7 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
+    "@mywiki/*",
     "fs_read",
     "grep"
   ],
@@ -30,12 +31,24 @@
         "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
       "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
+    },
+    "mywiki": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp",
+      "env": {
+        "CONFLUENCE_URL": "https://mywiki.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
     }
   },
   "allowedTools": [
-    "@jira/*",
     "@confluence/*",
-    "@github/*"
+    "@github/*",
+    "@jira/*",
+    "@mywiki/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"
