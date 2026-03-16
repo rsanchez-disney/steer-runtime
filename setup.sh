@@ -423,6 +423,24 @@ case "${1:-help}" in
         echo "📦 Installing MCP dependencies..."
         echo ""
         
+        # Check npm exists
+        if ! command -v npm &> /dev/null; then
+            echo "❌ npm not found. Please install Node.js first."
+            exit 1
+        fi
+        
+        # Sync npm registry from user's local config
+        local_registry=$(npm config get registry 2>/dev/null)
+        if [ -n "$local_registry" ] && [ "$local_registry" != "undefined" ]; then
+            echo "🔧 Syncing npm registry: $local_registry"
+            for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
+                if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
+                    echo "registry=$local_registry" > "$mcp/.npmrc"
+                fi
+            done
+            echo ""
+        fi
+        
         # Install npm dependencies
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
