@@ -421,12 +421,85 @@ case "${1:-help}" in
         
     mcp-install)
         echo "📦 Installing MCP dependencies..."
+        echo ""
+        
+        # Install npm dependencies
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
                 echo "Installing $(basename $mcp)..."
                 (cd "$mcp" && npm install)
             fi
         done
+        echo ""
+        
+        # Configure tokens
+        echo "╔══════════════════════════════════════════════════════════════╗"
+        echo "║              MCP Server Token Configuration                 ║"
+        echo "╚══════════════════════════════════════════════════════════════╝"
+        echo ""
+        echo "Generate Personal Access Tokens from these URLs:"
+        echo ""
+        echo "  Jira:"
+        echo "  https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens"
+        echo ""
+        echo "  Confluence:"
+        echo "  https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action"
+        echo ""
+        echo "  GitHub:"
+        echo "  https://github.disney.com/settings/tokens"
+        echo ""
+        
+        read -p "Would you like to configure tokens now? (y/N): " configure_tokens
+        
+        if [[ "$configure_tokens" =~ ^[Yy]$ ]]; then
+            echo ""
+            
+            # Jira token
+            echo "━━━ Jira ━━━"
+            read -r -p "Paste your Jira Personal Access Token (or Enter to skip): " jira_token
+            if [ -n "$jira_token" ]; then
+                jira_env="$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"
+                cat > "$jira_env" << JIRAEOF
+JIRA_PAT=$jira_token
+JIRAEOF
+                echo "  ✓ Saved to jira-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+            
+            # Confluence token
+            echo "━━━ Confluence ━━━"
+            read -r -p "Paste your Confluence Personal Access Token (or Enter to skip): " confluence_token
+            if [ -n "$confluence_token" ]; then
+                confluence_env="$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"
+                cat > "$confluence_env" << CONFEOF
+CONFLUENCE_URL=https://confluence.disney.com
+CONFLUENCE_PAT=$confluence_token
+CONFEOF
+                echo "  ✓ Saved to confluence-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+            
+            # GitHub token
+            echo "━━━ GitHub ━━━"
+            read -r -p "Paste your GitHub Personal Access Token (or Enter to skip): " github_token
+            if [ -n "$github_token" ]; then
+                github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
+                cat > "$github_env" << GHEOF
+GITHUB_TOKEN_disney=$github_token
+GITHUB_HOST_disney=github.disney.com
+GITHUB_DEFAULT_REMOTE=disney
+GHEOF
+                echo "  ✓ Saved to github-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+        fi
+        
         echo "✅ MCP servers ready"
         ;;
     rules)
