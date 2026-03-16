@@ -23,6 +23,10 @@ COMMANDS:
   list                                   List available profiles
   check                                  Verify installation
   mcp-install                            Install MCP server dependencies
+  rules [list|install]                   Manage common coding rules
+  prompts [list|install]                 Manage standalone prompts
+  init-memory <dir>                      Initialize project memory bank
+  configure                              Configure MCP tokens interactively
   help                                   Show this help message
 
 PROFILES:
@@ -55,6 +59,12 @@ EXAMPLES:
   # Other
   ./setup.sh list                           # Show available profiles
   ./setup.sh check                          # Check installation
+
+  # Rules & Prompts
+  ./setup.sh rules list                     # List available rules
+  ./setup.sh rules install --all            # Install all rules
+  ./setup.sh prompts list                   # List available prompts
+  ./setup.sh init-memory ~/myapp            # Initialize memory bank
 
 USAGE
 }
@@ -209,6 +219,13 @@ install_shared() {
         find "$STEER_ROOT/.kiro/tools" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec cp -r {} "$target_dir/tools/" \; 2>/dev/null
         
         echo "✓ Installed MCP servers (run 'mcp-install' to setup dependencies)"
+    fi
+    
+    if [ -d "$STEER_ROOT/.kiro/context" ]; then
+        echo "📦 Installing shared context..."
+        mkdir -p "$target_dir/context"
+        cp "$STEER_ROOT/.kiro/context/"*.md "$target_dir/context/" 2>/dev/null || true
+        echo "✓ Installed shared context files"
     fi
 }
 
@@ -412,6 +429,243 @@ case "${1:-help}" in
         done
         echo "✅ MCP servers ready"
         ;;
+    rules)
+        shift
+        subcmd="${1:-list}"
+        shift 2>/dev/null || true
+        
+        case "$subcmd" in
+            list)
+                echo "📋 Available rules:"
+                echo ""
+                for rule in "$STEER_ROOT"/common/rules/*.md; do
+                    if [ -f "$rule" ] && [ "$(basename "$rule")" != "README.md" ]; then
+                        name=$(basename "$rule" .md)
+                        echo "  • $name"
+                    fi
+                done
+                ;;
+            install)
+                project_dir=""
+                rules=()
+                install_all=false
+                
+                while [ $# -gt 0 ]; do
+                    case "$1" in
+                        --project)
+                            shift
+                            project_dir="$1"
+                            shift
+                            ;;
+                        --all)
+                            install_all=true
+                            shift
+                            ;;
+                        *)
+                            rules+=("$1")
+                            shift
+                            ;;
+                    esac
+                done
+                
+                target_root=$(get_target_dir "$project_dir")
+                mkdir -p "$target_root/rules"
+                
+                if [ "$install_all" = true ]; then
+                    echo "📦 Installing all rules to $target_root/rules/"
+                    for rule in "$STEER_ROOT"/common/rules/*.md; do
+                        if [ -f "$rule" ] && [ "$(basename "$rule")" != "README.md" ]; then
+                            cp "$rule" "$target_root/rules/"
+                            echo "  ✓ $(basename "$rule")"
+                        fi
+                    done
+                else
+                    for rule_name in "${rules[@]}"; do
+                        rule_file="$STEER_ROOT/common/rules/${rule_name}.md"
+                        if [ -f "$rule_file" ]; then
+                            cp "$rule_file" "$target_root/rules/"
+                            echo "✓ Installed $rule_name"
+                        else
+                            echo "❌ Rule not found: $rule_name"
+                        fi
+                    done
+                fi
+                echo "✅ Rules installed"
+                ;;
+            *)
+                echo "❌ Unknown rules subcommand: $subcmd"
+                echo "Usage: ./setup.sh rules [list|install] [--all|<rule-names>] [--project <dir>]"
+                exit 1
+                ;;
+        esac
+        ;;
+        
+    prompts)
+        shift
+        subcmd="${1:-list}"
+        shift 2>/dev/null || true
+        
+        case "$subcmd" in
+            list)
+                echo "📋 Available prompts:"
+                echo ""
+                for prompt in "$STEER_ROOT"/common/prompts/*.md; do
+                    if [ -f "$prompt" ] && [ "$(basename "$prompt")" != "README.md" ]; then
+                        name=$(basename "$prompt" .md)
+                        echo "  • $name"
+                    fi
+                done
+                ;;
+            install)
+                prompts=()
+                install_all=false
+                
+                while [ $# -gt 0 ]; do
+                    case "$1" in
+                        --all)
+                            install_all=true
+                            shift
+                            ;;
+                        *)
+                            prompts+=("$1")
+                            shift
+                            ;;
+                    esac
+                done
+                
+                mkdir -p "$KIRO_ROOT/prompts"
+                
+                if [ "$install_all" = true ]; then
+                    echo "📦 Installing all prompts to $KIRO_ROOT/prompts/"
+                    for prompt in "$STEER_ROOT"/common/prompts/*.md; do
+                        if [ -f "$prompt" ] && [ "$(basename "$prompt")" != "README.md" ]; then
+                            cp "$prompt" "$KIRO_ROOT/prompts/"
+                            echo "  ✓ $(basename "$prompt")"
+                        fi
+                    done
+                else
+                    for prompt_name in "${prompts[@]}"; do
+                        prompt_file="$STEER_ROOT/common/prompts/${prompt_name}.md"
+                        if [ -f "$prompt_file" ]; then
+                            cp "$prompt_file" "$KIRO_ROOT/prompts/"
+                            echo "✓ Installed $prompt_name"
+                        else
+                            echo "❌ Prompt not found: $prompt_name"
+                        fi
+                    done
+                fi
+                echo "✅ Prompts installed"
+                ;;
+            *)
+                echo "❌ Unknown prompts subcommand: $subcmd"
+                echo "Usage: ./setup.sh prompts [list|install] [--all|<prompt-names>]"
+                exit 1
+                ;;
+        esac
+        ;;
+        
+    init-memory)
+        shift
+        if [ $# -eq 0 ]; then
+            echo "❌ Project directory required"
+            echo "Usage: ./setup.sh init-memory <project-dir> [--from <known-project>]"
+            exit 1
+        fi
+        
+        project_dir="${1/#\~/$HOME}"
+        shift
+        from_project=""
+        
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --from)
+                    shift
+                    from_project="$1"
+                    shift
+                    ;;
+                *)
+                    shift
+                    ;;
+            esac
+        done
+        
+        if [ ! -d "$project_dir" ]; then
+            echo "❌ Directory does not exist: $project_dir"
+            exit 1
+        fi
+        
+        project_name=$(basename "$project_dir")
+        target_mb="$project_dir/.kiro/rules/memory-bank"
+        
+        mkdir -p "$target_mb"
+        
+        # Determine source
+        if [ -n "$from_project" ]; then
+            source_mb="$STEER_ROOT/Projects/$from_project/.kiro/rules/memory-bank"
+            if [ ! -d "$source_mb" ]; then
+                echo "❌ Unknown project: $from_project"
+                echo "Available: $(ls "$STEER_ROOT/Projects" 2>/dev/null | tr '\n' ' ')"
+                exit 1
+            fi
+            echo "📦 Copying memory bank from $from_project..."
+            cp "$source_mb"/*.md "$target_mb/"
+        elif [ -d "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank" ]; then
+            echo "📦 Found known project: $project_name"
+            cp "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"/*.md "$target_mb/"
+        else
+            echo "📦 Generating memory bank from templates..."
+            for tmpl in "$STEER_ROOT"/common/memory-bank-templates/*.template; do
+                out_name=$(basename "$tmpl" .template)
+                sed "s/{{PROJECT_NAME}}/$project_name/g" "$tmpl" > "$target_mb/$out_name"
+                echo "  ✓ $out_name"
+            done
+        fi
+        
+        echo "✅ Memory bank initialized at $target_mb"
+        ;;
+        
+    configure)
+        echo "🔧 Configure MCP tokens"
+        echo ""
+        
+        env_file="$KIRO_ROOT/.env"
+        touch "$env_file"
+        
+        tokens=(
+            "JIRA_PERSONAL_TOKEN"
+            "CONFLUENCE_PERSONAL_TOKEN"
+            "GITHUB_PERSONAL_ACCESS_TOKEN"
+            "HARNESS_API_KEY"
+            "SONARQUBE_TOKEN"
+        )
+        
+        for token in "${tokens[@]}"; do
+            current=$(grep "^$token=" "$env_file" 2>/dev/null | cut -d= -f2 || echo "")
+            if [ -n "$current" ]; then
+                status="set"
+            else
+                status="not set"
+            fi
+            
+            echo -n "$token [$status]: "
+            read -r value
+            
+            if [ -n "$value" ]; then
+                # Remove existing and add new
+                grep -v "^$token=" "$env_file" > "$env_file.tmp" 2>/dev/null || true
+                echo "$token=$value" >> "$env_file.tmp"
+                mv "$env_file.tmp" "$env_file"
+                echo "  ✓ Updated"
+            else
+                echo "  ⏭ Skipped"
+            fi
+        done
+        
+        echo ""
+        echo "✅ Configuration saved to $env_file"
+        echo "💡 Source this file or export variables before using MCP servers"
+        ;;
+        
         
     help|--help|-h)
         show_usage
