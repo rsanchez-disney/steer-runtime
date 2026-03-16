@@ -1,0 +1,53 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Output directories for GitHub data
+github-data/
+
+# MCP tool output files
+github-*.json
+github-pr-*.json
+github-repo-*.json
+github-comment-*.json
+
+# Any JSON files with timestamps (MCP output pattern)
+*_20*.json
+
+# Amazon Q data
+.amazonq/
