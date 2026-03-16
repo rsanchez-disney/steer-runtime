@@ -29,7 +29,7 @@
         "JIRA_PERSONAL_TOKEN",
         "-e",
         "CONFLUENCE_PERSONAL_TOKEN",
-        "containerregistry.disney.com/jedaimcp/jedai/mcp-atlassian:v0.13.0"
+        "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
         "JIRA_URL": "https://myjira.disney.com",
