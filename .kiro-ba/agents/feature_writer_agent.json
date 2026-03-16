@@ -16,21 +16,33 @@
       "args": [
         "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp",
+      "env": {
+        "JIRA_PAT": "YOUR_TOKEN"
+      }
     },
     "confluence": {
       "command": "node",
       "args": [
         "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp",
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
     },
     "github": {
       "command": "node",
       "args": [
         "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp",
+      "env": {
+        "GITHUB_TOKEN_disney": "YOUR_TOKEN",
+        "GITHUB_HOST_disney": "github.disney.com",
+        "GITHUB_DEFAULT_REMOTE": "disney"
+      }
     },
     "mywiki": {
       "command": "node",
