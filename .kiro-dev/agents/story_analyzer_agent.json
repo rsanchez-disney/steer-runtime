@@ -1,6 +1,6 @@
 {
   "name": "story_analyzer_agent",
-  "description": "Fetches and analyzes Jira stories. Extracts scope, acceptance criteria, and metadata.",
+  "description": "Fetches and analyzes Jira stories, Confluence pages, and GitHub repos.",
   "prompt": "story_analyzer_agent.md",
   "tools": [
     "web_fetch",
@@ -28,21 +28,29 @@
     "mcp-atlassian": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "JIRA_URL",
-        "-e", "CONFLUENCE_URL",
-        "-e", "JIRA_SSL_VERIFY",
-        "-e", "CONFLUENCE_SSL_VERIFY",
-        "-e", "JIRA_PERSONAL_TOKEN",
-        "-e", "CONFLUENCE_PERSONAL_TOKEN",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "CONFLUENCE_URL",
+        "-e",
+        "JIRA_SSL_VERIFY",
+        "-e",
+        "CONFLUENCE_SSL_VERIFY",
+        "-e",
+        "JIRA_PERSONAL_TOKEN",
+        "-e",
+        "CONFLUENCE_PERSONAL_TOKEN",
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
         "JIRA_URL": "https://myjira.disney.com",
-        "JIRA_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "JIRA_PERSONAL_TOKEN": "JIRA_PERSONAL_TOKEN",
         "JIRA_SSL_VERIFY": "false",
         "CONFLUENCE_URL": "https://confluence.disney.com",
-        "CONFLUENCE_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "CONFLUENCE_PERSONAL_TOKEN": "CONFLUENCE_PERSONAL_TOKEN",
         "CONFLUENCE_SSL_VERIFY": "false"
       },
       "timeout": 60000,
