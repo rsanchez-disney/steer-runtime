@@ -100,7 +100,7 @@ This will:
 4. Prompt for Personal Access Tokens:
    - **Jira:** https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
    - **Confluence:** https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action
-   - **MyWiki:** https://mywiki.disney.com (uses same Confluence PAT format)
+   - **MyWiki:** https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action
    - **GitHub:** https://github.disney.com/settings/tokens
 5. Save tokens to `.env` files and inject into all installed agent configs
 6. Resolve `$HOME` paths in agent JSON files

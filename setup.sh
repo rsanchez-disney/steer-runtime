@@ -597,6 +597,7 @@ CONFEOF
             
             # MyWiki token
             echo "━━━ MyWiki (mywiki.disney.com) ━━━"
+            echo "  Generate token: https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
             read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
             if [ -n "$mywiki_token" ]; then
                 # MyWiki uses the same confluence-mcp binary via agent env block
