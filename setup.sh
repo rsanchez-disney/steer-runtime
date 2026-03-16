@@ -139,7 +139,10 @@ install_profile() {
     local total_files=$(find "$source_dir" -type f 2>/dev/null | wc -l | tr -d ' ')
     echo "   Copying $total_files files..."
     
-    cp -r "$source_dir/agents/"* "$target_dir/agents/" 2>/dev/null || true
+    # Copy agents with $HOME expansion (Kiro doesn't expand shell variables in JSON)
+    for agent_json in "$source_dir/agents/"*.json; do
+        [ -f "$agent_json" ] && sed "s|\$HOME|$HOME|g" "$agent_json" > "$target_dir/agents/$(basename "$agent_json")"
+    done
     cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
     
     for subdir in context powers skills steering; do
