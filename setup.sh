@@ -436,8 +436,12 @@ case "${1:-help}" in
             echo "  1. Generate a token at: https://nexus3.disney.com/#user/usertoken"
             echo "  2. Create ~/.npmrc with:"
             echo ""
+            echo "     @wdpr:registry=https://nexus3.disney.com/repository/wdpr-ra-npm-hosted"
+            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-proxy"
+            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"'
+            echo ""
             echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-group"
-            echo "     //nexus3.disney.com/repository/:_auth=<your-base64-token>"
+            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"' 
             echo ""
             read -p "Continue anyway? (y/N): " skip_npmrc
             if [[ ! "$skip_npmrc" =~ ^[Yy]$ ]]; then
