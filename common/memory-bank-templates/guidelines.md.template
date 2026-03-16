@@ -1,0 +1,44 @@
+# {{PROJECT_NAME}} - Development Guidelines
+
+## Code Quality Standards
+
+### Naming Conventions
+<!-- Define naming conventions for classes, methods, variables, constants -->
+
+### Code Formatting
+<!-- Define indentation, line length, braces, spacing rules -->
+
+## Structural Conventions
+
+### Class Design
+<!-- Define patterns: single responsibility, immutability, utility classes -->
+
+### Dependency Injection
+<!-- Define DI approach: constructor vs setter, annotations -->
+
+## Semantic Patterns
+
+### Error Handling
+<!-- Define exception strategy, error codes, logging -->
+
+### Null Safety
+<!-- Define null check patterns, optional usage -->
+
+## Testing Patterns
+
+### Test Structure
+<!-- Define test framework, naming, organization -->
+
+### Mocking
+<!-- Define mocking framework and patterns -->
+
+## Best Practices
+
+### Security
+<!-- Define security requirements: input validation, secrets, logging -->
+
+### Performance
+<!-- Define performance patterns: caching, pooling, async -->
+
+### Maintainability
+<!-- Define code organization, documentation, DRY principles -->

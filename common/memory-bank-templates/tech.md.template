@@ -1,0 +1,22 @@
+# {{PROJECT_NAME}} - Technology Stack
+
+## Programming Languages
+<!-- Primary and secondary languages -->
+
+## Build System
+<!-- Build tool, parent POM, artifact info -->
+
+## Core Frameworks
+<!-- Main frameworks and versions -->
+
+## Key Libraries
+<!-- Important dependencies grouped by category -->
+
+## Development Commands
+<!-- Build, test, run commands -->
+
+## Deployment
+<!-- Container, CI/CD, environments -->
+
+## Repository & CI/CD
+<!-- Source control, pipelines, artifact repos -->
