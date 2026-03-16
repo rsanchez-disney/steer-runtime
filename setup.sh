@@ -460,13 +460,24 @@ case "${1:-help}" in
             echo ""
         fi
         
-        # Install npm dependencies
+        # Install npm dependencies (continue on failure)
+        failed_mcps=()
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                echo "Installing $(basename $mcp)..."
-                (cd "$mcp" && npm install)
+                name=$(basename "$mcp")
+                echo "Installing $name..."
+                if ! (cd "$mcp" && npm install 2>&1); then
+                    echo "⚠️  $name failed — skipping"
+                    failed_mcps+=("$name")
+                fi
             fi
         done
+        if [ ${#failed_mcps[@]} -gt 0 ]; then
+            echo ""
+            echo "⚠️  Failed to install: ${failed_mcps[*]}"
+            echo "   These may need a different npm registry or manual install."
+            echo "   Continuing with remaining setup..."
+        fi
         echo ""
         
         # Configure tokens
