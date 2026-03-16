@@ -537,6 +537,14 @@ GHEOF
             echo ""
         fi
         
+        # Resolve $HOME in installed agent configs
+        for agent_json in "$KIRO_ROOT/agents/"*.json; do
+            if [ -f "$agent_json" ] && grep -q '\$HOME' "$agent_json" 2>/dev/null; then
+                sed -i '' "s|\$HOME|$HOME|g" "$agent_json"
+                echo "🔧 Resolved \$HOME in $(basename "$agent_json")"
+            fi
+        done
+        
         echo "✅ MCP servers ready"
         ;;
     rules)
