@@ -488,23 +488,59 @@ case "${1:-help}" in
             echo ""
         fi
         
-        # Install npm dependencies (continue on failure)
-        failed_mcps=()
+        # Select which MCP servers to install
+        available_mcps=()
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                name=$(basename "$mcp")
+                available_mcps+=("$(basename "$mcp")")
+            fi
+        done
+        
+        echo "Available MCP servers:"
+        echo ""
+        for i in "${!available_mcps[@]}"; do
+            echo "  [$((i+1))] ${available_mcps[$i]}"
+        done
+        echo "  [A] All"
+        echo ""
+        read -p "Select MCP servers to install (e.g. 1,3 or A for all): " mcp_selection
+        
+        selected_mcps=()
+        if [[ "$mcp_selection" =~ ^[Aa]$ ]] || [ -z "$mcp_selection" ]; then
+            selected_mcps=("${available_mcps[@]}")
+        else
+            IFS=',' read -ra picks <<< "$mcp_selection"
+            for pick in "${picks[@]}"; do
+                pick=$(echo "$pick" | tr -d ' ')
+                if [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -le "${#available_mcps[@]}" ]; then
+                    selected_mcps+=("${available_mcps[$((pick-1))]}")
+                fi
+            done
+        fi
+        
+        if [ ${#selected_mcps[@]} -eq 0 ]; then
+            echo "⏭ No MCP servers selected — skipping install"
+        else
+            echo ""
+            echo "Installing: ${selected_mcps[*]}"
+            echo ""
+            
+            # Install npm dependencies (continue on failure)
+            failed_mcps=()
+            for name in "${selected_mcps[@]}"; do
+                mcp="$KIRO_ROOT/tools/mcp-servers/$name"
                 echo "Installing $name..."
                 if ! (cd "$mcp" && npm install 2>&1); then
                     echo "⚠️  $name failed — skipping"
                     failed_mcps+=("$name")
                 fi
+            done
+            if [ ${#failed_mcps[@]} -gt 0 ]; then
+                echo ""
+                echo "⚠️  Failed to install: ${failed_mcps[*]}"
+                echo "   These may need a different npm registry or manual install."
+                echo "   Continuing with remaining setup..."
             fi
-        done
-        if [ ${#failed_mcps[@]} -gt 0 ]; then
-            echo ""
-            echo "⚠️  Failed to install: ${failed_mcps[*]}"
-            echo "   These may need a different npm registry or manual install."
-            echo "   Continuing with remaining setup..."
         fi
         echo ""
         
