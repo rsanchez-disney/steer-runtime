@@ -139,7 +139,10 @@ install_profile() {
     local total_files=$(find "$source_dir" -type f 2>/dev/null | wc -l | tr -d ' ')
     echo "   Copying $total_files files..."
     
-    cp -r "$source_dir/agents/"* "$target_dir/agents/" 2>/dev/null || true
+    # Copy agents with $HOME expansion (Kiro doesn't expand shell variables in JSON)
+    for agent_json in "$source_dir/agents/"*.json; do
+        [ -f "$agent_json" ] && sed "s|\$HOME|$HOME|g" "$agent_json" > "$target_dir/agents/$(basename "$agent_json")"
+    done
     cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
     
     for subdir in context powers skills steering; do
@@ -429,25 +432,52 @@ case "${1:-help}" in
             exit 1
         fi
         
-        # Sync npm registry from user's local config
-        local_registry=$(npm config get registry 2>/dev/null)
-        if [ -n "$local_registry" ] && [ "$local_registry" != "undefined" ]; then
-            echo "🔧 Syncing npm registry: $local_registry"
+        # Check ~/.npmrc exists (required for Disney Nexus registry auth)
+        if [ ! -f "$HOME/.npmrc" ]; then
+            echo "⚠️  ~/.npmrc not found. MCP servers require Disney Nexus registry access."
+            echo ""
+            echo "  1. Generate a token at: https://nexus3.disney.com/#user/usertoken"
+            echo "  2. Create ~/.npmrc with:"
+            echo ""
+            echo "     @wdpr:registry=https://nexus3.disney.com/repository/wdpr-ra-npm-hosted"
+            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-proxy"
+            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"'
+            echo ""
+            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-group"
+            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"' 
+            echo ""
+            read -p "Continue anyway? (y/N): " skip_npmrc
+            if [[ ! "$skip_npmrc" =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        else
+            echo "🔧 Copying ~/.npmrc to MCP servers"
             for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
                 if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                    echo "registry=$local_registry" > "$mcp/.npmrc"
+                    cp "$HOME/.npmrc" "$mcp/.npmrc"
                 fi
             done
             echo ""
         fi
         
-        # Install npm dependencies
+        # Install npm dependencies (continue on failure)
+        failed_mcps=()
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                echo "Installing $(basename $mcp)..."
-                (cd "$mcp" && npm install)
+                name=$(basename "$mcp")
+                echo "Installing $name..."
+                if ! (cd "$mcp" && npm install 2>&1); then
+                    echo "⚠️  $name failed — skipping"
+                    failed_mcps+=("$name")
+                fi
             fi
         done
+        if [ ${#failed_mcps[@]} -gt 0 ]; then
+            echo ""
+            echo "⚠️  Failed to install: ${failed_mcps[*]}"
+            echo "   These may need a different npm registry or manual install."
+            echo "   Continuing with remaining setup..."
+        fi
         echo ""
         
         # Configure tokens
@@ -517,6 +547,14 @@ GHEOF
             fi
             echo ""
         fi
+        
+        # Resolve $HOME in installed agent configs
+        for agent_json in "$KIRO_ROOT/agents/"*.json; do
+            if [ -f "$agent_json" ] && grep -q '\$HOME' "$agent_json" 2>/dev/null; then
+                sed -i '' "s|\$HOME|$HOME|g" "$agent_json"
+                echo "🔧 Resolved \$HOME in $(basename "$agent_json")"
+            fi
+        done
         
         echo "✅ MCP servers ready"
         ;;

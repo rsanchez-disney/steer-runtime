@@ -1,6 +1,6 @@
 {
   "name": "story_analyzer_agent",
-  "description": "Fetches and analyzes Jira stories. Extracts scope, acceptance criteria, and metadata.",
+  "description": "Fetches and analyzes Jira stories, Confluence pages, and GitHub repos.",
   "prompt": "story_analyzer_agent.md",
   "tools": [
     "web_fetch",
@@ -11,6 +11,20 @@
     "@github/*"
   ],
   "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+    },
     "mcp-atlassian": {
       "command": "docker",
       "args": [
@@ -29,25 +43,25 @@
         "JIRA_PERSONAL_TOKEN",
         "-e",
         "CONFLUENCE_PERSONAL_TOKEN",
-        "containerregistry.disney.com/jedaimcp/jedai/mcp-atlassian:v0.13.0"
+        "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
         "JIRA_URL": "https://myjira.disney.com",
-        "JIRA_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "JIRA_PERSONAL_TOKEN": "JIRA_PERSONAL_TOKEN",
         "JIRA_SSL_VERIFY": "false",
         "CONFLUENCE_URL": "https://confluence.disney.com",
-        "CONFLUENCE_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "CONFLUENCE_PERSONAL_TOKEN": "CONFLUENCE_PERSONAL_TOKEN",
         "CONFLUENCE_SSL_VERIFY": "false"
       },
       "timeout": 60000,
-      "disabled": false
+      "disabled": true
     },
     "github": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/github-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
     }
   },
   "allowedTools": [
