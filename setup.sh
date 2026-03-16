@@ -121,6 +121,33 @@ get_profile_agents() {
     find "$source_dir/agents" -name "*.json" -exec basename {} .json \;
 }
 
+inject_agent_tokens() {
+    local target_dir=$1
+    _do_inject() {
+        local mcp_name="$1" env_file="$2" env_key="$3" tdir="$4"
+        if [ -f "$env_file" ]; then
+            local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
+            if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
+                for agent_json in "$tdir/agents/"*.json; do
+                    if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
+                        python3 -c "
+import json
+with open('$agent_json') as f: d=json.load(f)
+m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
+if m: m['$env_key']='$token'
+with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
+" 2>/dev/null
+                    fi
+                done
+            fi
+        fi
+    }
+    _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
+    _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+}
+
 install_profile() {
     local profile=$1
     local target_dir=$2
@@ -153,6 +180,7 @@ install_profile() {
     done
     
     local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    inject_agent_tokens "$target_dir"
     echo "✓ Installed $profile ($agent_count agents)"
 }
 
@@ -573,32 +601,7 @@ GHEOF
             fi
         done
         
-        # Inject tokens from .env files into agent config env blocks
-        _inject_token() {
-            local mcp_name="$1" env_file="$2" env_key="$3"
-            if [ -f "$env_file" ]; then
-                local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
-                if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
-                    for agent_json in "$KIRO_ROOT/agents/"*.json; do
-                        if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
-                            python3 -c "
-import json
-with open('$agent_json') as f: d=json.load(f)
-m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
-if m: m['$env_key']='$token'
-with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\n')
-" 2>/dev/null
-                        fi
-                    done
-                    echo "  🔧 Injected $mcp_name token"
-                fi
-            fi
-        }
-        
-        _inject_token "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"       "JIRA_PAT"
-        _inject_token "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"  "CONFLUENCE_PAT"
-        _inject_token "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki" "CONFLUENCE_PAT"
-        _inject_token "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"     "GITHUB_TOKEN_disney"
+        inject_agent_tokens "$KIRO_ROOT"
         
         echo "✅ MCP servers ready"
         ;;
