@@ -11,19 +11,36 @@
     "@github/*"
   ],
   "mcpServers": {
-    "jira": {
-      "command": "node",
+    "mcp-atlassian": {
+      "command": "docker",
       "args": [
-        "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "CONFLUENCE_URL",
+        "-e",
+        "JIRA_SSL_VERIFY",
+        "-e",
+        "CONFLUENCE_SSL_VERIFY",
+        "-e",
+        "JIRA_PERSONAL_TOKEN",
+        "-e",
+        "CONFLUENCE_PERSONAL_TOKEN",
+        "containerregistry.disney.com/jedaimcp/jedai/mcp-atlassian:v0.13.0"
       ],
-      "cwd": "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/jira-mcp"
-    },
-    "confluence": {
-      "command": "node",
-      "args": [
-        "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
-      ],
-      "cwd": "/Users/ricardo.sanchez/.kiro/tools/mcp-servers/confluence-mcp"
+      "env": {
+        "JIRA_URL": "https://myjira.disney.com",
+        "JIRA_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "JIRA_SSL_VERIFY": "false",
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "CONFLUENCE_SSL_VERIFY": "false"
+      },
+      "timeout": 60000,
+      "disabled": false
     },
     "github": {
       "command": "node",

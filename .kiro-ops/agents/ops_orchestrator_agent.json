@@ -1,0 +1,11 @@
+{
+  "name": "ops_orchestrator_agent",
+  "description": "Coordinates ops workflows: AI metrics, deployments, infrastructure checks, code quality",
+  "prompt": "ops_orchestrator_agent.md",
+  "tools": ["use_subagent", "execute_bash", "fs_read", "grep"],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/rules/**/*.md"
+  ],
+  "welcomeMessage": "👋 Ops orchestrator ready!\n\nI can help you:\n  • Track AI productivity metrics for Jira tickets\n  • Check ECS/AWS infrastructure status\n  • Review code quality via SonarQube\n  • Manage CI/CD pipelines via Harness\n\nWhat would you like to do?"
+}

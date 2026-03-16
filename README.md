@@ -235,6 +235,12 @@ QA Orchestrator automatically:
 - 📖 [QA Guidelines](.kiro-qa/context/qa_guidelines.md) - Testing best practices
 - 📖 [Test Templates](.kiro-qa/context/test_templates.md) - Test case templates
 - 📖 [Automation Patterns](.kiro-qa/context/automation_patterns.md) - Code patterns
+
+### For DevOps / Operations
+- 📖 [Ops Prompt Guide](docs/OPS_PROMPT_GUIDE.md) - 6+ ops workflow examples
+- 📖 [Ops Complete Workflows](docs/OPS_WORKFLOWS.md) - End-to-end ops processes
+- 📖 [Ops Quick Reference](docs/OPS_QUICK_REFERENCE.md) - Printable reference card
+- 📖 [Ops Guidelines](.kiro/context/ops_guidelines.md) - Ops best practices
 ---
 
 ## Adding New Profiles
@@ -257,6 +263,39 @@ The setup script auto-discovers all `.kiro-*` directories.
 
 ## Structure
 
+```
+steer-runtime/
+├── .kiro-dev/          # Development profile (18 agents)
+│   ├── agents/
+│   ├── prompts/
+│   ├── powers/
+│   ├── skills/
+│   └── steering/
+├── .kiro-ba/           # BA/PO profile (4 agents)
+│   ├── agents/
+│   ├── prompts/
+│   └── context/
+├── .kiro-qa/           # QA profile (6 agents)
+│   ├── agents/
+│   ├── prompts/
+│   └── context/
+├── .kiro-ops/          # Ops profile (5 agents)
+│   ├── agents/
+│   ├── prompts/
+│   └── context/
+├── .kiro/              # Shared (MCP servers, memory bank)
+│   ├── tools/
+│   │   └── mcp-servers/
+│   └── memory-bank/
+├── common/             # Shared resources
+│   ├── rules/
+│   ├── prompts/
+│   └── memory-bank-templates/
+├── Projects/           # Known project configs
+│   └── wdpr-payment-svc/
+├── docs/               # Documentation
+├── setup.sh            # Unified setup script
+└── README.md           # This file
 ```
 steer-runtime/
 ├── .kiro-dev/          # Development profile (18 agents)
@@ -327,25 +366,73 @@ ls ~/.kiro/tools/mcp-servers/*/.env
 
 ## Features
 
-✅ **22 specialized agents** - Dev (18) + BA/PO (4)  
+✅ **33 specialized agents** - Dev (18) + BA/PO (4) + QA (6) + Ops (5)  
 ✅ **Multi-profile support** - Install what you need  
 ✅ **Auto-discovery** - Add profiles by creating `.kiro-*` dirs  
 ✅ **Unified setup** - Single script for all profiles  
-✅ **MCP integration** - Jira, Confluence, GitHub, Mermaid  
+✅ **MCP integration** - Jira, Confluence, GitHub, Mermaid, Harness, SonarQube  
 ✅ **Comprehensive docs** - Guides for devs and BAs  
 ✅ **Extensible** - Easy to add new profiles  
+✅ **Common rules** - Shared coding standards across projects  
+✅ **Memory banks** - Per-project AI context and knowledge  
+✅ **Standalone prompts** - Reusable workflow templates  
+✅ **AI metrics** - Track AI productivity impact in Jira  
 
 ---
 
 ## Version
 
-**Version:** 3.0.0 (Unified)  
-**Profiles:** dev (18 agents), ba (4 agents)  
-**Total Agents:** 22  
-**Last Updated:** March 12, 2026  
+**Version:** 3.1.0 (Unified + Ops)  
+**Profiles:** dev (18 agents), ba (4 agents), qa (6 agents), ops (5 agents)  
+**Total Agents:** 33  
+**Last Updated:** March 16, 2026  
 
 ---
 
 ## License
 
 Internal Disney tool - not for external distribution.
+
+---
+
+## New in v3.1: Ops Profile & Common Resources
+
+### ops (5 agents)
+Operations agents for AI metrics, infrastructure checks, deployments, and code quality.
+
+**Key agents:**
+- `ops_orchestrator_agent` - Coordinates ops workflows
+- `ai_metrics_agent` - Tracks AI productivity metrics in Jira
+- `infra_check_agent` - AWS/ECS infrastructure status
+- `deployment_agent` - Harness CI/CD pipeline management
+- `code_quality_agent` - SonarQube code quality metrics
+
+### Common Rules
+Shared coding standards that can be installed to any project:
+```bash
+./setup.sh rules list                              # List available rules
+./setup.sh rules install --all                     # Install all rules
+./setup.sh rules install conventional_commit       # Install specific rule
+./setup.sh rules install --all --project ~/myapp   # Install to project
+```
+
+### Standalone Prompts
+Reusable workflow templates:
+```bash
+./setup.sh prompts list                            # List available prompts
+./setup.sh prompts install --all                   # Install all prompts
+```
+
+### Per-Project Memory Banks
+Initialize AI context for any project:
+```bash
+./setup.sh init-memory ~/my-project                # Generate from templates
+./setup.sh init-memory ~/my-project --from wdpr-payment-svc  # Copy from known project
+```
+
+### Token Configuration
+Configure MCP tokens interactively:
+```bash
+./setup.sh configure
+```
+

@@ -1,0 +1,32 @@
+{
+  "name": "ai_metrics_agent",
+  "description": "Tracks AI-assisted development metrics and updates Jira tickets",
+  "prompt": "ai_metrics_agent.md",
+  "tools": ["execute_bash", "fs_read"],
+  "mcpServers": {
+    "mcp-atlassian": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "JIRA_URL",
+        "-e", "JIRA_PERSONAL_TOKEN",
+        "-e", "JIRA_SSL_VERIFY",
+        "-e", "CONFLUENCE_URL",
+        "-e", "CONFLUENCE_PERSONAL_TOKEN",
+        "-e", "CONFLUENCE_SSL_VERIFY",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ],
+      "env": {
+        "JIRA_URL": "https://myjira.disney.com",
+        "JIRA_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "JIRA_SSL_VERIFY": "false",
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "CONFLUENCE_SSL_VERIFY": "false"
+      },
+      "timeout": 60000,
+      "disabled": false
+    }
+  },
+  "allowedTools": ["@mcp-atlassian/*"]
+}

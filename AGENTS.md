@@ -246,5 +246,95 @@ Install specific profiles:
 
 ---
 
-**Total Agents:** 22 (dev: 18, ba: 4)  
-**Last Updated:** March 12, 2026
+**Total Agents:** 33 (dev: 18, ba: 4, qa: 6, ops: 5)  
+**Last Updated:** March 16, 2026
+
+---
+
+## Profile: ops (5 agents)
+
+Operations agents for AI metrics, infrastructure, deployments, and code quality.
+
+### Ops Orchestrator (1)
+
+#### ops_orchestrator_agent
+**File:** `.kiro-ops/agents/ops_orchestrator_agent.json`  
+**Purpose:** Coordinates ops workflows and delegates to specialized agents  
+**Use for:** Complex ops tasks requiring multiple agents
+
+**Delegates to:**
+- ai_metrics_agent
+- infra_check_agent
+- deployment_agent
+- code_quality_agent
+
+---
+
+### Ops Specialists (4)
+
+#### ai_metrics_agent
+**File:** `.kiro-ops/agents/ai_metrics_agent.json`  
+**Purpose:** Tracks AI-assisted development metrics and updates Jira  
+**Use for:**
+- Generating AI productivity reports
+- Updating Jira AI custom fields (AI Assisted Effort, AI Usage Level, AI Tools Used)
+- Calculating efficiency gains
+
+**Example:**
+```bash
+kiro-cli chat --agent ai_metrics_agent
+> "Generate AI metrics report for DPAY-14337"
+```
+
+#### infra_check_agent
+**File:** `.kiro-ops/agents/infra_check_agent.json`  
+**Purpose:** Checks AWS infrastructure status  
+**Use for:**
+- Counting running ECS tasks
+- Checking cluster and service health
+- Infrastructure status reports
+
+**Example:**
+```bash
+kiro-cli chat --agent infra_check_agent
+> "How many tasks are running in cart-latest cluster?"
+```
+
+#### deployment_agent
+**File:** `.kiro-ops/agents/deployment_agent.json`  
+**Purpose:** Manages CI/CD pipelines via Harness  
+**Use for:**
+- Checking pipeline execution status
+- Listing recent deployments
+- Viewing deployment logs
+
+**Example:**
+```bash
+kiro-cli chat --agent deployment_agent
+> "Show recent deployments for payment-service"
+```
+
+#### code_quality_agent
+**File:** `.kiro-ops/agents/code_quality_agent.json`  
+**Purpose:** Retrieves code quality metrics from SonarQube  
+**Use for:**
+- Quality gate status
+- Code coverage reports
+- Bug/vulnerability/code smell counts
+
+**Example:**
+```bash
+kiro-cli chat --agent code_quality_agent
+> "Show quality gate status for wdpr-payment-svc"
+```
+
+---
+
+### Ops Quick Reference
+```bash
+kiro-cli chat --agent ops_orchestrator_agent  # Ops orchestrator
+kiro-cli chat --agent ai_metrics_agent        # AI metrics
+kiro-cli chat --agent infra_check_agent       # AWS/ECS checks
+kiro-cli chat --agent deployment_agent        # Harness CI/CD
+kiro-cli chat --agent code_quality_agent      # SonarQube metrics
+```
