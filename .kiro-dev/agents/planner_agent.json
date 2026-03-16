@@ -3,10 +3,32 @@
   "description": "Creates detailed implementation plans with tasks, dependencies, and test strategy",
   "prompt": "planner_agent.md",
   "tools": [
+    "@confluence/*",
+    "@jira/*",
     "fs_read"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/steering/**/*.md"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+    }
+  },
+  "allowedTools": [
+    "@confluence/*",
+    "@jira/*"
   ]
 }

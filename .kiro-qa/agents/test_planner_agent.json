@@ -3,8 +3,9 @@
   "description": "Creates test plans, test cases, and test scenarios from requirements",
   "prompt": "test_planner_agent.md",
   "tools": [
-    "@jira/*",
     "@confluence/*",
+    "@github/*",
+    "@jira/*",
     "fs_read",
     "fs_write",
     "grep"
@@ -13,21 +14,29 @@
     "jira": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/jira-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
     },
     "confluence": {
       "command": "node",
       "args": [
-        "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
       ],
-      "cwd": "/Users/ricardo.sanchez/Workspace/Disney/mcp-servers/confluence-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
     }
   },
   "allowedTools": [
     "@jira/*",
-    "@confluence/*"
+    "@confluence/*",
+    "@github/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

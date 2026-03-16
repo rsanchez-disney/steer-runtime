@@ -3,13 +3,35 @@
   "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
   "prompt": "code_review_agent.md",
   "tools": [
+    "@github/*",
+    "@jira/*",
     "code",
-    "grep",
+    "execute_bash",
     "fs_read",
-    "execute_bash"
+    "grep"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/steering/**/*.md"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
+    }
+  },
+  "allowedTools": [
+    "@github/*",
+    "@jira/*"
   ]
 }

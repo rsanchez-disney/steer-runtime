@@ -2,18 +2,32 @@
   "name": "ai_metrics_agent",
   "description": "Tracks AI-assisted development metrics and updates Jira tickets",
   "prompt": "ai_metrics_agent.md",
-  "tools": ["execute_bash", "fs_read"],
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "execute_bash",
+    "fs_read"
+  ],
   "mcpServers": {
     "mcp-atlassian": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "JIRA_URL",
-        "-e", "JIRA_PERSONAL_TOKEN",
-        "-e", "JIRA_SSL_VERIFY",
-        "-e", "CONFLUENCE_URL",
-        "-e", "CONFLUENCE_PERSONAL_TOKEN",
-        "-e", "CONFLUENCE_SSL_VERIFY",
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "JIRA_PERSONAL_TOKEN",
+        "-e",
+        "JIRA_SSL_VERIFY",
+        "-e",
+        "CONFLUENCE_URL",
+        "-e",
+        "CONFLUENCE_PERSONAL_TOKEN",
+        "-e",
+        "CONFLUENCE_SSL_VERIFY",
         "ghcr.io/sooperset/mcp-atlassian:latest"
       ],
       "env": {
@@ -26,7 +40,33 @@
       },
       "timeout": 60000,
       "disabled": false
+    },
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+    },
+    "github": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
     }
   },
-  "allowedTools": ["@mcp-atlassian/*"]
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "@mcp-atlassian/*"
+  ]
 }
