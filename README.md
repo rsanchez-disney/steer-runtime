@@ -91,6 +91,15 @@ Output:
 ./setup.sh mcp-install
 ```
 
+This will:
+1. Install npm dependencies for all MCP servers
+2. Display token generation URLs:
+   - **Jira:** https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
+   - **Confluence:** https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action
+   - **GitHub:** https://github.disney.com/settings/tokens
+3. Prompt you to paste each token (Enter to skip any)
+4. Save tokens to each MCP server's `.env` file
+
 ### 6. Use Agents
 
 **With Kiro CLI:**
@@ -352,14 +361,14 @@ ls ~/.kiro/agents/
 
 ### MCP servers not working
 ```bash
-# Check MCP servers installed
-ls ~/.kiro/tools/mcp-servers/
-
-# Reinstall dependencies
+# Reinstall dependencies and reconfigure tokens
 ./setup.sh mcp-install
 
 # Verify .env files exist
 ls ~/.kiro/tools/mcp-servers/*/.env
+
+# Reconfigure tokens only
+./setup.sh configure
 ```
 
 ---
