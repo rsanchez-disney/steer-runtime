@@ -3,12 +3,13 @@
   "description": "Fetches and analyzes Jira stories, Confluence pages, and GitHub repos.",
   "prompt": "story_analyzer_agent.md",
   "tools": [
-    "web_fetch",
-    "grep",
-    "fs_read",
-    "@jira/*",
     "@confluence/*",
-    "@github/*"
+    "@github/*",
+    "@jira/*",
+    "@mywiki/*",
+    "fs_read",
+    "grep",
+    "web_fetch"
   ],
   "mcpServers": {
     "jira": {
@@ -16,14 +17,21 @@
       "args": [
         "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp",
+      "env": {
+        "JIRA_PAT": "YOUR_TOKEN"
+      }
     },
     "confluence": {
       "command": "node",
       "args": [
         "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp",
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
     },
     "mcp-atlassian": {
       "command": "docker",
@@ -61,13 +69,30 @@
       "args": [
         "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp"
+      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp",
+      "env": {
+        "GITHUB_TOKEN_disney": "YOUR_TOKEN",
+        "GITHUB_HOST_disney": "github.disney.com",
+        "GITHUB_DEFAULT_REMOTE": "disney"
+      }
+    },
+    "mywiki": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/build/index.js"
+      ],
+      "cwd": "$HOME/.kiro/tools/mcp-servers/confluence-mcp",
+      "env": {
+        "CONFLUENCE_URL": "https://mywiki.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
     }
   },
   "allowedTools": [
-    "@jira/*",
     "@confluence/*",
-    "@github/*"
+    "@github/*",
+    "@jira/*",
+    "@mywiki/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

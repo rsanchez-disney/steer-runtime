@@ -75,7 +75,7 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 **File:** `.kiro-dev/agents/story_analyzer_agent.json`  
 **Purpose:** Jira story analysis and requirements extraction  
 **Use for:** Analyzing Jira stories, extracting requirements
-**MCP Servers:** jira (local), confluence (local), github (local), mcp-atlassian (Docker, disabled fallback)
+**MCP Servers:** jira, confluence, mywiki, github (local Node.js), mcp-atlassian (Docker, disabled fallback)
 
 #### architecture_agent
 **File:** `.kiro-dev/agents/architecture_agent.json`  
@@ -339,3 +339,27 @@ kiro-cli chat --agent infra_check_agent       # AWS/ECS checks
 kiro-cli chat --agent deployment_agent        # Harness CI/CD
 kiro-cli chat --agent code_quality_agent      # SonarQube metrics
 ```
+
+---
+
+## MCP Server Coverage
+
+All agents with Jira/Confluence/GitHub access use local Node.js MCP servers (`~/.kiro/tools/mcp-servers/`). Tokens are configured via `./setup.sh mcp-install`.
+
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub |
+|---------|-------|:----:|:----------:|:------:|:------:|
+| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ |
+| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ |
+| **dev** | code_review_agent | ✅ | | | ✅ |
+| **dev** | planner_agent | ✅ | ✅ | ✅ | |
+| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
+| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ |
+| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ |
+| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ |
+| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ |
+| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
+| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ |
+| **ops** | code_quality_agent | | | | | SonarQube |
+| **ops** | deployment_agent | | | | | Harness |

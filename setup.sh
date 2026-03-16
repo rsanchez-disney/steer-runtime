@@ -121,6 +121,33 @@ get_profile_agents() {
     find "$source_dir/agents" -name "*.json" -exec basename {} .json \;
 }
 
+inject_agent_tokens() {
+    local target_dir=$1
+    _do_inject() {
+        local mcp_name="$1" env_file="$2" env_key="$3" tdir="$4"
+        if [ -f "$env_file" ]; then
+            local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
+            if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
+                for agent_json in "$tdir/agents/"*.json; do
+                    if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
+                        python3 -c "
+import json
+with open('$agent_json') as f: d=json.load(f)
+m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
+if m: m['$env_key']='$token'
+with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
+" 2>/dev/null
+                    fi
+                done
+            fi
+        fi
+    }
+    _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
+    _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+}
+
 install_profile() {
     local profile=$1
     local target_dir=$2
@@ -153,6 +180,7 @@ install_profile() {
     done
     
     local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    inject_agent_tokens "$target_dir"
     echo "✓ Installed $profile ($agent_count agents)"
 }
 
@@ -460,23 +488,59 @@ case "${1:-help}" in
             echo ""
         fi
         
-        # Install npm dependencies (continue on failure)
-        failed_mcps=()
+        # Select which MCP servers to install
+        available_mcps=()
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
             if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                name=$(basename "$mcp")
+                available_mcps+=("$(basename "$mcp")")
+            fi
+        done
+        
+        echo "Available MCP servers:"
+        echo ""
+        for i in "${!available_mcps[@]}"; do
+            echo "  [$((i+1))] ${available_mcps[$i]}"
+        done
+        echo "  [A] All"
+        echo ""
+        read -p "Select MCP servers to install (e.g. 1,3 or A for all): " mcp_selection
+        
+        selected_mcps=()
+        if [[ "$mcp_selection" =~ ^[Aa]$ ]] || [ -z "$mcp_selection" ]; then
+            selected_mcps=("${available_mcps[@]}")
+        else
+            IFS=',' read -ra picks <<< "$mcp_selection"
+            for pick in "${picks[@]}"; do
+                pick=$(echo "$pick" | tr -d ' ')
+                if [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -le "${#available_mcps[@]}" ]; then
+                    selected_mcps+=("${available_mcps[$((pick-1))]}")
+                fi
+            done
+        fi
+        
+        if [ ${#selected_mcps[@]} -eq 0 ]; then
+            echo "⏭ No MCP servers selected — skipping install"
+        else
+            echo ""
+            echo "Installing: ${selected_mcps[*]}"
+            echo ""
+            
+            # Install npm dependencies (continue on failure)
+            failed_mcps=()
+            for name in "${selected_mcps[@]}"; do
+                mcp="$KIRO_ROOT/tools/mcp-servers/$name"
                 echo "Installing $name..."
                 if ! (cd "$mcp" && npm install 2>&1); then
                     echo "⚠️  $name failed — skipping"
                     failed_mcps+=("$name")
                 fi
+            done
+            if [ ${#failed_mcps[@]} -gt 0 ]; then
+                echo ""
+                echo "⚠️  Failed to install: ${failed_mcps[*]}"
+                echo "   These may need a different npm registry or manual install."
+                echo "   Continuing with remaining setup..."
             fi
-        done
-        if [ ${#failed_mcps[@]} -gt 0 ]; then
-            echo ""
-            echo "⚠️  Failed to install: ${failed_mcps[*]}"
-            echo "   These may need a different npm registry or manual install."
-            echo "   Continuing with remaining setup..."
         fi
         echo ""
         
@@ -531,6 +595,23 @@ CONFEOF
             fi
             echo ""
             
+            # MyWiki token
+            echo "━━━ MyWiki (mywiki.disney.com) ━━━"
+            read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
+            if [ -n "$mywiki_token" ]; then
+                # MyWiki uses the same confluence-mcp binary via agent env block
+                # Store token for reference and for the $HOME expansion step
+                mywiki_env="$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"
+                cat > "$mywiki_env" << MYWIKIEOF
+CONFLUENCE_URL=https://mywiki.disney.com
+CONFLUENCE_PAT=$mywiki_token
+MYWIKIEOF
+                echo "  ✓ Saved to confluence-mcp/.env.mywiki"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+            
             # GitHub token
             echo "━━━ GitHub ━━━"
             read -r -p "Paste your GitHub Personal Access Token (or Enter to skip): " github_token
@@ -555,6 +636,8 @@ GHEOF
                 echo "🔧 Resolved \$HOME in $(basename "$agent_json")"
             fi
         done
+        
+        inject_agent_tokens "$KIRO_ROOT"
         
         echo "✅ MCP servers ready"
         ;;

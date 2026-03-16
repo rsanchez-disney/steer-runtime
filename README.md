@@ -91,14 +91,19 @@ Output:
 ./setup.sh mcp-install
 ```
 
+**Prerequisite:** `~/.npmrc` with Disney Nexus registry auth. If missing, the script will show setup instructions (token from https://nexus3.disney.com/#user/usertoken).
+
 This will:
-1. Install npm dependencies for all MCP servers
-2. Display token generation URLs:
+1. Copy `~/.npmrc` to MCP servers (registry + auth)
+2. Let you select which MCP servers to install (e.g. `1,3` or `A` for all)
+3. Install npm dependencies (skips failures, continues with rest)
+4. Prompt for Personal Access Tokens:
    - **Jira:** https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
    - **Confluence:** https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action
+   - **MyWiki:** https://mywiki.disney.com (uses same Confluence PAT format)
    - **GitHub:** https://github.disney.com/settings/tokens
-3. Prompt you to paste each token (Enter to skip any)
-4. Save tokens to each MCP server's `.env` file
+5. Save tokens to `.env` files and inject into all installed agent configs
+6. Resolve `$HOME` paths in agent JSON files
 
 ### 6. Use Agents
 
