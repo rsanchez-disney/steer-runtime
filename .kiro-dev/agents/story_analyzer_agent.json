@@ -18,21 +18,26 @@
         "-i",
         "--rm",
         "-e",
-        "JIRA_URL=https://myjira.disney.com",
+        "JIRA_URL",
         "-e",
-        "CONFLUENCE_URL=https://confluence.disney.com",
+        "CONFLUENCE_URL",
         "-e",
-        "JIRA_SSL_VERIFY=false",
+        "JIRA_SSL_VERIFY",
         "-e",
-        "CONFLUENCE_SSL_VERIFY=false",
+        "CONFLUENCE_SSL_VERIFY",
         "-e",
-        "JIRA_PERSONAL_TOKEN=Njc3MzQ2MjA1MDQzOjI0peko0okp8hd1Gn7mUdJRn37k",
+        "JIRA_PERSONAL_TOKEN",
         "-e",
-        "CONFLUENCE_PERSONAL_TOKEN=Mjg2NTcwMTA1MjI5Otsr9OxkquCCCiK4gQtN8QonAK4W",
+        "CONFLUENCE_PERSONAL_TOKEN",
         "containerregistry.disney.com/jedaimcp/jedai/mcp-atlassian:v0.13.0"
       ],
       "env": {
-        "": ""
+        "JIRA_URL": "https://myjira.disney.com",
+        "JIRA_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "JIRA_SSL_VERIFY": "false",
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PERSONAL_TOKEN": "YOUR_TOKEN",
+        "CONFLUENCE_SSL_VERIFY": "false"
       },
       "timeout": 60000,
       "disabled": false
