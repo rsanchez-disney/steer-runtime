@@ -91,6 +91,15 @@ Output:
 ./setup.sh mcp-install
 ```
 
+This will:
+1. Install npm dependencies for all MCP servers
+2. Display token generation URLs:
+   - **Jira:** https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
+   - **Confluence:** https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action
+   - **GitHub:** https://github.disney.com/settings/tokens
+3. Prompt you to paste each token (Enter to skip any)
+4. Save tokens to each MCP server's `.env` file
+
 ### 6. Use Agents
 
 **With Kiro CLI:**
@@ -153,14 +162,33 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 
 **Documentation:** See `docs/QA_PROMPT_GUIDE.md` for QA workflows
 
+### ops (5 agents)
+Operations agents for AI metrics, infrastructure, deployments, and code quality.
+
+**Key agents:**
+- `ops_orchestrator_agent` - Coordinates ops workflows
+- `ai_metrics_agent` - Tracks AI productivity metrics in Jira
+- `infra_check_agent` - AWS/ECS infrastructure status checks
+- `deployment_agent` - Harness CI/CD pipeline management
+- `code_quality_agent` - SonarQube code quality metrics
+
+**Documentation:** See `docs/OPS_PROMPT_GUIDE.md` for ops workflows
+
 ## Commands
 
 ```bash
 ./setup.sh                      # Show help
 ./setup.sh list                 # List available profiles
 ./setup.sh install <profiles>   # Install one or more profiles
+./setup.sh sync                 # Update installed profiles
+./setup.sh remove <profiles>    # Remove specific profiles
 ./setup.sh check                # Verify installation
-./setup.sh mcp-install          # Setup MCP servers
+./setup.sh mcp-install          # Setup MCP servers + configure tokens
+./setup.sh rules list           # List available coding rules
+./setup.sh rules install --all  # Install rules to project
+./setup.sh prompts list         # List available prompts
+./setup.sh init-memory <dir>    # Initialize project memory bank
+./setup.sh configure            # Configure MCP tokens
 ```
 
 ---
@@ -210,6 +238,19 @@ QA Orchestrator automatically:
 3. Writes automated tests (UI + API)
 4. Executes tests and reports results
 5. Documents test coverage
+
+### Ops Workflow
+
+```bash
+kiro-cli chat --agent ops_orchestrator_agent
+> "Full status report for DPAY-14337"
+```
+
+Ops Orchestrator automatically:
+1. Fetches AI metrics from Jira
+2. Checks SonarQube quality gate
+3. Verifies deployment pipeline status
+4. Consolidates into a single report
 ---
 
 ## Documentation
@@ -352,14 +393,14 @@ ls ~/.kiro/agents/
 
 ### MCP servers not working
 ```bash
-# Check MCP servers installed
-ls ~/.kiro/tools/mcp-servers/
-
-# Reinstall dependencies
+# Reinstall dependencies and reconfigure tokens
 ./setup.sh mcp-install
 
 # Verify .env files exist
 ls ~/.kiro/tools/mcp-servers/*/.env
+
+# Reconfigure tokens only
+./setup.sh configure
 ```
 
 ---
@@ -392,47 +433,4 @@ ls ~/.kiro/tools/mcp-servers/*/.env
 ## License
 
 Internal Disney tool - not for external distribution.
-
----
-
-## New in v3.1: Ops Profile & Common Resources
-
-### ops (5 agents)
-Operations agents for AI metrics, infrastructure checks, deployments, and code quality.
-
-**Key agents:**
-- `ops_orchestrator_agent` - Coordinates ops workflows
-- `ai_metrics_agent` - Tracks AI productivity metrics in Jira
-- `infra_check_agent` - AWS/ECS infrastructure status
-- `deployment_agent` - Harness CI/CD pipeline management
-- `code_quality_agent` - SonarQube code quality metrics
-
-### Common Rules
-Shared coding standards that can be installed to any project:
-```bash
-./setup.sh rules list                              # List available rules
-./setup.sh rules install --all                     # Install all rules
-./setup.sh rules install conventional_commit       # Install specific rule
-./setup.sh rules install --all --project ~/myapp   # Install to project
-```
-
-### Standalone Prompts
-Reusable workflow templates:
-```bash
-./setup.sh prompts list                            # List available prompts
-./setup.sh prompts install --all                   # Install all prompts
-```
-
-### Per-Project Memory Banks
-Initialize AI context for any project:
-```bash
-./setup.sh init-memory ~/my-project                # Generate from templates
-./setup.sh init-memory ~/my-project --from wdpr-payment-svc  # Copy from known project
-```
-
-### Token Configuration
-Configure MCP tokens interactively:
-```bash
-./setup.sh configure
-```
 
