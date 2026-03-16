@@ -32,8 +32,7 @@ From URL `https://myjira.disney.com/browse/DPAY-14337`, extract: `DPAY-14337`
 **Use the Jira MCP tool to fetch the issue** (you have @jira/* tools available):
 
 Look for tools like:
-- `@jira/get-issue` or `jira_get_issue`
-- `@jira/fetch-issue` or `jira_fetch_issue`
+- `@mcp-atlassian/jira_get_issue`
 - Any tool with "jira" and "issue" or "get" in the name
 
 Call it with the issue key:

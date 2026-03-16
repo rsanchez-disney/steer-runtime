@@ -145,6 +145,38 @@
 
 ---
 
+---
+
+## Cart Service
+
+**Purpose**: Shopping cart functionality for Disney e-commerce platform
+
+**Repositories**:
+- **Backend**: `cart-service-java8` (../cart-service-java8)
+  - Tech: Java 8, Spring 3.2, EclipseLink JPA
+  - Entry: `src/main/java/com/disney/wdpro/service/cart/`
+  - Database: MariaDB/MySQL
+  - Caching: Redis (Lettuce)
+  - Messaging: RabbitMQ
+  - Resilience: Hystrix
+
+**Jira Prefix**: TBD
+
+---
+
+## Payment Service
+
+**Purpose**: Central payment gateway for Walt Disney Parks and Resorts Online
+
+**Repositories**:
+- **Backend**: `wdpr-payment-svc` (../wdpr-payment-svc)
+  - Tech: Java 8, Spring 3.2, Hibernate JPA
+  - Entry: `src/main/java/com/disney/wdpro/service/payment/`
+  - Database: Oracle, MariaDB
+  - Integrations: First Data, DVIC, Accertify
+
+**Jira Prefix**: TBD
+
 ## Usage
 
 When analyzing a Jira story:
@@ -158,3 +190,5 @@ Example:
 - `GCP-5678` → GCP → UI + WebAPI + Backend (+ Legacy UI if needed)
 - `TIMON-7590` → CAP → Backend (wdpr-cap-rev-rec-svc)
 - `SPR-1234` → Smart Payment Routing → Router + AI Adapter + Docs
+- `CART-xxxx` → Cart Service → Backend (cart-service-java8)
+- `PAY-xxxx` → Payment Service → Backend (wdpr-payment-svc)
