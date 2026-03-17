@@ -1,0 +1,10 @@
+{
+  "name": "mywiki-mcp",
+  "version": "0.1.0",
+  "description": "MyWiki Confluence instance — shares confluence-mcp build",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Uses confluence-mcp build'",
+    "prepare": "echo 'Uses confluence-mcp build'"
+  }
+}
