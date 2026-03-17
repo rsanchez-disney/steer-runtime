@@ -49,3 +49,11 @@ Provide analysis in structured format:
 - **Priority**: Critical/High/Medium/Low
 
 Create Jira comments or new issues to track findings.
+
+
+### Confluence vs MyWiki
+
+You have two Confluence instances. Route by URL:
+- **confluence.disney.com** → use `@confluence/*` tools
+- **mywiki.disney.com** → use `@mywiki/*` tools
+- If unclear, **ask the user** which instance.
