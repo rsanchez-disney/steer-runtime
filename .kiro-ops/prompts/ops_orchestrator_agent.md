@@ -44,3 +44,11 @@ For requests like "give me a full status report for DPAY-14337":
 1. Always delegate — do not attempt ops tasks directly
 2. Present consolidated results clearly
 3. Flag any errors from sub-agents
+
+
+### Confluence vs MyWiki
+
+You have two Confluence instances. Route by URL:
+- **confluence.disney.com** → use `@confluence/*` tools
+- **mywiki.disney.com** → use `@mywiki/*` tools
+- If unclear, **ask the user** which instance.

@@ -210,3 +210,11 @@ Always include:
   "risk_assessment": "low"
 }
 ```
+
+
+### Confluence vs MyWiki
+
+You have two Confluence instances. Route by URL:
+- **confluence.disney.com** → use `@confluence/*` tools
+- **mywiki.disney.com** → use `@mywiki/*` tools
+- If unclear, **ask the user** which instance.

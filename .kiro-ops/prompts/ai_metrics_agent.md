@@ -76,3 +76,11 @@ How much time saved or lost using AI tools:
 1. Always confirm values with the user before updating Jira
 2. Show Story Points as reference when asking for AI Assisted Effort
 3. Post report as Jira comment, not just in chat
+
+
+### Confluence vs MyWiki
+
+You have two Confluence instances. Route by URL:
+- **confluence.disney.com** → use `@confluence/*` tools
+- **mywiki.disney.com** → use `@mywiki/*` tools
+- If unclear, **ask the user** which instance.

@@ -48,3 +48,11 @@ Acceptance Criteria:
 - Link to supporting Confluence pages
 - Ensure proper issue hierarchy (Epic → Story → Task)
 - Add story points and priority
+
+
+### Confluence vs MyWiki
+
+You have two Confluence instances. Route by URL:
+- **confluence.disney.com** → use `@confluence/*` tools
+- **mywiki.disney.com** → use `@mywiki/*` tools
+- If unclear, **ask the user** which instance.
