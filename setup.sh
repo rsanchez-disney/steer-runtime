@@ -238,6 +238,24 @@ clean_all() {
     echo "✅ Clean complete"
 }
 
+write_profiles_manifest() {
+    local target_dir=$1
+    mkdir -p "$target_dir/settings"
+    python3 -c "
+import json, os, glob
+profiles = []
+for d in sorted(glob.glob('$STEER_ROOT/.kiro-*')):
+    if not os.path.isdir(d): continue
+    pid = os.path.basename(d).replace('.kiro-','')
+    agents_dir = os.path.join(d, 'agents')
+    agents = sorted([f[:-5] for f in os.listdir(agents_dir) if f.endswith('.json')]) if os.path.isdir(agents_dir) else []
+    installed = any(os.path.exists(os.path.join('$target_dir','agents',a+'.json')) for a in agents)
+    profiles.append({'id':pid,'agents':agents,'agent_count':len(agents),'installed':installed})
+data={'steer_root':'$STEER_ROOT','profiles':profiles}
+with open('$target_dir/settings/profiles.json','w') as f: json.dump(data,f,indent=2)
+" 2>/dev/null && echo "✓ Updated profiles manifest"
+}
+
 install_shared() {
     local target_dir=$1
     
@@ -317,6 +335,8 @@ case "${1:-help}" in
             install_profile "$profile" "$target_root"
         done
         
+        write_profiles_manifest "$target_root"
+        
         total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
         echo "✅ Installation complete ($total agents total)"
@@ -355,6 +375,8 @@ case "${1:-help}" in
         for profile in "${installed_profiles[@]}"; do
             install_profile "$profile" "$target_root"
         done
+        
+        write_profiles_manifest "$target_root"
         
         total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
