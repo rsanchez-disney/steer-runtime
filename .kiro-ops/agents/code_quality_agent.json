@@ -2,14 +2,23 @@
   "name": "code_quality_agent",
   "description": "Retrieves and analyzes code quality metrics from SonarQube",
   "prompt": "code_quality_agent.md",
-  "tools": ["execute_bash", "fs_read"],
+  "tools": [
+    "execute_bash",
+    "fs_read"
+  ],
   "mcpServers": {
     "sonarqube": {
       "command": "docker",
       "args": [
-        "run", "--init", "--pull=always", "-i", "--rm",
-        "-e", "SONARQUBE_TOKEN",
-        "-e", "SONARQUBE_URL",
+        "run",
+        "--init",
+        "--pull=always",
+        "-i",
+        "--rm",
+        "-e",
+        "SONARQUBE_TOKEN",
+        "-e",
+        "SONARQUBE_URL",
         "mcp/sonarqube"
       ],
       "env": {
@@ -20,5 +29,8 @@
       "disabled": false
     }
   },
-  "allowedTools": ["@sonarqube/*"]
+  "allowedTools": [
+    "@sonarqube/*"
+  ],
+  "includeMcpJson": true
 }

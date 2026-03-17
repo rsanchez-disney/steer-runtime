@@ -62,5 +62,6 @@
     "@github/*",
     "@jira/*",
     "@mywiki/*"
-  ]
+  ],
+  "includeMcpJson": true
 }

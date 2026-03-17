@@ -93,5 +93,6 @@
     "@jira/*",
     "@mcp-atlassian/*",
     "@mywiki/*"
-  ]
+  ],
+  "includeMcpJson": true
 }
