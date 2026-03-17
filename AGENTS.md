@@ -4,7 +4,7 @@ Complete reference for all agents across profiles.
 
 ---
 
-## Profile: dev (18 agents)
+## Profile: dev (19 agents)
 
 Development agents for backend, webapi, UI, mobile, testing, security, and code review.
 
@@ -132,6 +132,23 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 
 ---
 
+
+### Technical Writing (1)
+
+#### technical_writer_agent
+**File:** `.kiro-dev/agents/technical_writer_agent.json`  
+**Purpose:** Creates and maintains technical documentation  
+**Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials
+**MCP Servers:** confluence, mywiki, github
+
+**Example:**
+```bash
+kiro-cli chat --agent technical_writer_agent
+> "Review and improve the README for wdpr-payment-svc"
+```
+
+---
+
 ## Profile: ba (4 agents)
 
 Business Analyst and Product Owner agents for requirements, scope, and feature definition.
@@ -206,6 +223,101 @@ kiro-cli chat --agent requirements_analyst_agent
 
 ---
 
+
+## Profile: qa (6 agents)
+
+Quality Assurance and Test Automation agents for comprehensive testing.
+
+### QA Orchestrator (1)
+
+#### qa_orchestrator_agent
+**File:** `.kiro-qa/agents/qa_orchestrator_agent.json`  
+**Purpose:** Orchestrates QA tasks and coordinates specialized testing agents  
+**Use for:** Complex QA workflows requiring multiple agents
+**MCP Servers:** jira, confluence, mywiki, github
+
+**Delegates to:**
+- test_planner_agent
+- test_automation_agent
+- defect_analyst_agent
+- api_tester_agent
+- performance_tester_agent
+
+---
+
+### QA Specialists (5)
+
+#### test_planner_agent
+**File:** `.kiro-qa/agents/test_planner_agent.json`  
+**Purpose:** Creates test plans, test cases, and test scenarios from requirements  
+**Use for:** Test planning, test case design, coverage analysis
+**MCP Servers:** jira, confluence, mywiki, github
+
+**Example:**
+```bash
+kiro-cli chat --agent test_planner_agent
+> "Create test plan for DPAY-14561 payment validation feature"
+```
+
+#### test_automation_agent
+**File:** `.kiro-qa/agents/test_automation_agent.json`  
+**Purpose:** Creates and maintains automated test scripts  
+**Use for:** UI tests, API tests, integration tests, test frameworks
+
+**Example:**
+```bash
+kiro-cli chat --agent test_automation_agent
+> "Write Cypress tests for the payment form validation"
+```
+
+#### defect_analyst_agent
+**File:** `.kiro-qa/agents/defect_analyst_agent.json`  
+**Purpose:** Analyzes defects, performs root cause analysis  
+**Use for:** Bug triage, root cause analysis, detailed bug reports
+**MCP Servers:** jira, confluence, mywiki, github
+
+**Example:**
+```bash
+kiro-cli chat --agent defect_analyst_agent
+> "Analyze DPAY-15000 and identify root cause"
+```
+
+#### api_tester_agent
+**File:** `.kiro-qa/agents/api_tester_agent.json`  
+**Purpose:** Tests REST APIs and validates contracts  
+**Use for:** API test suites, contract testing, endpoint validation
+
+**Example:**
+```bash
+kiro-cli chat --agent api_tester_agent
+> "Create API tests for the /payments endpoint"
+```
+
+#### performance_tester_agent
+**File:** `.kiro-qa/agents/performance_tester_agent.json`  
+**Purpose:** Creates and executes performance and load tests  
+**Use for:** Load testing, stress testing, performance benchmarks
+
+**Example:**
+```bash
+kiro-cli chat --agent performance_tester_agent
+> "Create k6 load test for the checkout flow"
+```
+
+---
+
+### QA Quick Reference
+```bash
+kiro-cli chat --agent qa_orchestrator_agent   # QA orchestrator
+kiro-cli chat --agent test_planner_agent      # Test planning
+kiro-cli chat --agent test_automation_agent   # Test automation
+kiro-cli chat --agent defect_analyst_agent    # Defect analysis
+kiro-cli chat --agent api_tester_agent        # API testing
+kiro-cli chat --agent performance_tester_agent # Performance testing
+```
+
+---
+
 ## Quick Reference
 
 ### Development Agents
@@ -224,6 +336,15 @@ kiro-cli chat --agent ba_orchestrator_agent      # BA orchestrator
 kiro-cli chat --agent scope_definer_agent        # Define scope
 kiro-cli chat --agent feature_writer_agent       # Write stories
 kiro-cli chat --agent requirements_analyst_agent # Analyze requirements
+```
+
+
+### QA Agents
+```bash
+kiro-cli chat --agent qa_orchestrator_agent      # QA orchestrator
+kiro-cli chat --agent test_planner_agent         # Test planning
+kiro-cli chat --agent test_automation_agent      # Test automation
+kiro-cli chat --agent defect_analyst_agent       # Defect analysis
 ```
 
 ---
@@ -247,8 +368,8 @@ Install specific profiles:
 
 ---
 
-**Total Agents:** 33 (dev: 18, ba: 4, qa: 6, ops: 5)  
-**Last Updated:** March 16, 2026
+**Total Agents:** 34 (dev: 19, ba: 4, qa: 6, ops: 5)  
+**Last Updated:** March 17, 2026
 
 ---
 
@@ -352,6 +473,7 @@ All agents with Jira/Confluence/GitHub access use local Node.js MCP servers (`~/
 | **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ |
 | **dev** | code_review_agent | ✅ | | | ✅ |
 | **dev** | planner_agent | ✅ | ✅ | ✅ | |
+| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ |
