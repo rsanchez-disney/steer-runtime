@@ -103,6 +103,21 @@ function Inject-AgentTokens($targetDir) {
     }
 }
 
+
+function Write-ProfilesManifest($targetDir) {
+    $settingsDir = Join-Path $targetDir "settings"
+    New-Item -ItemType Directory -Force -Path $settingsDir | Out-Null
+    $profiles = @()
+    foreach ($dir in Get-ProfileDirs) {
+        $pid = Get-ProfileName $dir
+        $agents = @(Get-ChildItem "$($dir.FullName)\agents\*.json" -ErrorAction SilentlyContinue | ForEach-Object { $_.BaseName })
+        $installed = $agents | Where-Object { Test-Path "$targetDir\agents\$_.json" }
+        $profiles += @{ id=$pid; agents=$agents; agent_count=$agents.Count; installed=[bool]$installed }
+    }
+    @{ steer_root=$SteerRoot; profiles=$profiles } | ConvertTo-Json -Depth 5 |
+        Set-Content "$settingsDir\profiles.json" -Encoding UTF8
+}
+
 function Install-Profile($profile, $targetDir) {
     $sourceDir = Join-Path $SteerRoot ".kiro-$profile"
     if (-not (Test-Path $sourceDir)) {
@@ -204,6 +219,7 @@ switch ($Command) {
         Install-Shared $targetRoot
         foreach ($p in $profiles) { Install-Profile $p $targetRoot }
         $total = (Get-ChildItem "$targetRoot\agents\*.json" -ErrorAction SilentlyContinue).Count
+        Write-ProfilesManifest $targetRoot
         Write-Host "`nInstallation complete ($total agents total)" -ForegroundColor Green
     }
 
@@ -218,6 +234,7 @@ switch ($Command) {
         Install-Shared $targetRoot
         foreach ($p in $installed) { Install-Profile $p $targetRoot }
         $total = (Get-ChildItem "$targetRoot\agents\*.json" -ErrorAction SilentlyContinue).Count
+        Write-ProfilesManifest $targetRoot
         Write-Host "`nSync complete ($total agents total)" -ForegroundColor Green
     }
 
