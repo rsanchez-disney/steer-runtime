@@ -33,6 +33,16 @@ You should now be able to use Kiro CLI and Kiro UI.
 
 ---
 
+
+## 5. Install GitHub CLI (optional, recommended)
+
+```bash
+brew install gh                          # macOS
+gh auth login --hostname github.disney.com
+```
+
+Select HTTPS, authenticate via browser. This enables PR creation and repo management from agents.
+
 ## Next Steps
 
 Return to the [README](../README.md) to install agent profiles.

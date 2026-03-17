@@ -11,6 +11,12 @@ Unified multi-profile Kiro agent system for Disney Payments — 34 specialized a
 
 ---
 
+## Prerequisites
+
+Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
+
+---
+
 ## Quick Start
 
 ```bash
