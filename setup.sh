@@ -476,94 +476,28 @@ case "${1:-help}" in
         echo "📦 Installing MCP dependencies..."
         echo ""
         
-        # Check npm exists
-        if ! command -v npm &> /dev/null; then
-            echo "❌ npm not found. Please install Node.js first."
+        # Check node exists
+        if ! command -v node &> /dev/null; then
+            echo "❌ node not found. Please install Node.js first."
             exit 1
         fi
         
-        # Check ~/.npmrc exists (required for Disney Nexus registry auth)
-        if [ ! -f "$HOME/.npmrc" ]; then
-            echo "⚠️  ~/.npmrc not found. MCP servers require Disney Nexus registry access."
-            echo ""
-            echo "  1. Generate a token at: https://nexus3.disney.com/#user/usertoken"
-            echo "  2. Create ~/.npmrc with:"
-            echo ""
-            echo "     @wdpr:registry=https://nexus3.disney.com/repository/wdpr-ra-npm-hosted"
-            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-proxy"
-            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"'
-            echo ""
-            echo "     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-group"
-            echo '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"' 
-            echo ""
-            read -p "Continue anyway? (y/N): " skip_npmrc
-            if [[ ! "$skip_npmrc" =~ ^[Yy]$ ]]; then
-                exit 1
-            fi
-        else
-            echo "🔧 Copying ~/.npmrc to MCP servers"
-            for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
-                if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
-                    cp "$HOME/.npmrc" "$mcp/.npmrc"
-                fi
-            done
-            echo ""
-        fi
-        
-        # Select which MCP servers to install
+        # Verify pre-built bundles exist
+        echo "🔍 Verifying MCP server bundles..."
         available_mcps=()
         for mcp in "$KIRO_ROOT/tools/mcp-servers"/*; do
-            if [ -d "$mcp" ] && [ -f "$mcp/package.json" ]; then
+            if [ -d "$mcp" ] && [ -f "$mcp/dist/index.cjs" ]; then
                 available_mcps+=("$(basename "$mcp")")
+                echo "  ✓ $(basename "$mcp")"
             fi
         done
         
-        echo "Available MCP servers:"
-        echo ""
-        for i in "${!available_mcps[@]}"; do
-            echo "  [$((i+1))] ${available_mcps[$i]}"
-        done
-        echo "  [A] All"
-        echo ""
-        read -p "Select MCP servers to install (e.g. 1,3 or A for all): " mcp_selection
-        
-        selected_mcps=()
-        if [[ "$mcp_selection" =~ ^[Aa]$ ]] || [ -z "$mcp_selection" ]; then
-            selected_mcps=("${available_mcps[@]}")
-        else
-            IFS=',' read -ra picks <<< "$mcp_selection"
-            for pick in "${picks[@]}"; do
-                pick=$(echo "$pick" | tr -d ' ')
-                if [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -le "${#available_mcps[@]}" ]; then
-                    selected_mcps+=("${available_mcps[$((pick-1))]}")
-                fi
-            done
+        if [ ${#available_mcps[@]} -eq 0 ]; then
+            echo "❌ No pre-built MCP bundles found in dist/"
+            exit 1
         fi
-        
-        if [ ${#selected_mcps[@]} -eq 0 ]; then
-            echo "⏭ No MCP servers selected — skipping install"
-        else
-            echo ""
-            echo "Installing: ${selected_mcps[*]}"
-            echo ""
-            
-            # Install npm dependencies (continue on failure)
-            failed_mcps=()
-            for name in "${selected_mcps[@]}"; do
-                mcp="$KIRO_ROOT/tools/mcp-servers/$name"
-                echo "Installing $name..."
-                if ! (cd "$mcp" && npm install 2>&1); then
-                    echo "⚠️  $name failed — skipping"
-                    failed_mcps+=("$name")
-                fi
-            done
-            if [ ${#failed_mcps[@]} -gt 0 ]; then
-                echo ""
-                echo "⚠️  Failed to install: ${failed_mcps[*]}"
-                echo "   These may need a different npm registry or manual install."
-                echo "   Continuing with remaining setup..."
-            fi
-        fi
+        echo ""
+        echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
         echo ""
         
         # Configure tokens

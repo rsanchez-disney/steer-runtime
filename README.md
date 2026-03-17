@@ -66,7 +66,7 @@ Output:
 📋 Available profiles:
   • ba (4 agents)
   • qa (6 agents)
-  • dev (18 agents)
+  • dev (19 agents)
 ```
 
 ### 4. Install Profiles
@@ -130,7 +130,7 @@ kiro-cli chat --agent test_automation_agent
 
 ## Available Profiles
 
-### dev (18 agents)
+### dev (19 agents)
 Development agents for backend, webapi, UI, mobile, testing, security, and code review.
 
 **Key agents:**
@@ -508,7 +508,7 @@ Get-ChildItem $env:USERPROFILE\.kiro\tools\mcp-servers\*\.env
 
 ## Features
 
-✅ **33 specialized agents** - Dev (18) + BA/PO (4) + QA (6) + Ops (5)  
+✅ **34 specialized agents** - Dev (19) + BA/PO (4) + QA (6) + Ops (5)  
 ✅ **Multi-profile support** - Install what you need  
 ✅ **Auto-discovery** - Add profiles by creating `.kiro-*` dirs  
 ✅ **Unified setup** - Single script for all profiles  
@@ -525,8 +525,8 @@ Get-ChildItem $env:USERPROFILE\.kiro\tools\mcp-servers\*\.env
 ## Version
 
 **Version:** 3.1.0 (Unified + Ops)  
-**Profiles:** dev (18 agents), ba (4 agents), qa (6 agents), ops (5 agents)  
-**Total Agents:** 33  
+**Profiles:** dev (19 agents), ba (4 agents), qa (6 agents), ops (5 agents)  
+**Total Agents:** 34  
 **Last Updated:** March 16, 2026  
 
 ---

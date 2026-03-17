@@ -286,82 +286,26 @@ switch ($Command) {
     }
 
     "mcp-install" {
-        Write-Host "Installing MCP dependencies...`n"
+        Write-Host "Setting up MCP servers...`n"
 
-        # Check npm
-        if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
-            Write-Host "X npm not found. Please install Node.js first." -ForegroundColor Red; exit 1
+        # Check node
+        if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+            Write-Host "X node not found. Please install Node.js first." -ForegroundColor Red; exit 1
         }
 
-        # Check .npmrc
-        $npmrc = Join-Path $env:USERPROFILE ".npmrc"
-        if (Test-Path $npmrc) {
-            Write-Host "Copying .npmrc to MCP servers"
-            Get-ChildItem "$KiroRoot\tools\mcp-servers" -Directory -ErrorAction SilentlyContinue | ForEach-Object {
-                if (Test-Path "$($_.FullName)\package.json") {
-                    Copy-Item $npmrc "$($_.FullName)\.npmrc" -Force
-                }
-            }
-            Write-Host ""
-        } else {
-            Write-Host "WARNING: ~/.npmrc not found. MCP servers require Disney Nexus registry access." -ForegroundColor Yellow
-            Write-Host ""
-            Write-Host "  1. Generate a token at: https://nexus3.disney.com/#user/usertoken"
-            Write-Host "  2. Create %USERPROFILE%\.npmrc with:"
-            Write-Host ""
-            Write-Host '     @wdpr:registry=https://nexus3.disney.com/repository/wdpr-ra-npm-hosted'
-            Write-Host '     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-proxy'
-            Write-Host '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"'
-            Write-Host ''
-            Write-Host '     registry=https://nexus3.disney.com/repository/wdpr-ra-npm-group'
-            Write-Host '     //nexus3.disney.com/repository/:_auth="YOUR_TOKEN"'
-            Write-Host ""
-            $skip = Read-Host "Continue anyway? (y/N)"
-            if ($skip -notmatch '^[Yy]$') { exit 1 }
-        }
-
-        # Select MCP servers
+        # Verify pre-built bundles
+        Write-Host "Verifying MCP server bundles..."
         $mcpDirs = @(Get-ChildItem "$KiroRoot\tools\mcp-servers" -Directory -ErrorAction SilentlyContinue |
-            Where-Object { Test-Path "$($_.FullName)\package.json" })
+            Where-Object { Test-Path "$($_.FullName)\dist\index.cjs" })
 
-        Write-Host "Available MCP servers:`n"
-        for ($i = 0; $i -lt $mcpDirs.Count; $i++) {
-            Write-Host "  [$($i+1)] $($mcpDirs[$i].Name)"
-        }
-        Write-Host "  [A] All`n"
-        $selection = Read-Host "Select MCP servers to install (e.g. 1,3 or A for all)"
-
-        $selected = @()
-        if ($selection -match '^[Aa]$' -or [string]::IsNullOrEmpty($selection)) {
-            $selected = $mcpDirs
-        } else {
-            foreach ($pick in ($selection -split ',')) {
-                $idx = [int]$pick.Trim() - 1
-                if ($idx -ge 0 -and $idx -lt $mcpDirs.Count) { $selected += $mcpDirs[$idx] }
-            }
+        foreach ($mcp in $mcpDirs) {
+            Write-Host "  OK $($mcp.Name)" -ForegroundColor Green
         }
 
-        if ($selected.Count -eq 0) {
-            Write-Host "No MCP servers selected - skipping install"
-        } else {
-            Write-Host "`nInstalling: $($selected.Name -join ', ')`n"
-            $failed = @()
-            foreach ($mcp in $selected) {
-                Write-Host "Installing $($mcp.Name)..."
-                try {
-                    Push-Location $mcp.FullName
-                    & npm install 2>&1 | Out-Host
-                    Pop-Location
-                } catch {
-                    Pop-Location
-                    Write-Host "  $($mcp.Name) failed - skipping" -ForegroundColor Yellow
-                    $failed += $mcp.Name
-                }
-            }
-            if ($failed.Count -gt 0) {
-                Write-Host "`nFailed to install: $($failed -join ', ')" -ForegroundColor Yellow
-            }
+        if ($mcpDirs.Count -eq 0) {
+            Write-Host "X No pre-built MCP bundles found in dist/" -ForegroundColor Red; exit 1
         }
+        Write-Host "`n$($mcpDirs.Count) MCP servers ready (pre-built, no npm install needed)" -ForegroundColor Green
 
         # Configure tokens
         Write-Host ""

@@ -18,9 +18,8 @@
     "jira": {
       "command": "node",
       "args": [
-        "$HOME/.kiro/tools/mcp-servers/jira-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/jira-mcp",
       "env": {
         "JIRA_PAT": "YOUR_TOKEN"
       }
@@ -28,9 +27,8 @@
     "github": {
       "command": "node",
       "args": [
-        "$HOME/.kiro/tools/mcp-servers/github-mcp/build/index.js"
+        "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs"
       ],
-      "cwd": "$HOME/.kiro/tools/mcp-servers/github-mcp",
       "env": {
         "GITHUB_TOKEN_disney": "YOUR_TOKEN",
         "GITHUB_HOST_disney": "github.disney.com",
