@@ -1,0 +1,38 @@
+# Getting Started with Kiro
+
+First-time setup guide for Disney Payments team members.
+
+---
+
+## 1. Request Access
+
+- Visit: https://developer.disney.com/ai-tools
+- Request access to **AmazonQ (Kiro)**
+- Wait for approval (typically 1-2 business days)
+
+## 2. Download Kiro
+
+- Visit: https://kiro.dev/downloads/
+- Download for your operating system
+
+## 3. Sign in with Disney SSO
+
+1. Click "Sign in with your organization identity"
+2. Select region: **us-east-1**
+3. Input Start URL: `https://twdc-qdeveloper.awsapps.com/start`
+4. Sign in using your **@disney.com** email address
+5. Click "Allow" to grant Kiro IDE access
+
+## 4. Verify Installation
+
+```bash
+kiro-cli --version
+```
+
+You should now be able to use Kiro CLI and Kiro UI.
+
+---
+
+## Next Steps
+
+Return to the [README](../README.md) to install agent profiles.
