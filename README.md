@@ -1,183 +1,55 @@
 # steer-runtime
 
-**Unified Multi-Profile Agent System**
+Unified multi-profile Kiro agent system for Disney Payments — 34 specialized agents across 4 profiles.
 
-Specialized Kiro agents for development, BA/PO work, and more. Easily extensible with new profiles.
+```bash
+./setup.sh install dev ba qa ops    # Install all profiles
+./setup.sh mcp-install              # Configure MCP servers + tokens
+```
+
+> 🆕 **First time with Kiro?** See [Getting Started](docs/GETTING_STARTED.md) · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
 
 ---
 
-
-
 ## Prerequisites
 
-### First Time Kiro Setup
-
-If you haven't installed Kiro yet:
-
-1. **Request Access**
-   - Visit: https://developer.disney.com/ai-tools
-   - Request access to **AmazonQ (Kiro)**
-   - Wait for approval (typically 1-2 business days)
-
-2. **Download Kiro**
-   - Visit: https://kiro.dev/downloads/
-   - Download for your operating system
-
-3. **Sign in with Disney SSO**
-   - Click "Sign in with your organization identity"
-   - Select region: **us-east-1**
-   - Input Start URL: `https://twdc-qdeveloper.awsapps.com/start`
-   - Sign in using your **@disney.com** email address
-   - You will be prompted to allow Kiro IDE access
-   - Click "Allow" to grant permissions
-
-4. **Verify Installation**
-   ```bash
-   kiro-cli --version
-   ```
-
-You should now be able to use Kiro CLI and Kiro UI!
+Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
 
 ---
 
 ## Quick Start
 
-### 1. Clone Repository
-
 ```bash
 git clone <repo-url> ~/steer-runtime
 cd ~/steer-runtime
+
+./setup.sh list                 # See available profiles
+./setup.sh install dev          # Install dev profile (or: dev ba qa ops)
+./setup.sh mcp-install          # Setup MCP servers + tokens
 ```
 
-### 2. View Help
-
+Then use agents:
 ```bash
-./setup.sh
+kiro-cli chat --agent orchestrator              # Dev orchestrator
+kiro-cli chat --agent ba_orchestrator_agent      # BA orchestrator
+kiro-cli chat --agent qa_orchestrator_agent      # QA orchestrator
+kiro-cli chat --agent ops_orchestrator_agent     # Ops orchestrator
 ```
 
-### 3. List Available Profiles
-
-```bash
-./setup.sh list
-```
-
-Output:
-```
-📋 Available profiles:
-  • ba (4 agents)
-  • qa (6 agents)
-  • dev (19 agents)
-```
-
-### 4. Install Profiles
-
-**For Kiro CLI (global):**
-```bash
-./setup.sh install dev          # Install dev profile
-./setup.sh install ba           # Install BA profile
-./setup.sh install dev ba qa    # Install all three profiles
-```
-
-**For Kiro UI (project-specific):**
-```bash
-./setup.sh install dev --project ~/my-project
-./setup.sh install ba --project ~/my-project
-./setup.sh install dev ba --project ~/my-project
-```
-
-### 5. Setup MCP Servers
-
-```bash
-./setup.sh mcp-install
-```
-
-**Prerequisite:** `~/.npmrc` with Disney Nexus registry auth. If missing, the script will show setup instructions (token from https://nexus3.disney.com/#user/usertoken).
-
-This will:
-1. Copy `~/.npmrc` to MCP servers (registry + auth)
-2. Let you select which MCP servers to install (e.g. `1,3` or `A` for all)
-3. Install npm dependencies (skips failures, continues with rest)
-4. Prompt for Personal Access Tokens:
-   - **Jira:** https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
-   - **Confluence:** https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action
-   - **MyWiki:** https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action
-   - **GitHub:** https://github.disney.com/settings/tokens
-5. Save tokens to `.env` files and inject into all installed agent configs
-6. Resolve `$HOME` paths in agent JSON files
-
-### 6. Use Agents
-
-**With Kiro CLI:**
-```bash
-# Development
-kiro-cli chat --agent orchestrator
-kiro-cli chat --agent backend
-
-# BA/PO
-kiro-cli chat --agent scope_definer_agent
-kiro-cli chat --agent feature_writer_agent
-
-# QA
-kiro-cli chat --agent test_planner_agent
-kiro-cli chat --agent test_automation_agent
-```
-
-**With Kiro UI:**
-1. Open Kiro UI
-2. Select your project directory
-3. Agents will be available in the UI
 ---
 
-## Available Profiles
+## Profiles
 
-### dev (19 agents)
-Development agents for backend, webapi, UI, mobile, testing, security, and code review.
+| Profile | Agents | Focus | Docs |
+|---------|:------:|-------|------|
+| **dev** | 19 | Backend, WebAPI, UI, mobile, security, code review | [Prompt Guide](docs/PROMPT_GUIDE.md) |
+| **ba** | 4 | Requirements, scope, user stories, acceptance criteria | [BA Guide](docs/BA_PROMPT_GUIDE.md) |
+| **qa** | 6 | Test planning, automation, defect analysis, API/perf testing | [QA Guide](docs/QA_PROMPT_GUIDE.md) |
+| **ops** | 5 | AI metrics, infrastructure, deployments, code quality | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) |
 
-**Key agents:**
-- `orchestrator` - Main development orchestrator
-- `backend` - Java backend development
-- `webapi` - Node.js API development
-- `ui` - Angular frontend development
-- `flutter`, `android_native`, `ios_native` - Mobile development
-- `code_review_agent`, `security_scanner_agent`, `test_runner_agent` - Quality
+Full agent reference: [AGENTS.md](AGENTS.md)
 
-**Documentation:** See `docs/PROMPT_GUIDE.md` for dev workflows
-
-### ba (4 agents)
-Business Analyst and Product Owner agents for requirements, scope, and feature definition.
-
-**Key agents:**
-- `ba_orchestrator_agent` - Coordinates BA/PO tasks
-- `scope_definer_agent` - Defines project scope and boundaries
-- `feature_writer_agent` - Creates user stories and acceptance criteria
-- `requirements_analyst_agent` - Analyzes and validates requirements
-
-**Documentation:** See `docs/BA_PROMPT_GUIDE.md` for BA/PO workflows
-
-### qa (6 agents)
-Quality Assurance and Test Automation agents for comprehensive testing.
-
-**Key agents:**
-- `qa_orchestrator_agent` - Coordinates QA workflows
-- `test_planner_agent` - Creates test plans and test cases
-- `test_automation_agent` - Writes automated tests (UI, API, integration)
-- `defect_analyst_agent` - Analyzes bugs and root causes
-- `api_tester_agent` - Tests REST APIs and validates contracts
-- `performance_tester_agent` - Load and performance testing
-
-**Documentation:** See `docs/QA_PROMPT_GUIDE.md` for QA workflows
-
-### ops (5 agents)
-Operations agents for AI metrics, infrastructure, deployments, and code quality.
-
-**Key agents:**
-- `ops_orchestrator_agent` - Coordinates ops workflows
-- `ai_metrics_agent` - Tracks AI productivity metrics in Jira
-- `infra_check_agent` - AWS/ECS infrastructure status checks
-- `deployment_agent` - Harness CI/CD pipeline management
-- `code_quality_agent` - SonarQube code quality metrics
-
-**Documentation:** See `docs/OPS_PROMPT_GUIDE.md` for ops workflows
+---
 
 ## Commands
 
@@ -185,353 +57,90 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 ./setup.sh                      # Show help
 ./setup.sh list                 # List available profiles
 ./setup.sh install <profiles>   # Install one or more profiles
+./setup.sh install dev --project ~/my-project   # Project-specific (Kiro UI)
 ./setup.sh sync                 # Update installed profiles
 ./setup.sh remove <profiles>    # Remove specific profiles
 ./setup.sh check                # Verify installation
 ./setup.sh mcp-install          # Setup MCP servers + configure tokens
+./setup.sh configure            # Reconfigure MCP tokens only
 ./setup.sh rules list           # List available coding rules
 ./setup.sh rules install --all  # Install rules to project
 ./setup.sh prompts list         # List available prompts
 ./setup.sh init-memory <dir>    # Initialize project memory bank
-./setup.sh configure            # Configure MCP tokens
 ```
 
 ---
 
-## Usage Examples
-## Usage Examples
+## MCP Servers
 
-### Development Workflow
-
-```bash
-kiro-cli chat --agent orchestrator
-> "Implement Jira story DPAY-14561 for payment validation"
-```
-
-Orchestrator automatically:
-1. Fetches story from Jira
-2. Analyzes requirements
-3. Creates implementation plan
-4. Coordinates backend, webapi, UI agents
-5. Runs tests and quality checks
-6. Creates pull request
-
-### BA/PO Workflow
+MCP servers are pre-built and bundled — no `npm install` required. Just configure tokens:
 
 ```bash
-kiro-cli chat --agent ba_orchestrator_agent
-> "Analyze epic DPAY-500 and create complete story breakdown"
+./setup.sh mcp-install          # Verify bundles + configure tokens
+./setup.sh configure            # Reconfigure tokens only
 ```
 
-BA Orchestrator automatically:
-1. Fetches epic from Jira
-2. Defines scope and boundaries
-3. Identifies requirements
-4. Creates user stories with acceptance criteria
-5. Documents in Confluence
+| Server | Purpose | Token URL |
+|--------|---------|-----------|
+| jira-mcp | Jira issue management | [Generate token](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
+| confluence-mcp | Confluence wiki | [Generate token](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
+| mywiki-mcp | MyWiki instance | [Generate token](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
+| github-mcp | GitHub Enterprise | [Generate token](https://github.disney.com/settings/tokens) |
+| mermaid-diagram-mcp | Diagram generation | No token needed |
 
-### QA Workflow
+---
 
-```bash
-kiro-cli chat --agent qa_orchestrator_agent
-> "Create complete test suite for feature DPAY-500"
+## Project Structure
+
+```
+steer-runtime/
+├── .kiro-dev/              # Dev profile (19 agents)
+├── .kiro-ba/               # BA profile (4 agents)
+├── .kiro-qa/               # QA profile (6 agents)
+├── .kiro-ops/              # Ops profile (5 agents)
+├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles
+├── common/                 # Shared rules, prompts, memory templates
+├── docs/                   # All documentation
+├── setup.sh                # macOS/Linux setup
+└── setup.ps1               # Windows setup
 ```
 
-QA Orchestrator automatically:
-1. Creates test plan from requirements
-2. Generates test cases
-3. Writes automated tests (UI + API)
-4. Executes tests and reports results
-5. Documents test coverage
-
-### Ops Workflow
-
-```bash
-kiro-cli chat --agent ops_orchestrator_agent
-> "Full status report for DPAY-14337"
-```
-
-Ops Orchestrator automatically:
-1. Fetches AI metrics from Jira
-2. Checks SonarQube quality gate
-3. Verifies deployment pipeline status
-4. Consolidates into a single report
 ---
 
 ## Documentation
 
-### For Developers
-- 📖 [Development Prompts & Workflows](docs/PROMPT_GUIDE.md)
-- 📖 [Mobile Development Setup](docs/MOBILE_AGENTS_SETUP.md)
-- 📖 [System Architecture](docs/DESIGN.md)
-- 📖 [MCP Server Configuration](docs/MCP_SETUP.md)
+| Audience | Guides |
+|----------|--------|
+| **Developers** | [Prompt Guide](docs/PROMPT_GUIDE.md) · [Mobile Setup](docs/MOBILE_AGENTS_SETUP.md) · [Architecture](docs/DESIGN.md) · [MCP Config](docs/MCP_SETUP.md) |
+| **BA / PO** | [BA Guide](docs/BA_PROMPT_GUIDE.md) · [Workflows](docs/BA_WORKFLOWS.md) · [Quick Ref](docs/BA_QUICK_REFERENCE.md) |
+| **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
+| **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
+| **All** | [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
 
-### For Business Analysts / Product Owners
-- 📖 [BA/PO Prompt Guide](docs/BA_PROMPT_GUIDE.md) - 12+ workflow examples
-- 📖 [BA/PO Complete Workflows](docs/BA_WORKFLOWS.md) - End-to-end processes
-- 📖 [BA/PO Quick Reference](docs/BA_QUICK_REFERENCE.md) - Printable reference card
-- 📖 [BA Guidelines](.kiro-ba/context/ba_guidelines.md) - Best practices
-- 📖 [Story Templates](.kiro-ba/context/story_templates.md) - Jira templates
-
-### For QA Engineers / Test Automation
-- 📖 [QA Prompt Guide](docs/QA_PROMPT_GUIDE.md) - 12+ testing workflow examples
-- 📖 [QA Complete Workflows](docs/QA_WORKFLOWS.md) - End-to-end testing processes
-- 📖 [QA Quick Reference](docs/QA_QUICK_REFERENCE.md) - Printable reference card
-- 📖 [QA Profile Overview](docs/QA_PROFILE_OVERVIEW.md) - Complete guide
-- 📖 [QA Guidelines](.kiro-qa/context/qa_guidelines.md) - Testing best practices
-- 📖 [Test Templates](.kiro-qa/context/test_templates.md) - Test case templates
-- 📖 [Automation Patterns](.kiro-qa/context/automation_patterns.md) - Code patterns
-
-### For DevOps / Operations
-- 📖 [Ops Prompt Guide](docs/OPS_PROMPT_GUIDE.md) - 6+ ops workflow examples
-- 📖 [Ops Complete Workflows](docs/OPS_WORKFLOWS.md) - End-to-end ops processes
-- 📖 [Ops Quick Reference](docs/OPS_QUICK_REFERENCE.md) - Printable reference card
-- 📖 [Ops Guidelines](.kiro/context/ops_guidelines.md) - Ops best practices
 ---
 
 ## Adding New Profiles
 
-1. Create `.kiro-<profile>/` directory
-2. Add `agents/` and `prompts/` subdirectories
-3. Add agent configurations
-4. Run `./setup.sh install <profile>`
-
-Example:
-```bash
-mkdir -p .kiro-qa/agents .kiro-qa/prompts
-# Add agent configs...
-./setup.sh install qa
-```
+1. Create `.kiro-<name>/agents/` and `.kiro-<name>/prompts/`
+2. Add agent JSON configs and prompt markdown files
+3. Run `./setup.sh install <name>`
 
 The setup script auto-discovers all `.kiro-*` directories.
 
 ---
 
-## Structure
-
-```
-steer-runtime/
-├── .kiro-dev/          # Development profile (18 agents)
-│   ├── agents/
-│   ├── prompts/
-│   ├── powers/
-│   ├── skills/
-│   └── steering/
-├── .kiro-ba/           # BA/PO profile (4 agents)
-│   ├── agents/
-│   ├── prompts/
-│   └── context/
-├── .kiro-qa/           # QA profile (6 agents)
-│   ├── agents/
-│   ├── prompts/
-│   └── context/
-├── .kiro-ops/          # Ops profile (5 agents)
-│   ├── agents/
-│   ├── prompts/
-│   └── context/
-├── .kiro/              # Shared (MCP servers, memory bank)
-│   ├── tools/
-│   │   └── mcp-servers/
-│   │       ├── jira-mcp/
-│   │       ├── confluence-mcp/
-│   │       ├── mywiki-mcp/
-│   │       ├── github-mcp/
-│   │       └── mermaid-diagram-mcp/
-│   └── memory-bank/
-├── common/             # Shared resources
-│   ├── rules/
-│   ├── prompts/
-│   └── memory-bank-templates/
-├── Projects/           # Known project configs
-│   └── wdpr-payment-svc/
-├── docs/               # Documentation
-├── setup.sh            # Unified setup script
-└── README.md           # This file
-```
-steer-runtime/
-├── .kiro-dev/          # Development profile (18 agents)
-│   ├── agents/
-│   ├── prompts/
-│   ├── powers/
-│   ├── skills/
-│   └── steering/
-├── .kiro-ba/           # BA/PO profile (4 agents)
-│   ├── agents/
-│   ├── prompts/
-│   └── context/
-├── .kiro/              # Shared (MCP servers)
-│   └── tools/
-│       └── mcp-servers/
-├── docs/               # Documentation
-│   ├── PROMPT_GUIDE.md
-│   ├── BA_PROMPT_GUIDE.md
-│   ├── BA_WORKFLOWS.md
-│   └── ...
-├── setup.sh            # Unified setup script
-└── README.md           # This file
-```
-
----
-
-## Troubleshooting
-
-### Show help
-```bash
-./setup.sh
-./setup.sh help
-./setup.sh --help
-```
-
-### Check installation
-```bash
-./setup.sh check
-```
-
-### List available profiles
-```bash
-./setup.sh list
-```
-
-### Agents not found
-```bash
-# Verify installation
-ls ~/.kiro/agents/
-
-# Reinstall
-./setup.sh install dev ba
-```
-
-### MCP servers not working
-```bash
-# Reinstall dependencies and reconfigure tokens
-./setup.sh mcp-install
-
-# Verify .env files exist
-ls ~/.kiro/tools/mcp-servers/*/.env
-
-# Reconfigure tokens only
-./setup.sh configure
-```
-
----
-
-## Windows Setup
-
-Windows users use `setup.ps1` (PowerShell) instead of `setup.sh`. All commands are identical.
-
-### Prerequisites
-
-- PowerShell 5.1+ (included in Windows 10/11) or PowerShell 7+
-- Node.js and npm
-- Git
-- Kiro CLI (`kiro-cli`)
-
-If script execution is blocked, run once:
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-### Quick Start (Windows)
-
-```powershell
-# Clone
-git clone <repo-url> C:\steer-runtime
-cd C:\steer-runtime
-
-# View help
-.\setup.ps1
-
-# List profiles
-.\setup.ps1 list
-
-# Install profiles
-.\setup.ps1 install dev
-.\setup.ps1 install dev ba qa
-
-# Install to project (Kiro UI)
-.\setup.ps1 install dev --project C:\my-project
-
-# Setup MCP servers
-.\setup.ps1 mcp-install
-```
-
-### Commands (Windows)
-
-```powershell
-.\setup.ps1                          # Show help
-.\setup.ps1 list                     # List available profiles
-.\setup.ps1 install <profiles>       # Install one or more profiles
-.\setup.ps1 sync                     # Update installed profiles
-.\setup.ps1 remove <profiles>        # Remove specific profiles
-.\setup.ps1 check                    # Verify installation
-.\setup.ps1 mcp-install              # Setup MCP servers + configure tokens
-.\setup.ps1 rules list               # List available coding rules
-.\setup.ps1 rules install --all      # Install rules to project
-.\setup.ps1 prompts list             # List available prompts
-.\setup.ps1 init-memory C:\myapp     # Initialize project memory bank
-.\setup.ps1 configure                # Configure MCP tokens
-```
-
-### Key Differences from macOS/Linux
-
-| | macOS/Linux | Windows |
-|---|---|---|
-| Script | `./setup.sh` | `.\setup.ps1` |
-| Home dir | `~/.kiro` | `%USERPROFILE%\.kiro` |
-| Path separator | `/` | `\` |
-| npm config | `~/.npmrc` | `%USERPROFILE%\.npmrc` |
-| File copy | `rsync` | `robocopy` |
-
-### Troubleshooting (Windows)
-
-```powershell
-# Check installation
-.\setup.ps1 check
-
-# Verify agents installed
-Get-ChildItem $env:USERPROFILE\.kiro\agents\*.json
-
-# Reinstall
-.\setup.ps1 install dev ba
-
-# MCP servers not working
-.\setup.ps1 mcp-install
-
-# Verify .env files
-Get-ChildItem $env:USERPROFILE\.kiro\tools\mcp-servers\*\.env
-
-# Reconfigure tokens
-.\setup.ps1 configure
-```
-
----
-
 ## Features
 
-✅ **34 specialized agents** - Dev (19) + BA/PO (4) + QA (6) + Ops (5)  
-✅ **Multi-profile support** - Install what you need  
-✅ **Auto-discovery** - Add profiles by creating `.kiro-*` dirs  
-✅ **Unified setup** - Single script for all profiles  
-✅ **MCP integration** - Jira, Confluence, GitHub, Mermaid, Harness, SonarQube  
-✅ **Comprehensive docs** - Guides for devs and BAs  
-✅ **Extensible** - Easy to add new profiles  
-✅ **Common rules** - Shared coding standards across projects  
-✅ **Memory banks** - Per-project AI context and knowledge  
-✅ **Standalone prompts** - Reusable workflow templates  
-✅ **AI metrics** - Track AI productivity impact in Jira  
+✅ 34 specialized agents across 4 profiles  
+✅ Pre-built MCP bundles — no npm install needed  
+✅ Auto-discovery of `.kiro-*` profile directories  
+✅ Cross-platform — macOS/Linux (`setup.sh`) + Windows (`setup.ps1`)  
+✅ MCP integration — Jira, Confluence, MyWiki, GitHub, Mermaid  
+✅ Memory banks — per-project AI context  
+✅ Common rules and standalone prompts  
 
 ---
 
-## Version
+**Version:** 3.1.0 · **Agents:** 34 (dev 19, ba 4, qa 6, ops 5) · **Updated:** March 17, 2026
 
-**Version:** 3.1.0 (Unified + Ops)  
-**Profiles:** dev (19 agents), ba (4 agents), qa (6 agents), ops (5 agents)  
-**Total Agents:** 34  
-**Last Updated:** March 16, 2026  
-
----
-
-## License
-
-Internal Disney tool - not for external distribution.
-
+Internal Disney tool — not for external distribution.
