@@ -415,6 +415,97 @@ ls ~/.kiro/tools/mcp-servers/*/.env
 
 ---
 
+## Windows Setup
+
+Windows users use `setup.ps1` (PowerShell) instead of `setup.sh`. All commands are identical.
+
+### Prerequisites
+
+- PowerShell 5.1+ (included in Windows 10/11) or PowerShell 7+
+- Node.js and npm
+- Git
+- Kiro CLI (`kiro-cli`)
+
+If script execution is blocked, run once:
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+### Quick Start (Windows)
+
+```powershell
+# Clone
+git clone <repo-url> C:\steer-runtime
+cd C:\steer-runtime
+
+# View help
+.\setup.ps1
+
+# List profiles
+.\setup.ps1 list
+
+# Install profiles
+.\setup.ps1 install dev
+.\setup.ps1 install dev ba qa
+
+# Install to project (Kiro UI)
+.\setup.ps1 install dev --project C:\my-project
+
+# Setup MCP servers
+.\setup.ps1 mcp-install
+```
+
+### Commands (Windows)
+
+```powershell
+.\setup.ps1                          # Show help
+.\setup.ps1 list                     # List available profiles
+.\setup.ps1 install <profiles>       # Install one or more profiles
+.\setup.ps1 sync                     # Update installed profiles
+.\setup.ps1 remove <profiles>        # Remove specific profiles
+.\setup.ps1 check                    # Verify installation
+.\setup.ps1 mcp-install              # Setup MCP servers + configure tokens
+.\setup.ps1 rules list               # List available coding rules
+.\setup.ps1 rules install --all      # Install rules to project
+.\setup.ps1 prompts list             # List available prompts
+.\setup.ps1 init-memory C:\myapp     # Initialize project memory bank
+.\setup.ps1 configure                # Configure MCP tokens
+```
+
+### Key Differences from macOS/Linux
+
+| | macOS/Linux | Windows |
+|---|---|---|
+| Script | `./setup.sh` | `.\setup.ps1` |
+| Home dir | `~/.kiro` | `%USERPROFILE%\.kiro` |
+| Path separator | `/` | `\` |
+| npm config | `~/.npmrc` | `%USERPROFILE%\.npmrc` |
+| File copy | `rsync` | `robocopy` |
+
+### Troubleshooting (Windows)
+
+```powershell
+# Check installation
+.\setup.ps1 check
+
+# Verify agents installed
+Get-ChildItem $env:USERPROFILE\.kiro\agents\*.json
+
+# Reinstall
+.\setup.ps1 install dev ba
+
+# MCP servers not working
+.\setup.ps1 mcp-install
+
+# Verify .env files
+Get-ChildItem $env:USERPROFILE\.kiro\tools\mcp-servers\*\.env
+
+# Reconfigure tokens
+.\setup.ps1 configure
+```
+
+---
+
 ## Features
 
 ✅ **33 specialized agents** - Dev (18) + BA/PO (4) + QA (6) + Ops (5)  
