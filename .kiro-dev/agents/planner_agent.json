@@ -50,5 +50,6 @@
     "@confluence/*",
     "@jira/*",
     "@mywiki/*"
-  ]
+  ],
+  "includeMcpJson": true
 }

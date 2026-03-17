@@ -66,5 +66,6 @@
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"
-  ]
+  ],
+  "includeMcpJson": true
 }

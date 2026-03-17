@@ -2,17 +2,27 @@
   "name": "deployment_agent",
   "description": "Manages CI/CD pipelines and deployment status via Harness",
   "prompt": "deployment_agent.md",
-  "tools": ["execute_bash", "fs_read"],
+  "tools": [
+    "execute_bash",
+    "fs_read"
+  ],
   "mcpServers": {
     "harness": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
-        "-e", "HARNESS_API_KEY",
-        "-e", "HARNESS_DEFAULT_ORG_ID",
-        "-e", "HARNESS_DEFAULT_PROJECT_ID",
-        "-e", "HARNESS_BASE_URL",
-        "harness/mcp-server", "stdio"
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "HARNESS_API_KEY",
+        "-e",
+        "HARNESS_DEFAULT_ORG_ID",
+        "-e",
+        "HARNESS_DEFAULT_PROJECT_ID",
+        "-e",
+        "HARNESS_BASE_URL",
+        "harness/mcp-server",
+        "stdio"
       ],
       "env": {
         "HARNESS_API_KEY": "YOUR_TOKEN",
@@ -24,5 +34,8 @@
       "disabled": false
     }
   },
-  "allowedTools": ["@harness/*"]
+  "allowedTools": [
+    "@harness/*"
+  ],
+  "includeMcpJson": true
 }

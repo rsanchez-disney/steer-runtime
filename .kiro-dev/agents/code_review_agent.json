@@ -41,5 +41,6 @@
   "allowedTools": [
     "@github/*",
     "@jira/*"
-  ]
+  ],
+  "includeMcpJson": true
 }

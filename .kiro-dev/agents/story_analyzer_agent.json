@@ -97,5 +97,6 @@
   "resources": [
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/steering/**/*.md"
-  ]
+  ],
+  "includeMcpJson": true
 }

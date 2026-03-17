@@ -69,5 +69,6 @@
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
     "file://.kiro/context/test_templates.md"
-  ]
+  ],
+  "includeMcpJson": true
 }
