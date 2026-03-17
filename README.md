@@ -332,6 +332,11 @@ steer-runtime/
 ├── .kiro/              # Shared (MCP servers, memory bank)
 │   ├── tools/
 │   │   └── mcp-servers/
+│   │       ├── jira-mcp/
+│   │       ├── confluence-mcp/
+│   │       ├── mywiki-mcp/
+│   │       ├── github-mcp/
+│   │       └── mermaid-diagram-mcp/
 │   └── memory-bank/
 ├── common/             # Shared resources
 │   ├── rules/
