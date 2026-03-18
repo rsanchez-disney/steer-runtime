@@ -149,6 +149,17 @@ The setup script auto-discovers all `.kiro-*` directories.
 
 ## Resources
 
+### 🪁 Kite — Desktop GUI for Kiro CLI
+
+[Kite](https://github.disney.com/SANCR225/Kite) is a native desktop companion app (Tauri + React) that wraps kiro-cli with a visual interface — streaming chat, agent/profile switching, prompt scoring, session management, and plugins for steering files, GitHub, and MCP servers.
+
+```bash
+# Requires steer-runtime profiles installed first
+cd Kite/app && npm install && npm run tauri dev
+```
+
+### Recordings & Sessions
+
 | Date | Description | Link |
 |------|-------------|------|
 | March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
