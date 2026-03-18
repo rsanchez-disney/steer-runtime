@@ -318,6 +318,104 @@ kiro-cli chat --agent performance_tester_agent # Performance testing
 
 ---
 
+
+## Profile: pm (6 agents)
+
+Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tracking, and delivery reporting.
+
+### PM Orchestrator (1)
+
+#### pm_orchestrator_agent
+**File:** `.kiro-pm/agents/pm_orchestrator_agent.json`  
+**Purpose:** Coordinates PM/Scrum Master workflows and delegates to specialists  
+**Use for:** Complex PM tasks requiring multiple agents
+**MCP Servers:** jira, confluence, mywiki, github
+
+**Delegates to:**
+- sprint_manager_agent
+- standup_agent
+- retro_agent
+- risk_tracker_agent
+- delivery_reporter_agent
+
+---
+
+### PM Specialists (5)
+
+#### sprint_manager_agent
+**File:** `.kiro-pm/agents/sprint_manager_agent.json`  
+**Purpose:** Manages sprint planning, capacity, backlog grooming, and sprint health  
+**Use for:** Sprint planning, capacity analysis, backlog review
+**MCP Servers:** jira, confluence, mywiki
+
+**Example:**
+```bash
+kiro-cli chat --agent sprint_manager_agent
+> "Analyze current sprint health for DPAY board"
+```
+
+#### standup_agent
+**File:** `.kiro-pm/agents/standup_agent.json`  
+**Purpose:** Generates daily standup summaries from Jira activity  
+**Use for:** Standup prep, stale item detection, blocker alerts
+**MCP Servers:** jira
+
+**Example:**
+```bash
+kiro-cli chat --agent standup_agent
+> "Generate standup summary for DPAY team"
+```
+
+#### retro_agent
+**File:** `.kiro-pm/agents/retro_agent.json`  
+**Purpose:** Facilitates retrospectives with data-driven insights and action item tracking  
+**Use for:** Sprint retros, trend analysis, action item follow-up
+**MCP Servers:** jira, confluence, mywiki
+
+**Example:**
+```bash
+kiro-cli chat --agent retro_agent
+> "Prepare retro for sprint 23 — pull metrics and previous action items"
+```
+
+#### risk_tracker_agent
+**File:** `.kiro-pm/agents/risk_tracker_agent.json`  
+**Purpose:** Identifies blockers, dependencies, and risks across sprints and epics  
+**Use for:** Risk assessment, blocker tracking, dependency mapping
+**MCP Servers:** jira, confluence, mywiki
+
+**Example:**
+```bash
+kiro-cli chat --agent risk_tracker_agent
+> "What are the current blockers and risks for epic DPAY-500?"
+```
+
+#### delivery_reporter_agent
+**File:** `.kiro-pm/agents/delivery_reporter_agent.json`  
+**Purpose:** Generates velocity reports, burndown analysis, and release readiness assessments  
+**Use for:** Sprint reports, velocity trends, release readiness
+**MCP Servers:** jira, confluence, mywiki
+
+**Example:**
+```bash
+kiro-cli chat --agent delivery_reporter_agent
+> "Generate release readiness report for v2.5"
+```
+
+---
+
+### PM Quick Reference
+```bash
+kiro-cli chat --agent pm_orchestrator_agent    # PM orchestrator
+kiro-cli chat --agent sprint_manager_agent     # Sprint planning & health
+kiro-cli chat --agent standup_agent            # Daily standup summaries
+kiro-cli chat --agent retro_agent              # Retrospective facilitation
+kiro-cli chat --agent risk_tracker_agent       # Blockers & dependencies
+kiro-cli chat --agent delivery_reporter_agent  # Velocity & release reports
+```
+
+---
+
 ## Quick Reference
 
 ### Development Agents
@@ -347,6 +445,17 @@ kiro-cli chat --agent test_automation_agent      # Test automation
 kiro-cli chat --agent defect_analyst_agent       # Defect analysis
 ```
 
+
+### PM/Scrum Master Agents
+```bash
+kiro-cli chat --agent pm_orchestrator_agent    # PM orchestrator
+kiro-cli chat --agent sprint_manager_agent     # Sprint management
+kiro-cli chat --agent standup_agent            # Standup summaries
+kiro-cli chat --agent retro_agent              # Retrospectives
+kiro-cli chat --agent risk_tracker_agent       # Risk tracking
+kiro-cli chat --agent delivery_reporter_agent  # Delivery reports
+```
+
 ---
 
 ## Installation
@@ -368,7 +477,7 @@ Install specific profiles:
 
 ---
 
-**Total Agents:** 34 (dev: 19, ba: 4, qa: 6, ops: 5)  
+**Total Agents:** 40 (dev: 19, ba: 4, qa: 6, ops: 5, pm: 6)  
 **Last Updated:** March 17, 2026
 
 ---
@@ -484,4 +593,10 @@ All agents with Jira/Confluence/GitHub access use local Node.js MCP servers (`~/
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ |
 | **ops** | code_quality_agent | | | | | SonarQube |
+| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ |
+| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | |
+| **pm** | standup_agent | ✅ | | | |
+| **pm** | retro_agent | ✅ | ✅ | ✅ | |
+| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | |
+| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | |
 | **ops** | deployment_agent | | | | | Harness |

@@ -1,0 +1,51 @@
+{
+  "name": "delivery_reporter_agent",
+  "description": "Generates sprint velocity reports, burndown analysis, and release readiness assessments",
+  "prompt": "delivery_reporter_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "JIRA_PAT": "YOUR_TOKEN"
+      }
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
+    },
+    "mywiki": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://mywiki.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
+    }
+  },
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "includeMcpJson": true
+}
