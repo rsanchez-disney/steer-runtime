@@ -147,4 +147,12 @@ The setup script auto-discovers all `.kiro-*` directories.
 
 **Version:** 3.2.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 17, 2026
 
+## Resources
+
+| Date | Description | Link |
+|------|-------------|------|
+| March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
+
+---
+
 Internal Disney tool — not for external distribution.
