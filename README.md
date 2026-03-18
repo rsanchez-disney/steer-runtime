@@ -1,9 +1,9 @@
 # steer-runtime
 
-Unified multi-profile Kiro agent system for Disney Payments — 34 specialized agents across 4 profiles.
+Unified multi-profile Kiro agent system for Disney Payments — 40 specialized agents across 5 profiles.
 
 ```bash
-./setup.sh install dev ba qa ops    # Install all profiles
+./setup.sh install dev ba qa ops pm # Install all profiles
 ./setup.sh mcp-install              # Configure MCP servers + tokens
 ```
 
@@ -34,6 +34,7 @@ kiro-cli chat --agent orchestrator              # Dev orchestrator
 kiro-cli chat --agent ba_orchestrator_agent      # BA orchestrator
 kiro-cli chat --agent qa_orchestrator_agent      # QA orchestrator
 kiro-cli chat --agent ops_orchestrator_agent     # Ops orchestrator
+kiro-cli chat --agent pm_orchestrator_agent      # PM/Scrum Master orchestrator
 ```
 
 ---
@@ -46,6 +47,7 @@ kiro-cli chat --agent ops_orchestrator_agent     # Ops orchestrator
 | **ba** | 4 | Requirements, scope, user stories, acceptance criteria | [BA Guide](docs/BA_PROMPT_GUIDE.md) |
 | **qa** | 6 | Test planning, automation, defect analysis, API/perf testing | [QA Guide](docs/QA_PROMPT_GUIDE.md) |
 | **ops** | 5 | AI metrics, infrastructure, deployments, code quality | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) |
+| **pm** | 6 | Sprint management, standups, retros, risk tracking, delivery reports | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
 
 Full agent reference: [AGENTS.md](AGENTS.md)
 
@@ -98,6 +100,7 @@ steer-runtime/
 ├── .kiro-ba/               # BA profile (4 agents)
 ├── .kiro-qa/               # QA profile (6 agents)
 ├── .kiro-ops/              # Ops profile (5 agents)
+├── .kiro-pm/               # PM/Scrum Master profile (6 agents)
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles
 ├── common/                 # Shared rules, prompts, memory templates
 ├── docs/                   # All documentation
@@ -115,6 +118,7 @@ steer-runtime/
 | **BA / PO** | [BA Guide](docs/BA_PROMPT_GUIDE.md) · [Workflows](docs/BA_WORKFLOWS.md) · [Quick Ref](docs/BA_QUICK_REFERENCE.md) |
 | **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
 | **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
+| **PM / Scrum** | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
 | **All** | [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
 
 ---
@@ -131,7 +135,7 @@ The setup script auto-discovers all `.kiro-*` directories.
 
 ## Features
 
-✅ 34 specialized agents across 4 profiles  
+✅ 40 specialized agents across 5 profiles  
 ✅ Pre-built MCP bundles — no npm install needed  
 ✅ Auto-discovery of `.kiro-*` profile directories  
 ✅ Cross-platform — macOS/Linux (`setup.sh`) + Windows (`setup.ps1`)  
@@ -141,6 +145,6 @@ The setup script auto-discovers all `.kiro-*` directories.
 
 ---
 
-**Version:** 3.1.0 · **Agents:** 34 (dev 19, ba 4, qa 6, ops 5) · **Updated:** March 17, 2026
+**Version:** 3.2.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 17, 2026
 
 Internal Disney tool — not for external distribution.
