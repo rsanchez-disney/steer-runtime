@@ -5661,6 +5661,7 @@ var StdioServerTransport = class {
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var DEFAULT_TIMEOUT_MS = 3e4;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
@@ -5686,22 +5687,29 @@ var ConfluenceApiClient = class {
   async makeRequest(endpoint, options = {}) {
     await this.loadConfig();
     const url = `${this.confluenceUrl}/rest/api/${endpoint}`;
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        Authorization: `Bearer ${this.confluencePat}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        ...options.headers
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          Authorization: `Bearer ${this.confluencePat}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          ...options.headers
+        }
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      return response.json();
+    } finally {
+      clearTimeout(timeout);
     }
-    return response.json();
   }
   getConfluenceUrl() {
     if (!this.confluenceUrl) {
@@ -5717,6 +5725,15 @@ var ConfluenceApiClient = class {
   }
 };
 var apiClient = new ConfluenceApiClient();
+function stripHtmlToText(html) {
+  return html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/?(p|div|tr|li|h[1-6])[^>]*>/gi, "\n").replace(/<\/?[^>]+(>|$)/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\n{3,}/g, "\n\n").trim();
+}
+function truncateText(text, maxLength) {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + `
+
+[... truncated at ${maxLength} chars \u2014 use outputDir to get full content]`;
+}
 
 // confluence-mcp/src/utils/fileUtils.ts
 var import_promises = require("fs/promises");
@@ -5731,6 +5748,7 @@ async function saveToFile(data, outputDir, filename) {
 }
 
 // confluence-mcp/src/tools/getConfluencePage.ts
+var DEFAULT_MAX_LENGTH = 5e4;
 var getConfluencePageSchema = {
   name: "get_confluence_page",
   description: "Get a Confluence page by ID or title",
@@ -5754,6 +5772,10 @@ var getConfluencePageSchema = {
         description: "Comma-separated list of properties to expand",
         default: "body.storage,version,space"
       },
+      maxLength: {
+        type: "number",
+        description: "Max characters of page content to return inline (default 50000)"
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save data (optional, defaults to .amazonq/external-data). Pass false or null to skip saving"
@@ -5768,6 +5790,7 @@ async function handleGetConfluencePage(args) {
     spaceKey,
     title,
     expand = "body.storage,version,space",
+    maxLength = DEFAULT_MAX_LENGTH,
     outputDir
   } = args;
   let data;
@@ -5787,12 +5810,23 @@ async function handleGetConfluencePage(args) {
     );
   }
   const filePath = await saveToFile(data, outputDir, filename);
-  const savedInfo = filePath ? ` Data saved to: ${filePath}` : "";
+  const savedInfo = filePath ? `
+Full data saved to: ${filePath}` : "";
+  const pageTitle = data.title || "Unknown";
+  const pageIdStr = data.id || "N/A";
+  const spaceInfo = data.space?.key || "N/A";
+  const version = data.version?.number || "N/A";
+  const storageBody = data.body?.storage?.value || "";
+  const plainText = storageBody ? stripHtmlToText(storageBody) : "(no content)";
+  const content = truncateText(plainText, maxLength);
   return {
     content: [
       {
         type: "text",
-        text: `Successfully retrieved Confluence page.${savedInfo}`
+        text: `Page: ${pageTitle}
+ID: ${pageIdStr} | Space: ${spaceInfo} | Version: ${version}
+
+${content}${savedInfo}`
       }
     ]
   };
@@ -5849,12 +5883,22 @@ async function handleSearchConfluencePages(args) {
   const data = await apiClient.makeRequest(`content/search?${params}`);
   const filename = `search-results-${Date.now()}.json`;
   const filePath = await saveToFile(data, outputDir, filename);
-  const savedInfo = filePath ? ` Search results saved to: ${filePath}` : "";
+  const savedInfo = filePath ? `
+Full results saved to: ${filePath}` : "";
+  const results = data.results || [];
+  const total = data.totalSize || results.length;
+  const lines = results.map((r, i) => {
+    const space = r.space?.key || "N/A";
+    const ver = r.version?.number || "?";
+    return `  ${i + 1}. [${r.id}] ${r.title} (space: ${space}, v${ver})`;
+  });
+  const summary = lines.length > 0 ? `
+${lines.join("\n")}` : "\n  (no results)";
   return {
     content: [
       {
         type: "text",
-        text: `Found ${data.results?.length || 0} pages.${savedInfo}`
+        text: `Found ${results.length} of ${total} pages matching: ${cql}${summary}${savedInfo}`
       }
     ]
   };

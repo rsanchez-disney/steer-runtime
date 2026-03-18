@@ -56,13 +56,26 @@ export async function handleSearchConfluencePages(args: any) {
     const filename = `search-results-${Date.now()}.json`;
     const filePath = await saveToFile(data, outputDir, filename);
 
-    const savedInfo = filePath ? ` Search results saved to: ${filePath}` : "";
+    const savedInfo = filePath ? `\nFull results saved to: ${filePath}` : "";
+
+    // Build inline summary of results
+    const results = data.results || [];
+    const total = data.totalSize || results.length;
+    const lines = results.map((r: any, i: number) => {
+        const space = r.space?.key || "N/A";
+        const ver = r.version?.number || "?";
+        return `  ${i + 1}. [${r.id}] ${r.title} (space: ${space}, v${ver})`;
+    });
+
+    const summary = lines.length > 0
+        ? `\n${lines.join("\n")}`
+        : "\n  (no results)";
 
     return {
         content: [
             {
                 type: "text",
-                text: `Found ${data.results?.length || 0} pages.${savedInfo}`,
+                text: `Found ${results.length} of ${total} pages matching: ${cql}${summary}${savedInfo}`,
             },
         ],
     };

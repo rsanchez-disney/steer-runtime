@@ -1,5 +1,7 @@
-import { apiClient } from "../utils/apiClient.js";
+import { apiClient, stripHtmlToText, truncateText } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
+
+const DEFAULT_MAX_LENGTH = 50000;
 
 export const getConfluencePageSchema = {
     name: "get_confluence_page",
@@ -24,6 +26,10 @@ export const getConfluencePageSchema = {
                 description: "Comma-separated list of properties to expand",
                 default: "body.storage,version,space",
             },
+            maxLength: {
+                type: "number",
+                description: "Max characters of page content to return inline (default 50000)",
+            },
             outputDir: {
                 type: ["string", "boolean", "null"],
                 description:
@@ -40,6 +46,7 @@ export async function handleGetConfluencePage(args: any) {
         spaceKey,
         title,
         expand = "body.storage,version,space",
+        maxLength = DEFAULT_MAX_LENGTH,
         outputDir,
     } = args;
 
@@ -62,13 +69,22 @@ export async function handleGetConfluencePage(args: any) {
     }
 
     const filePath = await saveToFile(data, outputDir, filename);
-    const savedInfo = filePath ? ` Data saved to: ${filePath}` : "";
+    const savedInfo = filePath ? `\nFull data saved to: ${filePath}` : "";
+
+    // Extract page content for inline response
+    const pageTitle = data.title || "Unknown";
+    const pageIdStr = data.id || "N/A";
+    const spaceInfo = data.space?.key || "N/A";
+    const version = data.version?.number || "N/A";
+    const storageBody = data.body?.storage?.value || "";
+    const plainText = storageBody ? stripHtmlToText(storageBody) : "(no content)";
+    const content = truncateText(plainText, maxLength);
 
     return {
         content: [
             {
                 type: "text",
-                text: `Successfully retrieved Confluence page.${savedInfo}`,
+                text: `Page: ${pageTitle}\nID: ${pageIdStr} | Space: ${spaceInfo} | Version: ${version}\n\n${content}${savedInfo}`,
             },
         ],
     };
