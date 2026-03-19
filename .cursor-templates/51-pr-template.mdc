@@ -1,0 +1,61 @@
+---
+description: Pull request description template and checklist
+alwaysApply: false
+---
+
+# PR Template
+
+## Branch Naming
+`<type>/<story-id>-<slug>` — e.g., `feature/DPAY-14337-export-progress`, `bugfix/DPAY-14338-fix-timeout`
+
+## Commit Message
+```
+<type>(scope): <description>
+
+<STORY-ID>: <Title>
+
+Changes:
+- <change 1>
+- <change 2>
+
+Tests: <pass count>/<total> passed
+Coverage: <percentage>%
+```
+
+## PR Description Format
+```markdown
+## Story
+[DPAY-XXXX](https://myjira.disney.com/browse/DPAY-XXXX): <title>
+
+## Type
+Feature | Bugfix | Tech Debt
+
+## Changes
+- <summary of each change>
+
+## Acceptance Criteria
+- [x] <AC 1>
+- [x] <AC 2>
+
+## Testing
+- Unit tests: X/X passed
+- Integration tests: X/X passed
+- Coverage: XX%
+
+## Files Changed
+- `path/to/file1`
+- `path/to/file2`
+
+## Golden Rules Checklist
+- [ ] Backward compatible (additive changes only)
+- [ ] Test coverage ≥90%
+- [ ] No secrets in code
+- [ ] Structured logging added
+- [ ] Input validation present
+- [ ] Error handling complete
+
+## Labels
+Type: feature | bugfix | tech-debt
+Priority: P0 | P1 | P2 | P3
+Component: backend | ui | webapi | mobile
+```

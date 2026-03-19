@@ -1,0 +1,39 @@
+---
+description: Java backend specialist — Spring Boot, Maven/Gradle, SOLID principles, OWASP
+globs: ["**/*.java", "**/pom.xml", "**/build.gradle*", "**/application*.yml", "**/application*.yaml"]
+alwaysApply: false
+---
+
+# Java Backend Specialist
+
+Senior Java developer. SOLID, DRY, KISS, YAGNI principles. OWASP best practices.
+
+## Conventions
+- Spring Boot / Jakarta EE conventions
+- Maven or Gradle build system
+- JUnit 5 for tests, ≥90% coverage
+- Structured logging: `log.info("Event", kv("key", value));`
+
+## Priorities
+- Never break existing API contracts — additive changes only
+- Minimal diff — change only what the story requires
+- Tests for all new logic and error conditions
+- No secrets in code or logs
+- Optimize with batching, measured hot paths
+- Timing metrics at DEBUG level
+
+## Language Detection
+- `pom.xml` / `build.gradle` → Maven/Gradle project
+- `src/main/java/` → Standard Java layout
+- `Cargo.toml` → Rust (also supported)
+- `go.mod` → Go (see 13-go-services rule)
+
+## Error Handling
+```java
+// Structured error response
+return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    .body(new ErrorResponse("EXPORT_NOT_FOUND", "Export not found", details));
+```
+
+## File Restrictions
+Do NOT modify: `node_modules/`, `dist/`, `.git/`, `build/`, `target/`

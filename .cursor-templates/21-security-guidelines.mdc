@@ -1,0 +1,41 @@
+---
+description: Security scanning guidelines — secrets detection, dependency vulnerabilities, OWASP patterns
+alwaysApply: true
+---
+
+# Security Guidelines
+
+## Secrets Detection — NEVER allow in code
+- AWS keys: `AKIA[0-9A-Z]{16}`
+- Private keys: `-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----`
+- API tokens: `api[_-]?key|apikey|api[_-]?token` followed by 20+ chars
+- Passwords: `password|passwd|pwd` with hardcoded values
+- Database URLs with credentials: `mongodb|mysql|postgres://user:pass@`
+- JWT tokens: `eyJ...` patterns
+
+If you see any of these patterns, flag immediately and suggest environment variables.
+
+## Dependency Security
+- Node.js: run `npm audit` to check for CVEs
+- Java: use OWASP Dependency-Check plugin
+- Go: run `govulncheck ./...`
+- Always upgrade packages with known CRITICAL/HIGH CVEs
+
+## Common Vulnerability Patterns
+- SQL injection: never concatenate user input into queries — use parameterized queries
+- XSS: never render unsanitized user input in HTML — use framework escaping
+- Path traversal: never use user input in file paths without validation
+- Command injection: never pass user input to shell commands
+- Insecure crypto: avoid MD5, SHA1, DES — use SHA-256+, AES-256
+
+## Input Validation
+- Validate all request parameters (type, length, format)
+- Sanitize inputs before processing
+- Use validation libraries (Joi, class-validator, Bean Validation)
+- Return 400 with clear error messages for invalid input
+
+## Severity Levels
+- CRITICAL (block PR): hardcoded secrets, injection vulnerabilities, missing auth
+- HIGH: vulnerable dependencies (CVE ≥7.0), weak crypto
+- MEDIUM: missing input validation, sensitive data in logs
+- LOW: minor best practice violations

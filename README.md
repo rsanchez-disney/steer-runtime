@@ -71,6 +71,10 @@ Full agent reference: [AGENTS.md](AGENTS.md)
 ./setup.sh prompts list         # List available prompts
 ./setup.sh init-memory <dir>    # Initialize project memory bank
 ./setup.sh enable-tools         # Enable thinking, todo, knowledge
+./setup.sh cursor install <dir>  # Install Cursor rules + MCP config
+./setup.sh cursor sync <dir>     # Update Cursor rules from templates
+./setup.sh cursor remove <dir>   # Remove .cursor/ directory
+./setup.sh cursor init-memory <dir> # Generate project context rule
 ```
 
 ---
@@ -103,6 +107,7 @@ steer-runtime/
 ├── .kiro-qa/               # QA profile (6 agents)
 ├── .kiro-ops/              # Ops profile (5 agents)
 ├── .kiro-pm/               # PM/Scrum Master profile (6 agents)
+├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles
 ├── .kiro/hooks/              # Reusable agent hook scripts
 ├── common/                 # Shared rules, prompts, memory templates
@@ -122,7 +127,22 @@ steer-runtime/
 | **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
 | **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
 | **PM / Scrum** | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
-| **All** | [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
+| **Cursor** | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **All** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
+
+---
+
+## Cursor IDE Integration
+
+The same coding standards, MCP integrations, and project context can be used in Cursor IDE:
+
+```bash
+./setup.sh cursor install ~/my-project       # Install rules + MCP config
+./setup.sh cursor init-memory ~/my-project   # Add project-specific context
+./setup.sh cursor sync ~/my-project          # Update rules from latest templates
+```
+
+This generates `.cursor/rules/*.mdc` files (glob-activated coding standards) and `.cursor/mcp.json` (Jira, Confluence, GitHub, Mermaid). See [Cursor Setup Guide](docs/CURSOR_SETUP.md) for details.
 
 ---
 
@@ -147,6 +167,7 @@ The setup script auto-discovers all `.kiro-*` directories.
 ✅ Common rules and standalone prompts  
 ✅ Agent hooks — write guards, git context injection, destructive command warnings  
 ✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)  
+✅ Cursor IDE integration — same standards via .mdc rules + shared MCP  
 
 ---
 
