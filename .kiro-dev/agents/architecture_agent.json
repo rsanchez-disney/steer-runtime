@@ -6,7 +6,9 @@
     "code",
     "grep",
     "fs_read",
-    "execute_bash"
+    "execute_bash",
+    "thinking",
+    "knowledge"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

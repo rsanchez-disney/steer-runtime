@@ -43,6 +43,21 @@ gh auth login --hostname github.disney.com
 
 Select HTTPS, authenticate via browser. This enables PR creation and repo management from agents.
 
+## 6. Enable Advanced Tools (optional)
+
+After installing profiles, enable advanced kiro-cli features used by orchestrators and planning agents:
+
+```bash
+./setup.sh enable-tools
+```
+
+This enables:
+- **thinking** — step-by-step reasoning for complex decisions
+- **todo** — persistent task tracking across sessions
+- **knowledge** — long-term semantic memory across conversations
+
+Agents degrade gracefully if these aren't enabled — they just won't have access to those tools.
+
 ## Next Steps
 
 Return to the [README](../README.md) to install agent profiles.

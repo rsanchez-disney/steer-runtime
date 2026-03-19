@@ -27,12 +27,15 @@ COMMANDS:
   prompts [list|install]                 Manage standalone prompts
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
+  enable-tools                           Enable advanced kiro-cli tool settings
   help                                   Show this help message
 
 PROFILES:
-  dev                 Development (18 agents)
+  dev                 Development (19 agents)
   ba                  BA/PO (4 agents)
   qa                  QA/Testing (6 agents)
+  ops                 Operations (5 agents)
+  pm                  PM/Scrum Master (6 agents)
 
 OPTIONS:
   --project <dir>     Target project directory (for Kiro UI)
@@ -276,6 +279,14 @@ install_shared() {
         cp "$STEER_ROOT/.kiro/context/"*.md "$target_dir/context/" 2>/dev/null || true
         echo "✓ Installed shared context files"
     fi
+
+    if [ -d "$STEER_ROOT/.kiro/hooks" ]; then
+        echo "📦 Installing hooks..."
+        mkdir -p "$target_dir/hooks"
+        cp "$STEER_ROOT/.kiro/hooks/"*.sh "$target_dir/hooks/" 2>/dev/null || true
+        chmod +x "$target_dir/hooks/"*.sh 2>/dev/null || true
+        echo "✓ Installed hook scripts"
+    fi
 }
 
 get_target_dir() {
@@ -467,6 +478,23 @@ case "${1:-help}" in
             
             total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             echo "✓ Total agents: $total"
+
+            # Validate agent configs
+            if command -v kiro-cli &> /dev/null; then
+                local errors=0
+                for agent_json in "$KIRO_ROOT/agents/"*.json; do
+                    [ -f "$agent_json" ] || continue
+                    if ! kiro-cli agent validate --path "$agent_json" 2>/dev/null; then
+                        echo "  ❌ Invalid: $(basename "$agent_json")"
+                        errors=$((errors + 1))
+                    fi
+                done
+                if [ $errors -eq 0 ]; then
+                    echo "✓ All agent configs valid"
+                else
+                    echo "⚠️  $errors agent(s) failed validation"
+                fi
+            fi
         else
             echo "❌ No CLI agents installed"
         fi
@@ -836,6 +864,38 @@ GHEOF
         ;;
         
         
+    enable-tools)
+        echo "🔧 Enabling advanced kiro-cli tool settings..."
+        echo ""
+
+        settings=(
+            "chat.enableThinking"
+            "chat.enableTodoList"
+            "chat.enableKnowledge"
+        )
+
+        for setting in "${settings[@]}"; do
+            if kiro-cli settings "$setting" true 2>/dev/null; then
+                echo "  ✓ $setting = true"
+            else
+                echo "  ⚠️  $setting — not supported in this kiro-cli version"
+            fi
+        done
+
+        # delegate may not be available in all versions
+        if kiro-cli settings chat.enableDelegate true 2>/dev/null; then
+            echo "  ✓ chat.enableDelegate = true"
+        else
+            echo "  ⏭ chat.enableDelegate — not available yet (agents still work without it)"
+        fi
+
+        echo ""
+        echo "✅ Advanced tools enabled for agents that use them"
+        echo "   thinking  → orchestrators, architecture, planner"
+        echo "   todo      → orchestrators, sprint_manager"
+        echo "   knowledge → story_analyzer, architecture, test_planner, requirements_analyst"
+        ;;
+
     help|--help|-h)
         show_usage
         ;;

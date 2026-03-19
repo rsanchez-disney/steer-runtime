@@ -60,6 +60,34 @@ Then run:
 ./setup.sh configure
 ```
 
+## Advanced Tools Not Working
+
+If `thinking`, `todo`, or `knowledge` tools don't appear in an agent session:
+
+```bash
+# Enable the required settings
+./setup.sh enable-tools
+
+# Or manually:
+kiro-cli settings chat.enableThinking true
+kiro-cli settings chat.enableTodoList true
+kiro-cli settings chat.enableKnowledge true
+```
+
+## Hooks Not Running
+
+Verify hook scripts are installed and executable:
+
+```bash
+ls -la ~/.kiro/hooks/
+# Should show git-context.sh, guard-writes.sh, warn-destructive.sh
+
+# Reinstall hooks
+./setup.sh sync
+```
+
+Use `/hooks` in a chat session to inspect active hooks for the current agent.
+
 ---
 
 > 🪟 **Windows users:** See [Windows Setup Guide](WINDOWS_SETUP.md) for PowerShell equivalents.

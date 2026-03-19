@@ -10,7 +10,10 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "use_subagent"
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -65,5 +68,13 @@
     "@jira/*",
     "@mywiki/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ]
+  }
 }

@@ -6,7 +6,8 @@
     "@confluence/*",
     "@jira/*",
     "@mywiki/*",
-    "fs_read"
+    "fs_read",
+    "thinking"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

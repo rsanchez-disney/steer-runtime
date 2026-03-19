@@ -59,5 +59,8 @@
     "@jira/*",
     "@mywiki/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ]
 }

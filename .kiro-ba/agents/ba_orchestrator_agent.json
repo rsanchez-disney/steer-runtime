@@ -10,7 +10,10 @@
     "fs_read",
     "fs_write",
     "grep",
-    "use_subagent"
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
   ],
   "mcpServers": {
     "jira": {
@@ -63,5 +66,14 @@
   "resources": [
     "file://.kiro/context/ba_guidelines.md"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "welcomeMessage": "\ud83d\udc4b BA/PO orchestrator ready!\n\nI can help you:\n  \u2022 Gather and analyze requirements from Jira epics\n  \u2022 Define scope boundaries and constraints\n  \u2022 Write user stories with acceptance criteria\n  \u2022 Validate requirements completeness\n\nTry: \"Analyze requirements for DPAY-500\"",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ]
+  }
 }

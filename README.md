@@ -26,6 +26,7 @@ cd ~/steer-runtime
 ./setup.sh list                 # See available profiles
 ./setup.sh install dev          # Install dev profile (or: dev ba qa ops)
 ./setup.sh mcp-install          # Setup MCP servers + tokens
+./setup.sh enable-tools         # Enable thinking, todo, knowledge (optional)
 ```
 
 Then use agents:
@@ -69,6 +70,7 @@ Full agent reference: [AGENTS.md](AGENTS.md)
 ./setup.sh rules install --all  # Install rules to project
 ./setup.sh prompts list         # List available prompts
 ./setup.sh init-memory <dir>    # Initialize project memory bank
+./setup.sh enable-tools         # Enable thinking, todo, knowledge
 ```
 
 ---
@@ -102,6 +104,7 @@ steer-runtime/
 ├── .kiro-ops/              # Ops profile (5 agents)
 ├── .kiro-pm/               # PM/Scrum Master profile (6 agents)
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles
+├── .kiro/hooks/              # Reusable agent hook scripts
 ├── common/                 # Shared rules, prompts, memory templates
 ├── docs/                   # All documentation
 ├── setup.sh                # macOS/Linux setup
@@ -142,10 +145,12 @@ The setup script auto-discovers all `.kiro-*` directories.
 ✅ MCP integration — Jira, Confluence, MyWiki, GitHub, Mermaid  
 ✅ Memory banks — per-project AI context  
 ✅ Common rules and standalone prompts  
+✅ Agent hooks — write guards, git context injection, destructive command warnings  
+✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)  
 
 ---
 
-**Version:** 3.2.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 17, 2026
+**Version:** 3.3.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 19, 2026
 
 ## Resources
 

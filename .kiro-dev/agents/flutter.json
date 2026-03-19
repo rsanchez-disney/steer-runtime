@@ -3,12 +3,12 @@
   "description": "Flutter/Dart specialist for cross-platform mobile development",
   "prompt": "flutter.md",
   "tools": [
-    "read",
-    "write",
-    "shell"
+    "fs_read",
+    "fs_write",
+    "execute_bash"
   ],
   "toolsSettings": {
-    "write": {
+    "fs_write": {
       "allowedPaths": [
         "lib/**",
         "packages/*/lib/**",
@@ -24,5 +24,14 @@
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
     "file://README.md"
-  ]
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      }
+    ]
+  }
 }

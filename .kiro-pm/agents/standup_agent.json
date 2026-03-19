@@ -7,7 +7,9 @@
     "execute_bash",
     "fs_read"
   ],
-  "resources": [],
+  "resources": [
+    "file://.kiro/context/pm_guidelines.md"
+  ],
   "mcpServers": {
     "jira": {
       "command": "node",
