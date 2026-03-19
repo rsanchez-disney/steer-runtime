@@ -28,6 +28,7 @@ COMMANDS:
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
+  cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
   help                                   Show this help message
 
 PROFILES:
@@ -68,6 +69,11 @@ EXAMPLES:
   ./setup.sh rules install --all            # Install all rules
   ./setup.sh prompts list                   # List available prompts
   ./setup.sh init-memory ~/myapp            # Initialize memory bank
+
+  # Cursor IDE
+  ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
+  ./setup.sh cursor sync ~/myapp           # Update rules from latest templates
+  ./setup.sh cursor remove ~/myapp         # Remove .cursor/ directory
 
 USAGE
 }
@@ -894,6 +900,231 @@ GHEOF
         echo "   thinking  → orchestrators, architecture, planner"
         echo "   todo      → orchestrators, sprint_manager"
         echo "   knowledge → story_analyzer, architecture, test_planner, requirements_analyst"
+        ;;
+
+    cursor)
+        shift
+        cursor_subcmd="${1:-help}"
+        shift 2>/dev/null || true
+        cursor_dir="${1:-}"
+        
+        case "$cursor_subcmd" in
+            install)
+                if [ -z "$cursor_dir" ]; then
+                    echo "❌ Usage: ./setup.sh cursor install <project-dir>"
+                    exit 1
+                fi
+                cursor_dir="${cursor_dir/#\~/$HOME}"
+                if [ ! -d "$cursor_dir" ]; then
+                    echo "❌ Directory does not exist: $cursor_dir"
+                    exit 1
+                fi
+                
+                rules_dir="$cursor_dir/.cursor/rules"
+                mkdir -p "$rules_dir"
+                
+                echo "🖱️  Installing Cursor rules to $rules_dir"
+                echo ""
+                
+                count=0
+                for mdc in "$STEER_ROOT"/.cursor-templates/*.mdc; do
+                    [ -f "$mdc" ] || continue
+                    cp "$mdc" "$rules_dir/"
+                    echo "  ✓ $(basename "$mdc")"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Installed $count rules to $rules_dir"
+                
+                # Generate mcp.json if MCP servers are installed
+                if [ -d "$HOME/.kiro/tools/mcp-servers" ]; then
+                    mcp_json="$cursor_dir/.cursor/mcp.json"
+                    echo ""
+                    echo "🔌 Generating MCP config..."
+                    
+                    # Read tokens from existing .env files if available
+                    jira_pat="YOUR_TOKEN"
+                    confluence_pat="YOUR_TOKEN"
+                    mywiki_pat="YOUR_TOKEN"
+                    github_token="YOUR_TOKEN"
+                    
+                    [ -f "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" ] && \
+                        jira_pat=$(grep -s '^JIRA_PAT=' "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" ] && \
+                        confluence_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" ] && \
+                        mywiki_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    [ -f "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" ] && \
+                        github_token=$(grep -s '^GITHUB_TOKEN_disney=' "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    
+                    cat > "$mcp_json" << MCPEOF
+{
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"],
+      "env": { "JIRA_PAT": "$jira_pat" }
+    },
+    "confluence": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
+      "env": { "CONFLUENCE_URL": "https://confluence.disney.com", "CONFLUENCE_PAT": "$confluence_pat" }
+    },
+    "mywiki": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
+      "env": { "CONFLUENCE_URL": "https://mywiki.disney.com", "CONFLUENCE_PAT": "$mywiki_pat" }
+    },
+    "github": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs"],
+      "env": { "GITHUB_TOKEN_disney": "$github_token", "GITHUB_HOST_disney": "github.disney.com", "GITHUB_DEFAULT_REMOTE": "disney" }
+    },
+    "mermaid": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs"]
+    }
+  }
+}
+MCPEOF
+                    echo "  ✓ $mcp_json"
+                    
+                    if echo "$jira_pat$confluence_pat$github_token" | grep -q "YOUR_TOKEN"; then
+                        echo ""
+                        echo "⚠️  Some MCP tokens are placeholders. Run ./setup.sh mcp-install first,"
+                        echo "   then re-run ./setup.sh cursor install to pick up the tokens."
+                    fi
+                else
+                    echo ""
+                    echo "⚠️  MCP servers not found at ~/.kiro/tools/mcp-servers/"
+                    echo "   Run ./setup.sh mcp-install first, then re-run cursor install."
+                fi
+                ;;
+            
+            sync)
+                if [ -z "$cursor_dir" ]; then
+                    echo "❌ Usage: ./setup.sh cursor sync <project-dir>"
+                    exit 1
+                fi
+                cursor_dir="${cursor_dir/#\~/$HOME}"
+                rules_dir="$cursor_dir/.cursor/rules"
+                
+                if [ ! -d "$rules_dir" ]; then
+                    echo "❌ No Cursor rules found at $rules_dir"
+                    echo "   Run: ./setup.sh cursor install $cursor_dir"
+                    exit 1
+                fi
+                
+                echo "🔄 Syncing Cursor rules in $rules_dir"
+                echo ""
+                
+                count=0
+                for mdc in "$STEER_ROOT"/.cursor-templates/*.mdc; do
+                    [ -f "$mdc" ] || continue
+                    cp "$mdc" "$rules_dir/"
+                    echo "  ✓ $(basename "$mdc")"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Synced $count rules"
+                ;;
+            
+            remove)
+                if [ -z "$cursor_dir" ]; then
+                    echo "❌ Usage: ./setup.sh cursor remove <project-dir>"
+                    exit 1
+                fi
+                cursor_dir="${cursor_dir/#\~/$HOME}"
+                
+                if [ ! -d "$cursor_dir/.cursor" ]; then
+                    echo "⚠️  No .cursor/ directory found in $cursor_dir"
+                    exit 0
+                fi
+                
+                echo "🗑️  Removing .cursor/ from $cursor_dir"
+                rm -rf "$cursor_dir/.cursor"
+                echo "✅ Removed"
+                ;;
+            
+            
+            init-memory)
+                if [ -z "$cursor_dir" ]; then
+                    echo "❌ Usage: ./setup.sh cursor init-memory <project-dir>"
+                    exit 1
+                fi
+                cursor_dir="${cursor_dir/#\~/$HOME}"
+                if [ ! -d "$cursor_dir" ]; then
+                    echo "❌ Directory does not exist: $cursor_dir"
+                    exit 1
+                fi
+                
+                rules_dir="$cursor_dir/.cursor/rules"
+                mkdir -p "$rules_dir"
+                project_name=$(basename "$cursor_dir")
+                
+                echo "🧠 Generating project context for Cursor..."
+                echo ""
+                
+                # Check for existing Kiro memory bank
+                kiro_mb="$cursor_dir/.kiro/rules/memory-bank"
+                known_mb="$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"
+                
+                if [ -d "$kiro_mb" ] && ls "$kiro_mb"/*.md &>/dev/null; then
+                    echo "  Found existing Kiro memory bank at $kiro_mb"
+                    source_dir="$kiro_mb"
+                elif [ -d "$known_mb" ] && ls "$known_mb"/*.md &>/dev/null; then
+                    echo "  Found known project: $project_name"
+                    source_dir="$known_mb"
+                else
+                    echo "  No memory bank found — generating from templates"
+                    source_dir=""
+                fi
+                
+                # Generate 60-project-context.mdc
+                mdc_file="$rules_dir/60-project-context.mdc"
+                {
+                    echo "---"
+                    echo "description: Project context for $project_name — tech stack, patterns, guidelines"
+                    echo "alwaysApply: true"
+                    echo "---"
+                    echo ""
+                    echo "# Project Context: $project_name"
+                    echo ""
+                    
+                    if [ -n "$source_dir" ]; then
+                        for md in "$source_dir"/*.md; do
+                            [ -f "$md" ] || continue
+                            echo ""
+                            cat "$md"
+                            echo ""
+                        done
+                    else
+                        for tmpl in "$STEER_ROOT"/common/memory-bank-templates/*.template; do
+                            [ -f "$tmpl" ] || continue
+                            echo ""
+                            sed "s/{{PROJECT_NAME}}/$project_name/g" "$tmpl"
+                            echo ""
+                        done
+                    fi
+                } > "$mdc_file"
+                
+                echo "  ✓ 60-project-context.mdc"
+                echo ""
+                echo "✅ Project context generated at $mdc_file"
+                ;;
+
+            *)
+                echo "Cursor IDE integration"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh cursor install <project-dir>   Install rules + MCP config"
+                echo "  ./setup.sh cursor sync <project-dir>      Update rules from templates"
+                echo "  ./setup.sh cursor remove <project-dir>    Remove .cursor/ directory"
+                echo "  ./setup.sh cursor init-memory <project-dir>  Generate project context rule"
+                ;;
+        esac
         ;;
 
     help|--help|-h)

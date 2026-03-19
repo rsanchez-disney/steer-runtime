@@ -71,6 +71,10 @@ Full agent reference: [AGENTS.md](AGENTS.md)
 ./setup.sh prompts list         # List available prompts
 ./setup.sh init-memory <dir>    # Initialize project memory bank
 ./setup.sh enable-tools         # Enable thinking, todo, knowledge
+./setup.sh cursor install <dir>  # Install Cursor rules + MCP config
+./setup.sh cursor sync <dir>     # Update Cursor rules from templates
+./setup.sh cursor remove <dir>   # Remove .cursor/ directory
+./setup.sh cursor init-memory <dir> # Generate project context rule
 ```
 
 ---
@@ -103,6 +107,7 @@ steer-runtime/
 ├── .kiro-qa/               # QA profile (6 agents)
 ├── .kiro-ops/              # Ops profile (5 agents)
 ├── .kiro-pm/               # PM/Scrum Master profile (6 agents)
+├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles
 ├── .kiro/hooks/              # Reusable agent hook scripts
 ├── common/                 # Shared rules, prompts, memory templates
@@ -162,6 +167,7 @@ The setup script auto-discovers all `.kiro-*` directories.
 ✅ Common rules and standalone prompts  
 ✅ Agent hooks — write guards, git context injection, destructive command warnings  
 ✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)  
+✅ Cursor IDE integration — same standards via .mdc rules + shared MCP  
 
 ---
 

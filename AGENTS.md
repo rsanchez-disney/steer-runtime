@@ -22,9 +22,14 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 2. Explore codebase
 3. Review architecture
 4. Create implementation plan
-5. Coordinate implementation across repos
-6. Run quality checks
-7. Create pull request
+5. Approval gate #1 (user reviews plan)
+6. Implement tasks (delegate to specialist agents)
+7. Run tests (coverage ≥90%)
+8. Code review
+9. Security scan
+10. Quality report & approval gate #2
+11. Create pull request
+12. Complete (summary & PR URL)
 
 ---
 
@@ -342,6 +347,12 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 **Purpose:** Generates velocity reports, burndown analysis, and release readiness assessments  
 **Use for:** Sprint reports, velocity trends, release readiness  
 **MCP Servers:** jira, confluence, mywiki
+
+---
+
+## Cursor IDE
+
+The coding standards, MCP integrations, and workflow guidance from these agents are also available as Cursor IDE rules (`.cursor/rules/*.mdc`). See [Cursor Setup](docs/CURSOR_SETUP.md).
 
 ---
 

@@ -1,0 +1,41 @@
+---
+description: Golden rules for all code changes — backward compatibility, test coverage, security, logging, and documentation standards
+alwaysApply: true
+---
+
+# Golden Rules
+
+## 1. Backward Compatibility
+All API changes must be additive. Never remove or change existing fields, types, or endpoints.
+- ✅ Add new optional fields, endpoints, method overloads
+- ❌ Remove fields, change types, remove endpoints
+
+## 2. Test Coverage ≥90%
+All new code must have ≥90% test coverage — unit tests for methods, integration tests for endpoints, E2E for critical flows.
+
+## 3. No Secrets in Code
+Never commit credentials, API keys, or sensitive data. Use environment variables or secret management services. Verify .env files are gitignored.
+
+## 4. Structured Logging
+Use structured logging with context for all important events:
+- Java: `log.info("Export started", kv("exportId", id), kv("userId", userId));`
+- TypeScript: `logger.info('Export started', { exportId: id, userId: userId });`
+- Include correlation IDs, appropriate log levels (DEBUG, INFO, WARN, ERROR)
+
+## 5. Minimal Diff
+Change only what's necessary. One story = one PR. Don't refactor unrelated code, reformat entire files, or add unused dependencies.
+
+## 6. Input Validation
+Validate all user inputs. Never trust client data. Sanitize to prevent injection. Return clear error messages.
+
+## 7. Error Handling
+Handle all errors gracefully. Return structured error responses with error code, message, details, and timestamp. Use appropriate HTTP status codes. Never expose internal errors.
+
+## 8. Accessibility (WCAG 2.1 Level AA)
+All UI changes must include ARIA labels, keyboard navigation, focus management, screen reader support, and color contrast ≥4.5:1.
+
+## 9. Performance
+No performance regressions. Avoid N+1 queries, use pagination, cache expensive operations, lazy load when possible.
+
+## 10. Documentation
+Document all public APIs (JavaDoc/JSDoc), update READMEs for new features, maintain OpenAPI/Swagger specs, add inline comments for complex logic.

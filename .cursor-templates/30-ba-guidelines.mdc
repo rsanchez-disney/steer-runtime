@@ -1,0 +1,41 @@
+---
+description: Business Analyst / Product Owner guidelines — requirements, user stories, scope definition
+alwaysApply: false
+---
+
+# BA / Product Owner Guidelines
+
+## User Stories
+Format: "As a [user], I want [goal], so that [benefit]"
+- Keep stories small and independently deliverable
+- Include clear, testable acceptance criteria
+- Define edge cases and error scenarios
+- Consider accessibility and security requirements
+
+## Requirements
+- SMART: Specific, Measurable, Achievable, Relevant, Time-bound
+- Maintain traceability between requirements and deliverables
+- Flag incomplete stories: missing ACs, vague descriptions, "TBD" placeholders
+
+## Scope Definition
+- Define clear project boundaries and constraints
+- Identify stakeholders and their needs
+- Establish success criteria and KPIs
+- Document assumptions and dependencies
+
+## Jira Best Practices
+- Use appropriate issue types (Epic, Story, Task, Bug)
+- Maintain clear hierarchy and linked issues
+- Keep status updated in real-time
+- Use labels and components for organization
+
+## Confluence Best Practices
+- Organize docs in logical spaces with templates
+- Keep pages focused and scannable
+- Include table of contents for long documents
+- Archive outdated documentation
+
+## MCP Tools Available
+- Use Jira MCP tools to fetch/create/update stories
+- Use Confluence MCP tools to search/read/create wiki pages
+- Use GitHub MCP tools to review PRs and code

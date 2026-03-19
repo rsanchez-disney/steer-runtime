@@ -1,0 +1,44 @@
+---
+description: Conventional Commits 1.0.0 format for all commit messages
+alwaysApply: true
+---
+
+# Conventional Commits
+
+All commit messages must follow Conventional Commits 1.0.0:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## Types
+- `fix:` — patches a bug (PATCH in SemVer)
+- `feat:` — introduces a new feature (MINOR in SemVer)
+- `BREAKING CHANGE:` — footer or `!` after type for breaking API changes (MAJOR in SemVer)
+- `build:` — build system or external dependencies
+- `chore:` — maintenance tasks
+- `ci:` — CI configuration
+- `docs:` — documentation only
+- `style:` — formatting, no code change
+- `refactor:` — neither fix nor feature
+- `perf:` — performance improvement
+- `test:` — adding or correcting tests
+
+## Rules
+- Type and description are required
+- Description must be lowercase, imperative mood, no period at end
+- Body must begin one blank line after description
+- `BREAKING CHANGE:` in footer or `!` after type/scope signals a breaking change
+- Scopes are optional but recommended (e.g., `feat(export):`, `fix(auth):`)
+
+## Examples
+```
+feat(export): add CSV download for payment configs
+fix(auth): handle expired JWT tokens gracefully
+docs: update API documentation for v2 endpoints
+refactor!: rename PaymentConfig to PaymentRule
+```
