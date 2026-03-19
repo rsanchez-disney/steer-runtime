@@ -215,5 +215,22 @@ For troubleshooting: [Troubleshooting](TROUBLESHOOTING.md)
 
 ---
 
+## Multi-IDE Strategy
+
+steer-runtime is designed to be runtime-agnostic. While Kiro CLI is the primary runtime today, work is in progress to bring the same agent configurations to [Cursor](https://cursor.com) — mirroring the Kiro approach with Cursor's native rules, tools, and MCP support.
+
+The goal: teams pick the IDE they prefer, but share the same organizational context, guardrails, and agent behaviors. The agent configs (JSON + Markdown) are the source of truth — each runtime adapter translates them into its native format.
+
+```
+steer-runtime (source of truth)
+├── Kiro CLI    ← current primary runtime
+├── Kite        ← desktop GUI for Kiro CLI
+└── Cursor      ← in progress
+```
+
+This reinforces the "agents as code" principle — agent behavior is defined once, version-controlled, and deployed to multiple runtimes without duplication.
+
+---
+
 **Version:** 3.3.0 · **Last Updated:** March 19, 2026  
 Internal Disney tool — not for external distribution.
