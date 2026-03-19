@@ -8,7 +8,8 @@
     "@mywiki/*",
     "execute_bash",
     "fs_read",
-    "grep"
+    "grep",
+    "todo"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md"

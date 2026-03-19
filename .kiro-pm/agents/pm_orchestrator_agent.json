@@ -11,7 +11,10 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "use_subagent"
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

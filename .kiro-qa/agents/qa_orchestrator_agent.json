@@ -12,7 +12,10 @@
     "fs_read",
     "fs_write",
     "grep",
-    "use_subagent"
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
   ],
   "mcpServers": {
     "jira": {

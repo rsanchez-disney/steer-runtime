@@ -9,7 +9,8 @@
     "@mywiki/*",
     "fs_read",
     "grep",
-    "web_fetch"
+    "web_fetch",
+    "knowledge"
   ],
   "mcpServers": {
     "jira": {
