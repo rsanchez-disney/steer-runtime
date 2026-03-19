@@ -103,27 +103,29 @@ Pre-built memory banks ship for 9 Disney Payments projects. Adding a new project
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  steer-runtime                       │
-│                                                     │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐            │
-│  │ Profiles │ │ Context  │ │   MCP    │            │
-│  │ dev/ba/  │ │ rules,   │ │ servers  │            │
-│  │ qa/ops/pm│ │ prompts, │ │ (shared) │            │
-│  │          │ │ memory   │ │          │            │
-│  └────┬─────┘ └────┬─────┘ └────┬─────┘            │
-│       │             │            │                   │
-│  ┌────▼─────────────▼────────────▼─────┐            │
-│  │          setup.sh / setup.ps1        │            │
-│  │       (compile + install + configure)│            │
-│  └────┬──────────┬──────────┬──────────┘            │
-│       │          │          │                        │
-│  ┌────▼────┐ ┌───▼────┐ ┌──▼───┐                   │
-│  │Kiro CLI │ │ Cursor │ │ Kite │  ← IDE targets    │
-│  │ .kiro/  │ │.cursor/│ │ GUI  │                    │
-│  └─────────┘ └────────┘ └──────┘                    │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph src["steer-runtime (source of truth)"]
+        profiles["Profiles<br/>dev / ba / qa / ops / pm"]
+        context["Context<br/>rules, prompts, memory"]
+        mcp["MCP Servers<br/>(shared bundles)"]
+    end
+
+    profiles --> setup
+    context --> setup
+    mcp --> setup
+
+    setup["setup.sh / setup.ps1<br/>compile + install + configure"]
+
+    setup --> kiro["Kiro CLI<br/>.kiro/"]
+    setup --> cursor["Cursor<br/>.cursor/"]
+    setup --> kite["Kite<br/>Desktop GUI"]
+
+    style src fill:#1a1a2e,stroke:#e94560,color:#eee
+    style setup fill:#0f3460,stroke:#e94560,color:#eee
+    style kiro fill:#16213e,stroke:#0f3460,color:#eee
+    style cursor fill:#16213e,stroke:#0f3460,color:#eee
+    style kite fill:#16213e,stroke:#0f3460,color:#eee
 ```
 
 The key insight: agent knowledge (what to do, how to review code, what standards to enforce) is authored once in profile directories. `setup.sh` compiles that knowledge into each IDE's native format. When you improve an agent prompt, every IDE gets the update on next sync.
