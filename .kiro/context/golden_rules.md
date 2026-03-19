@@ -176,3 +176,20 @@ These rules are checked at:
 3. **Gate 5**: PR Review - Final validation before merge
 
 Violations will result in rejection at approval gates.
+
+## 11. Cross-Platform Tool Usage
+
+**Rule**: Use built-in agent tools instead of platform-specific shell commands.
+
+**Banned Commands**:
+- ❌ `findstr` — Windows-only, unreliable regex, breaks on macOS/Linux
+- ❌ `dir` — use `fs_read` (Directory mode) or `ls`
+- ❌ `type` — use `fs_read` (Line mode) or `cat`
+
+**Preferred Alternatives**:
+- ✅ `grep` tool for all file content searches
+- ✅ `fs_read` for reading files and listing directories
+- ✅ `code` tool for symbol search and AST analysis
+- ✅ `execute_bash` with cross-platform commands (`ls`, `cat`, `find`) when no agent tool fits
+
+**Why**: Agents run on macOS, Linux, and Windows. Platform-specific commands break for teammates on different OSes and produce inconsistent results.
