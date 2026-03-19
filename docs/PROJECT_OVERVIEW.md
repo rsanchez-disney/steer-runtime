@@ -187,13 +187,13 @@ Shared resources live in `.kiro/`:
 | MCP servers | 5 (jira, confluence, mywiki, github, mermaid) |
 | Agents with MCP integration | 22 |
 | Agents with hooks | 11 |
-| Agents with advanced tools | 14 |
+| Agents with advanced tools | 11 |
 | Context files | 12 |
 | Steering rules | 10 |
 | Skills | 16 |
 | Hook scripts | 3 |
 | Supported projects | 9 (with pre-built memory banks) |
-| Setup commands | 12 |
+| Setup commands | 13 (+ 4 cursor subcommands) |
 
 ---
 
