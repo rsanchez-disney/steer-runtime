@@ -3,12 +3,12 @@
   "description": "Config Studio UI specialist (Angular)",
   "prompt": "ui.md",
   "tools": [
-    "read",
-    "write",
-    "shell"
+    "fs_read",
+    "fs_write",
+    "execute_bash"
   ],
   "toolsSettings": {
-    "write": {
+    "fs_write": {
       "allowedPaths": [
         "src/**",
         "projects/**",

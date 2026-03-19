@@ -3,12 +3,12 @@
   "description": "Android native specialist for Kotlin/Java and platform channels",
   "prompt": "android_native.md",
   "tools": [
-    "read",
-    "write",
-    "shell"
+    "fs_read",
+    "fs_write",
+    "execute_bash"
   ],
   "toolsSettings": {
-    "write": {
+    "fs_write": {
       "allowedPaths": [
         "android/app/src/**",
         "android/build.gradle",

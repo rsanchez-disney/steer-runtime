@@ -3,12 +3,12 @@
   "description": "iOS native specialist for Swift/Objective-C and platform channels",
   "prompt": "ios_native.md",
   "tools": [
-    "read",
-    "write",
-    "shell"
+    "fs_read",
+    "fs_write",
+    "execute_bash"
   ],
   "toolsSettings": {
-    "write": {
+    "fs_write": {
       "allowedPaths": [
         "ios/Runner/**",
         "ios/Podfile",
