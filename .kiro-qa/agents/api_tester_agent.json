@@ -12,5 +12,14 @@
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
     "file://.kiro/context/api_test_patterns.md"
-  ]
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      }
+    ]
+  }
 }

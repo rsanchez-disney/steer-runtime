@@ -279,6 +279,14 @@ install_shared() {
         cp "$STEER_ROOT/.kiro/context/"*.md "$target_dir/context/" 2>/dev/null || true
         echo "✓ Installed shared context files"
     fi
+
+    if [ -d "$STEER_ROOT/.kiro/hooks" ]; then
+        echo "📦 Installing hooks..."
+        mkdir -p "$target_dir/hooks"
+        cp "$STEER_ROOT/.kiro/hooks/"*.sh "$target_dir/hooks/" 2>/dev/null || true
+        chmod +x "$target_dir/hooks/"*.sh 2>/dev/null || true
+        echo "✓ Installed hook scripts"
+    fi
 }
 
 get_target_dir() {

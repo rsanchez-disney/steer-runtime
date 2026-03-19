@@ -70,5 +70,13 @@
     "file://.kiro/context/test_templates.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\""
+  "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\"",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ]
+  }
 }

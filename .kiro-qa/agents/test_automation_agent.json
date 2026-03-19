@@ -14,5 +14,14 @@
     "file://.kiro/context/automation_patterns.md",
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/steering/**/*.md"
-  ]
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      }
+    ]
+  }
 }
