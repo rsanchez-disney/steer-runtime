@@ -88,6 +88,27 @@ ls -la ~/.kiro/hooks/
 
 Use `/hooks` in a chat session to inspect active hooks for the current agent.
 
+## Agent fails with "unknown field `welcomeMessage`"
+
+If you see:
+
+```bash
+Error: Json supplied at ~/.kiro/agents/x_orchestrator_agent.json is invalid: unknown field `welcomeMessage`, expected one of `$schema`, `name`, `description`, `prompt`, `mcpServers`, `tools`, `toolAliases`, `allowedTools`, `resources`, `hooks`, `toolsSettings`, `includeMcpJson`, `useLegacyMcpJson`, `model` at line 70 column 18
+```
+
+**Root cause:** steer-runtime added `welcomeMessage` to orchestrator agent configs. Older kiro-cli versions (<1.24.1) don't recognize this field and reject the JSON. Verify your version with:
+
+```bash
+kiro-cli --version
+```
+
+**Fix:** Reinstall to get an updated kiro version.
+
+```bash
+curl -fsSL https://cli.kiro.dev/install | bash
+```
+Reference: [Kiro CLI Website](https://kiro.dev/docs/cli/)
+
 ---
 
 > 🪟 **Windows users:** See [Windows Setup Guide](WINDOWS_SETUP.md) for PowerShell equivalents.
