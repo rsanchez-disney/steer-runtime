@@ -66,5 +66,6 @@
     "file://.kiro/context/qa_guidelines.md",
     "file://.kiro/context/test_templates.md"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\""
 }

@@ -2,5 +2,11 @@
   "name": "infra_check_agent",
   "description": "Checks AWS infrastructure status: ECS tasks, clusters, services",
   "prompt": "infra_check_agent.md",
-  "tools": ["execute_bash", "fs_read"]
+  "tools": [
+    "execute_bash",
+    "fs_read"
+  ],
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
 }

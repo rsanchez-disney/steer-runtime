@@ -90,5 +90,8 @@
     "@mcp-atlassian/*",
     "@mywiki/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
 }

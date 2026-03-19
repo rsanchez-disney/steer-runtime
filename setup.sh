@@ -30,9 +30,11 @@ COMMANDS:
   help                                   Show this help message
 
 PROFILES:
-  dev                 Development (18 agents)
+  dev                 Development (19 agents)
   ba                  BA/PO (4 agents)
   qa                  QA/Testing (6 agents)
+  ops                 Operations (5 agents)
+  pm                  PM/Scrum Master (6 agents)
 
 OPTIONS:
   --project <dir>     Target project directory (for Kiro UI)
@@ -467,6 +469,23 @@ case "${1:-help}" in
             
             total=$(find "$KIRO_ROOT/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             echo "✓ Total agents: $total"
+
+            # Validate agent configs
+            if command -v kiro-cli &> /dev/null; then
+                local errors=0
+                for agent_json in "$KIRO_ROOT/agents/"*.json; do
+                    [ -f "$agent_json" ] || continue
+                    if ! kiro-cli agent validate --path "$agent_json" 2>/dev/null; then
+                        echo "  ❌ Invalid: $(basename "$agent_json")"
+                        errors=$((errors + 1))
+                    fi
+                done
+                if [ $errors -eq 0 ]; then
+                    echo "✓ All agent configs valid"
+                else
+                    echo "⚠️  $errors agent(s) failed validation"
+                fi
+            fi
         else
             echo "❌ No CLI agents installed"
         fi

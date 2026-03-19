@@ -37,5 +37,8 @@
   "allowedTools": [
     "@harness/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
 }
