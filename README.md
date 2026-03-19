@@ -122,7 +122,22 @@ steer-runtime/
 | **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
 | **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
 | **PM / Scrum** | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
-| **All** | [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
+| **Cursor** | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **All** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Windows Setup](docs/WINDOWS_SETUP.md) · [Getting Started](docs/GETTING_STARTED.md) |
+
+---
+
+## Cursor IDE Integration
+
+The same coding standards, MCP integrations, and project context can be used in Cursor IDE:
+
+```bash
+./setup.sh cursor install ~/my-project       # Install rules + MCP config
+./setup.sh cursor init-memory ~/my-project   # Add project-specific context
+./setup.sh cursor sync ~/my-project          # Update rules from latest templates
+```
+
+This generates `.cursor/rules/*.mdc` files (glob-activated coding standards) and `.cursor/mcp.json` (Jira, Confluence, GitHub, Mermaid). See [Cursor Setup Guide](docs/CURSOR_SETUP.md) for details.
 
 ---
 
