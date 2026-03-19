@@ -26,6 +26,7 @@ cd ~/steer-runtime
 ./setup.sh list                 # See available profiles
 ./setup.sh install dev          # Install dev profile (or: dev ba qa ops)
 ./setup.sh mcp-install          # Setup MCP servers + tokens
+./setup.sh enable-tools         # Enable thinking, todo, knowledge (optional)
 ```
 
 Then use agents:

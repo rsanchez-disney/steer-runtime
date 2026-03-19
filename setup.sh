@@ -27,6 +27,7 @@ COMMANDS:
   prompts [list|install]                 Manage standalone prompts
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
+  enable-tools                           Enable advanced kiro-cli tool settings
   help                                   Show this help message
 
 PROFILES:
@@ -855,6 +856,38 @@ GHEOF
         ;;
         
         
+    enable-tools)
+        echo "🔧 Enabling advanced kiro-cli tool settings..."
+        echo ""
+
+        settings=(
+            "chat.enableThinking"
+            "chat.enableTodoList"
+            "chat.enableKnowledge"
+        )
+
+        for setting in "${settings[@]}"; do
+            if kiro-cli settings "$setting" true 2>/dev/null; then
+                echo "  ✓ $setting = true"
+            else
+                echo "  ⚠️  $setting — not supported in this kiro-cli version"
+            fi
+        done
+
+        # delegate may not be available in all versions
+        if kiro-cli settings chat.enableDelegate true 2>/dev/null; then
+            echo "  ✓ chat.enableDelegate = true"
+        else
+            echo "  ⏭ chat.enableDelegate — not available yet (agents still work without it)"
+        fi
+
+        echo ""
+        echo "✅ Advanced tools enabled for agents that use them"
+        echo "   thinking  → orchestrators, architecture, planner"
+        echo "   todo      → orchestrators, sprint_manager"
+        echo "   knowledge → story_analyzer, architecture, test_planner, requirements_analyst"
+        ;;
+
     help|--help|-h)
         show_usage
         ;;
