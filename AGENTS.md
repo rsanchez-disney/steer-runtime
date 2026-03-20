@@ -120,18 +120,21 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular).
 **File:** `.kiro-dev-web/agents/backend.json`  
 **Purpose:** Java services specialist for wdpr-config-services  
 **Use for:** Backend API development, database changes, Java services  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### webapi
 **File:** `.kiro-dev-web/agents/webapi.json`  
 **Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
 **Use for:** API layer, BFF logic, TypeScript interfaces  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ui
 **File:** `.kiro-dev-web/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
 **Use for:** Frontend development, components, services, routing  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ux_specialist_agent
@@ -149,17 +152,20 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 **File:** `.kiro-dev-mobile/agents/flutter.json`  
 **Purpose:** Dart/Flutter cross-platform development  
 **Use for:** Flutter widgets, state management, platform channels  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### android_native
 **File:** `.kiro-dev-mobile/agents/android_native.json`  
 **Purpose:** Kotlin/Java platform channels for Android  
-**Use for:** Android-specific implementations, native integrations
+**Use for:** Android-specific implementations, native integrations  
+**MCP Servers:** context7
 
 #### ios_native
 **File:** `.kiro-dev-mobile/agents/ios_native.json`  
 **Purpose:** Swift/Obj-C platform channels for iOS  
-**Use for:** iOS-specific implementations, native integrations
+**Use for:** iOS-specific implementations, native integrations  
+**MCP Servers:** context7
 
 ---
 
@@ -235,6 +241,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `.kiro-qa/agents/test_automation_agent.json`  
 **Purpose:** Creates and maintains automated test scripts  
 **Use for:** UI tests, API tests, integration tests, test frameworks  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### defect_analyst_agent
@@ -247,6 +254,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `.kiro-qa/agents/api_tester_agent.json`  
 **Purpose:** Tests REST APIs and validates contracts  
 **Use for:** API test suites, contract testing, endpoint validation  
+**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### performance_tester_agent
@@ -401,30 +409,38 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens configured via `./setup.sh mcp-install`.
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Other |
-|---------|-------|:----:|:----------:|:------:|:------:|:-----:|
-| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev-core** | code_review_agent | ✅ | | | ✅ | |
-| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | |
-| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | |
-| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | code_quality_agent | | | | | SonarQube |
-| **ops** | deployment_agent | | | | | Harness |
-| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | |
-| **pm** | standup_agent | ✅ | | | | |
-| **pm** | retro_agent | ✅ | ✅ | ✅ | | |
-| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | |
-| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | |
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
+|---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|
+| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | code_review_agent | ✅ | | | ✅ | | |
+| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
+| **dev-web** | backend | | | | | ✅ | |
+| **dev-web** | webapi | | | | | ✅ | |
+| **dev-web** | ui | | | | | ✅ | |
+| **dev-mobile** | flutter | | | | | ✅ | |
+| **dev-mobile** | android_native | | | | | ✅ | |
+| **dev-mobile** | ios_native | | | | | ✅ | |
+| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_automation_agent | | | | | ✅ | |
+| **qa** | api_tester_agent | | | | | ✅ | |
+| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | code_quality_agent | | | | | | SonarQube |
+| **ops** | deployment_agent | | | | | | Harness |
+| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | standup_agent | ✅ | | | | | |
+| **pm** | retro_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | |
 
 ---
 

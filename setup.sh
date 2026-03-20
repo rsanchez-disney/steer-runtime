@@ -575,6 +575,7 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
+        echo "  ✓ context7 (npx-based, no bundle needed)"
         echo ""
         
         # Configure tokens
@@ -1027,6 +1028,10 @@ GHEOF
     "mermaid": {
       "command": "node",
       "args": ["$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }

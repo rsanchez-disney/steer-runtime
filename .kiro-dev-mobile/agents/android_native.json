@@ -5,7 +5,8 @@
   "tools": [
     "fs_read",
     "fs_write",
-    "execute_bash"
+    "execute_bash",
+    "@context7/*"
   ],
   "toolsSettings": {
     "fs_write": {
@@ -23,5 +24,18 @@
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
     "file://README.md"
-  ]
+  ],
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "includeMcpJson": true
 }

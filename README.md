@@ -199,6 +199,7 @@ MCP servers are pre-built and bundled — no `npm install` required. Shared acro
 | mywiki-mcp | MyWiki instance | [Generate token](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
 | github-mcp | GitHub Enterprise | [Generate token](https://github.disney.com/settings/tokens) |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
+| context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
 
 ---
 
