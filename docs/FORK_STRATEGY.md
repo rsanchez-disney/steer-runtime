@@ -63,6 +63,7 @@ graph TD
 | **Memory banks** | ✅ Yes | ❌ No | Project-specific context |
 | **`Projects/` directory** | ✅ Yes | ❌ No | Team's project memory templates |
 | **Custom profiles** | ✅ Yes | ❌ No | Team-specific `.kiro-<name>/` directories |
+| **Team workspaces** | ✅ Yes | ❌ No | `workspaces/<team>/` — one-command team setup |
 | **Custom rules** | ✅ Yes | ⚠️ Merge | Team rules in `common/rules/` |
 | **Context files** | ⚠️ Additive | ✅ Yes | Add new files, don't modify upstream ones |
 
@@ -326,7 +327,7 @@ git merge upstream/main              # Sync
 
 - [ ] Fork `SANCR225/steer-runtime` to your team's GitHub org
 - [ ] Clone and add `upstream` remote
-- [ ] Run `./setup.sh install dev` (or whichever profiles you need)
+- [ ] Run `./setup.sh workspace apply <team>` (or `./setup.sh install dev` for manual setup)
 - [ ] Run `./setup.sh mcp-install` to configure tokens
 - [ ] Add project memory banks via `./setup.sh init-memory`
 - [ ] Set up weekly upstream sync (manual or automated)

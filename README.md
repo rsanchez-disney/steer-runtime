@@ -160,6 +160,11 @@ The key insight: agent knowledge (what to do, how to review code, what standards
 ./setup.sh configure            # Reconfigure MCP tokens only
 ./setup.sh enable-tools         # Enable thinking, todo, knowledge
 
+# Team Workspaces
+./setup.sh workspace list              # List available workspaces
+./setup.sh workspace apply payments-core # Apply team config
+./setup.sh workspace create my-team    # Scaffold new workspace
+
 # Content
 ./setup.sh rules list           # List available coding rules
 ./setup.sh rules install --all  # Install rules to project
@@ -219,6 +224,7 @@ steer-runtime/
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles (shared across IDEs)
 ├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
 ├── .amazonq-templates/       # Amazon Q Developer rule templates (19 .md files)
+├── workspaces/               # Team workspace configs
 ├── common/                   # Shared rules, prompts, memory templates
 ├── docs/                     # All documentation
 ├── setup.sh                  # macOS/Linux setup
@@ -261,7 +267,7 @@ steer-runtime/
 
 | Audience | Guides |
 |----------|--------|
-| **Everyone** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Getting Started](docs/GETTING_STARTED.md) · [Fork Strategy](docs/FORK_STRATEGY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) |
+| **Everyone** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Getting Started](docs/GETTING_STARTED.md) · [Team Workspaces](docs/TEAM_WORKSPACES.md) · [Fork Strategy](docs/FORK_STRATEGY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) |
 | **Developers** | [Prompt Guide](docs/PROMPT_GUIDE.md) · [Mobile Setup](docs/MOBILE_AGENTS_SETUP.md) · [Architecture](docs/DESIGN.md) · [MCP Config](docs/MCP_SETUP.md) |
 | **BA / PO** | [BA Guide](docs/BA_PROMPT_GUIDE.md) · [Workflows](docs/BA_WORKFLOWS.md) · [Quick Ref](docs/BA_QUICK_REFERENCE.md) |
 | **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |

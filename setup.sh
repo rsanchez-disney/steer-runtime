@@ -28,6 +28,7 @@ COMMANDS:
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
+  workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
   cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
   amazonq <subcmd> <dir>                 Manage Amazon Q Developer rules
   help                                   Show this help message
@@ -75,6 +76,12 @@ EXAMPLES:
   ./setup.sh rules install --all            # Install all rules
   ./setup.sh prompts list                   # List available prompts
   ./setup.sh init-memory ~/myapp            # Initialize memory bank
+
+  # Team Workspaces
+  ./setup.sh workspace list                # List available workspaces
+  ./setup.sh workspace show payments-core  # View workspace details
+  ./setup.sh workspace apply payments-core # Apply team config
+  ./setup.sh workspace create my-team      # Scaffold new workspace
 
   # Cursor IDE
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
@@ -1272,7 +1279,219 @@ MCPEOF
         esac
         ;;
 
-    help|--help|-h)
+    workspace)
+        shift
+        ws_cmd="${1:-list}"
+        shift 2>/dev/null || true
+        ws_dir="$STEER_ROOT/workspaces"
+
+        case "$ws_cmd" in
+            list)
+                echo "📋 Available team workspaces:"
+                echo ""
+                if [ ! -d "$ws_dir" ] || [ -z "$(ls -d "$ws_dir"/*/workspace.json 2>/dev/null)" ]; then
+                    echo "  (none) — create one with: ./setup.sh workspace create <name>"
+                    exit 0
+                fi
+                for ws in "$ws_dir"/*/workspace.json; do
+                    ws_name=$(basename "$(dirname "$ws")")
+                    ws_desc=$(python3 -c "import json; print(json.load(open('$ws')).get('description',''))" 2>/dev/null)
+                    ws_profiles=$(python3 -c "import json; print(', '.join(json.load(open('$ws')).get('profiles',[])))" 2>/dev/null)
+                    echo "  • $ws_name"
+                    [ -n "$ws_desc" ] && echo "    $ws_desc"
+                    [ -n "$ws_profiles" ] && echo "    Profiles: $ws_profiles"
+                    echo ""
+                done
+                ;;
+
+            show)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace show <name>"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                python3 -c "
+import json
+ws = json.load(open('$ws_file'))
+print(f\"╔{'═'*58}╗\")
+print(f\"║  Team Workspace: {ws['name']:<39} ║\")
+print(f\"╚{'═'*58}╝\")
+print()
+if ws.get('description'): print(f\"  Description:  {ws['description']}\")
+if ws.get('team'):        print(f\"  Team:         {ws['team']}\")
+if ws.get('jira_prefix'): print(f\"  Jira Prefix:  {ws['jira_prefix']}\")
+print()
+print('  Profiles:')
+for p in ws.get('profiles', []): print(f\"    • {p}\")
+if ws.get('default_agent'): print(f\"\n  Default Agent: {ws['default_agent']}\")
+if ws.get('projects'):
+    print('\n  Projects:')
+    for proj in ws['projects']: print(f\"    • {proj['name']} ({proj.get('path','')})\")
+if ws.get('rules'):
+    print('\n  Rules:')
+    for r in ws['rules']: print(f\"    • {r}\")
+print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
+"
+                # Show extra files
+                ws_path="$ws_dir/$ws_name"
+                [ -d "$ws_path/rules" ] && [ -n "$(ls "$ws_path/rules"/*.md 2>/dev/null)" ] && {
+                    echo ""
+                    echo "  Custom Rules:"
+                    for r in "$ws_path/rules"/*.md; do echo "    • $(basename "$r" .md)"; done
+                }
+                [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ] && {
+                    echo ""
+                    echo "  Context Files:"
+                    for c in "$ws_path/context"/*.md; do echo "    • $(basename "$c")"; done
+                }
+                echo ""
+                ;;
+
+            apply)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace apply <name>"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                echo "🚀 Applying workspace: $ws_name"
+                echo ""
+
+                # Parse workspace config
+                profiles=$(python3 -c "import json; print(' '.join(json.load(open('$ws_file')).get('profiles',[])))")
+                rules=$(python3 -c "import json; print(' '.join(json.load(open('$ws_file')).get('rules',[])))")
+                enable_tools=$(python3 -c "import json; print('yes' if json.load(open('$ws_file')).get('enable_tools') else 'no')")
+                default_agent=$(python3 -c "import json; print(json.load(open('$ws_file')).get('default_agent',''))")
+
+                # 1. Install profiles
+                if [ -n "$profiles" ]; then
+                    echo "📦 Installing profiles: $profiles"
+                    "$STEER_ROOT/setup.sh" install $profiles
+                    echo ""
+                fi
+
+                # 2. Install rules
+                if [ -n "$rules" ]; then
+                    echo "📏 Installing rules..."
+                    for rule in $rules; do
+                        rule_file="$STEER_ROOT/common/rules/$rule.md"
+                        if [ -f "$rule_file" ]; then
+                            mkdir -p "$KIRO_ROOT/rules"
+                            cp "$rule_file" "$KIRO_ROOT/rules/"
+                            echo "  ✓ $rule"
+                        fi
+                    done
+                    echo ""
+                fi
+
+                # 3. Copy workspace-specific rules
+                ws_path="$ws_dir/$ws_name"
+                if [ -d "$ws_path/rules" ] && [ -n "$(ls "$ws_path/rules"/*.md 2>/dev/null)" ]; then
+                    echo "📏 Installing workspace rules..."
+                    mkdir -p "$KIRO_ROOT/rules"
+                    for r in "$ws_path/rules"/*.md; do
+                        cp "$r" "$KIRO_ROOT/rules/"
+                        echo "  ✓ $(basename "$r")"
+                    done
+                    echo ""
+                fi
+
+                # 4. Copy workspace-specific context
+                if [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ]; then
+                    echo "📄 Installing workspace context..."
+                    mkdir -p "$KIRO_ROOT/context"
+                    for c in "$ws_path/context"/*.md; do
+                        cp "$c" "$KIRO_ROOT/context/"
+                        echo "  ✓ $(basename "$c")"
+                    done
+                    echo ""
+                fi
+
+                # 5. Initialize project memory banks
+                projects=$(python3 -c "
+import json
+for p in json.load(open('$ws_file')).get('projects',[]):
+    mb = p.get('memory_bank','')
+    path = p.get('path','')
+    if path: print(f\"{path}|{mb}\")
+")
+                if [ -n "$projects" ]; then
+                    echo "🧠 Initializing project memory banks..."
+                    while IFS='|' read -r proj_path proj_mb; do
+                        resolved="${proj_path/#\~/$HOME}"
+                        if [ -d "$resolved" ]; then
+                            if [ -n "$proj_mb" ]; then
+                                "$STEER_ROOT/setup.sh" init-memory "$resolved" --from "$proj_mb" 2>/dev/null && echo "  ✓ $(basename "$resolved")" || echo "  ⚠ $(basename "$resolved") (template not found, using generic)"
+                            else
+                                "$STEER_ROOT/setup.sh" init-memory "$resolved" 2>/dev/null && echo "  ✓ $(basename "$resolved")"
+                            fi
+                        else
+                            echo "  ⏭ $(basename "$resolved") (directory not found)"
+                        fi
+                    done <<< "$projects"
+                    echo ""
+                fi
+
+                # 6. Enable tools
+                if [ "$enable_tools" = "yes" ]; then
+                    echo "🔧 Enabling advanced tools..."
+                    "$STEER_ROOT/setup.sh" enable-tools 2>/dev/null || true
+                    echo ""
+                fi
+
+                echo "✅ Workspace '$ws_name' applied"
+                [ -n "$default_agent" ] && echo "   Default agent: $default_agent"
+                echo ""
+                echo "Next steps:"
+                echo "  ./setup.sh mcp-install              # Configure MCP tokens"
+                [ -n "$default_agent" ] && echo "  kiro-cli chat --agent $default_agent  # Start coding"
+                ;;
+
+            create)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace create <name>"; exit 1; fi
+                ws_path="$ws_dir/$ws_name"
+                if [ -d "$ws_path" ]; then echo "❌ Workspace already exists: $ws_name"; exit 1; fi
+
+                echo "🏗️  Creating workspace: $ws_name"
+                mkdir -p "$ws_path"/{rules,context,memory-banks}
+
+                cat > "$ws_path/workspace.json" << WSEOF
+{
+  "name": "$ws_name",
+  "description": "",
+  "team": "",
+  "profiles": ["dev-core", "dev-web"],
+  "default_agent": "orchestrator",
+  "projects": [],
+  "rules": ["conventional_commit"],
+  "enable_tools": true,
+  "jira_prefix": ""
+}
+WSEOF
+
+                echo "✅ Workspace scaffolded at workspaces/$ws_name/"
+                echo ""
+                echo "Next steps:"
+                echo "  1. Edit workspaces/$ws_name/workspace.json"
+                echo "  2. Add team rules to workspaces/$ws_name/rules/"
+                echo "  3. Add team context to workspaces/$ws_name/context/"
+                echo "  4. Apply: ./setup.sh workspace apply $ws_name"
+                ;;
+
+            *)
+                echo "❌ Unknown workspace command: $ws_cmd"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh workspace list              List available workspaces"
+                echo "  ./setup.sh workspace show <name>       Show workspace details"
+                echo "  ./setup.sh workspace apply <name>      Apply workspace config"
+                echo "  ./setup.sh workspace create <name>     Create new workspace"
+                exit 1
+                ;;
+        esac
+        ;;
+
+        help|--help|-h)
         show_usage
         ;;
         
