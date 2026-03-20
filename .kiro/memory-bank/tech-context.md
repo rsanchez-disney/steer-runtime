@@ -38,6 +38,7 @@
 - MyWiki (mywiki.disney.com) — shares confluence-mcp bundle
 - GitHub (github.disney.com) — via bundled node server
 - Mermaid — diagram generation, no token needed
+- Context7 — up-to-date library/framework docs, npx-based, no token needed
 - Harness (disney.harness.io) — CI/CD pipelines (ops)
 - SonarQube (sonar.cicd.wdprapps.disney.com) — code quality (ops)
 

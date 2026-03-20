@@ -2,10 +2,11 @@
 
 ## Required MCP Servers
 
-steer-runtime requires 2 MCP servers:
+steer-runtime uses these MCP servers:
 
 1. **Jira MCP** - For story_analyzer_agent
 2. **GitHub MCP** - For pr_creator_agent
+3. **Context7 MCP** - For coding agents (no token needed)
 
 ## Kiro UI Configuration
 
@@ -71,6 +72,30 @@ MCP servers must be configured in Kiro UI settings (cannot be automated via scri
 - `@github/create-pull-request` - Create PRs
 - `@github/get-repository` - Get repo info
 - `@github/create-branch` - Create branches
+
+
+
+### 3. Context7 MCP Server (No Token Required)
+
+Provides up-to-date library and framework documentation to coding agents. Runs via npx — no local bundle or token needed.
+
+**Configuration** (already wired into agent JSON configs):
+```json
+{
+  "context7": {
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp"]
+  }
+}
+```
+
+**Tools Provided**:
+- `@context7/resolve-library-id` - Find a library by name
+- `@context7/get-library-docs` - Fetch current documentation for a library
+
+**Used by**: backend, webapi, ui, flutter, android_native, ios_native, test_automation_agent, api_tester_agent
+
+**More info**: [context7.com](https://context7.com)
 
 ## Kiro CLI Configuration
 

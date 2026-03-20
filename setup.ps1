@@ -306,6 +306,7 @@ switch ($Command) {
             Write-Host "X No pre-built MCP bundles found in dist/" -ForegroundColor Red; exit 1
         }
         Write-Host "`n$($mcpDirs.Count) MCP servers ready (pre-built, no npm install needed)" -ForegroundColor Green
+        Write-Host "  OK context7 (npx-based, no bundle needed)" -ForegroundColor Green
 
         # Configure tokens
         Write-Host ""

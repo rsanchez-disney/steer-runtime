@@ -94,7 +94,8 @@ steer-runtime/
 │   │       ├── confluence-mcp/     #     Confluence integration
 │   │       ├── mywiki-mcp/         #     MyWiki instance (reuses confluence-mcp)
 │   │       ├── github-mcp/         #     GitHub Enterprise integration
-│   │       └── mermaid-diagram-mcp/#     Diagram generation
+│   │       ├── mermaid-diagram-mcp/#     Diagram generation
+│       └── (context7)           #     npx-based, no local bundle
 │   └── memory-bank/                #   steer-runtime's own memory bank
 │       ├── project-brief.md
 │       ├── tech-context.md
@@ -251,6 +252,8 @@ Each agent consists of two files:
 │   └── .env               GITHUB_TOKEN_disney + GITHUB_HOST_disney
 │
 └── mermaid-diagram-mcp/   Diagram generation
+
+# context7 is npx-based (@upstash/context7-mcp) — no local bundle
 ```
 
 Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file** (dotenv doesn't override existing env vars)
@@ -259,12 +262,12 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ## Profile × MCP Matrix
 
-| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Other |
-|---------|--------|:----:|:----------:|:------:|:------:|-------|
-| **dev** | 18 | 4 | 3 | 3 | 4 | — |
-| **ba** | 4 | 4 | 4 | 4 | 4 | — |
-| **qa** | 6 | 3 | 3 | 3 | 3 | — |
-| **ops** | 5 | 2 | 2 | 2 | 2 | SonarQube, Harness |
+| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
+|---------|--------|:----:|:----------:|:------:|:------:|:--------:|-------|
+| **dev** | 20 | 4 | 3 | 3 | 4 | 6 | — |
+| **ba** | 4 | 4 | 4 | 4 | 4 | — | — |
+| **qa** | 6 | 3 | 3 | 3 | 3 | 2 | — |
+| **ops** | 5 | 2 | 2 | 2 | 2 | — | SonarQube, Harness |
 
 ---
 
