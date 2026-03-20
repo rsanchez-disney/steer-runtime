@@ -219,6 +219,9 @@ graph LR
 - ✅ New common rules applicable org-wide
 - ❌ Team-specific memory banks or project mappings
 - ❌ Team-specific MCP tokens or credentials
+- ❌ Specific project architecture decisions or patterns
+- ❌ Specific project directory structures or conventions
+- ❌ Custom project code-styles or formatting preferences
 - ❌ One-off customizations
 
 ### How to Submit
