@@ -158,6 +158,7 @@ graph TD
     runtime --> github["GitHub MCP<br/>(node)"]
     runtime --> mermaid["Mermaid MCP<br/>(node)"]
     runtime --> mywiki["MyWiki MCP<br/>(node)"]
+    runtime --> context7["Context7 MCP<br/>(npx)"]
 
     style terminal fill:#1a1a2e,stroke:#e94560,color:#eee
     style runtime fill:#0f3460,stroke:#e94560,color:#eee
@@ -166,6 +167,7 @@ graph TD
     style github fill:#16213e,stroke:#0f3460,color:#eee
     style mermaid fill:#16213e,stroke:#0f3460,color:#eee
     style mywiki fill:#16213e,stroke:#0f3460,color:#eee
+    style context7 fill:#16213e,stroke:#0f3460,color:#eee
 ```
 
 ### Profile Layout
