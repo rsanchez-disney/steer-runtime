@@ -4,14 +4,25 @@ Complete reference for all agents across profiles.
 
 ---
 
-## Profile: dev (20 agents)
+## Dev Profiles (20 agents total)
 
-Development agents for backend, webapi, UI, mobile, testing, security, and code review.
+Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
-### Orchestrator (1)
+```bash
+./setup.sh install dev                    # All 20 dev agents (alias → dev-core + dev-web + dev-mobile)
+./setup.sh install dev-core dev-web       # Fullstack web developer (17 agents)
+./setup.sh install dev-core dev-mobile    # Mobile developer (16 agents)
+./setup.sh install dev-core               # Core only — orchestrator + quality (13 agents)
+```
+
+---
+
+### Profile: dev-core (13 agents)
+
+Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
 #### orchestrator
-**File:** `.kiro-dev/agents/orchestrator.json`  
+**File:** `.kiro-dev-core/agents/orchestrator.json`  
 **Purpose:** SDLC orchestrator with automatic multi-agent delegation  
 **Use for:** Implementing Jira stories end-to-end, coordinating multi-repo features  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -31,136 +42,124 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 11. Create pull request
 12. Complete (summary & PR URL)
 
----
-
-### Config Studio Specialists (3)
-
-#### backend
-**File:** `.kiro-dev/agents/backend.json`  
-**Purpose:** Java services specialist for wdpr-config-services  
-**Use for:** Backend API development, database changes, Java services  
-**Hooks:** preToolUse (guard writes)
-
-#### webapi
-**File:** `.kiro-dev/agents/webapi.json`  
-**Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
-**Use for:** API layer, BFF logic, TypeScript interfaces  
-**Hooks:** preToolUse (guard writes)
-
-#### ui
-**File:** `.kiro-dev/agents/ui.json`  
-**Purpose:** Angular specialist for wdpr-payment-controls-client  
-**Use for:** Frontend development, components, services, routing  
-**Hooks:** preToolUse (guard writes)
-
----
-
-### Mobile Development (3)
-
-#### flutter
-**File:** `.kiro-dev/agents/flutter.json`  
-**Purpose:** Dart/Flutter cross-platform development  
-**Use for:** Flutter widgets, state management, platform channels  
-**Hooks:** preToolUse (guard writes)
-
-#### android_native
-**File:** `.kiro-dev/agents/android_native.json`  
-**Purpose:** Kotlin/Java platform channels for Android  
-**Use for:** Android-specific implementations, native integrations
-
-#### ios_native
-**File:** `.kiro-dev/agents/ios_native.json`  
-**Purpose:** Swift/Obj-C platform channels for iOS  
-**Use for:** iOS-specific implementations, native integrations
-
----
-
-### Planning & Analysis (4)
-
 #### planner_agent
-**File:** `.kiro-dev/agents/planner_agent.json`  
+**File:** `.kiro-dev-core/agents/planner_agent.json`  
 **Purpose:** Task planning and breakdown  
 **Use for:** Breaking down complex tasks, creating implementation plans  
 **Tools:** `thinking`  
 **MCP Servers:** jira, confluence, mywiki
 
 #### story_analyzer_agent
-**File:** `.kiro-dev/agents/story_analyzer_agent.json`  
+**File:** `.kiro-dev-core/agents/story_analyzer_agent.json`  
 **Purpose:** Jira story analysis and requirements extraction  
 **Use for:** Analyzing Jira stories, extracting requirements  
 **Tools:** `knowledge`  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### architecture_agent
-**File:** `.kiro-dev/agents/architecture_agent.json`  
+**File:** `.kiro-dev-core/agents/architecture_agent.json`  
 **Purpose:** Architecture review and design validation  
 **Use for:** Reviewing architecture decisions, design patterns  
 **Tools:** `thinking`, `knowledge`
 
 #### codebase_explorer_agent
-**File:** `.kiro-dev/agents/codebase_explorer_agent.json`  
+**File:** `.kiro-dev-core/agents/codebase_explorer_agent.json`  
 **Purpose:** Code exploration and navigation  
 **Use for:** Finding relevant code, understanding structure
 
----
-
-### Quality & Security (6)
-
 #### code_review_agent
-**File:** `.kiro-dev/agents/code_review_agent.json`  
+**File:** `.kiro-dev-core/agents/code_review_agent.json`  
 **Purpose:** Code review and quality checks  
 **Use for:** Reviewing code changes, identifying issues  
 **MCP Servers:** jira, github
 
 #### security_scanner_agent
-**File:** `.kiro-dev/agents/security_scanner_agent.json`  
+**File:** `.kiro-dev-core/agents/security_scanner_agent.json`  
 **Purpose:** Security analysis and vulnerability detection  
 **Use for:** Security scans, finding vulnerabilities
 
 #### compliance_agent
-**File:** `.kiro-dev/agents/compliance_agent.json`  
+**File:** `.kiro-dev-core/agents/compliance_agent.json`  
 **Purpose:** Compliance validation (golden rules, standards)  
 **Use for:** Checking compliance with coding standards
 
 #### test_runner_agent
-**File:** `.kiro-dev/agents/test_runner_agent.json`  
+**File:** `.kiro-dev-core/agents/test_runner_agent.json`  
 **Purpose:** Test execution and coverage analysis  
 **Use for:** Running tests, checking coverage
 
 #### performance_agent
-**File:** `.kiro-dev/agents/performance_agent.json`  
+**File:** `.kiro-dev-core/agents/performance_agent.json`  
 **Purpose:** Performance optimization and analysis  
 **Use for:** Performance profiling, optimization suggestions
 
-#### ux_specialist_agent
-**File:** `.kiro-dev/agents/ux_specialist_agent.json`  
-**Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
-**Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance
-
----
-
-### Workflow (2)
-
 #### pr_creator_agent
-**File:** `.kiro-dev/agents/pr_creator_agent.json`  
+**File:** `.kiro-dev-core/agents/pr_creator_agent.json`  
 **Purpose:** Pull request creation and management  
 **Use for:** Creating PRs, formatting descriptions  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### discussion_agent
-**File:** `.kiro-dev/agents/discussion_agent.json`  
+**File:** `.kiro-dev-core/agents/discussion_agent.json`  
 **Purpose:** Technical discussions and decision support  
 **Use for:** Technical discussions, architecture decisions
 
----
-
-### Technical Writing (1)
-
 #### technical_writer_agent
-**File:** `.kiro-dev/agents/technical_writer_agent.json`  
+**File:** `.kiro-dev-core/agents/technical_writer_agent.json`  
 **Purpose:** Creates and maintains technical documentation  
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
 **MCP Servers:** confluence, mywiki, github
+
+---
+
+### Profile: dev-web (4 agents)
+
+Fullstack web specialists for Config Studio (Java + Node.js + Angular).
+
+#### backend
+**File:** `.kiro-dev-web/agents/backend.json`  
+**Purpose:** Java services specialist for wdpr-config-services  
+**Use for:** Backend API development, database changes, Java services  
+**Hooks:** preToolUse (guard writes)
+
+#### webapi
+**File:** `.kiro-dev-web/agents/webapi.json`  
+**Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
+**Use for:** API layer, BFF logic, TypeScript interfaces  
+**Hooks:** preToolUse (guard writes)
+
+#### ui
+**File:** `.kiro-dev-web/agents/ui.json`  
+**Purpose:** Angular specialist for wdpr-payment-controls-client  
+**Use for:** Frontend development, components, services, routing  
+**Hooks:** preToolUse (guard writes)
+
+#### ux_specialist_agent
+**File:** `.kiro-dev-web/agents/ux_specialist_agent.json`  
+**Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
+**Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance
+
+---
+
+### Profile: dev-mobile (3 agents)
+
+Mobile specialists for Flutter cross-platform and native platform channels.
+
+#### flutter
+**File:** `.kiro-dev-mobile/agents/flutter.json`  
+**Purpose:** Dart/Flutter cross-platform development  
+**Use for:** Flutter widgets, state management, platform channels  
+**Hooks:** preToolUse (guard writes)
+
+#### android_native
+**File:** `.kiro-dev-mobile/agents/android_native.json`  
+**Purpose:** Kotlin/Java platform channels for Android  
+**Use for:** Android-specific implementations, native integrations
+
+#### ios_native
+**File:** `.kiro-dev-mobile/agents/ios_native.json`  
+**Purpose:** Swift/Obj-C platform channels for iOS  
+**Use for:** iOS-specific implementations, native integrations
 
 ---
 
@@ -394,7 +393,7 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 |--------|-------|:------:|----------|
 | `git-context.sh` | agentSpawn | 5 orchestrators | Injects current branch + dirty file count on start |
 | `guard-writes.sh` | preToolUse (fs_write) | backend, webapi, ui, flutter, test_automation, api_tester | Blocks writes to `node_modules/`, `dist/`, `.git/` |
-| `warn-destructive.sh` | postToolUse (execute_bash) | dev orchestrator | Warns on `rm -rf`, `DROP TABLE`, `--force` |
+| `warn-destructive.sh` | postToolUse (execute_bash) | dev-core orchestrator | Warns on `rm -rf`, `DROP TABLE`, `--force` |
 
 ---
 
@@ -404,11 +403,11 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens configured
 
 | Profile | Agent | Jira | Confluence | MyWiki | GitHub | Other |
 |---------|-------|:----:|:----------:|:------:|:------:|:-----:|
-| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev** | code_review_agent | ✅ | | | ✅ | |
-| **dev** | planner_agent | ✅ | ✅ | ✅ | | |
-| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | |
+| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | |
+| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | |
+| **dev-core** | code_review_agent | ✅ | | | ✅ | |
+| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | |
+| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | |
@@ -435,8 +434,8 @@ Shared context loaded via agent `resources`:
 
 | File | Used by |
 |------|---------|
-| `golden_rules.md` | dev orchestrator, architecture, compliance, security, code_review, pr_creator, pm_orchestrator |
-| `project_mappings.md` | dev orchestrator, story_analyzer, planner, codebase_explorer, discussion, test_automation |
+| `golden_rules.md` | dev-core orchestrator, architecture, compliance, security, code_review, pr_creator, pm_orchestrator |
+| `project_mappings.md` | dev-core orchestrator, story_analyzer, planner, codebase_explorer, discussion, test_automation |
 | `ba_guidelines.md` | All BA agents |
 | `qa_guidelines.md` | All QA agents |
 | `ops_guidelines.md` | All ops agents |
@@ -453,15 +452,21 @@ Shared context loaded via agent `resources`:
 ## Quick Reference
 
 ```bash
-# Dev
+# Dev Core
 kiro-cli chat --agent orchestrator              # Dev orchestrator
+kiro-cli chat --agent code_review_agent         # Code review
+kiro-cli chat --agent technical_writer_agent    # Technical docs
+
+# Dev Web
 kiro-cli chat --agent backend                   # Java backend
 kiro-cli chat --agent webapi                    # Node.js API
 kiro-cli chat --agent ui                        # Angular frontend
-kiro-cli chat --agent flutter                   # Flutter mobile
-kiro-cli chat --agent code_review_agent         # Code review
-kiro-cli chat --agent technical_writer_agent    # Technical docs
 kiro-cli chat --agent ux_specialist_agent       # Accessibility & UX review
+
+# Dev Mobile
+kiro-cli chat --agent flutter                   # Flutter mobile
+kiro-cli chat --agent android_native            # Android native
+kiro-cli chat --agent ios_native                # iOS native
 
 # BA/PO
 kiro-cli chat --agent ba_orchestrator_agent     # BA orchestrator
@@ -498,13 +503,14 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ## Installation
 
 ```bash
-./setup.sh install dev          # Install dev agents only
-./setup.sh install dev ba qa    # Install multiple profiles
-./setup.sh install dev ba qa ops pm  # Install all
-./setup.sh enable-tools         # Enable thinking, todo, knowledge
+./setup.sh install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile)
+./setup.sh install dev-core dev-web       # Fullstack web developer
+./setup.sh install dev-core dev-mobile    # Mobile developer
+./setup.sh install dev ba qa ops pm       # Install all profiles
+./setup.sh enable-tools                   # Enable thinking, todo, knowledge
 ```
 
 ---
 
-**Total Agents:** 41 (dev: 20, ba: 4, qa: 6, ops: 5, pm: 6)  
+**Total Agents:** 41 (dev-core: 13, dev-web: 4, dev-mobile: 3, ba: 4, qa: 6, ops: 5, pm: 6)  
 **Last Updated:** March 20, 2026

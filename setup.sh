@@ -33,7 +33,10 @@ COMMANDS:
   help                                   Show this help message
 
 PROFILES:
-  dev                 Development (19 agents)
+  dev                 All dev agents (alias → dev-core + dev-web + dev-mobile)
+  dev-core            Orchestrator + planning + quality + workflow (13 agents)
+  dev-web             Backend + WebAPI + UI + UX specialist (4 agents)
+  dev-mobile          Flutter + Android + iOS (3 agents)
   ba                  BA/PO (4 agents)
   qa                  QA/Testing (6 agents)
   ops                 Operations (5 agents)
@@ -45,9 +48,11 @@ OPTIONS:
 
 EXAMPLES:
   # Install
-  ./setup.sh install dev                    # Install dev to ~/.kiro (CLI)
+  ./setup.sh install dev                    # Install ALL dev (core+web+mobile)
+  ./setup.sh install dev-core dev-web       # Fullstack web developer
+  ./setup.sh install dev-core dev-mobile    # Mobile developer
   ./setup.sh install ba qa                  # Install multiple profiles
-  ./setup.sh install dev --project ~/myapp  # Install to project (UI)
+  ./setup.sh install dev --project ~/myapp  # Install to project (Kiro UI)
   
   # Sync (update installed profiles)
   ./setup.sh sync                           # Update all installed profiles
@@ -87,11 +92,37 @@ USAGE
 list_profiles() {
     echo "📋 Available profiles:"
     echo ""
+    echo "  • dev (alias → dev-core + dev-web + dev-mobile, 20 agents total)"
     for dir in "$STEER_ROOT"/.kiro-*; do
         if [ -d "$dir" ]; then
             profile=$(basename "$dir" | sed 's/^\.kiro-//')
             agent_count=$(find "$dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             echo "  • $profile ($agent_count agents)"
+        fi
+    done
+}
+
+# Expand profile aliases (e.g., dev → dev-core dev-web dev-mobile)
+expand_profile_aliases() {
+    local -n _profiles=$1
+    local expanded=()
+    for p in "${_profiles[@]}"; do
+        case "$p" in
+            dev) expanded+=(dev-core dev-web dev-mobile) ;;
+            *)   expanded+=("$p") ;;
+        esac
+    done
+    # Deduplicate while preserving order
+    local seen=()
+    _profiles=()
+    for p in "${expanded[@]}"; do
+        local dup=false
+        for s in "${seen[@]}"; do
+            [ "$s" = "$p" ] && dup=true && break
+        done
+        if [ "$dup" = false ]; then
+            seen+=("$p")
+            _profiles+=("$p")
         fi
     done
 }
@@ -349,6 +380,9 @@ case "${1:-help}" in
             esac
         done
         
+        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        expand_profile_aliases profiles
+        
         target_root=$(get_target_dir "$project_dir")
         [ -n "$project_dir" ] && echo "🎯 Target: $target_root (Kiro UI)" || echo "🎯 Target: $target_root (Kiro CLI)"
         
@@ -435,6 +469,9 @@ case "${1:-help}" in
                     ;;
             esac
         done
+        
+        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        expand_profile_aliases profiles
         
         target_root=$(get_target_dir "$project_dir")
         echo "🎯 Target: $target_root"
