@@ -2,7 +2,7 @@
 
 Portable, IDE-agnostic AI agent platform for software teams — 40 specialized agents across 5 SDLC profiles, deployable to any AI-powered IDE or CLI.
 
-Define agents, standards, and integrations once. Run them everywhere — Kiro CLI, Cursor, Kite, or the next tool your team adopts.
+Define agents, standards, and integrations once. Run them everywhere — Kiro CLI, Cursor, Amazon Q, Kite, or the next tool your team adopts.
 
 ```bash
 ./setup.sh install dev ba qa ops pm   # Install all profiles
@@ -31,9 +31,10 @@ AI coding assistants are powerful, but without shared standards they produce inc
 |-----|---------------|-------|--------|
 | **Kiro CLI** | Native agent JSON + prompt markdown | `./setup.sh install <profiles>` | ✅ Primary |
 | **Cursor** | `.mdc` rule files + shared MCP config | `./setup.sh cursor install <dir>` | ✅ Supported |
+| **Amazon Q** | Plain `.md` rule files | `./setup.sh amazonq install <dir>` | ✅ Supported |
 | **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
 
-All three share the same MCP server bundles (Jira, Confluence, GitHub, Mermaid) and the same source-of-truth for coding standards. Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
+All four share the same source-of-truth for coding standards. Kiro, Cursor, and Amazon Q also share MCP server bundles. Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
 
 ---
 
@@ -60,6 +61,9 @@ kiro-cli chat --agent pm_orchestrator_agent      # PM/Scrum Master orchestrator
 
 # Cursor — agents activate automatically via glob patterns and manual rules
 ./setup.sh cursor install ~/my-project
+
+# Amazon Q — rules loaded automatically from .amazonq/rules/
+./setup.sh amazonq install ~/my-project
 
 # Kite — visual interface over Kiro CLI agents
 # See https://github.disney.com/SANCR225/Kite
@@ -119,12 +123,14 @@ graph TD
 
     setup --> kiro["Kiro CLI<br/>.kiro/"]
     setup --> cursor["Cursor<br/>.cursor/"]
+    setup --> amazonq["Amazon Q<br/>.amazonq/"]
     setup --> kite["Kite<br/>Desktop GUI"]
 
     style src fill:#1a1a2e,stroke:#e94560,color:#eee
     style setup fill:#0f3460,stroke:#e94560,color:#eee
     style kiro fill:#16213e,stroke:#0f3460,color:#eee
     style cursor fill:#16213e,stroke:#0f3460,color:#eee
+    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
     style kite fill:#16213e,stroke:#0f3460,color:#eee
 ```
 
@@ -160,6 +166,11 @@ The key insight: agent knowledge (what to do, how to review code, what standards
 ./setup.sh cursor sync <dir>     # Update Cursor rules from templates
 ./setup.sh cursor remove <dir>   # Remove .cursor/ directory
 ./setup.sh cursor init-memory <dir> # Generate project context rule
+
+# Amazon Q Developer
+./setup.sh amazonq install <dir>  # Install .amazonq/rules/
+./setup.sh amazonq sync <dir>     # Update rules from templates
+./setup.sh amazonq remove <dir>   # Remove .amazonq/ directory
 
 # Kiro UI (project-specific install)
 ./setup.sh install dev --project ~/my-project
@@ -199,6 +210,7 @@ steer-runtime/
 ├── .kiro/hooks/              # Reusable agent hook scripts
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles (shared across IDEs)
 ├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
+├── .amazonq-templates/       # Amazon Q Developer rule templates (19 .md files)
 ├── common/                   # Shared rules, prompts, memory templates
 ├── docs/                     # All documentation
 ├── setup.sh                  # macOS/Linux setup
@@ -232,6 +244,7 @@ steer-runtime/
 ```bash
 ./setup.sh init-memory ~/new-project           # Kiro CLI
 ./setup.sh cursor init-memory ~/new-project    # Cursor
+./setup.sh amazonq install ~/new-project       # Amazon Q
 ```
 
 ---
@@ -247,6 +260,7 @@ steer-runtime/
 | **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
 | **PM / Scrum** | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
 | **Cursor users** | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **Amazon Q users** | [Amazon Q templates README](.amazonq-templates/README.md) |
 | **Windows** | [Windows Setup](docs/WINDOWS_SETUP.md) |
 
 ---
@@ -254,7 +268,7 @@ steer-runtime/
 ## Features
 
 ✅ 40 specialized agents across 5 SDLC profiles  
-✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, and Kite  
+✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, Amazon Q, and Kite  
 ✅ Project-portable — memory banks adapt agents to any codebase or tech stack  
 ✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Mermaid, shared across IDEs  
 ✅ Cross-platform — macOS/Linux (`setup.sh`) + Windows (`setup.ps1`)  

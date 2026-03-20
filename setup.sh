@@ -29,6 +29,7 @@ COMMANDS:
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
   cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
+  amazonq <subcmd> <dir>                 Manage Amazon Q Developer rules
   help                                   Show this help message
 
 PROFILES:
@@ -74,6 +75,11 @@ EXAMPLES:
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
   ./setup.sh cursor sync ~/myapp           # Update rules from latest templates
   ./setup.sh cursor remove ~/myapp         # Remove .cursor/ directory
+
+  # Amazon Q Developer
+  ./setup.sh amazonq install ~/myapp       # Install .amazonq/rules/
+  ./setup.sh amazonq sync ~/myapp          # Update rules from latest templates
+  ./setup.sh amazonq remove ~/myapp        # Remove .amazonq/ directory
 
 USAGE
 }
@@ -1123,6 +1129,103 @@ MCPEOF
                 echo "  ./setup.sh cursor sync <project-dir>      Update rules from templates"
                 echo "  ./setup.sh cursor remove <project-dir>    Remove .cursor/ directory"
                 echo "  ./setup.sh cursor init-memory <project-dir>  Generate project context rule"
+                ;;
+        esac
+        ;;
+
+    amazonq)
+        shift
+        aq_subcmd="${1:-help}"
+        shift 2>/dev/null || true
+        aq_dir="${1:-}"
+        
+        case "$aq_subcmd" in
+            install)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq install <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                if [ ! -d "$aq_dir" ]; then
+                    echo "❌ Directory does not exist: $aq_dir"
+                    exit 1
+                fi
+                
+                rules_dir="$aq_dir/.amazonq/rules"
+                mkdir -p "$rules_dir"
+                
+                echo "🤖 Installing Amazon Q rules to $rules_dir"
+                echo ""
+                
+                count=0
+                for md in "$STEER_ROOT"/.amazonq-templates/*.md; do
+                    [ -f "$md" ] || continue
+                    name=$(basename "$md")
+                    [ "$name" = "README.md" ] && continue
+                    cp "$md" "$rules_dir/"
+                    echo "  ✓ $name"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Installed $count rules to $rules_dir"
+                ;;
+            
+            sync)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq sync <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                rules_dir="$aq_dir/.amazonq/rules"
+                
+                if [ ! -d "$rules_dir" ]; then
+                    echo "❌ No Amazon Q rules found at $rules_dir"
+                    echo "   Run: ./setup.sh amazonq install $aq_dir"
+                    exit 1
+                fi
+                
+                echo "🔄 Syncing Amazon Q rules in $rules_dir"
+                echo ""
+                
+                count=0
+                for md in "$STEER_ROOT"/.amazonq-templates/*.md; do
+                    [ -f "$md" ] || continue
+                    name=$(basename "$md")
+                    [ "$name" = "README.md" ] && continue
+                    cp "$md" "$rules_dir/"
+                    echo "  ✓ $name"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Synced $count rules"
+                ;;
+            
+            remove)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq remove <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                
+                if [ ! -d "$aq_dir/.amazonq" ]; then
+                    echo "⚠️  No .amazonq/ directory found in $aq_dir"
+                    exit 0
+                fi
+                
+                echo "🗑️  Removing .amazonq/ from $aq_dir"
+                rm -rf "$aq_dir/.amazonq"
+                echo "✅ Removed"
+                ;;
+
+            *)
+                echo "Amazon Q Developer integration"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh amazonq install <project-dir>   Install rules"
+                echo "  ./setup.sh amazonq sync <project-dir>      Update rules from templates"
+                echo "  ./setup.sh amazonq remove <project-dir>    Remove .amazonq/ directory"
                 ;;
         esac
         ;;

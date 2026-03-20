@@ -6,7 +6,7 @@ A unified LLMOps platform that packages AI-assisted workflows for the entire sof
 
 ## What is steer-runtime?
 
-steer-runtime is a curated collection of 40 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), and [Kite](https://github.disney.com/SANCR225/Kite).
+steer-runtime is a curated collection of 40 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), [Amazon Q Developer](https://aws.amazon.com/q/developer/), and [Kite](https://github.disney.com/SANCR225/Kite).
 
 Instead of one general-purpose AI assistant, steer-runtime gives every team role a set of agents that already understand Disney Payments' repositories, coding standards, Jira workflows, and organizational conventions.
 
@@ -146,7 +146,7 @@ graph TD
 
     terminal --> runtime
 
-    subgraph runtime["IDE Runtime (Kiro CLI / Cursor / Kite)"]
+    subgraph runtime["IDE Runtime (Kiro CLI / Cursor / Amazon Q / Kite)"]
         config["Agent Config (.json)"] --> tools["Tools + Hooks + Resources"]
         prompt["System Prompt (.md)"] --> llm["LLM Context"]
         mcpcfg["MCP Servers"] --> integrations["Jira, Confluence, GitHub"]
@@ -232,19 +232,21 @@ For troubleshooting: [Troubleshooting](TROUBLESHOOTING.md)
 
 ## Multi-IDE Strategy
 
-steer-runtime is runtime-agnostic. Teams pick the IDE they prefer — Kiro CLI, Cursor, or Kite — and share the same organizational context, guardrails, and agent behaviors. The agent configs (JSON + Markdown) are the single source of truth; `setup.sh` compiles them into each IDE's native format.
+steer-runtime is runtime-agnostic. Teams pick the IDE they prefer — Kiro CLI, Cursor, Amazon Q, or Kite — and share the same organizational context, guardrails, and agent behaviors. The agent configs (JSON + Markdown) are the single source of truth; `setup.sh` compiles them into each IDE's native format.
 
 ```mermaid
 graph TD
     src["steer-runtime<br/>(source of truth)"]
     src --> kiro["Kiro CLI<br/>Native agent JSON + prompts<br/><code>./setup.sh install</code>"]
     src --> cursor["Cursor<br/>.mdc rules + shared MCP<br/><code>./setup.sh cursor install</code>"]
+    src --> amazonq["Amazon Q<br/>Plain .md rules<br/><code>./setup.sh amazonq install</code>"]
     src --> kite["Kite<br/>Desktop GUI over Kiro CLI"]
     src -.-> next["Next IDE<br/><i>write one adapter</i>"]
 
     style src fill:#1a1a2e,stroke:#e94560,color:#eee
     style kiro fill:#16213e,stroke:#0f3460,color:#eee
     style cursor fill:#16213e,stroke:#0f3460,color:#eee
+    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
     style kite fill:#16213e,stroke:#0f3460,color:#eee
     style next fill:#16213e,stroke:#0f3460,color:#eee,stroke-dasharray: 5 5
 ```
