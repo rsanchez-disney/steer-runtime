@@ -9,7 +9,7 @@ Define agents, standards, and integrations once. Run them everywhere — Kiro CL
 ./setup.sh mcp-install                # Configure shared MCP servers
 ```
 
-> 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
+> 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 👥 **Joining a team?** Run `./setup.sh workspace apply <team>` · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
 
 **Prerequisites:** Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
 
@@ -94,19 +94,34 @@ Profiles are additive — install only what your role needs, or install all five
 
 ## Using Across Projects and Teams
 
-steer-runtime is designed to move between projects without reconfiguration:
+steer-runtime scales from individual developers to multi-team organizations through three layers:
+
+### Team Workspaces — one-command team setup
+
+New team member? A single command installs everything — profiles, rules, context, memory banks, and tools:
 
 ```bash
-# Initialize any project with a memory bank
-./setup.sh init-memory ~/my-project
-
-# Cursor projects get the same treatment
-./setup.sh cursor init-memory ~/my-project
+./setup.sh workspace list                    # See available team configs
+./setup.sh workspace apply payments-core     # Full team setup in one command
+./setup.sh mcp-install                       # Configure personal tokens
 ```
 
-Memory banks give agents project-specific context (tech stack, repo structure, conventions) while the agents themselves stay generic. The same `backend` agent works on a Java Spring Boot service, a Node.js API, or a Go microservice — the memory bank tells it which one it's looking at.
+Each workspace is a `workspace.json` manifest that defines what a team needs. Teams create their own in `workspaces/<team>/` with custom rules, context files, and project mappings. See [Team Workspaces](docs/TEAM_WORKSPACES.md) for the full guide.
 
-Pre-built memory banks ship for 9 Disney Payments projects. Adding a new project takes minutes — create a memory template in `common/memory-templates/` and run `init-memory`.
+### Memory Banks — project-specific context
+
+Agents are generic by design. Memory banks give them project-specific knowledge — tech stack, repo structure, conventions:
+
+```bash
+./setup.sh init-memory ~/my-project              # Kiro CLI
+./setup.sh cursor init-memory ~/my-project       # Cursor
+```
+
+The same `backend` agent works on a Java Spring Boot service, a Node.js API, or a Go microservice — the memory bank tells it which one it's looking at. Pre-built memory banks ship for 9 Disney Payments projects.
+
+### Fork Strategy — cross-team governance
+
+For organizations with multiple teams, each team forks the repo and maintains team-specific customizations while syncing shared improvements from upstream. See [Fork Strategy](docs/FORK_STRATEGY.md) for the governance model.
 
 ---
 
@@ -290,11 +305,12 @@ steer-runtime/
 ✅ Agent hooks — write guards, git context injection, destructive command warnings  
 ✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)  
 ✅ Auto-discovery of `.kiro-*` profile directories  
+✅ Team Workspaces — one-command setup for new team members  
 ✅ Common rules and standalone prompts reusable across teams  
 
 ---
 
-**Version:** 3.4.0 · **Agents:** 41 (dev-core 13, dev-web 4, dev-mobile 3, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
+**Version:** 3.5.0 · **Agents:** 41 (dev-core 13, dev-web 4, dev-mobile 3, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
 
 ## Resources
 
