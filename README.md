@@ -11,7 +11,7 @@ Define agents, standards, and integrations once. Run them everywhere — Kiro CL
 
 > 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 👥 **Joining a team?** Run `./setup.sh workspace apply <team>` · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
 
-**Prerequisites:** Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
+> **Prerequisites:** Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
 ---
 
 ## What's New
