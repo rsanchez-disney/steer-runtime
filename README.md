@@ -47,7 +47,7 @@ git clone <repo-url> ~/steer-runtime
 cd ~/steer-runtime
 
 ./setup.sh list                 # See available profiles
-./setup.sh install dev          # Install dev profile (or: dev ba qa ops pm)
+./setup.sh install dev          # Install all dev agents (or: dev-core dev-web)
 ./setup.sh mcp-install          # Setup MCP servers + tokens
 ./setup.sh enable-tools         # Enable thinking, todo, knowledge (optional)
 ```
@@ -77,7 +77,10 @@ kiro-cli chat --agent pm_orchestrator_agent      # PM/Scrum Master orchestrator
 
 | Profile | Agents | Focus | Docs |
 |---------|:------:|-------|------|
-| **dev** | 20 | Backend, WebAPI, UI, mobile, security, code review | [Prompt Guide](docs/PROMPT_GUIDE.md) |
+| **dev** | 20 | Alias → dev-core + dev-web + dev-mobile | [Prompt Guide](docs/PROMPT_GUIDE.md) |
+| dev-core | 13 | Orchestrator, planning, quality, security, workflow, docs | |
+| dev-web | 4 | Java backend, Node.js API, Angular UI, UX/a11y | |
+| dev-mobile | 3 | Flutter, Android native, iOS native | |
 | **ba** | 4 | Requirements, scope, user stories, acceptance criteria | [BA Guide](docs/BA_PROMPT_GUIDE.md) |
 | **qa** | 6 | Test planning, automation, defect analysis, API/perf testing | [QA Guide](docs/QA_PROMPT_GUIDE.md) |
 | **ops** | 5 | AI metrics, infrastructure, deployments, code quality | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) |
@@ -203,7 +206,9 @@ MCP servers are pre-built and bundled — no `npm install` required. Shared acro
 
 ```
 steer-runtime/
-├── .kiro-dev/                # Dev profile (19 agents)
+├── .kiro-dev-core/           # Dev core profile (13 agents)
+├── .kiro-dev-web/            # Dev web profile (4 agents)
+├── .kiro-dev-mobile/         # Dev mobile profile (3 agents)
 ├── .kiro-ba/                 # BA profile (4 agents)
 ├── .kiro-qa/                 # QA profile (6 agents)
 ├── .kiro-ops/                # Ops profile (5 agents)
@@ -282,7 +287,7 @@ steer-runtime/
 
 ---
 
-**Version:** 3.4.0 · **Agents:** 41 (dev 20, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
+**Version:** 3.4.0 · **Agents:** 41 (dev-core 13, dev-web 4, dev-mobile 3, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
 
 ## Resources
 
