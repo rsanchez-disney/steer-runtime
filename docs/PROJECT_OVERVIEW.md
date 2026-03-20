@@ -208,7 +208,7 @@ Shared resources live in `.kiro/`:
 | Skills | 16 |
 | Hook scripts | 3 |
 | Supported projects | 9 (with pre-built memory banks) |
-| Setup commands | 13 (+ 4 cursor subcommands) |
+| Setup commands | 14 (+ 7 IDE subcommands) |
 
 ---
 
@@ -255,5 +255,5 @@ Adding a new IDE target means writing one adapter — the agent definitions, con
 
 ---
 
-**Version:** 3.3.0 · **Last Updated:** March 19, 2026  
+**Version:** 3.4.0 · **Last Updated:** March 20, 2026  
 Internal Disney tool — not for external distribution.

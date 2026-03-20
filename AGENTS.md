@@ -350,9 +350,15 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 
 ---
 
-## Cursor IDE
+## Other IDEs
 
-The coding standards, MCP integrations, and workflow guidance from these agents are also available as Cursor IDE rules (`.cursor/rules/*.mdc`). See [Cursor Setup](docs/CURSOR_SETUP.md).
+The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
+
+| IDE | Format | Setup |
+|-----|--------|-------|
+| **Cursor** | `.mdc` rule files + shared MCP | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **Amazon Q** | Plain `.md` rule files | [Amazon Q README](.amazonq-templates/README.md) |
+| **Kite** | Desktop GUI over Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
 
 ---
 
@@ -495,4 +501,4 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ---
 
 **Total Agents:** 40 (dev: 19, ba: 4, qa: 6, ops: 5, pm: 6)  
-**Last Updated:** March 19, 2026
+**Last Updated:** March 20, 2026

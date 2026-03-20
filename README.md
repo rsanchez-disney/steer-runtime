@@ -11,6 +11,8 @@ Define agents, standards, and integrations once. Run them everywhere — Kiro CL
 
 > 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
 
+**Prerequisites:** Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
+
 ---
 
 ## Why steer-runtime?
@@ -34,7 +36,7 @@ AI coding assistants are powerful, but without shared standards they produce inc
 | **Amazon Q** | Plain `.md` rule files | `./setup.sh amazonq install <dir>` | ✅ Supported |
 | **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
 
-All four share the same source-of-truth for coding standards. Kiro, Cursor, and Amazon Q also share MCP server bundles. Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
+All four share the same source-of-truth for coding standards. Kiro CLI and Cursor also share MCP server bundles (Jira, Confluence, GitHub, Mermaid). Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
 
 ---
 
@@ -242,9 +244,9 @@ steer-runtime/
 ### Reuse across a new project
 
 ```bash
-./setup.sh init-memory ~/new-project           # Kiro CLI
-./setup.sh cursor init-memory ~/new-project    # Cursor
-./setup.sh amazonq install ~/new-project       # Amazon Q
+./setup.sh init-memory ~/new-project           # Kiro CLI — project memory bank
+./setup.sh cursor init-memory ~/new-project    # Cursor — project context rule
+./setup.sh amazonq install ~/new-project       # Amazon Q — coding standards
 ```
 
 ---
@@ -280,7 +282,7 @@ steer-runtime/
 
 ---
 
-**Version:** 3.3.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 19, 2026
+**Version:** 3.4.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
 
 ## Resources
 
