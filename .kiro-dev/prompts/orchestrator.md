@@ -60,6 +60,7 @@ Show plan to user. Wait for approval (yes/no/modify).
 For each task in plan, invoke appropriate agent:
 - `backend_agent` for Java/Spring/Go tasks
 - `ui_agent` for Angular/TypeScript tasks
+- `ux_specialist_agent` for accessibility audits and UX reviews
 - `webapi_agent` for Node/Express tasks
 
 Track progress after each task.

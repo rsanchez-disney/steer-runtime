@@ -4,7 +4,7 @@ Complete reference for all agents across profiles.
 
 ---
 
-## Profile: dev (19 agents)
+## Profile: dev (20 agents)
 
 Development agents for backend, webapi, UI, mobile, testing, security, and code review.
 
@@ -104,7 +104,7 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 
 ---
 
-### Quality & Security (5)
+### Quality & Security (6)
 
 #### code_review_agent
 **File:** `.kiro-dev/agents/code_review_agent.json`  
@@ -131,6 +131,11 @@ Development agents for backend, webapi, UI, mobile, testing, security, and code 
 **File:** `.kiro-dev/agents/performance_agent.json`  
 **Purpose:** Performance optimization and analysis  
 **Use for:** Performance profiling, optimization suggestions
+
+#### ux_specialist_agent
+**File:** `.kiro-dev/agents/ux_specialist_agent.json`  
+**Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
+**Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance
 
 ---
 
@@ -456,6 +461,7 @@ kiro-cli chat --agent ui                        # Angular frontend
 kiro-cli chat --agent flutter                   # Flutter mobile
 kiro-cli chat --agent code_review_agent         # Code review
 kiro-cli chat --agent technical_writer_agent    # Technical docs
+kiro-cli chat --agent ux_specialist_agent       # Accessibility & UX review
 
 # BA/PO
 kiro-cli chat --agent ba_orchestrator_agent     # BA orchestrator
@@ -500,5 +506,5 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 
 ---
 
-**Total Agents:** 40 (dev: 19, ba: 4, qa: 6, ops: 5, pm: 6)  
+**Total Agents:** 41 (dev: 20, ba: 4, qa: 6, ops: 5, pm: 6)  
 **Last Updated:** March 20, 2026

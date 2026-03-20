@@ -1,7 +1,7 @@
 # Progress
 
 ## What Works
-- ✅ 40 agents across 5 profiles (dev: 19, ba: 4, qa: 6, ops: 5, pm: 6)
+- ✅ 41 agents across 5 profiles (dev: 20, ba: 4, qa: 6, ops: 5, pm: 6)
 - ✅ 4 IDE targets: Kiro CLI, Cursor (19 .mdc rules), Amazon Q (19 .md rules), Kite
 - ✅ Unified setup.sh with 14 commands + 7 IDE subcommands
 - ✅ Windows support via setup.ps1

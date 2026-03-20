@@ -11,7 +11,7 @@
 ## Agent Profiles
 | Profile | Agents | Key Agents |
 |---------|--------|------------|
-| dev | 19 | orchestrator, backend, webapi, ui, flutter, android_native, ios_native, code_review_agent, security_scanner_agent, technical_writer_agent |
+| dev | 20 | orchestrator, backend, webapi, ui, flutter, android_native, ios_native, code_review_agent, security_scanner_agent, technical_writer_agent |
 | ba | 4 | ba_orchestrator_agent, scope_definer_agent, feature_writer_agent, requirements_analyst_agent |
 | qa | 6 | qa_orchestrator_agent, test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent |
 | ops | 5 | ops_orchestrator_agent, ai_metrics_agent, infra_check_agent, deployment_agent, code_quality_agent |

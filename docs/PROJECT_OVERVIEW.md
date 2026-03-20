@@ -6,13 +6,13 @@ A unified LLMOps platform that packages AI-assisted workflows for the entire sof
 
 ## What is steer-runtime?
 
-steer-runtime is a curated collection of 40 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), [Amazon Q Developer](https://aws.amazon.com/q/developer/), and [Kite](https://github.disney.com/SANCR225/Kite).
+steer-runtime is a curated collection of 41 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), [Amazon Q Developer](https://aws.amazon.com/q/developer/), and [Kite](https://github.disney.com/SANCR225/Kite).
 
 Instead of one general-purpose AI assistant, steer-runtime gives every team role a set of agents that already understand Disney Payments' repositories, coding standards, Jira workflows, and organizational conventions.
 
 ```mermaid
 graph LR
-    dev["👨‍💻 Developer"] --> devp["dev profile<br/>19 agents"]
+    dev["👨‍💻 Developer"] --> devp["dev profile<br/>20 agents"]
     devp --> devt["code, review, test, PR"]
 
     ba["📋 BA / PO"] --> bap["ba profile<br/>4 agents"]
@@ -197,7 +197,7 @@ Shared resources live in `.kiro/`:
 
 | Metric | Value |
 |--------|-------|
-| Total agents | 40 |
+| Total agents | 41 |
 | Profiles | 5 (dev, ba, qa, ops, pm) |
 | MCP servers | 5 (jira, confluence, mywiki, github, mermaid) |
 | Agents with MCP integration | 22 |

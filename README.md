@@ -1,6 +1,6 @@
 # steer-runtime
 
-Portable, IDE-agnostic AI agent platform for software teams — 40 specialized agents across 5 SDLC profiles, deployable to any AI-powered IDE or CLI.
+Portable, IDE-agnostic AI agent platform for software teams — 41 specialized agents across 5 SDLC profiles, deployable to any AI-powered IDE or CLI.
 
 Define agents, standards, and integrations once. Run them everywhere — Kiro CLI, Cursor, Amazon Q, Kite, or the next tool your team adopts.
 
@@ -77,7 +77,7 @@ kiro-cli chat --agent pm_orchestrator_agent      # PM/Scrum Master orchestrator
 
 | Profile | Agents | Focus | Docs |
 |---------|:------:|-------|------|
-| **dev** | 19 | Backend, WebAPI, UI, mobile, security, code review | [Prompt Guide](docs/PROMPT_GUIDE.md) |
+| **dev** | 20 | Backend, WebAPI, UI, mobile, security, code review | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | **ba** | 4 | Requirements, scope, user stories, acceptance criteria | [BA Guide](docs/BA_PROMPT_GUIDE.md) |
 | **qa** | 6 | Test planning, automation, defect analysis, API/perf testing | [QA Guide](docs/QA_PROMPT_GUIDE.md) |
 | **ops** | 5 | AI metrics, infrastructure, deployments, code quality | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) |
@@ -269,7 +269,7 @@ steer-runtime/
 
 ## Features
 
-✅ 40 specialized agents across 5 SDLC profiles  
+✅ 41 specialized agents across 5 SDLC profiles  
 ✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, Amazon Q, and Kite  
 ✅ Project-portable — memory banks adapt agents to any codebase or tech stack  
 ✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Mermaid, shared across IDEs  
@@ -282,7 +282,7 @@ steer-runtime/
 
 ---
 
-**Version:** 3.4.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
+**Version:** 3.4.0 · **Agents:** 41 (dev 20, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 20, 2026
 
 ## Resources
 
