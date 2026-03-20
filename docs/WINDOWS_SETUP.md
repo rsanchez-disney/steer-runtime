@@ -7,9 +7,18 @@ Windows users use `setup.ps1` (PowerShell) instead of `setup.sh`. All commands a
 ## Prerequisites
 
 - PowerShell 5.1+ (included in Windows 10/11) or PowerShell 7+
-- Node.js
+- [Node.js](https://nodejs.org) (includes npm)
 - Git
 - Kiro CLI (`kiro-cli`)
+
+### Install Kiro CLI
+
+Download from https://kiro.dev/downloads/, or install via npm:
+
+```powershell
+npm install -g @kiro/cli
+kiro-cli --version            # Verify installation
+```
 
 If script execution is blocked, run once:
 ```powershell
