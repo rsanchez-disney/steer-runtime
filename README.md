@@ -12,8 +12,17 @@ Define agents, standards, and integrations once. Run them everywhere — Kiro CL
 > 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 👥 **Joining a team?** Run `./setup.sh workspace apply <team>` · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
 
 **Prerequisites:** Node.js, Git, and [Kiro CLI](docs/GETTING_STARTED.md). Optional: [GitHub CLI](https://cli.github.com/) (`gh auth login --hostname github.disney.com`).
-
 ---
+
+## What's New
+
+| Date | Change | Details |
+|------|--------|---------|
+| Mar 20, 2026 | **Team Workspaces** | One-command team setup — `./setup.sh workspace apply <team>` · [Guide](docs/TEAM_WORKSPACES.md) |
+| Mar 20, 2026 | **Context7 MCP** | Real-time library docs for coding agents — no token needed · [context7.com](https://context7.com) |
+| Mar 20, 2026 | **AI-DLC framing** | steer-runtime positioned as AI Development Lifecycle platform |
+| Mar 20, 2026 | **Fork Strategy** | Cross-team governance guide for fork-based workflows · [Guide](docs/FORK_STRATEGY.md) |
+| Mar 20, 2026 | **Dev profile split** | `dev` → `dev-core` + `dev-web` + `dev-mobile` composable sub-profiles |
 
 ## Why steer-runtime?
 
