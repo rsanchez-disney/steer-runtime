@@ -17,7 +17,7 @@ Define agents, standards, and integrations once. Run them everywhere — Kiro CL
 
 ## Why steer-runtime?
 
-AI coding assistants are powerful, but without shared standards they produce inconsistent output across developers, projects, and IDEs. steer-runtime solves this:
+AI coding assistants are powerful, but without shared standards they produce inconsistent output across developers, projects, and IDEs. steer-runtime solves this by implementing an **AI-DLC (AI Development Lifecycle)** approach — AI assistance across every phase of the SDLC, not just code generation. With profiles for dev, BA, QA, ops, and PM, the entire team works with purpose-built agents from requirements through delivery.
 
 - **Consistent output** — Every agent enforces the same coding standards, review criteria, and documentation patterns regardless of who runs it or which IDE they use
 - **Role-based profiles** — Developers, BAs, QA, Ops, and PMs each get purpose-built agents tuned to their workflow
