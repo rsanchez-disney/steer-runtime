@@ -7,7 +7,8 @@
     "fs_read",
     "fs_write",
     "code",
-    "grep"
+    "grep",
+    "@context7/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -21,5 +22,18 @@
         "description": "Block writes to node_modules, dist, .git"
       }
     ]
-  }
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "includeMcpJson": true
 }
