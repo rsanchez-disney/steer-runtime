@@ -83,6 +83,8 @@ EXAMPLES:
   ./setup.sh workspace show payments-core  # View workspace details
   ./setup.sh workspace apply payments-core # Apply team config
   ./setup.sh workspace create my-team      # Scaffold + commit + push
+  ./setup.sh workspace sync payments-core   # Pull all workspace repos
+  ./setup.sh workspace sync payments-core --push  # Push all workspace repos
   ./setup.sh workspace create my-team --local  # Scaffold only (no git)
 
   # Cursor IDE
@@ -1495,6 +1497,50 @@ WSEOF
                 echo "  4. Apply: ./setup.sh workspace apply $ws_name"
                 ;;
 
+
+            sync)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace sync <name> [--push]"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                do_push=false
+                [ "$2" = "--push" ] && do_push=true
+
+                projects=$(python3 -c "
+import json
+for p in json.load(open('$ws_file')).get('projects',[]):
+    path = p.get('path','')
+    if path: print(path)
+")
+                if [ -z "$projects" ]; then
+                    echo "⚠ No projects in workspace $ws_name"
+                    exit 0
+                fi
+
+                echo "🔄 Syncing workspace: $ws_name"
+                echo ""
+                while IFS= read -r proj_path; do
+                    resolved="${proj_path/#\~/$HOME}"
+                    # Resolve relative paths from steer-runtime parent
+                    if [[ "$resolved" == ../* ]]; then
+                        resolved="$(cd "$STEER_ROOT/$resolved" 2>/dev/null && pwd || true)"
+                    fi
+                    name=$(basename "${resolved:-$proj_path}")
+                    if [ -z "$resolved" ] || [ ! -d "$resolved/.git" ]; then
+                        echo "  ⏭ $name (not found)"
+                        continue
+                    fi
+                    if $do_push; then
+                        git -C "$resolved" push --quiet 2>/dev/null && echo "  ✓ $name (pushed)" || echo "  ⚠ $name (push failed)"
+                    else
+                        git -C "$resolved" fetch --all --quiet 2>/dev/null
+                        git -C "$resolved" pull --rebase --quiet 2>/dev/null && echo "  ✓ $name (pulled)" || echo "  ⚠ $name (pull failed — resolve conflicts)"
+                    fi
+                done <<< "$projects"
+                echo ""
+                echo "✅ Sync complete"
+                ;;
             *)
                 echo "❌ Unknown workspace command: $ws_cmd"
                 echo ""
@@ -1502,7 +1548,9 @@ WSEOF
                 echo "  ./setup.sh workspace list              List available workspaces"
                 echo "  ./setup.sh workspace show <name>       Show workspace details"
                 echo "  ./setup.sh workspace apply <name>      Apply workspace config"
-                echo "  ./setup.sh workspace create <name>     Create new workspace"
+                echo "  ./setup.sh workspace create <name>     Create new workspace
+                echo "  ./setup.sh workspace sync <name>       Fetch & pull all workspace repos
+  ./setup.sh workspace sync <name> --push Push all workspace repos""
                 exit 1
                 ;;
         esac

@@ -43,7 +43,7 @@ COMMANDS:
   prompts [list|install]                 Manage standalone prompts
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
-  workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
+  workspace <subcmd>                     Manage team workspaces (create, list, apply, show, sync)
   help                                   Show this help message
 
 PROFILES:
@@ -615,6 +615,27 @@ switch ($Command) {
                 Write-Host "  3. Add team context to workspaces\$wsName\context\"
                 Write-Host "  4. Apply: .\setup.ps1 workspace apply $wsName"
             }
+            "sync" {
+                if (-not $wsName) { Write-Host "X Usage: .\setup.ps1 workspace sync <name> [--push]" -ForegroundColor Red; exit 1 }
+                $wsFile = Join-Path $wsDir "$wsName\workspace.json"
+                if (-not (Test-Path $wsFile)) { Write-Host "X Workspace not found: $wsName" -ForegroundColor Red; exit 1 }
+                $ws = Get-Content $wsFile | ConvertFrom-Json
+                $doPush = $args -contains "--push"
+                if (-not $ws.projects -or $ws.projects.Count -eq 0) { Write-Host "No projects in workspace $wsName"; exit 0 }
+                Write-Host "Syncing workspace: $wsName`n"
+                foreach ($proj in $ws.projects) {
+                    $resolved = $proj.path -replace '^\.\.\/','..\' | ForEach-Object { Join-Path (Split-Path $SteerRoot) ($_ -replace '^\.\.\/','') }
+                    $name = Split-Path $resolved -Leaf
+                    if (-not (Test-Path (Join-Path $resolved ".git"))) { Write-Host "  SKIP $name (not a git repo)"; continue }
+                    if ($doPush) {
+                        git -C $resolved push --quiet 2>$null; if ($?) { Write-Host "  OK $name (pushed)" -ForegroundColor Green } else { Write-Host "  WARN $name (push failed)" -ForegroundColor Yellow }
+                    } else {
+                        git -C $resolved fetch --all --quiet 2>$null
+                        git -C $resolved pull --rebase --quiet 2>$null; if ($?) { Write-Host "  OK $name (pulled)" -ForegroundColor Green } else { Write-Host "  WARN $name (pull failed)" -ForegroundColor Yellow }
+                    }
+                }
+                Write-Host "`nSync complete"
+            }
             default {
                 Write-Host "X Unknown workspace command: $wsCmd" -ForegroundColor Red
                 Write-Host "`nUsage:"
@@ -622,6 +643,7 @@ switch ($Command) {
                 Write-Host "  .\setup.ps1 workspace show <name>"
                 Write-Host "  .\setup.ps1 workspace apply <name>"
                 Write-Host "  .\setup.ps1 workspace create <name>"
+                Write-Host "  .\setup.ps1 workspace sync <name> [--push]"
                 exit 1
             }
         }
