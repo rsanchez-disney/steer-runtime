@@ -1,46 +1,75 @@
 # Flow Tests
 
-Run the orchestrator SDLC workflow end-to-end against a real Jira ticket.
+Run the full SDLC workflow by chaining specialist agents sequentially.
 
-## Usage
+## Entry Points
+
+### From a Jira ticket (dev flow)
 
 ```bash
-# Full flow — explore, plan, implement, test, PR
-./tests/run-flow.sh DPAY-14337
-
-# Dry run — explore and plan only, no code changes
-./tests/run-flow.sh DPAY-14337 --dry-run
-
-# Explicit project directory
-./tests/run-flow.sh DPAY-14337 ~/wdpr-payment-controls-api
-
-# Different project prefixes
-./tests/run-flow.sh GCP-5678                    # → wdpr-gcp-admin-api
-./tests/run-flow.sh TIMON-7590                  # → wdpr-cap-rev-rec-svc
-./tests/run-flow.sh SPR-1234                    # → spr-router
+./tests/run-flow.sh DPAY-14337                              # full flow
+./tests/run-flow.sh DPAY-14337 --dry-run                    # plan only
+./tests/run-flow.sh DPAY-14337 ~/wdpr-payment-controls-api  # explicit project
 ```
 
-## What it does
+### From a Confluence spec (full lifecycle)
 
-1. Resolves the target project from the Jira prefix (or explicit path)
-2. Launches `kiro-cli chat --agent orchestrator` with the ticket
-3. The orchestrator runs its 12-step SDLC workflow:
-   - Fetch & analyze Jira story
-   - Explore codebase
-   - Review architecture
-   - Create implementation plan
-   - Implement (delegates to specialist agents)
-   - Run tests (coverage ≥90%)
-   - Code review + security scan
-   - Create pull request
-4. Output is logged to `tests/runs/<ticket>-<timestamp>.log`
+```bash
+# Scope → story breakdown → dev flow
+./tests/run-flow.sh --from-confluence https://confluence.disney.com/spaces/Payments/pages/123/My+Feature
 
-## Modes
+# Scope + stories only (no implementation)
+./tests/run-flow.sh --from-confluence https://confluence.disney.com/spaces/Payments/pages/123/My+Feature --dry-run
+```
 
-| Flag | Behavior |
-|------|----------|
-| *(none)* | Full flow — implements and creates PR |
-| `--dry-run` | Plan only — explores and produces plan, no code changes |
+## Flow Phases
+
+### From Confluence (`--from-confluence`)
+
+| Phase | Agent | What it does |
+|-------|-------|-------------|
+| 0a | scope_definer_agent | Reads Confluence page, extracts scope |
+| 0b | feature_writer_agent | Breaks scope into proposed Jira stories |
+| 0c | requirements_analyst_agent | Validates stories for completeness |
+
+Stories are proposed as structured text — no real Jira tickets are created. This makes the flow reproducible.
+
+### Dev flow (from Jira ticket or after Phase 0)
+
+| Phase | Agent | What it does |
+|-------|-------|-------------|
+| 1 | story_analyzer_agent | Fetches Jira ticket via MCP |
+| 2 | codebase_explorer_agent | Explores project structure |
+| 3 | architecture_agent | Reviews design patterns |
+| 4 | planner_agent | Creates implementation plan |
+| 5 | backend/webapi/ui | Implements code (auto-selected) |
+| 6 | test_runner_agent | Runs tests, checks coverage |
+| 7 | code_review_agent | Reviews changes |
+| 8 | security_scanner_agent | Security scan |
+| 9 | pr_creator_agent | Creates PR via GitHub MCP |
+
+`--dry-run` stops after Phase 4 (or Phase 0c for Confluence flows).
+
+## Logs
+
+Each run creates a timestamped directory:
+
+```
+tests/runs/DPAY-14337-20260321-170000/
+├── 01-story_analyzer_agent.log
+├── 02-codebase_explorer_agent.log
+├── 03-architecture_agent.log
+├── 04-planner_agent.log
+├── 05-webapi.log
+├── ...
+
+tests/runs/confluence-20260321-170500/
+├── 00a-scope_definer_agent.log
+├── 00b-feature_writer_agent.log
+├── 00c-requirements_analyst_agent.log
+├── 02-codebase_explorer_agent.log
+├── ...
+```
 
 ## Prerequisites
 
@@ -48,13 +77,3 @@ Run the orchestrator SDLC workflow end-to-end against a real Jira ticket.
 - Profiles installed (`./setup.sh workspace apply payments-core`)
 - MCP tokens configured (`./setup.sh mcp-install`)
 - Target project repo cloned locally
-
-## Logs
-
-All runs are saved to `tests/runs/` (gitignored):
-
-```
-tests/runs/
-├── DPAY-14337-20260321-160000.log
-├── GCP-5678-20260321-163000.log
-```
