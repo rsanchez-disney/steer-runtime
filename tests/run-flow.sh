@@ -36,14 +36,30 @@ PREFIX=$(echo "$TICKET" | grep -oE '^[A-Z]+-')
 echo "🎫 Ticket:  $TICKET (prefix: ${PREFIX:-unknown})"
 
 # ─── Resolve project from prefix if not provided ───
+# Map prefix → repo name, then search for it
 if [ -z "$PROJECT_DIR" ]; then
     case "$PREFIX" in
-        DPAY-) PROJECT_DIR="$STEER_ROOT/../wdpr-payment-controls-api" ;;
-        GCP-)  PROJECT_DIR="$STEER_ROOT/../wdpr-gcp-admin-api" ;;
-        TIMON-) PROJECT_DIR="$STEER_ROOT/../wdpr-cap-rev-rec-svc" ;;
-        SPR-)  PROJECT_DIR="$STEER_ROOT/../spr-router" ;;
-        *)     echo "❌ Cannot auto-detect project for prefix '$PREFIX'. Pass project dir as 2nd arg."; exit 1 ;;
+        DPAY-)  REPO_NAME="wdpr-payment-controls-api" ;;
+        GCP-)   REPO_NAME="wdpr-gcp-admin-api" ;;
+        TIMON-) REPO_NAME="wdpr-cap-rev-rec-svc" ;;
+        SPR-)   REPO_NAME="spr-router" ;;
+        *)      echo "❌ Cannot auto-detect project for prefix '$PREFIX'. Pass project dir as 2nd arg."; exit 1 ;;
     esac
+
+    # Search: 1) steer-runtime sibling  2) workspace projects  3) find under ~/Workspace
+    SEARCH_ROOT="${STEER_SEARCH_ROOT:-$HOME/Workspace}"
+    if [ -d "$STEER_ROOT/../$REPO_NAME" ]; then
+        PROJECT_DIR="$(cd "$STEER_ROOT/../$REPO_NAME" && pwd)"
+    else
+        PROJECT_DIR="$(find "$SEARCH_ROOT" -maxdepth 4 -type d -name "$REPO_NAME" -not -path "*/node_modules/*" -not -path "*/.git/*" -print -quit 2>/dev/null)"
+    fi
+
+    if [ -z "$PROJECT_DIR" ]; then
+        echo "❌ Could not find '$REPO_NAME' under $SEARCH_ROOT"
+        echo "   Pass the path explicitly: ./tests/run-flow.sh $TICKET /path/to/$REPO_NAME"
+        echo "   Or set STEER_SEARCH_ROOT to change the search root"
+        exit 1
+    fi
 fi
 
 if [ ! -d "$PROJECT_DIR" ]; then
