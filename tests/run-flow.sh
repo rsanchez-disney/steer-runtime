@@ -77,21 +77,45 @@ LOG_FILE="$SCRIPT_DIR/runs/${TICKET}-${TIMESTAMP}.log"
 
 # ─── Build prompt ───
 if $DRY_RUN; then
-    PROMPT="Analyze Jira ticket $TICKET for the project at $PROJECT_DIR. Follow this delegation plan:
+    PROMPT="Analyze Jira ticket $TICKET for the project at $PROJECT_DIR.
 
-1. Delegate to story_analyzer_agent: Fetch the Jira ticket, extract requirements and acceptance criteria. Pull related Confluence docs if referenced.
-2. Delegate to codebase_explorer_agent: Explore the codebase structure, find relevant files for the change.
-3. Delegate to architecture_agent: Review the architecture and identify the right patterns for this change.
+IMPORTANT — Agent capabilities:
+- story_analyzer_agent HAS Jira, Confluence, MyWiki, and GitHub MCP tools. Delegate ALL Jira/Confluence lookups to it.
+- codebase_explorer_agent can read and navigate the local codebase.
+- architecture_agent can review design patterns and architecture.
+- planner_agent HAS Jira, Confluence, and MyWiki MCP tools for context.
+- code_review_agent HAS Jira and GitHub MCP tools.
+- pr_creator_agent HAS Jira, Confluence, MyWiki, and GitHub MCP tools.
+- backend, webapi, ui, flutter agents HAVE Context7 MCP for up-to-date library docs.
+
+You (orchestrator) do NOT have direct Jira/Confluence access — you MUST delegate via use_subagent.
+
+Delegation plan:
+1. Delegate to story_analyzer_agent: Use its Jira MCP tools to fetch $TICKET, extract requirements, acceptance criteria, and any linked Confluence pages.
+2. Delegate to codebase_explorer_agent: Explore the codebase at $PROJECT_DIR, find relevant files for the change.
+3. Delegate to architecture_agent: Review the architecture and identify the right patterns.
 4. Delegate to planner_agent: Create a detailed implementation plan with tasks, files to change, and estimated complexity.
 
-For each delegation, show the agent name and its output. Stop after the plan — do not implement. Show a summary of:
-- Requirements extracted
+Stop after the plan — do not implement. Show a summary of:
+- Requirements extracted from Jira
 - Files that would be changed
 - Implementation plan with tasks"
 else
-    PROMPT="Implement Jira ticket $TICKET in the project at $PROJECT_DIR. Run the full SDLC workflow with these delegations:
+    PROMPT="Implement Jira ticket $TICKET in the project at $PROJECT_DIR.
 
-1. Delegate to story_analyzer_agent: Fetch the Jira ticket, extract requirements and acceptance criteria.
+IMPORTANT — Agent capabilities:
+- story_analyzer_agent HAS Jira, Confluence, MyWiki, and GitHub MCP tools. Delegate ALL Jira/Confluence lookups to it.
+- codebase_explorer_agent can read and navigate the local codebase.
+- architecture_agent can review design patterns and architecture.
+- planner_agent HAS Jira, Confluence, and MyWiki MCP tools for context.
+- code_review_agent HAS Jira and GitHub MCP tools.
+- pr_creator_agent HAS Jira, Confluence, MyWiki, and GitHub MCP tools.
+- backend, webapi, ui, flutter agents HAVE Context7 MCP for up-to-date library docs.
+
+You (orchestrator) do NOT have direct Jira/Confluence access — you MUST delegate via use_subagent.
+
+Full SDLC workflow:
+1. Delegate to story_analyzer_agent: Use its Jira MCP tools to fetch $TICKET, extract requirements and acceptance criteria.
 2. Delegate to codebase_explorer_agent: Explore the codebase, find relevant files.
 3. Delegate to architecture_agent: Review architecture and design approach.
 4. Delegate to planner_agent: Create implementation plan.
@@ -102,10 +126,10 @@ else
    - ui agent for Angular frontend changes
    - flutter agent for Dart/Flutter changes
 7. Delegate to test_runner_agent: Run tests, ensure coverage >= 90%.
-8. Delegate to code_review_agent: Review all changes.
+8. Delegate to code_review_agent: Review all changes using its GitHub MCP tools.
 9. Delegate to security_scanner_agent: Run security scan.
 10. Auto-approve Gate 2 — proceed to PR.
-11. Delegate to pr_creator_agent: Create the pull request.
+11. Delegate to pr_creator_agent: Use its GitHub MCP tools to create the pull request.
 
 Auto-approve all approval gates — do not pause for human review. If tests fail, fix and retry once."
 fi
