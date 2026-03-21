@@ -75,6 +75,12 @@ mkdir -p "$RUN_DIR"
 echo "📝 Run dir: $RUN_DIR"
 echo ""
 
+# ─── Colors ───
+CYAN='[0;36m'
+YELLOW='[1;33m'
+DIM='[2m'
+RESET='[0m'
+
 # ─── Helper: run an agent and capture output ───
 run_agent() {
     local agent="$1"
@@ -82,7 +88,11 @@ run_agent() {
     local prompt="$3"
     local log_file="$RUN_DIR/${step}-${agent}.log"
 
-    echo "─── Step $step: $agent ───"
+    echo -e "${YELLOW}─── Step $step: $agent ───${RESET}"
+    echo ""
+    echo -e "${CYAN}▶ PROMPT:${RESET}"
+    echo -e "${DIM}$prompt${RESET}"
+    echo ""
     cd "$PROJECT_DIR"
     kiro-cli chat --agent "$agent" $CLI_FLAGS "$prompt" 2>&1 | tee "$log_file"
     echo ""
