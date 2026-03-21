@@ -1403,12 +1403,12 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                     echo ""
                 fi
 
-                # 4. Copy workspace-specific context
+                # 4. Copy workspace-specific context (into repo .kiro/context/ where agents read from)
                 if [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ]; then
                     echo "📄 Installing workspace context..."
-                    mkdir -p "$KIRO_ROOT/context"
+                    mkdir -p "$STEER_ROOT/.kiro/context"
                     for c in "$ws_path/context"/*.md; do
-                        cp "$c" "$KIRO_ROOT/context/"
+                        cp "$c" "$STEER_ROOT/.kiro/context/"
                         echo "  ✓ $(basename "$c")"
                     done
                     echo ""

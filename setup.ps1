@@ -575,9 +575,9 @@ switch ($Command) {
                 $customCtx = Join-Path $wsPath "context"
                 if (Test-Path $customCtx) {
                     Write-Host "`nInstalling context..."
-                    New-Item -Path "$KiroRoot\context" -ItemType Directory -Force | Out-Null
+                    New-Item -Path "$SteerRoot\.kiro\context" -ItemType Directory -Force | Out-Null
                     Get-ChildItem "$customCtx\*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-                        Copy-Item $_.FullName "$KiroRoot\context\"
+                        Copy-Item $_.FullName "$SteerRoot\.kiro\context\"
                         Write-Host "  OK $($_.Name)" -ForegroundColor Green
                     }
                 }
