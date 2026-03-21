@@ -400,8 +400,13 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 | Script | Event | Agents | Behavior |
 |--------|-------|:------:|----------|
 | `git-context.sh` | agentSpawn | 5 orchestrators | Injects current branch + dirty file count on start |
-| `guard-writes.sh` | preToolUse (fs_write) | backend, webapi, ui, flutter, test_automation, api_tester | Blocks writes to `node_modules/`, `dist/`, `.git/` |
+| `guard-writes.sh` | preToolUse (fs_write) | 6 write agents | Blocks writes to `node_modules/`, `dist/`, `.git/` |
+| `secret-scan.sh` | preToolUse (fs_write) | 6 write agents | Scans for potential secrets before writing |
+| `branch-guard.sh` | preToolUse (execute_bash) | 5 orchestrators | Blocks direct commits/pushes to `main`/`master` |
 | `warn-destructive.sh` | postToolUse (execute_bash) | dev-core orchestrator | Warns on `rm -rf`, `DROP TABLE`, `--force` |
+| `lint-on-write.sh` | postToolUse (fs_write) | 6 write agents | Auto-runs linter/formatter after file writes |
+
+Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 ---
 

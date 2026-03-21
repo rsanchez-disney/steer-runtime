@@ -292,7 +292,7 @@ steer-runtime/
 | Audience | Guides |
 |----------|--------|
 | **Everyone** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Getting Started](docs/GETTING_STARTED.md) · [Team Workspaces](docs/TEAM_WORKSPACES.md) · [Fork Strategy](docs/FORK_STRATEGY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) |
-| **Developers** | [Prompt Guide](docs/PROMPT_GUIDE.md) · [Mobile Setup](docs/MOBILE_AGENTS_SETUP.md) · [Architecture](docs/DESIGN.md) · [MCP Config](docs/MCP_SETUP.md) |
+| **Developers** | [Hooks & Powers](docs/HOOKS_AND_POWERS.md) · [Prompt Guide](docs/PROMPT_GUIDE.md) · [Mobile Setup](docs/MOBILE_AGENTS_SETUP.md) · [Architecture](docs/DESIGN.md) · [MCP Config](docs/MCP_SETUP.md) |
 | **BA / PO** | [BA Guide](docs/BA_PROMPT_GUIDE.md) · [Workflows](docs/BA_WORKFLOWS.md) · [Quick Ref](docs/BA_QUICK_REFERENCE.md) |
 | **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
 | **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |

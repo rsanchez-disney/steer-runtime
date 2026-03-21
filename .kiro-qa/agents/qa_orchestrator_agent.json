@@ -77,6 +77,13 @@
         "command": "$HOME/.kiro/hooks/git-context.sh",
         "description": "Inject git branch and status"
       }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
     ]
   }
 }
