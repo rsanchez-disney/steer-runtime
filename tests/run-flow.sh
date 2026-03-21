@@ -77,9 +77,37 @@ LOG_FILE="$SCRIPT_DIR/runs/${TICKET}-${TIMESTAMP}.log"
 
 # ─── Build prompt ───
 if $DRY_RUN; then
-    PROMPT="Analyze Jira ticket $TICKET. Explore the codebase at $PROJECT_DIR, review the architecture, and produce a detailed implementation plan. Stop after the plan — do not implement. Show the plan and a summary of files that would be changed."
+    PROMPT="Analyze Jira ticket $TICKET for the project at $PROJECT_DIR. Follow this delegation plan:
+
+1. Delegate to story_analyzer_agent: Fetch the Jira ticket, extract requirements and acceptance criteria. Pull related Confluence docs if referenced.
+2. Delegate to codebase_explorer_agent: Explore the codebase structure, find relevant files for the change.
+3. Delegate to architecture_agent: Review the architecture and identify the right patterns for this change.
+4. Delegate to planner_agent: Create a detailed implementation plan with tasks, files to change, and estimated complexity.
+
+For each delegation, show the agent name and its output. Stop after the plan — do not implement. Show a summary of:
+- Requirements extracted
+- Files that would be changed
+- Implementation plan with tasks"
 else
-    PROMPT="Implement Jira ticket $TICKET in the project at $PROJECT_DIR. Run the full SDLC workflow end-to-end. Auto-approve all approval gates — do not pause for human review. Create a pull request when done. If tests fail, fix them and retry once."
+    PROMPT="Implement Jira ticket $TICKET in the project at $PROJECT_DIR. Run the full SDLC workflow with these delegations:
+
+1. Delegate to story_analyzer_agent: Fetch the Jira ticket, extract requirements and acceptance criteria.
+2. Delegate to codebase_explorer_agent: Explore the codebase, find relevant files.
+3. Delegate to architecture_agent: Review architecture and design approach.
+4. Delegate to planner_agent: Create implementation plan.
+5. Auto-approve Gate 1 — proceed to implementation.
+6. Delegate to the appropriate specialist agents for implementation:
+   - backend agent for Java/Spring changes
+   - webapi agent for Node.js/Express changes
+   - ui agent for Angular frontend changes
+   - flutter agent for Dart/Flutter changes
+7. Delegate to test_runner_agent: Run tests, ensure coverage >= 90%.
+8. Delegate to code_review_agent: Review all changes.
+9. Delegate to security_scanner_agent: Run security scan.
+10. Auto-approve Gate 2 — proceed to PR.
+11. Delegate to pr_creator_agent: Create the pull request.
+
+Auto-approve all approval gates — do not pause for human review. If tests fail, fix and retry once."
 fi
 
 echo "🚀 Mode:    $(if $DRY_RUN; then echo 'dry-run (plan only)'; else echo 'full flow'; fi)"
@@ -90,7 +118,7 @@ echo ""
 
 # ─── Run ───
 cd "$PROJECT_DIR"
-echo "$PROMPT" | kiro-cli chat --agent orchestrator 2>&1 | tee "$LOG_FILE"
+kiro-cli chat --agent orchestrator --trust-all-tools --no-interactive "$PROMPT" 2>&1 | tee "$LOG_FILE"
 
 # ─── Summary ───
 echo ""
