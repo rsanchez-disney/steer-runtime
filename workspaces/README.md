@@ -26,6 +26,8 @@ workspaces/
 ./setup.sh workspace show payments-core      # View team workspace
 ./setup.sh workspace apply payments-core     # Apply team config
 ./setup.sh workspace create my-team          # Scaffold a new workspace
+./setup.sh workspace sync payments-core   # Pull all workspace repos
+./setup.sh workspace sync payments-core --push  # Push all workspace repos
 ```
 
 The `default` workspace contains all 9 project memory banks and all profiles. Team workspaces reference a subset.

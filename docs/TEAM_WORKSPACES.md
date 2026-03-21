@@ -119,6 +119,7 @@ Displays full configuration: profiles, projects, rules, context files.
 
 ```bash
 ./setup.sh workspace apply payments-core
+./setup.sh workspace sync payments-core          # Pull all workspace repos
 ```
 
 Runs the full setup sequence:
@@ -224,6 +225,19 @@ All commands work identically with `setup.ps1`:
 ```
 
 ---
+
+
+## Syncing Repos
+
+Pull or push all repositories in a workspace with one command:
+
+```bash
+./setup.sh workspace sync payments-core          # fetch + pull all repos
+./setup.sh workspace sync payments-core --push   # push all repos
+./setup.sh workspace sync default                # sync all 9 org repos
+```
+
+Resolves `projects[].path` from `workspace.json`, skips missing directories gracefully.
 
 ## Best Practices
 

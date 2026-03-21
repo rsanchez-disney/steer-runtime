@@ -112,6 +112,7 @@ New team member? A single command installs everything — profiles, rules, conte
 ```bash
 ./setup.sh workspace list                    # See available team configs
 ./setup.sh workspace apply payments-core     # Full team setup in one command
+./setup.sh workspace sync payments-core      # Pull all workspace repos
 ./setup.sh mcp-install                       # Configure personal tokens
 ```
 
