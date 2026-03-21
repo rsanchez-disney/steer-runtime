@@ -499,6 +499,12 @@ switch ($Command) {
 
         switch ($wsCmd) {
             "list" {
+                if ($Args -contains "--fetch") {
+                    Write-Host "Fetching latest from remote..."
+                    try { git -C $SteerRoot pull --rebase --quiet 2>$null; Write-Host "  OK Up to date" -ForegroundColor Green }
+                    catch { Write-Host "  Warning: Fetch failed (offline?)" -ForegroundColor Yellow }
+                    Write-Host ""
+                }
                 Write-Host "Available team workspaces:`n"
                 $found = $false
                 Get-ChildItem -Path $wsDir -Directory -ErrorAction SilentlyContinue | ForEach-Object {
@@ -594,6 +600,15 @@ switch ($Command) {
                 $template = @{name=$wsName;description="";team="";profiles=@("dev-core","dev-web");default_agent="orchestrator";projects=@();rules=@("conventional_commit");enable_tools=$true;jira_prefix=""} | ConvertTo-Json -Depth 3
                 $template | Set-Content (Join-Path $wsPath "workspace.json") -Encoding UTF8
                 Write-Host "Workspace scaffolded at workspaces\$wsName\" -ForegroundColor Green
+                if ($Args -notcontains "--local") {
+                    Write-Host "`nPublishing workspace to repository..."
+                    try {
+                        git -C $SteerRoot add "workspaces/$wsName/" 2>$null
+                        git -C $SteerRoot commit -m "feat: add $wsName team workspace" --quiet 2>$null
+                        git -C $SteerRoot push --quiet 2>$null
+                        Write-Host "  OK Committed and pushed" -ForegroundColor Green
+                    } catch { Write-Host "  Warning: Git push failed -- commit locally, push manually" -ForegroundColor Yellow }
+                }
                 Write-Host "`nNext steps:"
                 Write-Host "  1. Edit workspaces\$wsName\workspace.json"
                 Write-Host "  2. Add team rules to workspaces\$wsName\rules\"

@@ -79,9 +79,11 @@ EXAMPLES:
 
   # Team Workspaces
   ./setup.sh workspace list                # List available workspaces
+  ./setup.sh workspace list --fetch        # Pull latest, then list
   ./setup.sh workspace show payments-core  # View workspace details
   ./setup.sh workspace apply payments-core # Apply team config
-  ./setup.sh workspace create my-team      # Scaffold new workspace
+  ./setup.sh workspace create my-team      # Scaffold + commit + push
+  ./setup.sh workspace create my-team --local  # Scaffold only (no git)
 
   # Cursor IDE
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
@@ -1287,6 +1289,12 @@ MCPEOF
 
         case "$ws_cmd" in
             list)
+                # Fetch latest from remote if --fetch flag
+                if [[ "$1" == "--fetch" ]]; then
+                    echo "🔄 Fetching latest from remote..."
+                    git -C "$STEER_ROOT" pull --rebase --quiet 2>/dev/null && echo "  ✓ Up to date" || echo "  ⚠ Fetch failed (offline?)"
+                    echo ""
+                fi
                 echo "📋 Available team workspaces:"
                 echo ""
                 if [ ! -d "$ws_dir" ] || [ -z "$(ls -d "$ws_dir"/*/workspace.json 2>/dev/null)" ]; then
@@ -1470,6 +1478,15 @@ for p in json.load(open('$ws_file')).get('projects',[]):
 WSEOF
 
                 echo "✅ Workspace scaffolded at workspaces/$ws_name/"
+
+                # Commit and push unless --local
+                if [[ "$2" != "--local" ]]; then
+                    echo ""
+                    echo "📤 Publishing workspace to repository..."
+                    git -C "$STEER_ROOT" add "workspaces/$ws_name/" 2>/dev/null
+                    git -C "$STEER_ROOT" commit -m "feat: add $ws_name team workspace" --quiet 2>/dev/null &&                     git -C "$STEER_ROOT" push --quiet 2>/dev/null &&                         echo "  ✓ Committed and pushed" ||                         echo "  ⚠ Git push failed — commit locally, push manually"
+                fi
+
                 echo ""
                 echo "Next steps:"
                 echo "  1. Edit workspaces/$ws_name/workspace.json"
