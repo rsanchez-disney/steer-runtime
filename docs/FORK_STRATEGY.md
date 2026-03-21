@@ -61,7 +61,7 @@ graph TD
 | **MCP server bundles** | ❌ No | ✅ Yes | Shared infrastructure |
 | **MCP tokens** (`.env`) | ✅ Yes | ❌ No | Per-user, gitignored |
 | **Memory banks** | ✅ Yes | ❌ No | Project-specific context |
-| **`Projects/` directory** | ✅ Yes | ❌ No | Team's project memory templates |
+| **`workspaces/` directory** | ✅ Yes | ❌ No | Team workspace configs & project memory templates |
 | **Custom profiles** | ✅ Yes | ❌ No | Team-specific `.kiro-<name>/` directories |
 | **Team workspaces** | ✅ Yes | ❌ No | `workspaces/<team>/` — one-command team setup |
 | **Custom rules** | ✅ Yes | ⚠️ Merge | Team rules in `common/rules/` |
@@ -255,12 +255,12 @@ vim .kiro/context/golden_rules.md
 vim .kiro/context/team_standards.md
 ```
 
-### 2. Use the Projects/ Directory
+### 2. Use the Workspaces Directory
 
-Team-specific memory templates belong in `Projects/`:
+Team-specific memory templates belong in workspace `projects/` directories:
 
 ```
-Projects/
+workspaces/default/projects/
 ├── your-service-a/          # Team-specific
 │   └── .kiro/rules/memory-bank/
 ├── your-service-b/          # Team-specific

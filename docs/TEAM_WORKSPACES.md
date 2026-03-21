@@ -90,7 +90,7 @@ workspaces/
 | `projects` | object[] | Repos to initialize with memory banks |
 | `projects[].name` | string | Project display name |
 | `projects[].path` | string | Relative path to the repo |
-| `projects[].memory_bank` | string | Known project name in `Projects/` for memory bank source |
+| `projects[].memory_bank` | string | Known project name in `workspaces/default/projects/` for memory bank source |
 | `rules` | string[] | Common rules to install from `common/rules/` |
 | `enable_tools` | boolean | Whether to enable thinking, todo, knowledge |
 | `jira_prefix` | string | Team's Jira project prefix |
@@ -232,7 +232,7 @@ All commands work identically with `setup.ps1`:
 - **Don't put tokens in workspace files** — tokens go in `.env` files via `mcp-install`
 - **Use `rules/` for team conventions** — things like API patterns, naming standards
 - **Use `context/` for team knowledge** — deployment processes, review SLAs, team contacts
-- **Reference existing memory banks** — use `memory_bank` field to point to `Projects/` templates
+- **Reference existing memory banks** — use `memory_bank` field to point to `workspaces/default/projects/` templates
 - **Test before sharing** — run `workspace apply` on a clean setup to verify it works
 
 ---

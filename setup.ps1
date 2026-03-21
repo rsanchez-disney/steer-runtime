@@ -450,9 +450,9 @@ switch ($Command) {
             if ($Args[$i] -eq "--from") { $fromProject = $Args[++$i] }
         }
 
-        $knownPath = "$SteerRoot\Projects\$projectName\.kiro\rules\memory-bank"
+        $knownPath = "$SteerRoot\workspaces\default\projects\$projectName\.kiro\rules\memory-bank"
         if ($fromProject) {
-            $src = "$SteerRoot\Projects\$fromProject\.kiro\rules\memory-bank"
+            $src = "$SteerRoot\workspaces\default\projects\$fromProject\.kiro\rules\memory-bank"
             if (-not (Test-Path $src)) { Write-Host "X Unknown project: $fromProject" -ForegroundColor Red; exit 1 }
             Copy-Item "$src\*.md" $targetMb -Force
         } elseif (Test-Path $knownPath) {

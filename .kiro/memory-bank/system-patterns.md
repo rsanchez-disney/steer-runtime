@@ -7,7 +7,7 @@
 - Shared resources: `.kiro/context/`, `.kiro/hooks/`, `.kiro/tools/mcp-servers/`
 - IDE templates: `.cursor-templates/` (19 .mdc), `.amazonq-templates/` (19 .md)
 - Common resources: `common/` (rules, prompts, memory-bank templates)
-- Known project configs: `Projects/` (9 projects)
+- Known project configs: `workspaces/default/projects/` (9 projects)
 - Single entry point: `setup.sh` (macOS/Linux), `setup.ps1` (Windows)
 
 ## Compile-to-IDE-Target Model

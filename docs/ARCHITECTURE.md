@@ -119,7 +119,7 @@ steer-runtime/
 │       ├── structure.md.template
 │       └── tech.md.template
 │
-├── Projects/                       # ── Known Project Memory Banks (9 projects) ──
+│   ├── default/projects/            # ── Known Project Memory Banks (9 projects) ──
 │   ├── wdpr-payment-svc/
 │   ├── cart-service-java8/
 │   ├── wdpr-config-services/

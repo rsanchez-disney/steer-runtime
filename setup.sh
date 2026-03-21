@@ -857,17 +857,17 @@ GHEOF
         
         # Determine source
         if [ -n "$from_project" ]; then
-            source_mb="$STEER_ROOT/Projects/$from_project/.kiro/rules/memory-bank"
+            source_mb="$STEER_ROOT/workspaces/default/projects/$from_project/.kiro/rules/memory-bank"
             if [ ! -d "$source_mb" ]; then
                 echo "❌ Unknown project: $from_project"
-                echo "Available: $(ls "$STEER_ROOT/Projects" 2>/dev/null | tr '\n' ' ')"
+                echo "Available: $(ls "$STEER_ROOT/workspaces/default/projects" 2>/dev/null | tr '\n' ' ')"
                 exit 1
             fi
             echo "📦 Copying memory bank from $from_project..."
             cp "$source_mb"/*.md "$target_mb/"
-        elif [ -d "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank" ]; then
+        elif [ -d "$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank" ]; then
             echo "📦 Found known project: $project_name"
-            cp "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"/*.md "$target_mb/"
+            cp "$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank"/*.md "$target_mb/"
         else
             echo "📦 Generating memory bank from templates..."
             for tmpl in "$STEER_ROOT"/common/memory-bank-templates/*.template; do
@@ -1126,7 +1126,7 @@ MCPEOF
                 
                 # Check for existing Kiro memory bank
                 kiro_mb="$cursor_dir/.kiro/rules/memory-bank"
-                known_mb="$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"
+                known_mb="$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank"
                 
                 if [ -d "$kiro_mb" ] && ls "$kiro_mb"/*.md &>/dev/null; then
                     echo "  Found existing Kiro memory bank at $kiro_mb"
