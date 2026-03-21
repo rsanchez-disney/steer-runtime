@@ -205,16 +205,20 @@ MCP servers are pre-built and bundled — no `npm install` required. Shared acro
 ```mermaid
 graph TD
     subgraph src["steer-runtime (source of truth)"]
-        profiles["Profiles<br/>dev / ba / qa / ops / pm"]
-        context["Context<br/>rules, prompts, memory"]
-        mcp["MCP Servers<br/>(shared bundles)"]
+        profiles["Profiles<br/>dev · ba · qa · ops · pm"]
+        workspaces["Workspaces<br/>default · team configs · projects"]
+        hooks["Hooks & Powers<br/>6 hooks · 6 powers"]
+        context["Context<br/>rules · prompts · memory banks"]
+        mcp["MCP Servers<br/>shared bundles + Context7"]
     end
 
     profiles --> setup
+    workspaces --> setup
+    hooks --> setup
     context --> setup
     mcp --> setup
 
-    setup["setup.sh / setup.ps1<br/>compile + install + configure"]
+    setup["setup.sh / setup.ps1<br/>install · apply · sync · configure"]
 
     setup --> kiro["Kiro CLI<br/>.kiro/"]
     setup --> cursor["Cursor<br/>.cursor/"]
@@ -223,6 +227,8 @@ graph TD
 
     style src fill:#1a1a2e,stroke:#e94560,color:#eee
     style setup fill:#0f3460,stroke:#e94560,color:#eee
+    style workspaces fill:#1a1a2e,stroke:#53a8b6,color:#eee
+    style hooks fill:#1a1a2e,stroke:#53a8b6,color:#eee
     style kiro fill:#16213e,stroke:#0f3460,color:#eee
     style cursor fill:#16213e,stroke:#0f3460,color:#eee
     style amazonq fill:#16213e,stroke:#0f3460,color:#eee
@@ -245,11 +251,12 @@ steer-runtime/
 ├── .kiro-ops/                # Ops profile (5 agents)
 ├── .kiro-pm/                 # PM/Scrum Master profile (6 agents)
 ├── .kiro/context/            # Shared context files (golden rules, guidelines)
-├── .kiro/hooks/              # Reusable agent hook scripts
+├── .kiro/hooks/              # Reusable agent hook scripts (6 hooks)
 ├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles (shared across IDEs)
 ├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
 ├── .amazonq-templates/       # Amazon Q Developer rule templates (19 .md files)
-├── workspaces/               # Team workspace configs
+├── workspaces/default/       # Org-wide baseline (9 projects, all profiles)
+├── workspaces/<team>/         # Team-specific workspace configs
 ├── common/                   # Shared rules, prompts, memory templates
 ├── docs/                     # All documentation
 ├── setup.sh                  # macOS/Linux setup
