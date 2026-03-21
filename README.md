@@ -36,19 +36,6 @@ AI coding assistants are powerful, but without shared standards they produce inc
 
 ---
 
-## Supported IDEs
-
-| IDE | How agents run | Setup | Status |
-|-----|---------------|-------|--------|
-| **Kiro CLI** | Native agent JSON + prompt markdown | `./setup.sh install <profiles>` | ✅ Primary |
-| **Cursor** | `.mdc` rule files + shared MCP config | `./setup.sh cursor install <dir>` | ✅ Supported |
-| **Amazon Q** | Plain `.md` rule files | `./setup.sh amazonq install <dir>` | ✅ Supported |
-| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
-
-All four share the same source-of-truth for coding standards. Kiro CLI and Cursor also share MCP server bundles (Jira, Confluence, GitHub, Mermaid). Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
-
----
-
 ## Quick Start
 
 ```bash
@@ -101,6 +88,19 @@ Profiles are additive — install only what your role needs, or install all five
 
 ---
 
+## Supported IDEs
+
+| IDE | How agents run | Setup | Status |
+|-----|---------------|-------|--------|
+| **Kiro CLI** | Native agent JSON + prompt markdown | `./setup.sh install <profiles>` | ✅ Primary |
+| **Cursor** | `.mdc` rule files + shared MCP config | `./setup.sh cursor install <dir>` | ✅ Supported |
+| **Amazon Q** | Plain `.md` rule files | `./setup.sh amazonq install <dir>` | ✅ Supported |
+| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
+
+All four share the same source-of-truth for coding standards. Kiro CLI and Cursor also share MCP server bundles (Jira, Confluence, GitHub, Mermaid). Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
+
+---
+
 ## Using Across Projects and Teams
 
 steer-runtime scales from individual developers to multi-team organizations through three layers:
@@ -131,39 +131,6 @@ The same `backend` agent works on a Java Spring Boot service, a Node.js API, or 
 ### Fork Strategy — cross-team governance
 
 For organizations with multiple teams, each team forks the repo and maintains team-specific customizations while syncing shared improvements from upstream. See [Fork Strategy](docs/FORK_STRATEGY.md) for the governance model.
-
----
-
-## Architecture
-
-```mermaid
-graph TD
-    subgraph src["steer-runtime (source of truth)"]
-        profiles["Profiles<br/>dev / ba / qa / ops / pm"]
-        context["Context<br/>rules, prompts, memory"]
-        mcp["MCP Servers<br/>(shared bundles)"]
-    end
-
-    profiles --> setup
-    context --> setup
-    mcp --> setup
-
-    setup["setup.sh / setup.ps1<br/>compile + install + configure"]
-
-    setup --> kiro["Kiro CLI<br/>.kiro/"]
-    setup --> cursor["Cursor<br/>.cursor/"]
-    setup --> amazonq["Amazon Q<br/>.amazonq/"]
-    setup --> kite["Kite<br/>Desktop GUI"]
-
-    style src fill:#1a1a2e,stroke:#e94560,color:#eee
-    style setup fill:#0f3460,stroke:#e94560,color:#eee
-    style kiro fill:#16213e,stroke:#0f3460,color:#eee
-    style cursor fill:#16213e,stroke:#0f3460,color:#eee
-    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
-    style kite fill:#16213e,stroke:#0f3460,color:#eee
-```
-
-The key insight: agent knowledge (what to do, how to review code, what standards to enforce) is authored once in profile directories. `setup.sh` compiles that knowledge into each IDE's native format. When you improve an agent prompt, every IDE gets the update on next sync.
 
 ---
 
@@ -229,6 +196,39 @@ MCP servers are pre-built and bundled — no `npm install` required. Shared acro
 | github-mcp | GitHub Enterprise | [Generate token](https://github.disney.com/settings/tokens) |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
 | context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
+
+---
+
+## Architecture
+
+```mermaid
+graph TD
+    subgraph src["steer-runtime (source of truth)"]
+        profiles["Profiles<br/>dev / ba / qa / ops / pm"]
+        context["Context<br/>rules, prompts, memory"]
+        mcp["MCP Servers<br/>(shared bundles)"]
+    end
+
+    profiles --> setup
+    context --> setup
+    mcp --> setup
+
+    setup["setup.sh / setup.ps1<br/>compile + install + configure"]
+
+    setup --> kiro["Kiro CLI<br/>.kiro/"]
+    setup --> cursor["Cursor<br/>.cursor/"]
+    setup --> amazonq["Amazon Q<br/>.amazonq/"]
+    setup --> kite["Kite<br/>Desktop GUI"]
+
+    style src fill:#1a1a2e,stroke:#e94560,color:#eee
+    style setup fill:#0f3460,stroke:#e94560,color:#eee
+    style kiro fill:#16213e,stroke:#0f3460,color:#eee
+    style cursor fill:#16213e,stroke:#0f3460,color:#eee
+    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
+    style kite fill:#16213e,stroke:#0f3460,color:#eee
+```
+
+The key insight: agent knowledge (what to do, how to review code, what standards to enforce) is authored once in profile directories. `setup.sh` compiles that knowledge into each IDE's native format. When you improve an agent prompt, every IDE gets the update on next sync.
 
 ---
 
@@ -332,7 +332,6 @@ steer-runtime/
 | Date | Description | Link |
 |------|-------------|------|
 | March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
-
 ---
 
 Internal Disney tool — not for external distribution.
