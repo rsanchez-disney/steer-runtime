@@ -1028,7 +1028,7 @@ GHEOF
     },
     "mywiki": {
       "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
+      "args": ["$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"],
       "env": { "CONFLUENCE_URL": "https://mywiki.disney.com", "CONFLUENCE_PAT": "$mywiki_pat" }
     },
     "github": {

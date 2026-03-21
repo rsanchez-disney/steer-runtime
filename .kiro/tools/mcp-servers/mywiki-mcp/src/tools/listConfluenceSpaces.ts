@@ -2,8 +2,8 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const listConfluenceSpacesSchema = {
-    name: "list_confluence_spaces",
-    description: "List all Confluence spaces",
+    name: "list_mywiki_spaces",
+    description: "List all MyWiki spaces",
     inputSchema: {
         type: "object",
         properties: {
