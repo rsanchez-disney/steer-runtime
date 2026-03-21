@@ -141,7 +141,11 @@ if [ -n "$CONFLUENCE_URL" ]; then
 
     # 0a. Scope definition
     run_agent "scope_definer_agent" "00a" \
-        "Read this Confluence page using your Confluence MCP tools: $CONFLUENCE_URL
+        "Read this Confluence page: $CONFLUENCE_URL
+
+IMPORTANT MCP routing:
+- URLs starting with https://confluence.disney.com → use confluence MCP tools (get_confluence_page, search_confluence_pages)
+- URLs starting with https://mywiki.disney.com → use mywiki MCP tools
 
 Analyze the scope of this feature. Extract:
 - Feature title and objective
