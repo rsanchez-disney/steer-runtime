@@ -685,6 +685,68 @@ GHEOF
         
         inject_agent_tokens "$KIRO_ROOT"
         
+        # Generate ~/.kiro/settings/mcp.json
+        echo ""
+        echo "🔧 Generating ~/.kiro/settings/mcp.json..."
+        mkdir -p "$HOME/.kiro/settings"
+        mcp_settings="$HOME/.kiro/settings/mcp.json"
+        
+        # Read tokens from .env files
+        jira_pat=$(grep -s "^JIRA_PAT=" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "")
+        confluence_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "")
+        mywiki_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2- || echo "")
+        github_token=$(grep -s "^GITHUB_TOKEN_disney=" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "")
+        
+        # Preserve existing powers section if present
+        existing_powers="{}"
+        if [ -f "$mcp_settings" ]; then
+            existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
+        fi
+        
+        python3 -c "
+import json, sys
+
+mcp = {
+    'mcpServers': {
+        'jira': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'env': {'JIRA_PAT': '${jira_pat}'}
+        },
+        'confluence': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+        },
+        'mywiki': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs'],
+            'env': {'CONFLUENCE_URL': 'https://mywiki.disney.com', 'CONFLUENCE_PAT': '${mywiki_pat}'}
+        },
+        'github': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'env': {'GITHUB_TOKEN_disney': '${github_token}', 'GITHUB_HOST_disney': 'github.disney.com', 'GITHUB_DEFAULT_REMOTE': 'disney'}
+        },
+        'mermaid': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+        },
+        'context7': {
+            'command': 'npx',
+            'args': ['-y', '@upstash/context7-mcp']
+        }
+    }
+}
+powers = json.loads('$existing_powers')
+if powers:
+    mcp['powers'] = powers
+with open('$mcp_settings', 'w') as f:
+    json.dump(mcp, f, indent=2)
+    f.write('\n')
+"
+        echo "  ✓ $mcp_settings"
+        
         echo "✅ MCP servers ready"
         ;;
     rules)
