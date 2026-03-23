@@ -19,30 +19,66 @@ Common issues and solutions for steer-runtime.
 ls ~/.kiro/agents/
 
 # Reinstall
-./setup.sh install dev ba
+./setup.sh install dev ba qa ops pm
 ```
 
 ## MCP Servers Not Working
 
 ```bash
-# Reconfigure tokens
+# Check tokens are configured
+cat ~/.kiro/tokens.env
+
+# Reconfigure tokens interactively
 ./setup.sh configure
 
-# Verify .env files exist
-ls ~/.kiro/tools/mcp-servers/*/.env
-
-# Full MCP reinstall
+# Full MCP reinstall + token setup
 ./setup.sh mcp-install
+```
+
+## MCP Tool Name Collisions
+
+If you see "tools rejected because they conflict in names" for mywiki:
+
+```bash
+# mywiki-mcp must have unique tool names (get_mywiki_page, not get_confluence_page)
+cd ~/.kiro/tools/mcp-servers/mywiki-mcp && npm run build
+```
+
+## Mermaid MCP Init Failure
+
+If mermaid shows "connection closed: initialize response":
+
+```bash
+cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build
 ```
 
 ## MCP Bundle Missing
 
-If `mcp-install` reports missing bundles, ensure you have the latest code:
+If `mcp-install` reports missing bundles:
 
 ```bash
 git pull origin main
 ./setup.sh mcp-install
 ```
+
+## Tokens Showing YOUR_TOKEN
+
+After installing profiles, tokens may show as `YOUR_TOKEN` if `tokens.env` doesn't exist yet:
+
+```bash
+# 1. Configure tokens first
+./setup.sh mcp-install
+
+# 2. Then reinstall profiles (injects tokens from tokens.env)
+./setup.sh install dev ba qa ops pm
+```
+
+## Delegation Timeout
+
+If delegated agents time out with MCP auth errors:
+- The global `~/.kiro/settings/mcp.json` only applies to direct sessions
+- Delegated sessions use the agent JSON's `mcpServers.env` block
+- Fix: ensure `~/.kiro/tokens.env` has real tokens, then re-install profiles
 
 ## Token Expired
 
@@ -58,35 +94,25 @@ Regenerate tokens and reconfigure:
 Then run:
 ```bash
 ./setup.sh configure
+./setup.sh install dev ba qa ops pm
 ```
 
 ## Advanced Tools Not Working
 
-If `thinking`, `todo`, or `knowledge` tools don't appear in an agent session:
+If `thinking`, `todo`, or `knowledge` tools don't appear:
 
 ```bash
-# Enable the required settings
 ./setup.sh enable-tools
-
-# Or manually:
-kiro-cli settings chat.enableThinking true
-kiro-cli settings chat.enableTodoList true
-kiro-cli settings chat.enableKnowledge true
 ```
 
 ## Hooks Not Running
 
-Verify hook scripts are installed and executable:
-
 ```bash
 ls -la ~/.kiro/hooks/
-# Should show git-context.sh, guard-writes.sh, warn-destructive.sh
-
-# Reinstall hooks
 ./setup.sh sync
 ```
 
-Use `/hooks` in a chat session to inspect active hooks for the current agent.
+Use `/hooks` in a chat session to inspect active hooks.
 
 ---
 
