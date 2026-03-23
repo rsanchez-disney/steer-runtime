@@ -201,7 +201,7 @@ with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
     }
     _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
     _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
-    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env"              "CONFLUENCE_PAT"     "$target_dir"
     _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
 }
 
@@ -645,14 +645,14 @@ CONFEOF
             echo "  Generate token: https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
             read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
             if [ -n "$mywiki_token" ]; then
-                # MyWiki uses the same confluence-mcp binary via agent env block
-                # Store token for reference and for the $HOME expansion step
-                mywiki_env="$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"
+                # MyWiki has its own MCP server binary (mywiki-mcp)
+                # Store token in mywiki-mcp .env
+                mywiki_env="$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env"
                 cat > "$mywiki_env" << MYWIKIEOF
 CONFLUENCE_URL=https://mywiki.disney.com
 CONFLUENCE_PAT=$mywiki_token
 MYWIKIEOF
-                echo "  ✓ Saved to confluence-mcp/.env.mywiki"
+                echo "  ✓ Saved to mywiki-mcp/.env"
             else
                 echo "  ⏭ Skipped"
             fi
@@ -694,7 +694,7 @@ GHEOF
         # Read tokens from .env files
         jira_pat=$(grep -s "^JIRA_PAT=" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "")
         confluence_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "")
-        mywiki_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2- || echo "")
+        mywiki_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env" | cut -d= -f2- || echo "")
         github_token=$(grep -s "^GITHUB_TOKEN_disney=" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "")
         
         # Preserve existing powers section if present
@@ -1070,8 +1070,8 @@ with open('$mcp_settings', 'w') as f:
                         jira_pat=$(grep -s '^JIRA_PAT=' "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
                     [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" ] && \
                         confluence_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" ] && \
-                        mywiki_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    [ -f "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/.env" ] && \
+                        mywiki_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
                     [ -f "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" ] && \
                         github_token=$(grep -s '^GITHUB_TOKEN_disney=' "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
                     
