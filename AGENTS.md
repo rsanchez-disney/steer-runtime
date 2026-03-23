@@ -412,7 +412,7 @@ Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 ## MCP Server Coverage
 
-Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens configured via `./setup.sh mcp-install`.
+Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `./setup.sh mcp-install` or `./setup.sh configure`).
 
 | Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
 |---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|
@@ -534,4 +534,4 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ---
 
 **Total Agents:** 41 (dev-core: 13, dev-web: 4, dev-mobile: 3, ba: 4, qa: 6, ops: 5, pm: 6)  
-**Last Updated:** March 20, 2026
+**Last Updated:** March 22, 2026

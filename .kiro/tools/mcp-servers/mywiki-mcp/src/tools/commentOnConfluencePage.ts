@@ -2,8 +2,8 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const commentOnConfluencePageSchema = {
-    name: "comment_on_confluence_page",
-    description: "Add a comment to a Confluence page",
+    name: "comment_on_mywiki_page",
+    description: "Add a comment to a MyWiki page",
     inputSchema: {
         type: "object",
         properties: {

@@ -36,7 +36,7 @@
     "mywiki": {
       "command": "node",
       "args": [
-        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"
+        "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"
       ],
       "env": {
         "CONFLUENCE_URL": "https://mywiki.disney.com",
