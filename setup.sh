@@ -115,9 +115,8 @@ list_profiles() {
 
 # Expand profile aliases (e.g., dev → dev-core dev-web dev-mobile)
 expand_profile_aliases() {
-    local -n _profiles=$1
     local expanded=()
-    for p in "${_profiles[@]}"; do
+    for p in "${profiles[@]}"; do
         case "$p" in
             dev) expanded+=(dev-core dev-web dev-mobile) ;;
             *)   expanded+=("$p") ;;
@@ -125,7 +124,7 @@ expand_profile_aliases() {
     done
     # Deduplicate while preserving order
     local seen=()
-    _profiles=()
+    profiles=()
     for p in "${expanded[@]}"; do
         local dup=false
         for s in "${seen[@]}"; do
@@ -133,7 +132,7 @@ expand_profile_aliases() {
         done
         if [ "$dup" = false ]; then
             seen+=("$p")
-            _profiles+=("$p")
+            profiles+=("$p")
         fi
     done
 }
@@ -406,7 +405,7 @@ case "${1:-help}" in
         done
         
         # Expand aliases (dev → dev-core + dev-web + dev-mobile)
-        expand_profile_aliases profiles
+        expand_profile_aliases
         
         target_root=$(get_target_dir "$project_dir")
         [ -n "$project_dir" ] && echo "🎯 Target: $target_root (Kiro UI)" || echo "🎯 Target: $target_root (Kiro CLI)"
@@ -496,7 +495,7 @@ case "${1:-help}" in
         done
         
         # Expand aliases (dev → dev-core + dev-web + dev-mobile)
-        expand_profile_aliases profiles
+        expand_profile_aliases
         
         target_root=$(get_target_dir "$project_dir")
         echo "🎯 Target: $target_root"
