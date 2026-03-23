@@ -65,7 +65,7 @@ class ConfluenceMCPServer {
     constructor() {
         this.server = new Server(
             {
-                name: "confluence-mcp",
+                name: "mywiki-mcp",
                 version: "0.1.0",
             },
             {
@@ -111,7 +111,7 @@ class ConfluenceMCPServer {
     async run() {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        console.error("Confluence MCP server running on stdio");
+        console.error("MyWiki MCP server running on stdio");
     }
 }
 

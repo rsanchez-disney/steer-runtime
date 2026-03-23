@@ -3,8 +3,8 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const uploadAttachmentSchema = {
-    name: "upload_attachment",
-    description: "Upload a file attachment to a Confluence page",
+    name: "upload_mywiki_attachment",
+    description: "Upload a file attachment to a MyWiki page",
     inputSchema: {
         type: "object",
         properties: {

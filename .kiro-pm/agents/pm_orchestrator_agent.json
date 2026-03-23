@@ -54,7 +54,7 @@
     "mywiki": {
       "command": "node",
       "args": [
-        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"
+        "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"
       ],
       "env": {
         "CONFLUENCE_URL": "https://mywiki.disney.com",
@@ -75,6 +75,13 @@
       {
         "command": "$HOME/.kiro/hooks/git-context.sh",
         "description": "Inject git branch and status"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
       }
     ]
   }

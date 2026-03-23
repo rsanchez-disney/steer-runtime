@@ -1,0 +1,27 @@
+{
+  "name": "dependency-check",
+  "version": "1.0.0",
+  "description": "Dependency vulnerability and freshness analysis",
+  "tools": [
+    {
+      "name": "check_outdated",
+      "description": "List outdated dependencies in the project",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Project directory", "default": "." }
+        }
+      }
+    },
+    {
+      "name": "check_vulnerabilities",
+      "description": "Scan dependencies for known security vulnerabilities",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Project directory", "default": "." }
+        }
+      }
+    }
+  ]
+}

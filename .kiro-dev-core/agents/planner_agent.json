@@ -1,0 +1,53 @@
+{
+  "name": "planner_agent",
+  "description": "Creates detailed implementation plans with tasks, dependencies, and test strategy",
+  "prompt": "planner_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@jira/*",
+    "@mywiki/*",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "JIRA_PAT": "YOUR_TOKEN"
+      }
+    },
+    "confluence": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
+    },
+    "mywiki": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://mywiki.disney.com",
+        "CONFLUENCE_PAT": "YOUR_TOKEN"
+      }
+    }
+  },
+  "allowedTools": [
+    "@confluence/*",
+    "@jira/*",
+    "@mywiki/*"
+  ],
+  "includeMcpJson": true
+}

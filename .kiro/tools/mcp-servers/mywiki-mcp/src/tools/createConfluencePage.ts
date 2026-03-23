@@ -2,8 +2,8 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const createConfluencePageSchema = {
-    name: "create_confluence_page",
-    description: "Create a new Confluence page",
+    name: "create_mywiki_page",
+    description: "Create a new MyWiki page",
     inputSchema: {
         type: "object",
         properties: {

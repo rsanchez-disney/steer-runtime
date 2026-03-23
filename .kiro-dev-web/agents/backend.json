@@ -1,0 +1,76 @@
+{
+  "name": "backend",
+  "description": "Backend specialist for Java, Rust, Go, and Python services",
+  "prompt": "backend.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "@context7/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "pom.xml",
+        "build.gradle*",
+        "gradle.properties",
+        "application*.yml",
+        "application*.yaml",
+        "Cargo.toml",
+        "Cargo.lock",
+        "go.mod",
+        "go.sum",
+        "*.go",
+        "cmd/**",
+        "internal/**",
+        "pkg/**",
+        "requirements.txt",
+        "pyproject.toml",
+        "setup.py",
+        "setup.cfg",
+        "*.py",
+        "*.rs"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "includeMcpJson": true
+}

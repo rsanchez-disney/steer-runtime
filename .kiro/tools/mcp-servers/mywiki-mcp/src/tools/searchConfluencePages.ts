@@ -2,9 +2,9 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const searchConfluencePagesSchema = {
-    name: "search_confluence_pages",
+    name: "search_mywiki_pages",
     description:
-        "Search Confluence pages using CQL (Confluence Query Language)",
+        "Search MyWiki pages using CQL (Confluence Query Language)",
     inputSchema: {
         type: "object",
         properties: {

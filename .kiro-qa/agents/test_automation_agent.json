@@ -7,7 +7,8 @@
     "execute_bash",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "@context7/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -21,7 +22,32 @@
         "matcher": "fs_write",
         "command": "$HOME/.kiro/hooks/guard-writes.sh",
         "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
       }
     ]
-  }
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "includeMcpJson": true
 }

@@ -28,11 +28,16 @@ COMMANDS:
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
+  workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
   cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
+  amazonq <subcmd> <dir>                 Manage Amazon Q Developer rules
   help                                   Show this help message
 
 PROFILES:
-  dev                 Development (19 agents)
+  dev                 All dev agents (alias → dev-core + dev-web + dev-mobile)
+  dev-core            Orchestrator + planning + quality + workflow (13 agents)
+  dev-web             Backend + WebAPI + UI + UX specialist (4 agents)
+  dev-mobile          Flutter + Android + iOS (3 agents)
   ba                  BA/PO (4 agents)
   qa                  QA/Testing (6 agents)
   ops                 Operations (5 agents)
@@ -44,9 +49,11 @@ OPTIONS:
 
 EXAMPLES:
   # Install
-  ./setup.sh install dev                    # Install dev to ~/.kiro (CLI)
+  ./setup.sh install dev                    # Install ALL dev (core+web+mobile)
+  ./setup.sh install dev-core dev-web       # Fullstack web developer
+  ./setup.sh install dev-core dev-mobile    # Mobile developer
   ./setup.sh install ba qa                  # Install multiple profiles
-  ./setup.sh install dev --project ~/myapp  # Install to project (UI)
+  ./setup.sh install dev --project ~/myapp  # Install to project (Kiro UI)
   
   # Sync (update installed profiles)
   ./setup.sh sync                           # Update all installed profiles
@@ -70,10 +77,25 @@ EXAMPLES:
   ./setup.sh prompts list                   # List available prompts
   ./setup.sh init-memory ~/myapp            # Initialize memory bank
 
+  # Team Workspaces
+  ./setup.sh workspace list                # List available workspaces
+  ./setup.sh workspace list --fetch        # Pull latest, then list
+  ./setup.sh workspace show payments-core  # View workspace details
+  ./setup.sh workspace apply payments-core # Apply team config
+  ./setup.sh workspace create my-team      # Scaffold + commit + push
+  ./setup.sh workspace sync payments-core   # Pull all workspace repos
+  ./setup.sh workspace sync payments-core --push  # Push all workspace repos
+  ./setup.sh workspace create my-team --local  # Scaffold only (no git)
+
   # Cursor IDE
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
   ./setup.sh cursor sync ~/myapp           # Update rules from latest templates
   ./setup.sh cursor remove ~/myapp         # Remove .cursor/ directory
+
+  # Amazon Q Developer
+  ./setup.sh amazonq install ~/myapp       # Install .amazonq/rules/
+  ./setup.sh amazonq sync ~/myapp          # Update rules from latest templates
+  ./setup.sh amazonq remove ~/myapp        # Remove .amazonq/ directory
 
 USAGE
 }
@@ -81,11 +103,37 @@ USAGE
 list_profiles() {
     echo "📋 Available profiles:"
     echo ""
+    echo "  • dev (alias → dev-core + dev-web + dev-mobile, 20 agents total)"
     for dir in "$STEER_ROOT"/.kiro-*; do
         if [ -d "$dir" ]; then
             profile=$(basename "$dir" | sed 's/^\.kiro-//')
             agent_count=$(find "$dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             echo "  • $profile ($agent_count agents)"
+        fi
+    done
+}
+
+# Expand profile aliases (e.g., dev → dev-core dev-web dev-mobile)
+expand_profile_aliases() {
+    local -n _profiles=$1
+    local expanded=()
+    for p in "${_profiles[@]}"; do
+        case "$p" in
+            dev) expanded+=(dev-core dev-web dev-mobile) ;;
+            *)   expanded+=("$p") ;;
+        esac
+    done
+    # Deduplicate while preserving order
+    local seen=()
+    _profiles=()
+    for p in "${expanded[@]}"; do
+        local dup=false
+        for s in "${seen[@]}"; do
+            [ "$s" = "$p" ] && dup=true && break
+        done
+        if [ "$dup" = false ]; then
+            seen+=("$p")
+            _profiles+=("$p")
         fi
     done
 }
@@ -132,29 +180,43 @@ get_profile_agents() {
 
 inject_agent_tokens() {
     local target_dir=$1
-    _do_inject() {
-        local mcp_name="$1" env_file="$2" env_key="$3" tdir="$4"
-        if [ -f "$env_file" ]; then
-            local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
-            if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
-                for agent_json in "$tdir/agents/"*.json; do
-                    if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
-                        python3 -c "
-import json
-with open('$agent_json') as f: d=json.load(f)
-m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
-if m: m['$env_key']='$token'
-with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
-" 2>/dev/null
-                    fi
-                done
-            fi
-        fi
-    }
-    _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
-    _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
-    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
-    _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+    local tokens_file="$KIRO_ROOT/tokens.env"
+    
+    if [ ! -f "$tokens_file" ]; then
+        echo "⚠️  No tokens.env found — skipping token injection"
+        return
+    fi
+    
+    _read_token() { grep -s "^$1=" "$tokens_file" | head -1 | cut -d= -f2-; }
+    
+    local jira_pat=$(_read_token "JIRA_PAT")
+    local confluence_pat=$(_read_token "CONFLUENCE_PAT")
+    local mywiki_pat=$(_read_token "MYWIKI_PAT")
+    local github_token=$(_read_token "GITHUB_TOKEN_disney")
+    
+    for agent_json in "$target_dir/agents/"*.json; do
+        [ -f "$agent_json" ] || continue
+        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$mywiki_pat" "$github_token" << 'INJECT_PY'
+import json, sys
+path, jira, conf, mywiki, gh = sys.argv[1:6]
+tokens = {
+    ("jira", "JIRA_PAT"): jira,
+    ("confluence", "CONFLUENCE_PAT"): conf,
+    ("mywiki", "CONFLUENCE_PAT"): mywiki,
+    ("github", "GITHUB_TOKEN_disney"): gh,
+}
+with open(path) as f: d = json.load(f)
+changed = False
+for (mcp, key), val in tokens.items():
+    if val and val != "YOUR_TOKEN":
+        env = d.get("mcpServers", {}).get(mcp, {}).get("env", {})
+        if key in env:
+            env[key] = val
+            changed = True
+if changed:
+    with open(path, "w") as f: json.dump(d, f, indent=2); f.write("\n")
+INJECT_PY
+    done
 }
 
 install_profile() {
@@ -343,6 +405,9 @@ case "${1:-help}" in
             esac
         done
         
+        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        expand_profile_aliases profiles
+        
         target_root=$(get_target_dir "$project_dir")
         [ -n "$project_dir" ] && echo "🎯 Target: $target_root (Kiro UI)" || echo "🎯 Target: $target_root (Kiro CLI)"
         
@@ -429,6 +494,9 @@ case "${1:-help}" in
                     ;;
             esac
         done
+        
+        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        expand_profile_aliases profiles
         
         target_root=$(get_target_dir "$project_dir")
         echo "🎯 Target: $target_root"
@@ -532,6 +600,7 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
+        echo "  ✓ context7 (npx-based, no bundle needed)"
         echo ""
         
         # Configure tokens
@@ -590,14 +659,14 @@ CONFEOF
             echo "  Generate token: https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
             read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
             if [ -n "$mywiki_token" ]; then
-                # MyWiki uses the same confluence-mcp binary via agent env block
-                # Store token for reference and for the $HOME expansion step
-                mywiki_env="$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"
+                # MyWiki has its own MCP server binary (mywiki-mcp)
+                # Store token in mywiki-mcp .env
+                mywiki_env="$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env"
                 cat > "$mywiki_env" << MYWIKIEOF
 CONFLUENCE_URL=https://mywiki.disney.com
 CONFLUENCE_PAT=$mywiki_token
 MYWIKIEOF
-                echo "  ✓ Saved to confluence-mcp/.env.mywiki"
+                echo "  ✓ Saved to mywiki-mcp/.env"
             else
                 echo "  ⏭ Skipped"
             fi
@@ -620,6 +689,27 @@ GHEOF
             echo ""
         fi
         
+        # Generate centralized tokens.env
+        echo ""
+        echo "🔧 Generating ~/.kiro/tokens.env..."
+        tokens_file="$KIRO_ROOT/tokens.env"
+        cat > "$tokens_file" << 'TOKHEADER'
+# Kiro Agent Tokens — Single Source of Truth
+# Run: ./setup.sh mcp-install   to configure interactively
+# Or edit this file directly, then: ./setup.sh install <profiles>
+TOKHEADER
+        # Read from individual .env files (backward compat) or use just-entered values
+        _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
+        jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
+        cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
+        mp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env")
+        gt=$(_tok "GITHUB_TOKEN_disney" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env")
+        [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
+        [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
+        [ -n "$mp" ] && echo "MYWIKI_PAT=$mp" >> "$tokens_file"
+        [ -n "$gt" ] && echo "GITHUB_TOKEN_disney=$gt" >> "$tokens_file"
+        echo "  ✓ $tokens_file"
+        
         # Resolve $HOME in installed agent configs
         for agent_json in "$KIRO_ROOT/agents/"*.json; do
             if [ -f "$agent_json" ] && grep -q '\$HOME' "$agent_json" 2>/dev/null; then
@@ -629,6 +719,69 @@ GHEOF
         done
         
         inject_agent_tokens "$KIRO_ROOT"
+        
+        # Generate ~/.kiro/settings/mcp.json
+        echo ""
+        echo "🔧 Generating ~/.kiro/settings/mcp.json..."
+        mkdir -p "$HOME/.kiro/settings"
+        mcp_settings="$HOME/.kiro/settings/mcp.json"
+        
+        # Read tokens from centralized tokens.env
+        _tok() { grep -s "^$1=" "$KIRO_ROOT/tokens.env" 2>/dev/null | head -1 | cut -d= -f2-; }
+        jira_pat=$(_tok "JIRA_PAT")
+        confluence_pat=$(_tok "CONFLUENCE_PAT")
+        mywiki_pat=$(_tok "MYWIKI_PAT")
+        github_token=$(_tok "GITHUB_TOKEN_disney")
+        
+        # Preserve existing powers section if present
+        existing_powers="{}"
+        if [ -f "$mcp_settings" ]; then
+            existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
+        fi
+        
+        python3 -c "
+import json, sys
+
+mcp = {
+    'mcpServers': {
+        'jira': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'env': {'JIRA_PAT': '${jira_pat}'}
+        },
+        'confluence': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+        },
+        'mywiki': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs'],
+            'env': {'CONFLUENCE_URL': 'https://mywiki.disney.com', 'CONFLUENCE_PAT': '${mywiki_pat}'}
+        },
+        'github': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'env': {'GITHUB_TOKEN_disney': '${github_token}', 'GITHUB_HOST_disney': 'github.disney.com', 'GITHUB_DEFAULT_REMOTE': 'disney'}
+        },
+        'mermaid': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+        },
+        'context7': {
+            'command': 'npx',
+            'args': ['-y', '@upstash/context7-mcp']
+        }
+    }
+}
+powers = json.loads('$existing_powers')
+if powers:
+    mcp['powers'] = powers
+with open('$mcp_settings', 'w') as f:
+    json.dump(mcp, f, indent=2)
+    f.write('\n')
+"
+        echo "  ✓ $mcp_settings"
         
         echo "✅ MCP servers ready"
         ;;
@@ -804,17 +957,17 @@ GHEOF
         
         # Determine source
         if [ -n "$from_project" ]; then
-            source_mb="$STEER_ROOT/Projects/$from_project/.kiro/rules/memory-bank"
+            source_mb="$STEER_ROOT/workspaces/default/projects/$from_project/.kiro/rules/memory-bank"
             if [ ! -d "$source_mb" ]; then
                 echo "❌ Unknown project: $from_project"
-                echo "Available: $(ls "$STEER_ROOT/Projects" 2>/dev/null | tr '\n' ' ')"
+                echo "Available: $(ls "$STEER_ROOT/workspaces/default/projects" 2>/dev/null | tr '\n' ' ')"
                 exit 1
             fi
             echo "📦 Copying memory bank from $from_project..."
             cp "$source_mb"/*.md "$target_mb/"
-        elif [ -d "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank" ]; then
+        elif [ -d "$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank" ]; then
             echo "📦 Found known project: $project_name"
-            cp "$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"/*.md "$target_mb/"
+            cp "$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank"/*.md "$target_mb/"
         else
             echo "📦 Generating memory bank from templates..."
             for tmpl in "$STEER_ROOT"/common/memory-bank-templates/*.template; do
@@ -830,43 +983,57 @@ GHEOF
     configure)
         echo "🔧 Configure MCP tokens"
         echo ""
+        echo "Tokens file: ~/.kiro/tokens.env"
+        echo ""
         
-        env_file="$KIRO_ROOT/.env"
-        touch "$env_file"
+        tokens_file="$KIRO_ROOT/tokens.env"
+        touch "$tokens_file"
         
         tokens=(
-            "JIRA_PERSONAL_TOKEN"
-            "CONFLUENCE_PERSONAL_TOKEN"
-            "GITHUB_PERSONAL_ACCESS_TOKEN"
-            "HARNESS_API_KEY"
+            "JIRA_PAT"
+            "CONFLUENCE_PAT"
+            "MYWIKI_PAT"
+            "GITHUB_TOKEN_disney"
             "SONARQUBE_TOKEN"
+            "HARNESS_API_KEY"
         )
         
-        for token in "${tokens[@]}"; do
-            current=$(grep "^$token=" "$env_file" 2>/dev/null | cut -d= -f2 || echo "")
+        labels=(
+            "Jira PAT (myjira.disney.com)"
+            "Confluence PAT (confluence.disney.com)"
+            "MyWiki PAT (mywiki.disney.com)"
+            "GitHub Token (github.disney.com)"
+            "SonarQube Token (optional)"
+            "Harness API Key (optional)"
+        )
+        
+        for i in "${!tokens[@]}"; do
+            token="${tokens[$i]}"
+            label="${labels[$i]}"
+            current=$(grep "^$token=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
             if [ -n "$current" ]; then
-                status="set"
+                masked="${current:0:6}...${current: -4} (${#current}ch)"
+                status="$masked"
             else
                 status="not set"
             fi
             
-            echo -n "$token [$status]: "
+            echo -n "$label [$status]: "
             read -r value
             
             if [ -n "$value" ]; then
-                # Remove existing and add new
-                grep -v "^$token=" "$env_file" > "$env_file.tmp" 2>/dev/null || true
-                echo "$token=$value" >> "$env_file.tmp"
-                mv "$env_file.tmp" "$env_file"
+                grep -v "^$token=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                echo "$token=$value" >> "$tokens_file.tmp"
+                mv "$tokens_file.tmp" "$tokens_file"
                 echo "  ✓ Updated"
             else
-                echo "  ⏭ Skipped"
+                echo "  ⏭ Kept"
             fi
         done
         
         echo ""
-        echo "✅ Configuration saved to $env_file"
-        echo "💡 Source this file or export variables before using MCP servers"
+        echo "✅ Tokens saved to $tokens_file"
+        echo "💡 Run ./setup.sh install <profiles> to inject into agent configs"
         ;;
         
         
@@ -949,14 +1116,14 @@ GHEOF
                     mywiki_pat="YOUR_TOKEN"
                     github_token="YOUR_TOKEN"
                     
-                    [ -f "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" ] && \
-                        jira_pat=$(grep -s '^JIRA_PAT=' "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" ] && \
-                        confluence_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" ] && \
-                        mywiki_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env.mywiki" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" ] && \
-                        github_token=$(grep -s '^GITHUB_TOKEN_disney=' "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    # Read from centralized tokens.env
+                    if [ -f "$HOME/.kiro/tokens.env" ]; then
+                        _tok() { grep -s "^$1=" "$HOME/.kiro/tokens.env" | head -1 | cut -d= -f2-; }
+                        jira_pat=$(_tok "JIRA_PAT"); [ -z "$jira_pat" ] && jira_pat="YOUR_TOKEN"
+                        confluence_pat=$(_tok "CONFLUENCE_PAT"); [ -z "$confluence_pat" ] && confluence_pat="YOUR_TOKEN"
+                        mywiki_pat=$(_tok "MYWIKI_PAT"); [ -z "$mywiki_pat" ] && mywiki_pat="YOUR_TOKEN"
+                        github_token=$(_tok "GITHUB_TOKEN_disney"); [ -z "$github_token" ] && github_token="YOUR_TOKEN"
+                    fi
                     
                     cat > "$mcp_json" << MCPEOF
 {
@@ -973,7 +1140,7 @@ GHEOF
     },
     "mywiki": {
       "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
+      "args": ["$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"],
       "env": { "CONFLUENCE_URL": "https://mywiki.disney.com", "CONFLUENCE_PAT": "$mywiki_pat" }
     },
     "github": {
@@ -984,6 +1151,10 @@ GHEOF
     "mermaid": {
       "command": "node",
       "args": ["$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
     }
   }
 }
@@ -1069,7 +1240,7 @@ MCPEOF
                 
                 # Check for existing Kiro memory bank
                 kiro_mb="$cursor_dir/.kiro/rules/memory-bank"
-                known_mb="$STEER_ROOT/Projects/$project_name/.kiro/rules/memory-bank"
+                known_mb="$STEER_ROOT/workspaces/default/projects/$project_name/.kiro/rules/memory-bank"
                 
                 if [ -d "$kiro_mb" ] && ls "$kiro_mb"/*.md &>/dev/null; then
                     echo "  Found existing Kiro memory bank at $kiro_mb"
@@ -1127,7 +1298,377 @@ MCPEOF
         esac
         ;;
 
-    help|--help|-h)
+    amazonq)
+        shift
+        aq_subcmd="${1:-help}"
+        shift 2>/dev/null || true
+        aq_dir="${1:-}"
+        
+        case "$aq_subcmd" in
+            install)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq install <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                if [ ! -d "$aq_dir" ]; then
+                    echo "❌ Directory does not exist: $aq_dir"
+                    exit 1
+                fi
+                
+                rules_dir="$aq_dir/.amazonq/rules"
+                mkdir -p "$rules_dir"
+                
+                echo "🤖 Installing Amazon Q rules to $rules_dir"
+                echo ""
+                
+                count=0
+                for md in "$STEER_ROOT"/.amazonq-templates/*.md; do
+                    [ -f "$md" ] || continue
+                    name=$(basename "$md")
+                    [ "$name" = "README.md" ] && continue
+                    cp "$md" "$rules_dir/"
+                    echo "  ✓ $name"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Installed $count rules to $rules_dir"
+                ;;
+            
+            sync)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq sync <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                rules_dir="$aq_dir/.amazonq/rules"
+                
+                if [ ! -d "$rules_dir" ]; then
+                    echo "❌ No Amazon Q rules found at $rules_dir"
+                    echo "   Run: ./setup.sh amazonq install $aq_dir"
+                    exit 1
+                fi
+                
+                echo "🔄 Syncing Amazon Q rules in $rules_dir"
+                echo ""
+                
+                count=0
+                for md in "$STEER_ROOT"/.amazonq-templates/*.md; do
+                    [ -f "$md" ] || continue
+                    name=$(basename "$md")
+                    [ "$name" = "README.md" ] && continue
+                    cp "$md" "$rules_dir/"
+                    echo "  ✓ $name"
+                    count=$((count + 1))
+                done
+                
+                echo ""
+                echo "✅ Synced $count rules"
+                ;;
+            
+            remove)
+                if [ -z "$aq_dir" ]; then
+                    echo "❌ Usage: ./setup.sh amazonq remove <project-dir>"
+                    exit 1
+                fi
+                aq_dir="${aq_dir/#\~/$HOME}"
+                
+                if [ ! -d "$aq_dir/.amazonq" ]; then
+                    echo "⚠️  No .amazonq/ directory found in $aq_dir"
+                    exit 0
+                fi
+                
+                echo "🗑️  Removing .amazonq/ from $aq_dir"
+                rm -rf "$aq_dir/.amazonq"
+                echo "✅ Removed"
+                ;;
+
+            *)
+                echo "Amazon Q Developer integration"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh amazonq install <project-dir>   Install rules"
+                echo "  ./setup.sh amazonq sync <project-dir>      Update rules from templates"
+                echo "  ./setup.sh amazonq remove <project-dir>    Remove .amazonq/ directory"
+                ;;
+        esac
+        ;;
+
+    workspace)
+        shift
+        ws_cmd="${1:-list}"
+        shift 2>/dev/null || true
+        ws_dir="$STEER_ROOT/workspaces"
+
+        case "$ws_cmd" in
+            list)
+                # Fetch latest from remote if --fetch flag
+                if [[ "$1" == "--fetch" ]]; then
+                    echo "🔄 Fetching latest from remote..."
+                    git -C "$STEER_ROOT" pull --rebase --quiet 2>/dev/null && echo "  ✓ Up to date" || echo "  ⚠ Fetch failed (offline?)"
+                    echo ""
+                fi
+                echo "📋 Available team workspaces:"
+                echo ""
+                if [ ! -d "$ws_dir" ] || [ -z "$(ls -d "$ws_dir"/*/workspace.json 2>/dev/null)" ]; then
+                    echo "  (none) — create one with: ./setup.sh workspace create <name>"
+                    exit 0
+                fi
+                for ws in "$ws_dir"/*/workspace.json; do
+                    ws_name=$(basename "$(dirname "$ws")")
+                    ws_desc=$(python3 -c "import json; print(json.load(open('$ws')).get('description',''))" 2>/dev/null)
+                    ws_profiles=$(python3 -c "import json; print(', '.join(json.load(open('$ws')).get('profiles',[])))" 2>/dev/null)
+                    echo "  • $ws_name"
+                    [ -n "$ws_desc" ] && echo "    $ws_desc"
+                    [ -n "$ws_profiles" ] && echo "    Profiles: $ws_profiles"
+                    echo ""
+                done
+                ;;
+
+            show)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace show <name>"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                python3 -c "
+import json
+ws = json.load(open('$ws_file'))
+print(f\"╔{'═'*58}╗\")
+print(f\"║  Team Workspace: {ws['name']:<39} ║\")
+print(f\"╚{'═'*58}╝\")
+print()
+if ws.get('description'): print(f\"  Description:  {ws['description']}\")
+if ws.get('team'):        print(f\"  Team:         {ws['team']}\")
+if ws.get('jira_prefix'): print(f\"  Jira Prefix:  {ws['jira_prefix']}\")
+print()
+print('  Profiles:')
+for p in ws.get('profiles', []): print(f\"    • {p}\")
+if ws.get('default_agent'): print(f\"\n  Default Agent: {ws['default_agent']}\")
+if ws.get('projects'):
+    print('\n  Projects:')
+    for proj in ws['projects']: print(f\"    • {proj['name']} ({proj.get('path','')})\")
+if ws.get('rules'):
+    print('\n  Rules:')
+    for r in ws['rules']: print(f\"    • {r}\")
+print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
+"
+                # Show extra files
+                ws_path="$ws_dir/$ws_name"
+                [ -d "$ws_path/rules" ] && [ -n "$(ls "$ws_path/rules"/*.md 2>/dev/null)" ] && {
+                    echo ""
+                    echo "  Custom Rules:"
+                    for r in "$ws_path/rules"/*.md; do echo "    • $(basename "$r" .md)"; done
+                }
+                [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ] && {
+                    echo ""
+                    echo "  Context Files:"
+                    for c in "$ws_path/context"/*.md; do echo "    • $(basename "$c")"; done
+                }
+                echo ""
+                ;;
+
+            apply)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace apply <name>"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                echo "🚀 Applying workspace: $ws_name"
+                echo ""
+
+                # Parse workspace config
+                profiles=$(python3 -c "import json; print(' '.join(json.load(open('$ws_file')).get('profiles',[])))")
+                rules=$(python3 -c "import json; print(' '.join(json.load(open('$ws_file')).get('rules',[])))")
+                enable_tools=$(python3 -c "import json; print('yes' if json.load(open('$ws_file')).get('enable_tools') else 'no')")
+                default_agent=$(python3 -c "import json; print(json.load(open('$ws_file')).get('default_agent',''))")
+
+                # 1. Install profiles
+                if [ -n "$profiles" ]; then
+                    echo "📦 Installing profiles: $profiles"
+                    "$STEER_ROOT/setup.sh" install $profiles
+                    echo ""
+                fi
+
+                # 2. Install rules
+                if [ -n "$rules" ]; then
+                    echo "📏 Installing rules..."
+                    for rule in $rules; do
+                        rule_file="$STEER_ROOT/common/rules/$rule.md"
+                        if [ -f "$rule_file" ]; then
+                            mkdir -p "$KIRO_ROOT/rules"
+                            cp "$rule_file" "$KIRO_ROOT/rules/"
+                            echo "  ✓ $rule"
+                        fi
+                    done
+                    echo ""
+                fi
+
+                # 3. Copy workspace-specific rules
+                ws_path="$ws_dir/$ws_name"
+                if [ -d "$ws_path/rules" ] && [ -n "$(ls "$ws_path/rules"/*.md 2>/dev/null)" ]; then
+                    echo "📏 Installing workspace rules..."
+                    mkdir -p "$KIRO_ROOT/rules"
+                    for r in "$ws_path/rules"/*.md; do
+                        cp "$r" "$KIRO_ROOT/rules/"
+                        echo "  ✓ $(basename "$r")"
+                    done
+                    echo ""
+                fi
+
+                # 4. Copy workspace-specific context (into repo .kiro/context/ where agents read from)
+                if [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ]; then
+                    echo "📄 Installing workspace context..."
+                    mkdir -p "$STEER_ROOT/.kiro/context"
+                    for c in "$ws_path/context"/*.md; do
+                        cp "$c" "$STEER_ROOT/.kiro/context/"
+                        echo "  ✓ $(basename "$c")"
+                    done
+                    echo ""
+                fi
+
+                # 5. Initialize project memory banks
+                projects=$(python3 -c "
+import json
+for p in json.load(open('$ws_file')).get('projects',[]):
+    mb = p.get('memory_bank','')
+    path = p.get('path','')
+    if path: print(f\"{path}|{mb}\")
+")
+                if [ -n "$projects" ]; then
+                    echo "🧠 Initializing project memory banks..."
+                    while IFS='|' read -r proj_path proj_mb; do
+                        resolved="${proj_path/#\~/$HOME}"
+                        if [ -d "$resolved" ]; then
+                            if [ -n "$proj_mb" ]; then
+                                "$STEER_ROOT/setup.sh" init-memory "$resolved" --from "$proj_mb" 2>/dev/null && echo "  ✓ $(basename "$resolved")" || echo "  ⚠ $(basename "$resolved") (template not found, using generic)"
+                            else
+                                "$STEER_ROOT/setup.sh" init-memory "$resolved" 2>/dev/null && echo "  ✓ $(basename "$resolved")"
+                            fi
+                        else
+                            echo "  ⏭ $(basename "$resolved") (directory not found)"
+                        fi
+                    done <<< "$projects"
+                    echo ""
+                fi
+
+                # 6. Enable tools
+                if [ "$enable_tools" = "yes" ]; then
+                    echo "🔧 Enabling advanced tools..."
+                    "$STEER_ROOT/setup.sh" enable-tools 2>/dev/null || true
+                    echo ""
+                fi
+
+                echo "✅ Workspace '$ws_name' applied"
+                [ -n "$default_agent" ] && echo "   Default agent: $default_agent"
+                echo ""
+                echo "Next steps:"
+                echo "  ./setup.sh mcp-install              # Configure MCP tokens"
+                [ -n "$default_agent" ] && echo "  kiro-cli chat --agent $default_agent  # Start coding"
+                ;;
+
+            create)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace create <name>"; exit 1; fi
+                ws_path="$ws_dir/$ws_name"
+                if [ -d "$ws_path" ]; then echo "❌ Workspace already exists: $ws_name"; exit 1; fi
+
+                echo "🏗️  Creating workspace: $ws_name"
+                mkdir -p "$ws_path"/{rules,context,memory-banks}
+
+                cat > "$ws_path/workspace.json" << WSEOF
+{
+  "name": "$ws_name",
+  "description": "",
+  "team": "",
+  "profiles": ["dev-core", "dev-web"],
+  "default_agent": "orchestrator",
+  "projects": [],
+  "rules": ["conventional_commit"],
+  "enable_tools": true,
+  "jira_prefix": ""
+}
+WSEOF
+
+                echo "✅ Workspace scaffolded at workspaces/$ws_name/"
+
+                # Commit and push unless --local
+                if [[ "$2" != "--local" ]]; then
+                    echo ""
+                    echo "📤 Publishing workspace to repository..."
+                    git -C "$STEER_ROOT" add "workspaces/$ws_name/" 2>/dev/null
+                    git -C "$STEER_ROOT" commit -m "feat: add $ws_name team workspace" --quiet 2>/dev/null &&                     git -C "$STEER_ROOT" push --quiet 2>/dev/null &&                         echo "  ✓ Committed and pushed" ||                         echo "  ⚠ Git push failed — commit locally, push manually"
+                fi
+
+                echo ""
+                echo "Next steps:"
+                echo "  1. Edit workspaces/$ws_name/workspace.json"
+                echo "  2. Add team rules to workspaces/$ws_name/rules/"
+                echo "  3. Add team context to workspaces/$ws_name/context/"
+                echo "  4. Apply: ./setup.sh workspace apply $ws_name"
+                ;;
+
+
+            sync)
+                ws_name="$1"
+                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace sync <name> [--push]"; exit 1; fi
+                ws_file="$ws_dir/$ws_name/workspace.json"
+                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+
+                do_push=false
+                [ "$2" = "--push" ] && do_push=true
+
+                projects=$(python3 -c "
+import json
+for p in json.load(open('$ws_file')).get('projects',[]):
+    path = p.get('path','')
+    if path: print(path)
+")
+                if [ -z "$projects" ]; then
+                    echo "⚠ No projects in workspace $ws_name"
+                    exit 0
+                fi
+
+                echo "🔄 Syncing workspace: $ws_name"
+                echo ""
+                while IFS= read -r proj_path; do
+                    resolved="${proj_path/#\~/$HOME}"
+                    # Resolve relative paths from steer-runtime parent
+                    if [[ "$resolved" == ../* ]]; then
+                        resolved="$(cd "$STEER_ROOT/$resolved" 2>/dev/null && pwd || true)"
+                    fi
+                    name=$(basename "${resolved:-$proj_path}")
+                    if [ -z "$resolved" ] || [ ! -d "$resolved/.git" ]; then
+                        echo "  ⏭ $name (not found)"
+                        continue
+                    fi
+                    if $do_push; then
+                        git -C "$resolved" push --quiet 2>/dev/null && echo "  ✓ $name (pushed)" || echo "  ⚠ $name (push failed)"
+                    else
+                        git -C "$resolved" fetch --all --quiet 2>/dev/null
+                        git -C "$resolved" pull --rebase --quiet 2>/dev/null && echo "  ✓ $name (pulled)" || echo "  ⚠ $name (pull failed — resolve conflicts)"
+                    fi
+                done <<< "$projects"
+                echo ""
+                echo "✅ Sync complete"
+                ;;
+            *)
+                echo "❌ Unknown workspace command: $ws_cmd"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh workspace list              List available workspaces"
+                echo "  ./setup.sh workspace show <name>       Show workspace details"
+                echo "  ./setup.sh workspace apply <name>      Apply workspace config"
+                echo "  ./setup.sh workspace create <name>     Create new workspace
+                echo "  ./setup.sh workspace sync <name>       Fetch & pull all workspace repos
+  ./setup.sh workspace sync <name> --push Push all workspace repos""
+                exit 1
+                ;;
+        esac
+        ;;
+
+        help|--help|-h)
         show_usage
         ;;
         

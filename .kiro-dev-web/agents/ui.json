@@ -1,0 +1,62 @@
+{
+  "name": "ui",
+  "description": "Config Studio UI specialist (Angular)",
+  "prompt": "ui.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "@context7/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "projects/**",
+        "package.json",
+        "angular.json",
+        ".eslintrc*",
+        "tsconfig*.json"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "includeMcpJson": true
+}

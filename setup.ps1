@@ -43,6 +43,7 @@ COMMANDS:
   prompts [list|install]                 Manage standalone prompts
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
+  workspace <subcmd>                     Manage team workspaces (create, list, apply, show, sync)
   help                                   Show this help message
 
 PROFILES:
@@ -306,6 +307,7 @@ switch ($Command) {
             Write-Host "X No pre-built MCP bundles found in dist/" -ForegroundColor Red; exit 1
         }
         Write-Host "`n$($mcpDirs.Count) MCP servers ready (pre-built, no npm install needed)" -ForegroundColor Green
+        Write-Host "  OK context7 (npx-based, no bundle needed)" -ForegroundColor Green
 
         # Configure tokens
         Write-Host ""
@@ -448,9 +450,9 @@ switch ($Command) {
             if ($Args[$i] -eq "--from") { $fromProject = $Args[++$i] }
         }
 
-        $knownPath = "$SteerRoot\Projects\$projectName\.kiro\rules\memory-bank"
+        $knownPath = "$SteerRoot\workspaces\default\projects\$projectName\.kiro\rules\memory-bank"
         if ($fromProject) {
-            $src = "$SteerRoot\Projects\$fromProject\.kiro\rules\memory-bank"
+            $src = "$SteerRoot\workspaces\default\projects\$fromProject\.kiro\rules\memory-bank"
             if (-not (Test-Path $src)) { Write-Host "X Unknown project: $fromProject" -ForegroundColor Red; exit 1 }
             Copy-Item "$src\*.md" $targetMb -Force
         } elseif (Test-Path $knownPath) {
@@ -488,6 +490,163 @@ switch ($Command) {
         }
         $envContent | Set-Content $envFile -Encoding UTF8
         Write-Host "`nConfiguration saved to $envFile" -ForegroundColor Green
+    }
+
+    "workspace" {
+        $wsCmd = if ($Args.Count -gt 0) { $Args[0] } else { "list" }
+        $wsName = if ($Args.Count -gt 1) { $Args[1] } else { "" }
+        $wsDir = Join-Path $SteerRoot "workspaces"
+
+        switch ($wsCmd) {
+            "list" {
+                if ($Args -contains "--fetch") {
+                    Write-Host "Fetching latest from remote..."
+                    try { git -C $SteerRoot pull --rebase --quiet 2>$null; Write-Host "  OK Up to date" -ForegroundColor Green }
+                    catch { Write-Host "  Warning: Fetch failed (offline?)" -ForegroundColor Yellow }
+                    Write-Host ""
+                }
+                Write-Host "Available team workspaces:`n"
+                $found = $false
+                Get-ChildItem -Path $wsDir -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+                    $wsFile = Join-Path $_.FullName "workspace.json"
+                    if (Test-Path $wsFile) {
+                        $found = $true
+                        $ws = Get-Content $wsFile -Raw | ConvertFrom-Json
+                        Write-Host "  * $($ws.name)" -ForegroundColor Cyan
+                        if ($ws.description) { Write-Host "    $($ws.description)" }
+                        if ($ws.profiles) { Write-Host "    Profiles: $($ws.profiles -join ', ')" }
+                        Write-Host ""
+                    }
+                }
+                if (-not $found) { Write-Host "  (none) -- create one with: .\setup.ps1 workspace create <name>" }
+            }
+            "show" {
+                if (-not $wsName) { Write-Host "X Usage: .\setup.ps1 workspace show <name>" -ForegroundColor Red; exit 1 }
+                $wsFile = Join-Path $wsDir "$wsName\workspace.json"
+                if (-not (Test-Path $wsFile)) { Write-Host "X Workspace not found: $wsName" -ForegroundColor Red; exit 1 }
+                $ws = Get-Content $wsFile -Raw | ConvertFrom-Json
+                Write-Host "`n  Team Workspace: $($ws.name)" -ForegroundColor Cyan
+                Write-Host "  $('=' * 40)"
+                if ($ws.description) { Write-Host "  Description:  $($ws.description)" }
+                if ($ws.team)        { Write-Host "  Team:         $($ws.team)" }
+                if ($ws.jira_prefix) { Write-Host "  Jira Prefix:  $($ws.jira_prefix)" }
+                Write-Host "`n  Profiles:"
+                $ws.profiles | ForEach-Object { Write-Host "    * $_" }
+                if ($ws.default_agent) { Write-Host "`n  Default Agent: $($ws.default_agent)" }
+                if ($ws.projects) {
+                    Write-Host "`n  Projects:"
+                    $ws.projects | ForEach-Object { Write-Host "    * $($_.name) ($($_.path))" }
+                }
+                if ($ws.rules) {
+                    Write-Host "`n  Rules:"
+                    $ws.rules | ForEach-Object { Write-Host "    * $_" }
+                }
+                Write-Host ""
+            }
+            "apply" {
+                if (-not $wsName) { Write-Host "X Usage: .\setup.ps1 workspace apply <name>" -ForegroundColor Red; exit 1 }
+                $wsFile = Join-Path $wsDir "$wsName\workspace.json"
+                if (-not (Test-Path $wsFile)) { Write-Host "X Workspace not found: $wsName" -ForegroundColor Red; exit 1 }
+                $ws = Get-Content $wsFile -Raw | ConvertFrom-Json
+                Write-Host "Applying workspace: $wsName`n" -ForegroundColor Cyan
+                if ($ws.profiles) {
+                    Write-Host "Installing profiles: $($ws.profiles -join ' ')"
+                    & $MyInvocation.MyCommand.Path install @($ws.profiles)
+                }
+                if ($ws.rules) {
+                    Write-Host "`nInstalling rules..."
+                    $ws.rules | ForEach-Object {
+                        $ruleFile = Join-Path $SteerRoot "common\rules\$_.md"
+                        if (Test-Path $ruleFile) {
+                            New-Item -Path "$KiroRoot\rules" -ItemType Directory -Force | Out-Null
+                            Copy-Item $ruleFile "$KiroRoot\rules\"
+                            Write-Host "  OK $_" -ForegroundColor Green
+                        }
+                    }
+                }
+                $wsPath = Join-Path $wsDir $wsName
+                $customRules = Join-Path $wsPath "rules"
+                if (Test-Path $customRules) {
+                    Get-ChildItem "$customRules\*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+                        Copy-Item $_.FullName "$KiroRoot\rules\"
+                        Write-Host "  OK $($_.BaseName)" -ForegroundColor Green
+                    }
+                }
+                $customCtx = Join-Path $wsPath "context"
+                if (Test-Path $customCtx) {
+                    Write-Host "`nInstalling context..."
+                    New-Item -Path "$SteerRoot\.kiro\context" -ItemType Directory -Force | Out-Null
+                    Get-ChildItem "$customCtx\*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+                        Copy-Item $_.FullName "$SteerRoot\.kiro\context\"
+                        Write-Host "  OK $($_.Name)" -ForegroundColor Green
+                    }
+                }
+                if ($ws.enable_tools) {
+                    Write-Host "`nEnabling advanced tools..."
+                    & $MyInvocation.MyCommand.Path enable-tools 2>$null
+                }
+                Write-Host "`nWorkspace '$wsName' applied" -ForegroundColor Green
+                if ($ws.default_agent) { Write-Host "  Default agent: $($ws.default_agent)" }
+                Write-Host "`nNext steps:"
+                Write-Host "  .\setup.ps1 mcp-install"
+                if ($ws.default_agent) { Write-Host "  kiro-cli chat --agent $($ws.default_agent)" }
+            }
+            "create" {
+                if (-not $wsName) { Write-Host "X Usage: .\setup.ps1 workspace create <name>" -ForegroundColor Red; exit 1 }
+                $wsPath = Join-Path $wsDir $wsName
+                if (Test-Path $wsPath) { Write-Host "X Workspace already exists: $wsName" -ForegroundColor Red; exit 1 }
+                New-Item -Path $wsPath -ItemType Directory -Force | Out-Null
+                "rules","context","memory-banks" | ForEach-Object { New-Item -Path (Join-Path $wsPath $_) -ItemType Directory -Force | Out-Null }
+                $template = @{name=$wsName;description="";team="";profiles=@("dev-core","dev-web");default_agent="orchestrator";projects=@();rules=@("conventional_commit");enable_tools=$true;jira_prefix=""} | ConvertTo-Json -Depth 3
+                $template | Set-Content (Join-Path $wsPath "workspace.json") -Encoding UTF8
+                Write-Host "Workspace scaffolded at workspaces\$wsName\" -ForegroundColor Green
+                if ($Args -notcontains "--local") {
+                    Write-Host "`nPublishing workspace to repository..."
+                    try {
+                        git -C $SteerRoot add "workspaces/$wsName/" 2>$null
+                        git -C $SteerRoot commit -m "feat: add $wsName team workspace" --quiet 2>$null
+                        git -C $SteerRoot push --quiet 2>$null
+                        Write-Host "  OK Committed and pushed" -ForegroundColor Green
+                    } catch { Write-Host "  Warning: Git push failed -- commit locally, push manually" -ForegroundColor Yellow }
+                }
+                Write-Host "`nNext steps:"
+                Write-Host "  1. Edit workspaces\$wsName\workspace.json"
+                Write-Host "  2. Add team rules to workspaces\$wsName\rules\"
+                Write-Host "  3. Add team context to workspaces\$wsName\context\"
+                Write-Host "  4. Apply: .\setup.ps1 workspace apply $wsName"
+            }
+            "sync" {
+                if (-not $wsName) { Write-Host "X Usage: .\setup.ps1 workspace sync <name> [--push]" -ForegroundColor Red; exit 1 }
+                $wsFile = Join-Path $wsDir "$wsName\workspace.json"
+                if (-not (Test-Path $wsFile)) { Write-Host "X Workspace not found: $wsName" -ForegroundColor Red; exit 1 }
+                $ws = Get-Content $wsFile | ConvertFrom-Json
+                $doPush = $args -contains "--push"
+                if (-not $ws.projects -or $ws.projects.Count -eq 0) { Write-Host "No projects in workspace $wsName"; exit 0 }
+                Write-Host "Syncing workspace: $wsName`n"
+                foreach ($proj in $ws.projects) {
+                    $resolved = $proj.path -replace '^\.\.\/','..\' | ForEach-Object { Join-Path (Split-Path $SteerRoot) ($_ -replace '^\.\.\/','') }
+                    $name = Split-Path $resolved -Leaf
+                    if (-not (Test-Path (Join-Path $resolved ".git"))) { Write-Host "  SKIP $name (not a git repo)"; continue }
+                    if ($doPush) {
+                        git -C $resolved push --quiet 2>$null; if ($?) { Write-Host "  OK $name (pushed)" -ForegroundColor Green } else { Write-Host "  WARN $name (push failed)" -ForegroundColor Yellow }
+                    } else {
+                        git -C $resolved fetch --all --quiet 2>$null
+                        git -C $resolved pull --rebase --quiet 2>$null; if ($?) { Write-Host "  OK $name (pulled)" -ForegroundColor Green } else { Write-Host "  WARN $name (pull failed)" -ForegroundColor Yellow }
+                    }
+                }
+                Write-Host "`nSync complete"
+            }
+            default {
+                Write-Host "X Unknown workspace command: $wsCmd" -ForegroundColor Red
+                Write-Host "`nUsage:"
+                Write-Host "  .\setup.ps1 workspace list"
+                Write-Host "  .\setup.ps1 workspace show <name>"
+                Write-Host "  .\setup.ps1 workspace apply <name>"
+                Write-Host "  .\setup.ps1 workspace create <name>"
+                Write-Host "  .\setup.ps1 workspace sync <name> [--push]"
+                exit 1
+            }
+        }
     }
 
     { $_ -in "help","--help","-h" } { Show-Usage }

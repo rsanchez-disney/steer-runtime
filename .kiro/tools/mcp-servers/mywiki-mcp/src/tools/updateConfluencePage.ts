@@ -2,8 +2,8 @@ import { apiClient } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const updateConfluencePageSchema = {
-    name: "update_confluence_page",
-    description: "Update an existing Confluence page",
+    name: "update_mywiki_page",
+    description: "Update an existing MyWiki page",
     inputSchema: {
         type: "object",
         properties: {
