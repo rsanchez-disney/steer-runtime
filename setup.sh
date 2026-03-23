@@ -180,29 +180,43 @@ get_profile_agents() {
 
 inject_agent_tokens() {
     local target_dir=$1
-    _do_inject() {
-        local mcp_name="$1" env_file="$2" env_key="$3" tdir="$4"
-        if [ -f "$env_file" ]; then
-            local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
-            if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
-                for agent_json in "$tdir/agents/"*.json; do
-                    if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
-                        python3 -c "
-import json
-with open('$agent_json') as f: d=json.load(f)
-m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
-if m: m['$env_key']='$token'
-with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
-" 2>/dev/null
-                    fi
-                done
-            fi
-        fi
-    }
-    _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
-    _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
-    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env"              "CONFLUENCE_PAT"     "$target_dir"
-    _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+    local tokens_file="$KIRO_ROOT/tokens.env"
+    
+    if [ ! -f "$tokens_file" ]; then
+        echo "⚠️  No tokens.env found — skipping token injection"
+        return
+    fi
+    
+    _read_token() { grep -s "^$1=" "$tokens_file" | head -1 | cut -d= -f2-; }
+    
+    local jira_pat=$(_read_token "JIRA_PAT")
+    local confluence_pat=$(_read_token "CONFLUENCE_PAT")
+    local mywiki_pat=$(_read_token "MYWIKI_PAT")
+    local github_token=$(_read_token "GITHUB_TOKEN_disney")
+    
+    for agent_json in "$target_dir/agents/"*.json; do
+        [ -f "$agent_json" ] || continue
+        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$mywiki_pat" "$github_token" << 'INJECT_PY'
+import json, sys
+path, jira, conf, mywiki, gh = sys.argv[1:6]
+tokens = {
+    ("jira", "JIRA_PAT"): jira,
+    ("confluence", "CONFLUENCE_PAT"): conf,
+    ("mywiki", "CONFLUENCE_PAT"): mywiki,
+    ("github", "GITHUB_TOKEN_disney"): gh,
+}
+with open(path) as f: d = json.load(f)
+changed = False
+for (mcp, key), val in tokens.items():
+    if val and val != "YOUR_TOKEN":
+        env = d.get("mcpServers", {}).get(mcp, {}).get("env", {})
+        if key in env:
+            env[key] = val
+            changed = True
+if changed:
+    with open(path, "w") as f: json.dump(d, f, indent=2); f.write("\n")
+INJECT_PY
+    done
 }
 
 install_profile() {
@@ -675,6 +689,27 @@ GHEOF
             echo ""
         fi
         
+        # Generate centralized tokens.env
+        echo ""
+        echo "🔧 Generating ~/.kiro/tokens.env..."
+        tokens_file="$KIRO_ROOT/tokens.env"
+        cat > "$tokens_file" << 'TOKHEADER'
+# Kiro Agent Tokens — Single Source of Truth
+# Run: ./setup.sh mcp-install   to configure interactively
+# Or edit this file directly, then: ./setup.sh install <profiles>
+TOKHEADER
+        # Read from individual .env files (backward compat) or use just-entered values
+        _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
+        jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
+        cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
+        mp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env")
+        gt=$(_tok "GITHUB_TOKEN_disney" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env")
+        [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
+        [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
+        [ -n "$mp" ] && echo "MYWIKI_PAT=$mp" >> "$tokens_file"
+        [ -n "$gt" ] && echo "GITHUB_TOKEN_disney=$gt" >> "$tokens_file"
+        echo "  ✓ $tokens_file"
+        
         # Resolve $HOME in installed agent configs
         for agent_json in "$KIRO_ROOT/agents/"*.json; do
             if [ -f "$agent_json" ] && grep -q '\$HOME' "$agent_json" 2>/dev/null; then
@@ -691,11 +726,12 @@ GHEOF
         mkdir -p "$HOME/.kiro/settings"
         mcp_settings="$HOME/.kiro/settings/mcp.json"
         
-        # Read tokens from .env files
-        jira_pat=$(grep -s "^JIRA_PAT=" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "")
-        confluence_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "")
-        mywiki_pat=$(grep -s "^CONFLUENCE_PAT=" "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env" | cut -d= -f2- || echo "")
-        github_token=$(grep -s "^GITHUB_TOKEN_disney=" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "")
+        # Read tokens from centralized tokens.env
+        _tok() { grep -s "^$1=" "$KIRO_ROOT/tokens.env" 2>/dev/null | head -1 | cut -d= -f2-; }
+        jira_pat=$(_tok "JIRA_PAT")
+        confluence_pat=$(_tok "CONFLUENCE_PAT")
+        mywiki_pat=$(_tok "MYWIKI_PAT")
+        github_token=$(_tok "GITHUB_TOKEN_disney")
         
         # Preserve existing powers section if present
         existing_powers="{}"
@@ -947,43 +983,57 @@ with open('$mcp_settings', 'w') as f:
     configure)
         echo "🔧 Configure MCP tokens"
         echo ""
+        echo "Tokens file: ~/.kiro/tokens.env"
+        echo ""
         
-        env_file="$KIRO_ROOT/.env"
-        touch "$env_file"
+        tokens_file="$KIRO_ROOT/tokens.env"
+        touch "$tokens_file"
         
         tokens=(
-            "JIRA_PERSONAL_TOKEN"
-            "CONFLUENCE_PERSONAL_TOKEN"
-            "GITHUB_PERSONAL_ACCESS_TOKEN"
-            "HARNESS_API_KEY"
+            "JIRA_PAT"
+            "CONFLUENCE_PAT"
+            "MYWIKI_PAT"
+            "GITHUB_TOKEN_disney"
             "SONARQUBE_TOKEN"
+            "HARNESS_API_KEY"
         )
         
-        for token in "${tokens[@]}"; do
-            current=$(grep "^$token=" "$env_file" 2>/dev/null | cut -d= -f2 || echo "")
+        labels=(
+            "Jira PAT (myjira.disney.com)"
+            "Confluence PAT (confluence.disney.com)"
+            "MyWiki PAT (mywiki.disney.com)"
+            "GitHub Token (github.disney.com)"
+            "SonarQube Token (optional)"
+            "Harness API Key (optional)"
+        )
+        
+        for i in "${!tokens[@]}"; do
+            token="${tokens[$i]}"
+            label="${labels[$i]}"
+            current=$(grep "^$token=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
             if [ -n "$current" ]; then
-                status="set"
+                masked="${current:0:6}...${current: -4} (${#current}ch)"
+                status="$masked"
             else
                 status="not set"
             fi
             
-            echo -n "$token [$status]: "
+            echo -n "$label [$status]: "
             read -r value
             
             if [ -n "$value" ]; then
-                # Remove existing and add new
-                grep -v "^$token=" "$env_file" > "$env_file.tmp" 2>/dev/null || true
-                echo "$token=$value" >> "$env_file.tmp"
-                mv "$env_file.tmp" "$env_file"
+                grep -v "^$token=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                echo "$token=$value" >> "$tokens_file.tmp"
+                mv "$tokens_file.tmp" "$tokens_file"
                 echo "  ✓ Updated"
             else
-                echo "  ⏭ Skipped"
+                echo "  ⏭ Kept"
             fi
         done
         
         echo ""
-        echo "✅ Configuration saved to $env_file"
-        echo "💡 Source this file or export variables before using MCP servers"
+        echo "✅ Tokens saved to $tokens_file"
+        echo "💡 Run ./setup.sh install <profiles> to inject into agent configs"
         ;;
         
         
@@ -1066,14 +1116,14 @@ with open('$mcp_settings', 'w') as f:
                     mywiki_pat="YOUR_TOKEN"
                     github_token="YOUR_TOKEN"
                     
-                    [ -f "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" ] && \
-                        jira_pat=$(grep -s '^JIRA_PAT=' "$HOME/.kiro/tools/mcp-servers/jira-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" ] && \
-                        confluence_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/confluence-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/.env" ] && \
-                        mywiki_pat=$(grep -s '^CONFLUENCE_PAT=' "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
-                    [ -f "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" ] && \
-                        github_token=$(grep -s '^GITHUB_TOKEN_disney=' "$HOME/.kiro/tools/mcp-servers/github-mcp/.env" | cut -d= -f2- || echo "YOUR_TOKEN")
+                    # Read from centralized tokens.env
+                    if [ -f "$HOME/.kiro/tokens.env" ]; then
+                        _tok() { grep -s "^$1=" "$HOME/.kiro/tokens.env" | head -1 | cut -d= -f2-; }
+                        jira_pat=$(_tok "JIRA_PAT"); [ -z "$jira_pat" ] && jira_pat="YOUR_TOKEN"
+                        confluence_pat=$(_tok "CONFLUENCE_PAT"); [ -z "$confluence_pat" ] && confluence_pat="YOUR_TOKEN"
+                        mywiki_pat=$(_tok "MYWIKI_PAT"); [ -z "$mywiki_pat" ] && mywiki_pat="YOUR_TOKEN"
+                        github_token=$(_tok "GITHUB_TOKEN_disney"); [ -z "$github_token" ] && github_token="YOUR_TOKEN"
+                    fi
                     
                     cat > "$mcp_json" << MCPEOF
 {
