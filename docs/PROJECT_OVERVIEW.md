@@ -58,6 +58,7 @@ steer-runtime solves this by encoding organizational knowledge into agent config
 | **No vendor lock-in on context** | All config is plain JSON + Markdown — portable, version-controlled, reviewable |
 | **Pre-built integrations** | MCP servers are bundled as single-file Node.js bundles — no npm install, no Nexus credentials needed |
 | **Cross-platform** | macOS/Linux (`setup.sh`) + Windows (`setup.ps1`) |
+| **Multi-IDE** | Kiro CLI (agents) + Cursor IDE (rules) + Kite (desktop GUI) — same source, different runtimes |
 
 ---
 
@@ -206,6 +207,7 @@ Shared resources live in `.kiro/`:
 | Agents with hooks | 11 |
 | Agents with advanced tools | 11 |
 | Context files | 12 |
+| Cursor rule templates | 19 |
 | Steering rules | 10 |
 | Skills | 16 |
 | Hook scripts | 3 |
@@ -234,7 +236,58 @@ For troubleshooting: [Troubleshooting](TROUBLESHOOTING.md)
 
 ## Multi-IDE Strategy
 
-steer-runtime is runtime-agnostic. Teams pick the IDE they prefer — Kiro CLI, Cursor, Amazon Q, or Kite — and share the same organizational context, guardrails, and agent behaviors. The agent configs (JSON + Markdown) are the single source of truth; `setup.sh` compiles them into each IDE's native format.
+steer-runtime is runtime-agnostic. The same organizational knowledge powers both Kiro CLI and Cursor IDE today, with each runtime consuming the source material in its native format.
+
+```
+steer-runtime (source of truth)
+│
+├── Kiro CLI    → 40 agents (JSON + Markdown prompts)
+│                 Multi-agent orchestration, hooks, delegation
+│
+├── Kite        → Desktop GUI for Kiro CLI (Tauri + React)
+│                 Visual chat, agent switching, prompt scoring
+│
+└── Cursor IDE  → 19 rules (.mdc files with glob activation)
+                  Single-agent with same standards + MCP tools
+```
+
+### How It Works
+
+The `.cursor-templates/` directory contains 19 `.mdc` rule files derived from the same source material as Kiro agents — golden rules, coding standards, project mappings, role guidelines, and guardrails. Each rule uses Cursor's native activation model:
+
+| Range | Category | Activation |
+|-------|----------|------------|
+| 00-09 | Foundation (golden rules, mappings, commits) | Always on |
+| 10-19 | Language specialists (Java, Node, Angular, Go, Flutter) | File glob patterns |
+| 20-29 | Quality (testing, security, architecture) | Glob or always on |
+| 30-39 | Role guides (BA, QA, Ops, PM) | Manual `@` mention |
+| 40-49 | Guardrails (write protection, destructive warnings) | Always on |
+| 50-59 | Workflow (SDLC steps, PR templates, story analysis) | Manual `@` mention |
+
+MCP servers are shared — both Kiro and Cursor point to the same pre-built bundles in `~/.kiro/tools/mcp-servers/`.
+
+```bash
+./setup.sh cursor install ~/my-project   # Install rules + MCP config
+./setup.sh cursor sync ~/my-project      # Update from latest templates
+```
+
+### Kiro vs Cursor — Complementary Strengths
+
+| Capability | Kiro CLI | Cursor |
+|-----------|----------|--------|
+| Multi-agent orchestration | ✅ 40 agents, 5 profiles | — |
+| Automated SDLC pipeline | ✅ story → plan → code → review → PR | — |
+| Programmatic hooks | ✅ guard-writes, git-context | — |
+| Persistent memory (knowledge) | ✅ | — |
+| Inline code suggestions | — | ✅ Tab completion |
+| Multi-file Composer | — | ✅ |
+| Codebase indexing | — | ✅ @codebase |
+| Coding standards | ✅ via agent prompts | ✅ via .mdc rules |
+| MCP tools (Jira, Confluence, GitHub) | ✅ | ✅ |
+
+The recommendation: use Kiro for complex orchestrated workflows (implement a Jira story end-to-end), Cursor for day-to-day coding with the same standards and MCP access.
+
+See [Cursor Setup](CURSOR_SETUP.md) for detailed installation and usage.
 
 ```mermaid
 graph TD
