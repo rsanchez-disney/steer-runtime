@@ -12,6 +12,30 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 STEER_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 CLI_FLAGS="--trust-all-tools --no-interactive"
+PROMPT_DIR="$SCRIPT_DIR/prompts"
+
+# ─── Template renderer ───
+# Replaces {{VAR}} placeholders with bash variable values.
+# Usage: render_prompt <file.md> [context_string]
+render_prompt() {
+    local file="$PROMPT_DIR/$1"
+    local ctx="${2:-}"
+    if [ ! -f "$file" ]; then
+        echo "❌ Prompt file not found: $file" >&2; exit 1
+    fi
+    local prompt
+    prompt=$(sed \
+        -e "s|{{TICKET}}|${TICKET}|g" \
+        -e "s|{{PROJECT_DIR}}|${PROJECT_DIR}|g" \
+        -e "s|{{PROJECT_NAME}}|${PROJECT_NAME}|g" \
+        -e "s|{{CONFLUENCE_URL}}|${CONFLUENCE_URL}|g" \
+        "$file")
+    if [ -n "$ctx" ]; then
+        printf '%s\n\n## Context from previous steps\n\n%s' "$prompt" "$ctx"
+    else
+        printf '%s' "$prompt"
+    fi
+}
 
 # ─── Colors ───
 CYAN='\033[0;36m'
@@ -141,59 +165,20 @@ if [ -n "$CONFLUENCE_URL" ]; then
 
     # 0a. Scope definition
     run_agent "scope_definer_agent" "00a" \
-        "Read this Confluence page: $CONFLUENCE_URL
-
-IMPORTANT MCP routing:
-- URLs starting with https://confluence.disney.com → use confluence MCP tools (get_confluence_page, search_confluence_pages)
-- URLs starting with https://mywiki.disney.com → use mywiki MCP tools
-
-Analyze the scope of this feature. Extract:
-- Feature title and objective
-- Functional requirements
-- Non-functional requirements
-- Out of scope items
-- Dependencies and assumptions
-- Affected systems/repos
-
-Return a structured scope document."
+        "$(render_prompt 00a-scope_definer.md)"
 
     SCOPE="$RUN_DIR/00a-scope_definer_agent.log"
 
     # 0b. Story breakdown
     run_agent "feature_writer_agent" "00b" \
-        "Based on this scope analysis, break down the feature into implementable Jira stories.
-
-Scope: $(ctx "$SCOPE")
-
-For each proposed story, provide:
-- Title (format: Story X.Y — <description>)
-- Type: Story / Task / Sub-task
-- Description with context
-- Acceptance criteria (Given/When/Then)
-- Story points estimate (1/2/3/5/8)
-- Affected repo(s): backend (wdpr-config-services), webapi (wdpr-payment-controls-api), ui (wdpr-payment-controls-client)
-- Dependencies on other stories
-
-DO NOT create real Jira tickets. Output the proposed ticket content as structured text so it can be reviewed and reproduced."
+        "$(render_prompt 00b-feature_writer.md "$(ctx "$SCOPE")")"
 
     STORIES="$RUN_DIR/00b-feature_writer_agent.log"
 
     # 0c. Requirements validation
+    SCOPE_AND_STORIES="$(printf 'Original scope:\n%s\n\nProposed stories:\n%s' "$(ctx "$SCOPE")" "$(ctx "$STORIES")")"
     run_agent "requirements_analyst_agent" "00c" \
-        "Review these proposed stories for completeness and gaps.
-
-Original scope: $(ctx "$SCOPE")
-
-Proposed stories: $(ctx "$STORIES")
-
-Check for:
-- Missing acceptance criteria
-- Gaps in coverage vs the original scope
-- Missing non-functional requirements (performance, security, accessibility)
-- Correct story point estimates
-- Proper dependency ordering
-
-Provide a validation report and any recommended additions."
+        "$(render_prompt 00c-requirements_analyst.md "$SCOPE_AND_STORIES")"
 
     VALIDATED="$RUN_DIR/00c-requirements_analyst_agent.log"
 
@@ -224,7 +209,7 @@ if [ -n "$TICKET" ]; then
     echo ""
 
     run_agent "story_analyzer_agent" "01" \
-        "Fetch Jira ticket $TICKET using your Jira MCP tools. Extract: title, description, acceptance criteria, story points, priority, linked issues, and any referenced Confluence pages. Return a structured summary."
+        "$(render_prompt 01-story_analyzer.md)"
 
     REQUIREMENTS="$RUN_DIR/01-story_analyzer_agent.log"
 fi
@@ -236,7 +221,7 @@ echo -e "${GREEN}═══ Phase 2: Codebase Exploration ═══${RESET}"
 echo ""
 
 run_agent "codebase_explorer_agent" "02" \
-    "Explore the codebase at $PROJECT_DIR. Understand the project structure, key directories, entry points, and patterns. Identify files most likely relevant to this change: $(ctx "$REQUIREMENTS"). Return a summary of the project structure and relevant files."
+    "$(render_prompt 02-codebase_explorer.md "$(ctx "$REQUIREMENTS")")"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 3: Architecture Review
@@ -245,7 +230,7 @@ echo -e "${GREEN}═══ Phase 3: Architecture Review ═══${RESET}"
 echo ""
 
 run_agent "architecture_agent" "03" \
-    "Review the architecture for the project at $PROJECT_DIR. Based on these requirements: $(ctx "$REQUIREMENTS"). Identify the right design patterns, layers to modify, and any architectural concerns."
+    "$(render_prompt 03-architecture.md "$(ctx "$REQUIREMENTS")")"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 4: Implementation Plan
@@ -254,7 +239,7 @@ echo -e "${GREEN}═══ Phase 4: Implementation Plan ═══${RESET}"
 echo ""
 
 run_agent "planner_agent" "04" \
-    "Create a detailed implementation plan for the project at $PROJECT_DIR. Requirements: $(ctx "$REQUIREMENTS"). Include: tasks with file paths, estimated complexity, testing approach, and order of implementation."
+    "$(render_prompt 04-planner.md "$(ctx "$REQUIREMENTS")")"
 
 if $DRY_RUN; then
     echo -e "${GREEN}═══ Dry run complete ═══${RESET}"
@@ -282,8 +267,9 @@ case "$PROJECT_NAME" in
     *)  IMPL_AGENT="webapi" ;;
 esac
 
+PLAN_AND_REQS="$(printf 'Plan:\n%s\n\nRequirements:\n%s' "$(ctx "$PLAN")" "$(ctx "$REQUIREMENTS")")"
 run_agent "$IMPL_AGENT" "05" \
-    "Implement the changes in the project at $PROJECT_DIR. Follow this plan: $(ctx "$PLAN"). Requirements: $(ctx "$REQUIREMENTS"). Write the code, following existing patterns and conventions."
+    "$(render_prompt 05-implementation.md "$PLAN_AND_REQS")"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 6: Tests
@@ -292,7 +278,7 @@ echo -e "${GREEN}═══ Phase 6: Tests ═══${RESET}"
 echo ""
 
 run_agent "test_runner_agent" "06" \
-    "Run the test suite for the project at $PROJECT_DIR. Check that all tests pass and coverage is >= 90% for changed files. If tests fail, show the failures."
+    "$(render_prompt 06-test_runner.md)"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 7: Code Review
@@ -301,7 +287,7 @@ echo -e "${GREEN}═══ Phase 7: Code Review ═══${RESET}"
 echo ""
 
 run_agent "code_review_agent" "07" \
-    "Review the uncommitted changes in $PROJECT_DIR. Check for: backward compatibility, test coverage, error handling, security issues, coding standards compliance. Provide a structured review."
+    "$(render_prompt 07-code_review.md)"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 8: Security Scan
@@ -310,7 +296,7 @@ echo -e "${GREEN}═══ Phase 8: Security Scan ═══${RESET}"
 echo ""
 
 run_agent "security_scanner_agent" "08" \
-    "Run a security analysis on the changes in $PROJECT_DIR. Check for: hardcoded secrets, injection vulnerabilities, insecure dependencies, OWASP top 10 issues."
+    "$(render_prompt 08-security_scanner.md)"
 
 # ═══════════════════════════════════════════════════════
 # PHASE 9: Pull Request
@@ -319,7 +305,7 @@ echo -e "${GREEN}═══ Phase 9: Pull Request ═══${RESET}"
 echo ""
 
 run_agent "pr_creator_agent" "09" \
-    "Create a pull request for the project at $PROJECT_DIR. Use your GitHub MCP tools. Include: title with ticket number, description with requirements and changes summary, link to Jira ticket."
+    "$(render_prompt 09-pr_creator.md)"
 
 # ═══════════════════════════════════════════════════════
 echo -e "${GREEN}═══ Flow complete ═══${RESET}"
