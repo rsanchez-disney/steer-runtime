@@ -3,10 +3,16 @@ import { config } from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Resolve script directory (works in both ESM and CJS bundles)
+const scriptDir = (() => {
+    try {
+        return path.dirname(fileURLToPath(import.meta.url));
+    } catch {
+        return __dirname;
+    }
+})();
 
-config({ path: path.join(__dirname, "..", "..", ".env") });
+config({ path: path.join(scriptDir, "..", "..", ".env") });
 
 interface RemoteConfig {
     token: string;

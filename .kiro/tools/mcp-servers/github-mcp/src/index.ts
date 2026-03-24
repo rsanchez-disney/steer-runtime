@@ -10,6 +10,15 @@ import {
 import { fileURLToPath } from "url";
 import path from "path";
 
+// Resolve script directory (works in both ESM and CJS bundles)
+const scriptDir = (() => {
+    try {
+        return path.dirname(fileURLToPath(import.meta.url));
+    } catch {
+        return __dirname;
+    }
+})();
+
 // Import tool schemas and handlers
 import { githubGetPrSchema, handleGithubGetPr } from "./tools/githubGetPr.js";
 import {
@@ -40,13 +49,17 @@ import {
     githubListRemotesSchema,
     handleGithubListRemotes,
 } from "./tools/githubListRemotes.js";
-
-// Get the directory of this script
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {
+    githubGetFileSchema,
+    handleGithubGetFile,
+} from "./tools/githubGetFile.js";
+import {
+    githubGetFilesSchema,
+    handleGithubGetFiles,
+} from "./tools/githubGetFiles.js";
 
 // Load environment variables from .env file in the script's directory
-config({ path: path.join(__dirname, "..", ".env") });
+config({ path: path.join(scriptDir, "..", ".env") });
 
 // Tool registry - maps tool names to their handlers
 const toolHandlers: Record<string, (args: any) => Promise<any>> = {
@@ -58,6 +71,8 @@ const toolHandlers: Record<string, (args: any) => Promise<any>> = {
     github_get_repo: handleGithubGetRepo,
     github_search_prs: handleGithubSearchPrs,
     github_list_remotes: handleGithubListRemotes,
+    github_get_file: handleGithubGetFile,
+    github_get_files: handleGithubGetFiles,
 };
 
 const server = new Server(
@@ -84,6 +99,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             githubGetRepoSchema,
             githubSearchPrsSchema,
             githubListRemotesSchema,
+            githubGetFileSchema,
+            githubGetFilesSchema,
         ],
     };
 });

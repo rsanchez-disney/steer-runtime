@@ -8,6 +8,7 @@ Multi-remote GitHub MCP server with support for multiple GitHub Enterprise insta
 - **Auto-detection**: Automatically detect remote from repository URLs
 - **Explicit override**: Specify remote explicitly when needed
 - **Standard GitHub API**: Full pull request, comment, and repository operations
+- **File reading**: Read one or multiple files from a repo for use as agent context
 
 ## Setup
 
@@ -148,7 +149,9 @@ For Amazon Q CLI agents, reference the tools directly:
     "@github/github_update_pr",
     "@github/github_get_repo",
     "@github/github_search_prs",
-    "@github/github_list_remotes"
+    "@github/github_list_remotes",
+    "@github/github_get_file",
+    "@github/github_get_files"
   ],
   "allowedTools": [
     "@github/github_get_pr",
@@ -158,7 +161,9 @@ For Amazon Q CLI agents, reference the tools directly:
     "@github/github_update_pr",
     "@github/github_get_repo",
     "@github/github_search_prs",
-    "@github/github_list_remotes"
+    "@github/github_list_remotes",
+    "@github/github_get_file",
+    "@github/github_get_files"
   ]
 }
 ```
@@ -263,6 +268,52 @@ github_get_repo({
 })
 ```
 
+### Read a Single File
+
+```typescript
+// Read a file from default branch
+github_get_file({
+  repo: "team/project",
+  path: "src/index.ts"
+})
+
+// Read from a specific branch
+github_get_file({
+  repo: "team/project",
+  path: "README.md",
+  ref: "feature-branch"
+})
+
+// Read from a specific commit
+github_get_file({
+  repo: "team/project",
+  path: "package.json",
+  ref: "abc123f"
+})
+```
+
+### Read Multiple Files
+
+```typescript
+// Read several files at once for context
+github_get_files({
+  repo: "team/project",
+  paths: [
+    "src/index.ts",
+    "src/utils/helpers.ts",
+    "package.json"
+  ]
+})
+
+// From a specific branch
+github_get_files({
+  repo: "team/project",
+  paths: ["src/main.dart", "pubspec.yaml"],
+  ref: "develop",
+  remote: "espn_code"
+})
+```
+
 ## Adding New Remotes
 
 To add a new GitHub instance, add these environment variables:
@@ -289,6 +340,8 @@ The remote name can be anything (e.g., `espn_code`, `twdcgrid`, `my_github`).
 - `github_get_repo` - Fetch repository information
 - `github_search_prs` - Search pull requests
 - `github_list_remotes` - List configured remotes
+- `github_get_file` - Read a single file from a repository (decoded text content)
+- `github_get_files` - Read multiple files from a repository in one call
 
 ## Output
 
