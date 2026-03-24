@@ -386,8 +386,21 @@ run_agent "security_scanner_agent" "08" \
 echo -e "${GREEN}═══ Phase 9: Pull Request ═══${RESET}"
 echo ""
 
+PR_CTX="$(printf 'Requirements:\n%s\n\nCode review:\n%s\n\nSecurity scan:\n%s' "$(ctx "$REQUIREMENTS")" "$(ctx "$RUN_DIR/07-code_review_agent.log")" "$(ctx "$RUN_DIR/08-security_scanner_agent.log")")"
 run_agent "pr_creator_agent" "09" \
-    "$(render_prompt 09-pr_creator.md)"
+    "$(render_prompt 09-pr_creator.md "$PR_CTX")"
+
+# Update metadata with branch/PR from step 09
+if [ -f "$RUN_DIR/09-pr_creator_agent.log" ]; then
+    python3 -c "
+import json, re
+meta = json.load(open('$RUN_DIR/run-meta.json'))
+log = open('$RUN_DIR/09-pr_creator_agent.log').read()
+pr = re.findall(r'https://github[^ ]+/pull/[0-9]+', log)
+if pr: meta['pr_urls'] = list(set(pr))
+json.dump(meta, open('$RUN_DIR/run-meta.json', 'w'), indent=2)
+"
+fi
 
 # ═══════════════════════════════════════════════════════
 # PHASE 10: Confluence Implementation Summary

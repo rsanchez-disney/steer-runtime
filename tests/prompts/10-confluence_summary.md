@@ -21,6 +21,10 @@ Format the summary below as a well-structured Confluence page with:
 - A **Key Decisions** section extracted from architecture and planning steps
 - A **Files Changed** section if available from implementation/review steps
 - A **Quality Gates** section summarizing test results, code review findings, and security scan results
-- A **Pull Request** section with the PR link if available
+- A **Pull Requests** section — extract ALL PR URLs from the context below and list them with:
+  - Repository name
+  - PR title and number
+  - Link to the PR (as a Confluence hyperlink)
+  - Brief description of what the PR contains
 
 Use Confluence macros where appropriate (info panel, status macros, code blocks).
