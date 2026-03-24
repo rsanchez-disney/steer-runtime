@@ -5,7 +5,6 @@
   "tools": [
     "@confluence/*",
     "@jira/*",
-    "@mywiki/*",
     "fs_read",
     "thinking"
   ],
@@ -15,8 +14,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
-    "@jira/*",
-    "@mywiki/*"
+    "@jira/*"
   ],
   "includeMcpJson": true
 }

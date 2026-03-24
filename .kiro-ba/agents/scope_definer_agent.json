@@ -6,7 +6,6 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*",
     "fs_read",
     "fs_write",
     "grep"
@@ -14,8 +13,7 @@
   "allowedTools": [
     "@confluence/*",
     "@github/*",
-    "@jira/*",
-    "@mywiki/*"
+    "@jira/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

@@ -190,18 +190,16 @@ inject_agent_tokens() {
     
     local jira_pat=$(_read_token "JIRA_PAT")
     local confluence_pat=$(_read_token "CONFLUENCE_PAT")
-    local mywiki_pat=$(_read_token "MYWIKI_PAT")
     local github_token=$(_read_token "GITHUB_TOKEN_disney")
     
     for agent_json in "$target_dir/agents/"*.json; do
         [ -f "$agent_json" ] || continue
-        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$mywiki_pat" "$github_token" << 'INJECT_PY'
+        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_token" << 'INJECT_PY'
 import json, sys
-path, jira, conf, mywiki, gh = sys.argv[1:6]
+path, jira, conf, gh = sys.argv[1:5]
 tokens = {
     ("jira", "JIRA_PAT"): jira,
     ("confluence", "CONFLUENCE_PAT"): conf,
-    ("mywiki", "CONFLUENCE_PAT"): mywiki,
     ("github", "GITHUB_TOKEN_disney"): gh,
 }
 with open(path) as f: d = json.load(f)
@@ -660,23 +658,6 @@ CONFEOF
             fi
             echo ""
             
-            # MyWiki token
-            echo "━━━ MyWiki (mywiki.disney.com) ━━━"
-            echo "  Generate token: https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
-            read -r -p "Paste your MyWiki Personal Access Token (or Enter to skip): " mywiki_token
-            if [ -n "$mywiki_token" ]; then
-                # MyWiki has its own MCP server binary (mywiki-mcp)
-                # Store token in mywiki-mcp .env
-                mywiki_env="$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env"
-                cat > "$mywiki_env" << MYWIKIEOF
-CONFLUENCE_URL=https://mywiki.disney.com
-CONFLUENCE_PAT=$mywiki_token
-MYWIKIEOF
-                echo "  ✓ Saved to mywiki-mcp/.env"
-            else
-                echo "  ⏭ Skipped"
-            fi
-            echo ""
             
             # GitHub token
             echo "━━━ GitHub ━━━"
@@ -708,11 +689,9 @@ TOKHEADER
         _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
         jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
         cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
-        mp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/mywiki-mcp/.env")
         gt=$(_tok "GITHUB_TOKEN_disney" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env")
         [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
         [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
-        [ -n "$mp" ] && echo "MYWIKI_PAT=$mp" >> "$tokens_file"
         [ -n "$gt" ] && echo "GITHUB_TOKEN_disney=$gt" >> "$tokens_file"
         echo "  ✓ $tokens_file"
         
@@ -736,7 +715,6 @@ TOKHEADER
         _tok() { grep -s "^$1=" "$KIRO_ROOT/tokens.env" 2>/dev/null | head -1 | cut -d= -f2-; }
         jira_pat=$(_tok "JIRA_PAT")
         confluence_pat=$(_tok "CONFLUENCE_PAT")
-        mywiki_pat=$(_tok "MYWIKI_PAT")
         github_token=$(_tok "GITHUB_TOKEN_disney")
         
         # Preserve existing powers section if present
@@ -759,11 +737,6 @@ mcp = {
             'command': 'node',
             'args': ['$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
             'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
-        },
-        'mywiki': {
-            'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs'],
-            'env': {'CONFLUENCE_URL': 'https://mywiki.disney.com', 'CONFLUENCE_PAT': '${mywiki_pat}'}
         },
         'github': {
             'command': 'node',
@@ -1002,7 +975,6 @@ with open('$mcp_settings', 'w') as f:
         tokens=(
             "JIRA_PAT"
             "CONFLUENCE_PAT"
-            "MYWIKI_PAT"
             "GITHUB_TOKEN_disney"
             "SONARQUBE_TOKEN"
             "HARNESS_API_KEY"
@@ -1011,7 +983,6 @@ with open('$mcp_settings', 'w') as f:
         labels=(
             "Jira PAT (myjira.disney.com)"
             "Confluence PAT (confluence.disney.com)"
-            "MyWiki PAT (mywiki.disney.com)"
             "GitHub Token (github.disney.com)"
             "SonarQube Token (optional)"
             "Harness API Key (optional)"
@@ -1123,7 +1094,6 @@ with open('$mcp_settings', 'w') as f:
                     # Read tokens from existing .env files if available
                     jira_pat="YOUR_TOKEN"
                     confluence_pat="YOUR_TOKEN"
-                    mywiki_pat="YOUR_TOKEN"
                     github_token="YOUR_TOKEN"
                     
                     # Read from centralized tokens.env
@@ -1131,7 +1101,6 @@ with open('$mcp_settings', 'w') as f:
                         _tok() { grep -s "^$1=" "$HOME/.kiro/tokens.env" | head -1 | cut -d= -f2-; }
                         jira_pat=$(_tok "JIRA_PAT"); [ -z "$jira_pat" ] && jira_pat="YOUR_TOKEN"
                         confluence_pat=$(_tok "CONFLUENCE_PAT"); [ -z "$confluence_pat" ] && confluence_pat="YOUR_TOKEN"
-                        mywiki_pat=$(_tok "MYWIKI_PAT"); [ -z "$mywiki_pat" ] && mywiki_pat="YOUR_TOKEN"
                         github_token=$(_tok "GITHUB_TOKEN_disney"); [ -z "$github_token" ] && github_token="YOUR_TOKEN"
                     fi
                     
@@ -1148,10 +1117,6 @@ with open('$mcp_settings', 'w') as f:
       "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
       "env": { "CONFLUENCE_URL": "https://confluence.disney.com", "CONFLUENCE_PAT": "$confluence_pat" }
     },
-    "mywiki": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs"],
-      "env": { "CONFLUENCE_URL": "https://mywiki.disney.com", "CONFLUENCE_PAT": "$mywiki_pat" }
     },
     "github": {
       "command": "node",
