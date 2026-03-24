@@ -777,6 +777,10 @@ mcp = {
         'context7': {
             'command': 'node',
             'args': ['$HOME/.kiro/tools/mcp-servers/context7-mcp/node_modules/@upstash/context7-mcp/dist/index.js']
+        },
+        'bruno': {
+            'command': 'node',
+            'args': ['$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
         }
     }
 }
@@ -1161,6 +1165,10 @@ with open('$mcp_settings', 'w') as f:
     "context7": {
       "command": "node",
       "args": ["$HOME/.kiro/tools/mcp-servers/context7-mcp/node_modules/@upstash/context7-mcp/dist/index.js"]
+    },
+    "bruno": {
+      "command": "node",
+      "args": ["$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"]
     }
   }
 }

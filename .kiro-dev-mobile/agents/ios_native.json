@@ -24,15 +24,6 @@
     "file://.kiro/steering/**/*.md",
     "file://README.md"
   ],
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ]
-    }
-  },
   "allowedTools": [
     "@context7/*"
   ],
