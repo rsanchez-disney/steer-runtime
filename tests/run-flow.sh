@@ -50,9 +50,11 @@ CONFLUENCE_URL=""
 TICKET=""
 PROJECT_DIR=""
 DRY_RUN=false
+REVERT_DIR=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --revert) shift; REVERT_DIR="${1/#\~/$HOME}"; shift ;;
         --from-confluence) shift; CONFLUENCE_URL="$1"; shift ;;
         --dry-run) DRY_RUN=true; shift ;;
         -*)  echo "❌ Unknown flag: $1"; exit 1 ;;
@@ -66,10 +68,75 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# ─── Revert mode ───
+if [ -n "$REVERT_DIR" ]; then
+    if [ ! -d "$REVERT_DIR" ]; then
+        echo "❌ Run directory not found: $REVERT_DIR"
+        exit 1
+    fi
+    META="$REVERT_DIR/run-meta.json"
+    if [ ! -f "$META" ]; then
+        echo "❌ No run-meta.json in $REVERT_DIR (older run without metadata)"
+        exit 1
+    fi
+
+    proj=$(python3 -c "import json; print(json.load(open('$META'))['project_dir'])")
+    branch=$(python3 -c "import json; print(json.load(open('$META')).get('branch',''))")
+    echo -e "${YELLOW}⏪ Reverting run: $(basename "$REVERT_DIR")${RESET}"
+    echo "   Project: $proj"
+    echo ""
+
+    # 1. Revert uncommitted code changes
+    if [ -d "$proj" ]; then
+        cd "$proj"
+        dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$dirty" -gt 0 ]; then
+            echo "  📂 Reverting $dirty uncommitted file(s)..."
+            git checkout . 2>/dev/null
+            git clean -fd 2>/dev/null
+            echo "  ✓ Code changes reverted"
+        else
+            echo "  ✓ Working tree already clean"
+        fi
+
+        # 2. Delete feature branch if created by the run
+        if [ -n "$branch" ] && [ "$branch" != "main" ] && [ "$branch" != "master" ]; then
+            if git rev-parse --verify "$branch" &>/dev/null; then
+                git checkout main 2>/dev/null || git checkout master 2>/dev/null
+                git branch -D "$branch" 2>/dev/null && echo "  ✓ Deleted branch: $branch"
+            fi
+        fi
+    fi
+
+    # 3. Close PR if one was created
+    pr_log="$REVERT_DIR/09-pr_creator_agent.log"
+    if [ -f "$pr_log" ]; then
+        pr_url=$(grep -oE 'https://github[^[:space:]]+/pull/[0-9]+' "$pr_log" | head -1)
+        if [ -n "$pr_url" ]; then
+            echo "  🔗 Closing PR: $pr_url"
+            gh pr close "$pr_url" --delete-branch 2>/dev/null && echo "  ✓ PR closed" || echo "  ⚠ Could not close PR (may already be closed)"
+        fi
+    fi
+
+    # 4. Note Confluence page (can't auto-delete safely)
+    conf_log="$REVERT_DIR/10-technical_writer_agent.log"
+    if [ -f "$conf_log" ]; then
+        page_id=$(grep -oE 'ID [0-9]+' "$conf_log" | head -1 | grep -oE '[0-9]+')
+        if [ -n "$page_id" ]; then
+            echo "  📄 Confluence child page created (ID: $page_id) — delete manually if needed"
+        fi
+    fi
+
+    echo ""
+    echo -e "${GREEN}✓ Revert complete${RESET}"
+    exit 0
+fi
+
 if [ -z "$TICKET" ] && [ -z "$CONFLUENCE_URL" ]; then
     echo "Usage:"
     echo "  ./tests/run-flow.sh DPAY-14337 [project-dir] [--dry-run]"
     echo "  ./tests/run-flow.sh --from-confluence <url> [project-dir] [--dry-run]"
+    echo "  ./tests/run-flow.sh --revert <run-dir>"
     exit 1
 fi
 
@@ -129,6 +196,21 @@ TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 RUN_ID="${TICKET:-confluence}-${TIMESTAMP}"
 RUN_DIR="$SCRIPT_DIR/runs/$RUN_ID"
 mkdir -p "$RUN_DIR"
+
+# Save run metadata for --revert
+python3 -c "
+import json
+json.dump({
+    'ticket': '${TICKET}',
+    'confluence_url': '${CONFLUENCE_URL}',
+    'project_dir': '${PROJECT_DIR}',
+    'project_name': '${PROJECT_NAME}',
+    'branch': '$(cd "$PROJECT_DIR" && git branch --show-current 2>/dev/null || echo "")',
+    'timestamp': '${TIMESTAMP}',
+    'dry_run': $(if $DRY_RUN; then echo 'True'; else echo 'False'; fi)
+}, open('$RUN_DIR/run-meta.json', 'w'), indent=2)
+"
+
 echo "📝 Run dir: $RUN_DIR"
 echo ""
 

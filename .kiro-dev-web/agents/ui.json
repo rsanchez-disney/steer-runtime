@@ -5,8 +5,7 @@
   "tools": [
     "fs_read",
     "fs_write",
-    "execute_bash",
-    "@context7/*"
+    "execute_bash"
   ],
   "toolsSettings": {
     "fs_write": {
@@ -46,8 +45,6 @@
       }
     ]
   },
-  "allowedTools": [
-    "@context7/*"
-  ],
+  "allowedTools": [],
   "includeMcpJson": true
 }

@@ -8,7 +8,6 @@
     "fs_write",
     "code",
     "grep",
-    "@context7/*",
     "@bruno/*"
   ],
   "resources": [
@@ -37,7 +36,6 @@
     ]
   },
   "allowedTools": [
-    "@context7/*",
     "@bruno/*"
   ],
   "includeMcpJson": true
