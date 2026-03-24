@@ -278,6 +278,33 @@ if [ -n "$CONFLUENCE_URL" ]; then
         exit 0
     fi
 
+    # 0d. Create Jira tickets from validated stories
+    # Extract project key from Confluence URL or default to DPAY
+    JIRA_PROJECT="${JIRA_PROJECT:-DPAY}"
+
+    run_agent "story_analyzer_agent" "00d"         "Create Jira tickets for the validated stories below using the jira_create_issue MCP tool.
+
+Reference ticket for format/style: https://myjira.disney.com/browse/DPAY-14416
+First, fetch DPAY-14416 with jira_get_issue to use as a template for description format, labels, and components.
+
+Project key: $JIRA_PROJECT
+
+Validated stories: $(ctx "$VALIDATED")
+Original proposed stories: $(ctx "$STORIES")
+
+For EACH story, call jira_create_issue with:
+- projectKey: $JIRA_PROJECT
+- summary: the story title
+- issueType: Story (or Task/Sub-task as specified)
+- description: include context, acceptance criteria (Given/When/Then), affected repos, and dependencies — formatted like DPAY-14416
+
+After creating all tickets, output a summary table with: ticket key, summary, type, and story points."
+
+    TICKETS="$RUN_DIR/00d-story_analyzer_agent.log"
+
+    echo -e "${GREEN}═══ Jira tickets created ═══${RESET}"
+    echo ""
+
     # For full flow, pick the first story and run dev phases on it
     echo -e "${GREEN}═══ Continuing with dev flow for first proposed story ═══${RESET}"
     echo ""
