@@ -8,7 +8,8 @@
     "fs_read",
     "fs_write",
     "grep",
-    "@context7/*"
+    "@context7/*",
+    "@bruno/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -44,10 +45,17 @@
         "-y",
         "@upstash/context7-mcp"
       ]
+    },
+    "bruno": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"
+      ]
     }
   },
   "allowedTools": [
-    "@context7/*"
+    "@context7/*",
+    "@bruno/*"
   ],
   "includeMcpJson": true
 }
