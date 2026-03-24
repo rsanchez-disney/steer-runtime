@@ -329,15 +329,17 @@ with open('$target_dir/settings/profiles.json','w') as f: json.dump(data,f,inden
 install_shared() {
     local target_dir=$1
     
-    if [ -d "$STEER_ROOT/.kiro/tools" ]; then
-        echo "📦 Installing shared tools..."
-        mkdir -p "$target_dir/tools"
-        
-        # Copy excluding node_modules
-        rsync -a --exclude='node_modules' "$STEER_ROOT/.kiro/tools/" "$target_dir/tools/" 2>/dev/null || \
-        find "$STEER_ROOT/.kiro/tools" -mindepth 1 -maxdepth 1 ! -name 'node_modules' -exec cp -r {} "$target_dir/tools/" \; 2>/dev/null
-        
-        echo "✓ Installed MCP servers (run 'mcp-install' to setup dependencies)"
+    if [ -d "$STEER_ROOT/.kiro/tools/mcp-servers" ]; then
+        echo "📦 Installing MCP server bundles..."
+        for mcp_dir in "$STEER_ROOT/.kiro/tools/mcp-servers"/*/; do
+            local name=$(basename "$mcp_dir")
+            local bundle="$mcp_dir/dist/index.cjs"
+            if [ -f "$bundle" ]; then
+                mkdir -p "$target_dir/tools/mcp-servers/$name/dist"
+                cp "$bundle" "$target_dir/tools/mcp-servers/$name/dist/index.cjs"
+            fi
+        done
+        echo "✓ Installed MCP server bundles"
     fi
     
     if [ -d "$STEER_ROOT/.kiro/context" ]; then
