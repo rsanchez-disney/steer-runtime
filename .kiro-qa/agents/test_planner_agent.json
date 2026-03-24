@@ -10,7 +10,8 @@
     "fs_read",
     "fs_write",
     "grep",
-    "knowledge"
+    "knowledge",
+    "@bruno/*"
   ],
   "mcpServers": {
     "jira": {
@@ -52,13 +53,20 @@
         "CONFLUENCE_URL": "https://mywiki.disney.com",
         "CONFLUENCE_PAT": "YOUR_TOKEN"
       }
+    },
+    "bruno": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"
+      ]
     }
   },
   "allowedTools": [
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*"
+    "@mywiki/*",
+    "@bruno/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

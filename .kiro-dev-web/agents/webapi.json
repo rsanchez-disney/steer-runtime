@@ -6,7 +6,8 @@
     "fs_read",
     "fs_write",
     "execute_bash",
-    "@context7/*"
+    "@context7/*",
+    "@bruno/*"
   ],
   "toolsSettings": {
     "fs_write": {
@@ -52,10 +53,17 @@
         "-y",
         "@upstash/context7-mcp"
       ]
+    },
+    "bruno": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"
+      ]
     }
   },
   "allowedTools": [
-    "@context7/*"
+    "@context7/*",
+    "@bruno/*"
   ],
   "includeMcpJson": true
 }
