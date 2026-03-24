@@ -36,3 +36,4 @@ mcp-config.json
 .kiro/tools/mcp-servers/*/*.log
 .kiro/tools/mcp-servers/*/package-lock.json
 tests/runs/
+.kiro/settings/
