@@ -2,6 +2,100 @@
 
 Complete reference for all agents across profiles.
 
+## Agent Hierarchy
+
+```mermaid
+graph TD
+    classDef orch fill:#4a90d9,stroke:#2c5f8a,color:#fff,font-weight:bold
+    classDef agent fill:#f0f4f8,stroke:#8ba4c4,color:#1a1a1a
+    classDef mcp fill:#e8f5e9,stroke:#66bb6a,color:#2e7d32,font-size:11px
+    classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
+
+    %% ─── dev-core ──────────────────────────────────
+    subgraph DEV_CORE["dev-core · 13 agents"]
+        ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
+        ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
+        ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
+        ORCH --> ARCH["architecture<br/><i>thinking · knowledge</i>"]:::agent
+        ORCH --> EXPLORE["codebase_explorer"]:::agent
+        ORCH --> REVIEW["code_review<br/><i>jira · github</i>"]:::agent
+        ORCH --> SEC["security_scanner"]:::agent
+        ORCH --> COMPLY["compliance"]:::agent
+        ORCH --> TEST["test_runner"]:::agent
+        ORCH --> PERF["performance"]:::agent
+        ORCH --> PR["pr_creator<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        ORCH --> DISC["discussion"]:::agent
+        ORCH --> WRITER["technical_writer<br/><i>confluence · mywiki · github</i>"]:::agent
+    end
+
+    %% ─── dev-web ───────────────────────────────────
+    subgraph DEV_WEB["dev-web · 4 agents"]
+        BACK["backend<br/><i>context7 · bruno</i>"]:::agent
+        WAPI["webapi<br/><i>context7 · bruno</i>"]:::agent
+        UI["ui<br/><i>context7</i>"]:::agent
+        UX["ux_specialist"]:::agent
+    end
+
+    %% ─── dev-mobile ────────────────────────────────
+    subgraph DEV_MOB["dev-mobile · 3 agents"]
+        FLUTTER["flutter<br/><i>context7</i>"]:::agent
+        ANDROID["android_native<br/><i>context7</i>"]:::agent
+        IOS["ios_native<br/><i>context7</i>"]:::agent
+    end
+
+    %% ─── ba ────────────────────────────────────────
+    subgraph BA["ba · 4 agents"]
+        BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        BA_ORCH --> SCOPE["scope_definer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        BA_ORCH --> FEAT["feature_writer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        BA_ORCH --> REQS["requirements_analyst<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
+    end
+
+    %% ─── qa ────────────────────────────────────────
+    subgraph QA["qa · 6 agents"]
+        QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
+        QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
+        QA_ORCH --> TAUTO["test_automation<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        QA_ORCH --> APITEST["api_tester<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> PERFTEST["performance_tester"]:::agent
+    end
+
+    %% ─── ops ───────────────────────────────────────
+    subgraph OPS["ops · 5 agents"]
+        OPS_ORCH["🎯 ops_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        OPS_ORCH --> METRICS["ai_metrics<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        OPS_ORCH --> INFRA["infra_check"]:::agent
+        OPS_ORCH --> DEPLOY["deployment<br/><i>harness</i>"]:::agent
+        OPS_ORCH --> QUALITY["code_quality<br/><i>sonarqube</i>"]:::agent
+    end
+
+    %% ─── pm ────────────────────────────────────────
+    subgraph PM["pm · 6 agents"]
+        PM_ORCH["🎯 pm_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        PM_ORCH --> SPRINT["sprint_manager<br/><i>jira · confluence · mywiki · todo</i>"]:::agent
+        PM_ORCH --> STANDUP["standup<br/><i>jira</i>"]:::agent
+        PM_ORCH --> RETRO["retro<br/><i>jira · confluence · mywiki</i>"]:::agent
+        PM_ORCH --> RISK["risk_tracker<br/><i>jira · confluence · mywiki</i>"]:::agent
+        PM_ORCH --> DELIVER["delivery_reporter<br/><i>jira · confluence · mywiki</i>"]:::agent
+    end
+
+    %% ─── dev alias ─────────────────────────────────
+    DEV{{"dev (alias)"}}:::orch
+    DEV -.-> DEV_CORE
+    DEV -.-> DEV_WEB
+    DEV -.-> DEV_MOB
+
+    %% ─── cross-profile delegation ──────────────────
+    ORCH -.->|delegates| BACK
+    ORCH -.->|delegates| WAPI
+    ORCH -.->|delegates| UI
+    ORCH -.->|delegates| FLUTTER
+```
+
+**Legend:** 🎯 = orchestrator (has `thinking`, `todo`, `delegate`) · *italic* = MCP servers and special tools
+
+
 ---
 
 ## Dev Profiles (20 agents total)
