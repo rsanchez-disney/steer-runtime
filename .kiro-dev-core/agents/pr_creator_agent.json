@@ -6,7 +6,6 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*",
     "execute_bash",
     "fs_read",
     "fs_write"
@@ -14,8 +13,7 @@
   "allowedTools": [
     "@confluence/*",
     "@github/*",
-    "@jira/*",
-    "@mywiki/*"
+    "@jira/*"
   ],
   "includeMcpJson": true,
   "resources": [

@@ -6,7 +6,6 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*",
     "code",
     "execute_bash",
     "fs_read",
@@ -22,7 +21,6 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*",
     "@bruno/*"
   ],
   "resources": [

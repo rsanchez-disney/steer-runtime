@@ -6,7 +6,6 @@
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*",
     "fs_read",
     "grep",
     "web_fetch",
@@ -15,8 +14,7 @@
   "allowedTools": [
     "@confluence/*",
     "@github/*",
-    "@jira/*",
-    "@mywiki/*"
+    "@jira/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

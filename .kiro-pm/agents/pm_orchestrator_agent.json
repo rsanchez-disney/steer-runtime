@@ -5,7 +5,6 @@
   "tools": [
     "@jira/*",
     "@confluence/*",
-    "@mywiki/*",
     "@github/*",
     "code",
     "execute_bash",
@@ -23,7 +22,6 @@
   "allowedTools": [
     "@jira/*",
     "@confluence/*",
-    "@mywiki/*",
     "@github/*"
   ],
   "includeMcpJson": true,
