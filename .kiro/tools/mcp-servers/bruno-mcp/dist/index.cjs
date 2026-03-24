@@ -13872,6 +13872,9 @@ var StdioServerTransport = class {
   }
 };
 
+// src/server.ts
+var import_child_process = require("child_process");
+
 // src/bruno/collection.ts
 var import_fs = require("fs");
 var import_path = require("path");
@@ -15265,6 +15268,8 @@ var BrunoMcpServer = class {
     this.setupCreateCrudRequestsTool();
     this.setupListCollectionsTool();
     this.setupGetCollectionStatsTool();
+    this.setupRunRequestTool();
+    this.setupRunCollectionTool();
   }
   /**
    * Tool: create_collection
@@ -15725,6 +15730,111 @@ ${Object.entries(stats.requestsByMethod).map(([method, count]) => `  ${method}: 
                 text: `\u274C Error getting collection stats: ${error instanceof Error ? error.message : "Unknown error"}`
               }
             ],
+            isError: true
+          };
+        }
+      }
+    );
+  }
+  /**
+   * Run a Bruno CLI command and return structured output
+   */
+  runBruno(args) {
+    try {
+      const result = (0, import_child_process.execSync)(`npx @usebruno/cli ${args.join(" ")}`, {
+        encoding: "utf-8",
+        timeout: 6e4,
+        stdio: ["pipe", "pipe", "pipe"]
+      });
+      return result;
+    } catch (error) {
+      const stderr = error.stderr || "";
+      const stdout = error.stdout || "";
+      throw new Error(`Bruno CLI failed (exit ${error.status}):
+${stdout}
+${stderr}`);
+    }
+  }
+  /**
+   * Tool: run_request
+   */
+  setupRunRequestTool() {
+    this.server.registerTool(
+      "run_request",
+      {
+        title: "Run Bruno Request",
+        description: "Execute a single .bru request file against an environment and return the response",
+        inputSchema: {
+          bruFilePath: external_exports.string().min(1, "Path to .bru file is required"),
+          env: external_exports.string().optional().describe('Environment name (e.g., "development", "staging")'),
+          envVars: external_exports.record(external_exports.string()).optional().describe("Override environment variables"),
+          insecure: external_exports.boolean().optional().describe("Allow insecure TLS connections")
+        }
+      },
+      async (args) => {
+        try {
+          const cliArgs = ["run", args.bruFilePath];
+          if (args.env) cliArgs.push("--env", args.env);
+          if (args.insecure) cliArgs.push("--insecure");
+          if (args.envVars) {
+            for (const [k, v] of Object.entries(args.envVars)) {
+              cliArgs.push("--env-var", `${k}=${v}`);
+            }
+          }
+          const output = this.runBruno(cliArgs);
+          return {
+            content: [{ type: "text", text: `\u2705 Request executed:
+
+${output}` }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `\u274C ${error instanceof Error ? error.message : "Unknown error"}` }],
+            isError: true
+          };
+        }
+      }
+    );
+  }
+  /**
+   * Tool: run_collection
+   */
+  setupRunCollectionTool() {
+    this.server.registerTool(
+      "run_collection",
+      {
+        title: "Run Bruno Collection",
+        description: "Execute all requests in a Bruno collection or folder and return results summary",
+        inputSchema: {
+          collectionPath: external_exports.string().min(1, "Path to Bruno collection or folder is required"),
+          env: external_exports.string().optional().describe('Environment name (e.g., "development", "staging")'),
+          folder: external_exports.string().optional().describe("Run only requests in this subfolder"),
+          recursive: external_exports.boolean().optional().describe("Run requests in subfolders recursively (default: true)"),
+          insecure: external_exports.boolean().optional().describe("Allow insecure TLS connections"),
+          envVars: external_exports.record(external_exports.string()).optional().describe("Override environment variables")
+        }
+      },
+      async (args) => {
+        try {
+          const target = args.folder ? `${args.collectionPath}/${args.folder}` : args.collectionPath;
+          const cliArgs = ["run", target];
+          if (args.env) cliArgs.push("--env", args.env);
+          if (args.recursive === false) cliArgs.push("--no-recursive");
+          if (args.insecure) cliArgs.push("--insecure");
+          if (args.envVars) {
+            for (const [k, v] of Object.entries(args.envVars)) {
+              cliArgs.push("--env-var", `${k}=${v}`);
+            }
+          }
+          const output = this.runBruno(cliArgs);
+          return {
+            content: [{ type: "text", text: `\u2705 Collection run complete:
+
+${output}` }]
+          };
+        } catch (error) {
+          return {
+            content: [{ type: "text", text: `\u274C ${error instanceof Error ? error.message : "Unknown error"}` }],
             isError: true
           };
         }
