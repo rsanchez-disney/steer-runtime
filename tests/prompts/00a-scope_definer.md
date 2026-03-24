@@ -2,9 +2,8 @@ Read this Confluence page: {{CONFLUENCE_URL}}
 
 IMPORTANT MCP routing:
 - URLs starting with https://confluence.disney.com → use confluence MCP tools (get_confluence_page, search_confluence_pages)
-- URLs starting with https://mywiki.disney.com → use mywiki MCP tools
 
-Analyze the scope of this feature. Extract:
+let story_analyzer_agent review the scope of this feature. Extract:
 - Feature title and objective
 - Functional requirements
 - Non-functional requirements
