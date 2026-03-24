@@ -747,10 +747,6 @@ mcp = {
             'command': 'node',
             'args': ['$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
         },
-        'context7': {
-            'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/context7-mcp/node_modules/@upstash/context7-mcp/dist/index.js']
-        },
         'bruno': {
             'command': 'node',
             'args': ['$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
@@ -1126,10 +1122,6 @@ with open('$mcp_settings', 'w') as f:
     "mermaid": {
       "command": "node",
       "args": ["$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs"]
-    },
-    "context7": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/context7-mcp/node_modules/@upstash/context7-mcp/dist/index.js"]
     },
     "bruno": {
       "command": "node",
