@@ -7,6 +7,7 @@
     "@github/*",
     "@jira/*",
     "@mywiki/*",
+    "@qtest/*",
     "fs_read",
     "fs_write",
     "grep",
@@ -52,17 +53,29 @@
         "CONFLUENCE_URL": "https://mywiki.disney.com",
         "CONFLUENCE_PAT": "YOUR_TOKEN"
       }
+    },
+    "qtest": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "QTEST_BEARER_TOKEN": "YOUR_TOKEN",
+        "QTEST_PROJECT_ID": "YOUR_PROJECT_ID"
+      }
     }
   },
   "allowedTools": [
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*"
+    "@mywiki/*",
+    "@qtest/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
-    "file://.kiro/context/test_templates.md"
+    "file://.kiro/context/test_templates.md",
+    "file://.kiro/context/qtest_guidelines.md"
   ],
   "includeMcpJson": true
 }

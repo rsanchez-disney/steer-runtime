@@ -155,6 +155,8 @@ with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
     _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
     _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
     _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+    _do_inject "qtest"      "$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"             "QTEST_BEARER_TOKEN" "$target_dir"
+    _do_inject "qtest"      "$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"             "QTEST_PROJECT_ID"   "$target_dir"
 }
 
 install_profile() {
@@ -550,6 +552,9 @@ case "${1:-help}" in
         echo "  GitHub:"
         echo "  https://github.disney.com/settings/tokens"
         echo ""
+        echo "  qTest:"
+        echo "  https://qtest.disney.com/p/{yourProjectID}"
+        echo ""
         
         read -p "Would you like to configure tokens now? (y/N): " configure_tokens
         
@@ -614,6 +619,24 @@ GITHUB_HOST_disney=github.disney.com
 GITHUB_DEFAULT_REMOTE=disney
 GHEOF
                 echo "  ✓ Saved to github-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
+            fi
+            echo ""
+            
+            # qTest token
+            echo "━━━ qTest ━━━"
+            read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
+            read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
+            if [ -n "$qtest_token" ]; then
+                qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+                cat > "$qtest_env" << QTESTEOF
+QTEST_BEARER_TOKEN=$qtest_token
+QTESTEOF
+                if [ -n "$qtest_project_id" ]; then
+                    echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+                fi
+                echo "  ✓ Saved to qtest-mcp/.env"
             else
                 echo "  ⏭ Skipped"
             fi

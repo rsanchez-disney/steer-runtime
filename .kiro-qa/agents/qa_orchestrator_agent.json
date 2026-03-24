@@ -7,6 +7,7 @@
     "@github/*",
     "@jira/*",
     "@mywiki/*",
+    "@qtest/*",
     "code",
     "execute_bash",
     "fs_read",
@@ -57,17 +58,29 @@
         "CONFLUENCE_URL": "https://mywiki.disney.com",
         "CONFLUENCE_PAT": "YOUR_TOKEN"
       }
+    },
+    "qtest": {
+      "command": "node",
+      "args": [
+        "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs"
+      ],
+      "env": {
+        "QTEST_BEARER_TOKEN": "YOUR_TOKEN",
+        "QTEST_PROJECT_ID": "YOUR_PROJECT_ID"
+      }
     }
   },
   "allowedTools": [
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@mywiki/*"
+    "@mywiki/*",
+    "@qtest/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
-    "file://.kiro/context/test_templates.md"
+    "file://.kiro/context/test_templates.md",
+    "file://.kiro/context/qtest_guidelines.md"
   ],
   "includeMcpJson": true,
   "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\"",
