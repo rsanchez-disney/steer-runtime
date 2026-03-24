@@ -1,0 +1,1 @@
+Explore the codebase at {{PROJECT_DIR}}. Understand the project structure, key directories, entry points, and patterns. Identify files most likely relevant to this change. Return a summary of the project structure and relevant files.
