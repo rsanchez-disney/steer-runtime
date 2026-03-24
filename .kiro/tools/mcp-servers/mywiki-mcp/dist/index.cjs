@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const __import_meta_url = require('url').pathToFileURL(__filename).href;
+#!/usr/bin/env node
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -31,9 +31,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// confluence-mcp/node_modules/dotenv/package.json
+// node_modules/dotenv/package.json
 var require_package = __commonJS({
-  "confluence-mcp/node_modules/dotenv/package.json"(exports2, module2) {
+  "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
       version: "16.6.1",
@@ -99,9 +99,9 @@ var require_package = __commonJS({
   }
 });
 
-// confluence-mcp/node_modules/dotenv/lib/main.js
+// node_modules/dotenv/lib/main.js
 var require_main = __commonJS({
-  "confluence-mcp/node_modules/dotenv/lib/main.js"(exports2, module2) {
+  "node_modules/dotenv/lib/main.js"(exports2, module2) {
     var fs = require("fs");
     var path = require("path");
     var os = require("os");
@@ -389,7 +389,7 @@ var require_main = __commonJS({
   }
 });
 
-// confluence-mcp/node_modules/zod/v3/external.js
+// node_modules/zod/v3/external.js
 var external_exports = {};
 __export(external_exports, {
   BRAND: () => BRAND,
@@ -501,7 +501,7 @@ __export(external_exports, {
   void: () => voidType
 });
 
-// confluence-mcp/node_modules/zod/v3/helpers/util.js
+// node_modules/zod/v3/helpers/util.js
 var util;
 (function(util2) {
   util2.assertEqual = (_) => {
@@ -635,7 +635,7 @@ var getParsedType = (data) => {
   }
 };
 
-// confluence-mcp/node_modules/zod/v3/ZodError.js
+// node_modules/zod/v3/ZodError.js
 var ZodIssueCode = util.arrayToEnum([
   "invalid_type",
   "invalid_literal",
@@ -753,7 +753,7 @@ ZodError.create = (issues) => {
   return error;
 };
 
-// confluence-mcp/node_modules/zod/v3/locales/en.js
+// node_modules/zod/v3/locales/en.js
 var errorMap = (issue, _ctx) => {
   let message;
   switch (issue.code) {
@@ -856,7 +856,7 @@ var errorMap = (issue, _ctx) => {
 };
 var en_default = errorMap;
 
-// confluence-mcp/node_modules/zod/v3/errors.js
+// node_modules/zod/v3/errors.js
 var overrideErrorMap = en_default;
 function setErrorMap(map) {
   overrideErrorMap = map;
@@ -865,7 +865,7 @@ function getErrorMap() {
   return overrideErrorMap;
 }
 
-// confluence-mcp/node_modules/zod/v3/helpers/parseUtil.js
+// node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
   const { data, path, errorMaps, issueData } = params;
   const fullPath = [...path, ...issueData.path || []];
@@ -975,14 +975,14 @@ var isDirty = (x) => x.status === "dirty";
 var isValid = (x) => x.status === "valid";
 var isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 
-// confluence-mcp/node_modules/zod/v3/helpers/errorUtil.js
+// node_modules/zod/v3/helpers/errorUtil.js
 var errorUtil;
 (function(errorUtil2) {
   errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
   errorUtil2.toString = (message) => typeof message === "string" ? message : message?.message;
 })(errorUtil || (errorUtil = {}));
 
-// confluence-mcp/node_modules/zod/v3/types.js
+// node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
   constructor(parent, value, path, key) {
     this._cachedPath = [];
@@ -4217,7 +4217,7 @@ ZodNaN.create = (params) => {
     ...processCreateParams(params)
   });
 };
-var BRAND = /* @__PURE__ */ Symbol("zod_brand");
+var BRAND = Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -4419,18 +4419,18 @@ var ostring = () => stringType().optional();
 var onumber = () => numberType().optional();
 var oboolean = () => booleanType().optional();
 var coerce = {
-  string: ((arg) => ZodString.create({ ...arg, coerce: true })),
-  number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
-  boolean: ((arg) => ZodBoolean.create({
+  string: (arg) => ZodString.create({ ...arg, coerce: true }),
+  number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
+  boolean: (arg) => ZodBoolean.create({
     ...arg,
     coerce: true
-  })),
-  bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
-  date: ((arg) => ZodDate.create({ ...arg, coerce: true }))
+  }),
+  bigint: (arg) => ZodBigInt.create({ ...arg, coerce: true }),
+  date: (arg) => ZodDate.create({ ...arg, coerce: true })
 };
 var NEVER = INVALID;
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/types.js
 var LATEST_PROTOCOL_VERSION = "2024-11-05";
 var SUPPORTED_PROTOCOL_VERSIONS = [
   LATEST_PROTOCOL_VERSION,
@@ -5136,7 +5136,7 @@ var McpError = class extends Error {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -5413,7 +5413,7 @@ var Protocol = class {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -5566,10 +5566,10 @@ var Server = class extends Protocol {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var import_node_process = __toESM(require("node:process"), 1);
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
 var ReadBuffer = class {
   append(chunk) {
     this._buffer = this._buffer ? Buffer.concat([this._buffer, chunk]) : chunk;
@@ -5597,7 +5597,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = import_node_process.default.stdin, _stdout = import_node_process.default.stdout) {
     this._stdin = _stdin;
@@ -5657,17 +5657,17 @@ var StdioServerTransport = class {
   }
 };
 
-// confluence-mcp/src/utils/apiClient.ts
+// src/utils/apiClient.ts
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
-var DEFAULT_TIMEOUT_MS = 3e4;
+var import_meta = {};
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
   async loadConfig() {
     if (!this.confluenceUrl || !this.confluencePat) {
-      const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+      const __filename = (0, import_url.fileURLToPath)(import_meta.url);
       const __dirname = (0, import_path.dirname)(__filename);
       const envPath = (0, import_path.resolve)(__dirname, "../../.env");
       console.error(`Loading .env from: ${envPath}`);
@@ -5687,29 +5687,22 @@ var ConfluenceApiClient = class {
   async makeRequest(endpoint, options = {}) {
     await this.loadConfig();
     const url = `${this.confluenceUrl}/rest/api/${endpoint}`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
-    try {
-      const response = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          Authorization: `Bearer ${this.confluencePat}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          ...options.headers
-        }
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
-        );
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${this.confluencePat}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        ...options.headers
       }
-      return response.json();
-    } finally {
-      clearTimeout(timeout);
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
+    return response.json();
   }
   getConfluenceUrl() {
     if (!this.confluenceUrl) {
@@ -5725,21 +5718,13 @@ var ConfluenceApiClient = class {
   }
 };
 var apiClient = new ConfluenceApiClient();
-function stripHtmlToText(html) {
-  return html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/?(p|div|tr|li|h[1-6])[^>]*>/gi, "\n").replace(/<\/?[^>]+(>|$)/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\n{3,}/g, "\n\n").trim();
-}
-function truncateText(text, maxLength) {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength) + `
 
-[... truncated at ${maxLength} chars \u2014 use outputDir to get full content]`;
-}
-
-// confluence-mcp/src/utils/fileUtils.ts
+// src/utils/fileUtils.ts
 var import_promises = require("fs/promises");
 var import_path2 = require("path");
 async function saveToFile(data, outputDir, filename) {
-  if (outputDir === false || outputDir === null) return null;
+  if (outputDir === false || outputDir === null)
+    return null;
   const saveDir = typeof outputDir === "string" ? outputDir : "/tmp/confluence-mcp";
   await (0, import_promises.mkdir)(saveDir, { recursive: true });
   const filePath = (0, import_path2.join)(saveDir, filename);
@@ -5747,11 +5732,10 @@ async function saveToFile(data, outputDir, filename) {
   return filePath;
 }
 
-// confluence-mcp/src/tools/getConfluencePage.ts
-var DEFAULT_MAX_LENGTH = 5e4;
+// src/tools/getConfluencePage.ts
 var getConfluencePageSchema = {
-  name: "get_confluence_page",
-  description: "Get a Confluence page by ID or title",
+  name: "get_mywiki_page",
+  description: "Get a MyWiki page by ID or title",
   inputSchema: {
     type: "object",
     properties: {
@@ -5772,10 +5756,6 @@ var getConfluencePageSchema = {
         description: "Comma-separated list of properties to expand",
         default: "body.storage,version,space"
       },
-      maxLength: {
-        type: "number",
-        description: "Max characters of page content to return inline (default 50000)"
-      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save data (optional, defaults to .amazonq/external-data). Pass false or null to skip saving"
@@ -5790,7 +5770,6 @@ async function handleGetConfluencePage(args) {
     spaceKey,
     title,
     expand = "body.storage,version,space",
-    maxLength = DEFAULT_MAX_LENGTH,
     outputDir
   } = args;
   let data;
@@ -5810,32 +5789,21 @@ async function handleGetConfluencePage(args) {
     );
   }
   const filePath = await saveToFile(data, outputDir, filename);
-  const savedInfo = filePath ? `
-Full data saved to: ${filePath}` : "";
-  const pageTitle = data.title || "Unknown";
-  const pageIdStr = data.id || "N/A";
-  const spaceInfo = data.space?.key || "N/A";
-  const version = data.version?.number || "N/A";
-  const storageBody = data.body?.storage?.value || "";
-  const plainText = storageBody ? stripHtmlToText(storageBody) : "(no content)";
-  const content = truncateText(plainText, maxLength);
+  const savedInfo = filePath ? ` Data saved to: ${filePath}` : "";
   return {
     content: [
       {
         type: "text",
-        text: `Page: ${pageTitle}
-ID: ${pageIdStr} | Space: ${spaceInfo} | Version: ${version}
-
-${content}${savedInfo}`
+        text: `Successfully retrieved Confluence page.${savedInfo}`
       }
     ]
   };
 }
 
-// confluence-mcp/src/tools/searchConfluencePages.ts
+// src/tools/searchConfluencePages.ts
 var searchConfluencePagesSchema = {
-  name: "search_confluence_pages",
-  description: "Search Confluence pages using CQL (Confluence Query Language)",
+  name: "search_mywiki_pages",
+  description: "Search MyWiki pages using CQL (Confluence Query Language)",
   inputSchema: {
     type: "object",
     properties: {
@@ -5883,31 +5851,21 @@ async function handleSearchConfluencePages(args) {
   const data = await apiClient.makeRequest(`content/search?${params}`);
   const filename = `search-results-${Date.now()}.json`;
   const filePath = await saveToFile(data, outputDir, filename);
-  const savedInfo = filePath ? `
-Full results saved to: ${filePath}` : "";
-  const results = data.results || [];
-  const total = data.totalSize || results.length;
-  const lines = results.map((r, i) => {
-    const space = r.space?.key || "N/A";
-    const ver = r.version?.number || "?";
-    return `  ${i + 1}. [${r.id}] ${r.title} (space: ${space}, v${ver})`;
-  });
-  const summary = lines.length > 0 ? `
-${lines.join("\n")}` : "\n  (no results)";
+  const savedInfo = filePath ? ` Search results saved to: ${filePath}` : "";
   return {
     content: [
       {
         type: "text",
-        text: `Found ${results.length} of ${total} pages matching: ${cql}${summary}${savedInfo}`
+        text: `Found ${data.results?.length || 0} pages.${savedInfo}`
       }
     ]
   };
 }
 
-// confluence-mcp/src/tools/getConfluenceSpace.ts
+// src/tools/getConfluenceSpace.ts
 var getConfluenceSpaceSchema = {
-  name: "get_confluence_space",
-  description: "Get information about a Confluence space",
+  name: "get_mywiki_space",
+  description: "Get information about a MyWiki space",
   inputSchema: {
     type: "object",
     properties: {
@@ -5945,10 +5903,10 @@ async function handleGetConfluenceSpace(args) {
   };
 }
 
-// confluence-mcp/src/tools/listConfluenceSpaces.ts
+// src/tools/listConfluenceSpaces.ts
 var listConfluenceSpacesSchema = {
-  name: "list_confluence_spaces",
-  description: "List all Confluence spaces",
+  name: "list_mywiki_spaces",
+  description: "List all MyWiki spaces",
   inputSchema: {
     type: "object",
     properties: {
@@ -6001,10 +5959,10 @@ async function handleListConfluenceSpaces(args) {
   };
 }
 
-// confluence-mcp/src/tools/createConfluencePage.ts
+// src/tools/createConfluencePage.ts
 var createConfluencePageSchema = {
-  name: "create_confluence_page",
-  description: "Create a new Confluence page",
+  name: "create_mywiki_page",
+  description: "Create a new MyWiki page",
   inputSchema: {
     type: "object",
     properties: {
@@ -6065,10 +6023,10 @@ async function handleCreateConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/updateConfluencePage.ts
+// src/tools/updateConfluencePage.ts
 var updateConfluencePageSchema = {
-  name: "update_confluence_page",
-  description: "Update an existing Confluence page",
+  name: "update_mywiki_page",
+  description: "Update an existing MyWiki page",
   inputSchema: {
     type: "object",
     properties: {
@@ -6126,10 +6084,10 @@ async function handleUpdateConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/commentOnConfluencePage.ts
+// src/tools/commentOnConfluencePage.ts
 var commentOnConfluencePageSchema = {
-  name: "comment_on_confluence_page",
-  description: "Add a comment to a Confluence page",
+  name: "comment_on_mywiki_page",
+  description: "Add a comment to a MyWiki page",
   inputSchema: {
     type: "object",
     properties: {
@@ -6181,11 +6139,11 @@ async function handleCommentOnConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/uploadAttachment.ts
+// src/tools/uploadAttachment.ts
 var import_promises2 = require("fs/promises");
 var uploadAttachmentSchema = {
-  name: "upload_attachment",
-  description: "Upload a file attachment to a Confluence page",
+  name: "upload_mywiki_attachment",
+  description: "Upload a file attachment to a MyWiki page",
   inputSchema: {
     type: "object",
     properties: {
@@ -6251,7 +6209,7 @@ async function handleUploadAttachment(args) {
   }
 }
 
-// confluence-mcp/src/index.ts
+// src/index.ts
 var tools = [
   { schema: getConfluencePageSchema, handler: handleGetConfluencePage },
   {
@@ -6273,7 +6231,7 @@ var ConfluenceMCPServer = class {
   constructor() {
     this.server = new Server(
       {
-        name: "confluence-mcp",
+        name: "mywiki-mcp",
         version: "0.1.0"
       },
       {
@@ -6314,7 +6272,7 @@ var ConfluenceMCPServer = class {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Confluence MCP server running on stdio");
+    console.error("MyWiki MCP server running on stdio");
   }
 };
 var server = new ConfluenceMCPServer();
