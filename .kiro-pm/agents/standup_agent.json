@@ -10,17 +10,6 @@
   "resources": [
     "file://.kiro/context/pm_guidelines.md"
   ],
-  "mcpServers": {
-    "jira": {
-      "command": "node",
-      "args": [
-        "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"
-      ],
-      "env": {
-        "JIRA_PAT": "YOUR_TOKEN"
-      }
-    }
-  },
   "allowedTools": [
     "@jira/*"
   ],

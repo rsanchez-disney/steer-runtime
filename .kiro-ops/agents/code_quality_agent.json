@@ -6,29 +6,6 @@
     "execute_bash",
     "fs_read"
   ],
-  "mcpServers": {
-    "sonarqube": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--init",
-        "--pull=always",
-        "-i",
-        "--rm",
-        "-e",
-        "SONARQUBE_TOKEN",
-        "-e",
-        "SONARQUBE_URL",
-        "mcp/sonarqube"
-      ],
-      "env": {
-        "SONARQUBE_TOKEN": "YOUR_TOKEN",
-        "SONARQUBE_URL": "https://sonar.cicd.wdprapps.disney.com"
-      },
-      "timeout": 60000,
-      "disabled": false
-    }
-  },
   "allowedTools": [
     "@sonarqube/*"
   ],

@@ -61,21 +61,6 @@
       }
     ]
   },
-  "mcpServers": {
-    "context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ]
-    },
-    "bruno": {
-      "command": "node",
-      "args": [
-        "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"
-      ]
-    }
-  },
   "allowedTools": [
     "@context7/*",
     "@bruno/*"
