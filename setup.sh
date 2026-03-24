@@ -288,105 +288,31 @@ get_profile_agents() {
 
 inject_agent_tokens() {
     local target_dir=$1
-    local tokens_file="$KIRO_ROOT/tokens.env"
-    
-    if [ ! -f "$tokens_file" ]; then
-        echo "⚠️  No tokens.env found — skipping token injection"
-        return
-    fi
-    
-    _read_token() { grep -s "^$1=" "$tokens_file" | head -1 | cut -d= -f2-; }
-    
-    local jira_pat=$(_read_token "JIRA_PAT")
-    local confluence_pat=$(_read_token "CONFLUENCE_PAT")
-    
-    # Discover GitHub remotes for per-remote injection
-    local github_remotes
-    github_remotes=$(discover_github_remotes "$tokens_file")
-    
-    for agent_json in "$target_dir/agents/"*.json; do
-        [ -f "$agent_json" ] || continue
-        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_remotes" "$tokens_file" << 'INJECT_PY'
-import json, sys, os
-
-path = sys.argv[1]
-jira = sys.argv[2]
-conf = sys.argv[3]
-remotes_raw = sys.argv[4]
-tokens_file = sys.argv[5]
-
-def read_tok(key):
-    try:
-        with open(tokens_file) as f:
-            for line in f:
-                if line.startswith(key + '='):
-                    return line.strip().split('=', 1)[1]
-    except FileNotFoundError:
-        pass
-    return ''
-
-with open(path) as f:
-    d = json.load(f)
-
-servers = d.get("mcpServers", {})
-if not servers:
-    sys.exit(0)
-
-changed = False
-
-# Inject Jira token
-if jira and jira != "YOUR_TOKEN":
-    env = servers.get("jira", {}).get("env", {})
-    if "JIRA_PAT" in env:
-        env["JIRA_PAT"] = jira
-        changed = True
-
-# Inject Confluence token
-if conf and conf != "YOUR_TOKEN":
-    env = servers.get("confluence", {}).get("env", {})
-    if "CONFLUENCE_PAT" in env:
-        env["CONFLUENCE_PAT"] = conf
-        changed = True
-
-# GitHub: per-remote injection or legacy fallback
-if "github" in servers:
-    remotes = [r for r in remotes_raw.strip().split('\n') if r.strip()]
-    github_entry = servers.pop("github")
-
-    if remotes:
-        # Replace single "github" entry with N "github-{remote}" entries
-        for remote in remotes:
-            token = read_tok('GITHUB_TOKEN_' + remote)
-            host = read_tok('GITHUB_HOST_' + remote)
-            api_path = read_tok('GITHUB_API_PATH_' + remote)
-            if not token or not host:
-                continue
-            entry = dict(github_entry)
-            entry["env"] = {
-                "GITHUB_REMOTE": remote,
-                "GITHUB_HOST": host,
-                "GITHUB_TOKEN": token,
-            }
-            if api_path:
-                entry["env"]["GITHUB_API_PATH"] = api_path
-            servers["github-" + remote] = entry
-        changed = True
-    else:
-        # Fallback: legacy single github entry with GITHUB_TOKEN_disney
-        gh_token = read_tok('GITHUB_TOKEN_disney')
-        if gh_token and gh_token != "YOUR_TOKEN":
-            env = github_entry.get("env", {})
-            if "GITHUB_TOKEN_disney" in env:
-                env["GITHUB_TOKEN_disney"] = gh_token
-        servers["github"] = github_entry
-        changed = True
-
-if changed:
-    with open(path, "w") as f:
-        json.dump(d, f, indent=2)
-        f.write("\n")
-INJECT_PY
-    done
+    _do_inject() {
+        local mcp_name="$1" env_file="$2" env_key="$3" tdir="$4"
+        if [ -f "$env_file" ]; then
+            local token=$(grep "^${env_key}=" "$env_file" | cut -d= -f2-)
+            if [ -n "$token" ] && [ "$token" != "YOUR_TOKEN" ]; then
+                for agent_json in "$tdir/agents/"*.json; do
+                    if [ -f "$agent_json" ] && grep -q "\"${mcp_name}\"" "$agent_json"; then
+                        python3 -c "
+import json
+with open('$agent_json') as f: d=json.load(f)
+m=d.get('mcpServers',{}).get('$mcp_name',{}).get('env',{})
+if m: m['$env_key']='$token'
+with open('$agent_json','w') as f: json.dump(d,f,indent=2); f.write('\\n')
+" 2>/dev/null
+                    fi
+                done
+            fi
+        fi
+    }
+    _do_inject "jira"       "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env"              "JIRA_PAT"           "$target_dir"
+    _do_inject "confluence" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env"         "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "mywiki"     "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env.mywiki"  "CONFLUENCE_PAT"     "$target_dir"
+    _do_inject "github"     "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"            "GITHUB_TOKEN_disney" "$target_dir"
+    _do_inject "qtest"      "$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"             "QTEST_BEARER_TOKEN" "$target_dir"
+    _do_inject "qtest"      "$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"             "QTEST_PROJECT_ID"   "$target_dir"
 }
 
 install_profile() {
@@ -828,6 +754,9 @@ case "${1:-help}" in
         echo "  GitHub:"
         echo "  https://github.disney.com/settings/tokens"
         echo ""
+        echo "  qTest:"
+        echo "  https://qtest.disney.com/p/{yourProjectID}"
+        echo ""
         
         read -p "Would you like to configure tokens now? (y/N): " configure_tokens
         
@@ -906,6 +835,24 @@ CONFEOF
                     _add_github_remote=false
                 fi
             done
+            echo ""
+            
+            # qTest token
+            echo "━━━ qTest ━━━"
+            read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
+            read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
+            if [ -n "$qtest_token" ]; then
+                qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+                cat > "$qtest_env" << QTESTEOF
+QTEST_BEARER_TOKEN=$qtest_token
+QTESTEOF
+                if [ -n "$qtest_project_id" ]; then
+                    echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+                fi
+                echo "  ✓ Saved to qtest-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
+            fi
             echo ""
         fi
         

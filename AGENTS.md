@@ -454,7 +454,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Use for:** Complex QA workflows requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 **Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent
 
@@ -467,20 +467,20 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Creates test plans, test cases, and test scenarios from requirements  
 **Use for:** Test planning, test case design, coverage analysis  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### test_automation_agent
 **File:** `profiles/qa/agents/test_automation_agent.json`  
 **Purpose:** Creates and maintains automated test scripts  
 **Use for:** UI tests, API tests, integration tests, test frameworks  
-**MCP Servers:** context7  
-**Hooks:** preToolUse (guard writes)
+**Hooks:** preToolUse (guard writes)  
+**MCP Servers:** qtest
 
 #### defect_analyst_agent
 **File:** `profiles/qa/agents/defect_analyst_agent.json`  
 **Purpose:** Analyzes defects, performs root cause analysis  
 **Use for:** Bug triage, root cause analysis, detailed bug reports  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### api_tester_agent
 **File:** `profiles/qa/agents/api_tester_agent.json`  
@@ -686,42 +686,24 @@ Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `koda mcp-install` or `koda configure`).
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
-|---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|
-| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev-core** | code_review_agent | ✅ | | | ✅ | | |
-| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | |
-| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
-| **dev-web** | backend | | | | | ✅ | |
-| **dev-web** | webapi | | | | | ✅ | |
-| **dev-web** | ui | | | | | ✅ | Figma |
-| **dev-web** | ux_specialist_agent | | | | | | Figma |
-| **dev-web** | astro | | | | | ✅ | Figma |
-| **dev-python** | python | | | | | ✅ | |
-| **dev-infra** | terraform | | | | | ✅ | |
-| **dev-dotnet** | dotnet_senior_agent | | | | | | |
-| **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
-| **dev-dotnet** | dotnet_serverless_agent | | | | | | |
-| **dev-mobile** | flutter | | | | | ✅ | |
-| **dev-mobile** | android_native | | | | | ✅ | |
-| **dev-mobile** | ios_native | | | | | ✅ | |
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
+|---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
+| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | code_review_agent | ✅ | | | ✅ | | |
+| **dev** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **ba** | estimation_agent | ✅ | ✅ | | | | |
-| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_automation_agent | | | | | ✅ | |
-| **qa** | api_tester_agent | | | | | ✅ | |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_coverage_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_automation_agent | | | | |  | |
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | code_quality_agent | | | | | | SonarQube |
-| **ops** | release_manager_agent | ✅ | | | ✅ | | |
-| **ops** | release_documenter_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | deployment_agent | | | | | | Harness |
 | **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
@@ -749,6 +731,7 @@ Shared context loaded via agent `resources`:
 | `automation_patterns.md` | test_automation |
 | `defect_templates.md` | defect_analyst |
 | `api_test_patterns.md` | api_tester |
+| `qtest_guidelines.md` | qa_orchestrator, test_planner |
 | `performance_patterns.md` | performance_tester |
 | `coverage_matrix_template.md` | test_coverage_analyzer |
 | `python_guidelines.md` | python |
