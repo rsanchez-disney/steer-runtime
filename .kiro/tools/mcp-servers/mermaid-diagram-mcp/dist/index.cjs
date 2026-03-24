@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-const __import_meta_url = require('url').pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -28,7 +27,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// jira-mcp/node_modules/zod/v3/external.js
+// node_modules/zod/v3/external.js
 var external_exports = {};
 __export(external_exports, {
   BRAND: () => BRAND,
@@ -140,7 +139,7 @@ __export(external_exports, {
   void: () => voidType
 });
 
-// jira-mcp/node_modules/zod/v3/helpers/util.js
+// node_modules/zod/v3/helpers/util.js
 var util;
 (function(util2) {
   util2.assertEqual = (_) => {
@@ -274,7 +273,7 @@ var getParsedType = (data) => {
   }
 };
 
-// jira-mcp/node_modules/zod/v3/ZodError.js
+// node_modules/zod/v3/ZodError.js
 var ZodIssueCode = util.arrayToEnum([
   "invalid_type",
   "invalid_literal",
@@ -392,7 +391,7 @@ ZodError.create = (issues) => {
   return error;
 };
 
-// jira-mcp/node_modules/zod/v3/locales/en.js
+// node_modules/zod/v3/locales/en.js
 var errorMap = (issue, _ctx) => {
   let message;
   switch (issue.code) {
@@ -495,7 +494,7 @@ var errorMap = (issue, _ctx) => {
 };
 var en_default = errorMap;
 
-// jira-mcp/node_modules/zod/v3/errors.js
+// node_modules/zod/v3/errors.js
 var overrideErrorMap = en_default;
 function setErrorMap(map) {
   overrideErrorMap = map;
@@ -504,7 +503,7 @@ function getErrorMap() {
   return overrideErrorMap;
 }
 
-// jira-mcp/node_modules/zod/v3/helpers/parseUtil.js
+// node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
   const { data, path, errorMaps, issueData } = params;
   const fullPath = [...path, ...issueData.path || []];
@@ -614,14 +613,14 @@ var isDirty = (x) => x.status === "dirty";
 var isValid = (x) => x.status === "valid";
 var isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 
-// jira-mcp/node_modules/zod/v3/helpers/errorUtil.js
+// node_modules/zod/v3/helpers/errorUtil.js
 var errorUtil;
 (function(errorUtil2) {
   errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
   errorUtil2.toString = (message) => typeof message === "string" ? message : message?.message;
 })(errorUtil || (errorUtil = {}));
 
-// jira-mcp/node_modules/zod/v3/types.js
+// node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
   constructor(parent, value, path, key) {
     this._cachedPath = [];
@@ -3856,7 +3855,7 @@ ZodNaN.create = (params) => {
     ...processCreateParams(params)
   });
 };
-var BRAND = /* @__PURE__ */ Symbol("zod_brand");
+var BRAND = Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -4058,18 +4057,18 @@ var ostring = () => stringType().optional();
 var onumber = () => numberType().optional();
 var oboolean = () => booleanType().optional();
 var coerce = {
-  string: ((arg) => ZodString.create({ ...arg, coerce: true })),
-  number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
-  boolean: ((arg) => ZodBoolean.create({
+  string: (arg) => ZodString.create({ ...arg, coerce: true }),
+  number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
+  boolean: (arg) => ZodBoolean.create({
     ...arg,
     coerce: true
-  })),
-  bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
-  date: ((arg) => ZodDate.create({ ...arg, coerce: true }))
+  }),
+  bigint: (arg) => ZodBigInt.create({ ...arg, coerce: true }),
+  date: (arg) => ZodDate.create({ ...arg, coerce: true })
 };
 var NEVER = INVALID;
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/types.js
 var LATEST_PROTOCOL_VERSION = "2024-11-05";
 var SUPPORTED_PROTOCOL_VERSIONS = [
   LATEST_PROTOCOL_VERSION,
@@ -4775,7 +4774,7 @@ var McpError = class extends Error {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -5052,7 +5051,7 @@ var Protocol = class {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -5205,10 +5204,10 @@ var Server = class extends Protocol {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var import_node_process = __toESM(require("node:process"), 1);
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
 var ReadBuffer = class {
   append(chunk) {
     this._buffer = this._buffer ? Buffer.concat([this._buffer, chunk]) : chunk;
@@ -5236,7 +5235,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = import_node_process.default.stdin, _stdout = import_node_process.default.stdout) {
     this._stdin = _stdin;
@@ -5296,17 +5295,16 @@ var StdioServerTransport = class {
   }
 };
 
-// mermaid-diagram-mcp/src/index.ts
+// src/index.ts
 var import_child_process = require("child_process");
 var import_fs = require("fs");
 var import_path = require("path");
-var import_url = require("url");
-var __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-var __dirname = (0, import_path.dirname)(__filename);
 var server = new Server(
   {
     name: "mermaid-diagram-mcp",
-    version: "1.0.0",
+    version: "1.0.0"
+  },
+  {
     capabilities: {
       tools: {}
     }
@@ -5379,7 +5377,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         shouldCleanup = true;
       }
       const resolvedOutputPath = (0, import_path.resolve)(outputPath);
-      const outputDir = (0, import_path.dirname)(resolvedOutputPath);
+      const outputDir = dirname(resolvedOutputPath);
       if (!(0, import_fs.existsSync)(outputDir)) {
         (0, import_fs.mkdirSync)(outputDir, { recursive: true });
       }
