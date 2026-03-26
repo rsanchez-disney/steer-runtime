@@ -1,0 +1,18 @@
+# {{PROJECT_NAME}} — Data Dictionary
+
+## Database Tables / Collections
+<!-- Describe each table or collection -->
+
+### table_name
+| Column | Type | Nullable | Description |
+|--------|------|----------|-------------|
+| id | UUID | No | Primary key |
+
+## Indexes
+<!-- Key indexes and their purpose -->
+
+## Enums / Lookup Values
+<!-- Enumerated types and their valid values -->
+
+## Data Retention
+<!-- How long data is kept, archival policies -->

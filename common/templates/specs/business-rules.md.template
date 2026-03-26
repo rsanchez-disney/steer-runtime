@@ -1,0 +1,23 @@
+# {{PROJECT_NAME}} — Business Rules
+
+## Validation Rules
+<!-- Input validation, field constraints, format requirements -->
+
+| Rule ID | Description | Applies To | Error Code |
+|---------|-------------|------------|------------|
+| BR-001 | | | |
+
+## Business Logic
+<!-- Core business processes and their rules -->
+
+## State Transitions
+<!-- Valid state changes and their conditions -->
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Active
+```
+
+## Constraints
+<!-- System-level constraints: rate limits, size limits, permissions -->

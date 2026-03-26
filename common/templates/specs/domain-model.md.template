@@ -1,0 +1,23 @@
+# {{PROJECT_NAME}} — Domain Model
+
+## Entities
+<!-- List each domain entity with its attributes and purpose -->
+
+### EntityName
+| Field | Type | Description |
+|-------|------|-------------|
+| id | string | Unique identifier |
+
+## Relationships
+<!-- Describe how entities relate to each other -->
+
+```mermaid
+erDiagram
+    EntityA ||--o{ EntityB : "has many"
+```
+
+## Aggregates
+<!-- Define aggregate roots and boundaries -->
+
+## Value Objects
+<!-- Immutable objects defined by their attributes -->

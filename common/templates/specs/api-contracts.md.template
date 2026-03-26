@@ -1,0 +1,40 @@
+# {{PROJECT_NAME}} — API Contracts
+
+## Base URL
+<!-- API base URL and versioning strategy -->
+
+## Authentication
+<!-- Auth mechanism: JWT, API key, OAuth, etc. -->
+
+## Endpoints
+
+### `METHOD /path`
+<!-- Repeat for each endpoint -->
+
+**Description:** <!-- What this endpoint does -->
+
+**Request:**
+```json
+{}
+```
+
+**Response (200):**
+```json
+{}
+```
+
+**Error Responses:**
+| Status | Code | Description |
+|--------|------|-------------|
+| 400 | VALIDATION_ERROR | Invalid input |
+| 404 | NOT_FOUND | Resource not found |
+
+## Common Error Format
+```json
+{
+  "error": "string",
+  "code": "string",
+  "details": "string",
+  "timestamp": "ISO-8601"
+}
+```

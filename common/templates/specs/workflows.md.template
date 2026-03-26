@@ -1,0 +1,24 @@
+# {{PROJECT_NAME}} — Workflows
+
+## User Flows
+<!-- Key user journeys through the system -->
+
+### Flow Name
+**Actor:** <!-- Who performs this flow -->
+**Trigger:** <!-- What starts the flow -->
+
+```mermaid
+sequenceDiagram
+    Actor->>System: Action
+    System-->>Actor: Response
+```
+
+**Steps:**
+1. Step description
+2. Step description
+
+**Error Paths:**
+- What happens when X fails
+
+## Background Processes
+<!-- Scheduled jobs, event handlers, async workflows -->

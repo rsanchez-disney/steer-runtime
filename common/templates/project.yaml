@@ -1,0 +1,31 @@
+# Project Manifest — structured config for AI agents
+# Place this file in your project root. Agents read it for build commands,
+# branch names, Jira prefix, and specs location instead of guessing.
+#
+# This complements (not replaces) freeform memory banks.
+
+name: ""                    # Project name
+stack: ""                   # Primary tech stack (java, node, angular, go, flutter, csharp, python)
+baseBranch: main            # Default branch for PRs and diffs
+
+commands:
+  build: ""                 # e.g., mvn clean package, npm run build
+  test: ""                  # e.g., mvn test, npm test
+  lint: ""                  # e.g., mvn checkstyle:check, npm run lint
+  format: ""                # e.g., mvn spotless:apply, npm run format
+
+integrations:
+  jira:
+    projectKey: ""          # e.g., DPAY, GCP, TIMON
+    statuses:
+      inProgress: ""        # Status name for "in progress"
+      review: ""            # Status name for "in review"
+      done: ""              # Status name for "done"
+  github:
+    org: ""                 # e.g., SANCR225
+    repo: ""                # e.g., wdpr-config-services
+
+workspace:
+  specsDir: docs/specs/     # Where spec documents live
+  useSpecs: false           # Whether agents should reference specs
+  memoryBank: ""            # Memory bank name (from workspaces/default/projects/)
