@@ -47,24 +47,10 @@ Pick what fits your role, or install everything with `./setup.sh install dev ba 
 
 ---
 
-## Koda (Recommended)
-
-[Koda](https://github.disney.com/SANCR225/Koda) is a Go CLI that replaces `setup.sh` with an interactive TUI — fuzzy agent search, masked tokens, health checks. One binary, no dependencies.
-
-```bash
-koda                              # Launch interactive dashboard
-koda install dev ba qa ops pm     # Or use CLI commands directly
-```
-
-> `setup.sh` still works and is fully maintained.
-
----
-
 ## What's New
 
 | Date | Change |
 |------|--------|
-| Mar 25 | [Koda CLI](https://github.disney.com/SANCR225/Koda) — interactive Go CLI with TUI dashboard |
 | Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
 | Mar 20 | [Context7 MCP](https://context7.com) — real-time library docs, no token needed |
 | Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |
