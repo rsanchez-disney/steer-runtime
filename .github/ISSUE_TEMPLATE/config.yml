@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📋 Waypoints Board
+    url: https://github.disney.com/users/SANCR225/projects/2/views/1
+    about: Track the status of all features and issues
+  - name: 📖 Documentation
+    url: https://github.disney.com/SANCR225/steer-runtime/blob/main/docs/REFERENCE.md
+    about: Full reference guide
