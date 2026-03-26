@@ -1,0 +1,24 @@
+# {{PROJECT_NAME}} — Architecture
+
+## Overview
+<!-- High-level description of the system and its purpose -->
+
+## Component Diagram
+<!-- Mermaid diagram showing major components and their relationships -->
+
+```mermaid
+graph TD
+    A[Component A] --> B[Component B]
+```
+
+## Layers
+<!-- Describe each architectural layer: presentation, business, data, infrastructure -->
+
+## Data Flow
+<!-- How data moves through the system for key operations -->
+
+## Integration Points
+<!-- External systems, APIs, message queues, databases -->
+
+## Key Design Decisions
+<!-- Important architectural choices and their rationale -->
