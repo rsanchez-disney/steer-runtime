@@ -1,10 +1,10 @@
 # Koda installer for Windows
-# Koda installer — run from steer-runtime repo: .\tools\install-koda.ps1
+# One-liner: irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
 
 $ErrorActionPreference = 'Stop'
 
-$repo = 'SANCR225/steer-runtime'
-$ghHost = 'github.disney.com'
+$repo = 'rsanchez-disney/Koda'
+$ghHost = 'github.com'
 $installDir = if ($env:KODA_INSTALL_DIR) { $env:KODA_INSTALL_DIR } else { "$env:LOCALAPPDATA\koda" }
 
 # Detect architecture
@@ -18,14 +18,14 @@ Write-Host ''
 
 # Find latest release
 try {
-    $release = Invoke-RestMethod "https://$ghHost/api/v3/repos/$repo/releases/latest"
+    $release = Invoke-RestMethod "https://api.github.com/repos/$repo/releases/latest"
     $tag = $release.tag_name
 } catch {
     Write-Host '   Could not determine latest release.'
     exit 1
 }
 
-$url = "https://$ghHost/$repo/releases/download/$tag/$binary"
+$url = "https://github.com/$repo/releases/download/$tag/$binary"
 Write-Host "   Version: $tag"
 Write-Host "   URL: $url"
 Write-Host ''
