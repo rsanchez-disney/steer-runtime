@@ -1,0 +1,10 @@
+{
+  "name": "uad-team",
+  "description": "Unified Agent Desktop — PM workspace (sustainment + ongoing)",
+  "team": "UAD Team",
+  "profiles": ["pm"],
+  "default_agent": "pm_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "UAD-"
+}
