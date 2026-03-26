@@ -16,15 +16,16 @@ A workspace pre-loads your team's context — Jira projects, boards, team roster
 # 1. See available team workspaces
 ./setup.sh workspace list
 
-# 2. Apply your team's workspace
-./setup.sh workspace apply dta-team     # DTA Team
-./setup.sh workspace apply uad-team     # UAD Team
+# 2. Apply your project's workspace
+./setup.sh workspace apply dta-team          # Digital Travel Trade
+./setup.sh workspace apply uad-sustainment   # Resort Sales (UAD sustainment)
+./setup.sh workspace apply uad-ongoing       # Cast Sales Experience (UAD ongoing)
 
 # 3. Configure your Jira token (if not done already)
 ./setup.sh mcp-install
 ```
 
-That's it. Your PM agents now have your team's Jira project, board, and roster pre-loaded.
+That's it. Your PM agents now have your project's Jira board and roster pre-loaded.
 
 ---
 
@@ -56,23 +57,25 @@ You no longer need to specify the project, board, or team — the workspace hand
 
 ---
 
-## Switching teams
+## Switching projects
 
-If you manage multiple teams, just re-apply:
+If you manage multiple projects, just re-apply:
 
 ```bash
-./setup.sh workspace apply dta-team     # Switch to DTA
-./setup.sh workspace apply uad-team     # Switch to UAD
+./setup.sh workspace apply dta-team          # Switch to Digital Travel Trade
+./setup.sh workspace apply uad-sustainment   # Switch to Resort Sales
+./setup.sh workspace apply uad-ongoing       # Switch to Cast Sales Experience
 ```
 
 ---
 
 ## Available workspaces
 
-| Workspace | Team | Jira Sources |
-|-----------|------|-------------|
-| `dta-team` | Digital Travel Trade | Digital Travel Trade / Digital Travel Trade Projects |
-| `uad-team` | Unified Agent Desktop | Resort Sales / DLR UAD - Development + Cast Sales Experience / Unified Agent Desktop |
+| Workspace | Project | Board |
+|-----------|---------|-------|
+| `dta-team` | Digital Travel Trade | Digital Travel Trade Projects |
+| `uad-sustainment` | Resort Sales | DLR UAD - Development |
+| `uad-ongoing` | Cast Sales Experience | Unified Agent Desktop |
 
 ---
 
