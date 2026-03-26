@@ -1,0 +1,10 @@
+{
+  "name": "dta-team",
+  "description": "Digital Travel Trade — PM workspace",
+  "team": "DTA Team",
+  "profiles": ["pm"],
+  "default_agent": "pm_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "DTA-"
+}
