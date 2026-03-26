@@ -1,5 +1,5 @@
 # Koda installer for Windows
-# One-liner: irm https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.ps1 | iex
+# Koda installer — run from steer-runtime repo: .\tools\install-koda.ps1
 
 $ErrorActionPreference = 'Stop'
 
