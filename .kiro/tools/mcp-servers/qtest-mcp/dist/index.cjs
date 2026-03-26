@@ -5307,30 +5307,38 @@ var QtestApiError = class extends Error {
 };
 
 // src/utils/qtestClient.ts
-var QtestApiClient = class {
+var QtestApiClient = class _QtestApiClient {
   baseUrl;
   token;
   constructor() {
     this.baseUrl = process.env.QTEST_BASE_URL || "https://qtest.disney.com";
     this.token = process.env.QTEST_BEARER_TOKEN;
   }
+  static MAX_RETRIES = 3;
   async request(method, path, body) {
     const url = `${this.baseUrl}${path}`;
     let response;
-    try {
-      response = await fetch(url, {
-        method,
-        headers: {
-          "Authorization": `Bearer ${this.token}`,
-          "Content-Type": "application/json"
-        },
-        body: body ? JSON.stringify(body) : void 0
-      });
-    } catch (error) {
-      if (error instanceof TypeError) {
-        throw new QtestApiError(0, error.message, url);
+    for (let attempt = 0; attempt <= _QtestApiClient.MAX_RETRIES; attempt++) {
+      try {
+        response = await fetch(url, {
+          method,
+          headers: {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "application/json"
+          },
+          body: body ? JSON.stringify(body) : void 0
+        });
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new QtestApiError(0, error.message, url);
+        }
+        throw error;
       }
-      throw error;
+      if (response.status !== 429 || attempt === _QtestApiClient.MAX_RETRIES)
+        break;
+      const delay = Math.pow(2, attempt) * 1e3;
+      console.error(`[qtest-mcp] Rate limited (429), retrying in ${delay}ms (attempt ${attempt + 1}/${_QtestApiClient.MAX_RETRIES})`);
+      await new Promise((r) => setTimeout(r, delay));
     }
     if (!response.ok) {
       const errorBody = await response.text();
@@ -5377,6 +5385,16 @@ function mapApiError(error) {
   }
   return `qTest API error ${error.statusCode}: ${error.responseBody}`;
 }
+async function withErrorHandling(fn) {
+  try {
+    return await fn();
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+var MODULE_CACHE_TTL_MS = 5 * 60 * 1e3;
 var moduleCache = /* @__PURE__ */ new Map();
 function buildModuleIndex(modules, index) {
   for (const mod of modules) {
@@ -5389,14 +5407,18 @@ function buildModuleIndex(modules, index) {
 }
 async function resolveModulePid(client, projectId, mdPid) {
   const pid = mdPid.toUpperCase();
-  let index = moduleCache.get(projectId);
-  if (!index) {
+  const cached = moduleCache.get(projectId);
+  const now = Date.now();
+  let index;
+  if (cached && now - cached.timestamp < MODULE_CACHE_TTL_MS) {
+    index = cached.index;
+  } else {
     const modules = await client.get(
       `/api/v3/projects/${projectId}/modules?expand=descendants`
     );
     index = /* @__PURE__ */ new Map();
     buildModuleIndex(modules, index);
-    moduleCache.set(projectId, index);
+    moduleCache.set(projectId, { index, timestamp: now });
   }
   return index.get(pid) ?? null;
 }
@@ -5563,7 +5585,7 @@ var qtestGetProjectsSchema = {
   }
 };
 async function handleQtestGetProjects(args) {
-  try {
+  return withErrorHandling(async () => {
     const { outputDir } = args;
     const client = new QtestApiClient();
     const projects = await client.get("/api/v3/projects");
@@ -5581,11 +5603,7 @@ async function handleQtestGetProjects(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestGetProjectSchema = {
   name: "qtest_get_project",
@@ -5606,7 +5624,7 @@ var qtestGetProjectSchema = {
   }
 };
 async function handleQtestGetProject(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -5625,11 +5643,7 @@ async function handleQtestGetProject(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 // src/tools/qtestTestCases.ts
@@ -5656,7 +5670,7 @@ var qtestGetTestCaseSchema = {
   }
 };
 async function handleQtestGetTestCase(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testCaseId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -5691,11 +5705,7 @@ async function handleQtestGetTestCase(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestCreateTestCaseSchema = {
   name: "qtest_create_test_case",
@@ -5744,7 +5754,7 @@ var qtestCreateTestCaseSchema = {
   }
 };
 async function handleQtestCreateTestCase(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, name, description, precondition, testSteps, parentId: rawParentId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -5800,11 +5810,7 @@ async function handleQtestCreateTestCase(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestUpdateTestCaseSchema = {
   name: "qtest_update_test_case",
@@ -5853,7 +5859,7 @@ var qtestUpdateTestCaseSchema = {
   }
 };
 async function handleQtestUpdateTestCase(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testCaseId, name, description, precondition, testSteps, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const body = {};
@@ -5888,11 +5894,7 @@ async function handleQtestUpdateTestCase(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestSearchTestCasesSchema = {
   name: "qtest_search_test_cases",
@@ -5925,7 +5927,7 @@ var qtestSearchTestCasesSchema = {
   }
 };
 async function handleQtestSearchTestCases(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, query, page = 1, pageSize = 25, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const body = {
@@ -5965,11 +5967,7 @@ async function handleQtestSearchTestCases(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 // src/tools/qtestTestRuns.ts
@@ -6181,7 +6179,7 @@ var qtestGetTestCyclesSchema = {
   }
 };
 async function handleQtestGetTestCycles(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6202,11 +6200,7 @@ async function handleQtestGetTestCycles(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestCreateTestCycleSchema = {
   name: "qtest_create_test_cycle",
@@ -6239,7 +6233,7 @@ var qtestCreateTestCycleSchema = {
   }
 };
 async function handleQtestCreateTestCycle(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, name, description, parentId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const body = {
@@ -6268,11 +6262,7 @@ async function handleQtestCreateTestCycle(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestGetTestSuitesSchema = {
   name: "qtest_get_test_suites",
@@ -6297,7 +6287,7 @@ var qtestGetTestSuitesSchema = {
   }
 };
 async function handleQtestGetTestSuites(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testCycleId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6318,11 +6308,7 @@ async function handleQtestGetTestSuites(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestCreateTestSuiteSchema = {
   name: "qtest_create_test_suite",
@@ -6355,7 +6341,7 @@ var qtestCreateTestSuiteSchema = {
   }
 };
 async function handleQtestCreateTestSuite(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testCycleId, name, description, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const body = {
@@ -6384,11 +6370,7 @@ async function handleQtestCreateTestSuite(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 // src/tools/qtestRequirements.ts
@@ -6426,7 +6408,7 @@ var qtestGetRequirementsSchema = {
   }
 };
 async function handleQtestGetRequirements(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6447,11 +6429,7 @@ async function handleQtestGetRequirements(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestGetRequirementSchema = {
   name: "qtest_get_requirement",
@@ -6476,7 +6454,7 @@ var qtestGetRequirementSchema = {
   }
 };
 async function handleQtestGetRequirement(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, requirementId: rawReqId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6519,11 +6497,7 @@ async function handleQtestGetRequirement(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestLinkRequirementSchema = {
   name: "qtest_link_requirement",
@@ -6552,7 +6526,7 @@ var qtestLinkRequirementSchema = {
   }
 };
 async function handleQtestLinkRequirement(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, requirementId: rawReqId, testCaseId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6599,11 +6573,7 @@ async function handleQtestLinkRequirement(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestCreateRequirementSchema = {
   name: "qtest_create_requirement",
@@ -6636,7 +6606,7 @@ var qtestCreateRequirementSchema = {
   }
 };
 async function handleQtestCreateRequirement(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, name, description, parentId: rawParentId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6679,7 +6649,8 @@ async function handleQtestCreateRequirement(args) {
             `/api/v3/projects/${projectId}/requirements/${created.id}`,
             { properties: [{ field_id: descField.field_id, field_value: description }] }
           );
-        } catch {
+        } catch (descError) {
+          console.error(`[qtest-mcp] Warning: requirement created but description update failed: ${descError instanceof Error ? descError.message : descError}`);
         }
       }
     }
@@ -6695,7 +6666,8 @@ async function handleQtestCreateRequirement(args) {
         `/api/v3/projects/${projectId}/requirements/${created.id}/comments`,
         { content: "Created with qTest MCP" }
       );
-    } catch {
+    } catch (commentError) {
+      console.error(`[qtest-mcp] Warning: requirement created but auto-comment failed: ${commentError instanceof Error ? commentError.message : commentError}`);
     }
     const savedPath = await saveData(
       outputDir,
@@ -6710,11 +6682,7 @@ async function handleQtestCreateRequirement(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 // src/tools/qtestDefects.ts
@@ -6741,7 +6709,7 @@ var qtestGetDefectsSchema = {
   }
 };
 async function handleQtestGetDefects(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testRunId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6762,11 +6730,7 @@ async function handleQtestGetDefects(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestLinkDefectSchema = {
   name: "qtest_link_defect",
@@ -6795,7 +6759,7 @@ var qtestLinkDefectSchema = {
   }
 };
 async function handleQtestLinkDefect(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testRunId, defectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6820,11 +6784,7 @@ async function handleQtestLinkDefect(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 var qtestSubmitDefectSchema = {
   name: "qtest_submit_defect",
@@ -6857,7 +6817,7 @@ var qtestSubmitDefectSchema = {
   }
 };
 async function handleQtestSubmitDefect(args) {
-  try {
+  return withErrorHandling(async () => {
     const { projectId: rawProjectId, testRunId, summary, description, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6884,11 +6844,7 @@ async function handleQtestSubmitDefect(args) {
     return {
       content: [{ type: "text", text: `${responseSummary}${savedInfo}` }]
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 // src/index.ts

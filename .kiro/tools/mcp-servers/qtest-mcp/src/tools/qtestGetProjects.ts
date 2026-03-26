@@ -1,7 +1,6 @@
-import { QtestApiClient, mapApiError, resolveProjectId } from "../utils/qtestClient.js";
+import { QtestApiClient, resolveProjectId, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatProjects } from "../utils/formatting.js";
-import { QtestApiError } from "../utils/types.js";
 import type { QtestProject, ToolResponse } from "../utils/types.js";
 
 export const qtestGetProjectsSchema = {
@@ -20,9 +19,13 @@ export const qtestGetProjectsSchema = {
   },
 };
 
-export async function handleQtestGetProjects(args: any): Promise<ToolResponse> {
-  try {
-    const { outputDir } = args as { outputDir?: string | boolean | null };
+interface GetProjectsArgs {
+  outputDir?: string | boolean | null;
+}
+
+export async function handleQtestGetProjects(args: GetProjectsArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { outputDir } = args;
 
     const client = new QtestApiClient();
     const projects = await client.get<QtestProject[]>("/api/v3/projects");
@@ -42,13 +45,7 @@ export async function handleQtestGetProjects(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError
-      ? mapApiError(error)
-      : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 export const qtestGetProjectSchema = {
@@ -71,13 +68,14 @@ export const qtestGetProjectSchema = {
   },
 };
 
-export async function handleQtestGetProject(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, outputDir } = args as {
-      projectId?: number;
-      outputDir?: string | boolean | null;
-    };
+interface GetProjectArgs {
+  projectId?: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetProject(args: GetProjectArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -98,11 +96,5 @@ export async function handleQtestGetProject(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message = error instanceof QtestApiError
-      ? mapApiError(error)
-      : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
