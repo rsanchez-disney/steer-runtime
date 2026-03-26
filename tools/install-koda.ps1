@@ -1,17 +1,19 @@
-
 # Koda installer for Windows
-# One-liner: irm https://github.disney.com/raw/SANCR225/Koda/main/install.ps1 | iex
+# One-liner: irm https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.ps1 | iex
 
 $ErrorActionPreference = 'Stop'
 
-$repo = 'SANCR225/Koda'
+$repo = 'SANCR225/steer-runtime'
 $ghHost = 'github.disney.com'
 $installDir = if ($env:KODA_INSTALL_DIR) { $env:KODA_INSTALL_DIR } else { "$env:LOCALAPPDATA\koda" }
-$binary = 'koda-windows-amd64.exe'
+
+# Detect architecture
+$arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'amd64' }
+$binary = "koda-windows-${arch}.exe"
 
 Write-Host ''
 Write-Host '   Installing Koda...'
-Write-Host "   OS: windows  Arch: amd64"
+Write-Host "   OS: windows  Arch: $arch"
 Write-Host ''
 
 # Find latest release
@@ -40,7 +42,7 @@ if (Test-Path $dest) {
     # Check PATH
     if ($env:PATH -notlike "*$installDir*") {
         Write-Host '   Add to PATH:'
-        Write-Host "     [Environment]::SetEnvironmentVariable('PATH', \"$installDir;\$env:PATH\", 'User')"
+        Write-Host "     [Environment]::SetEnvironmentVariable('PATH', `"$installDir;`$env:PATH`", 'User')"
         Write-Host ''
     }
 } else {

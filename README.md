@@ -38,7 +38,7 @@ koda chat --agent orchestrator    # Dev orchestrator
 koda chat --agent qa_orchestrator_agent  # QA orchestrator
 ```
 
-> Koda replaces `setup.sh` with a cross-platform binary. It also adds an interactive TUI, chat mode, and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
+> `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
 
 ### Option B — setup.sh (bash)
 
@@ -102,7 +102,7 @@ koda install dev ba qa ops pm     # Koda
 | First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
-| Amazon Q / Kite setup | [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Cursor / Amazon Q / Kite setup | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
 | Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
 
 ---

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Koda installer — one-liner: curl -fsSL https://github.disney.com/raw/SANCR225/Koda/main/install.sh | bash
+# Koda installer — one-liner: curl -fsSL https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.sh | bash
 set -e
 
-REPO="SANCR225/Koda"
+REPO="SANCR225/steer-runtime"
 GH_HOST="github.disney.com"
 INSTALL_DIR="${KODA_INSTALL_DIR:-$HOME/.local/bin}"
 
