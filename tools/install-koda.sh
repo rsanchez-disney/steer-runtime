@@ -1,9 +1,9 @@
 #!/bin/bash
-# Koda installer — run from steer-runtime repo: bash tools/install-koda.sh
+# Koda installer — one-liner: curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
 set -e
 
-REPO="SANCR225/steer-runtime"
-GH_HOST="github.disney.com"
+REPO="rsanchez-disney/Koda"
+GH_HOST="github.com"
 INSTALL_DIR="${KODA_INSTALL_DIR:-$HOME/.local/bin}"
 
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -22,22 +22,15 @@ echo "   OS: $OS  Arch: $ARCH"
 echo ""
 
 # Find latest release tag
-if command -v gh &>/dev/null; then
-  TAG=$(gh release view --repo "$GH_HOST/$REPO" --json tagName -q .tagName 2>/dev/null || true)
-fi
-
-if [ -z "$TAG" ]; then
-  # Fallback: GitHub API
-  TAG=$(curl -fsSL "https://$GH_HOST/api/v3/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | head -1 | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')
-fi
+TAG=$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null | grep '"tag_name"' | head -1 | sed 's/.*"tag_name": *"\([^"]*\)".*/\1/')
 
 if [ -z "$TAG" ]; then
   echo "Could not determine latest release."
-  echo "Try: gh release view --repo $GH_HOST/$REPO"
+  echo "Check: https://github.com/$REPO/releases"
   exit 1
 fi
 
-URL="https://$GH_HOST/$REPO/releases/download/$TAG/$BINARY"
+URL="https://github.com/$REPO/releases/download/$TAG/$BINARY"
 echo "   Version: $TAG"
 echo "   URL: $URL"
 echo ""
@@ -47,12 +40,7 @@ mkdir -p "$INSTALL_DIR"
 TMP=$(mktemp)
 trap "rm -f $TMP" EXIT
 
-if command -v gh &>/dev/null; then
-  gh release download "$TAG" --repo "$GH_HOST/$REPO" --pattern "$BINARY" --output "$TMP" 2>/dev/null || \
-    curl -fsSL -o "$TMP" "$URL"
-else
-  curl -fsSL -o "$TMP" "$URL"
-fi
+curl -fsSL -o "$TMP" "$URL"
 
 chmod +x "$TMP"
 mv "$TMP" "$INSTALL_DIR/koda"

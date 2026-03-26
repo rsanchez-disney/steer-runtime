@@ -10,21 +10,16 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 You need **Node.js**, **Git**, and [Kiro CLI](docs/GETTING_STARTED.md). That's it.
 
-```bash
-git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
-cd ~/steer-runtime
-```
-
 ### Option A — Koda (recommended)
 
-Koda is the interactive terminal companion for steer-runtime.
+Koda is the interactive terminal companion for steer-runtime. One-liner install:
 
 ```bash
 # macOS / Linux
-bash tools/install-koda.sh
+curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
 
 # Windows (PowerShell)
-.\tools\install-koda.ps1
+irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
 ```
 
 Then:
@@ -46,6 +41,11 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 > `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
 
 ### Option B — setup.sh (bash)
+
+```bash
+git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
+cd ~/steer-runtime
+```
 
 ```bash
 ./setup.sh install dev        # Install dev agents
