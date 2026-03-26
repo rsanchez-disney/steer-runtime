@@ -1,7 +1,6 @@
-import { QtestApiClient, mapApiError, resolveProjectId, resolveModulePid, resolveRequirementPid } from "../utils/qtestClient.js";
+import { QtestApiClient, resolveProjectId, resolveModulePid, resolveRequirementPid, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatRequirements } from "../utils/formatting.js";
-import { QtestApiError } from "../utils/types.js";
 import type { QtestRequirement, ToolResponse } from "../utils/types.js";
 
 /**
@@ -17,7 +16,6 @@ async function fetchLinkedTestCases(
     const resp = await client.get<any[]>(
       `/api/v3/projects/${projectId}/linked-artifacts?type=requirements&ids=${requirementId}`,
     );
-    // Response: [{ id: reqId, objects: [{ id, pid, link_type, self }] }]
     const entry = Array.isArray(resp) ? resp.find((r: any) => r.id === requirementId) : null;
     const objects = entry?.objects ?? [];
     if (objects.length > 0) {
@@ -51,13 +49,14 @@ export const qtestGetRequirementsSchema = {
   },
 };
 
-export async function handleQtestGetRequirements(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, outputDir } = args as {
-      projectId?: number;
-      outputDir?: string | boolean | null;
-    };
+interface GetRequirementsArgs {
+  projectId?: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetRequirements(args: GetRequirementsArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -80,14 +79,7 @@ export async function handleQtestGetRequirements(args: any): Promise<ToolRespons
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -117,18 +109,18 @@ export const qtestGetRequirementSchema = {
   },
 };
 
-export async function handleQtestGetRequirement(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, requirementId: rawReqId, outputDir } = args as {
-      projectId?: number;
-      requirementId: string | number;
-      outputDir?: string | boolean | null;
-    };
+interface GetRequirementArgs {
+  projectId?: number;
+  requirementId: string | number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetRequirement(args: GetRequirementArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, requirementId: rawReqId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
 
-    // Resolve requirementId — accept RQ-#### (PID) or numeric ID
     const reqIdStr = String(rawReqId);
     const isRqPid = /^RQ-\d+$/i.test(reqIdStr);
     let numericReqId: number;
@@ -156,7 +148,6 @@ export async function handleQtestGetRequirement(args: any): Promise<ToolResponse
       `/api/v3/projects/${projectId}/requirements/${numericReqId}`,
     );
 
-    // Fetch linked test cases — try lightweight endpoints first, fall through on failure
     requirement.linked_test_cases = await fetchLinkedTestCases(client, projectId, numericReqId);
 
     const summary = formatRequirements([requirement]);
@@ -174,14 +165,7 @@ export async function handleQtestGetRequirement(args: any): Promise<ToolResponse
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -215,19 +199,19 @@ export const qtestLinkRequirementSchema = {
   },
 };
 
-export async function handleQtestLinkRequirement(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, requirementId: rawReqId, testCaseId, outputDir } = args as {
-      projectId?: number;
-      requirementId: string | number;
-      testCaseId: number;
-      outputDir?: string | boolean | null;
-    };
+interface LinkRequirementArgs {
+  projectId?: number;
+  requirementId: string | number;
+  testCaseId: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestLinkRequirement(args: LinkRequirementArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, requirementId: rawReqId, testCaseId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
 
-    // Resolve requirementId — accept RQ-#### (PID) or numeric ID
     const reqIdStr = String(rawReqId);
     const isRqPid = /^RQ-\d+$/i.test(reqIdStr);
     let numericReqId: number;
@@ -272,14 +256,7 @@ export async function handleQtestLinkRequirement(args: any): Promise<ToolRespons
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -317,26 +294,25 @@ export const qtestCreateRequirementSchema = {
   },
 };
 
-export async function handleQtestCreateRequirement(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, name, description, parentId: rawParentId, outputDir } = args as {
-      projectId?: number;
-      name: string;
-      description?: string;
-      parentId: string | number;
-      outputDir?: string | boolean | null;
-    };
+interface CreateRequirementArgs {
+  projectId?: number;
+  name: string;
+  description?: string;
+  parentId: string | number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestCreateRequirement(args: CreateRequirementArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, name, description, parentId: rawParentId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
 
-    // Resolve parentId — accept MD-#### (PID) or numeric ID
     const parentIdStr = String(rawParentId);
     const isMdPid = /^MD-\d+$/i.test(parentIdStr);
     let numericParentId: number;
 
     if (isMdPid) {
-      // Use cached module resolver
       const resolved = await resolveModulePid(client, projectId, parentIdStr);
       if (!resolved) {
         return {
@@ -376,8 +352,8 @@ export async function handleQtestCreateRequirement(args: any): Promise<ToolRespo
             `/api/v3/projects/${projectId}/requirements/${created.id}`,
             { properties: [{ field_id: descField.field_id, field_value: description }] },
           );
-        } catch {
-          // Non-critical — requirement was created, description update failed
+        } catch (descError) {
+          console.error(`[qtest-mcp] Warning: requirement created but description update failed: ${descError instanceof Error ? descError.message : descError}`);
         }
       }
     }
@@ -391,8 +367,8 @@ export async function handleQtestCreateRequirement(args: any): Promise<ToolRespo
         `/api/v3/projects/${projectId}/requirements/${created.id}/comments`,
         { content: "Created with qTest MCP" },
       );
-    } catch {
-      // Non-critical — don't fail the create if commenting fails
+    } catch (commentError) {
+      console.error(`[qtest-mcp] Warning: requirement created but auto-comment failed: ${commentError instanceof Error ? commentError.message : commentError}`);
     }
 
     const savedPath = await saveData(
@@ -408,13 +384,5 @@ export async function handleQtestCreateRequirement(args: any): Promise<ToolRespo
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
-

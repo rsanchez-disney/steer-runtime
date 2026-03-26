@@ -1,7 +1,6 @@
-import { QtestApiClient, mapApiError, resolveProjectId } from "../utils/qtestClient.js";
+import { QtestApiClient, mapApiError, resolveProjectId, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatDefects } from "../utils/formatting.js";
-import { QtestApiError } from "../utils/types.js";
 import type { QtestDefect, ToolResponse } from "../utils/types.js";
 
 // ── qtest_get_defects ───────────────────────────────────────────────
@@ -30,14 +29,15 @@ export const qtestGetDefectsSchema = {
   },
 };
 
-export async function handleQtestGetDefects(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testRunId, outputDir } = args as {
-      projectId?: number;
-      testRunId: number;
-      outputDir?: string | boolean | null;
-    };
+interface GetDefectsArgs {
+  projectId?: number;
+  testRunId: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetDefects(args: GetDefectsArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -60,14 +60,7 @@ export async function handleQtestGetDefects(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -101,15 +94,16 @@ export const qtestLinkDefectSchema = {
   },
 };
 
-export async function handleQtestLinkDefect(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testRunId, defectId, outputDir } = args as {
-      projectId?: number;
-      testRunId: number;
-      defectId: number;
-      outputDir?: string | boolean | null;
-    };
+interface LinkDefectArgs {
+  projectId?: number;
+  testRunId: number;
+  defectId: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestLinkDefect(args: LinkDefectArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, defectId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -133,14 +127,7 @@ export async function handleQtestLinkDefect(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -178,16 +165,17 @@ export const qtestSubmitDefectSchema = {
   },
 };
 
-export async function handleQtestSubmitDefect(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testRunId, summary, description, outputDir } = args as {
-      projectId?: number;
-      testRunId: number;
-      summary: string;
-      description?: string;
-      outputDir?: string | boolean | null;
-    };
+interface SubmitDefectArgs {
+  projectId?: number;
+  testRunId: number;
+  summary: string;
+  description?: string;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestSubmitDefect(args: SubmitDefectArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, summary, description, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -212,12 +200,5 @@ export async function handleQtestSubmitDefect(args: any): Promise<ToolResponse> 
     return {
       content: [{ type: "text", text: `${responseSummary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }

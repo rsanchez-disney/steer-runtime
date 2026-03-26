@@ -41,49 +41,15 @@ Each test case contains:
 
 ## Available qTest MCP Tools
 
-### Project Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_projects` | List all projects with ID, name, and description |
-| `qtest_get_project` | Get details for a single project by ID |
+For the full tool reference with parameters and usage details, see the [qTest MCP README](../../.kiro/tools/mcp-servers/qtest-mcp/README.md).
 
-### Test Case Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_test_case` | Retrieve test case details including steps and preconditions. Accepts `TC-####` format (e.g., `TC-8032`) or numeric ID. Auto-fetches test steps. |
-| `qtest_create_test_case` | Create a new test case with name, description, steps, and optional parent (`MD-####` or numeric) |
-| `qtest_update_test_case` | Update fields on an existing test case |
-| `qtest_search_test_cases` | Search test cases by query string (paginated) |
-
-### Test Run Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_test_run` | Retrieve test run details with status and linked test case |
-| `qtest_create_test_run` | Create a test run from a test case in a cycle or suite |
-| `qtest_update_test_run_result` | Submit execution result (passed/failed/blocked/incomplete) with optional note |
-
-### Test Cycle & Suite Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_test_cycles` | List all test cycles for a project |
-| `qtest_create_test_cycle` | Create a new test cycle with name and optional description |
-| `qtest_get_test_suites` | List test suites within a test cycle |
-| `qtest_create_test_suite` | Create a test suite within a test cycle |
-
-### Requirement Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_requirements` | Retrieve the requirements tree for a project |
-| `qtest_get_requirement` | Get requirement details and linked test cases. Accepts `RQ-####` format or numeric ID. Automatically fetches linked TCs via the `linked-artifacts` API. |
-| `qtest_link_requirement` | Link a requirement to a test case for traceability. Accepts `RQ-####` format or numeric ID. |
-| `qtest_create_requirement` | Create a new requirement in qTest with auto-comment. Accepts `MD-####` PID or numeric `parentId`. |
-
-### Defect Tools
-| Tool | Description |
-|------|-------------|
-| `qtest_get_defects` | Get defects linked to a test run |
-| `qtest_link_defect` | Link an existing defect to a test run |
-| `qtest_submit_defect` | Create a new defect linked to a failed test run |
+**Quick reference of available tools:**
+- `qtest_get_projects` / `qtest_get_project` — Project listing and details
+- `qtest_get_test_case` / `qtest_create_test_case` / `qtest_update_test_case` / `qtest_search_test_cases` — Test case CRUD and search
+- `qtest_get_test_run` / `qtest_create_test_run` / `qtest_update_test_run_result` — Test run management and result submission
+- `qtest_get_test_cycles` / `qtest_create_test_cycle` / `qtest_get_test_suites` / `qtest_create_test_suite` — Cycle and suite management
+- `qtest_get_requirements` / `qtest_get_requirement` / `qtest_link_requirement` / `qtest_create_requirement` — Requirement management and traceability
+- `qtest_get_defects` / `qtest_link_defect` / `qtest_submit_defect` — Defect tracking
 
 All tools accept an optional `outputDir` parameter. Default: `/tmp/qtest-mcp/`. Set to `false` or `null` to skip file saving.
 

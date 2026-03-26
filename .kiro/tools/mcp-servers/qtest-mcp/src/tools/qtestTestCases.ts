@@ -1,7 +1,6 @@
-import { QtestApiClient, mapApiError, resolveProjectId, resolveModulePid } from "../utils/qtestClient.js";
+import { QtestApiClient, resolveProjectId, resolveModulePid, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatTestCase } from "../utils/formatting.js";
-import { QtestApiError } from "../utils/types.js";
 import type { QtestTestCase, QtestTestStep, ToolResponse } from "../utils/types.js";
 
 // ── qtest_get_test_case ─────────────────────────────────────────────
@@ -30,18 +29,18 @@ export const qtestGetTestCaseSchema = {
   },
 };
 
-export async function handleQtestGetTestCase(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testCaseId, outputDir } = args as {
-      projectId?: number;
-      testCaseId: string | number;
-      outputDir?: string | boolean | null;
-    };
+interface GetTestCaseArgs {
+  projectId?: number;
+  testCaseId: string | number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetTestCase(args: GetTestCaseArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCaseId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
 
-    // Resolve the test case — accept TC-#### (PID) or numeric ID
     const tcIdStr = String(testCaseId);
     const isPid = /^TC-\d+$/i.test(tcIdStr);
     const lookupPath = isPid
@@ -81,14 +80,7 @@ export async function handleQtestGetTestCase(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -142,23 +134,22 @@ export const qtestCreateTestCaseSchema = {
   },
 };
 
-export async function handleQtestCreateTestCase(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, name, description, precondition, testSteps, parentId: rawParentId, outputDir } =
-      args as {
-        projectId?: number;
-        name: string;
-        description?: string;
-        precondition?: string;
-        testSteps?: Array<{ description: string; expected: string }>;
-        parentId?: string | number;
-        outputDir?: string | boolean | null;
-      };
+interface CreateTestCaseArgs {
+  projectId?: number;
+  name: string;
+  description?: string;
+  precondition?: string;
+  testSteps?: Array<{ description: string; expected: string }>;
+  parentId?: string | number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestCreateTestCase(args: CreateTestCaseArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, name, description, precondition, testSteps, parentId: rawParentId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
 
-    // Resolve parentId — accept MD-#### (PID) or numeric ID
     let numericParentId: number | undefined;
     if (rawParentId !== undefined && rawParentId !== null) {
       const parentIdStr = String(rawParentId);
@@ -211,14 +202,7 @@ export async function handleQtestCreateTestCase(args: any): Promise<ToolResponse
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -272,19 +256,19 @@ export const qtestUpdateTestCaseSchema = {
   },
 };
 
-export async function handleQtestUpdateTestCase(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testCaseId, name, description, precondition, testSteps, outputDir } =
-      args as {
-        projectId?: number;
-        testCaseId: number;
-        name?: string;
-        description?: string;
-        precondition?: string;
-        testSteps?: Array<{ description: string; expected: string }>;
-        outputDir?: string | boolean | null;
-      };
+interface UpdateTestCaseArgs {
+  projectId?: number;
+  testCaseId: number;
+  name?: string;
+  description?: string;
+  precondition?: string;
+  testSteps?: Array<{ description: string; expected: string }>;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestUpdateTestCase(args: UpdateTestCaseArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCaseId, name, description, precondition, testSteps, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const body: Record<string, any> = {};
@@ -316,14 +300,7 @@ export async function handleQtestUpdateTestCase(args: any): Promise<ToolResponse
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -361,16 +338,17 @@ export const qtestSearchTestCasesSchema = {
   },
 };
 
-export async function handleQtestSearchTestCases(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, query, page = 1, pageSize = 25, outputDir } = args as {
-      projectId?: number;
-      query: string;
-      page?: number;
-      pageSize?: number;
-      outputDir?: string | boolean | null;
-    };
+interface SearchTestCasesArgs {
+  projectId?: number;
+  query: string;
+  page?: number;
+  pageSize?: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestSearchTestCases(args: SearchTestCasesArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, query, page = 1, pageSize = 25, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const body = {
@@ -407,12 +385,5 @@ export async function handleQtestSearchTestCases(args: any): Promise<ToolRespons
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }

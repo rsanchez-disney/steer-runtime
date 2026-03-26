@@ -1,4 +1,5 @@
 import { QtestApiError } from "./types.js";
+import type { ToolResponse } from "./types.js";
 
 export class QtestApiClient {
   private baseUrl: string;
@@ -9,32 +10,41 @@ export class QtestApiClient {
     this.token = process.env.QTEST_BEARER_TOKEN!;
   }
 
+  private static readonly MAX_RETRIES = 3;
+
   async request<T>(method: string, path: string, body?: any): Promise<T> {
     const url = `${this.baseUrl}${path}`;
-    let response: Response;
+    let response: Response | undefined;
 
-    try {
-      response = await fetch(url, {
-        method,
-        headers: {
-          "Authorization": `Bearer ${this.token}`,
-          "Content-Type": "application/json",
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      });
-    } catch (error) {
-      if (error instanceof TypeError) {
-        throw new QtestApiError(0, error.message, url);
+    for (let attempt = 0; attempt <= QtestApiClient.MAX_RETRIES; attempt++) {
+      try {
+        response = await fetch(url, {
+          method,
+          headers: {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "application/json",
+          },
+          body: body ? JSON.stringify(body) : undefined,
+        });
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new QtestApiError(0, error.message, url);
+        }
+        throw error;
       }
-      throw error;
+
+      if (response.status !== 429 || attempt === QtestApiClient.MAX_RETRIES) break;
+      const delay = Math.pow(2, attempt) * 1000;
+      console.error(`[qtest-mcp] Rate limited (429), retrying in ${delay}ms (attempt ${attempt + 1}/${QtestApiClient.MAX_RETRIES})`);
+      await new Promise(r => setTimeout(r, delay));
     }
 
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new QtestApiError(response.status, errorBody, url);
+    if (!response!.ok) {
+      const errorBody = await response!.text();
+      throw new QtestApiError(response!.status, errorBody, url);
     }
 
-    return response.json() as Promise<T>;
+    return response!.json() as Promise<T>;
   }
 
   async get<T>(path: string): Promise<T> {
@@ -85,10 +95,36 @@ export function mapApiError(error: QtestApiError): string {
   return `qTest API error ${error.statusCode}: ${error.responseBody}`;
 }
 
+/**
+ * Shared error-handling wrapper for all tool handlers.
+ * Eliminates duplicated try/catch blocks across handlers.
+ */
+export async function withErrorHandling(
+  fn: () => Promise<ToolResponse>,
+): Promise<ToolResponse> {
+  try {
+    return await fn();
+  } catch (error) {
+    const message =
+      error instanceof QtestApiError
+        ? mapApiError(error)
+        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+
 // ── Module cache for MD-#### PID resolution ─────────────────────────
 
-// Cache keyed by projectId → Map<PID, numericId>
-const moduleCache = new Map<number, Map<string, number>>();
+// Cache keyed by projectId → { index, timestamp }
+const MODULE_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+interface ModuleCacheEntry {
+  index: Map<string, number>;
+  timestamp: number;
+}
+
+const moduleCache = new Map<number, ModuleCacheEntry>();
 
 function buildModuleIndex(modules: any[], index: Map<string, number>): void {
   for (const mod of modules) {
@@ -108,14 +144,19 @@ export async function resolveModulePid(
   mdPid: string,
 ): Promise<number | null> {
   const pid = mdPid.toUpperCase();
-  let index = moduleCache.get(projectId);
-  if (!index) {
+  const cached = moduleCache.get(projectId);
+  const now = Date.now();
+
+  let index: Map<string, number>;
+  if (cached && (now - cached.timestamp) < MODULE_CACHE_TTL_MS) {
+    index = cached.index;
+  } else {
     const modules = await client.get<any[]>(
       `/api/v3/projects/${projectId}/modules?expand=descendants`,
     );
     index = new Map();
     buildModuleIndex(modules, index);
-    moduleCache.set(projectId, index);
+    moduleCache.set(projectId, { index, timestamp: now });
   }
   return index.get(pid) ?? null;
 }

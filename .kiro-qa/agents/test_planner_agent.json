@@ -55,6 +55,7 @@
       }
     },
     "qtest": {
+      "_note": "Shared config — keep in sync with qa_orchestrator_agent.json",
       "command": "node",
       "args": [
         "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs"
