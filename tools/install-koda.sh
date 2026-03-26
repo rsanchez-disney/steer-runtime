@@ -1,5 +1,5 @@
 #!/bin/bash
-# Koda installer — one-liner: curl -fsSL https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.sh | bash
+# Koda installer — run from steer-runtime repo: bash tools/install-koda.sh
 set -e
 
 REPO="SANCR225/steer-runtime"

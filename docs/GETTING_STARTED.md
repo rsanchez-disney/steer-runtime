@@ -37,12 +37,12 @@ Koda is the interactive terminal companion for steer-runtime. It replaces `setup
 
 **macOS / Linux:**
 ```bash
-curl -fsSL https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.sh | bash
+cd ~/steer-runtime && bash tools/install-koda.sh
 ```
 
 **Windows (PowerShell):**
 ```powershell
-irm https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.ps1 | iex
+cd ~\steer-runtime; .\tools\install-koda.ps1
 ```
 
 Verify:

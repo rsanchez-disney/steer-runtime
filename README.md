@@ -10,16 +10,21 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 You need **Node.js**, **Git**, and [Kiro CLI](docs/GETTING_STARTED.md). That's it.
 
+```bash
+git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
+cd ~/steer-runtime
+```
+
 ### Option A — Koda (recommended)
 
-Koda is the interactive terminal companion for steer-runtime. One-liner install:
+Koda is the interactive terminal companion for steer-runtime.
 
 ```bash
 # macOS / Linux
-curl -fsSL https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.sh | bash
+bash tools/install-koda.sh
 
 # Windows (PowerShell)
-irm https://github.disney.com/raw/SANCR225/steer-runtime/main/tools/install-koda.ps1 | iex
+.\tools\install-koda.ps1
 ```
 
 Then:
@@ -43,9 +48,6 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 ### Option B — setup.sh (bash)
 
 ```bash
-git clone <repo-url> ~/steer-runtime
-cd ~/steer-runtime
-
 ./setup.sh install dev        # Install dev agents
 ./setup.sh mcp-install        # Setup MCP servers + tokens
 ```
@@ -103,6 +105,7 @@ koda install dev ba qa ops pm     # Koda
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
 | Cursor / Amazon Q / Kite setup | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Roadmap & feature requests | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 | Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
 
 ---
