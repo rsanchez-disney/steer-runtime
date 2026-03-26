@@ -45,16 +45,8 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 ```bash
 git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
 cd ~/steer-runtime
-```
-
-```bash
 ./setup.sh install dev        # Install dev agents
 ./setup.sh mcp-install        # Setup MCP servers + tokens
-```
-
-Then start chatting:
-
-```bash
 kiro-cli chat --agent orchestrator
 ```
 
@@ -88,7 +80,7 @@ koda install dev ba qa ops pm     # Koda
 
 | Date | Change |
 |------|--------|
-| Mar 26 | [Koda v0.1.0](https://github.disney.com/SANCR225/Koda) — interactive terminal companion, replaces setup.sh |
+| Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces setup.sh |
 | Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
 | Mar 20 | [Context7 MCP](https://context7.com) — real-time library docs, no token needed |
 | Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |
