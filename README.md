@@ -102,6 +102,16 @@ koda install dev ba qa ops pm     # Koda
 
 ---
 
+## Contribute
+
+Got an idea or found a bug? We'd love to hear from you.
+
+- 💡 [Propose a feature](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=feature_request.md)
+- 🐛 [Report a bug](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=bug_report.md)
+- 📋 [Track progress on Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)
+
+---
+
 **Version:** 3.6.0 · **Agents:** 41 · **Updated:** March 26, 2026
 
 Internal Disney tool — not for external distribution.
