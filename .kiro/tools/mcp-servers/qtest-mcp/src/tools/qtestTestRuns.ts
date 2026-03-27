@@ -1,7 +1,6 @@
-import { QtestApiClient, mapApiError, resolveProjectId } from "../utils/qtestClient.js";
+import { QtestApiClient, resolveProjectId, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatTestRun } from "../utils/formatting.js";
-import { QtestApiError } from "../utils/types.js";
 import type { QtestTestRun, ToolResponse } from "../utils/types.js";
 
 // ── qtest_get_test_run ──────────────────────────────────────────────
@@ -30,14 +29,15 @@ export const qtestGetTestRunSchema = {
   },
 };
 
-export async function handleQtestGetTestRun(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testRunId, outputDir } = args as {
-      projectId?: number;
-      testRunId: number;
-      outputDir?: string | boolean | null;
-    };
+interface GetTestRunArgs {
+  projectId?: number;
+  testRunId: number;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestGetTestRun(args: GetTestRunArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const client = new QtestApiClient();
@@ -60,14 +60,7 @@ export async function handleQtestGetTestRun(args: any): Promise<ToolResponse> {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -105,16 +98,17 @@ export const qtestCreateTestRunSchema = {
   },
 };
 
-export async function handleQtestCreateTestRun(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testCaseId, parentId, name, outputDir } = args as {
-      projectId?: number;
-      testCaseId: number;
-      parentId: number;
-      name?: string;
-      outputDir?: string | boolean | null;
-    };
+interface CreateTestRunArgs {
+  projectId?: number;
+  testCaseId: number;
+  parentId: number;
+  name?: string;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestCreateTestRun(args: CreateTestRunArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCaseId, parentId, name, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
     const body: Record<string, any> = {
@@ -144,14 +138,7 @@ export async function handleQtestCreateTestRun(args: any): Promise<ToolResponse>
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
 
 
@@ -180,6 +167,14 @@ export const qtestUpdateTestRunResultSchema = {
         type: "string",
         description: "Execution commentary or notes (optional)",
       },
+      exeStartDate: {
+        type: "string",
+        description: "Execution start date in ISO 8601 format (optional, defaults to current time)",
+      },
+      exeEndDate: {
+        type: "string",
+        description: "Execution end date in ISO 8601 format (optional, defaults to current time)",
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description:
@@ -190,23 +185,27 @@ export const qtestUpdateTestRunResultSchema = {
   },
 };
 
-export async function handleQtestUpdateTestRunResult(args: any): Promise<ToolResponse> {
-  try {
-    const { projectId: rawProjectId, testRunId, status, note, outputDir } = args as {
-      projectId?: number;
-      testRunId: number;
-      status: "passed" | "failed" | "blocked" | "incomplete";
-      note?: string;
-      outputDir?: string | boolean | null;
-    };
+interface UpdateTestRunResultArgs {
+  projectId?: number;
+  testRunId: number;
+  status: "passed" | "failed" | "blocked" | "incomplete";
+  note?: string;
+  exeStartDate?: string;
+  exeEndDate?: string;
+  outputDir?: string | boolean | null;
+}
 
+export async function handleQtestUpdateTestRunResult(args: UpdateTestRunResultArgs): Promise<ToolResponse> {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, status, note, exeStartDate, exeEndDate, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
 
+    const now = new Date().toISOString();
     const body = {
       status,
       note,
-      exe_start_date: new Date().toISOString(),
-      exe_end_date: new Date().toISOString(),
+      exe_start_date: exeStartDate ?? now,
+      exe_end_date: exeEndDate ?? now,
     };
 
     const client = new QtestApiClient();
@@ -230,12 +229,5 @@ export async function handleQtestUpdateTestRunResult(args: any): Promise<ToolRes
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }],
     };
-  } catch (error) {
-    const message =
-      error instanceof QtestApiError
-        ? mapApiError(error)
-        : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
-    console.error(`[qtest-mcp] ${message}`);
-    return { content: [{ type: "text", text: message }], isError: true };
-  }
+  });
 }
