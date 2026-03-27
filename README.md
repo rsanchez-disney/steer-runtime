@@ -102,6 +102,14 @@ koda install dev ba qa ops pm     # Koda
 
 ---
 
+## Recordings & Sessions
+
+| Date | Description | Link |
+|------|-------------|------|
+| March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
+
+---
+
 ## Contribute
 
 Got an idea or found a bug? We'd love to hear from you.
