@@ -67,7 +67,20 @@ koda                              # Launch TUI — press [p] for profiles, [t] f
 
 ---
 
-## 7. Start Chatting
+## 7. Add a Project Manifest (optional)
+
+Drop a `project.yaml` in your project root so agents know your stack, commands, and integrations:
+
+```bash
+cp ~/steer-runtime/common/templates/project.yaml ~/my-project/project.yaml
+# Edit with your project's details
+```
+
+See [project.yaml reference](REFERENCE.md#project-manifest-projectyaml) for all fields. Agents work without it (they fall back to memory banks), but it's the fastest way to get accurate results.
+
+---
+
+## 8. Start Chatting
 
 ```bash
 koda chat                         # Chat with last-used agent
@@ -83,7 +96,7 @@ kiro-cli chat --agent orchestrator
 
 ---
 
-## 8. Join a Team Workspace (optional)
+## 9. Join a Team Workspace (optional)
 
 ```bash
 koda workspace list               # See available team configs
@@ -94,7 +107,7 @@ This installs the right profiles, rules, and memory banks for your team in one c
 
 ---
 
-## 9. Enable Advanced Tools (optional)
+## 10. Enable Advanced Tools (optional)
 
 ```bash
 koda enable-tools

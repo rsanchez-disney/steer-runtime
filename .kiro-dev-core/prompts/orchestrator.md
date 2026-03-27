@@ -32,6 +32,17 @@ When given a Jira story URL (e.g., "Help me implement https://myjira.disney.com/
 
 **IMMEDIATELY invoke story_analyzer_agent - do NOT respond with text first.**
 
+### 0. Read Project Config
+
+Before starting any workflow, read the project's configuration:
+
+1. Look for `project.yaml` in the project root
+2. If found, extract: `stack`, `baseBranch`, `commands` (build/test/lint), `integrations.jira.projectKey`, `integrations.github`
+3. If not found, check `.kiro/context/` or memory bank files for equivalent info
+4. Use these values throughout the workflow — do not hardcode branch names, commands, or Jira prefixes
+
+This config determines which agents to delegate to (e.g., `backend_agent` for Java, `webapi_agent` for Node), which test/lint commands to run, and how to create branches and PRs.
+
 ### 1. Fetch & Validate Story
 Automatically invoke `story_analyzer_agent` with the Jira URL.
 - If story is incomplete, show issues and stop

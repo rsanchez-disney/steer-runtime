@@ -15,10 +15,15 @@ Multi-step workflow to ship changes: commit → push → PR → merge.
 
 ## Workflow
 
+### Step 0: Read Project Config
+
+1. Look for `project.yaml` in the project root
+2. If found, read: `baseBranch`, `integrations.jira.projectKey`, `integrations.jira.statuses`, `integrations.github`
+3. If not found, check memory bank or ask the user for base branch name
+
 ### Step 1: Pre-flight
 
-1. Read `project.yaml` for baseBranch and Jira/GitHub config
-2. Run `git status` — verify there are changes to ship
+1. Run `git status` — verify there are changes to ship
 3. Verify you're on a feature branch (not main/master)
 4. Run lint and test commands to confirm green state
 
