@@ -9,10 +9,15 @@ Conduct a thorough code review for changes targeting the base branch.
 
 ## Process
 
+### Step 0: Read Project Config
+
+1. Look for `project.yaml` in the project root
+2. If found, read: `baseBranch`
+3. If not found, check memory bank or ask the user for the base branch name
+
 ### Step 1: Identify Changes
 
-1. Read `project.yaml` or memory bank for `baseBranch`
-2. Run `git diff <baseBranch>...HEAD --name-only` to list changed files
+1. Run `git diff <baseBranch>...HEAD --name-only` to list changed files
 3. Run `git diff <baseBranch>...HEAD --stat` for a summary
 
 ### Step 2: Review Each File

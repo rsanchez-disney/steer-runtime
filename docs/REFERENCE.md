@@ -6,6 +6,48 @@ For quick setup, see the [README](../README.md).
 
 ---
 
+## Project Manifest (`project.yaml`)
+
+Drop a `project.yaml` in your project root to give agents structured config. No fork needed — any team, any project.
+
+### Field Reference
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | yes | Project name |
+| `stack` | string | yes | Primary tech stack (`java`, `node`, `angular`, `go`, `flutter`, `csharp`, `python`) |
+| `baseBranch` | string | yes | Default branch for PRs and diffs (default: `main`) |
+| `commands.build` | string | no | Build command (e.g., `mvn clean package`) |
+| `commands.test` | string | no | Test command (e.g., `npm test`) |
+| `commands.lint` | string | no | Lint command (e.g., `npm run lint`) |
+| `commands.format` | string | no | Format command (e.g., `mvn spotless:apply`) |
+| `integrations.jira.projectKey` | string | no | Jira project prefix (e.g., `DPAY`) |
+| `integrations.jira.statuses.inProgress` | string | no | Jira status name for "in progress" |
+| `integrations.jira.statuses.review` | string | no | Jira status name for "in review" |
+| `integrations.jira.statuses.done` | string | no | Jira status name for "done" |
+| `integrations.github.org` | string | no | GitHub org (e.g., `SANCR225`) |
+| `integrations.github.repo` | string | no | GitHub repo name |
+| `workspace.specsDir` | string | no | Where spec documents live (default: `docs/specs/`) |
+| `workspace.useSpecs` | boolean | no | Whether agents should reference specs |
+| `workspace.memoryBank` | string | no | Memory bank name from workspaces |
+
+### How Agents Use It
+
+Agents check for `project.yaml` at the start of every workflow (Step 0):
+1. `project.yaml` found → use it
+2. Not found → fall back to memory bank or `.kiro/context/`
+3. Neither exists → ask the user
+
+### Examples
+
+See `common/templates/examples/` for complete examples:
+- [Java/Spring Boot](../common/templates/examples/project-java-spring.yaml)
+- [Node.js/Express](../common/templates/examples/project-node-express.yaml)
+
+Template: [`common/templates/project.yaml`](../common/templates/project.yaml)
+
+---
+
 ## Commands
 
 ```bash

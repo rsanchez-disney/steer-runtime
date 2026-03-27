@@ -9,6 +9,12 @@ Diagnose and fix failing test(s) by identifying the root cause.
 
 ## Process
 
+### Step 0: Read Project Config
+
+1. Look for `project.yaml` in the project root
+2. If found, read: `stack`, `commands.test`
+3. If not found, check memory bank or ask the user for the test command
+
 ### Step 1: Analyze Failures
 
 1. Run the failing test(s) and capture the exact error messages and stack traces
@@ -37,7 +43,7 @@ Determine if the issue is:
 3. If new failures appear, repeat from Step 1
 
 ```bash
-# Use commands from project.yaml
+# From project.yaml commands.test (or ask user)
 <test_command>
 ```
 

@@ -15,20 +15,26 @@ End-to-end development workflow from Jira ticket to pull request.
 
 ## Workflow
 
-### Step 0: Gather Context
+### Step 0: Read Project Config
 
-1. Read `project.yaml` (or memory bank) for: stack, baseBranch, build/test/lint commands, Jira prefix
-2. Ask user for the ticket ID if not provided
-3. Fetch ticket details from Jira via MCP (summary, description, acceptance criteria)
-4. Transition ticket to "In Progress" if Jira statuses are configured
+1. Look for `project.yaml` in the project root
+2. If found, read: `stack`, `baseBranch`, `commands.build`, `commands.test`, `commands.lint`, `integrations.jira.projectKey`, `integrations.github`
+3. If not found, check memory bank or `.kiro/context/` for equivalent info
+4. If neither exists, ask the user for stack, branch, and Jira prefix
 
-### Step 1: Explore Codebase
+### Step 1: Fetch Ticket
+
+1. Ask user for the ticket ID if not provided
+2. Fetch ticket details from Jira via MCP (summary, description, acceptance criteria)
+3. Transition ticket to "In Progress" if Jira statuses are configured
+
+### Step 2: Explore Codebase
 
 1. Identify which files/modules are relevant to the ticket
 2. Review existing patterns in the codebase for consistency
 3. Note any related tests, configs, or documentation
 
-### Step 2: Generate Plan
+### Step 3: Generate Plan
 
 1. Break the ticket into small, testable implementation steps
 2. Each step should be independently verifiable
@@ -36,7 +42,7 @@ End-to-end development workflow from Jira ticket to pull request.
 
 **⏸ CHECKPOINT — User reviews and approves the plan before proceeding**
 
-### Step 3: Create Branch
+### Step 4: Create Branch
 
 ```bash
 git checkout <baseBranch>
@@ -44,7 +50,7 @@ git pull
 git checkout -b feat/<JIRA-KEY>-<short-description>
 ```
 
-### Step 4: Implement
+### Step 5: Implement
 
 For each step in the plan:
 1. Make the code changes
@@ -53,7 +59,7 @@ For each step in the plan:
 
 **⏸ CHECKPOINT — User reviews implementation before testing**
 
-### Step 5: Test
+### Step 6: Test
 
 1. Run the project's test command
 2. Verify all existing tests still pass
@@ -66,14 +72,14 @@ For each step in the plan:
 <lint_command>
 ```
 
-### Step 6: Fix Issues
+### Step 7: Fix Issues
 
 If tests fail or lint errors exist:
 1. Diagnose the root cause
 2. Fix the issue (prefer fixing source code over modifying tests)
 3. Re-run tests until green
 
-### Step 7: Review
+### Step 8: Review
 
 1. Run `git diff <baseBranch>...HEAD` to review all changes
 2. Verify changes map to acceptance criteria
@@ -81,7 +87,7 @@ If tests fail or lint errors exist:
 
 **⏸ CHECKPOINT — User reviews final changes before shipping**
 
-### Step 8: Ship
+### Step 9: Ship
 
 1. Stage and commit with conventional commit message
 2. Push branch

@@ -9,17 +9,20 @@ Create an implementation plan with small, testable, incremental steps.
 
 ## Context Gathering
 
-### Step 1: Read Project Config
+### Step 0: Read Project Config
 
-Read `project.yaml` or memory bank for: stack, baseBranch, build/test/lint commands, Jira prefix, specs directory.
+1. Look for `project.yaml` in the project root
+2. If found, read: `stack`, `baseBranch`, `commands.build`, `commands.test`, `commands.lint`, `integrations.jira.projectKey`, `workspace.specsDir`
+3. If not found, check memory bank or `.kiro/context/` for equivalent info
+4. If neither exists, ask the user
 
-### Step 2: Gather Context from MCP (if available)
+### Step 1: Gather Context from MCP (if available)
 
 1. **Jira** — fetch ticket details (summary, description, ACs, subtasks, linked issues)
 2. **Confluence/MyWiki** — search for related design docs or ADRs
 3. **GitHub** — check for related PRs or issues
 
-### Step 3: Analyze Codebase
+### Step 2: Analyze Codebase
 
 1. Identify relevant files, modules, and patterns
 2. Review existing tests for the affected area
