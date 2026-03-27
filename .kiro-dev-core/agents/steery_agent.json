@@ -1,0 +1,10 @@
+{
+  "name": "steery_agent",
+  "description": "Steery — steer-runtime support assistant. Answers questions, troubleshoots issues, formats bug reports and feature requests. No tools, no MCP, read-only.",
+  "prompt": "steery_agent.md",
+  "tools": [],
+  "resources": [
+    "file://.kiro-dev-core/context/steery_knowledge.md"
+  ],
+  "welcomeMessage": "\ud83d\udc4b Hi! I'm Steery, the steer-runtime support assistant.\n\nI can help you with:\n  \u2022 Installing and configuring agents and profiles\n  \u2022 Troubleshooting setup issues\n  \u2022 Understanding what agents are available\n  \u2022 Koda, Kite, and Kiro CLI usage\n  \u2022 Reporting bugs or requesting features\n\nJust ask!"
+}
