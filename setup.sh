@@ -26,6 +26,7 @@ COMMANDS:
   rules [list|install]                   Manage common coding rules
   prompts [list|install]                 Manage standalone prompts
   init-memory <dir>                      Initialize project memory bank
+  init-manifest <dir>                    Generate project.yaml from codebase analysis
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
   workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
@@ -76,6 +77,7 @@ EXAMPLES:
   ./setup.sh rules install --all            # Install all rules
   ./setup.sh prompts list                   # List available prompts
   ./setup.sh init-memory ~/myapp            # Initialize memory bank
+  ./setup.sh init-manifest ~/myapp          # Generate project.yaml
 
   # Team Workspaces
   ./setup.sh workspace list                # List available workspaces
@@ -957,6 +959,119 @@ with open('$mcp_settings', 'w') as f:
         fi
         
         echo "✅ Memory bank initialized at $target_mb"
+        ;;
+
+    init-manifest)
+        shift
+        if [ $# -eq 0 ]; then
+            echo "❌ Project directory required"
+            echo "Usage: ./setup.sh init-manifest <project-dir>"
+            exit 1
+        fi
+
+        project_dir="${1/#\~//Users/ricardo.sanchez}"
+
+        if [ ! -d "$project_dir" ]; then
+            echo "❌ Directory does not exist: $project_dir"
+            exit 1
+        fi
+
+        project_name=$(basename "$project_dir")
+        manifest="$project_dir/project.yaml"
+
+        if [ -f "$manifest" ]; then
+            echo "⚠️  project.yaml already exists at $manifest"
+            read -p "Overwrite? (y/N) " confirm
+            [ "$confirm" != "y" ] && exit 0
+        fi
+
+        echo "🔍 Analyzing $project_dir..."
+
+        # Detect stack
+        stack=""
+        [ -f "$project_dir/pom.xml" ] && stack="java"
+        [ -f "$project_dir/build.gradle" ] && stack="java"
+        [ -f "$project_dir/go.mod" ] && stack="go"
+        [ -f "$project_dir/pubspec.yaml" ] && stack="flutter"
+        [ -f "$project_dir/package.json" ] && {
+            if grep -q "angular" "$project_dir/package.json" 2>/dev/null; then
+                stack="angular"
+            elif grep -q "react" "$project_dir/package.json" 2>/dev/null; then
+                stack="react"
+            else
+                stack="node"
+            fi
+        }
+        [ -f "$project_dir/requirements.txt" ] && stack="python"
+        [ -f "$project_dir/setup.py" ] && stack="python"
+        [ -z "$stack" ] && { echo "Could not detect stack."; read -p "Stack (java/node/angular/go/flutter/csharp/python/react): " stack; }
+
+        # Detect base branch
+        base_branch="main"
+        if [ -d "$project_dir/.git" ]; then
+            default_branch=$(cd "$project_dir" && git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+            [ -n "$default_branch" ] && base_branch="$default_branch"
+        fi
+
+        # Detect commands
+        build_cmd="" test_cmd="" lint_cmd=""
+        case "$stack" in
+            java) build_cmd="mvn clean package -DskipTests"; test_cmd="mvn test"; lint_cmd="mvn checkstyle:check" ;;
+            node|angular|react) build_cmd="npm run build"; test_cmd="npm test"; lint_cmd="npm run lint" ;;
+            go) build_cmd="go build ./..."; test_cmd="go test ./..."; lint_cmd="go vet ./..." ;;
+            flutter) build_cmd="flutter build"; test_cmd="flutter test"; lint_cmd="flutter analyze" ;;
+            python) build_cmd="pip install -e ."; test_cmd="pytest"; lint_cmd="flake8" ;;
+        esac
+
+        # Detect GitHub org/repo
+        gh_org="" gh_repo=""
+        if [ -d "$project_dir/.git" ]; then
+            remote_url=$(cd "$project_dir" && git remote get-url origin 2>/dev/null)
+            if [ -n "$remote_url" ]; then
+                gh_org=$(echo "$remote_url" | sed -E 's|.*[:/]([^/]+)/[^/]+(\.git)?$|\1|')
+                gh_repo=$(echo "$remote_url" | sed -E 's|.*[:/][^/]+/([^/]+)(\.git)?$|\1|')
+            fi
+        fi
+
+        # Prompt for Jira prefix
+        read -p "Jira project key (e.g., DPAY) [skip]: " jira_key
+
+        # Write manifest
+        cat > "$manifest" << YAMLEOF
+name: $project_name
+stack: $stack
+baseBranch: $base_branch
+
+commands:
+  build: "$build_cmd"
+  test: "$test_cmd"
+  lint: "$lint_cmd"
+  format: ""
+
+integrations:
+  jira:
+    projectKey: "$jira_key"
+    statuses:
+      inProgress: ""
+      review: ""
+      done: ""
+  github:
+    org: "$gh_org"
+    repo: "$gh_repo"
+
+workspace:
+  specsDir: docs/specs/
+  useSpecs: false
+YAMLEOF
+
+        echo ""
+        echo "✅ project.yaml created at $manifest"
+        echo "   stack: $stack"
+        echo "   baseBranch: $base_branch"
+        [ -n "$gh_org" ] && echo "   github: $gh_org/$gh_repo"
+        [ -n "$jira_key" ] && echo "   jira: $jira_key"
+        echo ""
+        echo "Review and edit as needed. See: docs/REFERENCE.md#project-manifest-projectyaml"
         ;;
         
     configure)
