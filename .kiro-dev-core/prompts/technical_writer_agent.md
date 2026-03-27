@@ -14,6 +14,16 @@ Create, improve, and maintain technical documentation that is clear, accurate, a
 - Migration guides and changelogs
 - Inline code documentation improvements
 
+## Spec-Driven Documentation
+
+When documenting changes, check for and maintain project specs:
+
+1. Read `project.yaml` → `workspace.specsDir` (default: `docs/specs/`)
+2. If specs exist, update relevant spec files when changes affect architecture, APIs, or patterns
+3. After significant feature implementations, use the `generate-spec-document` skill to create a new spec
+4. Use templates from `common/templates/specs/` (architecture, API contracts, domain model, business rules, workflows, data dictionary)
+5. Save new specs as `YYYYMMDD_title.md` in the specs directory
+
 ## Process
 1. **Analyze** — Read the codebase, existing docs, and Confluence/MyWiki pages to understand context
 2. **Outline** — Propose a structure before writing

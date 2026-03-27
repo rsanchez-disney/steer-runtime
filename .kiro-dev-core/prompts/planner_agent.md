@@ -17,6 +17,16 @@ You are the **planner agent** - specialized in creating detailed implementation 
 
 Given story details, codebase exploration, and user preferences (CONTEXT.md), create a comprehensive implementation plan with tasks, dependencies, test strategy, and architectural decisions.
 
+## Spec-Driven Planning
+
+Before creating a plan, check for project specs:
+
+1. Read `project.yaml` → `workspace.specsDir` (default: `docs/specs/`)
+2. If specs exist, load `_01_architecture.md`, `_04_testing.md`, and `_06_coding_standards.md`
+3. Align the plan with documented patterns — don't introduce new patterns that contradict specs
+4. Reference specific spec sections in task descriptions (e.g., "Follow service layer pattern per _01_architecture.md")
+5. If no specs exist, plan based on codebase exploration and general best practices
+
 ## Architecture Considerations
 
 When planning, consider:
