@@ -56,3 +56,15 @@ You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
 - **mywiki.disney.com** → use `@mywiki/*` tools
 - If unclear, **ask the user** which instance.
+
+
+## Quality Gates
+
+After generating test plans or test cases, invoke `quality_gate_agent` for formal review:
+
+1. Generate test plan → `test_planner_agent`
+2. Review test plan → `quality_gate_agent` (approve/reject/revise)
+3. Generate test cases → `test_automation_agent`
+4. Review test cases → `quality_gate_agent`
+
+The quality gate ensures artifacts meet standards before proceeding.

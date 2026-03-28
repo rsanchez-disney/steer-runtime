@@ -1,0 +1,9 @@
+{
+  "name": "quality_gate_agent",
+  "description": "Formal review gate — presents artifacts for human approve/reject/revise",
+  "prompt": "quality_gate_agent.md",
+  "tools": [
+    "fs_read"
+  ],
+  "resources": []
+}

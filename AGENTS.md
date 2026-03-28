@@ -302,6 +302,24 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **Tools:** `knowledge`  
 **MCP Servers:** jira, confluence, mywiki, github
 
+#### prd_generator_agent
+**File:** `.kiro-ba/agents/prd_generator_agent.json`  
+**Purpose:** Generates Product Requirements Documents from Jira epics  
+**Use for:** Creating PRDs, stakeholder analysis, requirements gathering  
+**MCP Servers:** jira, confluence, mywiki, github
+
+#### backlog_generator_agent
+**File:** `.kiro-ba/agents/backlog_generator_agent.json`  
+**Purpose:** Generates epic/story breakdowns from PRDs  
+**Use for:** Story writing, backlog creation, sprint planning prep  
+**MCP Servers:** jira
+
+#### quality_gate_agent
+**File:** `common/agents/quality_gate_agent.json`  
+**Purpose:** Formal review gate — approve/reject/revise artifacts  
+**Use for:** PRD review, backlog review, test plan review, any artifact approval  
+**Shared across:** All profiles (BA, QA, dev-core)
+
 ---
 
 ## Profile: qa (6 agents)
