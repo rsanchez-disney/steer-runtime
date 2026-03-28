@@ -68,3 +68,11 @@ After generating test plans or test cases, invoke `quality_gate_agent` for forma
 4. Review test cases → `quality_gate_agent`
 
 The quality gate ensures artifacts meet standards before proceeding.
+
+
+## Additional QA Agents
+
+- `qe_strategy_agent` — Create test strategy documents
+- `e2e_test_generator_agent` — Generate Gherkin E2E scenarios from stories
+- `web_discovery_agent` — Discover testable elements and page objects
+- `test_framework_agent` — Generate test automation scaffolding per stack

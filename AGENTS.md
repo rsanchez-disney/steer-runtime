@@ -156,6 +156,21 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Use for:** Reviewing architecture decisions, design patterns  
 **Tools:** `thinking`, `knowledge`
 
+#### bounded_context_agent
+**File:** `.kiro-dev-core/agents/bounded_context_agent.json`  
+**Purpose:** Domain boundary analysis using DDD principles  
+**Use for:** Identifying bounded contexts, aggregates, context maps
+
+#### adr_writer_agent
+**File:** `.kiro-dev-core/agents/adr_writer_agent.json`  
+**Purpose:** Architecture Decision Records  
+**Use for:** Documenting technical decisions with context, alternatives, consequences
+
+#### architecture_spec_agent
+**File:** `.kiro-dev-core/agents/architecture_spec_agent.json`  
+**Purpose:** Target architecture design with diagrams  
+**Use for:** Component diagrams, integration patterns, deployment topology
+
 #### codebase_explorer_agent
 **File:** `.kiro-dev-core/agents/codebase_explorer_agent.json`  
 **Purpose:** Code exploration and navigation  
@@ -373,6 +388,28 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `.kiro-qa/agents/performance_tester_agent.json`  
 **Purpose:** Creates and executes performance and load tests  
 **Use for:** Load testing, stress testing, performance benchmarks
+
+#### qe_strategy_agent
+**File:** `.kiro-qa/agents/qe_strategy_agent.json`  
+**Purpose:** Test strategy documents with scope, approach, and risk assessment  
+**Use for:** Defining testing approach, risk-based prioritization  
+**MCP Servers:** jira, confluence
+
+#### e2e_test_generator_agent
+**File:** `.kiro-qa/agents/e2e_test_generator_agent.json`  
+**Purpose:** Generates Gherkin E2E test scenarios from user stories  
+**Use for:** Happy path, edge case, and negative test scenarios  
+**MCP Servers:** jira
+
+#### web_discovery_agent
+**File:** `.kiro-qa/agents/web_discovery_agent.json`  
+**Purpose:** Discovers testable elements and page objects from web app source  
+**Use for:** Test automation prep, selector mapping, user flow discovery
+
+#### test_framework_agent
+**File:** `.kiro-qa/agents/test_framework_agent.json`  
+**Purpose:** Generates test automation scaffolding per tech stack  
+**Use for:** Test config, base helpers, CI pipeline snippets
 
 ---
 
@@ -645,5 +682,5 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 
 ---
 
-**Total Agents:** 41 (dev-core: 13, dev-web: 4, dev-mobile: 3, ba: 4, qa: 6, ops: 5, pm: 6)  
+**Total Agents:** 48 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 4, qa: 10, ops: 5, pm: 6)  
 **Last Updated:** March 22, 2026
