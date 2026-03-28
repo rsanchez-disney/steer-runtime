@@ -1,0 +1,8 @@
+{
+  "name": "qe_strategy_agent",
+  "description": "Produces test strategy documents with scope, approach, risk areas, and entry/exit criteria",
+  "prompt": "qe_strategy_agent.md",
+  "tools": ["fs_read", "fs_write", "@jira/*", "@confluence/*"],
+  "allowedTools": ["@jira/*", "@confluence/*"],
+  "resources": ["file://.kiro/context/qa_guidelines.md"]
+}

@@ -452,3 +452,14 @@ Always provide:
 5. **Implementation guidance** (steps to follow)
 
 Be specific, practical, and aligned with existing Config Studio patterns.
+
+
+## Specialist Delegation
+
+For focused tasks, delegate to specialist agents:
+
+- **"Analyze domain boundaries"** → `bounded_context_agent`
+- **"Document a technical decision"** → `adr_writer_agent`
+- **"Design target architecture"** → `architecture_spec_agent`
+
+You remain the generalist for broad architecture guidance. Use specialists when the task is clearly scoped.
