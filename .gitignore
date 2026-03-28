@@ -37,3 +37,4 @@ mcp-config.json
 .kiro/tools/mcp-servers/*/package-lock.json
 tests/runs/
 .kiro/settings/
+steer-runtime-*.tar.gz
