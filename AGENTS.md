@@ -439,7 +439,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 **Hooks:** agentSpawn (git context)  
 **MCP Servers:** jira, confluence, mywiki, github
 
-**Delegates to:** ai_metrics_agent, infra_check_agent, deployment_agent, code_quality_agent
+**Delegates to:** ai_metrics_agent, infra_check_agent, deployment_agent, code_quality_agent, release_manager_agent, release_documenter_agent
 
 ---
 
@@ -612,6 +612,8 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | code_quality_agent | | | | | | SonarQube |
+| **ops** | release_manager_agent | ✅ | | | ✅ | | |
+| **ops** | release_documenter_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | deployment_agent | | | | | | Harness |
 | **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
@@ -682,6 +684,8 @@ kiro-cli chat --agent ai_metrics_agent          # AI metrics
 kiro-cli chat --agent infra_check_agent         # AWS/ECS checks
 kiro-cli chat --agent deployment_agent          # Harness CI/CD
 kiro-cli chat --agent code_quality_agent        # SonarQube metrics
+kiro-cli chat --agent release_manager_agent     # Release notes, tag comparison, GitHub releases
+kiro-cli chat --agent release_documenter_agent  # Confluence release documentation
 
 # PM/Scrum Master
 kiro-cli chat --agent pm_orchestrator_agent     # PM orchestrator
