@@ -2,7 +2,7 @@
 
 AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-48 agents, 5 profiles, one setup. Define your standards once, run them everywhere.
+50 agents, 5 profiles, one setup. Define your standards once, run them everywhere.
 
 ---
 
@@ -69,7 +69,7 @@ koda install dev ba qa ops pm     # Koda
 | **dev** | 23 | Code, review, test, security, PRs — the full dev loop |
 | **ba** | 7 | Requirements, scope, stories, PRD generation, quality gates |
 | **qa** | 10 | Test planning, automation, E2E generation, defect analysis, API & perf testing |
-| **ops** | 5 | AI metrics, infra checks, deployments, code quality |
+| **ops** | 7 | AI metrics, infra, deployments, code quality, release management |
 | **pm** | 6 | Sprints, standups, retros, risk tracking, delivery reports |
 
 `dev` is three composable sub-profiles: `dev-core` (16), `dev-web` (4), `dev-mobile` (3).

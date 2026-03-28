@@ -72,12 +72,14 @@ graph TD
     end
 
     %% ─── ops ───────────────────────────────────────
-    subgraph OPS["ops · 5 agents"]
+    subgraph OPS["ops · 7 agents"]
         OPS_ORCH["🎯 ops_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
         OPS_ORCH --> METRICS["ai_metrics<br/><i>jira · confluence · mywiki · github</i>"]:::agent
         OPS_ORCH --> INFRA["infra_check"]:::agent
         OPS_ORCH --> DEPLOY["deployment<br/><i>harness</i>"]:::agent
         OPS_ORCH --> QUALITY["code_quality<br/><i>sonarqube</i>"]:::agent
+        OPS_ORCH --> RELMGR["release_manager<br/><i>github · jira</i>"]:::agent
+        OPS_ORCH --> RELDOC["release_documenter<br/><i>confluence · github · jira</i>"]:::agent
     end
 
     %% ─── pm ────────────────────────────────────────
@@ -423,7 +425,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 
 ---
 
-## Profile: ops (5 agents)
+## Profile: ops (7 agents)
 
 Operations agents for AI metrics, infrastructure, deployments, and code quality.
 
@@ -441,7 +443,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 
 ---
 
-### Ops Specialists (4)
+### Ops Specialists (6)
 
 #### ai_metrics_agent
 **File:** `.kiro-ops/agents/ai_metrics_agent.json`  
@@ -465,6 +467,18 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 **Purpose:** Retrieves code quality metrics from SonarQube  
 **Use for:** Quality gate status, coverage reports, bug/vulnerability counts  
 **MCP Servers:** sonarqube
+
+#### release_manager_agent
+**File:** `.kiro-ops/agents/release_manager_agent.json`  
+**Purpose:** Manages releases — compares tags, generates release notes, creates GitHub releases  
+**Use for:** Release notes, tag comparison, readiness checks, GitHub releases  
+**MCP Servers:** github, jira
+
+#### release_documenter_agent
+**File:** `.kiro-ops/agents/release_documenter_agent.json`  
+**Purpose:** Documents releases in Confluence with changes, rollback plan, dependencies  
+**Use for:** Confluence release pages, change documentation, rollback procedures  
+**MCP Servers:** confluence, mywiki, github, jira
 
 ---
 
@@ -692,5 +706,5 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 
 ---
 
-**Total Agents:** 48 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 7, qa: 10, ops: 5, pm: 6)  
+**Total Agents:** 50 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 7, qa: 10, ops: 7, pm: 6)  
 **Last Updated:** March 22, 2026

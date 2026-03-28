@@ -1,0 +1,21 @@
+{
+  "name": "release_documenter_agent",
+  "description": "Documents releases in Confluence with full change details, rollback plan, and dependencies",
+  "prompt": "release_documenter_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}
