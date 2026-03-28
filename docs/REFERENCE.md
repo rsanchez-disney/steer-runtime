@@ -217,16 +217,18 @@ AI coding assistants are powerful, but without shared standards they produce inc
 
 ```
 steer-runtime/
-├── .kiro-dev-core/           # Dev core profile (13 agents)
-├── .kiro-dev-web/            # Dev web profile (4 agents)
-├── .kiro-dev-mobile/         # Dev mobile profile (3 agents)
-├── .kiro-ba/                 # BA profile (4 agents)
-├── .kiro-qa/                 # QA profile (6 agents)
-├── .kiro-ops/                # Ops profile (5 agents)
-├── .kiro-pm/                 # PM/Scrum Master profile (6 agents)
-├── .kiro/context/            # Shared context files (golden rules, guidelines)
-├── .kiro/hooks/              # Reusable agent hook scripts (6 hooks)
-├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles (shared across IDEs)
+├── profiles/
+│   ├── dev-core/             # Dev core profile (16 agents)
+│   ├── dev-web/              # Dev web profile (4 agents)
+│   ├── dev-mobile/           # Dev mobile profile (3 agents)
+│   ├── ba/                   # BA profile (7 agents)
+│   ├── qa/                   # QA profile (10 agents)
+│   ├── ops/                  # Ops profile (7 agents)
+│   └── pm/                   # PM/Scrum Master profile (6 agents)
+├── shared/
+│   ├── context/              # Shared context files (golden rules, guidelines)
+│   ├── hooks/                # Reusable agent hook scripts (6 hooks)
+│   └── tools/mcp-servers/    # Pre-built MCP bundles (shared across IDEs)
 ├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
 ├── .amazonq-templates/       # Amazon Q Developer rule templates (19 .md files)
 ├── workspaces/default/       # Org-wide baseline (9 projects, all profiles)
@@ -243,7 +245,7 @@ steer-runtime/
 
 ### Add a new profile
 
-1. Create `.kiro-<name>/agents/` and `.kiro-<name>/prompts/`
+1. Create `profiles/<name>/agents/` and `profiles/<name>/prompts/`
 2. Add agent JSON configs and prompt markdown files
 3. Run `./setup.sh install <name>` — auto-discovered
 
@@ -279,7 +281,7 @@ steer-runtime/
 ✅ Extensible — add profiles, IDE targets, or MCP servers without changing existing agents
 ✅ Agent hooks — write guards, git context injection, destructive command warnings
 ✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)
-✅ Auto-discovery of `.kiro-*` profile directories
+✅ Auto-discovery of `profiles/*` directories
 ✅ Team Workspaces — one-command setup for new team members
 ✅ Common rules and standalone prompts reusable across teams
 

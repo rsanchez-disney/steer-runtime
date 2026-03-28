@@ -106,9 +106,9 @@ list_profiles() {
     echo "📋 Available profiles:"
     echo ""
     echo "  • dev (alias → dev-core + dev-web + dev-mobile, 20 agents total)"
-    for dir in "$STEER_ROOT"/.kiro-*; do
+    for dir in "$STEER_ROOT"/profiles/*; do
         if [ -d "$dir" ]; then
-            profile=$(basename "$dir" | sed 's/^\.kiro-//')
+            profile=$(basename "$dir")
             agent_count=$(find "$dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
             echo "  • $profile ($agent_count agents)"
         fi
@@ -148,9 +148,9 @@ detect_installed_profiles() {
     fi
     
     # Check each available profile
-    for dir in "$STEER_ROOT"/.kiro-*; do
+    for dir in "$STEER_ROOT"/profiles/*; do
         if [ -d "$dir" ]; then
-            profile=$(basename "$dir" | sed 's/^\.kiro-//')
+            profile=$(basename "$dir")
             
             # Get first agent from this profile
             local first_agent=$(find "$dir/agents" -name "*.json" -print -quit 2>/dev/null)
@@ -170,7 +170,7 @@ detect_installed_profiles() {
 
 get_profile_agents() {
     local profile=$1
-    local source_dir="$STEER_ROOT/.kiro-$profile"
+    local source_dir="$STEER_ROOT/profiles/$profile"
     
     if [ ! -d "$source_dir/agents" ]; then
         return
@@ -221,7 +221,7 @@ INJECT_PY
 install_profile() {
     local profile=$1
     local target_dir=$2
-    local source_dir="$STEER_ROOT/.kiro-$profile"
+    local source_dir="$STEER_ROOT/profiles/$profile"
     
     if [ ! -d "$source_dir" ]; then
         echo "❌ Profile not found: $profile"
@@ -314,9 +314,9 @@ write_profiles_manifest() {
     python3 -c "
 import json, os, glob
 profiles = []
-for d in sorted(glob.glob('$STEER_ROOT/.kiro-*')):
+for d in sorted(glob.glob('$STEER_ROOT/profiles/*')):
     if not os.path.isdir(d): continue
-    pid = os.path.basename(d).replace('.kiro-','')
+    pid = os.path.basename(d)
     agents_dir = os.path.join(d, 'agents')
     agents = sorted([f[:-5] for f in os.listdir(agents_dir) if f.endswith('.json')]) if os.path.isdir(agents_dir) else []
     installed = any(os.path.exists(os.path.join('$target_dir','agents',a+'.json')) for a in agents)
@@ -329,9 +329,9 @@ with open('$target_dir/settings/profiles.json','w') as f: json.dump(data,f,inden
 install_shared() {
     local target_dir=$1
     
-    if [ -d "$STEER_ROOT/.kiro/tools/mcp-servers" ]; then
+    if [ -d "$STEER_ROOT/shared/tools/mcp-servers" ]; then
         echo "📦 Installing MCP server bundles..."
-        for mcp_dir in "$STEER_ROOT/.kiro/tools/mcp-servers"/*/; do
+        for mcp_dir in "$STEER_ROOT/shared/tools/mcp-servers"/*/; do
             local name=$(basename "$mcp_dir")
             local bundle="$mcp_dir/dist/index.cjs"
             if [ -f "$bundle" ]; then
@@ -342,17 +342,17 @@ install_shared() {
         echo "✓ Installed MCP server bundles"
     fi
     
-    if [ -d "$STEER_ROOT/.kiro/context" ]; then
+    if [ -d "$STEER_ROOT/shared/context" ]; then
         echo "📦 Installing shared context..."
         mkdir -p "$target_dir/context"
-        cp "$STEER_ROOT/.kiro/context/"*.md "$target_dir/context/" 2>/dev/null || true
+        cp "$STEER_ROOT/shared/context/"*.md "$target_dir/context/" 2>/dev/null || true
         echo "✓ Installed shared context files"
     fi
 
-    if [ -d "$STEER_ROOT/.kiro/hooks" ]; then
+    if [ -d "$STEER_ROOT/shared/hooks" ]; then
         echo "📦 Installing hooks..."
         mkdir -p "$target_dir/hooks"
-        cp "$STEER_ROOT/.kiro/hooks/"*.sh "$target_dir/hooks/" 2>/dev/null || true
+        cp "$STEER_ROOT/shared/hooks/"*.sh "$target_dir/hooks/" 2>/dev/null || true
         chmod +x "$target_dir/hooks/"*.sh 2>/dev/null || true
         echo "✓ Installed hook scripts"
     fi
@@ -1606,9 +1606,9 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                 # 4. Copy workspace-specific context (into repo .kiro/context/ where agents read from)
                 if [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ]; then
                     echo "📄 Installing workspace context..."
-                    mkdir -p "$STEER_ROOT/.kiro/context"
+                    mkdir -p "$STEER_ROOT/shared/context"
                     for c in "$ws_path/context"/*.md; do
-                        cp "$c" "$STEER_ROOT/.kiro/context/"
+                        cp "$c" "$STEER_ROOT/shared/context/"
                         echo "  ✓ $(basename "$c")"
                     done
                     echo ""
