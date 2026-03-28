@@ -12,11 +12,14 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 13 agents"]
+    subgraph DEV_CORE["dev-core · 16 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
         ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
         ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
         ORCH --> ARCH["architecture<br/><i>thinking · knowledge</i>"]:::agent
+        ORCH --> BCTX["bounded_context"]:::agent
+        ORCH --> ADR["adr_writer"]:::agent
+        ORCH --> ASPEC["architecture_spec"]:::agent
         ORCH --> EXPLORE["codebase_explorer"]:::agent
         ORCH --> REVIEW["code_review<br/><i>jira · github</i>"]:::agent
         ORCH --> SEC["security_scanner"]:::agent
@@ -44,21 +47,28 @@ graph TD
     end
 
     %% ─── ba ────────────────────────────────────────
-    subgraph BA["ba · 4 agents"]
+    subgraph BA["ba · 7 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
         BA_ORCH --> SCOPE["scope_definer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
         BA_ORCH --> FEAT["feature_writer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        BA_ORCH --> PRD["prd_generator<br/><i>jira · confluence</i>"]:::agent
+        BA_ORCH --> BLOG["backlog_generator<br/><i>jira</i>"]:::agent
+        BA_ORCH --> QGATE["quality_gate"]:::agent
         BA_ORCH --> REQS["requirements_analyst<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
     end
 
     %% ─── qa ────────────────────────────────────────
-    subgraph QA["qa · 6 agents"]
+    subgraph QA["qa · 10 agents"]
         QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
         QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
         QA_ORCH --> TAUTO["test_automation<br/><i>context7 · bruno</i>"]:::agent
         QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · mywiki · github</i>"]:::agent
         QA_ORCH --> APITEST["api_tester<br/><i>context7 · bruno</i>"]:::agent
         QA_ORCH --> PERFTEST["performance_tester"]:::agent
+        QA_ORCH --> QESTRAT["qe_strategy<br/><i>jira · confluence</i>"]:::agent
+        QA_ORCH --> E2EGEN["e2e_test_generator<br/><i>jira</i>"]:::agent
+        QA_ORCH --> WEBDISC["web_discovery"]:::agent
+        QA_ORCH --> TESTFW["test_framework"]:::agent
     end
 
     %% ─── ops ───────────────────────────────────────
@@ -103,15 +113,15 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-./setup.sh install dev                    # All 20 dev agents (alias → dev-core + dev-web + dev-mobile)
-./setup.sh install dev-core dev-web       # Fullstack web developer (17 agents)
-./setup.sh install dev-core dev-mobile    # Mobile developer (16 agents)
-./setup.sh install dev-core               # Core only — orchestrator + quality (13 agents)
+./setup.sh install dev                    # All 23 dev agents (alias → dev-core + dev-web + dev-mobile)
+./setup.sh install dev-core dev-web       # Fullstack web developer (20 agents)
+./setup.sh install dev-core dev-mobile    # Mobile developer (19 agents)
+./setup.sh install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
 
 ---
 
-### Profile: dev-core (13 agents)
+### Profile: dev-core (16 agents)
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
@@ -278,7 +288,7 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 
 ---
 
-## Profile: ba (4 agents)
+## Profile: ba (7 agents)
 
 Business Analyst and Product Owner agents for requirements, scope, and feature definition.
 
@@ -296,7 +306,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-### BA Specialists (3)
+### BA Specialists (6)
 
 #### scope_definer_agent
 **File:** `.kiro-ba/agents/scope_definer_agent.json`  
@@ -337,7 +347,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-## Profile: qa (6 agents)
+## Profile: qa (10 agents)
 
 Quality Assurance and Test Automation agents for comprehensive testing.
 
@@ -355,7 +365,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 
 ---
 
-### QA Specialists (5)
+### QA Specialists (9)
 
 #### test_planner_agent
 **File:** `.kiro-qa/agents/test_planner_agent.json`  
@@ -682,5 +692,5 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 
 ---
 
-**Total Agents:** 48 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 4, qa: 10, ops: 5, pm: 6)  
+**Total Agents:** 48 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 7, qa: 10, ops: 5, pm: 6)  
 **Last Updated:** March 22, 2026
