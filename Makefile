@@ -29,7 +29,7 @@ release: package ## Tag + package + publish to github.com (make release TAG=v3.7
 	GH_HOST=github.com gh release create $(TAG) $(TARBALL) \
 		--repo $(RELEASE_REPO) \
 		--title "steer-runtime $(TAG)" \
-		--notes "## Install\n\n\`\`\`bash\ncurl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash\nkoda install dev\n\`\`\`\n\n50 agents · 7 profiles · 16 rules · 7 skills"
+		--generate-notes
 	@echo "\n✅ Published $(TAG) to github.com/$(RELEASE_REPO)"
 
 clean: ## Remove build artifacts
