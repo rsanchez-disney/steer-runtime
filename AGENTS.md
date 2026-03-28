@@ -128,7 +128,7 @@ Development agents split into composable sub-profiles. Use `dev` as a shorthand 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
 #### orchestrator
-**File:** `.kiro-dev-core/agents/orchestrator.json`  
+**File:** `profiles/dev-core/agents/orchestrator.json`  
 **Purpose:** SDLC orchestrator with automatic multi-agent delegation  
 **Use for:** Implementing Jira stories end-to-end, coordinating multi-repo features  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -149,84 +149,84 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 12. Complete (summary & PR URL)
 
 #### planner_agent
-**File:** `.kiro-dev-core/agents/planner_agent.json`  
+**File:** `profiles/dev-core/agents/planner_agent.json`  
 **Purpose:** Task planning and breakdown  
 **Use for:** Breaking down complex tasks, creating implementation plans  
 **Tools:** `thinking`  
 **MCP Servers:** jira, confluence, mywiki
 
 #### story_analyzer_agent
-**File:** `.kiro-dev-core/agents/story_analyzer_agent.json`  
+**File:** `profiles/dev-core/agents/story_analyzer_agent.json`  
 **Purpose:** Jira story analysis and requirements extraction  
 **Use for:** Analyzing Jira stories, extracting requirements  
 **Tools:** `knowledge`  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### architecture_agent
-**File:** `.kiro-dev-core/agents/architecture_agent.json`  
+**File:** `profiles/dev-core/agents/architecture_agent.json`  
 **Purpose:** Architecture review and design validation  
 **Use for:** Reviewing architecture decisions, design patterns  
 **Tools:** `thinking`, `knowledge`
 
 #### bounded_context_agent
-**File:** `.kiro-dev-core/agents/bounded_context_agent.json`  
+**File:** `profiles/dev-core/agents/bounded_context_agent.json`  
 **Purpose:** Domain boundary analysis using DDD principles  
 **Use for:** Identifying bounded contexts, aggregates, context maps
 
 #### adr_writer_agent
-**File:** `.kiro-dev-core/agents/adr_writer_agent.json`  
+**File:** `profiles/dev-core/agents/adr_writer_agent.json`  
 **Purpose:** Architecture Decision Records  
 **Use for:** Documenting technical decisions with context, alternatives, consequences
 
 #### architecture_spec_agent
-**File:** `.kiro-dev-core/agents/architecture_spec_agent.json`  
+**File:** `profiles/dev-core/agents/architecture_spec_agent.json`  
 **Purpose:** Target architecture design with diagrams  
 **Use for:** Component diagrams, integration patterns, deployment topology
 
 #### codebase_explorer_agent
-**File:** `.kiro-dev-core/agents/codebase_explorer_agent.json`  
+**File:** `profiles/dev-core/agents/codebase_explorer_agent.json`  
 **Purpose:** Code exploration and navigation  
 **Use for:** Finding relevant code, understanding structure
 
 #### code_review_agent
-**File:** `.kiro-dev-core/agents/code_review_agent.json`  
+**File:** `profiles/dev-core/agents/code_review_agent.json`  
 **Purpose:** Code review and quality checks  
 **Use for:** Reviewing code changes, identifying issues  
 **MCP Servers:** jira, github
 
 #### security_scanner_agent
-**File:** `.kiro-dev-core/agents/security_scanner_agent.json`  
+**File:** `profiles/dev-core/agents/security_scanner_agent.json`  
 **Purpose:** Security analysis and vulnerability detection  
 **Use for:** Security scans, finding vulnerabilities
 
 #### compliance_agent
-**File:** `.kiro-dev-core/agents/compliance_agent.json`  
+**File:** `profiles/dev-core/agents/compliance_agent.json`  
 **Purpose:** Compliance validation (golden rules, standards)  
 **Use for:** Checking compliance with coding standards
 
 #### test_runner_agent
-**File:** `.kiro-dev-core/agents/test_runner_agent.json`  
+**File:** `profiles/dev-core/agents/test_runner_agent.json`  
 **Purpose:** Test execution and coverage analysis  
 **Use for:** Running tests, checking coverage
 
 #### performance_agent
-**File:** `.kiro-dev-core/agents/performance_agent.json`  
+**File:** `profiles/dev-core/agents/performance_agent.json`  
 **Purpose:** Performance optimization and analysis  
 **Use for:** Performance profiling, optimization suggestions
 
 #### pr_creator_agent
-**File:** `.kiro-dev-core/agents/pr_creator_agent.json`  
+**File:** `profiles/dev-core/agents/pr_creator_agent.json`  
 **Purpose:** Pull request creation and management  
 **Use for:** Creating PRs, formatting descriptions  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### discussion_agent
-**File:** `.kiro-dev-core/agents/discussion_agent.json`  
+**File:** `profiles/dev-core/agents/discussion_agent.json`  
 **Purpose:** Technical discussions and decision support  
 **Use for:** Technical discussions, architecture decisions
 
 #### technical_writer_agent
-**File:** `.kiro-dev-core/agents/technical_writer_agent.json`  
+**File:** `profiles/dev-core/agents/technical_writer_agent.json`  
 **Purpose:** Creates and maintains technical documentation  
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
 **MCP Servers:** confluence, mywiki, github
@@ -238,28 +238,28 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 Fullstack web specialists for Config Studio (Java + Node.js + Angular).
 
 #### backend
-**File:** `.kiro-dev-web/agents/backend.json`  
+**File:** `profiles/dev-web/agents/backend.json`  
 **Purpose:** Java services specialist for wdpr-config-services  
 **Use for:** Backend API development, database changes, Java services  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### webapi
-**File:** `.kiro-dev-web/agents/webapi.json`  
+**File:** `profiles/dev-web/agents/webapi.json`  
 **Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
 **Use for:** API layer, BFF logic, TypeScript interfaces  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ui
-**File:** `.kiro-dev-web/agents/ui.json`  
+**File:** `profiles/dev-web/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
 **Use for:** Frontend development, components, services, routing  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ux_specialist_agent
-**File:** `.kiro-dev-web/agents/ux_specialist_agent.json`  
+**File:** `profiles/dev-web/agents/ux_specialist_agent.json`  
 **Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
 **Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance
 
@@ -270,20 +270,20 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular).
 Mobile specialists for Flutter cross-platform and native platform channels.
 
 #### flutter
-**File:** `.kiro-dev-mobile/agents/flutter.json`  
+**File:** `profiles/dev-mobile/agents/flutter.json`  
 **Purpose:** Dart/Flutter cross-platform development  
 **Use for:** Flutter widgets, state management, platform channels  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### android_native
-**File:** `.kiro-dev-mobile/agents/android_native.json`  
+**File:** `profiles/dev-mobile/agents/android_native.json`  
 **Purpose:** Kotlin/Java platform channels for Android  
 **Use for:** Android-specific implementations, native integrations  
 **MCP Servers:** context7
 
 #### ios_native
-**File:** `.kiro-dev-mobile/agents/ios_native.json`  
+**File:** `profiles/dev-mobile/agents/ios_native.json`  
 **Purpose:** Swift/Obj-C platform channels for iOS  
 **Use for:** iOS-specific implementations, native integrations  
 **MCP Servers:** context7
@@ -297,7 +297,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 ### BA Orchestrator (1)
 
 #### ba_orchestrator_agent
-**File:** `.kiro-ba/agents/ba_orchestrator_agent.json`  
+**File:** `profiles/ba/agents/ba_orchestrator_agent.json`  
 **Purpose:** Coordinates BA/PO tasks and delegates to specialized agents  
 **Use for:** Complex BA workflows requiring multiple steps  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -311,32 +311,32 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 ### BA Specialists (6)
 
 #### scope_definer_agent
-**File:** `.kiro-ba/agents/scope_definer_agent.json`  
+**File:** `profiles/ba/agents/scope_definer_agent.json`  
 **Purpose:** Defines project and feature scope, boundaries, and constraints  
 **Use for:** Starting new projects, clarifying scope, documenting assumptions  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### feature_writer_agent
-**File:** `.kiro-ba/agents/feature_writer_agent.json`  
+**File:** `profiles/ba/agents/feature_writer_agent.json`  
 **Purpose:** Creates user stories, acceptance criteria, and feature specifications  
 **Use for:** Writing user stories, breaking down epics, refining backlog  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### requirements_analyst_agent
-**File:** `.kiro-ba/agents/requirements_analyst_agent.json`  
+**File:** `profiles/ba/agents/requirements_analyst_agent.json`  
 **Purpose:** Analyzes requirements, identifies gaps, validates completeness  
 **Use for:** Reviewing requirements, gap analysis, sprint planning prep  
 **Tools:** `knowledge`  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### prd_generator_agent
-**File:** `.kiro-ba/agents/prd_generator_agent.json`  
+**File:** `profiles/ba/agents/prd_generator_agent.json`  
 **Purpose:** Generates Product Requirements Documents from Jira epics  
 **Use for:** Creating PRDs, stakeholder analysis, requirements gathering  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### backlog_generator_agent
-**File:** `.kiro-ba/agents/backlog_generator_agent.json`  
+**File:** `profiles/ba/agents/backlog_generator_agent.json`  
 **Purpose:** Generates epic/story breakdowns from PRDs  
 **Use for:** Story writing, backlog creation, sprint planning prep  
 **MCP Servers:** jira
@@ -356,7 +356,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 ### QA Orchestrator (1)
 
 #### qa_orchestrator_agent
-**File:** `.kiro-qa/agents/qa_orchestrator_agent.json`  
+**File:** `profiles/qa/agents/qa_orchestrator_agent.json`  
 **Purpose:** Orchestrates QA tasks and coordinates specialized testing agents  
 **Use for:** Complex QA workflows requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -370,56 +370,56 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 ### QA Specialists (9)
 
 #### test_planner_agent
-**File:** `.kiro-qa/agents/test_planner_agent.json`  
+**File:** `profiles/qa/agents/test_planner_agent.json`  
 **Purpose:** Creates test plans, test cases, and test scenarios from requirements  
 **Use for:** Test planning, test case design, coverage analysis  
 **Tools:** `knowledge`  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### test_automation_agent
-**File:** `.kiro-qa/agents/test_automation_agent.json`  
+**File:** `profiles/qa/agents/test_automation_agent.json`  
 **Purpose:** Creates and maintains automated test scripts  
 **Use for:** UI tests, API tests, integration tests, test frameworks  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### defect_analyst_agent
-**File:** `.kiro-qa/agents/defect_analyst_agent.json`  
+**File:** `profiles/qa/agents/defect_analyst_agent.json`  
 **Purpose:** Analyzes defects, performs root cause analysis  
 **Use for:** Bug triage, root cause analysis, detailed bug reports  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### api_tester_agent
-**File:** `.kiro-qa/agents/api_tester_agent.json`  
+**File:** `profiles/qa/agents/api_tester_agent.json`  
 **Purpose:** Tests REST APIs and validates contracts  
 **Use for:** API test suites, contract testing, endpoint validation  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### performance_tester_agent
-**File:** `.kiro-qa/agents/performance_tester_agent.json`  
+**File:** `profiles/qa/agents/performance_tester_agent.json`  
 **Purpose:** Creates and executes performance and load tests  
 **Use for:** Load testing, stress testing, performance benchmarks
 
 #### qe_strategy_agent
-**File:** `.kiro-qa/agents/qe_strategy_agent.json`  
+**File:** `profiles/qa/agents/qe_strategy_agent.json`  
 **Purpose:** Test strategy documents with scope, approach, and risk assessment  
 **Use for:** Defining testing approach, risk-based prioritization  
 **MCP Servers:** jira, confluence
 
 #### e2e_test_generator_agent
-**File:** `.kiro-qa/agents/e2e_test_generator_agent.json`  
+**File:** `profiles/qa/agents/e2e_test_generator_agent.json`  
 **Purpose:** Generates Gherkin E2E test scenarios from user stories  
 **Use for:** Happy path, edge case, and negative test scenarios  
 **MCP Servers:** jira
 
 #### web_discovery_agent
-**File:** `.kiro-qa/agents/web_discovery_agent.json`  
+**File:** `profiles/qa/agents/web_discovery_agent.json`  
 **Purpose:** Discovers testable elements and page objects from web app source  
 **Use for:** Test automation prep, selector mapping, user flow discovery
 
 #### test_framework_agent
-**File:** `.kiro-qa/agents/test_framework_agent.json`  
+**File:** `profiles/qa/agents/test_framework_agent.json`  
 **Purpose:** Generates test automation scaffolding per tech stack  
 **Use for:** Test config, base helpers, CI pipeline snippets
 
@@ -432,7 +432,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 ### Ops Orchestrator (1)
 
 #### ops_orchestrator_agent
-**File:** `.kiro-ops/agents/ops_orchestrator_agent.json`  
+**File:** `profiles/ops/agents/ops_orchestrator_agent.json`  
 **Purpose:** Coordinates ops workflows and delegates to specialized agents  
 **Use for:** Complex ops tasks requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -446,36 +446,36 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 ### Ops Specialists (6)
 
 #### ai_metrics_agent
-**File:** `.kiro-ops/agents/ai_metrics_agent.json`  
+**File:** `profiles/ops/agents/ai_metrics_agent.json`  
 **Purpose:** Tracks AI-assisted development metrics and updates Jira  
 **Use for:** AI productivity reports, updating Jira AI custom fields  
 **MCP Servers:** jira, confluence, mywiki, github
 
 #### infra_check_agent
-**File:** `.kiro-ops/agents/infra_check_agent.json`  
+**File:** `profiles/ops/agents/infra_check_agent.json`  
 **Purpose:** Checks AWS infrastructure status  
 **Use for:** ECS task counts, cluster health, infrastructure reports
 
 #### deployment_agent
-**File:** `.kiro-ops/agents/deployment_agent.json`  
+**File:** `profiles/ops/agents/deployment_agent.json`  
 **Purpose:** Manages CI/CD pipelines via Harness  
 **Use for:** Pipeline status, recent deployments, deployment logs  
 **MCP Servers:** harness
 
 #### code_quality_agent
-**File:** `.kiro-ops/agents/code_quality_agent.json`  
+**File:** `profiles/ops/agents/code_quality_agent.json`  
 **Purpose:** Retrieves code quality metrics from SonarQube  
 **Use for:** Quality gate status, coverage reports, bug/vulnerability counts  
 **MCP Servers:** sonarqube
 
 #### release_manager_agent
-**File:** `.kiro-ops/agents/release_manager_agent.json`  
+**File:** `profiles/ops/agents/release_manager_agent.json`  
 **Purpose:** Manages releases — compares tags, generates release notes, creates GitHub releases  
 **Use for:** Release notes, tag comparison, readiness checks, GitHub releases  
 **MCP Servers:** github, jira
 
 #### release_documenter_agent
-**File:** `.kiro-ops/agents/release_documenter_agent.json`  
+**File:** `profiles/ops/agents/release_documenter_agent.json`  
 **Purpose:** Documents releases in Confluence with changes, rollback plan, dependencies  
 **Use for:** Confluence release pages, change documentation, rollback procedures  
 **MCP Servers:** confluence, mywiki, github, jira
@@ -489,7 +489,7 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 ### PM Orchestrator (1)
 
 #### pm_orchestrator_agent
-**File:** `.kiro-pm/agents/pm_orchestrator_agent.json`  
+**File:** `profiles/pm/agents/pm_orchestrator_agent.json`  
 **Purpose:** Coordinates PM/Scrum Master workflows and delegates to specialists  
 **Use for:** Complex PM tasks requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
@@ -503,32 +503,32 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 ### PM Specialists (5)
 
 #### sprint_manager_agent
-**File:** `.kiro-pm/agents/sprint_manager_agent.json`  
+**File:** `profiles/pm/agents/sprint_manager_agent.json`  
 **Purpose:** Manages sprint planning, capacity, backlog grooming, and sprint health  
 **Use for:** Sprint planning, capacity analysis, backlog review  
 **Tools:** `todo`  
 **MCP Servers:** jira, confluence, mywiki
 
 #### standup_agent
-**File:** `.kiro-pm/agents/standup_agent.json`  
+**File:** `profiles/pm/agents/standup_agent.json`  
 **Purpose:** Generates daily standup summaries from Jira activity  
 **Use for:** Standup prep, stale item detection, blocker alerts  
 **MCP Servers:** jira
 
 #### retro_agent
-**File:** `.kiro-pm/agents/retro_agent.json`  
+**File:** `profiles/pm/agents/retro_agent.json`  
 **Purpose:** Facilitates retrospectives with data-driven insights and action item tracking  
 **Use for:** Sprint retros, trend analysis, action item follow-up  
 **MCP Servers:** jira, confluence, mywiki
 
 #### risk_tracker_agent
-**File:** `.kiro-pm/agents/risk_tracker_agent.json`  
+**File:** `profiles/pm/agents/risk_tracker_agent.json`  
 **Purpose:** Identifies blockers, dependencies, and risks across sprints and epics  
 **Use for:** Risk assessment, blocker tracking, dependency mapping  
 **MCP Servers:** jira, confluence, mywiki
 
 #### delivery_reporter_agent
-**File:** `.kiro-pm/agents/delivery_reporter_agent.json`  
+**File:** `profiles/pm/agents/delivery_reporter_agent.json`  
 **Purpose:** Generates velocity reports, burndown analysis, and release readiness assessments  
 **Use for:** Sprint reports, velocity trends, release readiness  
 **MCP Servers:** jira, confluence, mywiki
