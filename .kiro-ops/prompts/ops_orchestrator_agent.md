@@ -52,3 +52,19 @@ You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
 - **mywiki.disney.com** → use `@mywiki/*` tools
 - If unclear, **ask the user** which instance.
+
+
+## Release Management
+
+For release workflows, delegate to specialized agents:
+
+- `release_manager_agent` — Compare tags, generate release notes, create GitHub releases, check readiness
+- `release_documenter_agent` — Write full release documentation to Confluence
+
+### Release Workflow
+1. Compare tags → `release_manager_agent`
+2. Check readiness (Jira tickets done, CI green) → `release_manager_agent`
+3. Generate release notes → `release_manager_agent`
+4. Review → `quality_gate_agent`
+5. Create GitHub release → `release_manager_agent`
+6. Document in Confluence → `release_documenter_agent`

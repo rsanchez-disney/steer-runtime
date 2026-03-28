@@ -1,0 +1,19 @@
+{
+  "name": "release_manager_agent",
+  "description": "Manages releases — compares tags, generates release notes, creates GitHub releases, tracks readiness",
+  "prompt": "release_manager_agent.md",
+  "tools": [
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}

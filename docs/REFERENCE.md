@@ -271,7 +271,7 @@ steer-runtime/
 
 ## Features
 
-✅ 48 specialized agents across 5 SDLC profiles
+✅ 50 specialized agents across 5 SDLC profiles
 ✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, Amazon Q, and Kite
 ✅ Project-portable — memory banks adapt agents to any codebase or tech stack
 ✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Mermaid, shared across IDEs
