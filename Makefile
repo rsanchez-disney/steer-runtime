@@ -2,7 +2,7 @@ VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 RELEASE_REPO := rsanchez-disney/steer-runtime
 TARBALL := steer-runtime-$(VERSION).tar.gz
 ENCRYPTED := steer-runtime-$(VERSION).tar.gz.enc
-RELEASE_KEY ?= 34f2448e66c092674fe0b231d91eedeca8cd74acb48935bcd04eb0d8fc24313f
+RELEASE_KEY ?= $(STEER_RELEASE_KEY)
 
 .PHONY: package release clean help
 
@@ -21,6 +21,7 @@ package: ## Create encrypted release tarball
 		setup.ps1 \
 		AGENTS.md \
 		README.md
+	@test -n "$(RELEASE_KEY)" || { echo "❌ Set STEER_RELEASE_KEY env var"; exit 1; }
 	@openssl enc -aes-256-cbc -salt -pbkdf2 -in $(TARBALL) -out $(ENCRYPTED) -pass pass:$(RELEASE_KEY)
 	@rm -f $(TARBALL)
 	@echo "✅ $(ENCRYPTED) ($$(du -h $(ENCRYPTED) | cut -f1))"
