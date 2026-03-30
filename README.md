@@ -120,6 +120,7 @@ koda install dev ba qa ops pm     # Koda
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
 | Cursor / Amazon Q / Kite setup | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
 | Roadmap & feature requests | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
+| IDE concepts comparison | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md) |
 | Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
 
 ---
