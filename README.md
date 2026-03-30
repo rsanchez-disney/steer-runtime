@@ -76,6 +76,28 @@ koda install dev ba qa ops pm     # Koda
 
 ---
 
+## Features
+
+| Feature | What it is |
+|---------|-----------|
+| **Agents** | 50 specialized AI assistants — each with a focused role (code review, test planning, sprint management, etc.) |
+| **Profiles** | Role-based bundles of agents — dev, BA, QA, ops, PM. Install only what your role needs |
+| **Orchestrators** | Multi-agent coordinators that break down tasks and delegate to specialists automatically |
+| **Skills** | Reusable multi-step workflows — implement-ticket, ship-it, generate-plan, fix-failing-test |
+| **Rules** | Coding standards per tech stack (Java, Node, Go, C#, Python, React, K8s, AWS, Docker, etc.) |
+| **Golden Rules** | Organization-wide standards enforced across all agents — security, quality, consistency |
+| **Hooks** | Guardrails that run before/after agent actions — write guards, secret scanning, branch protection |
+| **MCP Servers** | Pre-built integrations — Jira, Confluence, GitHub, Mermaid, Context7. No setup beyond tokens |
+| **Workspaces** | One-command team setup — profiles, rules, context, and Jira/board config per team |
+| **Memory Banks** | Project-specific knowledge that agents carry across sessions — tech stack, patterns, conventions |
+| **Project Manifest** | `project.yaml` — structured config so agents know your stack, commands, and integrations without forking |
+| **Spec Templates** | Architecture, API contracts, domain models, business rules, workflows, data dictionary templates |
+| **Artifact Templates** | PRD, backlog, test plan, ADR templates for structured document generation |
+| **Quality Gates** | Formal approve/reject/revise checkpoints between generation steps |
+| **IDE Portable** | Same agents run on Kiro CLI, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
+
+---
+
 ## What's New
 
 | Date | Change |
@@ -92,7 +114,7 @@ koda install dev ba qa ops pm     # Koda
 | What | Where |
 |------|-------|
 | Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md) |
-| All 41 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
+| All 50 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
 | First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
@@ -120,6 +142,6 @@ Got an idea or found a bug? We'd love to hear from you.
 
 ---
 
-**Version:** 3.7.0 · **Agents:** 48 · **Updated:** March 28, 2026
+**Version:** 3.7.0 · **Agents:** 50 · **Updated:** March 28, 2026
 
 Internal Disney tool — not for external distribution.
