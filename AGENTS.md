@@ -212,7 +212,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Use for:** Complex QA workflows requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 **Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent
 
@@ -225,19 +225,20 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Creates test plans, test cases, and test scenarios from requirements  
 **Use for:** Test planning, test case design, coverage analysis  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### test_automation_agent
 **File:** `.kiro-qa/agents/test_automation_agent.json`  
 **Purpose:** Creates and maintains automated test scripts  
 **Use for:** UI tests, API tests, integration tests, test frameworks  
-**Hooks:** preToolUse (guard writes)
+**Hooks:** preToolUse (guard writes)  
+**MCP Servers:** qtest
 
 #### defect_analyst_agent
 **File:** `.kiro-qa/agents/defect_analyst_agent.json`  
 **Purpose:** Analyzes defects, performs root cause analysis  
 **Use for:** Bug triage, root cause analysis, detailed bug reports  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### api_tester_agent
 **File:** `.kiro-qa/agents/api_tester_agent.json`  
@@ -391,30 +392,31 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens configured via `./setup.sh mcp-install`.
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Other |
-|---------|-------|:----:|:----------:|:------:|:------:|:-----:|
-| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **dev** | code_review_agent | ✅ | | | ✅ | |
-| **dev** | planner_agent | ✅ | ✅ | ✅ | | |
-| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | |
-| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | |
-| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | |
-| **ops** | code_quality_agent | | | | | SonarQube |
-| **ops** | deployment_agent | | | | | Harness |
-| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | |
-| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | |
-| **pm** | standup_agent | ✅ | | | | |
-| **pm** | retro_agent | ✅ | ✅ | ✅ | | |
-| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | |
-| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | |
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
+|---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
+| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | code_review_agent | ✅ | | | ✅ | | |
+| **dev** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
+| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_automation_agent | | | | |  | |
+| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | code_quality_agent | | | | | | SonarQube |
+| **ops** | deployment_agent | | | | | | Harness |
+| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | standup_agent | ✅ | | | | | |
+| **pm** | retro_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | |
 
 ---
 
@@ -435,6 +437,7 @@ Shared context loaded via agent `resources`:
 | `automation_patterns.md` | test_automation |
 | `defect_templates.md` | defect_analyst |
 | `api_test_patterns.md` | api_tester |
+| `qtest_guidelines.md` | qa_orchestrator, test_planner |
 | `performance_patterns.md` | performance_tester |
 
 ---
