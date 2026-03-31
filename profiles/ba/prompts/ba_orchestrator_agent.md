@@ -48,3 +48,11 @@ You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
 - **mywiki.disney.com** → use `@mywiki/*` tools
 - If unclear, **ask the user** which instance.
+
+
+## Estimation
+
+For project estimation, delegate to `estimation_agent`:
+- "Estimate this epic" → CCV mode (hours, story points, FTEs)
+- "How many tokens will this cost?" → DRIFT mode (tokens, cost per model)
+- "Full estimation" → both CCV + DRIFT side-by-side
