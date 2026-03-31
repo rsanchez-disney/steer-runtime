@@ -38,6 +38,12 @@ Agents check for `project.yaml` at the start of every workflow (Step 0):
 2. Not found → fall back to memory bank or `.kiro/context/`
 3. Neither exists → ask the user
 
+### Scaffold a Manifest
+
+```bash
+./setup.sh init-manifest ~/my-project    # Detects stack, commands, GitHub org/repo
+```
+
 ### Examples
 
 See `common/templates/examples/` for complete examples:
@@ -45,20 +51,48 @@ See `common/templates/examples/` for complete examples:
 - [Node.js/Express](../common/templates/examples/project-node-express.yaml)
 
 Template: [`common/templates/project.yaml`](../common/templates/project.yaml)
+Schema: [`common/schemas/project.schema.json`](../common/schemas/project.schema.json)
 
 ---
 
 ## Commands
 
+### Koda (recommended)
+
+```bash
+koda install <profiles>           # Install profiles
+koda sync                         # Re-install from local release
+koda sync --update                # Download latest release + sync
+koda list                         # List available profiles
+koda check                        # Verify installation
+koda doctor                       # Deep health check
+koda status                       # Show agent setup status
+koda diff                         # Preview what sync would change
+koda mcp-install                  # Setup MCP servers + tokens
+koda configure                    # Reconfigure tokens
+koda enable-tools                 # Enable thinking, todo, knowledge
+koda workspace list               # List workspaces
+koda workspace apply <team>       # Apply team config
+koda chat --agent <name>          # Chat with an agent
+koda stats                        # Token usage and prompt scoring stats
+koda auto-update enable           # Daily sync at 9 AM
+koda upgrade                      # Update Koda binary
+```
+
+### setup.sh (bash)
+
 ```bash
 # Core
-./setup.sh                      # Show help
 ./setup.sh list                 # List available profiles
 ./setup.sh install <profiles>   # Install one or more profiles
 ./setup.sh sync                 # Update installed profiles
 ./setup.sh remove <profiles>    # Remove specific profiles
-./setup.sh check                # Verify installation + validate agents
+./setup.sh check                # Verify installation
 ./setup.sh clean                # Remove all installed profiles
+
+# Project
+./setup.sh init-manifest <dir>  # Generate project.yaml from codebase
+./setup.sh init-memory <dir>    # Initialize project memory bank
 
 # MCP & Tools
 ./setup.sh mcp-install          # Setup MCP servers + configure tokens
@@ -67,47 +101,38 @@ Template: [`common/templates/project.yaml`](../common/templates/project.yaml)
 
 # Team Workspaces
 ./setup.sh workspace list              # List available workspaces
-./setup.sh workspace apply payments-core # Apply team config
-./setup.sh workspace create my-team    # Scaffold new workspace
+./setup.sh workspace apply <team>      # Apply team config
+./setup.sh workspace create <team>     # Scaffold new workspace
 
 # Content
 ./setup.sh rules list           # List available coding rules
 ./setup.sh rules install --all  # Install rules to project
 ./setup.sh prompts list         # List available prompts
-./setup.sh init-memory <dir>    # Initialize project memory bank
 
 # Cursor IDE
 ./setup.sh cursor install <dir>  # Install Cursor rules + MCP config
-./setup.sh cursor sync <dir>     # Update Cursor rules from templates
+./setup.sh cursor sync <dir>     # Update Cursor rules
 ./setup.sh cursor remove <dir>   # Remove .cursor/ directory
-./setup.sh cursor init-memory <dir> # Generate project context rule
 
 # Amazon Q Developer
 ./setup.sh amazonq install <dir>  # Install .amazonq/rules/
-./setup.sh amazonq sync <dir>     # Update rules from templates
+./setup.sh amazonq sync <dir>     # Update rules
 ./setup.sh amazonq remove <dir>   # Remove .amazonq/ directory
-
-# Kiro UI (project-specific install)
-./setup.sh install dev --project ~/my-project
 ```
 
 ---
 
 ## MCP Servers
 
-MCP servers are pre-built and bundled — no `npm install` required. Shared across all IDEs.
+Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 
-```bash
-./setup.sh mcp-install          # Verify bundles + configure tokens
-./setup.sh configure            # Reconfigure tokens only
-```
-
-| Server | Purpose | Token URL |
-|--------|---------|-----------|
-| jira-mcp | Jira issue management | [Generate token](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
-| confluence-mcp | Confluence wiki | [Generate token](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| mywiki-mcp | MyWiki instance | [Generate token](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| github-mcp | GitHub Enterprise | [Generate token](https://github.disney.com/settings/tokens) |
+| Server | Purpose | Token |
+|--------|---------|-------|
+| jira-mcp | Jira issue management | [Generate](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
+| confluence-mcp | Confluence wiki | [Generate](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
+| mywiki-mcp | MyWiki instance | [Generate](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
+| github-mcp | GitHub Enterprise | [Generate](https://github.disney.com/settings/tokens) |
+| bruno-mcp | API testing via Bruno collections | No token needed |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
 | context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
 
@@ -115,50 +140,47 @@ For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 
 ---
 
-## Supported IDEs
+## Supported Tools
 
-| IDE | How agents run | Setup | Status |
-|-----|---------------|-------|--------|
-| **Kiro CLI** | Native agent JSON + prompt markdown | `./setup.sh install <profiles>` | ✅ Primary |
-| **Cursor** | `.mdc` rule files + shared MCP config | `./setup.sh cursor install <dir>` | ✅ Supported |
-| **Amazon Q** | Plain `.md` rule files | `./setup.sh amazonq install <dir>` | ✅ Supported |
-| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
-
-All four share the same source-of-truth for coding standards. Kiro CLI and Cursor also share MCP server bundles (Jira, Confluence, GitHub, Mermaid). Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
+| Tool | What it does | Setup |
+|------|-------------|-------|
+| **Koda** | Interactive terminal companion — install, sync, chat, TUI dashboard | `curl \| bash` from [github.com](https://github.com/rsanchez-disney/Koda) |
+| **Kiro CLI** | Native agent runtime | [Getting Started](GETTING_STARTED.md) |
+| **Cursor** | IDE with `.mdc` rules + MCP | `./setup.sh cursor install <dir>` |
+| **Amazon Q** | IDE with `.md` rules | `./setup.sh amazonq install <dir>` |
+| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
 
 ---
 
 ## Using Across Projects and Teams
 
-steer-runtime scales from individual developers to multi-team organizations through three layers:
-
 ### Team Workspaces — one-command team setup
 
-New team member? A single command installs everything — profiles, rules, context, memory banks, and tools:
-
 ```bash
-./setup.sh workspace list                    # See available team configs
-./setup.sh workspace apply payments-core     # Full team setup in one command
-./setup.sh workspace sync payments-core      # Pull all workspace repos
-./setup.sh mcp-install                       # Configure personal tokens
+koda workspace apply payments-core     # or: ./setup.sh workspace apply payments-core
 ```
 
-Each workspace is a `workspace.json` manifest that defines what a team needs. Teams create their own in `workspaces/<team>/` with custom rules, context files, and project mappings. See [Team Workspaces](TEAM_WORKSPACES.md) for the full guide.
+Each workspace is a `workspace.json` manifest with profiles, rules, context, and Jira/board config. See [Team Workspaces](TEAM_WORKSPACES.md).
 
 ### Memory Banks — project-specific context
 
-Agents are generic by design. Memory banks give them project-specific knowledge — tech stack, repo structure, conventions:
-
 ```bash
-./setup.sh init-memory ~/my-project              # Kiro CLI
-./setup.sh cursor init-memory ~/my-project       # Cursor
+./setup.sh init-memory ~/my-project
 ```
 
-The same `backend` agent works on a Java Spring Boot service, a Node.js API, or a Go microservice — the memory bank tells it which one it's looking at. Pre-built memory banks ship for 9 Disney Payments projects.
+Memory banks give agents project-specific knowledge — tech stack, repo structure, conventions.
+
+### Project Manifest — structured config
+
+```bash
+./setup.sh init-manifest ~/my-project
+```
+
+`project.yaml` gives agents machine-readable config (stack, commands, Jira prefix) without forking steer-runtime.
 
 ### Fork Strategy — cross-team governance
 
-For organizations with multiple teams, each team forks the repo and maintains team-specific customizations while syncing shared improvements from upstream. See [Fork Strategy](FORK_STRATEGY.md) for the governance model.
+For multi-team organizations. See [Fork Strategy](FORK_STRATEGY.md).
 
 ---
 
@@ -166,50 +188,40 @@ For organizations with multiple teams, each team forks the repo and maintains te
 
 ```mermaid
 graph TD
-    subgraph src["steer-runtime (source of truth)"]
-        profiles["Profiles<br/>dev · ba · qa · ops · pm"]
-        workspaces["Workspaces<br/>default · team configs · projects"]
-        hooks["Hooks & Powers<br/>6 hooks · 6 powers"]
-        context["Context<br/>rules · prompts · memory banks"]
-        mcp["MCP Servers<br/>shared bundles + Context7"]
+    classDef source fill:#1a1a2e,stroke:#e94560,color:#eee
+    classDef tool fill:#0f3460,stroke:#e94560,color:#eee
+    classDef target fill:#16213e,stroke:#0f3460,color:#eee
+    classDef public fill:#2d6a4f,stroke:#40916c,color:#eee
+
+    subgraph src["steer-runtime (GHE — source of truth)"]
+        profiles["Profiles<br/>dev-core · dev-web · dev-mobile<br/>ba · qa · ops · pm"]
+        shared["Shared<br/>context · hooks · MCP servers"]
+        common["Common<br/>rules · skills · templates · schemas"]
+        workspaces["Workspaces<br/>default · team configs"]
     end
 
-    profiles --> setup
-    workspaces --> setup
-    hooks --> setup
-    context --> setup
-    mcp --> setup
+    src --> makefile["make release<br/>package + encrypt + publish"]
+    makefile --> public_repo["github.com (public)<br/>encrypted .tar.gz releases"]:::public
 
-    setup["setup.sh / setup.ps1<br/>install · apply · sync · configure"]
+    public_repo --> koda["Koda CLI<br/>download · decrypt · install"]:::tool
 
-    setup --> kiro["Kiro CLI<br/>.kiro/"]
-    setup --> cursor["Cursor<br/>.cursor/"]
-    setup --> amazonq["Amazon Q<br/>.amazonq/"]
-    setup --> kite["Kite<br/>Desktop GUI"]
+    koda --> kiro["~/.kiro/<br/>agents · prompts · tools"]:::target
 
-    style src fill:#1a1a2e,stroke:#e94560,color:#eee
-    style setup fill:#0f3460,stroke:#e94560,color:#eee
-    style workspaces fill:#1a1a2e,stroke:#53a8b6,color:#eee
-    style hooks fill:#1a1a2e,stroke:#53a8b6,color:#eee
-    style kiro fill:#16213e,stroke:#0f3460,color:#eee
-    style cursor fill:#16213e,stroke:#0f3460,color:#eee
-    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
-    style kite fill:#16213e,stroke:#0f3460,color:#eee
+    src --> setup["setup.sh / setup.ps1<br/>install · sync · configure"]:::tool
+    setup --> kiro
+    setup --> cursor["Cursor<br/>.cursor/"]:::target
+    setup --> amazonq["Amazon Q<br/>.amazonq/"]:::target
+
+    kiro --> kirocli["Kiro CLI"]:::target
+    kiro --> kite["Kite (Desktop GUI)"]:::target
+
+    class profiles source
+    class shared source
+    class common source
+    class workspaces source
 ```
 
-The key insight: agent knowledge (what to do, how to review code, what standards to enforce) is authored once in profile directories. `setup.sh` compiles that knowledge into each IDE's native format. When you improve an agent prompt, every IDE gets the update on next sync.
-
----
-
-## Why steer-runtime?
-
-AI coding assistants are powerful, but without shared standards they produce inconsistent output across developers, projects, and IDEs. steer-runtime solves this by implementing an **AI-DLC (AI Development Lifecycle)** approach — AI assistance across every phase of the SDLC, not just code generation.
-
-- **Consistent output** — Every agent enforces the same coding standards, review criteria, and documentation patterns regardless of who runs it or which IDE they use
-- **Role-based profiles** — Developers, BAs, QA, Ops, and PMs each get purpose-built agents tuned to their workflow
-- **IDE-portable** — Agent knowledge is authored once and compiled to each IDE's native format
-- **Project-portable** — Memory banks and project mappings let the same agents work across any codebase, team, or tech stack
-- **Extensible** — Add new profiles, new IDE targets, or new MCP integrations without changing existing agents
+**Key insight:** Agent knowledge is authored once in `profiles/` and `common/`. Koda downloads encrypted releases from public github.com — no GHE access needed for end users. `setup.sh` compiles to each IDE's native format.
 
 ---
 
@@ -217,26 +229,39 @@ AI coding assistants are powerful, but without shared standards they produce inc
 
 ```
 steer-runtime/
-├── profiles/
-│   ├── dev-core/             # Dev core profile (16 agents)
-│   ├── dev-web/              # Dev web profile (4 agents)
-│   ├── dev-mobile/           # Dev mobile profile (3 agents)
-│   ├── ba/                   # BA profile (7 agents)
-│   ├── qa/                   # QA profile (10 agents)
-│   ├── ops/                  # Ops profile (7 agents)
-│   └── pm/                   # PM/Scrum Master profile (6 agents)
-├── shared/
-│   ├── context/              # Shared context files (golden rules, guidelines)
-│   ├── hooks/                # Reusable agent hook scripts (6 hooks)
-│   └── tools/mcp-servers/    # Pre-built MCP bundles (shared across IDEs)
-├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
-├── .amazonq-templates/       # Amazon Q Developer rule templates (19 .md files)
-├── workspaces/default/       # Org-wide baseline (9 projects, all profiles)
-├── workspaces/<team>/        # Team-specific workspace configs
-├── common/                   # Shared rules, prompts, memory templates
-├── docs/                     # All documentation
-├── setup.sh                  # macOS/Linux setup
-└── setup.ps1                 # Windows setup
+├── profiles/                     # Agent profiles (source)
+│   ├── dev-core/                 #   16 agents — orchestrator, architecture, code review, etc.
+│   ├── dev-web/                  #   4 agents — backend, webapi, ui, ux
+│   ├── dev-mobile/               #   3 agents — flutter, android, ios
+│   ├── ba/                       #   7 agents — scope, features, PRD, backlog, quality gate
+│   ├── qa/                       #   10 agents — test planning, automation, E2E, defects
+│   ├── ops/                      #   7 agents — metrics, infra, deploy, quality, releases
+│   └── pm/                       #   6 agents — sprints, standups, retros, risks, delivery
+├── shared/                       # Shared resources
+│   ├── context/                  #   Golden rules, guidelines per profile
+│   ├── hooks/                    #   6 hooks — write guard, secret scan, branch guard, etc.
+│   └── tools/mcp-servers/        #   7 MCP bundles — Jira, Confluence, GitHub, etc.
+├── common/                       # Reusable content
+│   ├── rules/                    #   16 tech stack rules (Java, Node, Go, C#, K8s, AWS, etc.)
+│   ├── skills/                   #   7 workflow skills (implement-ticket, ship-it, etc.)
+│   ├── templates/                #   project.yaml, spec templates, examples
+│   ├── schemas/                  #   JSON schemas for validation
+│   ├── artifact-templates/       #   PRD, backlog, test plan, ADR templates
+│   ├── agents/                   #   Shared agents (quality_gate_agent)
+│   └── prompts/                  #   Shared prompts
+├── workspaces/                   # Team configurations
+│   ├── default/                  #   Org-wide baseline
+│   ├── payments-core/            #   Team-specific
+│   ├── dta-team/                 #   PM workspace
+│   ├── uad-sustainment/          #   PM workspace
+│   └── uad-ongoing/              #   PM workspace
+├── .cursor-templates/            # Cursor IDE rule templates
+├── .amazonq-templates/           # Amazon Q rule templates
+├── .github/ISSUE_TEMPLATE/       # Feature request + bug report templates
+├── docs/                         # All documentation
+├── Makefile                      # Release packaging (encrypt + publish)
+├── setup.sh                      # macOS/Linux setup
+└── setup.ps1                     # Windows setup
 ```
 
 ---
@@ -252,38 +277,45 @@ steer-runtime/
 ### Add a new IDE target
 
 1. Create a templates directory (e.g., `.windsurf-templates/`)
-2. Add a compile command to `setup.sh` that transforms agent prompts into the IDE's format
-3. The agent definitions, context, and MCP servers stay the same
+2. Add a compile command to `setup.sh`
+3. Agent definitions, context, and MCP servers stay the same
 
 ### Add a new MCP server
 
-1. Bundle the server into `.kiro/tools/mcp-servers/<name>/`
+1. Bundle the server into `shared/tools/mcp-servers/<name>/`
 2. Reference it in agent configs (`mcpServers` key)
 3. Add token configuration to `setup.sh mcp-install`
 
-### Reuse across a new project
+### Add a new rule
 
-```bash
-./setup.sh init-memory ~/new-project           # Kiro CLI — project memory bank
-./setup.sh cursor init-memory ~/new-project    # Cursor — project context rule
-./setup.sh amazonq install ~/new-project       # Amazon Q — coding standards
-```
+1. Create `common/rules/general-<stack>.md`
+2. Install with `./setup.sh rules install <name>` or `koda rules install <name>`
+
+### Add a new skill
+
+1. Create `common/skills/<name>.md` with YAML frontmatter
+2. Reference from agent prompts or invoke via `@prompt`
 
 ---
 
 ## Features
 
-✅ 50 specialized agents across 5 SDLC profiles
-✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, Amazon Q, and Kite
-✅ Project-portable — memory banks adapt agents to any codebase or tech stack
-✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Mermaid, shared across IDEs
-✅ Cross-platform — macOS/Linux (`setup.sh`) + Windows (`setup.ps1`)
-✅ Extensible — add profiles, IDE targets, or MCP servers without changing existing agents
-✅ Agent hooks — write guards, git context injection, destructive command warnings
+✅ 50 specialized agents across 7 profiles (dev-core, dev-web, dev-mobile, ba, qa, ops, pm)
+✅ 7 reusable skills — implement-ticket, ship-it, generate-plan, fix-failing-test, review-changed-code, generate-base-specifications, generate-spec-document
+✅ 16 tech stack rules — Java, Node, Angular, Go, Flutter, C#, Python, React, K8s, AWS, SQL, Docker, Terraform, Liquibase, API design, testing strategies, performance
+✅ IDE-portable — Kiro CLI, Cursor, Amazon Q, Kite
+✅ Encrypted release distribution — Koda downloads from public github.com, decrypts with compiled key
+✅ Project manifest (`project.yaml`) — structured config without forking
+✅ Spec-driven development — templates + spec-aware agents
+✅ Artifact generation — PRD, backlog, test plan, ADR templates with quality gates
+✅ Release management — tag comparison, release notes, Confluence documentation
+✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Bruno, Mermaid, Context7
+✅ Agent hooks — write guards, secret scanning, branch protection, lint-on-write
+✅ Team workspaces — one-command setup per team
+✅ Memory banks — project-specific knowledge across sessions
 ✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)
-✅ Auto-discovery of `profiles/*` directories
-✅ Team Workspaces — one-command setup for new team members
-✅ Common rules and standalone prompts reusable across teams
+✅ Prompt scoring + token tracking via Koda
+✅ Daily auto-update via LaunchAgent/cron
 
 ---
 
@@ -296,11 +328,10 @@ steer-runtime/
 | **BA / PO** | [BA Guide](BA_PROMPT_GUIDE.md) · [Workflows](BA_WORKFLOWS.md) · [Quick Ref](BA_QUICK_REFERENCE.md) |
 | **QA** | [QA Guide](QA_PROMPT_GUIDE.md) · [Workflows](QA_WORKFLOWS.md) · [Quick Ref](QA_QUICK_REFERENCE.md) · [Overview](QA_PROFILE_OVERVIEW.md) |
 | **Ops** | [Ops Guide](OPS_PROMPT_GUIDE.md) · [Workflows](OPS_WORKFLOWS.md) · [Quick Ref](OPS_QUICK_REFERENCE.md) |
-| **PM / Scrum** | [PM Guide](PM_PROMPT_GUIDE.md) |
-| **Cursor users** | [Cursor Setup](CURSOR_SETUP.md) |
-| **Amazon Q users** | [Amazon Q templates README](../.amazonq-templates/README.md) |
-| **Windows** | [Windows Setup](WINDOWS_SETUP.md) |
+| **PM / Scrum** | [PM Guide](PM_PROMPT_GUIDE.md) · [PM Workspaces](PM_WORKSPACES_GUIDE.md) |
+| **Cross-IDE** | [IDE Concepts Comparison](IDE_CONCEPTS_COMPARISON.md) · [Cursor Setup](CURSOR_SETUP.md) · [Amazon Q](../.amazonq-templates/README.md) · [Windows](WINDOWS_SETUP.md) |
+| **Roadmap** | [Roadmap](ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 
 ---
 
-**Version:** 3.5.0 · **Agents:** 41 · **Updated:** March 26, 2026
+**Version:** 3.7.0 · **Agents:** 50 · **Updated:** March 30, 2026
