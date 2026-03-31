@@ -2,7 +2,7 @@
 
 AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-50 agents, 5 profiles, one setup. Define your standards once, run them everywhere.
+51 agents, 5 profiles, one setup. Define your standards once, run them everywhere.
 
 ---
 
@@ -67,7 +67,7 @@ koda install dev ba qa ops pm     # Koda
 | Profile | Agents | What it does |
 |---------|:------:|-------------|
 | **dev** | 23 | Code, review, test, security, PRs — the full dev loop |
-| **ba** | 7 | Requirements, scope, stories, PRD generation, quality gates |
+| **ba** | 8 | Requirements, scope, stories, PRD generation, quality gates |
 | **qa** | 10 | Test planning, automation, E2E generation, defect analysis, API & perf testing |
 | **ops** | 7 | AI metrics, infra, deployments, code quality, release management |
 | **pm** | 6 | Sprints, standups, retros, risk tracking, delivery reports |
@@ -146,6 +146,6 @@ Got an idea or found a bug? We'd love to hear from you.
 
 ---
 
-**Version:** 3.7.0 · **Agents:** 50 · **Updated:** March 28, 2026
+**Version:** 3.7.0 · **Agents:** 51 · **Updated:** March 28, 2026
 
 Internal Disney tool — not for external distribution.

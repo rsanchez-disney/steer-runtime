@@ -47,7 +47,7 @@ graph TD
     end
 
     %% ─── ba ────────────────────────────────────────
-    subgraph BA["ba · 7 agents"]
+    subgraph BA["ba · 8 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
         BA_ORCH --> SCOPE["scope_definer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
         BA_ORCH --> FEAT["feature_writer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
@@ -290,7 +290,7 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 
 ---
 
-## Profile: ba (7 agents)
+## Profile: ba (8 agents)
 
 Business Analyst and Product Owner agents for requirements, scope, and feature definition.
 
@@ -346,6 +346,12 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **Purpose:** Formal review gate — approve/reject/revise artifacts  
 **Use for:** PRD review, backlog review, test plan review, any artifact approval  
 **Shared across:** All profiles (BA, QA, dev-core)
+
+#### estimation_agent
+**File:** `profiles/ba/agents/estimation_agent.json`  
+**Purpose:** Dual-mode project estimation — CCV (hours/story points/FTEs) and DRIFT (tokens/cost)  
+**Use for:** RFP estimation, sprint planning, AI cost projection, team sizing  
+**MCP Servers:** jira, confluence
 
 ---
 
@@ -669,6 +675,7 @@ kiro-cli chat --agent ba_orchestrator_agent     # BA orchestrator
 kiro-cli chat --agent scope_definer_agent       # Define scope
 kiro-cli chat --agent feature_writer_agent      # Write stories
 kiro-cli chat --agent requirements_analyst_agent # Analyze requirements
+kiro-cli chat --agent estimation_agent          # CCV + DRIFT estimation
 
 # QA
 kiro-cli chat --agent qa_orchestrator_agent     # QA orchestrator
@@ -710,5 +717,5 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 
 ---
 
-**Total Agents:** 50 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 7, qa: 10, ops: 7, pm: 6)  
+**Total Agents:** 51 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 8, qa: 10, ops: 7, pm: 6)  
 **Last Updated:** March 22, 2026
