@@ -28,7 +28,7 @@ mcp-config.json
 # mcp-servers/
 
 # MCP servers internal files
-.kiro/tools/mcp-servers/*/node_modules/
+node_modules/
 .kiro/tools/mcp-servers/*/.git/
 .kiro/tools/mcp-servers/*/.env
 .kiro/tools/mcp-servers/*/build/

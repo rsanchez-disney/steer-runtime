@@ -1,0 +1,21 @@
+defaults:
+  timeout: 300
+  threshold_structural: 100
+  threshold_quality: 70
+
+judge:
+  agent: ""
+  prompt: judge.md
+
+profiles:
+  critical:
+    - orchestrator
+    - ba_orchestrator_agent
+    - qa_orchestrator_agent
+  standard:
+    - orchestrator
+    - code_review_agent
+    - test_planner_agent
+    - security_scanner_agent
+    - pr_creator_agent
+    - backend
