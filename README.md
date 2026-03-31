@@ -95,6 +95,7 @@ koda install dev ba qa ops pm     # Koda
 | **Artifact Templates** | PRD, backlog, test plan, ADR templates for structured document generation |
 | **Quality Gates** | Formal approve/reject/revise checkpoints between generation steps |
 | **IDE Portable** | Same agents run on Kiro CLI, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
+| **Evals** | Agent quality scoring — structural checks + LLM-as-judge. Run via `koda eval` or CI. [Details](docs/EVAL_FRAMEWORK.md) |
 
 ---
 
@@ -102,6 +103,7 @@ koda install dev ba qa ops pm     # Koda
 
 | Date | Change |
 |------|--------|
+| Mar 30 | [Eval Framework](docs/EVAL_FRAMEWORK.md) — automated agent quality scoring with fixtures and rubrics |
 | Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces setup.sh |
 | Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
 | Mar 20 | [Context7 MCP](https://context7.com) — real-time library docs, no token needed |
@@ -115,6 +117,7 @@ koda install dev ba qa ops pm     # Koda
 |------|-------|
 | Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md) |
 | All 50 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
+| Eval framework — fixtures, rubrics, scoring | [Eval Framework](docs/EVAL_FRAMEWORK.md) |
 | First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
