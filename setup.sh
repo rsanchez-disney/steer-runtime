@@ -6,6 +6,11 @@ set -e
 STEER_ROOT="$(cd "$(dirname "$0")" && pwd)"
 KIRO_ROOT="$HOME/.kiro"
 
+# Clean macOS resource fork files (._*) from a directory
+clean_resource_forks() {
+    find "$1" -name "._*" -delete 2>/dev/null || true
+}
+
 show_usage() {
     cat << 'USAGE'
 ╔══════════════════════════════════════════════════════════════╗
@@ -463,6 +468,7 @@ case "${1:-help}" in
         
         total=$(find "$target_root/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
         echo ""
+        clean_resource_forks "$target_dir"
         echo "✅ Sync complete ($total agents total)"
         ;;
         
