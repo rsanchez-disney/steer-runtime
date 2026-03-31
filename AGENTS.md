@@ -54,6 +54,7 @@ graph TD
         BA_ORCH --> PRD["prd_generator<br/><i>jira · confluence</i>"]:::agent
         BA_ORCH --> BLOG["backlog_generator<br/><i>jira</i>"]:::agent
         BA_ORCH --> QGATE["quality_gate"]:::agent
+        BA_ORCH --> ESTIM["estimation<br/><i>jira · confluence</i>"]:::agent
         BA_ORCH --> REQS["requirements_analyst<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
     end
 
@@ -304,11 +305,11 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **Hooks:** agentSpawn (git context)  
 **MCP Servers:** jira, confluence, mywiki, github
 
-**Delegates to:** scope_definer_agent, feature_writer_agent, requirements_analyst_agent
+**Delegates to:** scope_definer_agent, feature_writer_agent, requirements_analyst_agent, estimation_agent
 
 ---
 
-### BA Specialists (6)
+### BA Specialists (7)
 
 #### scope_definer_agent
 **File:** `profiles/ba/agents/scope_definer_agent.json`  
@@ -610,6 +611,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | estimation_agent | ✅ | ✅ | | | | |
 | **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **qa** | test_automation_agent | | | | | ✅ | |
