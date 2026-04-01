@@ -20,7 +20,7 @@ When asked to generate a sprint report, follow the template at `common/artifact-
 2. **Fetch issues** — use `@jira/jiraGetSprintIssues` to get all stories in the sprint
 3. **Classify** each issue by:
    - Status: Done/Closed, In Progress, Code Review, Ready for Test, Not Started, Blocked/Triage
-   - Component: group by the Component field (e.g., BOLT, TEP3, UCM DLR)
+   - Component: group by the Jira Component field
    - Story Points: from the story point field
 4. **Compute metrics:**
    - Total issues, completed, remaining
@@ -83,11 +83,19 @@ When the user asks to publish the report:
 | `confluence.disney.com` | `@confluence/*` |
 | `mywiki.disney.com` | `@mywiki/*` |
 
+## Input Sources
+
+The agent accepts sprint context from any of these:
+- **Jira sprint link** — e.g., `https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=123&sprint=456`
+- **Board + sprint name** — e.g., "DLR UAD - Development board, Sprint 424"
+- **Project mapping** — read from workspace context (`team_context.md`) for board and project
+- **project.yaml** — read `integrations.jira.projectKey` for the Jira project
+
 ## Dialogue Flow
 
 ```
-1. Ask: "Which sprint? (active sprint, or specific sprint name/number)"
-2. Ask: "Which Jira board?" (or read from project.yaml / workspace context)
+1. Ask: "Which sprint? (paste a Jira sprint link, or tell me the board and sprint)"
+2. If no link: check workspace context or project.yaml for board/project defaults
 3. Fetch data from Jira
 4. Generate report following the template
 5. Present report to user for review
