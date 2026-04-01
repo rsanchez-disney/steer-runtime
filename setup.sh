@@ -118,6 +118,21 @@ list_profiles() {
             echo "  • $profile ($agent_count agents)"
         fi
     done
+    # Workspace-local profiles
+    local ws_profiles_found=false
+    for ws_dir in "$STEER_ROOT"/workspaces/*/profiles/*; do
+        if [ -d "$ws_dir/agents" ]; then
+            if [ "$ws_profiles_found" = false ]; then
+                echo ""
+                echo "  Workspace profiles:"
+                ws_profiles_found=true
+            fi
+            local profile=$(basename "$ws_dir")
+            local ws_name=$(basename "$(dirname "$(dirname "$ws_dir")")")
+            local agent_count=$(find "$ws_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+            echo "  • $profile ($agent_count agents) [workspace: $ws_name]"
+        fi
+    done
 }
 
 # Expand profile aliases (e.g., dev → dev-core dev-web dev-mobile)
@@ -152,19 +167,32 @@ detect_installed_profiles() {
         return
     fi
     
-    # Check each available profile
+    # Check global profiles
     for dir in "$STEER_ROOT"/profiles/*; do
         if [ -d "$dir" ]; then
             profile=$(basename "$dir")
-            
-            # Get first agent from this profile
             local first_agent=$(find "$dir/agents" -name "*.json" -print -quit 2>/dev/null)
             if [ -n "$first_agent" ]; then
                 local agent_name=$(basename "$first_agent" .json)
-                
-                # Check if this agent exists in target
                 if [ -f "$target_dir/agents/${agent_name}.json" ]; then
                     installed+=("$profile")
+                fi
+            fi
+        fi
+    done
+
+    # Check workspace-local profiles
+    for ws_dir in "$STEER_ROOT"/workspaces/*/profiles/*; do
+        if [ -d "$ws_dir/agents" ]; then
+            local profile=$(basename "$ws_dir")
+            local first_agent=$(find "$ws_dir/agents" -name "*.json" -print -quit 2>/dev/null)
+            if [ -n "$first_agent" ]; then
+                local agent_name=$(basename "$first_agent" .json)
+                if [ -f "$target_dir/agents/${agent_name}.json" ]; then
+                    # Avoid duplicates
+                    local dup=false
+                    for i in "${installed[@]}"; do [ "$i" = "$profile" ] && dup=true && break; done
+                    [ "$dup" = false ] && installed+=("$profile")
                 fi
             fi
         fi
