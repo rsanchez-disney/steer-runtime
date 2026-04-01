@@ -259,6 +259,35 @@ install_profile() {
     echo "✓ Installed $profile ($agent_count agents)"
 }
 
+install_profile_from() {
+    local source_dir=$1
+    local profile=$2
+    local target_dir="$KIRO_ROOT"
+
+    if [ ! -d "$source_dir" ]; then
+        echo "❌ Workspace profile not found: $source_dir"
+        return 1
+    fi
+
+    mkdir -p "$target_dir/agents" "$target_dir/prompts"
+
+    for agent_json in "$source_dir/agents/"*.json; do
+        [ -f "$agent_json" ] && sed "s|\$HOME|$HOME|g" "$agent_json" > "$target_dir/agents/$(basename "$agent_json")"
+    done
+    cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
+
+    for subdir in context powers skills steering; do
+        if [ -d "$source_dir/$subdir" ]; then
+            mkdir -p "$target_dir/$subdir"
+            cp -r "$source_dir/$subdir/"* "$target_dir/$subdir/" 2>/dev/null || true
+        fi
+    done
+
+    local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    inject_agent_tokens "$target_dir"
+    echo "  ✓ $profile ($agent_count agents)"
+}
+
 remove_profile() {
     local profile=$1
     local target_dir=$2
@@ -1576,10 +1605,22 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                 enable_tools=$(python3 -c "import json; print('yes' if json.load(open('$ws_file')).get('enable_tools') else 'no')")
                 default_agent=$(python3 -c "import json; print(json.load(open('$ws_file')).get('default_agent',''))")
 
-                # 1. Install profiles
+                # 1. Install profiles (workspace-local profiles take precedence)
+                ws_path="$ws_dir/$ws_name"
+                global_profiles=""
                 if [ -n "$profiles" ]; then
-                    echo "📦 Installing profiles: $profiles"
-                    "$STEER_ROOT/setup.sh" install $profiles
+                    for profile in $profiles; do
+                        if [ -d "$ws_path/profiles/$profile" ]; then
+                            echo "📦 Installing workspace profile: $profile"
+                            install_profile_from "$ws_path/profiles/$profile" "$profile"
+                        else
+                            global_profiles="$global_profiles $profile"
+                        fi
+                    done
+                    if [ -n "$global_profiles" ]; then
+                        echo "📦 Installing global profiles:$global_profiles"
+                        "$STEER_ROOT/setup.sh" install $global_profiles
+                    fi
                     echo ""
                 fi
 
