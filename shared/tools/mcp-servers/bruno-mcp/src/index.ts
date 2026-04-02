@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { createBrunoMcpServer } from './server.js';
 
 const server = createBrunoMcpServer();
