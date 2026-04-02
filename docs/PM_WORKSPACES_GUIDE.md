@@ -14,15 +14,15 @@ A workspace pre-loads your team's context — Jira projects, boards, team roster
 
 ```bash
 # 1. See available team workspaces
-./setup.sh workspace list
+koda workspace list
 
 # 2. Apply your project's workspace
-./setup.sh workspace apply dta-team          # Digital Travel Trade
-./setup.sh workspace apply uad-sustainment   # Resort Sales (UAD sustainment)
-./setup.sh workspace apply uad-ongoing       # Cast Sales Experience (UAD ongoing)
+koda workspace apply dta-team          # Digital Travel Trade
+koda workspace apply uad-sustainment   # Resort Sales (UAD sustainment)
+koda workspace apply uad-ongoing       # Cast Sales Experience (UAD ongoing)
 
 # 3. Configure your Jira token (if not done already)
-./setup.sh mcp-install
+koda mcp-install
 ```
 
 That's it. Your PM agents now have your project's Jira board and roster pre-loaded.
@@ -62,9 +62,9 @@ You no longer need to specify the project, board, or team — the workspace hand
 If you manage multiple projects, just re-apply:
 
 ```bash
-./setup.sh workspace apply dta-team          # Switch to Digital Travel Trade
-./setup.sh workspace apply uad-sustainment   # Switch to Resort Sales
-./setup.sh workspace apply uad-ongoing       # Switch to Cast Sales Experience
+koda workspace apply dta-team          # Switch to Digital Travel Trade
+koda workspace apply uad-sustainment   # Switch to Resort Sales
+koda workspace apply uad-ongoing       # Switch to Cast Sales Experience
 ```
 
 ---
@@ -84,7 +84,7 @@ If you manage multiple projects, just re-apply:
 Ask your team lead to scaffold one:
 
 ```bash
-./setup.sh workspace create my-new-team
+koda workspace create my-new-team
 ```
 
 This creates the directory structure. Then fill in `workspace.json` and `context/team_context.md` with your Jira project, board, and team roster. See existing workspaces in `workspaces/` for examples.

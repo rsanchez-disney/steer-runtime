@@ -116,10 +116,10 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-./setup.sh install dev                    # All 23 dev agents (alias → dev-core + dev-web + dev-mobile)
-./setup.sh install dev-core dev-web       # Fullstack web developer (20 agents)
-./setup.sh install dev-core dev-mobile    # Mobile developer (19 agents)
-./setup.sh install dev-core               # Core only — orchestrator + quality (16 agents)
+koda install dev                    # All 23 dev agents (alias → dev-core + dev-web + dev-mobile)
+koda install dev-core dev-web       # Fullstack web developer (20 agents)
+koda install dev-core dev-mobile    # Mobile developer (19 agents)
+koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
 
 ---
@@ -559,7 +559,7 @@ The coding standards, MCP integrations, and workflow guidance from these agents 
 Some agents use advanced kiro-cli tools that require global settings. Enable with:
 
 ```bash
-./setup.sh enable-tools
+koda enable-tools
 ```
 
 | Tool | What it does | Agents |
@@ -592,7 +592,7 @@ Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 ## MCP Server Coverage
 
-Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `./setup.sh mcp-install` or `./setup.sh configure`).
+Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `koda mcp-install` or `koda configure`).
 
 | Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
 |---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|
@@ -710,11 +710,11 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ## Installation
 
 ```bash
-./setup.sh install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile)
-./setup.sh install dev-core dev-web       # Fullstack web developer
-./setup.sh install dev-core dev-mobile    # Mobile developer
-./setup.sh install dev ba qa ops pm       # Install all profiles
-./setup.sh enable-tools                   # Enable thinking, todo, knowledge
+koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile)
+koda install dev-core dev-web       # Fullstack web developer
+koda install dev-core dev-mobile    # Mobile developer
+koda install dev ba qa ops pm       # Install all profiles
+koda enable-tools                   # Enable thinking, todo, knowledge
 ```
 
 ---

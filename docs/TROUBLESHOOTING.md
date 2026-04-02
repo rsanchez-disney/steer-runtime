@@ -7,9 +7,9 @@ Common issues and solutions for steer-runtime.
 ## General
 
 ```bash
-./setup.sh              # Show help
-./setup.sh check        # Verify installation
-./setup.sh list         # List available profiles
+koda # Show help
+koda check        # Verify installation
+koda list         # List available profiles
 ```
 
 ## Agents Not Found
@@ -19,7 +19,7 @@ Common issues and solutions for steer-runtime.
 ls ~/.kiro/agents/
 
 # Reinstall
-./setup.sh install dev ba qa ops pm
+koda install dev ba qa ops pm
 ```
 
 ## MCP Servers Not Working
@@ -29,10 +29,10 @@ ls ~/.kiro/agents/
 cat ~/.kiro/tokens.env
 
 # Reconfigure tokens interactively
-./setup.sh configure
+koda configure
 
 # Full MCP reinstall + token setup
-./setup.sh mcp-install
+koda mcp-install
 ```
 
 ## MCP Tool Name Collisions
@@ -58,7 +58,7 @@ If `mcp-install` reports missing bundles:
 
 ```bash
 git pull origin main
-./setup.sh mcp-install
+koda mcp-install
 ```
 
 ## Tokens Showing YOUR_TOKEN
@@ -67,10 +67,10 @@ After installing profiles, tokens may show as `YOUR_TOKEN` if `tokens.env` doesn
 
 ```bash
 # 1. Configure tokens first
-./setup.sh mcp-install
+koda mcp-install
 
 # 2. Then reinstall profiles (injects tokens from tokens.env)
-./setup.sh install dev ba qa ops pm
+koda install dev ba qa ops pm
 ```
 
 ## Delegation Timeout
@@ -93,8 +93,8 @@ Regenerate tokens and reconfigure:
 
 Then run:
 ```bash
-./setup.sh configure
-./setup.sh install dev ba qa ops pm
+koda configure
+koda install dev ba qa ops pm
 ```
 
 ## Advanced Tools Not Working
@@ -102,14 +102,14 @@ Then run:
 If `thinking`, `todo`, or `knowledge` tools don't appear:
 
 ```bash
-./setup.sh enable-tools
+koda enable-tools
 ```
 
 ## Hooks Not Running
 
 ```bash
 ls -la ~/.kiro/hooks/
-./setup.sh sync
+koda sync
 ```
 
 Use `/hooks` in a chat session to inspect active hooks.

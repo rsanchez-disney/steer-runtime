@@ -57,7 +57,7 @@ graph TD
 | **Agent prompts** (`.md`) | ⚠️ Rarely | ✅ Yes | Upstream prompts are generic by design |
 | **Golden rules** | ❌ No | ✅ Yes | Org-wide standards — changes go upstream |
 | **Profile structure** | ❌ No | ✅ Yes | Profile definitions are shared |
-| **Setup scripts** | ❌ No | ✅ Yes | `setup.sh` / `setup.ps1` are shared |
+| **Setup scripts** | ❌ No | ✅ Yes | `setup.sh` / `setup.ps1` are shared (Koda is primary) |
 | **MCP server bundles** | ❌ No | ✅ Yes | Shared infrastructure |
 | **MCP tokens** (`.env`) | ✅ Yes | ❌ No | Per-user, gitignored |
 | **Memory banks** | ✅ Yes | ❌ No | Project-specific context |
@@ -90,7 +90,7 @@ sequenceDiagram
         U-->>F: git fetch upstream
         F->>F: git merge upstream/main
         F->>F: Resolve conflicts (if any)
-        F->>F: Run ./setup.sh check
+        F->>F: Run koda check
     end
 
     Note over U,F: Contributing Back
@@ -127,10 +127,10 @@ git remote -v
 
 ```bash
 # Add project memory banks
-./setup.sh init-memory ~/your-project
+koda init-memory ~/your-project
 
 # Configure MCP tokens
-./setup.sh mcp-install
+koda mcp-install
 
 # Add team-specific rules (optional)
 cp your-team-rule.md common/rules/
@@ -157,7 +157,7 @@ git add -A && git commit
 git push origin main
 
 # Verify everything still works
-./setup.sh check
+koda check
 ```
 
 ### Automated Sync (Optional)
@@ -275,7 +275,7 @@ vim .kiro-dev-web/agents/backend.json
 
 # ✅ Create team-specific profiles
 mkdir -p .kiro-team-x/agents .kiro-team-x/prompts
-# setup.sh auto-discovers .kiro-* directories
+# koda auto-discovers .kiro-* directories
 ```
 
 ### 4. Gitignore Tokens
@@ -299,7 +299,7 @@ Upstream uses semantic versioning with tags:
 |-----|---------|-------------|
 | `v3.4.0` | New feature (agents, MCP, profiles) | Sync recommended |
 | `v3.4.1` | Bug fix or doc update | Sync at convenience |
-| `v4.0.0` | Breaking change (agent config format, setup.sh API) | Sync required, read changelog |
+| `v4.0.0` | Breaking change (agent config format, koda/setup.sh API) | Sync required, read changelog |
 
 ### Subscribing to Releases
 
@@ -327,9 +327,9 @@ git merge upstream/main              # Sync
 
 - [ ] Fork `SANCR225/steer-runtime` to your team's GitHub org
 - [ ] Clone and add `upstream` remote
-- [ ] Run `./setup.sh workspace apply <team>` (or `./setup.sh install dev` for manual setup)
-- [ ] Run `./setup.sh mcp-install` to configure tokens
-- [ ] Add project memory banks via `./setup.sh init-memory`
+- [ ] Run `koda workspace apply <team>` (or `koda install dev` for manual setup)
+- [ ] Run `koda mcp-install` to configure tokens
+- [ ] Add project memory banks via `koda init-memory`
 - [ ] Set up weekly upstream sync (manual or automated)
 - [ ] Designate a fork owner
 - [ ] Read [Golden Rules](../.kiro/context/golden_rules.md)

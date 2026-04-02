@@ -9,8 +9,8 @@ Steer-runtime is a unified multi-profile agent system for Disney Payments that p
 │                         User Terminal                           │
 │                                                                 │
 │  $ kiro-cli chat --agent story_analyzer_agent                   │
-│  $ ./setup.sh install dev ba                                    │
-│  $ ./setup.sh mcp-install                                       │
+│  $ koda install dev ba                                    │
+│  $ koda mcp-install                                       │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
@@ -38,7 +38,7 @@ Steer-runtime is a unified multi-profile agent system for Disney Payments that p
 ```
 steer-runtime/
 │
-├── setup.sh                        # Single entry point for all operations
+├── setup.sh                        # Bash fallback (Koda is primary)
 │
 ├── .kiro-dev/                      # ── Dev Profile (18 agents) ──
 │   ├── agents/                     #   Agent JSON configs (MCP, tools, resources)
@@ -149,7 +149,7 @@ steer-runtime/
 ### 1. Installation Flow
 
 ```
-setup.sh install <profiles>
+koda install <profiles>
          │
          ├─→ Copy agents/*.json to ~/.kiro/agents/     (with $HOME expansion)
          ├─→ Copy prompts/*.md to ~/.kiro/prompts/
@@ -161,7 +161,7 @@ setup.sh install <profiles>
 ### 2. MCP Install Flow
 
 ```
-setup.sh mcp-install
+koda mcp-install
          │
          ├─→ Check ~/.npmrc exists (Disney Nexus auth)
          ├─→ Copy ~/.npmrc to each MCP server directory
@@ -271,7 +271,7 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ---
 
-## setup.sh Commands
+## CLI Commands (Koda / setup.sh)
 
 | Command | Purpose |
 |---------|---------|
@@ -293,7 +293,7 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 1. **Profiles are additive** — Installing multiple profiles merges agents into `~/.kiro/agents/`. No conflicts because agent names are unique across profiles.
 
-2. **`$HOME` in source, absolute paths when installed** — Source repo uses `$HOME` for portability. `setup.sh install` expands to absolute paths because Kiro CLI doesn't resolve shell variables in JSON.
+2. **`$HOME` in source, absolute paths when installed** — Source repo uses `$HOME` for portability. `koda install` / `setup.sh install` expands to absolute paths because Kiro CLI doesn't resolve shell variables in JSON.
 
 3. **Token injection via `env` blocks** — Agent JSON `env` blocks override `.env` files (dotenv doesn't overwrite existing env vars). This makes tokens work even if `.env` loading fails.
 

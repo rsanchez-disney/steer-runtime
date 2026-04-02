@@ -6,7 +6,7 @@ Get the same coding standards, MCP integrations, and project context from steer-
 
 - [Cursor IDE](https://cursor.sh/) installed
 - steer-runtime cloned locally
-- MCP servers installed (`./setup.sh mcp-install`) — optional but recommended
+- MCP servers installed (`koda mcp-install`) — optional but recommended
 
 ## Quick Start
 
@@ -66,7 +66,7 @@ Cursor rules use `.mdc` files with frontmatter:
 
 ## MCP Integration
 
-The `cursor install` command generates `.cursor/mcp.json` pointing to the same MCP servers Kiro uses. If you've already run `./setup.sh mcp-install`, tokens are picked up automatically.
+The `cursor install` command generates `.cursor/mcp.json` pointing to the same MCP servers Kiro uses. If you've already run `koda mcp-install`, tokens are picked up automatically.
 
 Available MCP tools in Cursor:
 - **Jira** — fetch stories, create issues, manage sprints
