@@ -8,6 +8,6 @@
     { "name": "wdpr-payment-controls-api", "path": "../wdpr-payment-controls-api", "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api" },
     { "name": "wdpr-payment-services", "path": "../wdpr-payment-services", "repo": "DisneyPaymentsOrg/wdpr-payment-services" },
     { "name": "wdpr-app-inquiry-service", "path": "../wdpr-app-inquiry-service", "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service" },
-    { "name": "dpay-admin-inquiry-webapi", "path": "../dpay-admin-inquiry-webapi", "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-webapi" }
+    { "name": "dpay-admin-inquiry-webapi", "path": "../dpay-admin-inquiry-webapi", "repo": "Nutech/dpay-admin-inquiry-webapi" }
   ]
 }
