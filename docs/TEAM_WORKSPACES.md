@@ -1,45 +1,47 @@
 # Team Workspaces
 
-A Team Workspace is a self-contained configuration bundle that lets new team members get fully set up with a single command. It defines which profiles to install, which rules to apply, which projects to initialize, and any team-specific context or conventions.
+A Team Workspace is a self-contained configuration bundle that lets team members get fully set up with a single command. It defines which profiles to install, which rules to apply, which projects to initialize, and any team-specific context or conventions.
+
+Workspaces support **hierarchical inheritance** — a parent workspace defines the shared foundation, and child workspaces extend it with team-specific configuration.
 
 ---
 
 ## Quick Start
 
 ```bash
-# See what's available
+# List available workspaces (shows hierarchy)
 koda workspace list
 
-# Apply a team workspace (installs everything)
-koda workspace apply payments-core
+# Apply a workspace (resolves inheritance automatically)
+koda workspace apply opsheet-vas-team
 
 # Configure MCP tokens
 koda mcp-install
 ```
 
-That's it — profiles, rules, context, memory banks, and tools are all installed.
-
 ---
 
-## How It Works
+## Hierarchical Workspaces
 
-```mermaid
-graph LR
-    ws["workspace.json"] --> apply["koda workspace apply"]
-    apply --> profiles["Install profiles<br/>(dev-core, dev-web, qa...)"]
-    apply --> rules["Install rules<br/>(common + team-specific)"]
-    apply --> context["Copy team context<br/>(standards, conventions)"]
-    apply --> memory["Init memory banks<br/>(per-project)"]
-    apply --> tools["Enable tools<br/>(thinking, todo, knowledge)"]
+A workspace can `extend` a parent. The child inherits the parent's profiles, rules, and context, then adds its own.
 
-    style ws fill:#1a1a2e,stroke:#e94560,color:#eee
-    style apply fill:#0f3460,stroke:#e94560,color:#eee
-    style profiles fill:#16213e,stroke:#0f3460,color:#eee
-    style rules fill:#16213e,stroke:#0f3460,color:#eee
-    style context fill:#16213e,stroke:#0f3460,color:#eee
-    style memory fill:#16213e,stroke:#0f3460,color:#eee
-    style tools fill:#16213e,stroke:#0f3460,color:#eee
 ```
+opsheet-team (parent)              → profiles: [dev-core, qa, ba]
+  ├─ opsheet-vas-team              → inherits + [dev-web, ops, dev-vas]
+  └─ opsheet-flutter-team          → inherits + [dev-mobile]
+```
+
+### Inheritance rules
+
+| Field | Strategy | Example |
+|-------|----------|---------|
+| `profiles` | Additive (union) | parent `[dev-core, qa]` + child `[dev-web]` → `[dev-core, qa, dev-web]` |
+| `rules` | Additive (union) | parent `[conventional_commit]` + child `[flutter-dev]` → both |
+| `context/` | All copied (root-first) | parent's `team_context.md` + child's `vas_context.md` |
+| `description`, `team`, `default_agent`, `jira_prefix` | Child overrides parent | Child value wins if set |
+| `projects` | Child only | Projects are team-specific |
+
+Chains can go multiple levels deep. Resolution walks bottom-up with cycle detection.
 
 ---
 
@@ -47,13 +49,22 @@ graph LR
 
 ```
 workspaces/
-└── payments-core/
-    ├── workspace.json              # Configuration manifest
-    ├── rules/                      # Team-specific coding rules
-    │   └── payment-api-conventions.md
-    ├── context/                    # Team-specific context files
-    │   └── team_standards.md
-    └── memory-banks/               # Custom memory bank templates (optional)
+├── opsheet-team/                   # Parent workspace
+│   ├── workspace.json
+│   ├── context/
+│   │   └── team_context.md         # Shared business context
+│   └── rules/
+│       └── opsheet-conventions.md
+├── opsheet-vas-team/               # Child workspace
+│   ├── workspace.json              # "extends": "opsheet-team"
+│   ├── context/
+│   │   └── vas_context.md          # VAS-specific context
+│   └── profiles/
+│       └── dev-vas/                # Workspace-specific profile overrides
+└── opsheet-flutter-team/           # Child workspace
+    ├── workspace.json              # "extends": "opsheet-team"
+    └── context/
+        └── flutter_context.md
 ```
 
 ---
@@ -62,208 +73,166 @@ workspaces/
 
 ```json
 {
-  "name": "payments-core",
-  "description": "Config Studio & Payment Services — fullstack web development",
-  "team": "Disney Payments Core",
-  "profiles": ["dev-core", "dev-web", "qa", "ops"],
+  "name": "opsheet-vas-team",
+  "extends": "opsheet-team",
+  "description": "OpSheet+ VAS backend & web team",
+  "team": "OpSheet+ VAS Team",
+  "profiles": ["dev-web", "ops", "dev-vas"],
   "default_agent": "orchestrator",
   "projects": [
     {
-      "name": "wdpr-config-services",
-      "path": "../wdpr-config-services",
-      "memory_bank": "wdpr-config-services"
+      "name": "opsheet-plus-vas",
+      "repo": "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-plus-vas",
+      "path": "../opsheet-plus-vas",
+      "memory_bank": "opsheet-plus-vas"
     }
   ],
-  "rules": ["conventional_commit", "general-java-development"],
+  "rules": ["general-angular-development"],
   "enable_tools": true,
-  "jira_prefix": "DPAY-"
+  "jira_prefix": "OPS-"
 }
 ```
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | string | Workspace identifier (matches directory name) |
+| `extends` | string | Parent workspace name (optional — enables inheritance) |
 | `description` | string | Human-readable description |
 | `team` | string | Team name |
-| `profiles` | string[] | Profiles to install (dev-core, dev-web, ba, qa, ops, pm) |
+| `profiles` | string[] | Profiles to install (merged with parent if extends is set) |
 | `default_agent` | string | Suggested starting agent |
 | `projects` | object[] | Repos to initialize with memory banks |
-| `projects[].name` | string | Project display name |
-| `projects[].path` | string | Relative path to the repo |
-| `projects[].memory_bank` | string | Known project name in `workspaces/default/projects/` for memory bank source |
-| `rules` | string[] | Common rules to install from `common/rules/` |
-| `enable_tools` | boolean | Whether to enable thinking, todo, knowledge |
+| `rules` | string[] | Common rules from `common/rules/` (merged with parent) |
+| `enable_tools` | boolean | Enable thinking, todo, knowledge |
 | `jira_prefix` | string | Team's Jira project prefix |
+| `workspace_path` | string | Base path for project repos |
 
 ---
 
-## Commands
+## Managing Workspaces with Koda
 
-### List workspaces
+### Koda TUI (interactive)
+
+Launch `koda` and press `w` to open the Workspaces screen.
+
+| Key | Action |
+|-----|--------|
+| `enter` | Apply selected workspace |
+| `e` | Edit selected workspace |
+| `x` | Extend — create a child workspace from selected parent |
+| `n` | Create a new workspace from scratch |
+| `esc` | Back to dashboard |
+
+The TUI shows workspaces in a tree:
+
+```
+▸ opsheet-team           dev-core, qa, ba
+    OpSheet+ shared foundation
+  ├─ opsheet-vas-team    dev-web, ops, dev-vas
+  └─ opsheet-flutter-team dev-mobile
+  payments-core          dev-core, dev-web, qa, ops
+```
+
+### Koda CLI
 
 ```bash
-koda workspace list
+koda workspace list                    # List with tree hierarchy
+koda workspace show payments-core      # View full details
+koda workspace apply opsheet-vas-team  # Apply (resolves inheritance)
+koda workspace sync payments-core      # Pull all workspace repos
 ```
 
-Shows all available workspaces with descriptions and profiles.
+### setup.sh (for scripts and CI)
 
-### Show workspace details
+The setup script supports listing and applying workspaces. Workspace creation and editing is done through Koda.
 
 ```bash
-koda workspace show payments-core
-```
-
-Displays full configuration: profiles, projects, rules, context files.
-
-### Apply a workspace
-
-```bash
-koda workspace apply payments-core
-koda workspace sync payments-core          # Pull all workspace repos
-```
-
-Runs the full setup sequence:
-1. Installs specified profiles
-2. Installs common rules (from `common/rules/`)
-3. Copies workspace-specific rules (from `workspaces/<name>/rules/`)
-4. Copies workspace-specific context (from `workspaces/<name>/context/`)
-5. Initializes memory banks for listed projects
-6. Enables advanced tools (if configured)
-
-After applying, run `koda mcp-install` to configure tokens.
-
-### Create a new workspace
-
-```bash
-koda workspace create my-team
-```
-
-Scaffolds a new workspace directory with a template `workspace.json` and empty `rules/`, `context/`, and `memory-banks/` directories.
-
----
-
-## Creating a Workspace for Your Team
-
-### 1. Scaffold
-
-```bash
-koda workspace create my-team
-```
-
-### 2. Edit workspace.json
-
-Set your team's profiles, projects, and rules:
-
-```json
-{
-  "name": "my-team",
-  "description": "My team's description",
-  "team": "Team Name",
-  "profiles": ["dev-core", "dev-web", "qa"],
-  "default_agent": "orchestrator",
-  "projects": [
-    {
-      "name": "my-service",
-      "path": "../my-service",
-      "memory_bank": "my-service"
-    }
-  ],
-  "rules": ["conventional_commit", "general-java-development"],
-  "enable_tools": true,
-  "jira_prefix": "MYTEAM-"
-}
-```
-
-### 3. Add team rules (optional)
-
-Drop markdown files into `workspaces/my-team/rules/`:
-
-```markdown
-# My Team API Conventions
-- All endpoints must use `/api/v2/` prefix
-- Response format: { data, meta }
-```
-
-### 4. Add team context (optional)
-
-Drop markdown files into `workspaces/my-team/context/`:
-
-```markdown
-# My Team Standards
-- PRs require 1 approval
-- Branch naming: feat/MYTEAM-{ticket}-{description}
-```
-
-### 5. Test it
-
-```bash
-koda workspace show my-team    # Verify config
-koda workspace apply my-team   # Apply and test
-```
-
-### 6. Commit to your fork
-
-```bash
-git add workspaces/my-team/
-git commit -m "feat: add my-team workspace"
-git push
-```
-
-New team members just clone and run `koda workspace apply my-team`.
-
----
-
-## Windows
-
-All commands work identically with `setup.ps1`:
-
-```powershell
-.\setup.ps1 workspace list
-.\setup.ps1 workspace show payments-core
-.\setup.ps1 workspace apply payments-core
-.\setup.ps1 workspace create my-team
+./setup.sh workspace list                    # List with tree hierarchy
+./setup.sh workspace list --fetch            # Pull latest, then list
+./setup.sh workspace show payments-core      # View details
+./setup.sh workspace apply opsheet-vas-team  # Apply (resolves inheritance)
+./setup.sh workspace sync payments-core      # Pull all workspace repos
 ```
 
 ---
 
+## Creating a Workspace
+
+Use the Koda TUI (`koda` → `w` → `n`):
+
+1. Fill in name, description, team, Jira prefix
+2. Select profiles (space to toggle)
+3. Select rules
+4. Set repos path and add repositories
+5. `ctrl+s` to save — Koda scaffolds the directory and publishes via PR
+
+### Creating a child workspace
+
+Select a parent workspace and press `x`:
+
+1. The `extends` field is pre-filled with the parent name
+2. Add only the profiles, rules, and context specific to the child team
+3. The child inherits everything from the parent automatically
+
+### Manual creation
+
+If you prefer, create the directory structure directly:
+
+```bash
+mkdir -p workspaces/my-team/{rules,context}
+# Edit workspaces/my-team/workspace.json
+# Commit and push
+```
+
+---
+
+## What Apply Does
+
+When you run `koda workspace apply <name>`:
+
+1. **Resolves inheritance** — walks the `extends` chain, merges profiles and rules
+2. **Installs profiles** — global profiles first, then workspace-specific overrides
+3. **Installs rules** — from `common/rules/` for all merged rule names
+4. **Copies rules and context** — from each workspace in the chain (root-first)
+5. **Injects tokens** — applies configured MCP tokens to agent configs
+6. **Clones repos** — clones missing project repos if `workspace_path` is set
+7. **Saves active workspace** — records which workspace is active in settings
+
+---
 
 ## Syncing Repos
 
-Pull or push all repositories in a workspace with one command:
+Pull or push all repositories in a workspace:
 
 ```bash
 koda workspace sync payments-core          # fetch + pull all repos
 koda workspace sync payments-core --push   # push all repos
-koda workspace sync default                # sync all 9 org repos
 ```
 
-Resolves `projects[].path` from `workspace.json`, skips missing directories gracefully.
+---
 
 ## Best Practices
 
-- **One workspace per team** — not per developer or per project
+- **One parent workspace per product team** — shared foundation (profiles, rules, context)
+- **Child workspaces per sub-team** — only add what's specific to that sub-team
 - **Keep workspace.json in version control** — it's the team's setup contract
-- **Don't put tokens in workspace files** — tokens go in `.env` files via `mcp-install`
-- **Use `rules/` for team conventions** — things like API patterns, naming standards
+- **Don't put tokens in workspace files** — tokens go in `~/.kiro/tokens.env` via `koda configure`
+- **Use `rules/` for team conventions** — API patterns, naming standards
 - **Use `context/` for team knowledge** — deployment processes, review SLAs, team contacts
-- **Reference existing memory banks** — use `memory_bank` field to point to `workspaces/default/projects/` templates
-- **Test before sharing** — run `workspace apply` on a clean setup to verify it works
+- **Test before sharing** — run `workspace apply` on a clean setup to verify
 
 ---
 
 ## Workspaces vs. Forks
 
-Workspaces and forks serve different purposes:
-
 | | Workspace | Fork |
 |---|-----------|------|
-| **Scope** | Team-level config within a repo | Full repo copy for a team |
+| **Scope** | Team-level config within a repo | Full repo copy |
 | **What it customizes** | Profiles, rules, context, memory banks | Everything |
 | **Where it lives** | `workspaces/<name>/` in any fork | Separate GitHub repo |
-| **Who maintains it** | Team lead or fork owner | Fork owner |
-| **Shared upstream?** | No — team-specific, stays in fork | Syncs with upstream |
+| **Hierarchy** | Supports `extends` for parent-child | N/A |
 
-A typical setup: each team has a fork of steer-runtime, and within that fork they have a workspace that configures their specific setup.
+A typical setup: each org has a fork of steer-runtime, and within that fork teams have workspaces (with hierarchy) that configure their specific setup.
 
 ---
 
