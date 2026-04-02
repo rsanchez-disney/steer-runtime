@@ -40,18 +40,18 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 > `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
 
-### Option B — setup.sh (bash)
+### Option B — setup.sh (bash fallback)
 
 ```bash
 git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
 cd ~/steer-runtime
-./setup.sh install dev        # Install dev agents
-./setup.sh mcp-install        # Setup MCP servers + tokens
+koda install dev        # Install dev agents
+koda mcp-install        # Setup MCP servers + tokens
 kiro-cli chat --agent orchestrator
 ```
 
 > 🪟 On Windows? See [Windows Setup](docs/WINDOWS_SETUP.md).
-> 👥 Joining a team? Run `koda workspace apply <team>` or `./setup.sh workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
+> 👥 Joining a team? Run `koda workspace apply <team>` or `koda workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
 
 ---
 
@@ -61,7 +61,7 @@ Pick what fits your role, or install everything:
 
 ```bash
 koda install dev ba qa ops pm     # Koda
-./setup.sh install dev ba qa ops pm  # setup.sh
+koda install dev ba qa ops pm
 ```
 
 | Profile | Agents | What it does |
@@ -104,7 +104,7 @@ koda install dev ba qa ops pm     # Koda
 | Date | Change |
 |------|--------|
 | Mar 30 | [Eval Framework](docs/EVAL_FRAMEWORK.md) — automated agent quality scoring with fixtures and rubrics |
-| Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces setup.sh |
+| Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces `setup.sh` |
 | Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
 | Mar 20 | [Context7 MCP](https://context7.com) — real-time library docs, no token needed |
 | Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |

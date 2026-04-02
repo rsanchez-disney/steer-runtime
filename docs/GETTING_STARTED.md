@@ -128,15 +128,15 @@ Enables PR creation and repo management from agents.
 
 ---
 
-## Alternative: setup.sh
+## Alternative: setup.sh (bash fallback)
 
 If you prefer bash over Koda:
 
 ```bash
 git clone <repo-url> ~/steer-runtime
 cd ~/steer-runtime
-./setup.sh install dev
-./setup.sh mcp-install
+koda install dev
+koda mcp-install
 ```
 
 > 🪟 Windows users: see [Windows Setup](WINDOWS_SETUP.md)

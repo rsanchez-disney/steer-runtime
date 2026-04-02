@@ -5,15 +5,15 @@ Complete status of all documentation after consolidation and updates.
 ## ✅ Fully Updated Documents
 
 ### Core Documentation
-- **README.md** - v2.0, 23 agents, unified setup.sh
+- **README.md** - v2.0, 23 agents, Koda + setup.sh
 - **AGENTS.md** - Complete reference for all 23 agents
 - **DESIGN.md** - v2.0 architecture with mobile agents
 
 ### Setup & Configuration
-- **docs/SETUP_GUIDE.md** - Unified setup.sh commands
+- **docs/SETUP_GUIDE.md** - ⚠️ Deprecated (Koda is primary)
 - **docs/SETUP_CONSOLIDATION.md** - Documents the consolidation
 - **docs/MCP_SETUP.md** - MCP configuration (verified paths)
-- **docs/KIRO_UI_SETUP.md** - Updated to setup.sh ui
+- **docs/KIRO_UI_SETUP.md** - Updated to setup.sh ui (no Koda equivalent)
 
 ### Usage Guides
 - **docs/PROMPT_GUIDE.md** - ✅ Added mobile development section
@@ -40,7 +40,7 @@ Complete status of all documentation after consolidation and updates.
 - Moved `mcp-config-template.json` to `.kiro/`
 
 ### 2. Setup Scripts
-- Unified 3 scripts → `setup.sh` with subcommands
+- Unified 3 scripts → `setup.sh` with subcommands → Koda CLI
 - Updated all path references
 - Added dependency checking
 
@@ -57,7 +57,7 @@ Complete status of all documentation after consolidation and updates.
 ## Reference Consistency
 
 All documents now correctly reference:
-- ✅ `./setup.sh` (not old setup-*.sh scripts)
+- ✅ `koda` (primary) or `./setup.sh` (fallback)
 - ✅ `.kiro/` (not _kiro-pack or .kiro-steer)
 - ✅ 23 agents (not 16 or 9)
 - ✅ 4 powers
@@ -95,7 +95,7 @@ All documents now correctly reference:
 steer-runtime/
 ├── README.md                   ✅ Updated
 ├── AGENTS.md                   ✅ Updated
-├── setup.sh                    ✅ New unified script
+├── setup.sh                    ✅ Bash fallback (Koda is primary)
 ├── docs/
 │   ├── INDEX.md               ✅ New
 │   ├── DESIGN.md              ✅ Updated
@@ -135,7 +135,7 @@ steer-runtime/
 1. ✅ All documentation updated
 2. ✅ All references consistent
 3. ✅ Mobile agents documented
-4. 🔄 Test setup.sh commands
+4. 🔄 Test koda commands
 5. 🔄 Verify agent configurations
 6. 🔄 Delete backup after confirmation
 

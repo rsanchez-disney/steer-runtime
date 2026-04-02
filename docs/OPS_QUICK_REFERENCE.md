@@ -25,7 +25,7 @@ kiro-cli chat --agent <agent_name>
 
 ### Configure MCP tokens
 ```bash
-./setup.sh configure
+koda configure
 ```
 
 ---

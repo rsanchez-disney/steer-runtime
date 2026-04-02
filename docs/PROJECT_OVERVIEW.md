@@ -50,14 +50,14 @@ steer-runtime solves this by encoding organizational knowledge into agent config
 
 | Advantage | How |
 |-----------|-----|
-| **Zero-setup onboarding** | `./setup.sh install dev` — one command, 19 agents ready |
+| **Zero-setup onboarding** | `koda install dev` — one command, 19 agents ready |
 | **Role-appropriate tooling** | A BA agent can't accidentally run `rm -rf`; a dev agent can't skip code review |
 | **Consistent quality** | Golden rules, compliance checks, and write guards are enforced by hooks, not hope |
 | **Institutional memory** | Context files, steering rules, and knowledge tool persist what the team has learned |
 | **Multi-repo coordination** | Orchestrator agents understand which repos map to which Jira prefixes and coordinate across them |
 | **No vendor lock-in on context** | All config is plain JSON + Markdown — portable, version-controlled, reviewable |
 | **Pre-built integrations** | MCP servers are bundled as single-file Node.js bundles — no npm install, no Nexus credentials needed |
-| **Cross-platform** | macOS/Linux (`setup.sh`) + Windows (`setup.ps1`) |
+| **Cross-platform** | Koda (Go binary, all platforms) + `setup.sh` / `setup.ps1` fallback |
 | **Multi-IDE** | Kiro CLI (agents) + Cursor IDE (rules) + Kite (desktop GUI) — same source, different runtimes |
 
 ---
@@ -119,12 +119,12 @@ Hooks run as shell scripts with exit codes — `exit 2` blocks the action, `exit
 Not every team member needs every agent. Profiles are installed independently:
 
 ```bash
-./setup.sh install dev          # Developer gets 19 agents
-./setup.sh install pm           # Scrum master gets 6 agents
-./setup.sh install dev ba qa    # Full-stack team gets 29 agents
+koda install dev          # Developer gets 19 agents
+koda install pm           # Scrum master gets 6 agents
+koda install dev ba qa    # Full-stack team gets 29 agents
 ```
 
-Advanced tools (`thinking`, `todo`, `knowledge`) are opt-in via `./setup.sh enable-tools`. Agents degrade gracefully when features aren't enabled.
+Advanced tools (`thinking`, `todo`, `knowledge`) are opt-in via `koda enable-tools`. Agents degrade gracefully when features aren't enabled.
 
 ### 6. Pre-built, Not Just Configured
 
@@ -132,7 +132,7 @@ MCP servers are bundled as single `.cjs` files using esbuild — no `npm install
 
 ### 7. Observability
 
-- `./setup.sh check` validates installation and runs `kiro-cli agent validate` on every config
+- `koda check` validates installation and runs `kiro-cli agent validate` on every config
 - `/hooks` command in chat shows active hooks for the current agent
 - `kiro-cli mcp list` shows MCP server status per agent
 - Memory banks and todo lists persist across sessions for auditability
@@ -221,9 +221,9 @@ Shared resources live in `.kiro/`:
 ```bash
 git clone <repo-url> ~/steer-runtime && cd ~/steer-runtime
 
-./setup.sh install dev ba qa ops pm   # Install all profiles
-./setup.sh mcp-install                # Configure MCP tokens
-./setup.sh enable-tools               # Enable advanced tools
+koda install dev ba qa ops pm   # Install all profiles
+koda mcp-install                # Configure MCP tokens
+koda enable-tools               # Enable advanced tools
 
 kiro-cli chat --agent orchestrator    # Start working
 ```
@@ -292,9 +292,9 @@ See [Cursor Setup](CURSOR_SETUP.md) for detailed installation and usage.
 ```mermaid
 graph TD
     src["steer-runtime<br/>(source of truth)"]
-    src --> kiro["Kiro CLI<br/>Native agent JSON + prompts<br/><code>./setup.sh install</code>"]
+    src --> kiro["Kiro CLI<br/>Native agent JSON + prompts<br/><code>koda install</code>"]
     src --> cursor["Cursor<br/>.mdc rules + shared MCP<br/><code>./setup.sh cursor install</code>"]
-    src --> amazonq["Amazon Q<br/>Plain .md rules<br/><code>./setup.sh amazonq install</code>"]
+    src --> amazonq["Amazon Q<br/>Plain .md rules<br/><code>koda amazonq install</code>"]
     src --> kite["Kite<br/>Desktop GUI over Kiro CLI"]
     src -.-> next["Next IDE<br/><i>write one adapter</i>"]
 

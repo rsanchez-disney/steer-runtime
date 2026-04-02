@@ -37,7 +37,7 @@ steer-runtime/
 │   ├── context/               # Project context
 │   └── tools/                 # Utilities
 ├── docs/                       # Documentation
-└── setup.sh                    # Unified setup
+└── setup.sh                    # Bash fallback (Koda is primary)
 ```
 
 ### Agent Architecture
@@ -374,7 +374,7 @@ State persists across:
 2. Write prompt in `.kiro/prompts/`
 3. Add skills in `.kiro/skills/` (optional)
 4. Update `AGENTS.md`
-5. Test with `./setup.sh cli --sync`
+5. Test with `koda cli --sync`
 
 ### Adding New Powers
 

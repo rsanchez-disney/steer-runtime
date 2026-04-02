@@ -79,35 +79,35 @@ koda auto-update enable           # Daily sync at 9 AM
 koda upgrade                      # Update Koda binary
 ```
 
-### setup.sh (bash)
+### setup.sh (bash fallback)
 
 ```bash
 # Core
-./setup.sh list                 # List available profiles
-./setup.sh install <profiles>   # Install one or more profiles
-./setup.sh sync                 # Update installed profiles
-./setup.sh remove <profiles>    # Remove specific profiles
-./setup.sh check                # Verify installation
-./setup.sh clean                # Remove all installed profiles
+koda list                 # List available profiles
+koda install <profiles>   # Install one or more profiles
+koda sync                 # Update installed profiles
+koda remove <profiles>    # Remove specific profiles
+koda check                # Verify installation
+koda clean                # Remove all installed profiles
 
 # Project
 ./setup.sh init-manifest <dir>  # Generate project.yaml from codebase
-./setup.sh init-memory <dir>    # Initialize project memory bank
+koda init-memory <dir>    # Initialize project memory bank
 
 # MCP & Tools
-./setup.sh mcp-install          # Setup MCP servers + configure tokens
-./setup.sh configure            # Reconfigure MCP tokens only
-./setup.sh enable-tools         # Enable thinking, todo, knowledge
+koda mcp-install          # Setup MCP servers + configure tokens
+koda configure            # Reconfigure MCP tokens only
+koda enable-tools         # Enable thinking, todo, knowledge
 
 # Team Workspaces
-./setup.sh workspace list              # List available workspaces
-./setup.sh workspace apply <team>      # Apply team config
-./setup.sh workspace create <team>     # Scaffold new workspace
+koda workspace list              # List available workspaces
+koda workspace apply <team>      # Apply team config
+koda workspace create <team>     # Scaffold new workspace
 
 # Content
-./setup.sh rules list           # List available coding rules
-./setup.sh rules install --all  # Install rules to project
-./setup.sh prompts list         # List available prompts
+koda rules list           # List available coding rules
+koda rules install --all  # Install rules to project
+koda prompts list         # List available prompts
 
 # Cursor IDE
 ./setup.sh cursor install <dir>  # Install Cursor rules + MCP config
@@ -115,9 +115,9 @@ koda upgrade                      # Update Koda binary
 ./setup.sh cursor remove <dir>   # Remove .cursor/ directory
 
 # Amazon Q Developer
-./setup.sh amazonq install <dir>  # Install .amazonq/rules/
-./setup.sh amazonq sync <dir>     # Update rules
-./setup.sh amazonq remove <dir>   # Remove .amazonq/ directory
+koda amazonq install <dir>  # Install .amazonq/rules/
+koda amazonq sync <dir>     # Update rules
+koda amazonq remove <dir>   # Remove .amazonq/ directory
 ```
 
 ---
@@ -147,7 +147,7 @@ For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 | **Koda** | Interactive terminal companion — install, sync, chat, TUI dashboard | `curl \| bash` from [github.com](https://github.com/rsanchez-disney/Koda) |
 | **Kiro CLI** | Native agent runtime | [Getting Started](GETTING_STARTED.md) |
 | **Cursor** | IDE with `.mdc` rules + MCP | `./setup.sh cursor install <dir>` |
-| **Amazon Q** | IDE with `.md` rules | `./setup.sh amazonq install <dir>` |
+| **Amazon Q** | IDE with `.md` rules | `koda amazonq install <dir>` |
 | **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
 
 ---
@@ -157,7 +157,7 @@ For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 ### Team Workspaces — one-command team setup
 
 ```bash
-koda workspace apply payments-core     # or: ./setup.sh workspace apply payments-core
+koda workspace apply payments-core     # or: koda workspace apply payments-core
 ```
 
 Each workspace is a `workspace.json` manifest with profiles, rules, context, and Jira/board config. See [Team Workspaces](TEAM_WORKSPACES.md).
@@ -165,7 +165,7 @@ Each workspace is a `workspace.json` manifest with profiles, rules, context, and
 ### Memory Banks — project-specific context
 
 ```bash
-./setup.sh init-memory ~/my-project
+koda init-memory ~/my-project
 ```
 
 Memory banks give agents project-specific knowledge — tech stack, repo structure, conventions.
@@ -207,7 +207,7 @@ graph TD
 
     koda --> kiro["~/.kiro/<br/>agents · prompts · tools"]:::target
 
-    src --> setup["setup.sh / setup.ps1<br/>install · sync · configure"]:::tool
+    src --> setup["Koda / setup.sh<br/>install · sync · configure"]:::tool
     setup --> kiro
     setup --> cursor["Cursor<br/>.cursor/"]:::target
     setup --> amazonq["Amazon Q<br/>.amazonq/"]:::target
@@ -221,7 +221,7 @@ graph TD
     class workspaces source
 ```
 
-**Key insight:** Agent knowledge is authored once in `profiles/` and `common/`. Koda downloads encrypted releases from public github.com — no GHE access needed for end users. `setup.sh` compiles to each IDE's native format.
+**Key insight:** Agent knowledge is authored once in `profiles/` and `common/`. Koda downloads encrypted releases from public github.com — no GHE access needed for end users. Koda (or `setup.sh`) compiles to each IDE's native format.
 
 ---
 
@@ -260,7 +260,7 @@ steer-runtime/
 ├── .github/ISSUE_TEMPLATE/       # Feature request + bug report templates
 ├── docs/                         # All documentation
 ├── Makefile                      # Release packaging (encrypt + publish)
-├── setup.sh                      # macOS/Linux setup
+├── setup.sh                      # Bash fallback (Koda is primary)
 └── setup.ps1                     # Windows setup
 ```
 
@@ -272,24 +272,24 @@ steer-runtime/
 
 1. Create `profiles/<name>/agents/` and `profiles/<name>/prompts/`
 2. Add agent JSON configs and prompt markdown files
-3. Run `./setup.sh install <name>` — auto-discovered
+3. Run `koda install <name>` — auto-discovered
 
 ### Add a new IDE target
 
 1. Create a templates directory (e.g., `.windsurf-templates/`)
-2. Add a compile command to `setup.sh`
+2. Add a compile command to `setup.sh` (Koda auto-discovers)
 3. Agent definitions, context, and MCP servers stay the same
 
 ### Add a new MCP server
 
 1. Bundle the server into `shared/tools/mcp-servers/<name>/`
 2. Reference it in agent configs (`mcpServers` key)
-3. Add token configuration to `setup.sh mcp-install`
+3. Add token configuration to `koda mcp-install` / `setup.sh mcp-install`
 
 ### Add a new rule
 
 1. Create `common/rules/general-<stack>.md`
-2. Install with `./setup.sh rules install <name>` or `koda rules install <name>`
+2. Install with `koda rules install <name>` or `koda rules install <name>`
 
 ### Add a new skill
 

@@ -54,7 +54,7 @@ Complete guide to all documentation.
 steer-runtime/
 ├── README.md              # Main entry point
 ├── AGENTS.md              # Agent reference
-├── setup.sh               # Setup script
+├── setup.sh               # Bash fallback (Koda is primary)
 ├── docs/                  # All documentation
 │   ├── INDEX.md          # This file
 │   ├── SETUP_GUIDE.md
@@ -75,7 +75,7 @@ steer-runtime/
 ## Need Help?
 
 1. Check [SETUP_GUIDE.md](SETUP_GUIDE.md) troubleshooting section
-2. Run `./setup.sh check` to verify dependencies
+2. Run `koda check` to verify dependencies
 3. Review [AGENTS.md](../AGENTS.md) for agent capabilities
 4. See [PROMPT_GUIDE.md](PROMPT_GUIDE.md) for usage examples
 

@@ -85,13 +85,13 @@ steer-runtime authors content once and compiles to each IDE's native format:
 
 ```
 profiles/dev-core/prompts/orchestrator.md
-    ↓ setup.sh install
+    ↓ koda install
     → ~/.kiro/prompts/orchestrator.md          (Kiro CLI)
 
-    ↓ setup.sh cursor install <dir>
+    ↓ ./setup.sh cursor install <dir>
     → .cursor/agents/orchestrator.md           (Cursor)
 
-    ↓ setup.sh amazonq install <dir>
+    ↓ koda amazonq install <dir>
     → .amazonq/rules/orchestrator.md           (Amazon Q)
 ```
 

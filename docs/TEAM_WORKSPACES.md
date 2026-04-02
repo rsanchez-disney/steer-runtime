@@ -8,13 +8,13 @@ A Team Workspace is a self-contained configuration bundle that lets new team mem
 
 ```bash
 # See what's available
-./setup.sh workspace list
+koda workspace list
 
 # Apply a team workspace (installs everything)
-./setup.sh workspace apply payments-core
+koda workspace apply payments-core
 
 # Configure MCP tokens
-./setup.sh mcp-install
+koda mcp-install
 ```
 
 That's it — profiles, rules, context, memory banks, and tools are all installed.
@@ -25,7 +25,7 @@ That's it — profiles, rules, context, memory banks, and tools are all installe
 
 ```mermaid
 graph LR
-    ws["workspace.json"] --> apply["./setup.sh workspace apply"]
+    ws["workspace.json"] --> apply["koda workspace apply"]
     apply --> profiles["Install profiles<br/>(dev-core, dev-web, qa...)"]
     apply --> rules["Install rules<br/>(common + team-specific)"]
     apply --> context["Copy team context<br/>(standards, conventions)"]
@@ -102,7 +102,7 @@ workspaces/
 ### List workspaces
 
 ```bash
-./setup.sh workspace list
+koda workspace list
 ```
 
 Shows all available workspaces with descriptions and profiles.
@@ -110,7 +110,7 @@ Shows all available workspaces with descriptions and profiles.
 ### Show workspace details
 
 ```bash
-./setup.sh workspace show payments-core
+koda workspace show payments-core
 ```
 
 Displays full configuration: profiles, projects, rules, context files.
@@ -118,8 +118,8 @@ Displays full configuration: profiles, projects, rules, context files.
 ### Apply a workspace
 
 ```bash
-./setup.sh workspace apply payments-core
-./setup.sh workspace sync payments-core          # Pull all workspace repos
+koda workspace apply payments-core
+koda workspace sync payments-core          # Pull all workspace repos
 ```
 
 Runs the full setup sequence:
@@ -130,12 +130,12 @@ Runs the full setup sequence:
 5. Initializes memory banks for listed projects
 6. Enables advanced tools (if configured)
 
-After applying, run `./setup.sh mcp-install` to configure tokens.
+After applying, run `koda mcp-install` to configure tokens.
 
 ### Create a new workspace
 
 ```bash
-./setup.sh workspace create my-team
+koda workspace create my-team
 ```
 
 Scaffolds a new workspace directory with a template `workspace.json` and empty `rules/`, `context/`, and `memory-banks/` directories.
@@ -147,7 +147,7 @@ Scaffolds a new workspace directory with a template `workspace.json` and empty `
 ### 1. Scaffold
 
 ```bash
-./setup.sh workspace create my-team
+koda workspace create my-team
 ```
 
 ### 2. Edit workspace.json
@@ -197,8 +197,8 @@ Drop markdown files into `workspaces/my-team/context/`:
 ### 5. Test it
 
 ```bash
-./setup.sh workspace show my-team    # Verify config
-./setup.sh workspace apply my-team   # Apply and test
+koda workspace show my-team    # Verify config
+koda workspace apply my-team   # Apply and test
 ```
 
 ### 6. Commit to your fork
@@ -209,7 +209,7 @@ git commit -m "feat: add my-team workspace"
 git push
 ```
 
-New team members just clone and run `./setup.sh workspace apply my-team`.
+New team members just clone and run `koda workspace apply my-team`.
 
 ---
 
@@ -232,9 +232,9 @@ All commands work identically with `setup.ps1`:
 Pull or push all repositories in a workspace with one command:
 
 ```bash
-./setup.sh workspace sync payments-core          # fetch + pull all repos
-./setup.sh workspace sync payments-core --push   # push all repos
-./setup.sh workspace sync default                # sync all 9 org repos
+koda workspace sync payments-core          # fetch + pull all repos
+koda workspace sync payments-core --push   # push all repos
+koda workspace sync default                # sync all 9 org repos
 ```
 
 Resolves `projects[].path` from `workspace.json`, skips missing directories gracefully.
