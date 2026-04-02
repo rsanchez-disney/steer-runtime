@@ -4,9 +4,9 @@
   "description": "Payment Sheet — guest-facing payment UI for Disney apps",
   "profiles": ["dev-web"],
   "projects": [
-    { "name": "wdpr-payment-sheet", "path": "../wdpr-payment-sheet", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-sheet" },
-    { "name": "wdpr-payment-sheet-api", "path": "../wdpr-payment-sheet-api", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-sheet-api" },
-    { "name": "wdpr-payment-session", "path": "../wdpr-payment-session", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-session" },
-    { "name": "wdpr-payment-services", "path": "../wdpr-payment-services", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-services" }
+    { "name": "wdpr-payment-sheet", "path": "../wdpr-payment-sheet", "repo": "DisneyPaymentsOrg/wdpr-payment-sheet" },
+    { "name": "wdpr-payment-sheet-api", "path": "../wdpr-payment-sheet-api", "repo": "DisneyPaymentsOrg/wdpr-payment-sheet-api" },
+    { "name": "wdpr-payment-session", "path": "../wdpr-payment-session", "repo": "DisneyPaymentsOrg/wdpr-payment-session" },
+    { "name": "wdpr-payment-services", "path": "../wdpr-payment-services", "repo": "DisneyPaymentsOrg/wdpr-payment-services" }
   ]
 }
