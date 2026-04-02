@@ -4,6 +4,7 @@
   "prompt": "technical_writer_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "code",
     "execute_bash",

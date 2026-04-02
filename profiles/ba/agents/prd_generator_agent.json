@@ -4,6 +4,7 @@
   "prompt": "prd_generator_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "fs_read",

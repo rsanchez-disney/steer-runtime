@@ -5,6 +5,7 @@
   "tools": [
     "@jira/*",
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "code",
     "execute_bash",
