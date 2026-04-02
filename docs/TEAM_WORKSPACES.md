@@ -195,8 +195,26 @@ When you run `koda workspace apply <name>`:
 3. **Installs rules** — from `common/rules/` for all merged rule names
 4. **Copies rules and context** — from each workspace in the chain (root-first)
 5. **Injects tokens** — applies configured MCP tokens to agent configs
-6. **Clones repos** — clones missing project repos if `workspace_path` is set
+6. **For each project**:
+   - If not cloned locally and `repo` field is set → **clones the repo** to `workspace_path/<name>`
+   - If cloned but no memory bank → **initializes memory bank** from known templates or generic templates
+   - If already set up → skips silently
 7. **Saves active workspace** — records which workspace is active in settings
+
+### Project path resolution
+
+When `workspace_path` is set on a workspace (or inherited from a parent), project paths are resolved as `workspace_path + path`. This means projects only need the folder name:
+
+```json
+{
+  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
+  "projects": [
+    { "name": "wdpr-config-services", "path": "wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services" }
+  ]
+}
+```
+
+Koda resolves this to `~/Workspace/Disney/DisneyPaymentsOrg/wdpr-config-services`. The `repo` field enables auto-cloning when the directory doesn't exist.
 
 ---
 
