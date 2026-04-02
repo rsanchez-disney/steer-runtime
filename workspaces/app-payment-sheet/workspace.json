@@ -1,0 +1,12 @@
+{
+  "name": "app-payment-sheet",
+  "extends": "app-team",
+  "description": "Payment Sheet — guest-facing payment UI for Disney apps",
+  "profiles": ["dev-web"],
+  "projects": [
+    { "name": "wdpr-payment-sheet", "path": "../wdpr-payment-sheet", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-sheet" },
+    { "name": "wdpr-payment-sheet-api", "path": "../wdpr-payment-sheet-api", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-sheet-api" },
+    { "name": "wdpr-payment-session", "path": "../wdpr-payment-session", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-session" },
+    { "name": "wdpr-payment-services", "path": "../wdpr-payment-services", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-services" }
+  ]
+}
