@@ -89,10 +89,8 @@ EXAMPLES:
   ./setup.sh workspace list --fetch        # Pull latest, then list
   ./setup.sh workspace show payments-core  # View workspace details
   ./setup.sh workspace apply payments-core # Apply team config
-  ./setup.sh workspace create my-team      # Scaffold + commit + push
   ./setup.sh workspace sync payments-core   # Pull all workspace repos
   ./setup.sh workspace sync payments-core --push  # Push all workspace repos
-  ./setup.sh workspace create my-team --local  # Scaffold only (no git)
 
   # Cursor IDE
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
@@ -1563,18 +1561,53 @@ MCPEOF
                 echo "📋 Available team workspaces:"
                 echo ""
                 if [ ! -d "$ws_dir" ] || [ -z "$(ls -d "$ws_dir"/*/workspace.json 2>/dev/null)" ]; then
-                    echo "  (none) — create one with: ./setup.sh workspace create <name>"
+                    echo "  (none)"
                     exit 0
                 fi
-                for ws in "$ws_dir"/*/workspace.json; do
-                    ws_name=$(basename "$(dirname "$ws")")
-                    ws_desc=$(python3 -c "import json; print(json.load(open('$ws')).get('description',''))" 2>/dev/null)
-                    ws_profiles=$(python3 -c "import json; print(', '.join(json.load(open('$ws')).get('profiles',[])))" 2>/dev/null)
-                    echo "  • $ws_name"
-                    [ -n "$ws_desc" ] && echo "    $ws_desc"
-                    [ -n "$ws_profiles" ] && echo "    Profiles: $ws_profiles"
-                    echo ""
-                done
+                python3 - "$ws_dir" << 'LIST_PY'
+import json, os, sys
+ws_dir = sys.argv[1]
+workspaces = {}
+for name in sorted(os.listdir(ws_dir)):
+    ws_file = os.path.join(ws_dir, name, "workspace.json")
+    if os.path.isfile(ws_file):
+        with open(ws_file) as f:
+            workspaces[name] = json.load(f)
+
+children = {}
+roots = []
+for name, ws in workspaces.items():
+    parent = ws.get("extends", "")
+    if parent and parent in workspaces:
+        children.setdefault(parent, []).append(name)
+    else:
+        roots.append(name)
+
+def print_tree(name, prefix="", last=True):
+    ws = workspaces[name]
+    tree = prefix
+    if prefix:
+        tree += "└─ " if last else "├─ "
+    else:
+        tree = "  • "
+    desc = ws.get("description", "")
+    profiles = ", ".join(ws.get("profiles", []))
+    print(f"{tree}{name}")
+    if desc:
+        pad = prefix + ("   " if last else "│  ") if prefix else "    "
+        print(f"{pad}{desc}")
+    if profiles:
+        pad = prefix + ("   " if last else "│  ") if prefix else "    "
+        print(f"{pad}Profiles: {profiles}")
+    kids = children.get(name, [])
+    child_prefix = prefix + ("   " if last else "│  ") if prefix else "    "
+    for i, kid in enumerate(kids):
+        print_tree(kid, child_prefix, i == len(kids) - 1)
+
+for name in roots:
+    print_tree(name)
+    print()
+LIST_PY
                 ;;
 
             show)
@@ -1590,6 +1623,7 @@ print(f\"╔{'═'*58}╗\")
 print(f\"║  Team Workspace: {ws['name']:<39} ║\")
 print(f\"╚{'═'*58}╝\")
 print()
+if ws.get('extends'):     print(f\"  Extends:      {ws['extends']}\")
 if ws.get('description'): print(f\"  Description:  {ws['description']}\")
 if ws.get('team'):        print(f\"  Team:         {ws['team']}\")
 if ws.get('jira_prefix'): print(f\"  Jira Prefix:  {ws['jira_prefix']}\")
@@ -1668,28 +1702,33 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                     echo ""
                 fi
 
-                # 3. Copy workspace-specific rules
-                ws_path="$ws_dir/$ws_name"
-                if [ -d "$ws_path/rules" ] && [ -n "$(ls "$ws_path/rules"/*.md 2>/dev/null)" ]; then
-                    echo "📏 Installing workspace rules..."
-                    mkdir -p "$KIRO_ROOT/rules"
-                    for r in "$ws_path/rules"/*.md; do
-                        cp "$r" "$KIRO_ROOT/rules/"
-                        echo "  ✓ $(basename "$r")"
-                    done
-                    echo ""
-                fi
+                # 3. Copy workspace-specific rules from chain
+                for chain_ws in $ws_chain; do
+                    chain_path="$ws_dir/$chain_ws"
+                    if [ -d "$chain_path/rules" ] && [ -n "$(ls "$chain_path/rules"/*.md 2>/dev/null)" ]; then
+                        echo "📏 Installing rules from $chain_ws..."
+                        mkdir -p "$KIRO_ROOT/rules"
+                        for r in "$chain_path/rules"/*.md; do
+                            cp "$r" "$KIRO_ROOT/rules/"
+                            echo "  ✓ $(basename "$r")"
+                        done
+                    fi
+                done
+                echo ""
 
-                # 4. Copy workspace-specific context (into repo .kiro/context/ where agents read from)
-                if [ -d "$ws_path/context" ] && [ -n "$(ls "$ws_path/context"/*.md 2>/dev/null)" ]; then
-                    echo "📄 Installing workspace context..."
-                    mkdir -p "$STEER_ROOT/shared/context"
-                    for c in "$ws_path/context"/*.md; do
-                        cp "$c" "$STEER_ROOT/shared/context/"
-                        echo "  ✓ $(basename "$c")"
-                    done
-                    echo ""
-                fi
+                # 4. Copy context from all workspaces in chain (root first)
+                for chain_ws in $ws_chain; do
+                    chain_path="$ws_dir/$chain_ws"
+                    if [ -d "$chain_path/context" ] && [ -n "$(ls "$chain_path/context"/*.md 2>/dev/null)" ]; then
+                        echo "📄 Installing context from $chain_ws..."
+                        mkdir -p "$KIRO_ROOT/context"
+                        for c in "$chain_path/context"/*.md; do
+                            cp "$c" "$KIRO_ROOT/context/"
+                            echo "  ✓ $(basename "$c")"
+                        done
+                    fi
+                done
+                echo ""
 
                 # 5. Initialize project memory banks
                 projects=$(python3 -c "
@@ -1732,44 +1771,9 @@ for p in json.load(open('$ws_file')).get('projects',[]):
                 ;;
 
             create)
-                ws_name="$1"
-                if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace create <name>"; exit 1; fi
-                ws_path="$ws_dir/$ws_name"
-                if [ -d "$ws_path" ]; then echo "❌ Workspace already exists: $ws_name"; exit 1; fi
-
-                echo "🏗️  Creating workspace: $ws_name"
-                mkdir -p "$ws_path"/{rules,context,memory-banks}
-
-                cat > "$ws_path/workspace.json" << WSEOF
-{
-  "name": "$ws_name",
-  "description": "",
-  "team": "",
-  "profiles": ["dev-core", "dev-web"],
-  "default_agent": "orchestrator",
-  "projects": [],
-  "rules": ["conventional_commit"],
-  "enable_tools": true,
-  "jira_prefix": ""
-}
-WSEOF
-
-                echo "✅ Workspace scaffolded at workspaces/$ws_name/"
-
-                # Commit and push unless --local
-                if [[ "$2" != "--local" ]]; then
-                    echo ""
-                    echo "📤 Publishing workspace to repository..."
-                    git -C "$STEER_ROOT" add "workspaces/$ws_name/" 2>/dev/null
-                    git -C "$STEER_ROOT" commit -m "feat: add $ws_name team workspace" --quiet 2>/dev/null &&                     git -C "$STEER_ROOT" push --quiet 2>/dev/null &&                         echo "  ✓ Committed and pushed" ||                         echo "  ⚠ Git push failed — commit locally, push manually"
-                fi
-
-                echo ""
-                echo "Next steps:"
-                echo "  1. Edit workspaces/$ws_name/workspace.json"
-                echo "  2. Add team rules to workspaces/$ws_name/rules/"
-                echo "  3. Add team context to workspaces/$ws_name/context/"
-                echo "  4. Apply: ./setup.sh workspace apply $ws_name"
+                echo "❌ Workspace creation is managed through the Koda TUI."
+                echo "   Run: koda → Workspaces → n=new or x=extend"
+                exit 1
                 ;;
 
 

@@ -81,10 +81,11 @@ koda workspace apply uad-ongoing       # Switch to Cast Sales Experience
 
 ## Need a new workspace?
 
-Ask your team lead to scaffold one:
+Workspace creation is done through the Koda TUI:
 
-```bash
-koda workspace create my-new-team
-```
+1. Run `koda` and press `w` to open Workspaces
+2. Press `n` to create new, or select an existing workspace and press `x` to extend it
+3. Fill in your team's details, profiles, and Jira prefix
+4. `ctrl+s` to save — Koda publishes via PR
 
-This creates the directory structure. Then fill in `workspace.json` and `context/team_context.md` with your Jira project, board, and team roster. See existing workspaces in `workspaces/` for examples.
+See the [Team Workspaces Guide](TEAM_WORKSPACES.md) for full documentation on creating, editing, and extending workspaces.

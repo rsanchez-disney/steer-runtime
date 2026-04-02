@@ -102,7 +102,7 @@ koda enable-tools         # Enable thinking, todo, knowledge
 # Team Workspaces
 koda workspace list              # List available workspaces
 koda workspace apply <team>      # Apply team config
-koda workspace create <team>     # Scaffold new workspace
+koda workspace show <team>       # View workspace details
 
 # Content
 koda rules list           # List available coding rules
