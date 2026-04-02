@@ -4,9 +4,9 @@
   "description": "Config Studio — client configuration management",
   "profiles": ["dev-web"],
   "projects": [
-    { "name": "wdpr-config-services", "path": "../wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services" },
-    { "name": "wdpr-payment-controls-api", "path": "../wdpr-payment-controls-api", "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api" },
-    { "name": "wdpr-payment-controls-client", "path": "../wdpr-payment-controls-client", "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client" },
-    { "name": "wdpr-payments-ref", "path": "../wdpr-payments-ref", "repo": "DisneyPaymentsOrg/wdpr-payments-ref" }
+    { "name": "wdpr-config-services", "path": "wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services" },
+    { "name": "wdpr-payment-controls-api", "path": "wdpr-payment-controls-api", "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api" },
+    { "name": "wdpr-payment-controls-client", "path": "wdpr-payment-controls-client", "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client" },
+    { "name": "wdpr-payments-ref", "path": "wdpr-payments-ref", "repo": "DisneyPaymentsOrg/wdpr-payments-ref" }
   ]
 }
