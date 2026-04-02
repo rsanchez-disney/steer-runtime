@@ -129,7 +129,7 @@ list_profiles() {
             fi
             local profile=$(basename "$ws_dir")
             local ws_name=$(basename "$(dirname "$(dirname "$ws_dir")")")
-            local agent_count=$(find "$ws_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+            local agent_count=$(find "$ws_dir/agents" -name "*.json" ! -name "._*" 2>/dev/null | wc -l | tr -d ' ')
             echo "  • $profile ($agent_count agents) [workspace: $ws_name]"
         fi
     done
@@ -171,7 +171,7 @@ detect_installed_profiles() {
     for dir in "$STEER_ROOT"/profiles/*; do
         if [ -d "$dir" ]; then
             profile=$(basename "$dir")
-            local first_agent=$(find "$dir/agents" -name "*.json" -print -quit 2>/dev/null)
+            local first_agent=$(find "$dir/agents" -name "*.json" ! -name "._*" -print -quit 2>/dev/null)
             if [ -n "$first_agent" ]; then
                 local agent_name=$(basename "$first_agent" .json)
                 if [ -f "$target_dir/agents/${agent_name}.json" ]; then
@@ -181,18 +181,18 @@ detect_installed_profiles() {
         fi
     done
 
-    # Check workspace-local profiles
+    # Check workspace-local profiles (skip if same name already found globally)
     for ws_dir in "$STEER_ROOT"/workspaces/*/profiles/*; do
         if [ -d "$ws_dir/agents" ]; then
             local profile=$(basename "$ws_dir")
-            local first_agent=$(find "$ws_dir/agents" -name "*.json" -print -quit 2>/dev/null)
+            local dup=false
+            for i in "${installed[@]}"; do [ "$i" = "$profile" ] && dup=true && break; done
+            [ "$dup" = true ] && continue
+            local first_agent=$(find "$ws_dir/agents" -name "*.json" ! -name "._*" -print -quit 2>/dev/null)
             if [ -n "$first_agent" ]; then
                 local agent_name=$(basename "$first_agent" .json)
                 if [ -f "$target_dir/agents/${agent_name}.json" ]; then
-                    # Avoid duplicates
-                    local dup=false
-                    for i in "${installed[@]}"; do [ "$i" = "$profile" ] && dup=true && break; done
-                    [ "$dup" = false ] && installed+=("$profile")
+                    installed+=("$profile")
                 fi
             fi
         fi
@@ -290,7 +290,7 @@ install_profile() {
 install_profile_from() {
     local source_dir=$1
     local profile=$2
-    local target_dir="$KIRO_ROOT"
+    local target_dir=${3:-$KIRO_ROOT}
 
     if [ ! -d "$source_dir" ]; then
         echo "❌ Workspace profile not found: $source_dir"
@@ -300,18 +300,20 @@ install_profile_from() {
     mkdir -p "$target_dir/agents" "$target_dir/prompts"
 
     for agent_json in "$source_dir/agents/"*.json; do
-        [ -f "$agent_json" ] && sed "s|\$HOME|$HOME|g" "$agent_json" > "$target_dir/agents/$(basename "$agent_json")"
+        [ -f "$agent_json" ] || continue
+        [[ "$(basename "$agent_json")" == ._* ]] && continue
+        sed "s|\$HOME|$HOME|g" "$agent_json" > "$target_dir/agents/$(basename "$agent_json")"
     done
-    cp -r "$source_dir/prompts/"* "$target_dir/prompts/" 2>/dev/null || true
 
-    for subdir in context powers skills steering; do
+    # Copy subdirs, excluding macOS ._ resource fork files
+    for subdir in prompts context powers skills steering; do
         if [ -d "$source_dir/$subdir" ]; then
             mkdir -p "$target_dir/$subdir"
-            cp -r "$source_dir/$subdir/"* "$target_dir/$subdir/" 2>/dev/null || true
+            find "$source_dir/$subdir" -maxdepth 1 -type f ! -name '._*' -exec cp {} "$target_dir/$subdir/" \;
         fi
     done
 
-    local agent_count=$(find "$source_dir/agents" -name "*.json" 2>/dev/null | wc -l | tr -d ' ')
+    local agent_count=$(find "$source_dir/agents" -name "*.json" ! -name "._*" 2>/dev/null | wc -l | tr -d ' ')
     inject_agent_tokens "$target_dir"
     echo "  ✓ $profile ($agent_count agents)"
 }
@@ -1640,7 +1642,7 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                     for profile in $profiles; do
                         if [ -d "$ws_path/profiles/$profile" ]; then
                             echo "📦 Installing workspace profile: $profile"
-                            install_profile_from "$ws_path/profiles/$profile" "$profile"
+                            install_profile_from "$ws_path/profiles/$profile" "$profile" "$KIRO_ROOT"
                         else
                             global_profiles="$global_profiles $profile"
                         fi
