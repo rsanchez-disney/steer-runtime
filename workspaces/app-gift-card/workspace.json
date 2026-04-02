@@ -4,12 +4,12 @@
   "description": "Gift Card Platform — products, promotions, client management",
   "profiles": ["dev-web"],
   "projects": [
-    { "name": "wdpr-gcp-dgc", "path": "../wdpr-gcp-dgc", "repo": "wdpr-parkops-opsheet-suite/wdpr-gcp-dgc" },
-    { "name": "wdpr-gcp-admin", "path": "../wdpr-gcp-admin", "repo": "wdpr-parkops-opsheet-suite/wdpr-gcp-admin" },
-    { "name": "wdpr-gcp-admin-api", "path": "../wdpr-gcp-admin-api", "repo": "wdpr-parkops-opsheet-suite/wdpr-gcp-admin-api" },
-    { "name": "gcp-admin-services", "path": "../gcp-admin-services", "repo": "wdpr-parkops-opsheet-suite/gcp-admin-services" },
-    { "name": "gcp-batch", "path": "../gcp-batch", "repo": "wdpr-parkops-opsheet-suite/gcp-batch" },
-    { "name": "gcp-guest-services", "path": "../gcp-guest-services", "repo": "wdpr-parkops-opsheet-suite/gcp-guest-services" },
-    { "name": "gcp-common-components", "path": "../gcp-common-components", "repo": "wdpr-parkops-opsheet-suite/gcp-common-components" }
+    { "name": "wdpr-gcp-dgc", "path": "../wdpr-gcp-dgc", "repo": "DisneyPaymentsOrg/wdpr-gcp-dgc" },
+    { "name": "wdpr-gcp-admin", "path": "../wdpr-gcp-admin", "repo": "DisneyPaymentsOrg/wdpr-gcp-admin" },
+    { "name": "wdpr-gcp-admin-api", "path": "../wdpr-gcp-admin-api", "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api" },
+    { "name": "gcp-admin-services", "path": "../gcp-admin-services", "repo": "DisneyPaymentsOrg/gcp-admin-services" },
+    { "name": "gcp-batch", "path": "../gcp-batch", "repo": "DisneyPaymentsOrg/gcp-batch" },
+    { "name": "gcp-guest-services", "path": "../gcp-guest-services", "repo": "DisneyPaymentsOrg/gcp-guest-services" },
+    { "name": "gcp-common-components", "path": "../gcp-common-components", "repo": "DisneyPaymentsOrg/gcp-common-components" }
   ]
 }
