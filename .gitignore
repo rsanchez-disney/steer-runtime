@@ -39,3 +39,4 @@ tests/runs/
 .kiro/settings/
 steer-runtime-*.tar.gz
 ._*
+VERSION
