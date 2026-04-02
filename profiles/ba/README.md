@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (4)
+## Agents (8)
 
 ### ba_orchestrator_agent
 Coordinates multiple BA tasks and delegates to specialized agents.
@@ -25,6 +25,40 @@ Creates user stories, acceptance criteria, and feature specifications.
 Analyzes requirements, identifies gaps, validates completeness.
 
 **Use when:** Reviewing requirements, gap analysis, sprint prep
+
+### prd_generator_agent
+Generates Product Requirements Documents from Jira epics.
+
+**Use when:**
+- Creating PRDs
+- Stakeholder analysis
+- Requirements gathering
+
+### backlog_generator_agent
+Generates epic/story breakdowns from PRDs.
+
+**Use when:**
+- Story writing from PRDs
+- Backlog creation
+- Sprint planning prep
+
+### quality_gate_agent
+Formal review gate — approve/reject/revise artifacts.
+
+**Use when:**
+- PRD review
+- Backlog review
+- Test plan review
+- Any artifact approval
+
+### estimation_agent
+Dual-mode project estimation — CCV (hours/story points/FTEs) and DRIFT (tokens/cost).
+
+**Use when:**
+- RFP estimation
+- Sprint planning
+- AI cost projection
+- Team sizing
 
 ---
 
@@ -84,6 +118,27 @@ kiro-cli chat --agent requirements_analyst_agent
    missing information"
 ```
 
+### Generate PRD
+```bash
+kiro-cli chat --agent prd_generator_agent
+> "Generate a PRD from epic DPAY-500 with stakeholder analysis 
+   and success metrics"
+```
+
+### Create Backlog
+```bash
+kiro-cli chat --agent backlog_generator_agent
+> "Break down the PRD into epics and stories with acceptance 
+   criteria ready for sprint planning"
+```
+
+### Estimate Work
+```bash
+kiro-cli chat --agent estimation_agent
+> "Estimate epic DPAY-500 using CCV model — story points, 
+   hours, and FTE requirements"
+```
+
 ### Complex Workflow
 ```bash
 kiro-cli chat --agent ba_orchestrator_agent
@@ -97,11 +152,15 @@ kiro-cli chat --agent ba_orchestrator_agent
 
 ```
 .kiro-ba/
-├── agents/              # 4 agent configurations
+├── agents/              # 8 agent configurations
 │   ├── ba_orchestrator_agent.json
 │   ├── scope_definer_agent.json
 │   ├── feature_writer_agent.json
-│   └── requirements_analyst_agent.json
+│   ├── requirements_analyst_agent.json
+│   ├── prd_generator_agent.json
+│   ├── backlog_generator_agent.json
+│   ├── quality_gate_agent.json
+│   └── estimation_agent.json
 ├── prompts/             # Agent prompts
 ├── context/             # Guidelines and templates
 │   ├── ba_guidelines.md
@@ -120,5 +179,5 @@ kiro-cli chat --agent ba_orchestrator_agent
 ---
 
 **Profile Version:** 1.0  
-**Agents:** 4  
-**Last Updated:** March 12, 2026
+**Agents:** 8  
+**Last Updated:** April 2, 2026
