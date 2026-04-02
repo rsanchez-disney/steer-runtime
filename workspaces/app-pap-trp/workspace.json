@@ -1,0 +1,13 @@
+{
+  "name": "app-pap-trp",
+  "extends": "app-team",
+  "description": "PAP & TRP — batch payment processing and transaction research",
+  "profiles": ["dev-web"],
+  "projects": [
+    { "name": "wdpr-payment-controls-client", "path": "../wdpr-payment-controls-client", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-controls-client" },
+    { "name": "wdpr-payment-controls-api", "path": "../wdpr-payment-controls-api", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-controls-api" },
+    { "name": "wdpr-payment-services", "path": "../wdpr-payment-services", "repo": "wdpr-parkops-opsheet-suite/wdpr-payment-services" },
+    { "name": "wdpr-app-inquiry-service", "path": "../wdpr-app-inquiry-service", "repo": "wdpr-parkops-opsheet-suite/wdpr-app-inquiry-service" },
+    { "name": "dpay-admin-inquiry-webapi", "path": "../dpay-admin-inquiry-webapi", "repo": "wdpr-parkops-opsheet-suite/dpay-admin-inquiry-webapi" }
+  ]
+}
