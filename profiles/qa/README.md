@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (6)
+## Agents (11)
 
 ### qa_orchestrator_agent
 Coordinates QA tasks and delegates to specialized testing agents.
@@ -55,6 +55,35 @@ Creates and executes performance tests, analyzes results.
 - Stress testing
 - Performance benchmarking
 - Identifying bottlenecks
+
+### qe_strategy_agent
+Creates test strategy documents with scope, approach, and risk assessment.
+
+**Use when:** Defining testing approach, risk-based prioritization
+
+### e2e_test_generator_agent
+Generates Gherkin E2E test scenarios from user stories.
+
+**Use when:** Happy path, edge case, and negative test scenarios
+
+### web_discovery_agent
+Discovers testable elements and page objects from web app source.
+
+**Use when:** Test automation prep, selector mapping, user flow discovery
+
+### test_framework_agent
+Generates test automation scaffolding per tech stack.
+
+**Use when:** Test config, base helpers, CI pipeline snippets
+
+### test_coverage_analyzer_agent
+Analyzes test coverage for epics against Jira/Xray and discovers reusable tests.
+
+**Use when:**
+- Coverage gap analysis for epics
+- Discovering reusable tests across projects
+- Building coverage matrix reports
+- Identifying orphan tests and missing ACs
 
 ---
 
@@ -113,24 +142,36 @@ kiro-cli chat --agent performance_tester_agent
 > "Create JMeter load test for checkout flow, 100 concurrent users"
 ```
 
+### Coverage Analysis
+```bash
+kiro-cli chat --agent test_coverage_analyzer_agent
+> "Analyze test coverage for epic DPAY-600 and find reusable tests"
+```
+
 ---
 
 ## Structure
 
 ```
 .kiro-qa/
-├── agents/              # 6 agent configurations
+├── agents/              # 11 agent configurations
 │   ├── qa_orchestrator_agent.json
 │   ├── test_planner_agent.json
 │   ├── test_automation_agent.json
 │   ├── defect_analyst_agent.json
 │   ├── api_tester_agent.json
-│   └── performance_tester_agent.json
+│   ├── performance_tester_agent.json
+│   ├── qe_strategy_agent.json
+│   ├── e2e_test_generator_agent.json
+│   ├── web_discovery_agent.json
+│   ├── test_framework_agent.json
+│   └── test_coverage_analyzer_agent.json
 ├── prompts/             # Agent prompts
 ├── context/             # QA guidelines and templates
 │   ├── qa_guidelines.md
 │   ├── test_templates.md
-│   └── automation_patterns.md
+│   ├── automation_patterns.md
+│   └── coverage_matrix_template.md
 └── README.md            # This file
 ```
 
@@ -173,5 +214,5 @@ kiro-cli chat --agent performance_tester_agent
 ---
 
 **Profile Version:** 1.0  
-**Agents:** 6  
-**Last Updated:** March 12, 2026
+**Agents:** 11  
+**Last Updated:** April 2, 2026

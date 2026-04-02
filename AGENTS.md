@@ -59,7 +59,7 @@ graph TD
     end
 
     %% ─── qa ────────────────────────────────────────
-    subgraph QA["qa · 10 agents"]
+    subgraph QA["qa · 11 agents"]
         QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
         QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
         QA_ORCH --> TAUTO["test_automation<br/><i>context7 · bruno</i>"]:::agent
@@ -70,6 +70,7 @@ graph TD
         QA_ORCH --> E2EGEN["e2e_test_generator<br/><i>jira</i>"]:::agent
         QA_ORCH --> WEBDISC["web_discovery"]:::agent
         QA_ORCH --> TESTFW["test_framework"]:::agent
+        QA_ORCH --> TCOV["test_coverage_analyzer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
     end
 
     %% ─── ops ───────────────────────────────────────
@@ -356,7 +357,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-## Profile: qa (10 agents)
+## Profile: qa (11 agents)
 
 Quality Assurance and Test Automation agents for comprehensive testing.
 
@@ -370,11 +371,11 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Hooks:** agentSpawn (git context)  
 **MCP Servers:** jira, confluence, mywiki, github
 
-**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent
+**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent
 
 ---
 
-### QA Specialists (9)
+### QA Specialists (10)
 
 #### test_planner_agent
 **File:** `profiles/qa/agents/test_planner_agent.json`  
@@ -429,6 +430,12 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/test_framework_agent.json`  
 **Purpose:** Generates test automation scaffolding per tech stack  
 **Use for:** Test config, base helpers, CI pipeline snippets
+
+#### test_coverage_analyzer_agent
+**File:** `profiles/qa/agents/test_coverage_analyzer_agent.json`  
+**Purpose:** Analyzes test coverage for epics against Jira/Xray and discovers reusable tests  
+**Use for:** Coverage gap analysis, reuse discovery across projects, coverage matrix reports  
+**MCP Servers:** jira, confluence, mywiki, github
 
 ---
 
@@ -617,6 +624,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **qa** | test_automation_agent | | | | | ✅ | |
 | **qa** | api_tester_agent | | | | | ✅ | |
 | **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_coverage_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | code_quality_agent | | | | | | SonarQube |
@@ -650,6 +658,7 @@ Shared context loaded via agent `resources`:
 | `defect_templates.md` | defect_analyst |
 | `api_test_patterns.md` | api_tester |
 | `performance_patterns.md` | performance_tester |
+| `coverage_matrix_template.md` | test_coverage_analyzer |
 
 ---
 
@@ -686,6 +695,7 @@ kiro-cli chat --agent test_automation_agent     # Test automation
 kiro-cli chat --agent defect_analyst_agent      # Defect analysis
 kiro-cli chat --agent api_tester_agent          # API testing
 kiro-cli chat --agent performance_tester_agent  # Performance testing
+kiro-cli chat --agent test_coverage_analyzer_agent # Coverage analysis
 
 # Ops
 kiro-cli chat --agent ops_orchestrator_agent    # Ops orchestrator
@@ -719,5 +729,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 51 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 8, qa: 10, ops: 7, pm: 6)  
-**Last Updated:** March 22, 2026
+**Total Agents:** 52 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Last Updated:** April 2, 2026
