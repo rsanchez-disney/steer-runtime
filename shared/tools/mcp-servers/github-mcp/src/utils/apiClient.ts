@@ -14,94 +14,41 @@ const scriptDir = (() => {
 
 config({ path: path.join(scriptDir, "..", "..", ".env") });
 
-interface RemoteConfig {
-    token: string;
-    apiUrl: string;
-}
+const githubUrl = process.env.GITHUB_URL || "";
+const githubToken = process.env.GITHUB_TOKEN || "";
 
-interface RemoteClients {
-    [remoteName: string]: RemoteConfig;
-}
-
-// Load remotes from environment variables
-function loadRemotesFromEnv(): RemoteClients {
-    const remotes: RemoteClients = {};
-    const envKeys = Object.keys(process.env);
-
-    envKeys.forEach((key) => {
-        const match = key.match(/^GITHUB_TOKEN_(.+)$/);
-        if (match) {
-            const remoteName = match[1];
-            const token = process.env[key];
-            const host = process.env[`GITHUB_HOST_${remoteName}`];
-            const path = process.env[`GITHUB_PATH_${remoteName}`] || "/api/v3";
-
-            if (token && host) {
-                const apiUrl = `https://${host}${path}`;
-                remotes[remoteName] = { token, apiUrl };
-            }
-        }
-    });
-
-    return remotes;
-}
-
-export const remotes = loadRemotesFromEnv();
-export const defaultRemote =
-    process.env.GITHUB_DEFAULT_REMOTE || Object.keys(remotes)[0];
-
-if (Object.keys(remotes).length === 0) {
+if (!githubUrl || !githubToken) {
     console.error(
-        "No GitHub remotes configured. Please set GITHUB_TOKEN_* and GITHUB_API_URL_* environment variables.",
+        "Missing required environment variables: GITHUB_URL, GITHUB_TOKEN",
     );
     process.exit(1);
 }
 
-// Get Octokit client for specific remote
-export function getClient(remote: string): Octokit {
-    const config = remotes[remote];
-    if (!config) {
-        throw new Error(
-            `Unknown remote: ${remote}. Available: ${Object.keys(remotes).join(", ")}`,
-        );
-    }
-    return new Octokit({
-        auth: config.token,
-        baseUrl: config.apiUrl,
-    });
+// Derive API base URL from the GitHub URL
+const apiPath = process.env.GITHUB_API_PATH || "/api/v3";
+const apiBaseUrl = `${githubUrl}${apiPath}`;
+
+const octokit = new Octokit({
+    auth: githubToken,
+    baseUrl: apiBaseUrl,
+});
+
+export function getClient(): Octokit {
+    return octokit;
 }
 
-// Extract remote from repo URL or use explicit remote parameter
-export function getRemoteFromRepo(
-    repo: string,
-    explicitRemote?: string,
-): { remote: string; owner: string; repo: string } {
-    if (explicitRemote) {
-        const [owner, repoName] = repo.split("/");
-        return { remote: explicitRemote, owner, repo: repoName };
-    }
-
+export function parseRepo(repo: string): { owner: string; repo: string } {
+    // Handle full URLs: https://github.disney.com/owner/repo
     if (repo.startsWith("http://") || repo.startsWith("https://")) {
         const url = new URL(repo);
-        const hostname = url.hostname;
-        const pathParts = url.pathname.split("/").filter(Boolean);
-
-        // Find matching remote by checking if hostname matches any configured host
-        for (const [remoteName, config] of Object.entries(remotes)) {
-            if (config.apiUrl.includes(hostname)) {
-                return {
-                    remote: remoteName,
-                    owner: pathParts[0],
-                    repo: pathParts[1],
-                };
-            }
-        }
-
-        throw new Error(
-            `No remote configured for hostname: ${hostname}. Available remotes: ${Object.keys(remotes).join(", ")}`,
-        );
+        const parts = url.pathname.split("/").filter(Boolean);
+        return { owner: parts[0], repo: parts[1] };
     }
-
+    // Handle owner/repo format
     const [owner, repoName] = repo.split("/");
-    return { remote: defaultRemote, owner, repo: repoName };
+    return { owner, repo: repoName };
+}
+
+export function getGitHubUrl(): string {
+    return githubUrl;
 }

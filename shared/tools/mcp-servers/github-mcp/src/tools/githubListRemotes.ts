@@ -1,8 +1,8 @@
-import { remotes, defaultRemote } from "../utils/apiClient.js";
+import { getGitHubUrl } from "../utils/apiClient.js";
 
 export const githubListRemotesSchema = {
     name: "github_list_remotes",
-    description: "List all configured GitHub remotes",
+    description: "Show the configured GitHub instance URL",
     inputSchema: {
         type: "object",
         properties: {},
@@ -11,24 +11,11 @@ export const githubListRemotesSchema = {
 };
 
 export async function handleGithubListRemotes() {
-    const configs = Object.entries(remotes).map(([host, config]) => ({
-        hostname: host,
-        apiUrl: config.apiUrl,
-    }));
-
     return {
         content: [
             {
                 type: "text",
-                text: JSON.stringify(
-                    {
-                        remotes: Object.keys(remotes),
-                        default: defaultRemote,
-                        configs,
-                    },
-                    null,
-                    2,
-                ),
+                text: JSON.stringify({ url: getGitHubUrl() }, null, 2),
             },
         ],
     };

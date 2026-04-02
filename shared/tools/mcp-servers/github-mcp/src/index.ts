@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 import { config } from "dotenv";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";

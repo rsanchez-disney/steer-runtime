@@ -1,4 +1,4 @@
-import { getClient, getRemoteFromRepo, remotes } from "../utils/apiClient.js";
+import { getClient, parseRepo } from "../utils/apiClient.js";
 
 export const githubGetFileSchema = {
     name: "github_get_file",
@@ -21,10 +21,6 @@ export const githubGetFileSchema = {
                 description:
                     "Optional: Branch, tag, or commit SHA. Defaults to the repo's default branch",
             },
-            remote: {
-                type: "string",
-                description: `Optional: Explicit remote (${Object.keys(remotes).join(", ")})`,
-            },
         },
         required: ["repo", "path"],
     },
@@ -35,20 +31,16 @@ export async function handleGithubGetFile(args: any) {
         repo,
         path: filePath,
         ref,
-        remote: explicitRemote,
     } = args as {
         repo: string;
         path: string;
         ref?: string;
-        remote?: string;
     };
 
-    const {
-        remote,
-        owner,
+    const { owner,
         repo: repoName,
-    } = getRemoteFromRepo(repo, explicitRemote);
-    const octokit = getClient(remote);
+    } = parseRepo(repo);
+    const octokit = getClient();
 
     const params: { owner: string; repo: string; path: string; ref?: string } =
         { owner, repo: repoName, path: filePath };

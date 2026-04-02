@@ -1,4 +1,4 @@
-import { getClient, getRemoteFromRepo, remotes } from "../utils/apiClient.js";
+import { getClient, parseRepo } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 import { formatTimestamp, formatRepoId } from "../utils/formatting.js";
 
@@ -35,10 +35,6 @@ export const githubSearchPrsSchema = {
                 description:
                     "Sort direction: 'asc' or 'desc' (default: 'desc')",
             },
-            remote: {
-                type: "string",
-                description: `Optional: Explicit remote hostname (${Object.keys(remotes).join(", ")})`,
-            },
             outputDir: {
                 type: "string",
                 description: "Optional: Directory to save search results",
@@ -56,7 +52,6 @@ export async function handleGithubSearchPrs(args: any) {
         base,
         sort = "created",
         direction = "desc",
-        remote: explicitRemote,
         outputDir,
     } = args as {
         repo: string;
@@ -65,16 +60,13 @@ export async function handleGithubSearchPrs(args: any) {
         base?: string;
         sort?: string;
         direction?: string;
-        remote?: string;
         outputDir?: string | false | null;
     };
 
-    const {
-        remote,
-        owner,
+    const { owner,
         repo: repoName,
-    } = getRemoteFromRepo(repo, explicitRemote);
-    const octokit = getClient(remote);
+    } = parseRepo(repo);
+    const octokit = getClient();
 
     const { data: prs } = await octokit.pulls.list({
         owner,

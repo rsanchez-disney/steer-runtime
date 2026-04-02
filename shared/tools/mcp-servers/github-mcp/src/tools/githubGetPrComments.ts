@@ -1,4 +1,4 @@
-import { getClient, getRemoteFromRepo, remotes } from "../utils/apiClient.js";
+import { getClient, parseRepo } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 import { formatTimestamp, formatRepoId } from "../utils/formatting.js";
 
@@ -16,10 +16,6 @@ export const githubGetPrCommentsSchema = {
                 type: "string",
                 description: "Pull request number",
             },
-            remote: {
-                type: "string",
-                description: `Optional: Explicit remote hostname (${Object.keys(remotes).join(", ")})`,
-            },
             outputDir: {
                 type: "string",
                 description: "Optional: Directory to save comments data",
@@ -33,21 +29,17 @@ export async function handleGithubGetPrComments(args: any) {
     const {
         repo,
         prNumber,
-        remote: explicitRemote,
         outputDir,
     } = args as {
         repo: string;
         prNumber: string;
-        remote?: string;
         outputDir?: string | false | null;
     };
 
-    const {
-        remote,
-        owner,
+    const { owner,
         repo: repoName,
-    } = getRemoteFromRepo(repo, explicitRemote);
-    const octokit = getClient(remote);
+    } = parseRepo(repo);
+    const octokit = getClient();
     const prNum = parseInt(prNumber);
 
     const { data: comments } = await octokit.issues.listComments({
