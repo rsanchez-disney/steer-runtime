@@ -22,7 +22,8 @@
   "resources": [
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
-    "file://README.md"
+    "file://README.md",
+    "file://.kiro/context/node_conventions.md"
   ],
   "hooks": {
     "preToolUse": [

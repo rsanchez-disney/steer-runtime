@@ -1,31 +1,27 @@
 {
-  "name": "ui",
-  "description": "Config Studio UI specialist (Angular)",
-  "prompt": "ui.md",
+  "name": "astro",
+  "description": "Astro SSR specialist with React components and TypeScript",
+  "prompt": "astro.md",
   "tools": [
     "fs_read",
     "fs_write",
     "execute_bash",
+    "code",
+    "grep",
+    "@context7/*",
     "@figma/*"
   ],
-  "toolsSettings": {
-    "fs_write": {
-      "allowedPaths": [
-        "src/**",
-        "projects/**",
-        "package.json",
-        "angular.json",
-        ".eslintrc*",
-        "tsconfig*.json"
-      ]
-    }
-  },
+  "allowedTools": [
+    "@context7/*",
+    "@figma/*"
+  ],
   "resources": [
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
-    "file://README.md",
-    "file://.kiro/context/angular_modern_patterns.md"
+    "file://.kiro/context/astro_project_patterns.md",
+    "file://.kiro/context/vista_web_components.md"
   ],
+  "includeMcpJson": true,
   "hooks": {
     "preToolUse": [
       {
@@ -46,9 +42,5 @@
         "description": "Auto-lint after file writes"
       }
     ]
-  },
-  "allowedTools": [
-    "@figma/*"
-  ],
-  "includeMcpJson": true
+  }
 }

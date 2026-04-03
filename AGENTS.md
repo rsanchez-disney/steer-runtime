@@ -32,11 +32,12 @@ graph TD
     end
 
     %% ─── dev-web ───────────────────────────────────
-    subgraph DEV_WEB["dev-web · 4 agents"]
+    subgraph DEV_WEB["dev-web · 5 agents"]
         BACK["backend<br/><i>context7 · bruno</i>"]:::agent
         WAPI["webapi<br/><i>context7 · bruno</i>"]:::agent
         UI["ui<br/><i>context7 · figma</i>"]:::agent
         UX["ux_specialist<br/><i>figma</i>"]:::agent
+        ASTRO["astro<br/><i>context7 · figma</i>"]:::agent
     end
 
     %% ─── dev-mobile ────────────────────────────────
@@ -127,13 +128,13 @@ graph TD
 
 ---
 
-## Dev Profiles (22 agents total)
+## Dev Profiles (23 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 25 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
-koda install dev-core dev-web       # Fullstack web developer (20 agents)
+koda install dev                    # All 26 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
+koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
@@ -252,9 +253,9 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 
 ---
 
-### Profile: dev-web (4 agents)
+### Profile: dev-web (5 agents)
 
-Fullstack web specialists for Config Studio (Java + Node.js + Angular).
+Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 
 #### backend
 **File:** `profiles/dev-web/agents/backend.json`  
@@ -282,6 +283,13 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular).
 **Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
 **Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance  
 **MCP Servers:** figma
+
+#### astro
+**File:** `profiles/dev-web/agents/astro.json`  
+**Purpose:** Astro SSR specialist with React components and TypeScript  
+**Use for:** Astro pages, React islands, server actions, Nanostores state  
+**MCP Servers:** context7, figma  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
 
@@ -657,6 +665,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-web** | webapi | | | | | ✅ | |
 | **dev-web** | ui | | | | | ✅ | Figma |
 | **dev-web** | ux_specialist_agent | | | | | | Figma |
+| **dev-web** | astro | | | | | ✅ | Figma |
 | **dev-python** | python | | | | | ✅ | |
 | **dev-infra** | terraform | | | | | ✅ | |
 | **dev-mobile** | flutter | | | | | ✅ | |
@@ -708,6 +717,11 @@ Shared context loaded via agent `resources`:
 | `performance_patterns.md` | performance_tester |
 | `coverage_matrix_template.md` | test_coverage_analyzer |
 | `python_guidelines.md` | python |
+| `angular_modern_patterns.md` | ui |
+| `java_conventions.md` | backend |
+| `node_conventions.md` | webapi |
+| `astro_project_patterns.md` | astro |
+| `vista_web_components.md` | astro, ui, ux_specialist |
 | `terraform_guidelines.md` | terraform |
 
 ---
@@ -725,6 +739,7 @@ kiro-cli chat --agent backend                   # Java backend
 kiro-cli chat --agent webapi                    # Node.js API
 kiro-cli chat --agent ui                        # Angular frontend
 kiro-cli chat --agent ux_specialist_agent       # Accessibility & UX review
+kiro-cli chat --agent astro                     # Astro SSR + React
 
 # Dev Python
 kiro-cli chat --agent python                    # Python development
@@ -785,5 +800,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 54 (dev-core: 16, dev-web: 4, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Total Agents:** 55 (dev-core: 16, dev-web: 5, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
 **Last Updated:** April 3, 2026

@@ -1,10 +1,10 @@
 # Dev Web Profile
 
-Fullstack web specialists for Config Studio (Java + Node.js + Angular).
+Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 
 Requires `dev-core` as a base.
 
-## Agents (4)
+## Agents (5)
 
 | Agent | Purpose |
 |-------|---------|
@@ -12,13 +12,14 @@ Requires `dev-core` as a base.
 | webapi | Node.js/TypeScript specialist (wdpr-payment-controls-api) |
 | ui | Angular specialist (wdpr-payment-controls-client) |
 | ux_specialist_agent | Accessibility (WCAG 2.1 AA) and UX pattern review |
+| astro | Astro SSR specialist with React components and TypeScript |
 
 ## Structure
 
 ```
 .kiro-dev-web/
-├── agents/       # 4 agent JSON configs
-├── prompts/      # 4 agent prompt files
+├── agents/       # 5 agent JSON configs
+├── prompts/      # 5 agent prompt files
 ├── steering/     # Repo-specific: backend-java, webapi-node, ui-angular
 └── skills/       # 12 skills: api-*, backend-*, ui-*
 ```

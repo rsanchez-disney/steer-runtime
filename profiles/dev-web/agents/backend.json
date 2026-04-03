@@ -37,7 +37,8 @@
   "resources": [
     "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
-    "file://README.md"
+    "file://README.md",
+    "file://.kiro/context/java_conventions.md"
   ],
   "hooks": {
     "preToolUse": [
