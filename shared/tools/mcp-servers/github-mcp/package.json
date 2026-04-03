@@ -12,7 +12,9 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\""
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest --run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
@@ -30,6 +32,8 @@
     "eslint-plugin-react": "^7.37.5",
     "prettier": "^3.0.0",
     "prettier-plugin-packagejson": "^2.5.19",
-    "typescript": "^5.9.3"
+    "fast-check": "^4.1.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.1"
   }
 }

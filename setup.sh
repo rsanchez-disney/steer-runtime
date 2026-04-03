@@ -11,6 +11,14 @@ clean_resource_forks() {
     find "$1" -name "._*" -delete 2>/dev/null || true
 }
 
+# Discover GitHub remotes from tokens.env by scanning for GITHUB_TOKEN_{remote} keys
+# Outputs one remote name per line, sorted and deduplicated
+discover_github_remotes() {
+    local tokens_file="$1"
+    [ -f "$tokens_file" ] || return
+    grep -o 'GITHUB_TOKEN_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/GITHUB_TOKEN_//' | sort -u
+}
+
 show_usage() {
     cat << 'USAGE'
 ╔══════════════════════════════════════════════════════════════╗
@@ -223,28 +231,92 @@ inject_agent_tokens() {
     
     local jira_pat=$(_read_token "JIRA_PAT")
     local confluence_pat=$(_read_token "CONFLUENCE_PAT")
-    local github_token=$(_read_token "GITHUB_TOKEN_disney")
+    
+    # Discover GitHub remotes for per-remote injection
+    local github_remotes
+    github_remotes=$(discover_github_remotes "$tokens_file")
     
     for agent_json in "$target_dir/agents/"*.json; do
         [ -f "$agent_json" ] || continue
-        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_token" << 'INJECT_PY'
-import json, sys
-path, jira, conf, gh = sys.argv[1:5]
-tokens = {
-    ("jira", "JIRA_PAT"): jira,
-    ("confluence", "CONFLUENCE_PAT"): conf,
-    ("github", "GITHUB_TOKEN_disney"): gh,
-}
-with open(path) as f: d = json.load(f)
+        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_remotes" "$tokens_file" << 'INJECT_PY'
+import json, sys, os
+
+path = sys.argv[1]
+jira = sys.argv[2]
+conf = sys.argv[3]
+remotes_raw = sys.argv[4]
+tokens_file = sys.argv[5]
+
+def read_tok(key):
+    try:
+        with open(tokens_file) as f:
+            for line in f:
+                if line.startswith(key + '='):
+                    return line.strip().split('=', 1)[1]
+    except FileNotFoundError:
+        pass
+    return ''
+
+with open(path) as f:
+    d = json.load(f)
+
+servers = d.get("mcpServers", {})
+if not servers:
+    sys.exit(0)
+
 changed = False
-for (mcp, key), val in tokens.items():
-    if val and val != "YOUR_TOKEN":
-        env = d.get("mcpServers", {}).get(mcp, {}).get("env", {})
-        if key in env:
-            env[key] = val
-            changed = True
+
+# Inject Jira token
+if jira and jira != "YOUR_TOKEN":
+    env = servers.get("jira", {}).get("env", {})
+    if "JIRA_PAT" in env:
+        env["JIRA_PAT"] = jira
+        changed = True
+
+# Inject Confluence token
+if conf and conf != "YOUR_TOKEN":
+    env = servers.get("confluence", {}).get("env", {})
+    if "CONFLUENCE_PAT" in env:
+        env["CONFLUENCE_PAT"] = conf
+        changed = True
+
+# GitHub: per-remote injection or legacy fallback
+if "github" in servers:
+    remotes = [r for r in remotes_raw.strip().split('\n') if r.strip()]
+    github_entry = servers.pop("github")
+
+    if remotes:
+        # Replace single "github" entry with N "github-{remote}" entries
+        for remote in remotes:
+            token = read_tok('GITHUB_TOKEN_' + remote)
+            host = read_tok('GITHUB_HOST_' + remote)
+            api_path = read_tok('GITHUB_API_PATH_' + remote)
+            if not token or not host:
+                continue
+            entry = dict(github_entry)
+            entry["env"] = {
+                "GITHUB_REMOTE": remote,
+                "GITHUB_HOST": host,
+                "GITHUB_TOKEN": token,
+            }
+            if api_path:
+                entry["env"]["GITHUB_API_PATH"] = api_path
+            servers["github-" + remote] = entry
+        changed = True
+    else:
+        # Fallback: legacy single github entry with GITHUB_TOKEN_disney
+        gh_token = read_tok('GITHUB_TOKEN_disney')
+        if gh_token and gh_token != "YOUR_TOKEN":
+            env = github_entry.get("env", {})
+            if "GITHUB_TOKEN_disney" in env:
+                env["GITHUB_TOKEN_disney"] = gh_token
+        servers["github"] = github_entry
+        changed = True
+
 if changed:
-    with open(path, "w") as f: json.dump(d, f, indent=2); f.write("\n")
+    with open(path, "w") as f:
+        json.dump(d, f, indent=2)
+        f.write("\n")
 INJECT_PY
     done
 }
@@ -724,20 +796,48 @@ CONFEOF
             echo ""
             
             
-            # GitHub token
-            echo "━━━ GitHub ━━━"
-            read -r -p "Paste your GitHub Personal Access Token (or Enter to skip): " github_token
-            if [ -n "$github_token" ]; then
+            # GitHub remotes (multi-remote loop)
+            echo "━━━ GitHub Remotes ━━━"
+            echo "Configure one or more GitHub remotes (e.g., disney, public, espn_code)"
+            echo ""
+            _add_github_remote=true
+            while [ "$_add_github_remote" = true ]; do
+                read -r -p "Remote name (e.g., disney): " _gh_remote
+                if [ -z "$_gh_remote" ]; then
+                    echo "  ⏭ Skipped GitHub configuration"
+                    break
+                fi
+                read -r -p "GitHub host for '$_gh_remote' (e.g., github.disney.com): " _gh_host
+                if [ -z "$_gh_host" ]; then
+                    echo "  ⚠️  Host is required, skipping remote '$_gh_remote'"
+                    continue
+                fi
+                read -r -p "GitHub token for '$_gh_remote': " _gh_token
+                if [ -z "$_gh_token" ]; then
+                    echo "  ⚠️  Token is required, skipping remote '$_gh_remote'"
+                    continue
+                fi
+                read -r -p "API path for '$_gh_remote' (default: /api/v3, Enter to skip): " _gh_api_path
+
+                # Write to github-mcp .env for backward compat
                 github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
-                cat > "$github_env" << GHEOF
-GITHUB_TOKEN_disney=$github_token
-GITHUB_HOST_disney=github.disney.com
-GITHUB_DEFAULT_REMOTE=disney
-GHEOF
-                echo "  ✓ Saved to github-mcp/.env"
-            else
-                echo "  ⏭ Skipped"
-            fi
+                # Append (or create) — don't overwrite previous remotes
+                if [ ! -f "$github_env" ]; then
+                    : > "$github_env"
+                fi
+                # Remove old entries for this remote if present
+                grep -v "^GITHUB_TOKEN_${_gh_remote}=" "$github_env" 2>/dev/null | grep -v "^GITHUB_HOST_${_gh_remote}=" | grep -v "^GITHUB_API_PATH_${_gh_remote}=" > "$github_env.tmp" || true
+                echo "GITHUB_TOKEN_${_gh_remote}=$_gh_token" >> "$github_env.tmp"
+                echo "GITHUB_HOST_${_gh_remote}=$_gh_host" >> "$github_env.tmp"
+                [ -n "$_gh_api_path" ] && echo "GITHUB_API_PATH_${_gh_remote}=$_gh_api_path" >> "$github_env.tmp"
+                mv "$github_env.tmp" "$github_env"
+                echo "  ✓ Saved remote '$_gh_remote' (host: $_gh_host)"
+
+                read -r -p "Add another GitHub remote? (y/N): " _more
+                if [[ ! "$_more" =~ ^[Yy]$ ]]; then
+                    _add_github_remote=false
+                fi
+            done
             echo ""
         fi
         
@@ -754,10 +854,13 @@ TOKHEADER
         _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
         jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
         cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
-        gt=$(_tok "GITHUB_TOKEN_disney" "$KIRO_ROOT/tools/mcp-servers/github-mcp/.env")
         [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
         [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
-        [ -n "$gt" ] && echo "GITHUB_TOKEN_disney=$gt" >> "$tokens_file"
+        # Copy all GITHUB_TOKEN_{remote}, GITHUB_HOST_{remote}, GITHUB_API_PATH_{remote} from github-mcp/.env
+        github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
+        if [ -f "$github_env" ]; then
+            grep -E '^GITHUB_(TOKEN|HOST|API_PATH)_[a-zA-Z0-9_]+=' "$github_env" >> "$tokens_file" 2>/dev/null || true
+        fi
         echo "  ✓ $tokens_file"
         
         # Resolve $HOME in installed agent configs
@@ -780,7 +883,9 @@ TOKHEADER
         _tok() { grep -s "^$1=" "$KIRO_ROOT/tokens.env" 2>/dev/null | head -1 | cut -d= -f2-; }
         jira_pat=$(_tok "JIRA_PAT")
         confluence_pat=$(_tok "CONFLUENCE_PAT")
-        github_token=$(_tok "GITHUB_TOKEN_disney")
+        
+        # Discover GitHub remotes from tokens.env
+        _github_remotes=$(discover_github_remotes "$KIRO_ROOT/tokens.env")
         
         # Preserve existing powers section if present
         existing_powers="{}"
@@ -789,35 +894,81 @@ TOKHEADER
         fi
         
         python3 -c "
-import json, sys
+import json, sys, os
+
+tokens_file = '$KIRO_ROOT/tokens.env'
+remotes_raw = '''$_github_remotes'''.strip()
+home = '$HOME'
+
+def read_tok(key):
+    try:
+        with open(tokens_file) as f:
+            for line in f:
+                if line.startswith(key + '='):
+                    return line.strip().split('=', 1)[1]
+    except FileNotFoundError:
+        pass
+    return ''
 
 mcp = {
     'mcpServers': {
         'jira': {
             'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'args': [home + '/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
         'confluence': {
             'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'args': [home + '/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
             'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
         },
-        'github': {
-            'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
-            'env': {'GITHUB_TOKEN_disney': '${github_token}', 'GITHUB_HOST_disney': 'github.disney.com', 'GITHUB_DEFAULT_REMOTE': 'disney'}
-        },
-        'mermaid': {
-            'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
-        },
-        'bruno': {
-            'command': 'node',
-            'args': ['$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
-        }
     }
 }
+
+# GitHub entries: per-remote with flat env vars, or legacy fallback
+remotes = [r for r in remotes_raw.split('\n') if r.strip()]
+if remotes:
+    for remote in remotes:
+        token = read_tok('GITHUB_TOKEN_' + remote)
+        host = read_tok('GITHUB_HOST_' + remote)
+        api_path = read_tok('GITHUB_API_PATH_' + remote)
+        if not token or not host:
+            continue
+        entry = {
+            'command': 'node',
+            'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'env': {
+                'GITHUB_REMOTE': remote,
+                'GITHUB_HOST': host,
+                'GITHUB_TOKEN': token,
+            }
+        }
+        if api_path:
+            entry['env']['GITHUB_API_PATH'] = api_path
+        mcp['mcpServers']['github-' + remote] = entry
+else:
+    # Fallback: legacy single github entry
+    legacy_token = read_tok('GITHUB_TOKEN')
+    legacy_url = read_tok('GITHUB_URL')
+    mcp['mcpServers']['github'] = {
+        'command': 'node',
+        'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+        'env': {
+            'GITHUB_URL': legacy_url or 'https://github.disney.com',
+            'GITHUB_TOKEN': legacy_token or 'YOUR_TOKEN',
+        }
+    }
+
+# Non-GitHub MCP servers
+mcp['mcpServers']['mermaid'] = {
+    'command': 'node',
+    'args': [home + '/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+}
+mcp['mcpServers']['bruno'] = {
+    'command': 'node',
+    'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
+}
+
 powers = json.loads('$existing_powers')
 if powers:
     mcp['powers'] = powers
@@ -1146,10 +1297,10 @@ YAMLEOF
         tokens_file="$KIRO_ROOT/tokens.env"
         touch "$tokens_file"
         
+        # --- Non-GitHub tokens (simple key/value) ---
         tokens=(
             "JIRA_PAT"
             "CONFLUENCE_PAT"
-            "GITHUB_TOKEN_disney"
             "SONARQUBE_TOKEN"
             "HARNESS_API_KEY"
         )
@@ -1157,7 +1308,6 @@ YAMLEOF
         labels=(
             "Jira PAT (myjira.disney.com)"
             "Confluence PAT (confluence.disney.com)"
-            "GitHub Token (github.disney.com)"
             "SonarQube Token (optional)"
             "Harness API Key (optional)"
         )
@@ -1184,6 +1334,87 @@ YAMLEOF
             else
                 echo "  ⏭ Kept"
             fi
+        done
+        
+        # --- GitHub remotes (multi-remote management) ---
+        echo ""
+        echo "━━━ GitHub Remotes ━━━"
+        
+        # Discover existing remotes from tokens.env
+        _existing_remotes=$(discover_github_remotes "$tokens_file")
+        
+        if [ -n "$_existing_remotes" ]; then
+            echo "Existing remotes:"
+            while IFS= read -r _remote; do
+                _cur_token=$(grep "^GITHUB_TOKEN_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                _cur_host=$(grep "^GITHUB_HOST_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                if [ -n "$_cur_token" ]; then
+                    _masked_tok="${_cur_token:0:4}***${_cur_token: -3}"
+                else
+                    _masked_tok="not set"
+                fi
+                echo "  $_remote: ${_cur_host:-no host} ($_masked_tok)"
+            done <<< "$_existing_remotes"
+            echo ""
+            
+            # Allow updating existing remotes
+            while IFS= read -r _remote; do
+                read -r -p "Update remote '$_remote'? (y/N): " _update
+                if [[ "$_update" =~ ^[Yy]$ ]]; then
+                    _cur_host=$(grep "^GITHUB_HOST_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                    read -r -p "  Host for '$_remote' [${_cur_host:-not set}]: " _new_host
+                    [ -z "$_new_host" ] && _new_host="$_cur_host"
+                    read -r -p "  Token for '$_remote' (Enter to keep current): " _new_token
+                    
+                    if [ -n "$_new_host" ]; then
+                        grep -v "^GITHUB_HOST_${_remote}=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                        echo "GITHUB_HOST_${_remote}=$_new_host" >> "$tokens_file.tmp"
+                        mv "$tokens_file.tmp" "$tokens_file"
+                    fi
+                    if [ -n "$_new_token" ]; then
+                        grep -v "^GITHUB_TOKEN_${_remote}=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                        echo "GITHUB_TOKEN_${_remote}=$_new_token" >> "$tokens_file.tmp"
+                        mv "$tokens_file.tmp" "$tokens_file"
+                    fi
+                    echo "  ✓ Updated remote '$_remote'"
+                else
+                    echo "  ⏭ Kept"
+                fi
+            done <<< "$_existing_remotes"
+        else
+            echo "No GitHub remotes configured yet."
+        fi
+        
+        # Allow adding new remotes
+        echo ""
+        _add_more=true
+        while [ "$_add_more" = true ]; do
+            read -r -p "Add a new GitHub remote? (y/N): " _add_yn
+            if [[ ! "$_add_yn" =~ ^[Yy]$ ]]; then
+                break
+            fi
+            read -r -p "  Remote name (e.g., disney): " _new_remote
+            if [ -z "$_new_remote" ]; then
+                echo "  ⚠️  Remote name is required"
+                continue
+            fi
+            read -r -p "  GitHub host for '$_new_remote' (e.g., github.disney.com): " _new_host
+            if [ -z "$_new_host" ]; then
+                echo "  ⚠️  Host is required, skipping remote '$_new_remote'"
+                continue
+            fi
+            read -r -p "  GitHub token for '$_new_remote': " _new_token
+            if [ -z "$_new_token" ]; then
+                echo "  ⚠️  Token is required, skipping remote '$_new_remote'"
+                continue
+            fi
+            
+            # Remove old entries for this remote if present, then write new ones
+            grep -v "^GITHUB_TOKEN_${_new_remote}=" "$tokens_file" 2>/dev/null | grep -v "^GITHUB_HOST_${_new_remote}=" > "$tokens_file.tmp" || true
+            echo "GITHUB_TOKEN_${_new_remote}=$_new_token" >> "$tokens_file.tmp"
+            echo "GITHUB_HOST_${_new_remote}=$_new_host" >> "$tokens_file.tmp"
+            mv "$tokens_file.tmp" "$tokens_file"
+            echo "  ✓ Added remote '$_new_remote' (host: $_new_host)"
         done
         
         echo ""
@@ -1268,49 +1499,105 @@ YAMLEOF
                     # Read tokens from existing .env files if available
                     jira_pat="YOUR_TOKEN"
                     confluence_pat="YOUR_TOKEN"
-                    github_token="YOUR_TOKEN"
                     
                     # Read from centralized tokens.env
                     if [ -f "$HOME/.kiro/tokens.env" ]; then
                         _tok() { grep -s "^$1=" "$HOME/.kiro/tokens.env" | head -1 | cut -d= -f2-; }
                         jira_pat=$(_tok "JIRA_PAT"); [ -z "$jira_pat" ] && jira_pat="YOUR_TOKEN"
                         confluence_pat=$(_tok "CONFLUENCE_PAT"); [ -z "$confluence_pat" ] && confluence_pat="YOUR_TOKEN"
-                        github_token=$(_tok "GITHUB_TOKEN_disney"); [ -z "$github_token" ] && github_token="YOUR_TOKEN"
                     fi
                     
-                    cat > "$mcp_json" << MCPEOF
-{
-  "mcpServers": {
-    "jira": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"],
-      "env": { "JIRA_PAT": "$jira_pat" }
-    },
-    "confluence": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs"],
-      "env": { "CONFLUENCE_URL": "https://confluence.disney.com", "CONFLUENCE_PAT": "$confluence_pat" }
-    },
-    },
-    "github": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs"],
-      "env": { "GITHUB_TOKEN_disney": "$github_token", "GITHUB_HOST_disney": "github.disney.com", "GITHUB_DEFAULT_REMOTE": "disney" }
-    },
-    "mermaid": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs"]
-    },
-    "bruno": {
-      "command": "node",
-      "args": ["$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs"]
+                    # Discover GitHub remotes from tokens.env
+                    _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
+                    
+                    python3 -c "
+import json, sys, os
+
+tokens_file = '$HOME/.kiro/tokens.env'
+remotes_raw = '''$_cursor_github_remotes'''.strip()
+home = '$HOME'
+mcp_json_path = '$mcp_json'
+
+def read_tok(key):
+    try:
+        with open(tokens_file) as f:
+            for line in f:
+                if line.startswith(key + '='):
+                    return line.strip().split('=', 1)[1]
+    except FileNotFoundError:
+        pass
+    return ''
+
+mcp = {
+    'mcpServers': {
+        'jira': {
+            'command': 'node',
+            'args': [home + '/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'env': {'JIRA_PAT': '${jira_pat}'}
+        },
+        'confluence': {
+            'command': 'node',
+            'args': [home + '/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+        },
     }
-  }
 }
-MCPEOF
+
+# GitHub entries: per-remote with flat env vars, or fallback to single placeholder
+remotes = [r for r in remotes_raw.split('\n') if r.strip()]
+has_placeholder = False
+if remotes:
+    for remote in remotes:
+        token = read_tok('GITHUB_TOKEN_' + remote)
+        host = read_tok('GITHUB_HOST_' + remote)
+        api_path = read_tok('GITHUB_API_PATH_' + remote)
+        if not token or not host:
+            continue
+        entry = {
+            'command': 'node',
+            'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'env': {
+                'GITHUB_REMOTE': remote,
+                'GITHUB_HOST': host,
+                'GITHUB_TOKEN': token,
+            }
+        }
+        if api_path:
+            entry['env']['GITHUB_API_PATH'] = api_path
+        mcp['mcpServers']['github-' + remote] = entry
+else:
+    # Fallback: single github entry with placeholders
+    has_placeholder = True
+    mcp['mcpServers']['github'] = {
+        'command': 'node',
+        'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+        'env': {
+            'GITHUB_TOKEN': 'YOUR_TOKEN',
+        }
+    }
+
+# Non-GitHub MCP servers
+mcp['mcpServers']['mermaid'] = {
+    'command': 'node',
+    'args': [home + '/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+}
+mcp['mcpServers']['bruno'] = {
+    'command': 'node',
+    'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
+}
+
+with open(mcp_json_path, 'w') as f:
+    json.dump(mcp, f, indent=2)
+    f.write('\n')
+
+# Signal placeholder status
+if has_placeholder or '${jira_pat}' == 'YOUR_TOKEN' or '${confluence_pat}' == 'YOUR_TOKEN':
+    sys.exit(2)
+"
+                    _cursor_mcp_rc=$?
                     echo "  ✓ $mcp_json"
                     
-                    if echo "$jira_pat$confluence_pat$github_token" | grep -q "YOUR_TOKEN"; then
+                    if [ "$_cursor_mcp_rc" -eq 2 ]; then
                         echo ""
                         echo "⚠️  Some MCP tokens are placeholders. Run ./setup.sh mcp-install first,"
                         echo "   then re-run ./setup.sh cursor install to pick up the tokens."

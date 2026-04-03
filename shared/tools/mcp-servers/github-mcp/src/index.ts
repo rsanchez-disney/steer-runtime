@@ -8,6 +8,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { fileURLToPath } from "url";
 import path from "path";
+import { prefixToolName, getServerName } from "./utils/toolPrefix.js";
 
 // Resolve script directory (works in both ESM and CJS bundles)
 const scriptDir = (() => {
@@ -60,8 +61,28 @@ import {
 // Load environment variables from .env file in the script's directory
 config({ path: path.join(scriptDir, "..", ".env") });
 
-// Tool registry - maps tool names to their handlers
-const toolHandlers: Record<string, (args: any) => Promise<any>> = {
+// All tool schemas
+const allSchemas = [
+    githubGetPrSchema,
+    githubCreatePrSchema,
+    githubCommentOnPrSchema,
+    githubGetPrCommentsSchema,
+    githubUpdatePrSchema,
+    githubGetRepoSchema,
+    githubSearchPrsSchema,
+    githubListRemotesSchema,
+    githubGetFileSchema,
+    githubGetFilesSchema,
+];
+
+// Build schemas with prefixed names
+const prefixedSchemas = allSchemas.map((schema) => ({
+    ...schema,
+    name: prefixToolName(schema.name),
+}));
+
+// Base handler map (original tool names → handlers)
+const baseHandlers: Record<string, (args: any) => Promise<any>> = {
     github_get_pr: handleGithubGetPr,
     github_create_pr: handleGithubCreatePr,
     github_comment_on_pr: handleGithubCommentOnPr,
@@ -74,9 +95,15 @@ const toolHandlers: Record<string, (args: any) => Promise<any>> = {
     github_get_files: handleGithubGetFiles,
 };
 
+// Build handler map with prefixed keys
+const toolHandlers: Record<string, (args: any) => Promise<any>> = {};
+for (const [name, handler] of Object.entries(baseHandlers)) {
+    toolHandlers[prefixToolName(name)] = handler;
+}
+
 const server = new Server(
     {
-        name: "github-mcp",
+        name: getServerName(),
         version: "1.0.0",
     },
     {
@@ -86,25 +113,14 @@ const server = new Server(
     },
 );
 
-// Register tool schemas
+// Register tool schemas (prefixed)
 server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
-        tools: [
-            githubGetPrSchema,
-            githubCreatePrSchema,
-            githubCommentOnPrSchema,
-            githubGetPrCommentsSchema,
-            githubUpdatePrSchema,
-            githubGetRepoSchema,
-            githubSearchPrsSchema,
-            githubListRemotesSchema,
-            githubGetFileSchema,
-            githubGetFilesSchema,
-        ],
+        tools: prefixedSchemas,
     };
 });
 
-// Register tool call handler
+// Register tool call handler (uses prefixed keys)
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
 
