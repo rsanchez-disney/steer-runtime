@@ -1,40 +1,33 @@
 # Team Workspaces
 
-Each subdirectory is a team workspace — a self-contained configuration bundle. Workspaces support hierarchical inheritance via the `extends` field.
+Each subdirectory is a team workspace. Child workspaces are nested inside their parent folder.
 
 ## Structure
 
 ```
 workspaces/
-├── opsheet-team/               # Parent workspace (shared foundation)
+├── app-team/                       # Parent workspace
 │   ├── workspace.json
 │   ├── context/
-│   └── rules/
-├── opsheet-vas-team/           # Child workspace (extends opsheet-team)
-│   ├── workspace.json
-│   └── context/
-├── payments-core/              # Standalone workspace
-│   ├── workspace.json
-│   ├── context/
-│   └── rules/
-└── default/                    # Org-wide baseline
-    ├── workspace.json
-    └── projects/               # Memory bank templates for known projects
+│   ├── config-studio/              # Child (extends app-team)
+│   │   ├── workspace.json
+│   │   └── context/
+│   ├── payment-sheet/              # Child
+│   ├── pap-trp/                    # Child
+│   ├── gift-card/                  # Child
+│   └── infra/                      # Child
+├── payments-core/                  # Standalone workspace
+│   └── workspace.json
+└── default/                        # Org-wide baseline
+    └── workspace.json
 ```
 
 ## Quick Commands
 
 ```bash
-# List workspaces (shows hierarchy)
-koda workspace list
-
-# Apply a workspace (resolves inheritance)
-koda workspace apply payments-core
-
-# Show workspace details
-koda workspace show payments-core
+koda workspace list                    # Shows hierarchy
+koda workspace apply app-config-studio # Resolves inheritance
+koda workspace show payments-core      # View details
 ```
-
-Creating and editing workspaces is done through the Koda TUI (`koda` → `w`).
 
 See [Team Workspaces Guide](../docs/TEAM_WORKSPACES.md) for full documentation.
