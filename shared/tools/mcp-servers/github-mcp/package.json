@@ -6,8 +6,9 @@
   "main": "build/index.js",
   "scripts": {
     "build": "npx tsc",
+    "bundle": "npx esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs",
     "watch": "npx tsc --watch",
-    "prepare": "npm run build",
+    "prepare": "npm run build && npm run bundle",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "typecheck": "tsc --noEmit",

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -6700,7 +6699,7 @@ var require_fast_content_type_parse = __commonJS({
   }
 });
 
-// src/index.ts
+// build/index.js
 var import_dotenv2 = __toESM(require_main(), 1);
 
 // node_modules/zod/v3/external.js
@@ -12389,9 +12388,18 @@ var StdioServerTransport = class {
   }
 };
 
-// src/index.ts
+// build/index.js
 var import_url2 = require("url");
 var import_path3 = __toESM(require("path"), 1);
+
+// build/utils/toolPrefix.js
+var GITHUB_REMOTE = process.env.GITHUB_REMOTE || "";
+function prefixToolName(name) {
+  return GITHUB_REMOTE ? `${GITHUB_REMOTE}_${name}` : name;
+}
+function getServerName() {
+  return GITHUB_REMOTE ? `github-${GITHUB_REMOTE}` : "github-mcp";
+}
 
 // node_modules/universal-user-agent/index.js
 function getUserAgent() {
@@ -15940,7 +15948,7 @@ var Octokit2 = Octokit.plugin(requestLog, legacyRestEndpointMethods, paginateRes
   }
 );
 
-// src/utils/apiClient.ts
+// build/utils/apiClient.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = __toESM(require("path"), 1);
 var import_url = require("url");
@@ -15953,16 +15961,27 @@ var scriptDir = (() => {
   }
 })();
 (0, import_dotenv.config)({ path: import_path.default.join(scriptDir, "..", "..", ".env") });
-var githubUrl = process.env.GITHUB_URL || "";
+function deriveBaseUrl(host, url, apiPath2) {
+  const resolvedApiPath = apiPath2 || "/api/v3";
+  if (host && host.length > 0) {
+    return `https://${host}${resolvedApiPath}`;
+  }
+  if (url && url.length > 0) {
+    return `${url}${resolvedApiPath}`;
+  }
+  throw new Error("Missing GITHUB_HOST or GITHUB_URL. Set GITHUB_HOST in the MCP env block or GITHUB_URL in .env");
+}
+var githubHost = process.env.GITHUB_HOST;
 var githubToken = process.env.GITHUB_TOKEN || "";
-if (!githubUrl || !githubToken) {
-  console.error(
-    "Missing required environment variables: GITHUB_URL, GITHUB_TOKEN"
-  );
+var apiPath = process.env.GITHUB_API_PATH || "/api/v3";
+var apiBaseUrl;
+try {
+  apiBaseUrl = deriveBaseUrl(githubHost, process.env.GITHUB_URL, apiPath);
+} catch (err) {
+  console.error("Missing GITHUB_HOST or GITHUB_URL. Set GITHUB_HOST in the MCP env block or GITHUB_URL in .env");
   process.exit(1);
 }
-var apiPath = process.env.GITHUB_API_PATH || "/api/v3";
-var apiBaseUrl = `${githubUrl}${apiPath}`;
+var githubUrl = githubHost ? `https://${githubHost}` : process.env.GITHUB_URL || "";
 var octokit = new Octokit2({
   auth: githubToken,
   baseUrl: apiBaseUrl
@@ -15983,7 +16002,7 @@ function getGitHubUrl() {
   return githubUrl;
 }
 
-// src/utils/fileUtils.ts
+// build/utils/fileUtils.js
 var import_promises = __toESM(require("fs/promises"), 1);
 var import_path2 = __toESM(require("path"), 1);
 async function saveToFile(data, filename, outputDir) {
@@ -15997,7 +16016,7 @@ async function saveToFile(data, filename, outputDir) {
   return filepath;
 }
 
-// src/utils/formatting.ts
+// build/utils/formatting.js
 function formatTimestamp() {
   return (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
 }
@@ -16005,7 +16024,7 @@ function formatRepoId(repo) {
   return repo.replace(/\//g, "-");
 }
 
-// src/tools/githubGetPr.ts
+// build/tools/githubGetPr.js
 var githubGetPrSchema = {
   name: "github_get_pr",
   description: "Fetch a GitHub pull request by repo and PR number",
@@ -16029,15 +16048,8 @@ var githubGetPrSchema = {
   }
 };
 async function handleGithubGetPr(args) {
-  const {
-    repo,
-    prNumber,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, prNumber, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const prNum = parseInt(prNumber);
   const { data: pr } = await octokit2.pulls.get({
@@ -16066,7 +16078,7 @@ Branch: ${pr.head.ref} \u2192 ${pr.base.ref}`
   };
 }
 
-// src/tools/githubCreatePr.ts
+// build/tools/githubCreatePr.js
 var githubCreatePrSchema = {
   name: "github_create_pr",
   description: "Create a new GitHub pull request",
@@ -16106,19 +16118,8 @@ var githubCreatePrSchema = {
   }
 };
 async function handleGithubCreatePr(args) {
-  const {
-    repo,
-    title,
-    head,
-    base = "main",
-    body,
-    draft = false,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, title, head, base = "main", body, draft = false, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const { data: pr } = await octokit2.pulls.create({
     owner,
@@ -16149,7 +16150,7 @@ Branch: ${pr.head.ref} \u2192 ${pr.base.ref}`
   };
 }
 
-// src/tools/githubCommentOnPr.ts
+// build/tools/githubCommentOnPr.js
 var githubCommentOnPrSchema = {
   name: "github_comment_on_pr",
   description: "Add a comment to a GitHub pull request",
@@ -16177,16 +16178,8 @@ var githubCommentOnPrSchema = {
   }
 };
 async function handleGithubCommentOnPr(args) {
-  const {
-    repo,
-    prNumber,
-    body,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, prNumber, body, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const prNum = parseInt(prNumber);
   const { data: comment } = await octokit2.issues.createComment({
@@ -16214,7 +16207,7 @@ URL: ${comment.html_url}`
   };
 }
 
-// src/tools/githubGetPrComments.ts
+// build/tools/githubGetPrComments.js
 var githubGetPrCommentsSchema = {
   name: "github_get_pr_comments",
   description: "Fetch comments from a GitHub pull request",
@@ -16238,15 +16231,8 @@ var githubGetPrCommentsSchema = {
   }
 };
 async function handleGithubGetPrComments(args) {
-  const {
-    repo,
-    prNumber,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, prNumber, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const prNum = parseInt(prNumber);
   const { data: comments } = await octokit2.issues.listComments({
@@ -16272,7 +16258,7 @@ Total comments: ${comments.length}`
   };
 }
 
-// src/tools/githubUpdatePr.ts
+// build/tools/githubUpdatePr.js
 var githubUpdatePrSchema = {
   name: "github_update_pr",
   description: "Update a GitHub pull request (title, description, assignees, reviewers)",
@@ -16318,20 +16304,8 @@ var githubUpdatePrSchema = {
   }
 };
 async function handleGithubUpdatePr(args) {
-  const {
-    repo,
-    prNumber,
-    title,
-    body,
-    state,
-    assignees,
-    reviewers,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, prNumber, title, body, state, assignees, reviewers, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const prNum = parseInt(prNumber);
   const updateData = {
@@ -16339,9 +16313,12 @@ async function handleGithubUpdatePr(args) {
     repo: repoName,
     pull_number: prNum
   };
-  if (title) updateData.title = title;
-  if (body) updateData.body = body;
-  if (state) updateData.state = state;
+  if (title)
+    updateData.title = title;
+  if (body)
+    updateData.body = body;
+  if (state)
+    updateData.state = state;
   const { data: pr } = await octokit2.pulls.update(updateData);
   if (assignees) {
     await octokit2.issues.addAssignees({
@@ -16378,7 +16355,7 @@ State: ${pr.state}`
   };
 }
 
-// src/tools/githubGetRepo.ts
+// build/tools/githubGetRepo.js
 var githubGetRepoSchema = {
   name: "github_get_repo",
   description: "Fetch GitHub repository information",
@@ -16398,14 +16375,8 @@ var githubGetRepoSchema = {
   }
 };
 async function handleGithubGetRepo(args) {
-  const {
-    repo,
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const { data: repoData } = await octokit2.repos.get({
     owner,
@@ -16431,7 +16402,7 @@ Default Branch: ${repoData.default_branch}`
   };
 }
 
-// src/tools/githubSearchPrs.ts
+// build/tools/githubSearchPrs.js
 var githubSearchPrsSchema = {
   name: "github_search_prs",
   description: "Search pull requests in a repository",
@@ -16471,19 +16442,8 @@ var githubSearchPrsSchema = {
   }
 };
 async function handleGithubSearchPrs(args) {
-  const {
-    repo,
-    state = "open",
-    head,
-    base,
-    sort = "created",
-    direction = "desc",
-    outputDir
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, state = "open", head, base, sort = "created", direction = "desc", outputDir } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const { data: prs } = await octokit2.pulls.list({
     owner,
@@ -16513,7 +16473,7 @@ State: ${state}`
   };
 }
 
-// src/tools/githubListRemotes.ts
+// build/tools/githubListRemotes.js
 var githubListRemotesSchema = {
   name: "github_list_remotes",
   description: "Show the configured GitHub instance URL",
@@ -16534,7 +16494,7 @@ async function handleGithubListRemotes() {
   };
 }
 
-// src/tools/githubGetFile.ts
+// build/tools/githubGetFile.js
 var githubGetFileSchema = {
   name: "github_get_file",
   description: "Read a single file from a GitHub repository. Returns the decoded text content. Useful for reading source code, configs, docs, etc. as context.",
@@ -16558,18 +16518,12 @@ var githubGetFileSchema = {
   }
 };
 async function handleGithubGetFile(args) {
-  const {
-    repo,
-    path: filePath,
-    ref
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, path: filePath, ref } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const params = { owner, repo: repoName, path: filePath };
-  if (ref) params.ref = ref;
+  if (ref)
+    params.ref = ref;
   const { data } = await octokit2.repos.getContent(params);
   if (Array.isArray(data)) {
     const entries = data.map((e) => `${e.type === "dir" ? "\u{1F4C1}" : "\u{1F4C4}"} ${e.path}`);
@@ -16611,7 +16565,7 @@ ${decoded}`
   };
 }
 
-// src/tools/githubGetFiles.ts
+// build/tools/githubGetFiles.js
 var githubGetFilesSchema = {
   name: "github_get_files",
   description: "Read multiple files from a GitHub repository in a single call. Returns decoded text content for each file. Useful for loading several source files as context at once.",
@@ -16636,42 +16590,32 @@ var githubGetFilesSchema = {
   }
 };
 async function handleGithubGetFiles(args) {
-  const {
-    repo,
-    paths,
-    ref
-  } = args;
-  const {
-    owner,
-    repo: repoName
-  } = parseRepo(repo);
+  const { repo, paths, ref } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const refInfo = ref ? ` (ref: ${ref})` : "";
-  const results = await Promise.allSettled(
-    paths.map(async (filePath) => {
-      const params = { owner, repo: repoName, path: filePath };
-      if (ref) params.ref = ref;
-      const { data } = await octokit2.repos.getContent(params);
-      if (Array.isArray(data)) {
-        return { path: filePath, error: "Path is a directory" };
-      }
-      if (data.type !== "file" || !("content" in data)) {
-        return {
-          path: filePath,
-          error: `Not a regular file (type: ${data.type})`
-        };
-      }
-      const decoded = Buffer.from(data.content, "base64").toString(
-        "utf-8"
-      );
+  const results = await Promise.allSettled(paths.map(async (filePath) => {
+    const params = { owner, repo: repoName, path: filePath };
+    if (ref)
+      params.ref = ref;
+    const { data } = await octokit2.repos.getContent(params);
+    if (Array.isArray(data)) {
+      return { path: filePath, error: "Path is a directory" };
+    }
+    if (data.type !== "file" || !("content" in data)) {
       return {
         path: filePath,
-        size: data.size,
-        sha: data.sha,
-        content: decoded
+        error: `Not a regular file (type: ${data.type})`
       };
-    })
-  );
+    }
+    const decoded = Buffer.from(data.content, "base64").toString("utf-8");
+    return {
+      path: filePath,
+      size: data.size,
+      sha: data.sha,
+      content: decoded
+    };
+  }));
   const sections = [];
   let successCount = 0;
   let errorCount = 0;
@@ -16685,16 +16629,12 @@ ${result.reason}`);
     const val = result.value;
     if ("error" in val) {
       errorCount++;
-      sections.push(
-        `--- ${val.path} ---
-Error: ${val.error}`
-      );
+      sections.push(`--- ${val.path} ---
+Error: ${val.error}`);
     } else {
       successCount++;
-      sections.push(
-        `--- ${val.path} (${val.size} bytes, sha: ${val.sha}) ---
-${val.content}`
-      );
+      sections.push(`--- ${val.path} (${val.size} bytes, sha: ${val.sha}) ---
+${val.content}`);
     }
   }
   const summary = `Fetched ${successCount}/${paths.length} files from ${owner}/${repoName}${refInfo}${errorCount > 0 ? ` (${errorCount} errors)` : ""}`;
@@ -16710,7 +16650,7 @@ ${sections.join("\n\n")}`
   };
 }
 
-// src/index.ts
+// build/index.js
 var import_meta2 = {};
 var scriptDir2 = (() => {
   try {
@@ -16720,7 +16660,23 @@ var scriptDir2 = (() => {
   }
 })();
 (0, import_dotenv2.config)({ path: import_path3.default.join(scriptDir2, "..", ".env") });
-var toolHandlers = {
+var allSchemas = [
+  githubGetPrSchema,
+  githubCreatePrSchema,
+  githubCommentOnPrSchema,
+  githubGetPrCommentsSchema,
+  githubUpdatePrSchema,
+  githubGetRepoSchema,
+  githubSearchPrsSchema,
+  githubListRemotesSchema,
+  githubGetFileSchema,
+  githubGetFilesSchema
+];
+var prefixedSchemas = allSchemas.map((schema) => ({
+  ...schema,
+  name: prefixToolName(schema.name)
+}));
+var baseHandlers = {
   github_get_pr: handleGithubGetPr,
   github_create_pr: handleGithubCreatePr,
   github_comment_on_pr: handleGithubCommentOnPr,
@@ -16732,31 +16688,21 @@ var toolHandlers = {
   github_get_file: handleGithubGetFile,
   github_get_files: handleGithubGetFiles
 };
-var server = new Server(
-  {
-    name: "github-mcp",
-    version: "1.0.0"
-  },
-  {
-    capabilities: {
-      tools: {}
-    }
+var toolHandlers = {};
+for (const [name, handler2] of Object.entries(baseHandlers)) {
+  toolHandlers[prefixToolName(name)] = handler2;
+}
+var server = new Server({
+  name: getServerName(),
+  version: "1.0.0"
+}, {
+  capabilities: {
+    tools: {}
   }
-);
+});
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
-    tools: [
-      githubGetPrSchema,
-      githubCreatePrSchema,
-      githubCommentOnPrSchema,
-      githubGetPrCommentsSchema,
-      githubUpdatePrSchema,
-      githubGetRepoSchema,
-      githubSearchPrsSchema,
-      githubListRemotesSchema,
-      githubGetFileSchema,
-      githubGetFilesSchema
-    ]
+    tools: prefixedSchemas
   };
 });
 server.setRequestHandler(CallToolRequestSchema, async (request2) => {
