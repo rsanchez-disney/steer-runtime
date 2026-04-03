@@ -136,6 +136,7 @@ Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 | mermaid-diagram-mcp | Diagram generation | No token needed |
 | context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
 | figma-mcp | Figma design files, components, styles, comments | [Generate](https://www.figma.com/developers/api#access-tokens) |
+| compass-mcp | Compass service catalog and API discovery (SSE) | Compass token (contact your team lead) |
 
 For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 

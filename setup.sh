@@ -856,6 +856,8 @@ TOKHEADER
         cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
         [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
         [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
+        ct=$(_tok "COMPASS_TOKEN" "$KIRO_ROOT/tokens.env")
+        [ -n "$ct" ] && echo "COMPASS_TOKEN=$ct" >> "$tokens_file"
         # Copy all GITHUB_TOKEN_{remote}, GITHUB_HOST_{remote}, GITHUB_API_PATH_{remote} from github-mcp/.env
         github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
         if [ -f "$github_env" ]; then
@@ -968,6 +970,14 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
 }
+
+compass_token = read_tok('COMPASS_TOKEN')
+if compass_token:
+    mcp['mcpServers']['compass'] = {
+        'url': 'https://compass.wdprapps.disney.com/api/mcp/mcp-60d5792b-5ce9-469b-9a6b-b08216eb267e',
+        'type': 'sse',
+        'headers': {'Authorization': 'Bearer ' + compass_token}
+    }
 
 powers = json.loads('$existing_powers')
 if powers:
@@ -1585,6 +1595,15 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
 }
+
+
+compass_token = read_tok('COMPASS_TOKEN')
+if compass_token:
+    mcp['mcpServers']['compass'] = {
+        'url': 'https://compass.wdprapps.disney.com/api/mcp/mcp-60d5792b-5ce9-469b-9a6b-b08216eb267e',
+        'type': 'sse',
+        'headers': {'Authorization': 'Bearer ' + compass_token}
+    }
 
 with open(mcp_json_path, 'w') as f:
     json.dump(mcp, f, indent=2)
