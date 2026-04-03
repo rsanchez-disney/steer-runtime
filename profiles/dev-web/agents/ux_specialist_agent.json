@@ -6,10 +6,15 @@
     "fs_read",
     "execute_bash",
     "code",
-    "grep"
+    "grep",
+    "@figma/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/steering/**/*.md"
-  ]
+  ],
+  "allowedTools": [
+    "@figma/*"
+  ],
+  "includeMcpJson": true
 }

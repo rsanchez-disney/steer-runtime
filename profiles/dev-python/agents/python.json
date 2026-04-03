@@ -1,30 +1,23 @@
 {
-  "name": "ui",
-  "description": "Config Studio UI specialist (Angular)",
-  "prompt": "ui.md",
+  "name": "python",
+  "description": "Python specialist for FastAPI, Flask, Django, and general Python development",
+  "prompt": "python.md",
   "tools": [
     "fs_read",
     "fs_write",
     "execute_bash",
-    "@figma/*"
+    "code",
+    "grep",
+    "@context7/*"
   ],
-  "toolsSettings": {
-    "fs_write": {
-      "allowedPaths": [
-        "src/**",
-        "projects/**",
-        "package.json",
-        "angular.json",
-        ".eslintrc*",
-        "tsconfig*.json"
-      ]
-    }
-  },
+  "allowedTools": [
+    "@context7/*"
+  ],
   "resources": [
     "file://AGENTS.md",
-    "file://.kiro/steering/**/*.md",
-    "file://README.md"
+    "file://.kiro/steering/**/*.md"
   ],
+  "includeMcpJson": true,
   "hooks": {
     "preToolUse": [
       {
@@ -45,9 +38,5 @@
         "description": "Auto-lint after file writes"
       }
     ]
-  },
-  "allowedTools": [
-    "@figma/*"
-  ],
-  "includeMcpJson": true
+  }
 }

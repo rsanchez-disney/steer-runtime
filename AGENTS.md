@@ -35,8 +35,8 @@ graph TD
     subgraph DEV_WEB["dev-web · 4 agents"]
         BACK["backend<br/><i>context7 · bruno</i>"]:::agent
         WAPI["webapi<br/><i>context7 · bruno</i>"]:::agent
-        UI["ui<br/><i>context7</i>"]:::agent
-        UX["ux_specialist"]:::agent
+        UI["ui<br/><i>context7 · figma</i>"]:::agent
+        UX["ux_specialist<br/><i>figma</i>"]:::agent
     end
 
     %% ─── dev-mobile ────────────────────────────────
@@ -44,6 +44,17 @@ graph TD
         FLUTTER["flutter<br/><i>context7</i>"]:::agent
         ANDROID["android_native<br/><i>context7</i>"]:::agent
         IOS["ios_native<br/><i>context7</i>"]:::agent
+    end
+
+
+    %% ─── dev-python ────────────────────────────────
+    subgraph DEV_PY["dev-python · 1 agent"]
+        PYTHON["python<br/><i>context7</i>"]:::agent
+    end
+
+    %% ─── dev-infra ─────────────────────────────────
+    subgraph DEV_INFRA["dev-infra · 1 agent"]
+        TERRAFORM["terraform<br/><i>context7</i>"]:::agent
     end
 
     %% ─── ba ────────────────────────────────────────
@@ -99,11 +110,15 @@ graph TD
     DEV -.-> DEV_CORE
     DEV -.-> DEV_WEB
     DEV -.-> DEV_MOB
+    DEV -.-> DEV_PY
+    DEV -.-> DEV_INFRA
 
     %% ─── cross-profile delegation ──────────────────
     ORCH -.->|delegates| BACK
     ORCH -.->|delegates| WAPI
     ORCH -.->|delegates| UI
+    ORCH -.->|delegates| PYTHON
+    ORCH -.->|delegates| TERRAFORM
     ORCH -.->|delegates| FLUTTER
 ```
 
@@ -112,13 +127,15 @@ graph TD
 
 ---
 
-## Dev Profiles (20 agents total)
+## Dev Profiles (22 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 23 dev agents (alias → dev-core + dev-web + dev-mobile)
+koda install dev                    # All 25 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
 koda install dev-core dev-web       # Fullstack web developer (20 agents)
+koda install dev-core dev-python    # Python developer (17 agents)
+koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
@@ -257,13 +274,41 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular).
 **File:** `profiles/dev-web/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
 **Use for:** Frontend development, components, services, routing  
-**MCP Servers:** context7  
+**MCP Servers:** context7, figma  
 **Hooks:** preToolUse (guard writes)
 
 #### ux_specialist_agent
 **File:** `profiles/dev-web/agents/ux_specialist_agent.json`  
 **Purpose:** Accessibility (WCAG 2.1 AA) and UX pattern review  
-**Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance
+**Use for:** Accessibility audits, usability reviews, focus management, ARIA compliance  
+**MCP Servers:** figma
+
+---
+
+
+### Profile: dev-python (1 agent)
+
+Python specialist for FastAPI, Flask, Django, and general Python development.
+
+#### python
+**File:** `profiles/dev-python/agents/python.json`  
+**Purpose:** Python development specialist for API services and general Python  
+**Use for:** FastAPI/Flask/Django development, pytest, async patterns  
+**MCP Servers:** context7  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+---
+
+### Profile: dev-infra (1 agent)
+
+Infrastructure as Code specialist for Terraform and cloud provisioning.
+
+#### terraform
+**File:** `profiles/dev-infra/agents/terraform.json`  
+**Purpose:** Terraform/IaC specialist for modules, state management, and provisioning  
+**Use for:** Terraform modules, plan/apply workflows, security scanning  
+**MCP Servers:** context7  
+**Hooks:** preToolUse (guard writes, secret scan)
 
 ---
 
@@ -610,7 +655,10 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
 | **dev-web** | backend | | | | | ✅ | |
 | **dev-web** | webapi | | | | | ✅ | |
-| **dev-web** | ui | | | | | ✅ | |
+| **dev-web** | ui | | | | | ✅ | Figma |
+| **dev-web** | ux_specialist_agent | | | | | | Figma |
+| **dev-python** | python | | | | | ✅ | |
+| **dev-infra** | terraform | | | | | ✅ | |
 | **dev-mobile** | flutter | | | | | ✅ | |
 | **dev-mobile** | android_native | | | | | ✅ | |
 | **dev-mobile** | ios_native | | | | | ✅ | |
@@ -659,6 +707,8 @@ Shared context loaded via agent `resources`:
 | `api_test_patterns.md` | api_tester |
 | `performance_patterns.md` | performance_tester |
 | `coverage_matrix_template.md` | test_coverage_analyzer |
+| `python_guidelines.md` | python |
+| `terraform_guidelines.md` | terraform |
 
 ---
 
@@ -675,6 +725,12 @@ kiro-cli chat --agent backend                   # Java backend
 kiro-cli chat --agent webapi                    # Node.js API
 kiro-cli chat --agent ui                        # Angular frontend
 kiro-cli chat --agent ux_specialist_agent       # Accessibility & UX review
+
+# Dev Python
+kiro-cli chat --agent python                    # Python development
+
+# Dev Infra
+kiro-cli chat --agent terraform                 # Terraform/IaC
 
 # Dev Mobile
 kiro-cli chat --agent flutter                   # Flutter mobile
@@ -720,7 +776,7 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ## Installation
 
 ```bash
-koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile)
+koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev ba qa ops pm       # Install all profiles
@@ -729,5 +785,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 52 (dev-core: 16, dev-web: 4, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
-**Last Updated:** April 2, 2026
+**Total Agents:** 54 (dev-core: 16, dev-web: 4, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Last Updated:** April 3, 2026
