@@ -2,7 +2,7 @@
 
 AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-51 agents, 5 profiles, one setup. Define your standards once, run them everywhere.
+55 agents, 7 profiles, one setup. Define your standards once, run them everywhere.
 
 ---
 
@@ -72,7 +72,7 @@ koda install dev ba qa ops pm
 | **ops** | 7 | AI metrics, infra, deployments, code quality, release management |
 | **pm** | 6 | Sprints, standups, retros, risk tracking, delivery reports |
 
-`dev` is three composable sub-profiles: `dev-core` (16), `dev-web` (4), `dev-mobile` (3).
+`dev` is five composable sub-profiles: `dev-core` (16), `dev-web` (5), `dev-python` (1), `dev-infra` (1), `dev-mobile` (3).
 
 ---
 
@@ -116,7 +116,7 @@ koda install dev ba qa ops pm
 | What | Where |
 |------|-------|
 | Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md) |
-| All 50 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
+| All 55 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
 | Eval framework — fixtures, rubrics, scoring | [Eval Framework](docs/EVAL_FRAMEWORK.md) |
 | First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |

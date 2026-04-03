@@ -128,7 +128,7 @@ graph TD
 
 ---
 
-## Dev Profiles (23 agents total)
+## Dev Profiles (26 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 

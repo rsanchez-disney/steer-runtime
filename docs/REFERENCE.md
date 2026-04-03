@@ -15,7 +15,7 @@ Drop a `project.yaml` in your project root to give agents structured config. No 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | yes | Project name |
-| `stack` | string | yes | Primary tech stack (`java`, `node`, `angular`, `go`, `flutter`, `csharp`, `python`) |
+| `stack` | string | yes | Primary tech stack (`java`, `node`, `angular`, `astro`, `go`, `flutter`, `csharp`, `python`, `terraform`) |
 | `baseBranch` | string | yes | Default branch for PRs and diffs (default: `main`) |
 | `commands.build` | string | no | Build command (e.g., `mvn clean package`) |
 | `commands.test` | string | no | Test command (e.g., `npm test`) |
@@ -135,6 +135,7 @@ Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 | bruno-mcp | API testing via Bruno collections | No token needed |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
 | context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
+| figma-mcp | Figma design files, components, styles, comments | [Generate](https://www.figma.com/developers/api#access-tokens) |
 
 For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 
