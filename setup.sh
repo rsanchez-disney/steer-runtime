@@ -1568,11 +1568,11 @@ MCPEOF
 import json, os, sys
 ws_dir = sys.argv[1]
 workspaces = {}
-for name in sorted(os.listdir(ws_dir)):
-    ws_file = os.path.join(ws_dir, name, "workspace.json")
-    if os.path.isfile(ws_file):
-        with open(ws_file) as f:
-            workspaces[name] = json.load(f)
+for root, dirs, files in os.walk(ws_dir):
+    if "workspace.json" in files:
+        with open(os.path.join(root, "workspace.json")) as f:
+            ws = json.load(f)
+            workspaces[ws["name"]] = ws
 
 children = {}
 roots = []
