@@ -1550,6 +1550,23 @@ MCPEOF
         shift 2>/dev/null || true
         ws_dir="$STEER_ROOT/workspaces"
 
+        # Resolve workspace.json path (supports nested folders)
+        find_ws_file() {
+            local name=$1
+            if [ -f "$ws_dir/$name/workspace.json" ]; then
+                echo "$ws_dir/$name/workspace.json"
+                return
+            fi
+            python3 -c "
+import json,os,sys
+for r,d,f in os.walk(sys.argv[1]):
+ if 'workspace.json' in f:
+  p=os.path.join(r,'workspace.json')
+  with open(p) as fh:
+   if json.load(fh).get('name')==sys.argv[2]: print(p);sys.exit()
+" "$ws_dir" "$name"
+        }
+
         case "$ws_cmd" in
             list)
                 # Fetch latest from remote if --fetch flag
@@ -1613,8 +1630,8 @@ LIST_PY
             show)
                 ws_name="$1"
                 if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace show <name>"; exit 1; fi
-                ws_file="$ws_dir/$ws_name/workspace.json"
-                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+                ws_file=$(find_ws_file "$ws_name")
+                if [ -z "$ws_file" ] || [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
 
                 python3 -c "
 import json
@@ -1657,8 +1674,8 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
             apply)
                 ws_name="$1"
                 if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace apply <name>"; exit 1; fi
-                ws_file="$ws_dir/$ws_name/workspace.json"
-                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+                ws_file=$(find_ws_file "$ws_name")
+                if [ -z "$ws_file" ] || [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
 
                 echo "🚀 Applying workspace: $ws_name"
                 echo ""
@@ -1670,7 +1687,7 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
                 default_agent=$(python3 -c "import json; print(json.load(open('$ws_file')).get('default_agent',''))")
 
                 # 1. Install profiles (workspace-local profiles take precedence)
-                ws_path="$ws_dir/$ws_name"
+                ws_path="$(dirname "$ws_file")"
                 global_profiles=""
                 if [ -n "$profiles" ]; then
                     for profile in $profiles; do
@@ -1704,7 +1721,8 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
 
                 # 3. Copy workspace-specific rules from chain
                 for chain_ws in $ws_chain; do
-                    chain_path="$ws_dir/$chain_ws"
+                    chain_file=$(find_ws_file "$chain_ws")
+                    chain_path="$(dirname "${chain_file:-$ws_dir/$chain_ws/workspace.json}")"
                     if [ -d "$chain_path/rules" ] && [ -n "$(ls "$chain_path/rules"/*.md 2>/dev/null)" ]; then
                         echo "📏 Installing rules from $chain_ws..."
                         mkdir -p "$KIRO_ROOT/rules"
@@ -1718,7 +1736,8 @@ print(f\"\n  Enable Tools: {'yes' if ws.get('enable_tools') else 'no'}\")
 
                 # 4. Copy context from all workspaces in chain (root first)
                 for chain_ws in $ws_chain; do
-                    chain_path="$ws_dir/$chain_ws"
+                    chain_file=$(find_ws_file "$chain_ws")
+                    chain_path="$(dirname "${chain_file:-$ws_dir/$chain_ws/workspace.json}")"
                     if [ -d "$chain_path/context" ] && [ -n "$(ls "$chain_path/context"/*.md 2>/dev/null)" ]; then
                         echo "📄 Installing context from $chain_ws..."
                         mkdir -p "$KIRO_ROOT/context"
@@ -1780,8 +1799,8 @@ for p in json.load(open('$ws_file')).get('projects',[]):
             sync)
                 ws_name="$1"
                 if [ -z "$ws_name" ]; then echo "❌ Usage: ./setup.sh workspace sync <name> [--push]"; exit 1; fi
-                ws_file="$ws_dir/$ws_name/workspace.json"
-                if [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
+                ws_file=$(find_ws_file "$ws_name")
+                if [ -z "$ws_file" ] || [ ! -f "$ws_file" ]; then echo "❌ Workspace not found: $ws_name"; exit 1; fi
 
                 do_push=false
                 [ "$2" = "--push" ] && do_push=true
