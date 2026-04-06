@@ -392,7 +392,7 @@ var require_uri_all = __commonJS({
   "node_modules/uri-js/dist/es5/uri.all.js"(exports2, module2) {
     (function(global, factory) {
       typeof exports2 === "object" && typeof module2 !== "undefined" ? factory(exports2) : typeof define === "function" && define.amd ? define(["exports"], factory) : factory(global.URI = global.URI || {});
-    })(exports2, (function(exports3) {
+    })(exports2, function(exports3) {
       "use strict";
       function merge2() {
         for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
@@ -452,7 +452,7 @@ var require_uri_all = __commonJS({
       }
       var URI_PROTOCOL = buildExps(false);
       var IRI_PROTOCOL = buildExps(true);
-      var slicedToArray = /* @__PURE__ */ (function() {
+      var slicedToArray = /* @__PURE__ */ function() {
         function sliceIterator(arr, i) {
           var _arr = [];
           var _n = true;
@@ -484,7 +484,7 @@ var require_uri_all = __commonJS({
             throw new TypeError("Invalid attempt to destructure non-iterable instance");
           }
         };
-      })();
+      }();
       var toConsumableArray = function(arr) {
         if (Array.isArray(arr)) {
           for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
@@ -1400,7 +1400,7 @@ var require_uri_all = __commonJS({
       exports3.escapeComponent = escapeComponent;
       exports3.unescapeComponent = unescapeComponent;
       Object.defineProperty(exports3, "__esModule", { value: true });
-    }));
+    });
   }
 });
 
@@ -1997,7 +1997,7 @@ var require_fast_json_stable_stringify = __commonJS({
       if (!opts) opts = {};
       if (typeof opts === "function") opts = { cmp: opts };
       var cycles = typeof opts.cycles === "boolean" ? opts.cycles : false;
-      var cmp = opts.cmp && /* @__PURE__ */ (function(f) {
+      var cmp = opts.cmp && /* @__PURE__ */ function(f) {
         return function(node) {
           return function(a, b) {
             var aobj = { key: a, value: node[a] };
@@ -2005,9 +2005,9 @@ var require_fast_json_stable_stringify = __commonJS({
             return f(aobj, bobj);
           };
         };
-      })(opts.cmp);
+      }(opts.cmp);
       var seen = [];
-      return (function stringify(node) {
+      return function stringify(node) {
         if (node && node.toJSON && typeof node.toJSON === "function") {
           node = node.toJSON();
         }
@@ -2040,7 +2040,7 @@ var require_fast_json_stable_stringify = __commonJS({
         }
         seen.splice(seenIndex, 1);
         return "{" + out + "}";
-      })(data);
+      }(data);
     };
   }
 });
@@ -10530,7 +10530,7 @@ ZodNaN.create = (params) => {
     ...processCreateParams(params)
   });
 };
-var BRAND = /* @__PURE__ */ Symbol("zod_brand");
+var BRAND = Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -10732,14 +10732,14 @@ var ostring = () => stringType().optional();
 var onumber = () => numberType().optional();
 var oboolean = () => booleanType().optional();
 var coerce = {
-  string: ((arg) => ZodString.create({ ...arg, coerce: true })),
-  number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
-  boolean: ((arg) => ZodBoolean.create({
+  string: (arg) => ZodString.create({ ...arg, coerce: true }),
+  number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
+  boolean: (arg) => ZodBoolean.create({
     ...arg,
     coerce: true
-  })),
-  bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
-  date: ((arg) => ZodDate.create({ ...arg, coerce: true }))
+  }),
+  bigint: (arg) => ZodBigInt.create({ ...arg, coerce: true }),
+  date: (arg) => ZodDate.create({ ...arg, coerce: true })
 };
 var NEVER = INVALID;
 
@@ -12500,7 +12500,7 @@ function bindApi(hook2, state, name) {
   });
 }
 function Singular() {
-  const singularHookName = /* @__PURE__ */ Symbol("Singular");
+  const singularHookName = Symbol("Singular");
   const singularHookState = {
     registry: {}
   };

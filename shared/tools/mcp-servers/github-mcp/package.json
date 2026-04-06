@@ -6,7 +6,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
-    "bundle": "esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node' && chmod 755 dist/index.cjs",
+    "bundle": "esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --external:node:* --banner:js='#!/usr/bin/env node' && chmod 755 dist/index.cjs",
     "watch": "tsc --watch",
     "prepare": "npm run build && npm run bundle",
     "lint": "eslint src --ext .ts",

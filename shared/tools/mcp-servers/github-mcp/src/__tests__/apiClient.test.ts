@@ -46,6 +46,7 @@ describe("apiClient property tests", () => {
     it("Property 1: for any valid hostname h and API path p, base URL equals https://{h}{p}", async () => {
         await fc.assert(
             fc.asyncProperty(hostnameArb, apiPathArb, async (host, apiPath) => {
+                fc.pre(host !== "github.com" && host !== "api.github.com");
                 const result = deriveBaseUrl(host, undefined, apiPath);
                 expect(result).toBe(`https://${host}${apiPath}`);
             }),
@@ -58,6 +59,7 @@ describe("apiClient property tests", () => {
     it("Property 1: when apiPath is absent, defaults to /api/v3", async () => {
         await fc.assert(
             fc.asyncProperty(hostnameArb, async (host) => {
+                fc.pre(host !== "github.com" && host !== "api.github.com");
                 const result = deriveBaseUrl(host, undefined, undefined);
                 expect(result).toBe(`https://${host}/api/v3`);
             }),
@@ -71,13 +73,19 @@ describe("apiClient property tests", () => {
         const urlArb = hostnameArb.map((h) => `https://${h}`);
 
         await fc.assert(
-            fc.asyncProperty(hostnameArb, urlArb, apiPathArb, async (host, url, apiPath) => {
-                const result = deriveBaseUrl(host, url, apiPath);
-                // Must use host, not url
-                expect(result).toBe(`https://${host}${apiPath}`);
-                // Verify url is NOT used (unless host and url happen to produce the same result)
-                expect(result.startsWith(`https://${host}`)).toBe(true);
-            }),
+            fc.asyncProperty(
+                hostnameArb,
+                urlArb,
+                apiPathArb,
+                async (host, url, apiPath) => {
+                    fc.pre(host !== "github.com" && host !== "api.github.com");
+                    const result = deriveBaseUrl(host, url, apiPath);
+                    // Must use host, not url
+                    expect(result).toBe(`https://${host}${apiPath}`);
+                    // Verify url is NOT used (unless host and url happen to produce the same result)
+                    expect(result.startsWith(`https://${host}`)).toBe(true);
+                },
+            ),
             { numRuns: 100 },
         );
     });
@@ -90,13 +98,21 @@ describe("apiClient property tests", () => {
 describe("apiClient unit tests", () => {
     // **Validates: Requirements 1.3, 7.1**
     it("legacy mode: only GITHUB_URL set → uses that value with apiPath", () => {
-        const result = deriveBaseUrl(undefined, "https://github.disney.com", "/api/v3");
+        const result = deriveBaseUrl(
+            undefined,
+            "https://github.disney.com",
+            "/api/v3",
+        );
         expect(result).toBe("https://github.disney.com/api/v3");
     });
 
     // **Validates: Requirements 1.3, 7.1**
     it("legacy mode: only GITHUB_URL set with default apiPath", () => {
-        const result = deriveBaseUrl(undefined, "https://github.disney.com", undefined);
+        const result = deriveBaseUrl(
+            undefined,
+            "https://github.disney.com",
+            undefined,
+        );
         expect(result).toBe("https://github.disney.com/api/v3");
     });
 
@@ -140,5 +156,20 @@ describe("apiClient unit tests", () => {
             "/api/v3",
         );
         expect(result).toBe("https://github.disney.com/api/v3");
+    });
+
+    // **Validates: public GitHub special case — no /api/v3 suffix**
+    it("github.com host returns https://api.github.com (no path suffix)", () => {
+        expect(deriveBaseUrl("github.com")).toBe("https://api.github.com");
+    });
+
+    it("api.github.com host returns https://api.github.com", () => {
+        expect(deriveBaseUrl("api.github.com")).toBe("https://api.github.com");
+    });
+
+    it("github.com ignores custom apiPath", () => {
+        expect(deriveBaseUrl("github.com", undefined, "/api/v4")).toBe(
+            "https://api.github.com",
+        );
     });
 });
