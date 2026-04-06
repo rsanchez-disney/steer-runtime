@@ -31,13 +31,18 @@ export function deriveBaseUrl(
     url?: string,
     apiPath?: string,
 ): string {
-    const resolvedApiPath = apiPath || "/api/v3";
-
     if (host && host.length > 0) {
+        // github.com uses https://api.github.com (no path suffix)
+        // GitHub Enterprise uses https://{host}/api/v3
+        if (host === "github.com" || host === "api.github.com") {
+            return "https://api.github.com";
+        }
+        const resolvedApiPath = apiPath || "/api/v3";
         return `https://${host}${resolvedApiPath}`;
     }
 
     if (url && url.length > 0) {
+        const resolvedApiPath = apiPath || "/api/v3";
         return `${url}${resolvedApiPath}`;
     }
 

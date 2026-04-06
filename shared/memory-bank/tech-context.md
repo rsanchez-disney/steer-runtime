@@ -59,3 +59,11 @@
 - `YOUR_TOKEN` placeholder pattern in all agent configs
 - guard-writes.sh hook blocks writes to protected paths
 - warn-destructive.sh hook alerts on dangerous commands
+
+## Git Remotes
+| Remote | URL | Purpose |
+|--------|-----|---------|
+| `origin` | `git@github.disney.com:SANCR225/steer-runtime.git` | Primary (Disney GHE) |
+| `personal` | `git@github.com-arianthox:arianthox/steer-runtime.git` | Backup (private, github.com) |
+
+To sync personal backup: `git push personal main`
