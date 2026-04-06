@@ -47,7 +47,7 @@ git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
 cd ~/steer-runtime
 koda install dev        # Install dev agents
 koda mcp-install        # Setup MCP servers + tokens
-kiro-cli chat --agent orchestrator
+kiro-cli chat --agent orchestrator --tui
 ```
 
 > 🪟 On Windows? See [Windows Setup](docs/WINDOWS_SETUP.md).
