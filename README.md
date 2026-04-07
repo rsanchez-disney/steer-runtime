@@ -105,6 +105,7 @@ koda install dev ba qa ops pm
 
 | Date | Change |
 |------|--------|
+| Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
 | Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
 | Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
 | Apr 2 | [Nested workspaces](docs/TEAM_WORKSPACES.md) — child workspaces inside parent folders |

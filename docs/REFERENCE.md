@@ -117,9 +117,12 @@ koda prompts list         # List available prompts
 ./setup.sh cursor remove <dir>   # Remove .cursor/ directory
 
 # Amazon Q Developer
-koda amazonq install <dir>  # Install .amazonq/rules/
-koda amazonq sync <dir>     # Update rules
-koda amazonq remove <dir>   # Remove .amazonq/ directory
+koda amazonq install <dir>    # Install .amazonq/rules/ from templates
+koda amazonq sync <dir>       # Update rules from latest templates
+koda amazonq sync-all [dir]   # Full sync: templates + context + MCP to Amazon Q
+koda amazonq sync-mcp         # Sync MCP servers to ~/.aws/amazonq/mcp.json
+koda amazonq status [dir]     # Show current Amazon Q sync state
+koda amazonq remove <dir>     # Remove .amazonq/ directory
 ```
 
 ---

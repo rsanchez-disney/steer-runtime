@@ -9,10 +9,13 @@ Amazon Q loads all `.md` files from `.amazonq/rules/` in your project. No frontm
 ## Installation
 
 ```bash
-./setup.sh amazonq install ~/my-project
+koda amazonq install ~/my-project       # Install rule templates
+koda amazonq sync-all ~/my-project      # Full sync: templates + context + MCP
+koda amazonq sync-mcp                   # Sync MCP servers only
+koda amazonq status ~/my-project        # Check sync status
 ```
 
-This copies all templates to `<project>/.amazonq/rules/`.
+`sync-all` copies templates, adds installed context files (as `60-ctx-*.md`), and merges your Kiro MCP config into `~/.aws/amazonq/mcp.json` — preserving any servers you added manually.
 
 ## Rule numbering
 
