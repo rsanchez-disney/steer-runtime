@@ -67,6 +67,7 @@ COMMANDS:
   workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
   cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
   amazonq <subcmd> <dir>                 Manage Amazon Q Developer rules
+  amazonq-sync [full|rules|mcp|status]   Sync Kiro dev config to Amazon Q plugin
   help                                   Show this help message
 
 PROFILES:
@@ -131,7 +132,9 @@ EXAMPLES:
   ./setup.sh amazonq install ~/myapp       # Install .amazonq/rules/
   ./setup.sh amazonq sync ~/myapp          # Update rules from latest templates
   ./setup.sh amazonq remove ~/myapp        # Remove .amazonq/ directory
-
+  ./setup.sh amazonq-sync                    # Sync Kiro rules + MCP to Amazon Q plugin
+  ./setup.sh amazonq-sync mcp                # Sync MCP servers only
+  ./setup.sh amazonq-sync status ~/myapp     # Check sync status
 USAGE
 }
 
@@ -1870,6 +1873,139 @@ if has_placeholder or '${jira_pat}' == 'YOUR_TOKEN' or '${confluence_pat}' == 'Y
                 echo "  ./setup.sh amazonq remove <project-dir>    Remove .amazonq/ directory"
                 ;;
         esac
+        ;;
+
+
+    amazonq-sync)
+        shift
+        aq_sync_subcmd="${1:-full}"
+        shift 2>/dev/null || true
+        aq_sync_dir="${1:-.}"
+
+        aq_sync_dir="${aq_sync_dir/#\~/$HOME}"
+        if [ ! -d "$aq_sync_dir" ]; then
+            echo "❌ Directory does not exist: $aq_sync_dir"
+            exit 1
+        fi
+
+        case "$aq_sync_subcmd" in
+            full|rules|mcp)
+                ;;
+            status)
+                echo "📋 Amazon Q Sync Status"
+                echo ""
+                rules_dir="$aq_sync_dir/.amazonq/rules"
+                if [ -d "$rules_dir" ]; then
+                    count=$(find "$rules_dir" -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+                    echo "  Rules:  $count files in $rules_dir"
+                else
+                    echo "  Rules:  ❌ Not configured ($rules_dir missing)"
+                fi
+                aq_mcp="$HOME/.aws/amazonq/mcp.json"
+                if [ -f "$aq_mcp" ]; then
+                    servers=$(node -e 'const d=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")); console.log(Object.keys(d.mcpServers||{}).length)' "$aq_mcp" 2>/dev/null || echo "?")
+                    echo "  MCP:    $servers servers in $aq_mcp"
+                else
+                    echo "  MCP:    ❌ Not configured ($aq_mcp missing)"
+                fi
+                kiro_mcp="$HOME/.kiro/settings/mcp.json"
+                if [ -f "$kiro_mcp" ]; then
+                    echo "  Source: ✓ $kiro_mcp"
+                else
+                    echo "  Source: ❌ Run ./setup.sh mcp-install first"
+                fi
+                exit 0
+                ;;
+            *)
+                echo "Amazon Q Sync — mirror Kiro dev config to Amazon Q plugin"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh amazonq-sync [full|rules|mcp|status] [project-dir]"
+                echo ""
+                echo "Commands:"
+                echo "  full     Sync rules + MCP (default)"
+                echo "  rules    Sync .amazonq/rules/ only"
+                echo "  mcp      Sync ~/.aws/amazonq/mcp.json only"
+                echo "  status   Show current sync state"
+                echo ""
+                echo "Examples:"
+                echo "  ./setup.sh amazonq-sync                    # Full sync for current dir"
+                echo "  ./setup.sh amazonq-sync full ~/myproject   # Full sync for project"
+                echo "  ./setup.sh amazonq-sync mcp                # MCP only"
+                echo "  ./setup.sh amazonq-sync status ~/myproject # Check status"
+                exit 0
+                ;;
+        esac
+
+        # --- Sync rules ---
+        if [ "$aq_sync_subcmd" = "full" ] || [ "$aq_sync_subcmd" = "rules" ]; then
+            rules_dir="$aq_sync_dir/.amazonq/rules"
+            mkdir -p "$rules_dir"
+            echo "📝 Syncing Amazon Q rules to $rules_dir"
+            echo ""
+
+            count=0
+            # Prefer curated templates from steer-runtime
+            if [ -d "$STEER_ROOT/.amazonq-templates" ]; then
+                for md in "$STEER_ROOT"/.amazonq-templates/*.md; do
+                    [ -f "$md" ] || continue
+                    name=$(basename "$md")
+                    [ "$name" = "README.md" ] && continue
+                    cp "$md" "$rules_dir/"
+                    echo "  ✓ $name"
+                    count=$((count + 1))
+                done
+            fi
+
+            # Also copy profile-specific context if installed
+            kiro_ctx="$HOME/.kiro/context"
+            if [ -d "$kiro_ctx" ]; then
+                for ctx in "$kiro_ctx"/*.md; do
+                    [ -f "$ctx" ] || continue
+                    name=$(basename "$ctx")
+                    # Skip files already covered by templates
+                    if ! ls "$rules_dir"/*"$name"* >/dev/null 2>&1; then
+                        cp "$ctx" "$rules_dir/60-ctx-$name"
+                        echo "  ✓ 60-ctx-$name (context)"
+                        count=$((count + 1))
+                    fi
+                done
+            fi
+
+            echo ""
+            echo "✅ Synced $count rules"
+        fi
+
+        # --- Sync MCP ---
+        if [ "$aq_sync_subcmd" = "full" ] || [ "$aq_sync_subcmd" = "mcp" ]; then
+            kiro_mcp="$HOME/.kiro/settings/mcp.json"
+            aq_mcp="$HOME/.aws/amazonq/mcp.json"
+
+            if [ ! -f "$kiro_mcp" ]; then
+                echo "❌ No Kiro MCP config found at $kiro_mcp"
+                echo "   Run: ./setup.sh mcp-install"
+                exit 1
+            fi
+
+            mkdir -p "$HOME/.aws/amazonq"
+
+            # Merge: preserve user-added servers in existing amazonq mcp.json
+            node -e '
+                const fs = require("fs");
+                const kiroPath = process.argv[1], aqPath = process.argv[2];
+                const kiro = JSON.parse(fs.readFileSync(kiroPath, "utf8"));
+                const existing = fs.existsSync(aqPath) ? JSON.parse(fs.readFileSync(aqPath, "utf8")) : {};
+                const merged = Object.assign({}, existing.mcpServers || {}, kiro.mcpServers || {});
+                fs.writeFileSync(aqPath, JSON.stringify({ mcpServers: merged }, null, 2) + "\n");
+                const kiroCount = Object.keys(kiro.mcpServers || {}).length;
+                const mergedCount = Object.keys(merged).length;
+                console.log("  ✓ " + kiroCount + " Kiro servers synced to " + aqPath);
+                if (mergedCount > kiroCount) console.log("  ✓ " + (mergedCount - kiroCount) + " existing user server(s) preserved");
+            ' "$kiro_mcp" "$aq_mcp"
+
+            echo ""
+            echo "✅ MCP servers synced to Amazon Q"
+        fi
         ;;
 
     workspace)

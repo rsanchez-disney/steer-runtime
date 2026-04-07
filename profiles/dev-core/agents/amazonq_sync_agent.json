@@ -1,0 +1,23 @@
+{
+  "name": "amazonq_sync_agent",
+  "description": "Syncs Kiro dev agent rules and MCP configs to Amazon Q plugin format for seamless IDE continuity",
+  "prompt": "amazonq_sync_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        ".amazonq/**",
+        "$HOME/.aws/amazonq/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/settings/mcp.json"
+  ]
+}
