@@ -38,7 +38,7 @@ Steer-runtime is a unified multi-profile agent system for Disney Payments that p
 ```
 steer-runtime/
 │
-├── setup.sh                        # Bash fallback (Koda is primary)
+├── setup.sh                        # ⚠️ Deprecated — use Koda instead
 │
 ├── .kiro-dev/                      # ── Dev Profile (18 agents) ──
 │   ├── agents/                     #   Agent JSON configs (MCP, tools, resources)
@@ -271,7 +271,9 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ---
 
-## CLI Commands (Koda / setup.sh)
+## CLI Commands (Koda)
+
+> `setup.sh` is deprecated. All commands below are available via `koda`.
 
 | Command | Purpose |
 |---------|---------|

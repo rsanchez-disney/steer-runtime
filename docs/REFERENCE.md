@@ -79,7 +79,9 @@ koda auto-update enable           # Daily sync at 9 AM
 koda upgrade                      # Update Koda binary
 ```
 
-### setup.sh (bash fallback)
+### setup.sh (⚠️ deprecated)
+
+> **Deprecated:** Use `koda` instead. See [Koda install instructions](https://github.disney.com/SANCR225/Koda).
 
 ```bash
 # Core

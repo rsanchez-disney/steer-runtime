@@ -40,7 +40,9 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 > `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
 
-### Option B — setup.sh (bash fallback)
+### Option B — setup.sh (⚠️ deprecated)
+
+> **Deprecated:** `setup.sh` and `setup.ps1` are deprecated and will be removed in a future release. Use [Koda](#option-a--koda-recommended) instead.
 
 ```bash
 git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime

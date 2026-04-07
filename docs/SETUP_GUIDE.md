@@ -1,5 +1,11 @@
 # steer-runtime Setup Guide
 
+> **⚠️ Deprecated:** This setup guide covers `setup.sh` which is deprecated. Use [Koda](https://github.disney.com/SANCR225/Koda) instead:
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
+> koda install dev
+> ```
+
 Quick guide to setting up steer-runtime agents.
 
 ## Prerequisites

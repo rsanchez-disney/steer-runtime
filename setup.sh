@@ -3,6 +3,28 @@
 
 set -e
 
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  ⚠️  DEPRECATED — This script is deprecated. Use Koda instead.     ║
+# ║                                                                      ║
+# ║  Install Koda:                                                       ║
+# ║    curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/\    ║
+# ║         Koda/main/install.sh | bash                                  ║
+# ║                                                                      ║
+# ║  Then run: koda install dev                                          ║
+# ║  Docs: https://github.disney.com/SANCR225/Koda                      ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+echo ""
+echo "╔══════════════════════════════════════════════════════════════════════╗"
+echo "║  ⚠️  DEPRECATED — This script is deprecated. Use Koda instead.     ║"
+echo "║                                                                      ║"
+echo "║  Install:  curl -fsSL https://raw.githubusercontent.com/            ║"
+echo "║            rsanchez-disney/Koda/main/install.sh | bash              ║"
+echo "║  Then:     koda install dev                                          ║"
+echo "╚══════════════════════════════════════════════════════════════════════╝"
+echo ""
+
+
 STEER_ROOT="$(cd "$(dirname "$0")" && pwd)"
 KIRO_ROOT="$HOME/.kiro"
 
