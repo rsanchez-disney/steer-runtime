@@ -79,7 +79,9 @@ koda auto-update enable           # Daily sync at 9 AM
 koda upgrade                      # Update Koda binary
 ```
 
-### setup.sh (bash fallback)
+### setup.sh (⚠️ deprecated)
+
+> **Deprecated:** Use `koda` instead. See [Koda install instructions](https://github.disney.com/SANCR225/Koda).
 
 ```bash
 # Core
@@ -115,9 +117,12 @@ koda prompts list         # List available prompts
 ./setup.sh cursor remove <dir>   # Remove .cursor/ directory
 
 # Amazon Q Developer
-koda amazonq install <dir>  # Install .amazonq/rules/
-koda amazonq sync <dir>     # Update rules
-koda amazonq remove <dir>   # Remove .amazonq/ directory
+koda amazonq install <dir>    # Install .amazonq/rules/ from templates
+koda amazonq sync <dir>       # Update rules from latest templates
+koda amazonq sync-all [dir]   # Full sync: templates + context + MCP to Amazon Q
+koda amazonq sync-mcp         # Sync MCP servers to ~/.aws/amazonq/mcp.json
+koda amazonq status [dir]     # Show current Amazon Q sync state
+koda amazonq remove <dir>     # Remove .amazonq/ directory
 ```
 
 ---

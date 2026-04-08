@@ -26,3 +26,9 @@ When asked to implement changes:
 - Use the `grep` tool for all file content searches. It works on macOS, Linux, and Windows (via Git Bash).
 - Avoid platform-specific shell commands (`cmd`, `dir`, `type`, `findstr`, `icacls`) when a built-in agent tool exists.
 - Prefer agent tools over shell equivalents: `grep` over `grep`/`findstr` in bash, `fs_read` over `cat`/`type`, `code` over manual AST parsing.
+
+## GitHub MCP server selection
+- Multiple GitHub MCP servers may be configured, each targeting a different host.
+- When a user provides a GitHub URL, extract the hostname from the URL.
+- Match it against the `GITHUB_HOST` exposed by each available GitHub MCP server.
+- Use the tools from the server whose `GITHUB_HOST` matches the URL's host.

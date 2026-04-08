@@ -5,9 +5,9 @@
   "type": "module",
   "main": "build/index.js",
   "scripts": {
-    "build": "npx tsc",
-    "bundle": "npx esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs",
-    "watch": "npx tsc --watch",
+    "build": "tsc",
+    "bundle": "esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --external:node:* --banner:js='#!/usr/bin/env node' && chmod 755 dist/index.cjs",
+    "watch": "tsc --watch",
     "prepare": "npm run build && npm run bundle",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "esbuild": "^0.21.0",
     "@typescript-eslint/eslint-plugin": "8.56.0",
     "@typescript-eslint/parser": "8.56.0",
     "eslint": "^8.57.0",

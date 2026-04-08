@@ -17,6 +17,28 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  ⚠️  DEPRECATED — This script is deprecated. Use Koda instead.     ║
+# ║                                                                      ║
+# ║  Install Koda:                                                       ║
+# ║    irm https://raw.githubusercontent.com/rsanchez-disney/            ║
+# ║        Koda/main/install.ps1 | iex                                   ║
+# ║                                                                      ║
+# ║  Then run: koda install dev                                          ║
+# ║  Docs: https://github.disney.com/SANCR225/Koda                      ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+
+Write-Host ""
+Write-Host "╔══════════════════════════════════════════════════════════════════════╗"
+Write-Host "║  ⚠️  DEPRECATED — This script is deprecated. Use Koda instead.     ║"
+Write-Host "║                                                                      ║"
+Write-Host "║  Install:  irm https://raw.githubusercontent.com/                   ║"
+Write-Host "║            rsanchez-disney/Koda/main/install.ps1 | iex              ║"
+Write-Host "║  Then:     koda install dev                                          ║"
+Write-Host "╚══════════════════════════════════════════════════════════════════════╝"
+Write-Host ""
+
 $SteerRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KiroRoot = Join-Path $env:USERPROFILE ".kiro"
 

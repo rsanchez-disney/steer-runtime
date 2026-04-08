@@ -40,14 +40,16 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 > `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
 
-### Option B — setup.sh (bash fallback)
+### Option B — setup.sh (⚠️ deprecated)
+
+> **Deprecated:** `setup.sh` and `setup.ps1` are deprecated and will be removed in a future release. Use [Koda](#option-a--koda-recommended) instead.
 
 ```bash
 git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
 cd ~/steer-runtime
 koda install dev        # Install dev agents
 koda mcp-install        # Setup MCP servers + tokens
-kiro-cli chat --agent orchestrator
+kiro-cli chat --agent orchestrator --tui
 ```
 
 > 🪟 On Windows? See [Windows Setup](docs/WINDOWS_SETUP.md).
@@ -103,11 +105,23 @@ koda install dev ba qa ops pm
 
 | Date | Change |
 |------|--------|
+| Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
+| Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
+| Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
+| Apr 2 | [Nested workspaces](docs/TEAM_WORKSPACES.md) — child workspaces inside parent folders |
+| Apr 1 | [Figma MCP](docs/MCP_SETUP.md) + `dev-python` and `dev-infra` profiles |
+| Apr 1 | RA enrichment — agents gain context files, skills library, and spec awareness |
+| Mar 31 | [MCP bundles](docs/MCP_SETUP.md) — self-contained `dist/index.cjs` for all MCP servers |
 | Mar 30 | [Eval Framework](docs/EVAL_FRAMEWORK.md) — automated agent quality scoring with fixtures and rubrics |
+| Mar 28 | [project.yaml](common/templates/project.yaml) — structured project manifest (stack, commands, Jira, GitHub) |
+| Mar 27 | 7 new agents — architecture_spec, bounded_context, compliance, performance, steery, release_manager, release_documenter |
 | Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces `setup.sh` |
+| Mar 24 | [Hierarchical workspaces](docs/TEAM_WORKSPACES.md) — `extends` support, 7 team workspaces |
+| Mar 22 | Agent hooks — git context injection, write guards, destructive command warnings |
 | Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
-| Mar 20 | [Context7 MCP](https://context7.com) — real-time library docs, no token needed |
 | Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |
+
+> **Current:** 9 profiles · 55+ agents · 8 MCP servers · 7 team workspaces
 
 ---
 
