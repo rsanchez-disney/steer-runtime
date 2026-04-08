@@ -1,0 +1,14 @@
+{
+  "name": "test_runner_agent",
+  "description": "Runs tests and validates coverage requirements",
+  "prompt": "test_runner_agent.md",
+  "tools": [
+    "read",
+    "shell"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}
