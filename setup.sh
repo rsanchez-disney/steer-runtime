@@ -716,7 +716,7 @@ case "${1:-help}" in
 
             # Validate agent configs
             if command -v kiro-cli &> /dev/null; then
-                local errors=0
+                errors=0
                 for agent_json in "$KIRO_ROOT/agents/"*.json; do
                     [ -f "$agent_json" ] || continue
                     if ! kiro-cli agent validate --path "$agent_json" 2>/dev/null; then
