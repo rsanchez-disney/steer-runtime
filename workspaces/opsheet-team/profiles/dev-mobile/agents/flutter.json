@@ -1,0 +1,28 @@
+{
+  "name": "flutter",
+  "description": "Flutter/Dart specialist for cross-platform mobile development",
+  "prompt": "flutter.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "lib/**",
+        "packages/*/lib/**",
+        "packages/*/test/**",
+        "test/**",
+        "pubspec.yaml",
+        "packages/*/pubspec.yaml",
+        "analysis_options.yaml"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}
