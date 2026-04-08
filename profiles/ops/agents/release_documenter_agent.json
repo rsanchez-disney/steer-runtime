@@ -17,5 +17,6 @@
   ],
   "resources": [
     "file://.kiro/context/ops_guidelines.md"
-  ]
+  ],
+  "includeMcpJson": true
 }
