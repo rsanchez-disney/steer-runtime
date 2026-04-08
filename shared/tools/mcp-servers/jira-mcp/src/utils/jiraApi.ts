@@ -152,8 +152,21 @@ export class JiraApiClient {
         jql: string,
         maxResults: number = 50,
         startAt: number = 0,
+        extraFields: string[] = [],
     ): Promise<any> {
         const pat = await this.auth.getJiraPat();
+
+        const baseFields = [
+            "summary",
+            "status",
+            "assignee",
+            "priority",
+            "issuetype",
+            "project",
+            "created",
+            "updated",
+        ];
+        const fields = [...new Set([...baseFields, ...extraFields])];
 
         const response = await fetch(
             `https://myjira.disney.com/rest/api/2/search`,
@@ -167,16 +180,7 @@ export class JiraApiClient {
                     jql,
                     maxResults,
                     startAt,
-                    fields: [
-                        "summary",
-                        "status",
-                        "assignee",
-                        "priority",
-                        "issuetype",
-                        "project",
-                        "created",
-                        "updated",
-                    ],
+                    fields,
                 }),
             },
         );
@@ -200,6 +204,8 @@ export class JiraApiClient {
         epicLink?: string,
         components?: string[],
         labels?: string[],
+        sprint?: string,
+        customFields?: Record<string, unknown>,
     ): Promise<any> {
         const pat = await this.auth.getJiraPat();
 
@@ -229,6 +235,26 @@ export class JiraApiClient {
 
         if (labels && labels.length > 0) {
             fields.labels = labels;
+        }
+
+        if (sprint) {
+            // Sprint is typically customfield_10003 but resolve via alias system
+            const { resolveCustomFieldIds } = await import("./customFields.js");
+            const resolved = resolveCustomFieldIds(["sprint"]);
+            if (resolved.length > 0) {
+                fields[resolved[0]] = Number(sprint);
+            }
+        }
+
+        // Resolve and merge custom fields
+        if (customFields && Object.keys(customFields).length > 0) {
+            const { resolveCustomFieldIds } = await import("./customFields.js");
+            for (const [key, value] of Object.entries(customFields)) {
+                const resolved = resolveCustomFieldIds([key]);
+                if (resolved.length > 0) {
+                    fields[resolved[0]] = value;
+                }
+            }
         }
 
         console.error(

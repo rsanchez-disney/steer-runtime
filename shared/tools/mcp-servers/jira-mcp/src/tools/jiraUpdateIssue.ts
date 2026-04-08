@@ -1,9 +1,14 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { saveTicketData } from "../utils/fileUtils.js";
+import {
+    CUSTOM_FIELD_ALIASES,
+    resolveCustomFieldIds,
+} from "../utils/customFields.js";
 
 export const jiraUpdateIssueSchema = {
     name: "jira_update_issue",
-    description: "Update a JIRA ticket and save the updated data",
+    description:
+        "Update a JIRA ticket with support for custom fields and save the updated data",
     inputSchema: {
         type: "object",
         properties: {
@@ -45,6 +50,10 @@ export const jiraUpdateIssueSchema = {
                 description:
                     'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"])',
             },
+            customFields: {
+                type: "object",
+                description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`,
+            },
         },
         required: ["ticketId"],
     },
@@ -61,6 +70,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             epicLink,
             components,
             labels,
+            customFields,
         } = args as {
             ticketId: string;
             outputDir?: string;
@@ -70,6 +80,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             epicLink?: string;
             components?: string[];
             labels?: string[];
+            customFields?: Record<string, unknown>;
         };
 
         const apiClient = new JiraApiClient();
@@ -86,6 +97,16 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
 
         if (labels && labels.length > 0) {
             updates.labels = labels;
+        }
+
+        // Resolve custom field aliases and merge into updates
+        if (customFields) {
+            for (const [key, value] of Object.entries(customFields)) {
+                const resolved = resolveCustomFieldIds([key]);
+                if (resolved.length > 0) {
+                    updates[resolved[0]] = value;
+                }
+            }
         }
 
         // Try different Epic Link field IDs
