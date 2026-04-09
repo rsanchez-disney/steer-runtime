@@ -45,9 +45,9 @@ $KiroRoot = Join-Path $env:USERPROFILE ".kiro"
 # ── Helpers ──
 
 function Show-Usage {
-    Write-Host @"
+    Write-Host @'
 +==============================================================+
-|           steer-runtime Unified Setup (Windows)               |
+           steer-runtime Unified Setup (Windows)
 +==============================================================+
 
 USAGE:
@@ -66,6 +66,7 @@ COMMANDS:
   init-memory <dir>                      Initialize project memory bank
   configure                              Configure MCP tokens interactively
   workspace <subcmd>                     Manage team workspaces (create, list, apply, show, sync)
+  kiro-ide <subcmd> <dir>                Manage Kiro IDE steering, skills, hooks + MCP
   help                                   Show this help message
 
 PROFILES:
@@ -78,9 +79,10 @@ EXAMPLES:
   .\setup.ps1 install dev
   .\setup.ps1 install dev ba --project C:\myapp
   .\setup.ps1 mcp-install
+  .\setup.ps1 kiro-ide install .
   .\setup.ps1 rules install --all
   .\setup.ps1 init-memory C:\myapp
-"@
+'@
 }
 
 function Get-ProfileDirs {
@@ -666,6 +668,315 @@ switch ($Command) {
                 Write-Host "  .\setup.ps1 workspace apply <name>"
                 Write-Host "  .\setup.ps1 workspace create <name>"
                 Write-Host "  .\setup.ps1 workspace sync <name> [--push]"
+                exit 1
+            }
+        }
+    }
+
+    "kiro-ide" {
+        $subcmd = if ($Args.Count -gt 0) { $Args[0] } else { "help" }
+        $kideDir = if ($Args.Count -gt 1) { $Args[1] } else { $null }
+
+        switch ($subcmd) {
+            "install" {
+                if (-not $kideDir) {
+                    Write-Host "X Usage: .\setup.ps1 kiro-ide install <project-dir>" -ForegroundColor Red; exit 1
+                }
+                $kideDir = [System.IO.Path]::GetFullPath($kideDir)
+                if (-not (Test-Path $kideDir -PathType Container)) {
+                    Write-Host "X Directory does not exist: $kideDir" -ForegroundColor Red; exit 1
+                }
+
+                Write-Host "Installing Kiro IDE config to $kideDir\.kiro\`n"
+
+                # --- Steering ---
+                $steeringDir = "$kideDir\.kiro\steering"
+                New-Item -ItemType Directory -Force -Path $steeringDir | Out-Null
+                $steeringCount = 0
+
+                foreach ($profileDir in @("$SteerRoot\profiles\dev-core\steering", "$SteerRoot\profiles\dev-web\steering")) {
+                    if (Test-Path $profileDir) {
+                        Get-ChildItem "$profileDir\*.md" | ForEach-Object {
+                            Copy-Item $_.FullName "$steeringDir\" -Force
+                            Write-Host "  OK steering\$($_.Name)" -ForegroundColor Green
+                            $steeringCount++
+                        }
+                    }
+                }
+                Write-Host "`n$steeringCount steering files installed" -ForegroundColor Green
+
+                # --- Skills ---
+                $skillsDir = "$kideDir\.kiro\skills"
+                New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+                $skillsCount = 0
+
+                # Common skills
+                if (Test-Path "$SteerRoot\common\skills") {
+                    Get-ChildItem "$SteerRoot\common\skills\*.md" | Where-Object { $_.Name -ne "README.md" } | ForEach-Object {
+                        Copy-Item $_.FullName "$skillsDir\" -Force
+                        Write-Host "  OK skills\$($_.Name)" -ForegroundColor Green
+                        $skillsCount++
+                    }
+                }
+
+                # Dev-web skills
+                if (Test-Path "$SteerRoot\profiles\dev-web\skills") {
+                    Get-ChildItem "$SteerRoot\profiles\dev-web\skills\*.md" | ForEach-Object {
+                        Copy-Item $_.FullName "$skillsDir\" -Force
+                        Write-Host "  OK skills\$($_.Name)" -ForegroundColor Green
+                        $skillsCount++
+                    }
+                }
+                Write-Host "`n$skillsCount skills installed" -ForegroundColor Green
+
+                # --- Hooks ---
+                $hooksDir = "$kideDir\.kiro\hooks"
+                New-Item -ItemType Directory -Force -Path $hooksDir | Out-Null
+                $hooksCount = 0
+
+                $hooks = @(
+                    @{
+                        File = "guard-writes.kiro.hook"
+                        Content = @'
+{
+  "name": "Guard Sensitive Paths",
+  "version": "1.0.0",
+  "description": "Blocks file writes to node_modules/, dist/, and .git/ directories.",
+  "when": { "type": "preToolUse", "toolTypes": ["write"] },
+  "then": { "type": "askAgent", "prompt": "Check if the file being written is inside node_modules/, dist/, or .git/ directories. If it is, REFUSE to proceed." }
+}
+'@
+                    },
+                    @{
+                        File = "secret-scan.kiro.hook"
+                        Content = @'
+{
+  "name": "Secret Scan on Write",
+  "version": "1.0.0",
+  "description": "Scans for hardcoded secrets before writing files.",
+  "when": { "type": "preToolUse", "toolTypes": ["write"] },
+  "then": { "type": "askAgent", "prompt": "Scan the content being written for potential hardcoded secrets. If a real secret is detected, REFUSE the write and instruct to use environment variables instead." }
+}
+'@
+                    },
+                    @{
+                        File = "branch-guard.kiro.hook"
+                        Content = @'
+{
+  "name": "Branch Guard",
+  "version": "1.0.0",
+  "description": "Blocks direct git commit, push, or merge on main/master branch.",
+  "when": { "type": "preToolUse", "toolTypes": ["shell"] },
+  "then": { "type": "askAgent", "prompt": "Check if the shell command involves git commit, git push, or git merge. If the current branch is main or master, REFUSE and instruct to use a feature branch. Read-only git commands are always allowed." }
+}
+'@
+                    },
+                    @{
+                        File = "warn-destructive.kiro.hook"
+                        Content = @'
+{
+  "name": "Warn on Destructive Commands",
+  "version": "1.0.0",
+  "description": "Warns after destructive commands like rm -rf, DROP TABLE, or --force.",
+  "when": { "type": "postToolUse", "toolTypes": ["shell"] },
+  "then": { "type": "askAgent", "prompt": "If the command contained destructive patterns like rm -rf, DROP TABLE, DELETE FROM, or --force, warn the user. Otherwise do nothing." }
+}
+'@
+                    }
+                )
+
+                foreach ($hook in $hooks) {
+                    Set-Content -Path "$hooksDir\$($hook.File)" -Value $hook.Content -Encoding UTF8
+                    Write-Host "  OK hooks\$($hook.File)" -ForegroundColor Green
+                    $hooksCount++
+                }
+                Write-Host "`n$hooksCount hooks installed" -ForegroundColor Green
+
+                # --- MCP servers (user-level, Windows-aware) ---
+                Write-Host "`nConfiguring MCP servers..."
+
+                # Copy bundles
+                $mcpBundleDir = "$env:USERPROFILE\.kiro\tools\mcp-servers"
+                $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp","mywiki-mcp")
+                $bundleCount = 0
+                foreach ($s in $servers) {
+                    $src = "$SteerRoot\shared\tools\mcp-servers\$s\dist\index.cjs"
+                    $dest = "$mcpBundleDir\$s\dist"
+                    if (Test-Path $src) {
+                        New-Item -ItemType Directory -Force -Path $dest | Out-Null
+                        Copy-Item $src "$dest\index.cjs" -Force
+                        $bundleCount++
+                    }
+                }
+                Write-Host "  OK $bundleCount MCP bundles copied" -ForegroundColor Green
+
+                # Find node.exe
+                $nodePath = $null
+                $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+                if ($nodeCmd) { $nodePath = $nodeCmd.Source }
+                if (-not $nodePath) {
+                    # Try fnm default location
+                    $fnmVersions = "$env:APPDATA\fnm\node-versions"
+                    if (Test-Path $fnmVersions) {
+                        $latest = Get-ChildItem $fnmVersions -Directory | Sort-Object Name -Descending | Select-Object -First 1
+                        if ($latest) {
+                            $candidate = "$($latest.FullName)\installation\node.exe"
+                            if (Test-Path $candidate) { $nodePath = $candidate }
+                        }
+                    }
+                }
+
+                if (-not $nodePath) {
+                    Write-Host "  WARNING: node.exe not found. MCP config will use 'node' — you may need to replace with the full path." -ForegroundColor Yellow
+                    $nodePath = "node"
+                } else {
+                    Write-Host "  OK node.exe: $nodePath" -ForegroundColor Green
+                }
+
+                # Find uvx.exe (optional, for fetch server)
+                $uvxPath = $null
+                $uvxCmd = Get-Command uvx -ErrorAction SilentlyContinue
+                if ($uvxCmd) { $uvxPath = $uvxCmd.Source }
+                if (-not $uvxPath -and (Test-Path "$env:USERPROFILE\.local\bin\uvx.exe")) {
+                    $uvxPath = "$env:USERPROFILE\.local\bin\uvx.exe"
+                }
+
+                # Generate mcp.json
+                $mcpConfig = [ordered]@{ mcpServers = [ordered]@{} }
+
+                if ($uvxPath) {
+                    $mcpConfig.mcpServers["fetch"] = [ordered]@{
+                        command = $uvxPath
+                        args = @("mcp-server-fetch")
+                        env = @{}
+                        disabled = $false
+                        autoApprove = @()
+                    }
+                    Write-Host "  OK fetch (uvx)" -ForegroundColor Green
+                } else {
+                    Write-Host "  SKIP fetch (uvx not found — install uv to enable)" -ForegroundColor Yellow
+                }
+
+                $mcpConfig.mcpServers["bruno"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\bruno-mcp\dist\index.cjs")
+                }
+                $mcpConfig.mcpServers["confluence"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs")
+                    env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://confluence.disney.com" }
+                }
+                $mcpConfig.mcpServers["github"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\github-mcp\dist\index.cjs")
+                    env = [ordered]@{ GITHUB_HOST = "github.disney.com"; GITHUB_TOKEN = ""; GITHUB_API_PATH = "/api/v3" }
+                }
+                $mcpConfig.mcpServers["jira"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\jira-mcp\dist\index.cjs")
+                    env = [ordered]@{ JIRA_PAT = "" }
+                }
+                $mcpConfig.mcpServers["mermaid"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs")
+                }
+                $mcpConfig.mcpServers["mywiki"] = [ordered]@{
+                    command = $nodePath
+                    args = @("$mcpBundleDir\mywiki-mcp\dist\index.cjs")
+                    env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" }
+                }
+
+                $mcpJsonPath = "$env:USERPROFILE\.kiro\settings\mcp.json"
+                New-Item -ItemType Directory -Force -Path (Split-Path $mcpJsonPath) | Out-Null
+                $mcpConfig | ConvertTo-Json -Depth 5 | Set-Content $mcpJsonPath -Encoding UTF8
+                Write-Host "  OK $mcpJsonPath" -ForegroundColor Green
+
+                # --- Summary ---
+                Write-Host "`nKiro IDE setup complete:" -ForegroundColor Green
+                Write-Host "   $steeringCount steering  -> $steeringDir\"
+                Write-Host "   $skillsCount skills     -> $skillsDir\"
+                Write-Host "   $hooksCount hooks      -> $hooksDir\"
+                Write-Host "   $bundleCount MCP servers -> $mcpBundleDir\"
+                Write-Host "   MCP config   -> $mcpJsonPath"
+                Write-Host ""
+                Write-Host "Next: add your tokens to $mcpJsonPath" -ForegroundColor Yellow
+                Write-Host "  Jira:       https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens"
+                Write-Host "  Confluence: https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action"
+                Write-Host "  MyWiki:     https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
+                Write-Host "  GitHub:     https://github.disney.com/settings/tokens"
+            }
+
+            "sync" {
+                if (-not $kideDir) {
+                    Write-Host "X Usage: .\setup.ps1 kiro-ide sync <project-dir>" -ForegroundColor Red; exit 1
+                }
+                $kideDir = [System.IO.Path]::GetFullPath($kideDir)
+
+                if (-not (Test-Path "$kideDir\.kiro\steering") -and -not (Test-Path "$kideDir\.kiro\skills")) {
+                    Write-Host "X No Kiro IDE config found at $kideDir\.kiro\" -ForegroundColor Red
+                    Write-Host "  Run: .\setup.ps1 kiro-ide install $kideDir"
+                    exit 1
+                }
+
+                Write-Host "Syncing Kiro IDE config in $kideDir\.kiro\`n"
+                $count = 0
+
+                if (Test-Path "$kideDir\.kiro\steering") {
+                    foreach ($profileDir in @("$SteerRoot\profiles\dev-core\steering", "$SteerRoot\profiles\dev-web\steering")) {
+                        if (Test-Path $profileDir) {
+                            Get-ChildItem "$profileDir\*.md" | ForEach-Object {
+                                Copy-Item $_.FullName "$kideDir\.kiro\steering\" -Force
+                                $count++
+                            }
+                        }
+                    }
+                }
+
+                if (Test-Path "$kideDir\.kiro\skills") {
+                    Get-ChildItem "$SteerRoot\common\skills\*.md" -EA SilentlyContinue | Where-Object { $_.Name -ne "README.md" } | ForEach-Object {
+                        Copy-Item $_.FullName "$kideDir\.kiro\skills\" -Force
+                        $count++
+                    }
+                    if (Test-Path "$SteerRoot\profiles\dev-web\skills") {
+                        Get-ChildItem "$SteerRoot\profiles\dev-web\skills\*.md" | ForEach-Object {
+                            Copy-Item $_.FullName "$kideDir\.kiro\skills\" -Force
+                            $count++
+                        }
+                    }
+                }
+
+                Write-Host "Synced $count files" -ForegroundColor Green
+            }
+
+            "remove" {
+                if (-not $kideDir) {
+                    Write-Host "X Usage: .\setup.ps1 kiro-ide remove <project-dir>" -ForegroundColor Red; exit 1
+                }
+                $kideDir = [System.IO.Path]::GetFullPath($kideDir)
+                $removed = 0
+
+                foreach ($subdir in @("steering", "skills", "hooks")) {
+                    $path = "$kideDir\.kiro\$subdir"
+                    if (Test-Path $path) {
+                        Remove-Item -Recurse -Force $path
+                        Write-Host "  Removed .kiro\$subdir\" -ForegroundColor Yellow
+                        $removed++
+                    }
+                }
+
+                if ($removed -eq 0) {
+                    Write-Host "Nothing to remove" -ForegroundColor Yellow
+                } else {
+                    Write-Host "Removed $removed directories" -ForegroundColor Green
+                }
+            }
+
+            default {
+                Write-Host "`nKiro IDE - install steering, skills, hooks, and MCP servers`n"
+                Write-Host "Usage:"
+                Write-Host "  .\setup.ps1 kiro-ide install <project-dir>   Install steering, skills, hooks + MCP"
+                Write-Host "  .\setup.ps1 kiro-ide sync <project-dir>      Update from latest profiles"
+                Write-Host "  .\setup.ps1 kiro-ide remove <project-dir>    Remove steering, skills, hooks"
                 exit 1
             }
         }
