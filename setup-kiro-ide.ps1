@@ -2,10 +2,15 @@
 <#
 .SYNOPSIS
     Install steer-runtime steering, skills, hooks, and MCP servers for Kiro IDE on Windows.
+
+    Steering and skills install to user-level (~/.kiro/) so they apply to all workspaces
+    without polluting project repos. Hooks install to the workspace (.kiro/hooks/) since
+    Kiro IDE only supports workspace-level hooks, and are auto-added to .gitignore.
+
 .EXAMPLE
     .\setup-kiro-ide.ps1 install .
     .\setup-kiro-ide.ps1 install C:\Users\me\Projects\my-app
-    .\setup-kiro-ide.ps1 sync .
+    .\setup-kiro-ide.ps1 sync
     .\setup-kiro-ide.ps1 remove .
 #>
 
@@ -18,6 +23,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $SteerRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$KiroHome = Join-Path $env:USERPROFILE ".kiro"
 
 function Show-Help {
     Write-Host @'
@@ -25,17 +31,19 @@ function Show-Help {
   steer-runtime Kiro IDE Setup (Windows)
 
   USAGE:
-    .\setup-kiro-ide.ps1 install <project-dir>   Install steering, skills, hooks + MCP
-    .\setup-kiro-ide.ps1 sync <project-dir>      Update steering and skills from latest profiles
-    .\setup-kiro-ide.ps1 remove <project-dir>    Remove steering, skills, hooks
+    .\setup-kiro-ide.ps1 install <project-dir>   Full setup: steering, skills, hooks, MCP
+    .\setup-kiro-ide.ps1 sync                     Update user-level steering and skills
+    .\setup-kiro-ide.ps1 remove <project-dir>     Remove workspace hooks
+
+  WHERE THINGS GO:
+    Steering + Skills  -> ~/.kiro/          (user-level, all workspaces)
+    MCP servers        -> ~/.kiro/          (user-level, all workspaces)
+    Hooks              -> <project>/.kiro/  (workspace, auto-gitignored)
 
   EXAMPLES:
     .\setup-kiro-ide.ps1 install .
     .\setup-kiro-ide.ps1 install C:\Projects\my-app
-    .\setup-kiro-ide.ps1 sync .
-
-  MCP servers are installed to the user-level ~/.kiro/settings/mcp.json
-  so they work across all workspaces.
+    .\setup-kiro-ide.ps1 sync
 
 '@
 }
@@ -54,10 +62,8 @@ function Find-NodeExe {
     $cmd = Get-Command node -ErrorAction SilentlyContinue
     if ($cmd) {
         $source = $cmd.Source
-        # Skip fnm_multishells paths — they're ephemeral
         if ($source -notmatch 'fnm_multishells') { return $source }
     }
-    # Try Program Files
     $pf = "C:\Program Files\nodejs\node.exe"
     if (Test-Path $pf) { return $pf }
     return $null
@@ -71,8 +77,8 @@ function Find-UvxExe {
     return $null
 }
 
-function Install-Steering($dir) {
-    $steeringDir = Join-Path $dir ".kiro\steering"
+function Install-Steering {
+    $steeringDir = Join-Path $KiroHome "steering"
     New-Item -ItemType Directory -Force -Path $steeringDir | Out-Null
     $count = 0
     foreach ($profileDir in @("$SteerRoot\profiles\dev-core\steering", "$SteerRoot\profiles\dev-web\steering")) {
@@ -84,12 +90,12 @@ function Install-Steering($dir) {
             }
         }
     }
-    Write-Host "$count steering files" -ForegroundColor Green
+    Write-Host "$count steering files -> $steeringDir" -ForegroundColor Green
     return $count
 }
 
-function Install-Skills($dir) {
-    $skillsDir = Join-Path $dir ".kiro\skills"
+function Install-Skills {
+    $skillsDir = Join-Path $KiroHome "skills"
     New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
     $count = 0
     $commonSkills = "$SteerRoot\common\skills"
@@ -108,7 +114,7 @@ function Install-Skills($dir) {
             $count++
         }
     }
-    Write-Host "$count skills" -ForegroundColor Green
+    Write-Host "$count skills -> $skillsDir" -ForegroundColor Green
     return $count
 }
 
@@ -128,13 +134,26 @@ function Install-Hooks($dir) {
         Write-Host "  OK hooks\$($hook.File)" -ForegroundColor Green
         $count++
     }
-    Write-Host "$count hooks" -ForegroundColor Green
+    Write-Host "$count hooks -> $hooksDir" -ForegroundColor Green
+
+    # Auto-add hooks to .gitignore
+    $gitignore = Join-Path $dir ".gitignore"
+    $hookPattern = ".kiro/hooks/"
+    $needsAdd = $true
+    if (Test-Path $gitignore) {
+        $lines = Get-Content $gitignore
+        if ($lines -contains $hookPattern -or $lines -contains ".kiro/hooks") { $needsAdd = $false }
+    }
+    if ($needsAdd) {
+        Add-Content -Path $gitignore -Value "`n# Kiro IDE hooks (workspace-level, not committed)`n$hookPattern"
+        Write-Host "  OK added $hookPattern to .gitignore" -ForegroundColor Green
+    }
     return $count
 }
 
 function Install-McpServers {
     Write-Host "`nConfiguring MCP servers (user-level)..."
-    $mcpBundleDir = "$env:USERPROFILE\.kiro\tools\mcp-servers"
+    $mcpBundleDir = Join-Path $KiroHome "tools\mcp-servers"
     $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp","mywiki-mcp")
     $bundleCount = 0
     foreach ($s in $servers) {
@@ -173,7 +192,7 @@ function Install-McpServers {
     $mcpConfig.mcpServers["mermaid"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs") }
     $mcpConfig.mcpServers["mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mywiki-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
 
-    $mcpJsonPath = "$env:USERPROFILE\.kiro\settings\mcp.json"
+    $mcpJsonPath = Join-Path $KiroHome "settings\mcp.json"
     New-Item -ItemType Directory -Force -Path (Split-Path $mcpJsonPath) | Out-Null
     $mcpConfig | ConvertTo-Json -Depth 5 | Set-Content $mcpJsonPath -Encoding UTF8
     Write-Host "  OK $mcpJsonPath" -ForegroundColor Green
@@ -193,44 +212,38 @@ switch ($Command) {
         $TargetDir = [System.IO.Path]::GetFullPath($TargetDir)
         if (-not (Test-Path $TargetDir -PathType Container)) { Write-Host "X Directory not found: $TargetDir" -ForegroundColor Red; exit 1 }
 
-        Write-Host "Installing Kiro IDE config to $TargetDir\.kiro\`n"
-        $sc = Install-Steering $TargetDir
-        $skc = Install-Skills $TargetDir
-        $hc = Install-Hooks $TargetDir
-        $mc = Install-McpServers
+        Write-Host "Installing Kiro IDE config`n"
+        Write-Host "User-level (all workspaces):" -ForegroundColor Cyan
+        Install-Steering | Out-Null
+        Install-Skills | Out-Null
 
+        Write-Host "`nWorkspace-level ($TargetDir):" -ForegroundColor Cyan
+        Install-Hooks $TargetDir | Out-Null
+
+        Install-McpServers | Out-Null
         Write-Host "`nDone." -ForegroundColor Green
     }
 
     "sync" {
-        if (-not $TargetDir) { Write-Host "X Usage: .\setup-kiro-ide.ps1 sync <project-dir>" -ForegroundColor Red; exit 1 }
-        $TargetDir = [System.IO.Path]::GetFullPath($TargetDir)
-        if (-not (Test-Path "$TargetDir\.kiro\steering") -and -not (Test-Path "$TargetDir\.kiro\skills")) {
-            Write-Host "X No Kiro IDE config found. Run install first." -ForegroundColor Red; exit 1
-        }
-        Write-Host "Syncing Kiro IDE config in $TargetDir\.kiro\`n"
-        $count = 0
-        if (Test-Path "$TargetDir\.kiro\steering") {
-            foreach ($pd in @("$SteerRoot\profiles\dev-core\steering", "$SteerRoot\profiles\dev-web\steering")) {
-                if (Test-Path $pd) { Get-ChildItem "$pd\*.md" | ForEach-Object { Copy-Item $_.FullName "$TargetDir\.kiro\steering\" -Force; $count++ } }
-            }
-        }
-        if (Test-Path "$TargetDir\.kiro\skills") {
-            Get-ChildItem "$SteerRoot\common\skills\*.md" -EA SilentlyContinue | Where-Object { $_.Name -ne "README.md" } | ForEach-Object { Copy-Item $_.FullName "$TargetDir\.kiro\skills\" -Force; $count++ }
-            if (Test-Path "$SteerRoot\profiles\dev-web\skills") { Get-ChildItem "$SteerRoot\profiles\dev-web\skills\*.md" | ForEach-Object { Copy-Item $_.FullName "$TargetDir\.kiro\skills\" -Force; $count++ } }
-        }
-        Write-Host "Synced $count files" -ForegroundColor Green
+        Write-Host "Syncing user-level steering and skills`n"
+        Install-Steering | Out-Null
+        Install-Skills | Out-Null
+        Write-Host "`nDone." -ForegroundColor Green
     }
 
     "remove" {
         if (-not $TargetDir) { Write-Host "X Usage: .\setup-kiro-ide.ps1 remove <project-dir>" -ForegroundColor Red; exit 1 }
         $TargetDir = [System.IO.Path]::GetFullPath($TargetDir)
         $removed = 0
-        foreach ($sub in @("steering", "skills", "hooks")) {
-            $p = "$TargetDir\.kiro\$sub"
-            if (Test-Path $p) { Remove-Item -Recurse -Force $p; Write-Host "  Removed .kiro\$sub\" -ForegroundColor Yellow; $removed++ }
+        # Only remove workspace hooks (steering/skills are user-level)
+        $hooksPath = "$TargetDir\.kiro\hooks"
+        if (Test-Path $hooksPath) {
+            Remove-Item -Recurse -Force $hooksPath
+            Write-Host "  Removed $hooksPath" -ForegroundColor Yellow
+            $removed++
         }
-        if ($removed -eq 0) { Write-Host "Nothing to remove" -ForegroundColor Yellow } else { Write-Host "Removed $removed directories" -ForegroundColor Green }
+        if ($removed -eq 0) { Write-Host "Nothing to remove from workspace" -ForegroundColor Yellow }
+        else { Write-Host "Removed workspace hooks. User-level steering/skills in ~/.kiro/ were not touched." -ForegroundColor Green }
     }
 
     default { Show-Help }
