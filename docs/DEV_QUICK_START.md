@@ -36,6 +36,43 @@ kiro-cli chat --agent orchestrator
 
 ---
 
+## 0. Project Initialization
+
+Before diving into any task, orient the orchestrator to your project. This is the first prompt you should send in any new session — it gives the agent the context it needs to make accurate decisions.
+
+### Initialize a project you'll be working on
+
+```
+Let's start working on wdpr-config-services located at ~/Workspace/Disney/wdpr-config-services.
+Review the existing implementation — tech stack, project structure, key patterns, and dependencies.
+Summarize what you find so we have a shared understanding before making changes.
+```
+
+### Initialize with a specific focus area
+
+```
+Let's start working on wdpr-payment-controls-api at ~/Workspace/Disney/wdpr-payment-controls-api.
+I'll be working on the cart endpoints today. Review:
+- The existing cart controller and service layer
+- Current test coverage for cart operations
+- Any related middleware or validation logic
+
+Summarize the current state so I know where to start.
+```
+
+### Initialize from a Jira ticket
+
+```
+Let's start working on DPAY-1234.
+Fetch the ticket details, identify which repo and files are affected,
+then review the current implementation in those areas.
+Give me a summary of what exists and what needs to change.
+```
+
+> **Why this matters:** The orchestrator delegates to specialized agents (backend, webapi, ui). When you establish the project context upfront, every subsequent prompt — tests, reviews, PRs — targets the right codebase without you repeating paths and tech stack details.
+
+---
+
 ## 1. Unit Test Generation
 
 ### Generate tests for an existing class
