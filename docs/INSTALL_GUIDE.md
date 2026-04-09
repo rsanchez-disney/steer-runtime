@@ -28,15 +28,7 @@ brew --version
 
 ### Windows
 
-Windows comes with **winget** pre-installed on Windows 10 (1709+) and Windows 11. Open **PowerShell
-** (press `Win + X` → "Windows PowerShell" or "Terminal") and verify:
-
-```powershell
-winget --version
-```
-
-If winget is not available, install it from
-the [Microsoft Store (App Installer)](https://apps.microsoft.com/detail/9NBLGGH4NNS1).
+TBD.
 
 ---
 
@@ -52,17 +44,7 @@ brew install gh
 
 ### Windows
 
-```powershell
-winget install GitHub.cli
-```
-
-Verify on either platform:
-
-```
-gh --version
-```
-
----
+TBD.
 
 ## 3. Set Up Environment Variables
 
@@ -84,19 +66,9 @@ source ~/.zshrc
 
 > If you use **bash** instead of zsh, replace `~/.zshrc` with `~/.bashrc` in the commands above.
 
-### Windows (PowerShell)
+### Windows
 
-```powershell
-[Environment]::SetEnvironmentVariable('GH_HOST', 'github.disney.com', 'User')
-```
-
-Close and reopen PowerShell for the change to take effect. Verify:
-
-```powershell
-echo $env:GH_HOST
-```
-
-It should print `github.disney.com`.
+TBD.
 
 ---
 
@@ -160,13 +132,7 @@ curl -fsSL https://cli.kiro.dev/install | bash
 
 ### Windows
 
-Download the installer from [https://kiro.dev/downloads/](https://kiro.dev/downloads/) and run it.
-
-Verify on either platform:
-
-```
-kiro-cli --version
-```
+TBD.
 
 ---
 
@@ -183,7 +149,7 @@ Open the `.dmg` file and drag Kiro into **Applications**.
 
 ### Windows
 
-Run the `.exe` installer and follow the prompts.
+TBD.
 
 ---
 
@@ -202,19 +168,9 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### Windows (PowerShell)
+### Windows
 
-```powershell
-irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
-```
-
-If PowerShell tells you to add the install directory to your PATH:
-
-```powershell
-[Environment]::SetEnvironmentVariable('PATH', "$env:LOCALAPPDATA\koda;$env:PATH", 'User')
-```
-
-Close and reopen PowerShell.
+TBD.
 
 ### Verify (both platforms)
 
@@ -239,16 +195,16 @@ koda                    # Opens the interactive TUI dashboard
 
 ## Quick Reference
 
-| Step               | macOS                                         | Windows                                |
-|--------------------|-----------------------------------------------|----------------------------------------|
-| 1. Package manager | `brew` (install via script)                   | `winget` (pre-installed)               |
-| 2. GitHub CLI      | `brew install gh`                             | `winget install GitHub.cli`            |
-| 3. Env vars        | Add `GH_HOST` to `~/.zshrc`                   | `SetEnvironmentVariable` in PowerShell |
-| 4. Token           | Generate at github.disney.com/settings/tokens | Same                                   |
-| 5. Auth            | `gh auth login --hostname github.disney.com`  | Same                                   |
-| 6. kiro-cli        | `curl` one-liner                              | Download from kiro.dev                 |
-| 7. Kiro IDE        | `.dmg` installer                              | `.exe` installer                       |
-| 8. Koda            | `curl` one-liner                              | `irm ... \| iex` in PowerShell         |
+| Step               | macOS                                         | Windows |
+|--------------------|-----------------------------------------------|---------|
+| 1. Package manager | `brew` (install via script)                   |         |
+| 2. GitHub CLI      | `brew install gh`                             |         |
+| 3. Env vars        | Add `GH_HOST` to `~/.zshrc`                   |         |
+| 4. Token           | Generate at github.disney.com/settings/tokens | TBD     |
+| 5. Auth            | `gh auth login --hostname github.disney.com`  |         |
+| 6. kiro-cli        | `curl` one-liner                              |         |
+| 7. Kiro IDE        | `.dmg` installer                              |         |
+| 8. Koda            | `curl` one-liner                              |         |
 
 ---
 
