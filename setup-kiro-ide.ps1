@@ -7,6 +7,12 @@
     without polluting project repos. Hooks install to the workspace (.kiro/hooks/) since
     Kiro IDE only supports workspace-level hooks, and are auto-added to .gitignore.
 
+.NOTES
+    If you get a PSSecurityException ("running scripts is disabled"), run:
+      Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+    Or bypass for a single run:
+      powershell -ExecutionPolicy Bypass -File setup-kiro-ide.ps1 install .
+
 .EXAMPLE
     .\setup-kiro-ide.ps1 install .
     .\setup-kiro-ide.ps1 install C:\Users\me\Projects\my-app
@@ -44,6 +50,12 @@ function Show-Help {
     .\setup-kiro-ide.ps1 install .
     .\setup-kiro-ide.ps1 install C:\Projects\my-app
     .\setup-kiro-ide.ps1 sync
+
+  TROUBLESHOOTING:
+    "running scripts is disabled" error:
+      Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+    Or bypass for one run:
+      powershell -ExecutionPolicy Bypass -File setup-kiro-ide.ps1 install .
 
 '@
 }
