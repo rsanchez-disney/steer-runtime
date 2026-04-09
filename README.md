@@ -105,6 +105,7 @@ koda install dev ba qa ops pm
 
 | Date | Change |
 |------|--------|
+| Apr 9 | Orchestrator execution modes — **review mode** (pause after each specialist, show diff, approve) and **autopilot mode** (run straight through) |
 | Apr 9 | [Kiro IDE setup](docs/KIRO_IDE_WINDOWS_SETUP.md) — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
 | Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
 | Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |

@@ -263,6 +263,18 @@ Stack trace: [paste stack trace]
 
 ## Tips
 
+### Execution modes
+
+The orchestrator supports two modes for task execution:
+
+```
+Implement DPAY-1234 in review mode      # pause after each specialist — review diff, approve/revert
+Implement DPAY-1234 in autopilot mode   # run all tasks, only stop at plan + quality gates
+Implement DPAY-1234                      # defaults to review mode
+```
+
+Switch mid-session: `Switch to autopilot` or `Switch to review mode`
+
 - **Be specific about file paths** — the orchestrator delegates to specialized agents who need exact locations
 - **Mention the tech stack** — "JUnit 5 + Mockito" or "Jest + supertest" helps agents pick the right patterns
 - **Reference existing patterns** — "follow the style in src/test/" avoids style mismatches

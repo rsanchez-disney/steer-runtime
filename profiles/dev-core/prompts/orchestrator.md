@@ -84,6 +84,14 @@ For each task in plan, invoke appropriate agent:
 - `python` for Python/FastAPI/Flask/Django tasks
 - `terraform` for Terraform/IaC tasks
 
+**In review mode**, after each specialist completes a task:
+1. Run `git diff` to capture changes
+2. Present a summary: files changed, lines added/removed, key modifications
+3. Ask: "Approve these changes? (yes / revert / modify)"
+4. Only proceed to the next task after approval
+
+**In autopilot mode**, proceed to the next task immediately after each specialist completes.
+
 Track progress after each task.
 
 ### 7. Run Tests
@@ -114,6 +122,22 @@ Invoke `pr_creator_agent` with story + changes + quality report.
 
 ### 12. Complete
 Show summary: PR URL, duration, files changed, quality checks.
+
+## Execution Mode
+
+Two modes control how you handle specialist task completion:
+
+- **Review mode** (default): Pause after each specialist task. Show the diff, wait for user approval before continuing. The user can approve, revert, or request modifications.
+- **Autopilot mode**: Run all tasks without pausing. Only stop at the existing approval gates (#1 and #2).
+
+The user selects the mode at the start of a session:
+- "Implement DPAY-1234 in review mode" — pause after each task
+- "Implement DPAY-1234 in autopilot mode" — run straight through
+- "Implement DPAY-1234" (no mode specified) — default to review mode
+
+The user can switch mid-session:
+- "Switch to autopilot" — stop pausing
+- "Switch to review mode" — start pausing again
 
 ## Delegation Pattern
 
