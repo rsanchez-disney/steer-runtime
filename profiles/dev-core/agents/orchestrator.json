@@ -24,6 +24,10 @@
       {
         "command": "$HOME/.kiro/hooks/git-context.sh",
         "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
       }
     ],
     "preToolUse": [

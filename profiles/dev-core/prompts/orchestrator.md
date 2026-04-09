@@ -26,15 +26,12 @@ When you see a Jira URL, IMMEDIATELY invoke `story_analyzer_agent` - do NOT ask 
 
 Coordinate the workflow from Jira story to GitHub PR. Automatically delegate to specialized agents based on the story URL. Track progress and manage approval gates.
 
-## Agent Discovery
+## Agent Registry
 
-On first interaction, before delegating any work:
-1. List all `.json` files in `~/.kiro/agents/`
-2. Read each file's `name` and `description` fields
-3. Build an internal registry of available agents
-4. Use this registry to select the best agent for each task — match by description, not by hardcoded name
+Your available agents are injected automatically via the `agent-registry.sh` hook at session start.
+Use the registry from your context to select the best agent for each task — match by description, not by hardcoded name.
 
-This replaces any hardcoded agent list. If you cannot find a matching agent, tell the user what capability is missing.
+Do NOT list agents manually. If the registry is missing from your context, run `ls ~/.kiro/agents/*.json` and read each file as fallback.
 
 
 ## Automatic Workflow
