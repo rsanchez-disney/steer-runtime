@@ -33,6 +33,43 @@ clean_resource_forks() {
     find "$1" -name "._*" -delete 2>/dev/null || true
 }
 
+# Detect WSL and provide path conversion for Windows UNC format
+_is_wsl=false
+_wsl_distro=""
+if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+    _is_wsl=true
+    _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+fi
+
+# Convert a Linux path to a Windows UNC path when running in WSL.
+# On non-WSL systems, returns the path unchanged.
+to_win_path() {
+    if [ "$_is_wsl" = true ]; then
+        if command -v wslpath &>/dev/null; then
+            wslpath -w "$1"
+        else
+            echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
+        fi
+    else
+        echo "$1"
+    fi
+}
+
+# Pre-compute MCP server paths (WSL-aware)
+precompute_mcp_paths() {
+    _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
+    _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
+    _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
+    _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
+    _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs")"
+    _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
+    _node_cmd="node"
+    if [ "$_is_wsl" = true ]; then
+        _node_cmd="wsl.exe -d $_wsl_distro node"
+    fi
+}
+
 # Discover GitHub remotes from tokens.env by scanning for GITHUB_TOKEN_{remote} keys
 # Outputs one remote name per line, sorted and deduplicated
 discover_github_remotes() {
@@ -926,34 +963,11 @@ TOKHEADER
             existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
         fi
         
-        # Detect WSL and convert paths to Windows UNC format for mcp.json
-        # Kiro runs on Windows but setup.sh runs in WSL — paths must be Windows-accessible
-        _is_wsl=false
-        if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
-            _is_wsl=true
-            _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+        # Pre-compute WSL-aware MCP paths
+        precompute_mcp_paths
+        if [ "$_is_wsl" = true ]; then
             echo "  ℹ️  WSL detected ($_wsl_distro) — using Windows UNC paths in mcp.json"
         fi
-        
-        # Convert a Linux path to a Windows UNC path when running in WSL
-        to_win_path() {
-            if [ "$_is_wsl" = true ]; then
-                if command -v wslpath &>/dev/null; then
-                    wslpath -w "$1"
-                else
-                    echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
-                fi
-            else
-                echo "$1"
-            fi
-        }
-        
-        # Pre-compute all MCP server paths
-        _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
-        _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
-        _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
-        _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
-        _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
         
         python3 -c "
 import json, sys, os
@@ -1843,28 +1857,8 @@ HOOKEOF
                     # Discover GitHub remotes from tokens.env
                     _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
                     
-                    # Detect WSL for Windows UNC paths
-                    _is_wsl=false
-                    if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
-                        _is_wsl=true
-                        _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
-                    fi
-                    to_win_path() {
-                        if [ "$_is_wsl" = true ]; then
-                            if command -v wslpath &>/dev/null; then
-                                wslpath -w "$1"
-                            else
-                                echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
-                            fi
-                        else
-                            echo "$1"
-                        fi
-                    }
-                    _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
-                    _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
-                    _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
-                    _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
-                    _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+                    # Pre-compute WSL-aware MCP paths
+                    precompute_mcp_paths
                     
                     python3 -c "
 import json, sys, os
