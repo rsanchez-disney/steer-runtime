@@ -1,0 +1,15 @@
+{
+  "name": "architecture_agent",
+  "description": "Provides architecture guidance, design patterns, and technical decisions for implementation",
+  "prompt": "architecture_agent.md",
+  "tools": [
+    "read",
+    "shell"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md",
+    "file://pubspec.yaml"
+  ]
+}

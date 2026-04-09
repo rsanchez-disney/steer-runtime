@@ -1,0 +1,14 @@
+{
+  "name": "security_scanner_agent",
+  "description": "Runs automated security scans on code changes to detect vulnerabilities, secrets, and compliance issues",
+  "prompt": "security_scanner_agent.md",
+  "tools": [
+    "read",
+    "shell"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}
