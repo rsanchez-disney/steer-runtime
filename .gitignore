@@ -40,3 +40,6 @@ tests/runs/
 steer-runtime-*.tar.gz
 ._*
 VERSION
+
+# Kiro IDE hooks (workspace-level, not committed)
+.kiro/hooks/
