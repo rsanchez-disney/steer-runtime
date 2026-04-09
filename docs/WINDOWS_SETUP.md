@@ -9,6 +9,11 @@
 - Windows 10 (version 2004+) or Windows 11
 - [Node.js](https://nodejs.org) (includes npm)
 - Git
+- Open "Turn Windows features ON or OFF" APP in Windows and enable:
+  -Hyper V
+  -Windows Hypervisor Platform
+  -Virtual Machine Platform
+  -Windows Subsystem for Linux
 
 ---
 
