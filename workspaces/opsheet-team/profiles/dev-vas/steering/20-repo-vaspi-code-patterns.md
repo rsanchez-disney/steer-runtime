@@ -210,6 +210,7 @@ export class DomainProcessor {
 ## Preferred Patterns
 
 - Async/await over callbacks
+- ES6 import/export over CommonJS require/exports
 - Functional programming where possible
 - Dependency injection via constructor params with defaults on routers, controllers, and processors — this enables integration testing by allowing mock injection
 - Middleware-based request processing
