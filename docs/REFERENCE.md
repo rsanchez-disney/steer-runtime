@@ -68,7 +68,8 @@ koda check                        # Verify installation
 koda doctor                       # Deep health check
 koda status                       # Show agent setup status
 koda diff                         # Preview what sync would change
-koda mcp-install                  # Setup MCP servers + tokens
+koda mcp-install                  # Setup MCP servers + tokens (interactive on first run)
+koda mcp-install --assistant      # Force interactive assistant to reconfigure servers/tokens
 koda configure                    # Reconfigure tokens
 koda enable-tools                 # Enable thinking, todo, knowledge
 koda workspace list               # List workspaces
@@ -97,7 +98,8 @@ koda clean                # Remove all installed profiles
 koda init-memory <dir>    # Initialize project memory bank
 
 # MCP & Tools
-koda mcp-install          # Setup MCP servers + configure tokens
+koda mcp-install          # Setup MCP servers (interactive on first run, quick reinstall after)
+koda mcp-install --assistant  # Force interactive assistant to reconfigure
 koda configure            # Reconfigure MCP tokens only
 koda enable-tools         # Enable thinking, todo, knowledge
 

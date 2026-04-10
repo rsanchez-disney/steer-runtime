@@ -30,7 +30,8 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 ## Quick Setup
 
 ```bash
-koda mcp-install                    # Verify bundles + generate mcp.json
+koda setup                          # Install all dependencies first
+koda mcp-install                    # Setup MCP servers (interactive on first run)
 koda install dev ba qa ops pm       # Install agents with tokens injected
 ```
 
@@ -38,6 +39,51 @@ Or use the Koda TUI:
 - `[t]` Tokens — set Jira, Confluence, MyWiki, SonarQube, Harness, Figma, Compass tokens
 - `[g]` GitHub — manage GitHub remotes (multi-instance)
 - `[e]` Env Vars — configure URLs (Confluence, MyWiki, Compass endpoint)
+
+## Command Modes
+
+`koda mcp-install` adapts its behavior based on your current configuration:
+
+| Scenario                         | Behavior                                                                |
+|----------------------------------|-------------------------------------------------------------------------|
+| No `mcp.json` exists (first run) | Interactive assistant — server selection, token prompts, GitHub remotes |
+| `mcp.json` already has servers   | Quick reinstall — re-verifies and regenerates config silently           |
+| `--assistant` flag used          | Forces interactive assistant regardless of existing config              |
+| Non-TTY (CI, piped input)        | Installs all verified servers without prompting                         |
+
+```bash
+koda mcp-install               # Auto-detects: assistant on first run, quick reinstall after
+koda mcp-install --assistant   # Force interactive assistant to reconfigure servers/tokens
+echo "" | koda mcp-install     # Non-TTY: install all verified servers silently
+```
+
+### Interactive Assistant Flow
+
+The assistant runs automatically on first install (no existing `mcp.json`), or when you pass `--assistant`. It walks through these phases:
+
+1. **Bundle verification** — scans `~/.kiro/tools/mcp-servers/` and reports which servers are ready
+2. **Server selection** — numbered toggle list to pick which servers to install (toggle with numbers, `a`=all, `n`=none, `Enter`=confirm)
+3. **Token configuration** — prompts only for tokens required by selected servers; existing values shown masked, press Enter to keep
+4. **GitHub remotes** (if github selected) — shows existing remotes, lets you add new ones (name → host → token)
+5. **Config generation** — writes `~/.kiro/settings/mcp.json` with selected servers and configured tokens
+
+### Quick Reinstall Mode
+
+When `mcp.json` already contains at least one server, running `koda mcp-install` without `--assistant` performs a quick reinstall: re-verifies bundles, selects all verified servers, reads existing tokens and GitHub remotes, and regenerates the config silently.
+
+To reconfigure servers or tokens after initial setup:
+
+```bash
+koda mcp-install --assistant
+```
+
+### Non-Interactive Mode
+
+When stdin is not a TTY (CI, scripts, piped input), Koda installs all verified servers without prompting. This preserves backward compatibility with automated workflows.
+
+```bash
+echo "" | koda mcp-install
+```
 
 ## Token Management
 
@@ -64,11 +110,12 @@ GITHUB_HOST_public=github.com
 
 ### Configure tokens
 
-| Method | Command |
-|--------|---------|
-| TUI | `koda` → `[t]` Tokens |
-| CLI | `koda configure` |
-| Direct | Edit `~/.kiro/tokens.env` then `koda install <profiles>` |
+| Method                | Command                                                              |
+|-----------------------|----------------------------------------------------------------------|
+| Interactive assistant | `koda mcp-install --assistant` (prompts inline for selected servers) |
+| TUI                   | `koda` → `[t]` Tokens                                                |
+| CLI                   | `koda configure`                                                     |
+| Direct                | Edit `~/.kiro/tokens.env` then `koda install <profiles>`             |
 
 ### env.vars
 
@@ -171,13 +218,17 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| Tokens showing `YOUR_TOKEN` | `koda install <profiles>` to re-inject |
-| MyWiki tools rejected as duplicates | Rebuild: `cd ~/.kiro/tools/mcp-servers/mywiki-mcp && npm run build` |
-| Mermaid init failure | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build` |
-| Delegation timeout | Check agent JSON has real tokens — global mcp.json only applies to direct sessions |
-| Compass connection failed | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env |
+| Issue                               | Fix                                                                                               |
+|-------------------------------------|---------------------------------------------------------------------------------------------------|
+| `0 MCP servers available`           | steer-runtime hasn't been synced yet — run `koda sync` first                                      |
+| Bundle missing for a server         | Server shows `(bundle missing)` in the selector — run `koda sync --update` to re-download bundles |
+| context7 install fails              | Requires `npm` on your PATH — run `koda setup` to install Node.js                                 |
+| Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                 |
+| Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                            |
+| MyWiki tools rejected as duplicates | Rebuild: `cd ~/.kiro/tools/mcp-servers/mywiki-mcp && npm run build`                               |
+| Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                      |
+| Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                |
+| Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                |
 
 ---
 
