@@ -46,10 +46,10 @@ As a <PERSONA>, I want to <FUNCTIONALITY>, so that <BENEFIT>.
  ** When a user selects out of a data entry cell, if a validation error is detected, the red underline should display on the impacted cell.
  ** If a user selects save and there is a single validation error, the red underline should display on the impacted cell, with the associated error toast message populated.
  ** If a user selects save and there are multiple validation errors, the red underline should display for all impacted cells, and a single, generic error toast message should populate.
- ** Following the selection of save, if validation errors are detected, the Save button will go disabled until errors are corrected. The Cancel button should remain available.
+ ** Following the selection of save, if validation errors are detected, the appropriate error messages will be populated and the Save button will go disabled until the associated errors are corrected (i.e., if a user selects Save and a validation error is presented, they will be unable to select Save again until they have corrected the validation error). The Cancel button however, should remain available.
  * If a user has made changes but attempts to navigate away prior to saving or cancelling, they should receive an unsaved changes warning:
  ** Yes, Continue: Unsaved changes will be discarded and navigation away from the page will be completed.
- ** No, Go Back: User will be sent back to the page with the unsaved changes still in place.
+ ** No, Go Back: User will be sent back to the page with the unsaved changes still in place and queued for saving or cancelling.
 
 +Permissions Requirements:+
  * [Click Here|https://mywiki.disney.com/display/OPSHEET/Global+Acceptance+Criteria] for global permissions acceptance criteria.
