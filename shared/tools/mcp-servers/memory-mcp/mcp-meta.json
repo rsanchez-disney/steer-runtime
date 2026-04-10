@@ -1,0 +1,9 @@
+{
+  "type": "docker",
+  "name": "memory",
+  "description": "Persistent memory with semantic search for AI agents",
+  "compose": "docker-compose.yml",
+  "port": 9377,
+  "health": "/health",
+  "mcp_path": "/mcp"
+}
