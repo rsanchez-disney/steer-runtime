@@ -8,18 +8,28 @@ export class ConfluenceApiClient {
 
     async loadConfig() {
         if (!this.confluenceUrl || !this.confluencePat) {
-            const __filename = fileURLToPath(import.meta.url);
-            const __dirname = dirname(__filename);
-            const envPath = resolve(__dirname, "../../.env");
-            console.error(`Loading .env from: ${envPath}`);
-            config({ path: envPath });
-
+            // First, try reading directly from process.env (set by MCP config)
             this.confluenceUrl = process.env.CONFLUENCE_URL || null;
             this.confluencePat = process.env.CONFLUENCE_PAT || null;
 
+            // Fallback: try loading from .env file if env vars not already set
+            if (!this.confluenceUrl || !this.confluencePat) {
+                try {
+                    const __filename = fileURLToPath(import.meta.url);
+                    const __dirname = dirname(__filename);
+                    const envPath = resolve(__dirname, "../../.env");
+                    console.error(`Loading .env from: ${envPath}`);
+                    config({ path: envPath });
+                    this.confluenceUrl = process.env.CONFLUENCE_URL || null;
+                    this.confluencePat = process.env.CONFLUENCE_PAT || null;
+                } catch (e) {
+                    console.error(`Failed to load .env file: ${(e as Error).message}`);
+                }
+            }
+
             if (!this.confluenceUrl || !this.confluencePat) {
                 throw new Error(
-                    `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT. Tried loading from: ${envPath}`,
+                    `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT.`,
                 );
             }
 
