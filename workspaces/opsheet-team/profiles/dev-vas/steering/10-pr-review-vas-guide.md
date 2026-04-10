@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: manual
 ---
 
 # PR Review Guide — OpSheet+ VAS
@@ -19,7 +19,7 @@ Expected format: `{type}/OPS-{number}` or `{type}/OPS-{number}-{short-descriptio
 Where `{type}` is: `feat`, `fix`, `refactor`, `test`, `chore`, `docs`, `perf`
 
 Common violations to flag:
-- `feature/` instead of `feat/` (PEREM666 pattern)
+- `feature/` instead of `feat/` (DEV003 pattern)
 - Missing ticket number
 - Inconsistent separator (underscore vs dash)
 
@@ -28,7 +28,7 @@ Common violations to flag:
 Expected: `{type}: OPS-{number} - {description}` or `{type}({scope}): OPS-{number} - {description}`
 
 Flag these:
-- Brackets around ticket: `[OPS-XXXXX]` — should be `OPS-XXXXX` (TANGC266 pattern)
+- Brackets around ticket: `[OPS-XXXXX]` — should be `OPS-XXXXX` (DEV002 pattern)
 - Title type doesn't match "Type of change" selection (e.g., title says `feat:` but type says "Bug fix")
 - Missing ticket number without justification
 
