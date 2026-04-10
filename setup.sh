@@ -920,12 +920,46 @@ TOKHEADER
             existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
         fi
         
+        # Detect WSL and convert paths to Windows UNC format for mcp.json
+        # Kiro runs on Windows but setup.sh runs in WSL — paths must be Windows-accessible
+        _is_wsl=false
+        if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+            _is_wsl=true
+            _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+            echo "  ℹ️  WSL detected ($_wsl_distro) — using Windows UNC paths in mcp.json"
+        fi
+        
+        # Convert a Linux path to a Windows UNC path when running in WSL
+        to_win_path() {
+            if [ "$_is_wsl" = true ]; then
+                if command -v wslpath &>/dev/null; then
+                    wslpath -w "$1"
+                else
+                    echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
+                fi
+            else
+                echo "$1"
+            fi
+        }
+        
+        # Pre-compute all MCP server paths
+        _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
+        _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
+        _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
+        _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
+        _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+        
         python3 -c "
 import json, sys, os
 
 tokens_file = '$KIRO_ROOT/tokens.env'
 remotes_raw = '''$_github_remotes'''.strip()
-home = '$HOME'
+
+p_jira = r'$_p_jira'
+p_confluence = r'$_p_confluence'
+p_github = r'$_p_github'
+p_mermaid = r'$_p_mermaid'
+p_bruno = r'$_p_bruno'
 
 def read_tok(key):
     try:
@@ -941,12 +975,12 @@ mcp = {
     'mcpServers': {
         'jira': {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
         'confluence': {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'args': [p_confluence],
             'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
         },
     }
@@ -963,7 +997,7 @@ if remotes:
             continue
         entry = {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'args': [p_github],
             'env': {
                 'GITHUB_REMOTE': remote,
                 'GITHUB_HOST': host,
@@ -979,7 +1013,7 @@ else:
     legacy_url = read_tok('GITHUB_URL')
     mcp['mcpServers']['github'] = {
         'command': 'node',
-        'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+        'args': [p_github],
         'env': {
             'GITHUB_URL': legacy_url or 'https://github.disney.com',
             'GITHUB_TOKEN': legacy_token or 'YOUR_TOKEN',
@@ -989,11 +1023,11 @@ else:
 # Non-GitHub MCP servers
 mcp['mcpServers']['mermaid'] = {
     'command': 'node',
-    'args': [home + '/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+    'args': [p_mermaid]
 }
 mcp['mcpServers']['bruno'] = {
     'command': 'node',
-    'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
+    'args': [p_bruno]
 }
 
 compass_token = read_tok('COMPASS_TOKEN')
@@ -1545,13 +1579,41 @@ YAMLEOF
                     # Discover GitHub remotes from tokens.env
                     _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
                     
+                    # Detect WSL for Windows UNC paths
+                    _is_wsl=false
+                    if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+                        _is_wsl=true
+                        _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+                    fi
+                    to_win_path() {
+                        if [ "$_is_wsl" = true ]; then
+                            if command -v wslpath &>/dev/null; then
+                                wslpath -w "$1"
+                            else
+                                echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
+                            fi
+                        else
+                            echo "$1"
+                        fi
+                    }
+                    _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
+                    _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
+                    _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
+                    _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
+                    _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+                    
                     python3 -c "
 import json, sys, os
 
 tokens_file = '$HOME/.kiro/tokens.env'
 remotes_raw = '''$_cursor_github_remotes'''.strip()
-home = '$HOME'
 mcp_json_path = '$mcp_json'
+
+p_jira = r'$_p_jira'
+p_confluence = r'$_p_confluence'
+p_github = r'$_p_github'
+p_mermaid = r'$_p_mermaid'
+p_bruno = r'$_p_bruno'
 
 def read_tok(key):
     try:
@@ -1567,12 +1629,12 @@ mcp = {
     'mcpServers': {
         'jira': {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs'],
+            'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
         'confluence': {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs'],
+            'args': [p_confluence],
             'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
         },
     }
@@ -1590,7 +1652,7 @@ if remotes:
             continue
         entry = {
             'command': 'node',
-            'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+            'args': [p_github],
             'env': {
                 'GITHUB_REMOTE': remote,
                 'GITHUB_HOST': host,
@@ -1605,7 +1667,7 @@ else:
     has_placeholder = True
     mcp['mcpServers']['github'] = {
         'command': 'node',
-        'args': [home + '/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs'],
+        'args': [p_github],
         'env': {
             'GITHUB_TOKEN': 'YOUR_TOKEN',
         }
@@ -1614,11 +1676,11 @@ else:
 # Non-GitHub MCP servers
 mcp['mcpServers']['mermaid'] = {
     'command': 'node',
-    'args': [home + '/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs']
+    'args': [p_mermaid]
 }
 mcp['mcpServers']['bruno'] = {
     'command': 'node',
-    'args': [home + '/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs']
+    'args': [p_bruno]
 }
 
 
