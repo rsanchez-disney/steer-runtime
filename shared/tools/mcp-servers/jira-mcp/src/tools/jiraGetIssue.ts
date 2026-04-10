@@ -1,17 +1,23 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { buildFormattedSummary } from "../utils/formatting.js";
 import { saveTicketData } from "../utils/fileUtils.js";
+import {
+    CUSTOM_FIELD_ALIASES,
+    resolveCustomFieldIds,
+    getCustomFieldLabel,
+    formatCustomFieldValue,
+} from "../utils/customFields.js";
 
 export const jiraGetIssueSchema = {
     name: "jira_get_issue",
     description:
-        "Fetch a JIRA ticket by ID and optionally save to output directory",
+        "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
     inputSchema: {
         type: "object",
         properties: {
             ticketId: {
                 type: "string",
-                description: "The JIRA ticket ID (e.g., COREWEB-1815)",
+                description: "The JIRA ticket ID (e.g., ROS-1815)",
             },
             outputDir: {
                 type: ["string", "boolean", "null"],
@@ -32,10 +38,16 @@ export const jiraGetIssueSchema = {
                         "description",
                         "labels",
                         "components",
+                        "customfield_10003",
                     ],
                 },
                 description:
                     "Optional: Fields to include in response (default: all current fields)",
+            },
+            customFields: {
+                type: "array",
+                items: { type: "string" },
+                description: `Optional: Array of custom field IDs to fetch (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`,
             },
         },
         required: ["ticketId"],
@@ -44,10 +56,11 @@ export const jiraGetIssueSchema = {
 
 export async function handleJiraGetIssue(args: any): Promise<any> {
     try {
-        const { ticketId, outputDir, fields } = args as {
+        const { ticketId, outputDir, fields, customFields } = args as {
             ticketId: string;
             outputDir?: string;
             fields?: string[];
+            customFields?: string[];
         };
 
         const defaultFields = [
@@ -60,18 +73,38 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
         ];
         const requestedFields = fields || defaultFields;
 
+        // Resolve custom field aliases → real IDs and merge into the field list
+        const resolvedCustomFields = customFields
+            ? resolveCustomFieldIds(customFields)
+            : [];
+        const allFields = [...new Set([...requestedFields, ...resolvedCustomFields])];
+
         const apiClient = new JiraApiClient();
-        const ticket = await apiClient.fetchJiraTicket(
-            ticketId,
-            requestedFields,
-        );
+        const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
+
+        // Build the standard summary
         const summary = buildFormattedSummary(ticket, requestedFields);
+
+        // Append custom field values
+        let customFieldSection = "";
+        if (resolvedCustomFields.length > 0) {
+            const lines: string[] = ["", "**Custom Fields:**"];
+            for (const fieldId of resolvedCustomFields) {
+                const label = getCustomFieldLabel(fieldId);
+                const rawValue = (ticket.fields as any)[fieldId];
+                const display = formatCustomFieldValue(rawValue);
+                lines.push(`**${label}:** ${display}`);
+            }
+            customFieldSection = lines.join("\n");
+        }
+
+        const fullSummary = `${summary}${customFieldSection}`;
 
         const savedPath = await saveTicketData(
             outputDir,
             ticketId,
             ticket,
-            summary,
+            fullSummary,
             true,
         );
 
@@ -81,7 +114,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             content: [
                 {
                     type: "text",
-                    text: `${summary}${savedInfo}`,
+                    text: `${fullSummary}${savedInfo}`,
                 },
             ],
         };
