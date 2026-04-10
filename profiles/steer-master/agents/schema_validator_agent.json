@@ -1,0 +1,19 @@
+{
+  "name": "schema_validator_agent",
+  "description": "Validates agent JSON, workspace JSON, and profile directory structures against expected schemas",
+  "prompt": "prompts/schema_validator_agent.md",
+  "tools": [],
+  "resources": [
+    "context/agent_schema.md",
+    "context/workspace_schema.md",
+    "context/naming_conventions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "$HOME/.kiro/hooks/validate-agent-json.sh",
+        "description": "Validate agent JSON structure before writing"
+      }
+    ]
+  }
+}
