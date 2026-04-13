@@ -1,0 +1,58 @@
+{
+  "name": "godev",
+  "description": "OpSheet+ Go specialist — APIs, event processors, shared libraries, monorepo services",
+  "prompt": "godev.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "cmd/**",
+        "internal/**",
+        "mocks/**",
+        "scripts/**",
+        "models/**",
+        "processors/**",
+        "mappers/**",
+        "persisters/**",
+        "schemas/**",
+        "utils/**",
+        "go.mod",
+        "go.sum",
+        "Makefile",
+        "Dockerfile",
+        "ECS.Dockerfile",
+        "serverless.yml",
+        ".golangci.yml",
+        ".mockery.yaml",
+        ".covignore",
+        ".semver.yaml",
+        "README.md"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to vendor, .git, bin"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ]
+  },
+  "allowedTools": [],
+  "includeMcpJson": true
+}
