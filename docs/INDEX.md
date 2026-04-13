@@ -6,7 +6,7 @@ Complete guide to all documentation.
 
 1. **[README.md](../README.md)** - Quick start guide
 2. **[AGENTS.md](../AGENTS.md)** - Complete agent reference (23 agents)
-3. **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed setup instructions
+3. **[SETUP.md](SETUP.md)** - Detailed setup instructions
 
 ## Usage Guides
 
@@ -16,7 +16,7 @@ Complete guide to all documentation.
 
 ## Setup & Configuration
 
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Complete setup instructions
+- **[SETUP.md](SETUP.md)** - Complete setup instructions (macOS/Linux)
 - **[MCP_SETUP.md](MCP_SETUP.md)** - MCP server configuration (Jira, GitHub)
 - **[KIRO_UI_SETUP.md](KIRO_UI_SETUP.md)** - Kiro UI specific setup
 - **[MOBILE_AGENTS_SETUP.md](MOBILE_AGENTS_SETUP.md)** - Mobile development setup
@@ -35,7 +35,7 @@ Complete guide to all documentation.
 
 ### For New Users
 1. [README.md](../README.md) - Start here
-2. [SETUP_GUIDE.md](SETUP_GUIDE.md) - Setup instructions
+2. [SETUP.md](SETUP.md) - Setup instructions
 3. [AGENTS.md](../AGENTS.md) - Available agents
 
 ### For Developers
@@ -57,7 +57,7 @@ steer-runtime/
 ├── setup.sh               # Bash fallback (Koda is primary)
 ├── docs/                  # All documentation
 │   ├── INDEX.md          # This file
-│   ├── SETUP_GUIDE.md
+│   ├── SETUP.md
 │   ├── PROMPT_GUIDE.md
 │   ├── KIRO_CLI_VS_UI.md
 │   ├── MCP_SETUP.md
@@ -74,7 +74,7 @@ steer-runtime/
 
 ## Need Help?
 
-1. Check [SETUP_GUIDE.md](SETUP_GUIDE.md) troubleshooting section
+1. Check [SETUP.md](SETUP.md) troubleshooting section
 2. Run `koda check` to verify dependencies
 3. Review [AGENTS.md](../AGENTS.md) for agent capabilities
 4. See [PROMPT_GUIDE.md](PROMPT_GUIDE.md) for usage examples

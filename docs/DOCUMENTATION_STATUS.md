@@ -10,7 +10,7 @@ Complete status of all documentation after consolidation and updates.
 - **DESIGN.md** - v2.0 architecture with mobile agents
 
 ### Setup & Configuration
-- **docs/SETUP_GUIDE.md** - ⚠️ Deprecated (Koda is primary)
+- **docs/SETUP.md** - Installation guide (macOS/Linux)
 - **docs/SETUP_CONSOLIDATION.md** - Documents the consolidation
 - **docs/MCP_SETUP.md** - MCP configuration (verified paths)
 - **docs/KIRO_UI_SETUP.md** - Updated to setup.sh ui (no Koda equivalent)
@@ -69,7 +69,7 @@ All documents now correctly reference:
 
 ### For New Users
 1. **README.md** - Start here, quick setup
-2. **docs/SETUP_GUIDE.md** - Detailed setup
+2. **docs/SETUP.md** - Detailed setup
 3. **AGENTS.md** - What agents are available
 
 ### For Developers
@@ -101,7 +101,7 @@ steer-runtime/
 │   ├── DESIGN.md              ✅ Updated
 │   ├── PROMPT_GUIDE.md        ✅ Updated (mobile added)
 │   ├── ORCHESTRATOR_DELEGATION_REVIEW.md  ✅ Updated (mobile added)
-│   ├── SETUP_GUIDE.md         ✅ New
+│   ├── SETUP.md              ✅ New
 │   ├── SETUP_CONSOLIDATION.md ✅ New
 │   ├── KIRO_CLI_VS_UI.md      ✅ Verified
 │   ├── KIRO_UI_SETUP.md       ✅ Updated

@@ -129,18 +129,19 @@ koda install dev ba qa ops pm
 
 ## Learn More
 
-| What | Where |
-|------|-------|
-| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md) |
-| All 55 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
-| Eval framework — fixtures, rubrics, scoring | [Eval Framework](docs/EVAL_FRAMEWORK.md) |
-| First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
-| How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
-| Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
-| Cursor / Amazon Q / Kite / Kiro IDE setup | [Kiro IDE (Windows)](docs/KIRO_IDE_WINDOWS_SETUP.md) · [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
-| Roadmap & feature requests | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
-| IDE concepts comparison | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md) |
-| Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
+| What                                                         | Where                                                                                                                                                                              |
+|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md)                                                                                                                                                     |
+| All 55 agents with tools, hooks, and MCP coverage            | [AGENTS.md](AGENTS.md)                                                                                                                                                             |
+| Eval framework — fixtures, rubrics, scoring                  | [Eval Framework](docs/EVAL_FRAMEWORK.md)                                                                                                                                           |
+| First-time Kiro setup (SSO, downloads)                       | [Getting Started](docs/GETTING_STARTED.md)                                                                                                                                         |
+| Detailed installation (macOS/Linux)                          | [Setup](docs/SETUP.md)                                                                                                                                                             |
+| How to prompt agents effectively                             | [Prompt Guide](docs/PROMPT_GUIDE.md)                                                                                                                                               |
+| Role-specific guides                                         | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md)                                                    |
+| Cursor / Amazon Q / Kite / Kiro IDE setup                    | [Kiro IDE (Windows)](docs/KIRO_IDE_WINDOWS_SETUP.md) · [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Roadmap & feature requests                                   | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)                                                                              |
+| IDE concepts comparison                                      | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md)                                                                                                                                    |
+| Troubleshooting                                              | [Troubleshooting](docs/TROUBLESHOOTING.md)                                                                                                                                         |
 
 ---
 
