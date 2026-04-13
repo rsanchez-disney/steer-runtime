@@ -160,7 +160,7 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 3. Review architecture
 4. Create implementation plan
 5. Approval gate #1 (user reviews plan)
-6. Implement tasks (delegate to specialist agents)
+6. Implement tasks (delegate to specialist agents) — **review mode** pauses after each task for approval; **autopilot** runs straight through
 7. Run tests (coverage ≥90%)
 8. Code review
 9. Security scan

@@ -33,6 +33,43 @@ clean_resource_forks() {
     find "$1" -name "._*" -delete 2>/dev/null || true
 }
 
+# Detect WSL and provide path conversion for Windows UNC format
+_is_wsl=false
+_wsl_distro=""
+if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
+    _is_wsl=true
+    _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+fi
+
+# Convert a Linux path to a Windows UNC path when running in WSL.
+# On non-WSL systems, returns the path unchanged.
+to_win_path() {
+    if [ "$_is_wsl" = true ]; then
+        if command -v wslpath &>/dev/null; then
+            wslpath -w "$1"
+        else
+            echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
+        fi
+    else
+        echo "$1"
+    fi
+}
+
+# Pre-compute MCP server paths (WSL-aware)
+precompute_mcp_paths() {
+    _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
+    _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
+    _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
+    _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
+    _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs")"
+    _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
+    _node_cmd="node"
+    if [ "$_is_wsl" = true ]; then
+        _node_cmd="wsl.exe -d $_wsl_distro node"
+    fi
+}
+
 # Discover GitHub remotes from tokens.env by scanning for GITHUB_TOKEN_{remote} keys
 # Outputs one remote name per line, sorted and deduplicated
 discover_github_remotes() {
@@ -65,6 +102,7 @@ COMMANDS:
   configure                              Configure MCP tokens interactively
   enable-tools                           Enable advanced kiro-cli tool settings
   workspace <subcmd>                     Manage team workspaces (create, list, apply, show)
+  kiro-ide <subcmd> <dir>                Manage Kiro IDE steering, skills, hooks + MCP
   cursor <subcmd> <dir>                  Manage Cursor IDE rules + MCP config
   amazonq <subcmd> <dir>                 Manage Amazon Q Developer rules
   amazonq-sync [full|rules|mcp|status]   Sync Kiro dev config to Amazon Q plugin
@@ -122,6 +160,11 @@ EXAMPLES:
   ./setup.sh workspace apply payments-core # Apply team config
   ./setup.sh workspace sync payments-core   # Pull all workspace repos
   ./setup.sh workspace sync payments-core --push  # Push all workspace repos
+
+  # Kiro IDE
+  ./setup.sh kiro-ide install ~/myapp      # Install .kiro/steering, skills, hooks
+  ./setup.sh kiro-ide sync ~/myapp         # Update from latest profiles
+  ./setup.sh kiro-ide remove ~/myapp       # Remove .kiro/steering, skills, hooks
 
   # Cursor IDE
   ./setup.sh cursor install ~/myapp        # Install .cursor/rules + MCP config
@@ -716,7 +759,7 @@ case "${1:-help}" in
 
             # Validate agent configs
             if command -v kiro-cli &> /dev/null; then
-                local errors=0
+                errors=0
                 for agent_json in "$KIRO_ROOT/agents/"*.json; do
                     [ -f "$agent_json" ] || continue
                     if ! kiro-cli agent validate --path "$agent_json" 2>/dev/null; then
@@ -920,34 +963,11 @@ TOKHEADER
             existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
         fi
         
-        # Detect WSL and convert paths to Windows UNC format for mcp.json
-        # Kiro runs on Windows but setup.sh runs in WSL — paths must be Windows-accessible
-        _is_wsl=false
-        if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
-            _is_wsl=true
-            _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
+        # Pre-compute WSL-aware MCP paths
+        precompute_mcp_paths
+        if [ "$_is_wsl" = true ]; then
             echo "  ℹ️  WSL detected ($_wsl_distro) — using Windows UNC paths in mcp.json"
         fi
-        
-        # Convert a Linux path to a Windows UNC path when running in WSL
-        to_win_path() {
-            if [ "$_is_wsl" = true ]; then
-                if command -v wslpath &>/dev/null; then
-                    wslpath -w "$1"
-                else
-                    echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
-                fi
-            else
-                echo "$1"
-            fi
-        }
-        
-        # Pre-compute all MCP server paths
-        _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
-        _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
-        _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
-        _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
-        _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
         
         python3 -c "
 import json, sys, os
@@ -1524,6 +1544,264 @@ YAMLEOF
         echo "   knowledge → story_analyzer, architecture, test_planner, requirements_analyst"
         ;;
 
+    kiro-ide)
+        shift
+        kide_subcmd="${1:-help}"
+        kide_dir="${2:-}"
+        
+        case "$kide_subcmd" in
+            install)
+                if [ -z "$kide_dir" ]; then
+                    echo "❌ Usage: ./setup.sh kiro-ide install <project-dir>"
+                    exit 1
+                fi
+                kide_dir="${kide_dir/#\~/$HOME}"
+                if [ ! -d "$kide_dir" ]; then
+                    echo "❌ Directory does not exist: $kide_dir"
+                    exit 1
+                fi
+                
+                echo "🔧 Installing Kiro IDE config to $kide_dir/.kiro/"
+                echo ""
+                
+                # --- Steering ---
+                steering_dir="$kide_dir/.kiro/steering"
+                mkdir -p "$steering_dir"
+                steering_count=0
+                
+                # Dev-core steering
+                if [ -d "$STEER_ROOT/profiles/dev-core/steering" ]; then
+                    for md in "$STEER_ROOT"/profiles/dev-core/steering/*.md; do
+                        [ -f "$md" ] || continue
+                        cp "$md" "$steering_dir/"
+                        echo "  ✓ steering/$(basename "$md")"
+                        steering_count=$((steering_count + 1))
+                    done
+                fi
+                
+                # Dev-web steering
+                if [ -d "$STEER_ROOT/profiles/dev-web/steering" ]; then
+                    for md in "$STEER_ROOT"/profiles/dev-web/steering/*.md; do
+                        [ -f "$md" ] || continue
+                        cp "$md" "$steering_dir/"
+                        echo "  ✓ steering/$(basename "$md")"
+                        steering_count=$((steering_count + 1))
+                    done
+                fi
+                
+                echo ""
+                echo "✅ Installed $steering_count steering files"
+                
+                # --- Skills ---
+                skills_dir="$kide_dir/.kiro/skills"
+                mkdir -p "$skills_dir"
+                skills_count=0
+                
+                # Common skills
+                if [ -d "$STEER_ROOT/common/skills" ]; then
+                    for md in "$STEER_ROOT"/common/skills/*.md; do
+                        [ -f "$md" ] || continue
+                        [ "$(basename "$md")" = "README.md" ] && continue
+                        cp "$md" "$skills_dir/"
+                        echo "  ✓ skills/$(basename "$md")"
+                        skills_count=$((skills_count + 1))
+                    done
+                fi
+                
+                # Dev-web skills
+                if [ -d "$STEER_ROOT/profiles/dev-web/skills" ]; then
+                    for md in "$STEER_ROOT"/profiles/dev-web/skills/*.md; do
+                        [ -f "$md" ] || continue
+                        cp "$md" "$skills_dir/"
+                        echo "  ✓ skills/$(basename "$md")"
+                        skills_count=$((skills_count + 1))
+                    done
+                fi
+                
+                echo ""
+                echo "✅ Installed $skills_count skills"
+                
+                # --- Hooks ---
+                hooks_dir="$kide_dir/.kiro/hooks"
+                mkdir -p "$hooks_dir"
+                hooks_count=0
+                
+                # Guard writes
+                cat > "$hooks_dir/guard-writes.kiro.hook" << 'HOOKEOF'
+{
+  "name": "Guard Sensitive Paths",
+  "version": "1.0.0",
+  "description": "Blocks file writes to node_modules/, dist/, and .git/ directories.",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if the file being written is inside node_modules/, dist/, or .git/ directories. If it is, REFUSE to proceed."
+  }
+}
+HOOKEOF
+                echo "  ✓ hooks/guard-writes.kiro.hook"
+                hooks_count=$((hooks_count + 1))
+                
+                # Secret scan
+                cat > "$hooks_dir/secret-scan.kiro.hook" << 'HOOKEOF'
+{
+  "name": "Secret Scan on Write",
+  "version": "1.0.0",
+  "description": "Scans for hardcoded secrets before writing files.",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Scan the content being written for potential hardcoded secrets. If a real secret is detected, REFUSE the write and instruct to use environment variables instead. Placeholders like YOUR_TOKEN or ${ENV_VAR} are fine."
+  }
+}
+HOOKEOF
+                echo "  ✓ hooks/secret-scan.kiro.hook"
+                hooks_count=$((hooks_count + 1))
+                
+                # Branch guard
+                cat > "$hooks_dir/branch-guard.kiro.hook" << 'HOOKEOF'
+{
+  "name": "Branch Guard",
+  "version": "1.0.0",
+  "description": "Blocks direct git commit, push, or merge on main/master branch.",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ["shell"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Check if the shell command involves git commit, git push, or git merge. If the current branch is main or master, REFUSE and instruct to use a feature branch. Read-only git commands are always allowed."
+  }
+}
+HOOKEOF
+                echo "  ✓ hooks/branch-guard.kiro.hook"
+                hooks_count=$((hooks_count + 1))
+                
+                # Warn destructive
+                cat > "$hooks_dir/warn-destructive.kiro.hook" << 'HOOKEOF'
+{
+  "name": "Warn on Destructive Commands",
+  "version": "1.0.0",
+  "description": "Warns after destructive commands like rm -rf, DROP TABLE, or --force.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": ["shell"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "If the command contained destructive patterns like rm -rf, DROP TABLE, DELETE FROM, or --force, warn the user. Otherwise do nothing."
+  }
+}
+HOOKEOF
+                echo "  ✓ hooks/warn-destructive.kiro.hook"
+                hooks_count=$((hooks_count + 1))
+                
+                echo ""
+                echo "✅ Installed $hooks_count hooks"
+                
+                # --- Summary ---
+                echo ""
+                echo "🎉 Kiro IDE setup complete:"
+                echo "   $steering_count steering files → $steering_dir/"
+                echo "   $skills_count skills → $skills_dir/"
+                echo "   $hooks_count hooks → $hooks_dir/"
+                echo ""
+                echo "💡 MCP servers are user-level. Run ./setup.sh mcp-install to configure them."
+                ;;
+            
+            sync)
+                if [ -z "$kide_dir" ]; then
+                    echo "❌ Usage: ./setup.sh kiro-ide sync <project-dir>"
+                    exit 1
+                fi
+                kide_dir="${kide_dir/#\~/$HOME}"
+                
+                if [ ! -d "$kide_dir/.kiro/steering" ] && [ ! -d "$kide_dir/.kiro/skills" ]; then
+                    echo "❌ No Kiro IDE config found at $kide_dir/.kiro/"
+                    echo "   Run: ./setup.sh kiro-ide install $kide_dir"
+                    exit 1
+                fi
+                
+                echo "🔄 Syncing Kiro IDE config in $kide_dir/.kiro/"
+                echo ""
+                
+                count=0
+                # Sync steering
+                if [ -d "$kide_dir/.kiro/steering" ]; then
+                    for profile_dir in "$STEER_ROOT"/profiles/dev-core/steering "$STEER_ROOT"/profiles/dev-web/steering; do
+                        [ -d "$profile_dir" ] || continue
+                        for md in "$profile_dir"/*.md; do
+                            [ -f "$md" ] || continue
+                            cp "$md" "$kide_dir/.kiro/steering/"
+                            count=$((count + 1))
+                        done
+                    done
+                fi
+                
+                # Sync skills
+                if [ -d "$kide_dir/.kiro/skills" ]; then
+                    for md in "$STEER_ROOT"/common/skills/*.md; do
+                        [ -f "$md" ] || continue
+                        [ "$(basename "$md")" = "README.md" ] && continue
+                        cp "$md" "$kide_dir/.kiro/skills/"
+                        count=$((count + 1))
+                    done
+                    if [ -d "$STEER_ROOT/profiles/dev-web/skills" ]; then
+                        for md in "$STEER_ROOT"/profiles/dev-web/skills/*.md; do
+                            [ -f "$md" ] || continue
+                            cp "$md" "$kide_dir/.kiro/skills/"
+                            count=$((count + 1))
+                        done
+                    fi
+                fi
+                
+                echo "✅ Synced $count files"
+                ;;
+            
+            remove)
+                if [ -z "$kide_dir" ]; then
+                    echo "❌ Usage: ./setup.sh kiro-ide remove <project-dir>"
+                    exit 1
+                fi
+                kide_dir="${kide_dir/#\~/$HOME}"
+                
+                removed=0
+                for subdir in steering skills hooks; do
+                    if [ -d "$kide_dir/.kiro/$subdir" ]; then
+                        rm -rf "$kide_dir/.kiro/$subdir"
+                        echo "  🗑️  Removed .kiro/$subdir/"
+                        removed=$((removed + 1))
+                    fi
+                done
+                
+                if [ "$removed" -eq 0 ]; then
+                    echo "⚠️  Nothing to remove — no steering, skills, or hooks found in $kide_dir/.kiro/"
+                else
+                    echo "✅ Removed $removed directories"
+                fi
+                ;;
+            
+            *)
+                echo ""
+                echo "Kiro IDE — install steering, skills, and hooks into a project workspace"
+                echo ""
+                echo "Usage:"
+                echo "  ./setup.sh kiro-ide install <project-dir>   Install steering, skills, hooks"
+                echo "  ./setup.sh kiro-ide sync <project-dir>      Update from latest profiles"
+                echo "  ./setup.sh kiro-ide remove <project-dir>    Remove steering, skills, hooks"
+                echo ""
+                echo "MCP servers are user-level — use ./setup.sh mcp-install separately."
+                exit 1
+                ;;
+        esac
+        ;;
+
     cursor)
         shift
         cursor_subcmd="${1:-help}"
@@ -1579,28 +1857,8 @@ YAMLEOF
                     # Discover GitHub remotes from tokens.env
                     _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
                     
-                    # Detect WSL for Windows UNC paths
-                    _is_wsl=false
-                    if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/version 2>/dev/null; then
-                        _is_wsl=true
-                        _wsl_distro="${WSL_DISTRO_NAME:-Ubuntu}"
-                    fi
-                    to_win_path() {
-                        if [ "$_is_wsl" = true ]; then
-                            if command -v wslpath &>/dev/null; then
-                                wslpath -w "$1"
-                            else
-                                echo "\\\\wsl.localhost\\${_wsl_distro}$(echo "$1" | sed 's|/|\\|g')"
-                            fi
-                        else
-                            echo "$1"
-                        fi
-                    }
-                    _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
-                    _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
-                    _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
-                    _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
-                    _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+                    # Pre-compute WSL-aware MCP paths
+                    precompute_mcp_paths
                     
                     python3 -c "
 import json, sys, os

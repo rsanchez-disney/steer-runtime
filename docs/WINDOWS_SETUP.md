@@ -9,6 +9,15 @@
 - Windows 10 (version 2004+) or Windows 11
 - [Node.js](https://nodejs.org) (includes npm)
 - Git
+- WSL with required Windows features (see below)
+
+> **Enable WSL features** — either run `wsl --install` in an elevated PowerShell (enables everything automatically), or manually open "Turn Windows features on or off" and enable:
+> - Hyper-V
+> - Windows Hypervisor Platform
+> - Virtual Machine Platform
+> - Windows Subsystem for Linux
+>
+> Restart after enabling.
 
 ---
 

@@ -27,6 +27,12 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 
 > `mywiki` and `confluence` are separate Confluence instances with separate binaries and unique tool names.
 
+### Docker Servers
+
+| Server | Type | Port | Description |
+|--------|------|------|-------------|
+| memory | Docker (SSE) | 9377 | Persistent semantic memory — Redis vector search + local embeddings |
+
 ## Quick Setup
 
 ```bash
@@ -200,6 +206,41 @@ Compass is a **remote SSE MCP** — no local bundle needed. It connects to the C
 
 The URL is configurable via `COMPASS_URL` in env.vars — each user can point to their own Compass MCP instance.
 
+## Memory MCP (Docker)
+
+Unlike stdio and SSE servers, memory-mcp runs as a **Docker Compose** service — two containers (FastAPI app + Redis Stack).
+
+### Lifecycle
+
+```bash
+koda memory start     # docker compose up -d (pulls images on first run)
+koda memory status    # Check container health
+koda memory stop      # docker compose down
+```
+
+Or via Kite: Settings → Health tab → memory-mcp toggle.
+
+### mcp.json entry
+
+```json
+"memory": {
+  "url": "http://localhost:9377/mcp",
+  "type": "sse"
+}
+```
+
+`koda mcp-install` generates this entry automatically when memory-mcp containers are detected.
+
+### Container runtime
+
+Set `CONTAINER_RUNTIME` in your shell or env.vars if auto-detection picks the wrong one:
+
+```bash
+export CONTAINER_RUNTIME=podman   # or docker, nerdctl
+```
+
+> See [MEMORY_MCP.md](MEMORY_MCP.md) for full details — data model, tools reference, and troubleshooting.
+
 ## Verification
 
 ```bash
@@ -229,6 +270,7 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 | Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                      |
 | Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                |
 | Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                |
+| memory-mcp tools unavailable        | Run `koda memory start` — containers must be running. Check port 9377                             |
 
 ---
 

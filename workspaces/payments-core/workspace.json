@@ -23,5 +23,7 @@
   ],
   "rules": ["conventional_commit", "general-java-development", "general-node-development", "general-angular-development"],
   "enable_tools": true,
-  "jira_prefix": "DPAY-"
+  "jira_prefix": "DPAY-",
+  "services": ["config-services"],
+  "channels": ["config-studio"]
 }
