@@ -205,7 +205,7 @@ find_tests({path, framework})   // Locate tests
 test_coverage({command})        // Coverage analysis
 ```
 
-See `.kiro/powers/GUIDE.md` for creating custom powers.
+See [`profiles/dev-core/powers/GUIDE.md`](../profiles/dev-core/powers/GUIDE.md) for creating custom powers.
 
 ---
 
@@ -500,7 +500,6 @@ State persists across:
 - **[README.md](../README.md)** - Quick start
 - **[AGENTS.md](../AGENTS.md)** - Agent reference
 - **[PROMPT_GUIDE.md](PROMPT_GUIDE.md)** - Usage examples
-- **[.kiro/README.md](../.kiro/README.md)** - Configuration structure
 
 ---
 
