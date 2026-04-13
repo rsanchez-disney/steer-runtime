@@ -86,7 +86,15 @@ When asked to review a PR:
 - Check against `cross-repo-map.md`
 - Flag if the other repo needs a corresponding change
 
-### 5. Report
+### 5. Fork Classification
+- Detect if the PR originates from a fork
+- Classify each changed file using `FORK_STRATEGY.md`:
+  - ⬆️ **UPSTREAM** — benefits all teams, should be in upstream
+  - 🔒 **FORK-ONLY** — team-specific, stays in fork
+  - 💬 **NEEDS DISCUSSION** — ambiguous, flag for review
+- If PR mixes both, recommend splitting
+
+### 6. Report
 Output structured review:
 ```
 ## Review Summary
@@ -102,6 +110,13 @@ Output structured review:
 ### 🟢 Info
 
 ## Cross-Repo Impact
+
+## Fork Classification
+| File | Classification | Reason |
+|------|---------------|--------|
+| {path} | ⬆️ UPSTREAM / 🔒 FORK-ONLY / 💬 DISCUSS | {why} |
+
+**Recommendation:** {upstream as separate PR / keep in fork / split PR}
 ```
 
 ## Delegation

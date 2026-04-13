@@ -43,6 +43,15 @@ When given a PR URL or diff:
    - If profile directory renamed, flag Koda alias update needed
    - If new MCP server added, flag Koda registry update needed
 
+7. **Fork classification** using `FORK_STRATEGY.md`:
+   - Detect if the PR originates from a fork (check PR description, branch name, or remote)
+   - For each changed file, classify as:
+     - ⬆️ **UPSTREAM** — generic improvement that benefits all teams (MCP fixes, new hooks, agent improvements, setup script fixes, docs)
+     - 🔒 **FORK-ONLY** — team-specific content (workspaces, team context, team memory banks, team-specific rules)
+     - 💬 **NEEDS DISCUSSION** — could go either way (custom field aliases with team-specific IDs, additive context files)
+   - Use the "What to Customize vs. What to Keep in Sync" table from FORK_STRATEGY.md
+   - If the PR mixes upstream and fork-only changes, recommend splitting into separate PRs
+
 ## Output Format
 
 Structure your review as:
@@ -70,6 +79,13 @@ Structure your review as:
 ## Cross-Repo Impact
 - Does this change require a Koda update? Yes/No
 - If yes: what needs to change
+
+## Fork Classification
+| File | Classification | Reason |
+|------|---------------|--------|
+| {path} | ⬆️ UPSTREAM / 🔒 FORK-ONLY / 💬 DISCUSS | {why} |
+
+**Recommendation:** {upstream as separate PR / keep in fork / split PR}
 ```
 
 ## Rules

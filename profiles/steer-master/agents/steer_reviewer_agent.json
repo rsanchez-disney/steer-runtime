@@ -10,7 +10,8 @@
     "context/naming_conventions.md",
     "context/cross_repo_map.md",
     "../../shared/memory-bank/steer-master/schema-inventory.md",
-    "../../shared/memory-bank/steer-master/breaking-change-log.md"
+    "../../shared/memory-bank/steer-master/breaking-change-log.md",
+    "../../docs/FORK_STRATEGY.md"
   ],
   "hooks": {
     "preToolUse": [
