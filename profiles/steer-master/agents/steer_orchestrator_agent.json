@@ -1,0 +1,70 @@
+{
+  "name": "steer_orchestrator_agent",
+  "description": "Orchestrates development and review workflows for steer-runtime and Koda",
+  "prompt": "prompts/steer_orchestrator_agent.md",
+  "tools": [
+    "use_subagent",
+    "execute_bash",
+    "grep",
+    "code",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo",
+    "delegate"
+  ],
+  "resources": [
+    "context/agent_schema.md",
+    "context/prompt_structure.md",
+    "context/workspace_schema.md",
+    "context/breaking_change_rules.md",
+    "context/naming_conventions.md",
+    "context/cross_repo_map.md",
+    "../../shared/memory-bank/steer-master/schema-inventory.md",
+    "../../shared/memory-bank/steer-master/breaking-change-log.md"
+  ],
+  "welcomeMessage": "🛠️ Steer-master orchestrator ready!\n\nI can help you:\n  • Implement features for steer-runtime and Koda\n  • Review PRs for breaking changes and consistency\n  • Validate schemas and cross-repo compatibility\n  • Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/validate-agent-json.sh",
+        "description": "Validate agent JSON structure before writing"
+      },
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/check-cross-references.sh",
+        "description": "Check that all references still resolve after writing"
+      },
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/warn-destructive.sh",
+        "description": "Warn on destructive commands"
+      }
+    ]
+  },
+  "allowedTools": ["@github/*", "@jira/*"],
+  "includeMcpJson": true
+}

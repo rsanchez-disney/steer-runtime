@@ -37,6 +37,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 });
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.error("Figma MCP server running on stdio");
+async function main() {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    console.error("Figma MCP server running on stdio");
+}
+
+main().catch(console.error);

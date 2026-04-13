@@ -96,7 +96,7 @@ koda install dev ba qa ops pm
 | **Spec Templates** | Architecture, API contracts, domain models, business rules, workflows, data dictionary templates |
 | **Artifact Templates** | PRD, backlog, test plan, ADR templates for structured document generation |
 | **Quality Gates** | Formal approve/reject/revise checkpoints between generation steps |
-| **IDE Portable** | Same agents run on Kiro CLI, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
+| **IDE Portable** | Same agents run on Kiro CLI, Kiro IDE, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
 | **Evals** | Agent quality scoring — structural checks + LLM-as-judge. Run via `koda eval` or CI. [Details](docs/EVAL_FRAMEWORK.md) |
 
 ---
@@ -105,6 +105,8 @@ koda install dev ba qa ops pm
 
 | Date | Change |
 |------|--------|
+| Apr 9 | Orchestrator execution modes — **review mode** (pause after each specialist, show diff, approve) and **autopilot mode** (run straight through) |
+| Apr 9 | [Kiro IDE setup](docs/KIRO_IDE_WINDOWS_SETUP.md) — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
 | Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
 | Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
 | Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
@@ -135,7 +137,7 @@ koda install dev ba qa ops pm
 | First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
 | How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
 | Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
-| Cursor / Amazon Q / Kite setup | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Cursor / Amazon Q / Kite / Kiro IDE setup | [Kiro IDE (Windows)](docs/KIRO_IDE_WINDOWS_SETUP.md) · [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
 | Roadmap & feature requests | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 | IDE concepts comparison | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md) |
 | Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
