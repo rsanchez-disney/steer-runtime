@@ -31,43 +31,16 @@ kiro-cli --version
 
 ---
 
-## 5. Install Koda (recommended)
+## 5. Install Tools & Agents
 
-Koda is the interactive terminal companion for steer-runtime. It replaces `setup.sh` with a cross-platform binary.
+Follow the platform-specific setup guide to install Koda, GitHub CLI, kiro-cli, and agent profiles:
 
-**macOS / Linux:**
-```bash
-curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
-```
-
-**Windows (PowerShell):**
-```powershell
-irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
-```
-
-Verify:
-```bash
-koda version
-```
+- **macOS / Linux:** [Setup Guide](SETUP.md)
+- **Windows:** [Windows Setup Guide](WINDOWS_SETUP.md)
 
 ---
 
-## 6. Install Agent Profiles
-
-```bash
-koda setup                        # Check & install dependencies (node, git, kiro-cli)
-koda install dev                  # Install all dev agents
-koda mcp-install                  # Setup MCP servers + tokens
-```
-
-Or use the interactive dashboard:
-```bash
-koda                              # Launch TUI — press [p] for profiles, [t] for tokens
-```
-
----
-
-## 7. Add a Project Manifest (optional)
+## 6. Add a Project Manifest (optional)
 
 Drop a `project.yaml` in your project root so agents know your stack, commands, and integrations:
 
@@ -80,7 +53,7 @@ See [project.yaml reference](REFERENCE.md#project-manifest-projectyaml) for all 
 
 ---
 
-## 8. Start Chatting
+## 7. Start Chatting
 
 ```bash
 koda chat                         # Chat with last-used agent
@@ -96,7 +69,7 @@ kiro-cli chat --agent orchestrator
 
 ---
 
-## 9. Join a Team Workspace (optional)
+## 8. Join a Team Workspace (optional)
 
 ```bash
 koda workspace list               # See available team configs
@@ -107,7 +80,7 @@ This installs the right profiles, rules, and memory banks for your team in one c
 
 ---
 
-## 10. Enable Advanced Tools (optional)
+## 9. Enable Advanced Tools (optional)
 
 ```bash
 koda enable-tools
@@ -117,30 +90,4 @@ Enables **thinking**, **todo**, and **knowledge** tools used by orchestrators.
 
 ---
 
-## GitHub CLI (optional, recommended)
-
-```bash
-brew install gh                          # macOS
-gh auth login --hostname github.disney.com
-```
-
-Enables PR creation and repo management from agents.
-
----
-
-## Alternative: setup.sh (bash fallback)
-
-If you prefer bash over Koda:
-
-```bash
-git clone <repo-url> ~/steer-runtime
-cd ~/steer-runtime
-koda install dev
-koda mcp-install
-```
-
-> 🪟 Windows users: see [Windows Setup](WINDOWS_SETUP.md)
-
----
-
-Return to the [README](../README.md) for more.
+Back to [README](../README.md)

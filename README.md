@@ -2,58 +2,24 @@
 
 AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-55 agents, 7 profiles, one setup. Define your standards once, run them everywhere.
+55 agents, 9 profiles, one setup. Define your standards once, run them everywhere.
 
 ---
 
 ## Get Started
 
-You need **Node.js**, **Git**, and [Kiro CLI](docs/GETTING_STARTED.md). That's it.
-
-### Option A — Koda (recommended)
-
-Koda is the interactive terminal companion for steer-runtime. One-liner install:
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
-
-# Windows (PowerShell)
-irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
-```
-
-Then:
-
-```bash
-koda setup                        # Check & install dependencies
-koda install dev                  # Install all dev agents
-koda mcp-install                  # Setup MCP servers + tokens
-koda                              # Launch interactive dashboard
-```
-
-Or jump straight into chat:
+1. [Request access and sign in](docs/GETTING_STARTED.md) with Disney SSO
+2. Install tools and agents: [macOS / Linux](docs/SETUP.md) · [Windows](docs/WINDOWS_SETUP.md)
+3. Start chatting:
 
 ```bash
 koda chat --agent orchestrator    # Dev orchestrator
 koda chat --agent qa_orchestrator_agent  # QA orchestrator
+koda chat --agent ba_orchestrator_agent  # BA orchestrator
 ```
 
 > `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
-
-### Option B — setup.sh (⚠️ deprecated)
-
-> **Deprecated:** `setup.sh` and `setup.ps1` are deprecated and will be removed in a future release. Use [Koda](#option-a--koda-recommended) instead.
-
-```bash
-git clone git@github.disney.com:SANCR225/steer-runtime.git ~/steer-runtime
-cd ~/steer-runtime
-koda install dev        # Install dev agents
-koda mcp-install        # Setup MCP servers + tokens
-kiro-cli chat --agent orchestrator --tui
-```
-
-> 🪟 On Windows? See [Windows Setup](docs/WINDOWS_SETUP.md).
-> 👥 Joining a team? Run `koda workspace apply <team>` or `koda workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
+> 👥 Joining a team? Run `koda workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
 
 ---
 
@@ -62,7 +28,6 @@ kiro-cli chat --agent orchestrator --tui
 Pick what fits your role, or install everything:
 
 ```bash
-koda install dev ba qa ops pm     # Koda
 koda install dev ba qa ops pm
 ```
 
@@ -82,7 +47,7 @@ koda install dev ba qa ops pm
 
 | Feature | What it is |
 |---------|-----------|
-| **Agents** | 50 specialized AI assistants — each with a focused role (code review, test planning, sprint management, etc.) |
+| **Agents** | 55 specialized AI assistants — each with a focused role (code review, test planning, sprint management, etc.) |
 | **Profiles** | Role-based bundles of agents — dev, BA, QA, ops, PM. Install only what your role needs |
 | **Orchestrators** | Multi-agent coordinators that break down tasks and delegate to specialists automatically |
 | **Skills** | Reusable multi-step workflows — implement-ticket, ship-it, generate-plan, fix-failing-test |
@@ -106,7 +71,7 @@ koda install dev ba qa ops pm
 | Date | Change |
 |------|--------|
 | Apr 9 | Orchestrator execution modes — **review mode** (pause after each specialist, show diff, approve) and **autopilot mode** (run straight through) |
-| Apr 9 | [Kiro IDE setup](docs/KIRO_IDE_WINDOWS_SETUP.md) — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
+| Apr 9 | Kiro IDE setup — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
 | Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
 | Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
 | Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
@@ -129,18 +94,19 @@ koda install dev ba qa ops pm
 
 ## Learn More
 
-| What | Where |
-|------|-------|
-| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md) |
-| All 55 agents with tools, hooks, and MCP coverage | [AGENTS.md](AGENTS.md) |
-| Eval framework — fixtures, rubrics, scoring | [Eval Framework](docs/EVAL_FRAMEWORK.md) |
-| First-time Kiro setup (SSO, downloads) | [Getting Started](docs/GETTING_STARTED.md) |
-| How to prompt agents effectively | [Prompt Guide](docs/PROMPT_GUIDE.md) |
-| Role-specific guides | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md) |
-| Cursor / Amazon Q / Kite / Kiro IDE setup | [Kiro IDE (Windows)](docs/KIRO_IDE_WINDOWS_SETUP.md) · [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
-| Roadmap & feature requests | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
-| IDE concepts comparison | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md) |
-| Troubleshooting | [Troubleshooting](docs/TROUBLESHOOTING.md) |
+| What                                                         | Where                                                                                                                                                                              |
+|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md)                                                                                                                                                     |
+| All 55 agents with tools, hooks, and MCP coverage            | [AGENTS.md](AGENTS.md)                                                                                                                                                             |
+| Eval framework — fixtures, rubrics, scoring                  | [Eval Framework](docs/EVAL_FRAMEWORK.md)                                                                                                                                           |
+| First-time Kiro setup (SSO, downloads)                       | [Getting Started](docs/GETTING_STARTED.md)                                                                                                                                         |
+| Detailed installation (macOS/Linux)                          | [Setup](docs/SETUP.md)                                                                                                                                                             |
+| How to prompt agents effectively                             | [Prompt Guide](docs/PROMPT_GUIDE.md)                                                                                                                                               |
+| Role-specific guides                                         | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md)                                                    |
+| Cursor / Amazon Q / Kite / Kiro IDE setup                    | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Roadmap & feature requests                                   | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)                                                                              |
+| IDE concepts comparison                                      | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md)                                                                                                                                    |
+| Troubleshooting                                              | [Troubleshooting](docs/TROUBLESHOOTING.md)                                                                                                                                         |
 
 ---
 
@@ -163,6 +129,6 @@ Got an idea or found a bug? We'd love to hear from you.
 
 ---
 
-**Version:** 3.7.0 · **Agents:** 51 · **Updated:** March 28, 2026
+**Version:** 3.7.0 · **Agents:** 55 · **Updated:** April 13, 2026
 
 Internal Disney tool — not for external distribution.

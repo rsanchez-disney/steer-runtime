@@ -1,5 +1,9 @@
 # Windows Setup Guide
 
+> **First time here?** Start with [Getting Started](GETTING_STARTED.md) to request access and sign in with Disney SSO before following this guide.
+>
+> **On macOS / Linux?** See [Setup](SETUP.md) instead.
+
 > **⚠️ Deprecated:** `setup.ps1` is deprecated. Use [Koda](https://github.disney.com/SANCR225/Koda) instead.
 
 ---

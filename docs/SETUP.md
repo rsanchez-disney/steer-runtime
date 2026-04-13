@@ -1,15 +1,17 @@
-# Installation Guide — Koda + Kiro
+# Setup Guide — Koda + Kiro (macOS / Linux)
 
-Step-by-step guide to install all the tools you need.
-No prior technical experience required.
+> **First time here?** Start with [Getting Started](GETTING_STARTED.md) to request access and sign
+> in with Disney SSO before following this guide.
+>
+> **On Windows?** See [Windows Setup](WINDOWS_SETUP.md) instead.
+
+Step-by-step guide to install all the tools you need on macOS or Linux.
 
 ---
 
 ## 1. Install a Package Manager
 
 A package manager lets you install tools from the command line instead of hunting for downloads.
-
-### macOS
 
 Install **Homebrew**. Open the **Terminal** app (press `Cmd + Space`, type "Terminal", hit Enter)
 and paste:
@@ -26,31 +28,21 @@ Verify it worked:
 brew --version
 ```
 
-### Windows
-
-TBD.
-
 ---
 
 ## 2. Install GitHub CLI (`gh`)
 
 GitHub CLI lets you authenticate with GitHub from the command line.
 
-### macOS
-
 ```bash
 brew install gh
 ```
-
-### Windows
-
-TBD.
 
 ## 3. Set Up Environment Variables
 
 We need to tell `gh` to default to the Disney GitHub Enterprise instance.
 
-### macOS (zsh — default shell)
+### zsh (default shell)
 
 ```bash
 echo '' >> ~/.zshrc
@@ -65,10 +57,6 @@ source ~/.zshrc
 ```
 
 > If you use **bash** instead of zsh, replace `~/.zshrc` with `~/.bashrc` in the commands above.
-
-### Windows
-
-TBD.
 
 ---
 
@@ -94,8 +82,6 @@ Save the token somewhere safe (e.g. a password manager). You will need it in the
 ## 5. Authenticate with `gh auth login`
 
 This links your terminal session to your `github.disney.com` account.
-
-Run this on both macOS and Windows:
 
 ```
 gh auth login --hostname github.disney.com
@@ -124,15 +110,9 @@ You should see your username and an active token.
 `kiro-cli` is the agent runtime engine that Koda depends on for chat and agent teams. It is **not**
 bundled with Koda — you need to install it separately.
 
-### macOS
-
 ```bash
 curl -fsSL https://cli.kiro.dev/install | bash
 ```
-
-### Windows
-
-TBD.
 
 ---
 
@@ -143,19 +123,11 @@ terminal, but it provides a full graphical experience.
 
 Download from: [https://kiro.dev](https://kiro.dev)
 
-### macOS
-
 Open the `.dmg` file and drag Kiro into **Applications**.
-
-### Windows
-
-TBD.
 
 ---
 
 ## 8. Install Koda
-
-### macOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
@@ -168,11 +140,7 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-### Windows
-
-TBD.
-
-### Verify (both platforms)
+Verify:
 
 ```
 koda version
@@ -180,7 +148,7 @@ koda version
 
 ---
 
-## Getting Started
+## First Run
 
 Once everything is installed, run the initial setup:
 
@@ -195,16 +163,16 @@ koda                    # Opens the interactive TUI dashboard
 
 ## Quick Reference
 
-| Step               | macOS                                         | Windows |
-|--------------------|-----------------------------------------------|---------|
-| 1. Package manager | `brew` (install via script)                   |         |
-| 2. GitHub CLI      | `brew install gh`                             |         |
-| 3. Env vars        | Add `GH_HOST` to `~/.zshrc`                   |         |
-| 4. Token           | Generate at github.disney.com/settings/tokens | TBD     |
-| 5. Auth            | `gh auth login --hostname github.disney.com`  |         |
-| 6. kiro-cli        | `curl` one-liner                              |         |
-| 7. Kiro IDE        | `.dmg` installer                              |         |
-| 8. Koda            | `curl` one-liner                              |         |
+| Step               | Command                                       |
+|--------------------|-----------------------------------------------|
+| 1. Package manager | `brew` (install via script)                   |
+| 2. GitHub CLI      | `brew install gh`                             |
+| 3. Env vars        | Add `GH_HOST` to `~/.zshrc`                   |
+| 4. Token           | Generate at github.disney.com/settings/tokens |
+| 5. Auth            | `gh auth login --hostname github.disney.com`  |
+| 6. kiro-cli        | `curl` one-liner                              |
+| 7. Kiro IDE        | `.dmg` installer                              |
+| 8. Koda            | `curl` one-liner                              |
 
 ---
 
@@ -212,9 +180,6 @@ koda                    # Opens the interactive TUI dashboard
 
 **`command not found: brew`** — Close and reopen Terminal after installing Homebrew. If it still
 fails, run the "Next steps" commands that Homebrew printed during installation.
-
-**`winget` not recognized** — Install "App Installer" from the Microsoft Store, or update Windows to
-the latest version.
 
 **`command not found: gh`** — Make sure the package manager install succeeded, then reopen your
 terminal.
@@ -227,3 +192,7 @@ reopen your terminal.
 
 **`koda setup` shows missing dependencies** — Run `koda setup` and answer `y` to auto-install
 whatever is missing.
+
+---
+
+Back to [README](../README.md)
