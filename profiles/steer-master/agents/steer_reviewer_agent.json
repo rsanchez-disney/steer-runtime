@@ -4,24 +4,26 @@
   "prompt": "prompts/steer_reviewer_agent.md",
   "tools": [],
   "resources": [
-    "context/agent_schema.md",
-    "context/prompt_structure.md",
-    "context/breaking_change_rules.md",
-    "context/naming_conventions.md",
-    "context/cross_repo_map.md",
-    "../../shared/memory-bank/steer-master/schema-inventory.md",
-    "../../shared/memory-bank/steer-master/breaking-change-log.md",
-    "../../docs/FORK_STRATEGY.md"
+    "file://profiles/steer-master/context/agent_schema.md",
+    "file://profiles/steer-master/context/prompt_structure.md",
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://profiles/steer-master/context/naming_conventions.md",
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://shared/memory-bank/steer-master/schema-inventory.md",
+    "file://shared/memory-bank/steer-master/breaking-change-log.md",
+    "file://docs/FORK_STRATEGY.md"
   ],
   "hooks": {
     "preToolUse": [
       {
+        "matcher": "fs_write",
         "command": "$HOME/.kiro/hooks/validate-agent-json.sh",
         "description": "Validate agent JSON structure before writing"
       }
     ],
     "postToolUse": [
       {
+        "matcher": "fs_write",
         "command": "$HOME/.kiro/hooks/check-cross-references.sh",
         "description": "Check that all references still resolve after writing"
       }

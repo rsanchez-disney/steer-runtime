@@ -4,10 +4,10 @@
   "prompt": "prompts/compatibility_agent.md",
   "tools": [],
   "resources": [
-    "context/cross_repo_map.md",
-    "context/breaking_change_rules.md",
-    "../../shared/memory-bank/steer-master/schema-inventory.md",
-    "../../shared/memory-bank/steer-master/breaking-change-log.md"
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://shared/memory-bank/steer-master/schema-inventory.md",
+    "file://shared/memory-bank/steer-master/breaking-change-log.md"
   ],
   "allowedTools": ["@github/*"],
   "includeMcpJson": true
