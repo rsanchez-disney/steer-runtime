@@ -1,4 +1,4 @@
-# Installation Guide — Koda + Kiro
+# Setup Guide — Koda + Kiro (macOS / Linux)
 
 > **First time here?** Start with [Getting Started](GETTING_STARTED.md) to request access and sign
 > in with Disney SSO before following this guide.
@@ -148,7 +148,7 @@ koda version
 
 ---
 
-## Getting Started
+## First Run
 
 Once everything is installed, run the initial setup:
 
@@ -192,3 +192,7 @@ reopen your terminal.
 
 **`koda setup` shows missing dependencies** — Run `koda setup` and answer `y` to auto-install
 whatever is missing.
+
+---
+
+Back to [README](../README.md)

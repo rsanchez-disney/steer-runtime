@@ -5,18 +5,22 @@ Complete guide to all documentation.
 ## Getting Started
 
 1. **[README.md](../README.md)** - Quick start guide
-2. **[AGENTS.md](../AGENTS.md)** - Complete agent reference (23 agents)
-3. **[SETUP.md](SETUP.md)** - Detailed setup instructions
+2. **[GETTING_STARTED.md](GETTING_STARTED.md)** - First-time setup (SSO, access, downloads)
+3. **[SETUP.md](SETUP.md)** - Detailed installation (macOS/Linux)
+4. **[WINDOWS_SETUP.md](WINDOWS_SETUP.md)** - Windows installation (WSL)
+5. **[AGENTS.md](../AGENTS.md)** - Complete agent reference (55 agents)
 
 ## Usage Guides
 
 - **[PROMPT_GUIDE.md](PROMPT_GUIDE.md)** - How to use agents effectively with examples
 - **[KIRO_CLI_VS_UI.md](KIRO_CLI_VS_UI.md)** - When to use CLI vs UI
-- **[.kiro/powers/GUIDE.md](../.kiro/powers/GUIDE.md)** - Creating custom powers
+- **[Powers Guide](../profiles/dev-core/powers/GUIDE.md)** - Creating custom powers
 
 ## Setup & Configuration
 
+- **[GETTING_STARTED.md](GETTING_STARTED.md)** - First-time setup (SSO, access)
 - **[SETUP.md](SETUP.md)** - Complete setup instructions (macOS/Linux)
+- **[WINDOWS_SETUP.md](WINDOWS_SETUP.md)** - Windows setup (WSL)
 - **[MCP_SETUP.md](MCP_SETUP.md)** - MCP server configuration (Jira, GitHub)
 - **[KIRO_UI_SETUP.md](KIRO_UI_SETUP.md)** - Kiro UI specific setup
 - **[MOBILE_AGENTS_SETUP.md](MOBILE_AGENTS_SETUP.md)** - Mobile development setup
@@ -24,7 +28,6 @@ Complete guide to all documentation.
 ## Architecture & Design
 
 - **[DESIGN.md](DESIGN.md)** - System architecture and design decisions
-- **[.kiro/README.md](../.kiro/README.md)** - Configuration structure
 - **[ORCHESTRATOR_DELEGATION_REVIEW.md](ORCHESTRATOR_DELEGATION_REVIEW.md)** - Orchestration patterns
 
 ## Change History
@@ -35,13 +38,14 @@ Complete guide to all documentation.
 
 ### For New Users
 1. [README.md](../README.md) - Start here
-2. [SETUP.md](SETUP.md) - Setup instructions
-3. [AGENTS.md](../AGENTS.md) - Available agents
+2. [GETTING_STARTED.md](GETTING_STARTED.md) - Access & SSO
+3. [SETUP.md](SETUP.md) / [WINDOWS_SETUP.md](WINDOWS_SETUP.md) - Installation
+4. [AGENTS.md](../AGENTS.md) - Available agents
 
 ### For Developers
 1. [PROMPT_GUIDE.md](PROMPT_GUIDE.md) - Effective prompts
 2. [DESIGN.md](DESIGN.md) - Architecture
-3. [.kiro/powers/GUIDE.md](../.kiro/powers/GUIDE.md) - Custom powers
+3. [Powers Guide](../profiles/dev-core/powers/GUIDE.md) - Custom powers
 
 ### For Mobile Development
 1. [MOBILE_AGENTS_SETUP.md](MOBILE_AGENTS_SETUP.md) - Setup
@@ -57,19 +61,19 @@ steer-runtime/
 ├── setup.sh               # Bash fallback (Koda is primary)
 ├── docs/                  # All documentation
 │   ├── INDEX.md          # This file
+│   ├── GETTING_STARTED.md
 │   ├── SETUP.md
+│   ├── WINDOWS_SETUP.md
 │   ├── PROMPT_GUIDE.md
 │   ├── KIRO_CLI_VS_UI.md
 │   ├── MCP_SETUP.md
 │   ├── KIRO_UI_SETUP.md
 │   ├── MOBILE_AGENTS_SETUP.md
 │   ├── DESIGN.md
+│   ├── DOCUMENTATION_STATUS.md
+│   ├── HOOKS_AND_POWERS.md
 │   ├── ORCHESTRATOR_DELEGATION_REVIEW.md
 │   └── SETUP_CONSOLIDATION.md
-└── .kiro/
-    ├── README.md          # Configuration structure
-    └── powers/
-        └── GUIDE.md       # Powers guide
 ```
 
 ## Need Help?
@@ -81,4 +85,4 @@ steer-runtime/
 
 ---
 
-**Last Updated:** March 12, 2026
+**Last Updated:** April 13, 2026

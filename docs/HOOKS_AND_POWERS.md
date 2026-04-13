@@ -225,7 +225,7 @@ Add to an agent's JSON config:
    };
    ```
 
-See `.kiro-dev-core/powers/GUIDE.md` for the full creation guide.
+See [`profiles/dev-core/powers/GUIDE.md`](../profiles/dev-core/powers/GUIDE.md) for the full creation guide.
 
 ---
 
