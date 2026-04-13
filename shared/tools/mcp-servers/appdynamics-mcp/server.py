@@ -75,6 +75,36 @@ async def _appd_get(path: str, params: dict = None) -> dict | list | str:
             return resp.text
 
 
+async def _appd_get_raw(url_path: str, params: dict = None) -> dict | list | str:
+    """Make a GET request to any AppDynamics controller URL path (not just /controller/rest)."""
+    token = await _get_oauth_token()
+    url = f"{_base_url()}{url_path}"
+    if params is None:
+        params = {}
+
+    async with httpx.AsyncClient(timeout=30.0, verify=True) as client:
+        resp = await client.get(
+            url,
+            params=params,
+            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"},
+        )
+        resp.raise_for_status()
+        try:
+            return resp.json()
+        except Exception:
+            return resp.text
+
+
+async def _resolve_app_id(app_name: str) -> int:
+    """Resolve an application name to its numeric ID."""
+    data = await _appd_get("/applications")
+    if isinstance(data, list):
+        for app in data:
+            if app.get("name") == app_name:
+                return app["id"]
+    raise ValueError(f"Application '{app_name}' not found in AppDynamics")
+
+
 # ── Tool 1: List Applications ──────────────────────────────────────
 
 @mcp.tool()
@@ -332,6 +362,113 @@ async def get_snapshots(
         ]
         return json.dumps({"count": len(snaps), "snapshots": snaps}, indent=2)
     return json.dumps(data, indent=2)
+
+
+# ── Tool 9: Get Anomalies with Suspected Causes ───────────────────
+
+@mcp.tool()
+async def get_anomalies(
+    app_name: str,
+    duration_hours: int = 24,
+    include_suspected_causes: bool = True,
+) -> str:
+    """
+    Get anomaly violations detected by AppDynamics AI for an application,
+    including suspected root causes. Uses the Anomaly Detection API which
+    leverages machine learning to identify abnormal behavior in business
+    transactions and provides automated root cause analysis.
+
+    Args:
+        app_name: The application name in AppDynamics
+        duration_hours: How many hours back to check for anomalies (default 24)
+        include_suspected_causes: Whether to include AI-determined suspected causes (default True)
+    """
+    app_id = await _resolve_app_id(app_name)
+
+    now = int(datetime.utcnow().timestamp() * 1000)
+    start = int((datetime.utcnow() - timedelta(hours=duration_hours)).timestamp() * 1000)
+
+    try:
+        data = await _appd_get_raw(
+            f"/controller/anomaly/rest/api/v1/applications/{app_id}/anomalies",
+            params={
+                "startTime": start,
+                "endTime": now,
+                "fetchSuspectedCause": str(include_suspected_causes).lower(),
+            },
+        )
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 404:
+            return json.dumps({
+                "application": app_name,
+                "app_id": app_id,
+                "error": "Anomaly Detection API not available",
+                "message": "The Anomaly Detection API endpoint returned 404. This typically means "
+                           "anomaly detection is not enabled on this controller or the controller "
+                           "version does not support this API. Check Settings > Anomaly Detection "
+                           "in the AppDynamics UI, or contact your AppDynamics admin.",
+            }, indent=2)
+        raise
+
+    violations = data.get("violationListItem", []) if isinstance(data, dict) else []
+
+    anomalies = []
+    for v in violations:
+        anomaly = {
+            "id": v.get("id"),
+            "status": v.get("status"),
+            "description": v.get("description"),
+            "startTime": v.get("startTime"),
+            "endTime": v.get("endTime"),
+            "duration_ms": v.get("duration"),
+            "affectedEntityName": v.get("affectedEntityName"),
+            "affectedEntityType": v.get("affectedEntityType"),
+        }
+
+        # Extract suspected causes from event details
+        if include_suspected_causes and v.get("eventDetailMap"):
+            causes = []
+            for event_id, event in v["eventDetailMap"].items():
+                event_info = {
+                    "eventId": event_id,
+                    "severity": event.get("eventSeverity"),
+                    "type": event.get("eventType"),
+                    "summary": event.get("eventSummary"),
+                    "suspectedCauses": [],
+                }
+                for cause in event.get("suspectedCauses", []):
+                    event_info["suspectedCauses"].append({
+                        "entityName": cause.get("entityName"),
+                        "entityType": cause.get("entityType"),
+                        "rcaSummary": cause.get("rcaSummary"),
+                        "metrics": [
+                            m.get("metricName")
+                            for m in cause.get("affectedEntityMetricIds", [])
+                        ],
+                    })
+                causes.append(event_info)
+            anomaly["events"] = causes
+
+        anomalies.append(anomaly)
+
+    # Summary
+    active = [a for a in anomalies if a.get("status") == "OPEN"]
+    resolved = [a for a in anomalies if a.get("status") == "RESOLVED"]
+    with_causes = [a for a in anomalies if a.get("events") and
+                   any(e.get("suspectedCauses") for e in a.get("events", []))]
+
+    return json.dumps({
+        "application": app_name,
+        "app_id": app_id,
+        "duration_hours": duration_hours,
+        "summary": {
+            "total_anomalies": len(anomalies),
+            "active": len(active),
+            "resolved": len(resolved),
+            "with_suspected_causes": len(with_causes),
+        },
+        "anomalies": anomalies,
+    }, indent=2)
 
 
 # ── Entry Point ────────────────────────────────────────────────────

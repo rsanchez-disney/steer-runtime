@@ -89,6 +89,7 @@ To create API client credentials in AppDynamics:
 | `get_health_violations` | Health rule violations within a configurable time range |
 | `get_error_rate` | Error count and total call count for an app |
 | `get_snapshots` | Recent slow/error transaction snapshots |
+| `get_anomalies` | AI-detected anomalies with suspected root causes (Automated RCA). Requires controller version 26.x+. Returns a clear message on older controllers (25.x). |
 
 ## Common Metric Paths
 
@@ -115,3 +116,4 @@ Replace `<tier>` and `<node>` with actual tier/node names from `get_tiers` and `
 | `ModuleNotFoundError: httpx` | Wrong Python binary (system Python without packages) | Ensure `command` points to the Python where you installed the dependencies |
 | `FastMCP() got unexpected keyword argument` | FastMCP v3 API change | Don't pass `description` to the `FastMCP()` constructor — already fixed in `server.py` |
 | Empty metric results | Metric path doesn't exist for the app | Use `get_tiers` first to find valid tier names, then build the metric path |
+| `get_anomalies` returns 404 | Controller version < 26.x | The Anomaly Detection API requires Splunk AppDynamics 26.x+. Current Disney-Prod controller is 25.7.0-3004. The tool will work automatically once the controller is upgraded. |
