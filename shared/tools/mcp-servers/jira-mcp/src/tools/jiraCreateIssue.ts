@@ -1,10 +1,14 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
+import {
+    CUSTOM_FIELD_ALIASES,
+    resolveCustomFieldIds,
+} from "../utils/customFields.js";
 
 export const jiraCreateIssueSchema = {
     name: "jira_create_issue",
-    description: "Create a new JIRA issue",
+    description: "Create a new JIRA issue with support for custom fields",
     inputSchema: {
         type: "object",
         properties: {
@@ -45,6 +49,15 @@ export const jiraCreateIssueSchema = {
                 description:
                     'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"]) (optional)',
             },
+            sprint: {
+                type: "string",
+                description:
+                    "Sprint ID to assign the issue to (optional)",
+            },
+            customFields: {
+                type: "object",
+                description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`,
+            },
             outputDir: {
                 type: ["string", "boolean", "null"],
                 description:
@@ -66,6 +79,8 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             epicLink,
             components,
             labels,
+            sprint,
+            customFields,
             outputDir,
         } = args as {
             projectKey: string;
@@ -76,6 +91,8 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             epicLink?: string;
             components?: string[];
             labels?: string[];
+            sprint?: string;
+            customFields?: Record<string, unknown>;
             outputDir?: string;
         };
 
@@ -89,6 +106,8 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             epicLink,
             components,
             labels,
+            sprint,
+            customFields,
         );
 
         // Fetch the created issue to get full details
