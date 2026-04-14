@@ -25,7 +25,7 @@ export async function handleQueryIncidents(args: any) {
         sysparm_query: query,
         sysparm_fields: fields,
         sysparm_limit: String(limit),
-        sysparm_display_value: "true",
+        sysparm_display_value: "all",
     });
     const records = result?.result ?? [];
     return {

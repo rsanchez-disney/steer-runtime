@@ -26,7 +26,8 @@ Skills are standalone prompt files that define a complete workflow — from cont
 ### Operations
 | Skill | Description |
 |-------|-------------|
-| [appdynamics-health-check](appdynamics-health-check.md) | Application health check and incident triage using AppDynamics MCP |## Usage
+| [appdynamics-health-check](appdynamics-health-check.md) | Application health check and incident triage using AppDynamics MCP |
+| [servicenow-incident-ops](servicenow-incident-ops.md) | Incident triage, routing, resolution, CTASK management, reporting, and service validation |## Usage
 
 ### Kiro CLI
 ```bash
