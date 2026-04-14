@@ -14,15 +14,15 @@
     "delegate"
   ],
   "resources": [
-    "context/agent_schema.md",
-    "context/prompt_structure.md",
-    "context/workspace_schema.md",
-    "context/breaking_change_rules.md",
-    "context/naming_conventions.md",
-    "context/cross_repo_map.md",
-    "../../shared/memory-bank/steer-master/schema-inventory.md",
-    "../../shared/memory-bank/steer-master/breaking-change-log.md",
-    "../../docs/FORK_STRATEGY.md"
+    "file://profiles/steer-master/context/agent_schema.md",
+    "file://profiles/steer-master/context/prompt_structure.md",
+    "file://profiles/steer-master/context/workspace_schema.md",
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://profiles/steer-master/context/naming_conventions.md",
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://shared/memory-bank/steer-master/schema-inventory.md",
+    "file://shared/memory-bank/steer-master/breaking-change-log.md",
+    "file://docs/FORK_STRATEGY.md"
   ],
   "welcomeMessage": "🛠️ Steer-master orchestrator ready!\n\nI can help you:\n  • Implement features for steer-runtime and Koda\n  • Review PRs for breaking changes and consistency\n  • Validate schemas and cross-repo compatibility\n  • Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
   "hooks": {
