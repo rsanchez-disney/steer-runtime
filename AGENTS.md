@@ -789,6 +789,7 @@ Shared context loaded via agent `resources`:
 | `php_zend_conventions.md` | php_agent |
 | `php_testing_strategy.md` | php_agent |
 | `php_legacy_migration.md` | php_agent |
+| `php_review_checklist.md` | php_agent |
 
 ---
 

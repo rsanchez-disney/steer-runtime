@@ -101,3 +101,15 @@ When working with legacy code:
 - Cover success path, validation failure, and error handling
 - Use data providers for parameterized tests
 - Keep tests independent — no shared mutable state
+
+## Code Review
+
+When reviewing PHP code, always check for:
+- **Type safety**: loose comparisons (`==` vs `===`), undefined variables, incorrect reference usage
+- **Memory**: circular references, large structures not freed, deprecated function usage
+- **Security**: SQL injection (require prepared statements), session fixation, php.ini misconfigurations
+- **Concurrency**: race conditions on shared resources, inconsistent data states
+- **Error handling**: silent failures, swallowed exceptions, missing error logging
+- **Logic**: off-by-one errors, flawed control flow, incompatible dependency versions
+
+Flag every finding with severity (critical/warning/nit) and suggest a fix.
