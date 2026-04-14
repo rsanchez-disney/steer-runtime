@@ -58,6 +58,13 @@ graph TD
         TERRAFORM["terraform<br/><i>context7</i>"]:::agent
     end
 
+    %% ─── dev-dotnet ──────────────────────────────────
+    subgraph DEV_DOTNET["dev-dotnet · 3 agents"]
+        DOTNET_SENIOR["dotnet_senior_agent"]:::agent
+        DOTNET_API["dotnet_self_host_api_agent"]:::agent
+        DOTNET_SERVERLESS["dotnet_serverless_agent"]:::agent
+    end
+
     %% ─── ba ────────────────────────────────────────
     subgraph BA["ba · 8 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
@@ -137,6 +144,7 @@ koda install dev                    # All 26 dev agents (alias → dev-core + de
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
+koda install dev-core dev-dotnet    # .NET developer (19 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
@@ -317,6 +325,30 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 **Use for:** Terraform modules, plan/apply workflows, security scanning  
 **MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan)
+
+---
+
+### Profile: dev-dotnet (3 agents)
+
+.NET specialists for self-hosted APIs and serverless applications.
+
+#### dotnet_senior_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_senior_agent.json`  
+**Purpose:** Senior .NET persona — reads project config, applies company standards, routes to archetype specialists  
+**Use for:** Project scaffolding, archetype routing, cross-cutting .NET tasks  
+**Tools:** thinking, todo, delegate, code, execute_bash, fs_read, fs_write, grep
+
+#### dotnet_self_host_api_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_self_host_api_agent.json`  
+**Purpose:** ASP.NET Core specialist — thin controllers, explicit DI, Swagger/OpenAPI, health checks  
+**Use for:** Self-hosted APIs, Windows Services, Kubernetes backends  
+**Tools:** code, execute_bash, fs_read, fs_write, grep
+
+#### dotnet_serverless_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_serverless_agent.json`  
+**Purpose:** Serverless specialist — thin handlers, service orchestration, explicit contracts, AWS adapter seams  
+**Use for:** Lambda handlers, event-driven workflows, stateless execution  
+**Tools:** code, execute_bash, fs_read, fs_write, grep
 
 ---
 
@@ -668,6 +700,9 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-web** | astro | | | | | ✅ | Figma |
 | **dev-python** | python | | | | | ✅ | |
 | **dev-infra** | terraform | | | | | ✅ | |
+| **dev-dotnet** | dotnet_senior_agent | | | | | | |
+| **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
+| **dev-dotnet** | dotnet_serverless_agent | | | | | | |
 | **dev-mobile** | flutter | | | | | ✅ | |
 | **dev-mobile** | android_native | | | | | ✅ | |
 | **dev-mobile** | ios_native | | | | | ✅ | |
@@ -723,6 +758,12 @@ Shared context loaded via agent `resources`:
 | `astro_project_patterns.md` | astro |
 | `vista_web_components.md` | astro, ui, ux_specialist |
 | `terraform_guidelines.md` | terraform |
+| `dotnet_engineering_principles.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_tech_standards.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_testing_strategy.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_aws_platform_guidance.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_self_host_api_guidance.md` | dotnet_senior, dotnet_self_host_api |
+| `dotnet_serverless_guidance.md` | dotnet_senior, dotnet_serverless |
 
 ---
 
@@ -746,6 +787,9 @@ kiro-cli chat --agent python                    # Python development
 
 # Dev Infra
 kiro-cli chat --agent terraform                 # Terraform/IaC
+kiro-cli chat --agent dotnet_senior_agent       # .NET senior persona
+kiro-cli chat --agent dotnet_self_host_api_agent  # ASP.NET Core APIs
+kiro-cli chat --agent dotnet_serverless_agent     # .NET serverless
 
 # Dev Mobile
 kiro-cli chat --agent flutter                   # Flutter mobile
@@ -800,5 +844,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 55 (dev-core: 16, dev-web: 5, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Total Agents:** 58 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
 **Last Updated:** April 3, 2026
