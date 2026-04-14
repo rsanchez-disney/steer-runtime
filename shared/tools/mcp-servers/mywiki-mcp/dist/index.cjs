@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const __import_meta_url = require("url").pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -5660,22 +5661,29 @@ var StdioServerTransport = class {
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
-var import_meta = {};
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
   async loadConfig() {
     if (!this.confluenceUrl || !this.confluencePat) {
-      const __filename = (0, import_url.fileURLToPath)(import_meta.url);
-      const __dirname = (0, import_path.dirname)(__filename);
-      const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-      console.error(`Loading .env from: ${envPath}`);
-      (0, import_dotenv.config)({ path: envPath });
       this.confluenceUrl = process.env.CONFLUENCE_URL || null;
       this.confluencePat = process.env.CONFLUENCE_PAT || null;
       if (!this.confluenceUrl || !this.confluencePat) {
+        try {
+          const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+          const __dirname = (0, import_path.dirname)(__filename);
+          const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+          console.error(`Loading .env from: ${envPath}`);
+          (0, import_dotenv.config)({ path: envPath });
+          this.confluenceUrl = process.env.CONFLUENCE_URL || null;
+          this.confluencePat = process.env.CONFLUENCE_PAT || null;
+        } catch (e) {
+          console.error(`Failed to load .env file: ${e.message}`);
+        }
+      }
+      if (!this.confluenceUrl || !this.confluencePat) {
         throw new Error(
-          `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT. Tried loading from: ${envPath}`
+          `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT.`
         );
       }
       if (this.confluenceUrl.includes("atlassian.net") && !this.confluenceUrl.includes("/wiki")) {
@@ -5722,8 +5730,7 @@ var apiClient = new ConfluenceApiClient();
 var import_promises = require("fs/promises");
 var import_path2 = require("path");
 async function saveToFile(data, outputDir, filename) {
-  if (outputDir === false || outputDir === null)
-    return null;
+  if (outputDir === false || outputDir === null) return null;
   const saveDir = typeof outputDir === "string" ? outputDir : "/tmp/confluence-mcp";
   await (0, import_promises.mkdir)(saveDir, { recursive: true });
   const filePath = (0, import_path2.join)(saveDir, filename);
