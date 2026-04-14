@@ -15,8 +15,23 @@ export const updateCtaskSchema = {
 
 export async function handleUpdateCtask(args: any) {
     const { ctaskNumber, fieldsJson } = args;
+
+    let fields: Record<string, any>;
+    try {
+        fields = JSON.parse(fieldsJson);
+    } catch {
+        return {
+            content: [{ type: "text", text: JSON.stringify({ status: "error", ctask: ctaskNumber, message: `Invalid JSON in fieldsJson: ${fieldsJson}` }) }],
+        };
+    }
+
+    if (!fields || typeof fields !== "object" || Array.isArray(fields) || !Object.keys(fields).length) {
+        return {
+            content: [{ type: "text", text: JSON.stringify({ status: "error", ctask: ctaskNumber, message: "fieldsJson must be a non-empty JSON object (e.g. '{\"state\": \"3\"}')." }) }],
+        };
+    }
+
     const sysId = await apiClient.getSysId("change_task", "number", ctaskNumber);
-    const fields = JSON.parse(fieldsJson);
     await apiClient.patch(`/table/change_task/${sysId}`, fields);
     return {
         content: [{ type: "text", text: JSON.stringify({ status: "success", ctask: ctaskNumber, updated_fields: Object.keys(fields), message: "CTASK updated" }) }],

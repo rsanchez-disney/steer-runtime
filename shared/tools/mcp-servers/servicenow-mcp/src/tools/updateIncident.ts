@@ -15,8 +15,23 @@ export const updateIncidentSchema = {
 
 export async function handleUpdateIncident(args: any) {
     const { incidentNumber, fieldsJson } = args;
+
+    let fields: Record<string, any>;
+    try {
+        fields = JSON.parse(fieldsJson);
+    } catch {
+        return {
+            content: [{ type: "text", text: JSON.stringify({ status: "error", incident: incidentNumber, message: `Invalid JSON in fieldsJson: ${fieldsJson}` }) }],
+        };
+    }
+
+    if (!fields || typeof fields !== "object" || Array.isArray(fields) || !Object.keys(fields).length) {
+        return {
+            content: [{ type: "text", text: JSON.stringify({ status: "error", incident: incidentNumber, message: "fieldsJson must be a non-empty JSON object (e.g. '{\"priority\": \"2\"}')." }) }],
+        };
+    }
+
     const incSysId = await apiClient.getSysId("incident", "number", incidentNumber);
-    const fields = JSON.parse(fieldsJson);
     await apiClient.patch(`/table/incident/${incSysId}`, fields);
     return {
         content: [{ type: "text", text: JSON.stringify({ status: "success", incident: incidentNumber, updated_fields: Object.keys(fields), message: "Incident updated" }) }],
