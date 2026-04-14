@@ -1,4 +1,4 @@
-const __import_meta_url = require("url").pathToFileURL(__filename).href;
+#!/usr/bin/env node
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -6,12 +6,6 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -32,422 +26,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-
-// node_modules/dotenv/package.json
-var require_package = __commonJS({
-  "node_modules/dotenv/package.json"(exports2, module2) {
-    module2.exports = {
-      name: "dotenv",
-      version: "16.4.5",
-      description: "Loads environment variables from .env file",
-      main: "lib/main.js",
-      types: "lib/main.d.ts",
-      exports: {
-        ".": {
-          types: "./lib/main.d.ts",
-          require: "./lib/main.js",
-          default: "./lib/main.js"
-        },
-        "./config": "./config.js",
-        "./config.js": "./config.js",
-        "./lib/env-options": "./lib/env-options.js",
-        "./lib/env-options.js": "./lib/env-options.js",
-        "./lib/cli-options": "./lib/cli-options.js",
-        "./lib/cli-options.js": "./lib/cli-options.js",
-        "./package.json": "./package.json"
-      },
-      scripts: {
-        "dts-check": "tsc --project tests/types/tsconfig.json",
-        lint: "standard",
-        "lint-readme": "standard-markdown",
-        pretest: "npm run lint && npm run dts-check",
-        test: "tap tests/*.js --100 -Rspec",
-        "test:coverage": "tap --coverage-report=lcov",
-        prerelease: "npm test",
-        release: "standard-version"
-      },
-      repository: {
-        type: "git",
-        url: "git://github.com/motdotla/dotenv.git"
-      },
-      funding: "https://dotenvx.com",
-      keywords: [
-        "dotenv",
-        "env",
-        ".env",
-        "environment",
-        "variables",
-        "config",
-        "settings"
-      ],
-      readmeFilename: "README.md",
-      license: "BSD-2-Clause",
-      devDependencies: {
-        "@definitelytyped/dtslint": "^0.0.133",
-        "@types/node": "^18.11.3",
-        decache: "^4.6.1",
-        sinon: "^14.0.1",
-        standard: "^17.0.0",
-        "standard-markdown": "^7.1.0",
-        "standard-version": "^9.5.0",
-        tap: "^16.3.0",
-        tar: "^6.1.11",
-        typescript: "^4.8.4"
-      },
-      engines: {
-        node: ">=12"
-      },
-      browser: {
-        fs: false
-      }
-    };
-  }
-});
-
-// node_modules/dotenv/lib/main.js
-var require_main = __commonJS({
-  "node_modules/dotenv/lib/main.js"(exports2, module2) {
-    var fs = require("fs");
-    var path = require("path");
-    var os = require("os");
-    var crypto = require("crypto");
-    var packageJson = require_package();
-    var version = packageJson.version;
-    var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
-    function parse(src) {
-      const obj = {};
-      let lines = src.toString();
-      lines = lines.replace(/\r\n?/mg, "\n");
-      let match;
-      while ((match = LINE.exec(lines)) != null) {
-        const key = match[1];
-        let value = match[2] || "";
-        value = value.trim();
-        const maybeQuote = value[0];
-        value = value.replace(/^(['"`])([\s\S]*)\1$/mg, "$2");
-        if (maybeQuote === '"') {
-          value = value.replace(/\\n/g, "\n");
-          value = value.replace(/\\r/g, "\r");
-        }
-        obj[key] = value;
-      }
-      return obj;
-    }
-    function _parseVault(options) {
-      const vaultPath = _vaultPath(options);
-      const result = DotenvModule.configDotenv({ path: vaultPath });
-      if (!result.parsed) {
-        const err = new Error(`MISSING_DATA: Cannot parse ${vaultPath} for an unknown reason`);
-        err.code = "MISSING_DATA";
-        throw err;
-      }
-      const keys = _dotenvKey(options).split(",");
-      const length = keys.length;
-      let decrypted;
-      for (let i = 0; i < length; i++) {
-        try {
-          const key = keys[i].trim();
-          const attrs = _instructions(result, key);
-          decrypted = DotenvModule.decrypt(attrs.ciphertext, attrs.key);
-          break;
-        } catch (error) {
-          if (i + 1 >= length) {
-            throw error;
-          }
-        }
-      }
-      return DotenvModule.parse(decrypted);
-    }
-    function _log(message) {
-      console.log(`[dotenv@${version}][INFO] ${message}`);
-    }
-    function _warn(message) {
-      console.log(`[dotenv@${version}][WARN] ${message}`);
-    }
-    function _debug(message) {
-      console.log(`[dotenv@${version}][DEBUG] ${message}`);
-    }
-    function _dotenvKey(options) {
-      if (options && options.DOTENV_KEY && options.DOTENV_KEY.length > 0) {
-        return options.DOTENV_KEY;
-      }
-      if (process.env.DOTENV_KEY && process.env.DOTENV_KEY.length > 0) {
-        return process.env.DOTENV_KEY;
-      }
-      return "";
-    }
-    function _instructions(result, dotenvKey) {
-      let uri;
-      try {
-        uri = new URL(dotenvKey);
-      } catch (error) {
-        if (error.code === "ERR_INVALID_URL") {
-          const err = new Error("INVALID_DOTENV_KEY: Wrong format. Must be in valid uri format like dotenv://:key_1234@dotenvx.com/vault/.env.vault?environment=development");
-          err.code = "INVALID_DOTENV_KEY";
-          throw err;
-        }
-        throw error;
-      }
-      const key = uri.password;
-      if (!key) {
-        const err = new Error("INVALID_DOTENV_KEY: Missing key part");
-        err.code = "INVALID_DOTENV_KEY";
-        throw err;
-      }
-      const environment = uri.searchParams.get("environment");
-      if (!environment) {
-        const err = new Error("INVALID_DOTENV_KEY: Missing environment part");
-        err.code = "INVALID_DOTENV_KEY";
-        throw err;
-      }
-      const environmentKey = `DOTENV_VAULT_${environment.toUpperCase()}`;
-      const ciphertext = result.parsed[environmentKey];
-      if (!ciphertext) {
-        const err = new Error(`NOT_FOUND_DOTENV_ENVIRONMENT: Cannot locate environment ${environmentKey} in your .env.vault file.`);
-        err.code = "NOT_FOUND_DOTENV_ENVIRONMENT";
-        throw err;
-      }
-      return { ciphertext, key };
-    }
-    function _vaultPath(options) {
-      let possibleVaultPath = null;
-      if (options && options.path && options.path.length > 0) {
-        if (Array.isArray(options.path)) {
-          for (const filepath of options.path) {
-            if (fs.existsSync(filepath)) {
-              possibleVaultPath = filepath.endsWith(".vault") ? filepath : `${filepath}.vault`;
-            }
-          }
-        } else {
-          possibleVaultPath = options.path.endsWith(".vault") ? options.path : `${options.path}.vault`;
-        }
-      } else {
-        possibleVaultPath = path.resolve(process.cwd(), ".env.vault");
-      }
-      if (fs.existsSync(possibleVaultPath)) {
-        return possibleVaultPath;
-      }
-      return null;
-    }
-    function _resolveHome(envPath) {
-      return envPath[0] === "~" ? path.join(os.homedir(), envPath.slice(1)) : envPath;
-    }
-    function _configVault(options) {
-      _log("Loading env from encrypted .env.vault");
-      const parsed = DotenvModule._parseVault(options);
-      let processEnv = process.env;
-      if (options && options.processEnv != null) {
-        processEnv = options.processEnv;
-      }
-      DotenvModule.populate(processEnv, parsed, options);
-      return { parsed };
-    }
-    function configDotenv(options) {
-      const dotenvPath = path.resolve(process.cwd(), ".env");
-      let encoding = "utf8";
-      const debug = Boolean(options && options.debug);
-      if (options && options.encoding) {
-        encoding = options.encoding;
-      } else {
-        if (debug) {
-          _debug("No encoding is specified. UTF-8 is used by default");
-        }
-      }
-      let optionPaths = [dotenvPath];
-      if (options && options.path) {
-        if (!Array.isArray(options.path)) {
-          optionPaths = [_resolveHome(options.path)];
-        } else {
-          optionPaths = [];
-          for (const filepath of options.path) {
-            optionPaths.push(_resolveHome(filepath));
-          }
-        }
-      }
-      let lastError;
-      const parsedAll = {};
-      for (const path2 of optionPaths) {
-        try {
-          const parsed = DotenvModule.parse(fs.readFileSync(path2, { encoding }));
-          DotenvModule.populate(parsedAll, parsed, options);
-        } catch (e) {
-          if (debug) {
-            _debug(`Failed to load ${path2} ${e.message}`);
-          }
-          lastError = e;
-        }
-      }
-      let processEnv = process.env;
-      if (options && options.processEnv != null) {
-        processEnv = options.processEnv;
-      }
-      DotenvModule.populate(processEnv, parsedAll, options);
-      if (lastError) {
-        return { parsed: parsedAll, error: lastError };
-      } else {
-        return { parsed: parsedAll };
-      }
-    }
-    function config2(options) {
-      if (_dotenvKey(options).length === 0) {
-        return DotenvModule.configDotenv(options);
-      }
-      const vaultPath = _vaultPath(options);
-      if (!vaultPath) {
-        _warn(`You set DOTENV_KEY but you are missing a .env.vault file at ${vaultPath}. Did you forget to build it?`);
-        return DotenvModule.configDotenv(options);
-      }
-      return DotenvModule._configVault(options);
-    }
-    function decrypt(encrypted, keyStr) {
-      const key = Buffer.from(keyStr.slice(-64), "hex");
-      let ciphertext = Buffer.from(encrypted, "base64");
-      const nonce = ciphertext.subarray(0, 12);
-      const authTag = ciphertext.subarray(-16);
-      ciphertext = ciphertext.subarray(12, -16);
-      try {
-        const aesgcm = crypto.createDecipheriv("aes-256-gcm", key, nonce);
-        aesgcm.setAuthTag(authTag);
-        return `${aesgcm.update(ciphertext)}${aesgcm.final()}`;
-      } catch (error) {
-        const isRange = error instanceof RangeError;
-        const invalidKeyLength = error.message === "Invalid key length";
-        const decryptionFailed = error.message === "Unsupported state or unable to authenticate data";
-        if (isRange || invalidKeyLength) {
-          const err = new Error("INVALID_DOTENV_KEY: It must be 64 characters long (or more)");
-          err.code = "INVALID_DOTENV_KEY";
-          throw err;
-        } else if (decryptionFailed) {
-          const err = new Error("DECRYPTION_FAILED: Please check your DOTENV_KEY");
-          err.code = "DECRYPTION_FAILED";
-          throw err;
-        } else {
-          throw error;
-        }
-      }
-    }
-    function populate(processEnv, parsed, options = {}) {
-      const debug = Boolean(options && options.debug);
-      const override = Boolean(options && options.override);
-      if (typeof parsed !== "object") {
-        const err = new Error("OBJECT_REQUIRED: Please check the processEnv argument being passed to populate");
-        err.code = "OBJECT_REQUIRED";
-        throw err;
-      }
-      for (const key of Object.keys(parsed)) {
-        if (Object.prototype.hasOwnProperty.call(processEnv, key)) {
-          if (override === true) {
-            processEnv[key] = parsed[key];
-          }
-          if (debug) {
-            if (override === true) {
-              _debug(`"${key}" is already defined and WAS overwritten`);
-            } else {
-              _debug(`"${key}" is already defined and was NOT overwritten`);
-            }
-          }
-        } else {
-          processEnv[key] = parsed[key];
-        }
-      }
-    }
-    var DotenvModule = {
-      configDotenv,
-      _configVault,
-      _parseVault,
-      config: config2,
-      decrypt,
-      parse,
-      populate
-    };
-    module2.exports.configDotenv = DotenvModule.configDotenv;
-    module2.exports._configVault = DotenvModule._configVault;
-    module2.exports._parseVault = DotenvModule._parseVault;
-    module2.exports.config = DotenvModule.config;
-    module2.exports.decrypt = DotenvModule.decrypt;
-    module2.exports.parse = DotenvModule.parse;
-    module2.exports.populate = DotenvModule.populate;
-    module2.exports = DotenvModule;
-  }
-});
-
-// build/utils/customFields.js
-var customFields_exports = {};
-__export(customFields_exports, {
-  CUSTOM_FIELD_ALIASES: () => CUSTOM_FIELD_ALIASES,
-  formatCustomFieldValue: () => formatCustomFieldValue,
-  getCustomFieldLabel: () => getCustomFieldLabel,
-  resolveCustomFieldIds: () => resolveCustomFieldIds
-});
-function resolveCustomFieldIds(input) {
-  const resolved = [];
-  for (const token of input) {
-    const lower = token.toLowerCase();
-    const aliasMatch = Object.entries(CUSTOM_FIELD_ALIASES).find(([alias]) => alias.toLowerCase() === lower);
-    if (aliasMatch) {
-      resolved.push(aliasMatch[1]);
-      continue;
-    }
-    if (/^customfield_\d+$/i.test(token)) {
-      resolved.push(token);
-      continue;
-    }
-    console.error(`[customFields] Unknown alias or field ID: "${token}" \u2013 skipping`);
-  }
-  return [...new Set(resolved)];
-}
-function getCustomFieldLabel(fieldId) {
-  const alias = REVERSE_ALIASES[fieldId];
-  return alias ? `${alias} (${fieldId})` : fieldId;
-}
-function formatCustomFieldValue(value) {
-  if (value === null || value === void 0)
-    return "Not set";
-  if (typeof value === "string")
-    return value;
-  if (typeof value === "number" || typeof value === "boolean")
-    return String(value);
-  if (typeof value === "object" && value !== null) {
-    const obj = value;
-    if (obj.name)
-      return String(obj.name);
-    if (obj.value)
-      return String(obj.value);
-    if (obj.displayName)
-      return String(obj.displayName);
-    if (Array.isArray(value)) {
-      return value.map((v) => formatCustomFieldValue(v)).join(", ");
-    }
-    return JSON.stringify(value);
-  }
-  return String(value);
-}
-var CUSTOM_FIELD_ALIASES, REVERSE_ALIASES;
-var init_customFields = __esm({
-  "build/utils/customFields.js"() {
-    "use strict";
-    CUSTOM_FIELD_ALIASES = {
-      // ── Team / Org ───────────────────────────────────
-      team: "customfield_22600",
-      // ── App / Release ────────────────────────────────
-      appVersion: "customfield_15301",
-      // ── QA / Defect ──────────────────────────────────
-      rootCauseAnalysis: "customfield_20805",
-      // ── Agile ────────────────────────────────────────
-      sprint: "customfield_10003",
-      storyPoints: "customfield_10004",
-      epicLink: "customfield_10014",
-      // ── Studio / Programme ───────────────────────────
-      studio: "customfield_20001"
-      // Add more aliases below as needed:
-      // myAlias: "customfield_XXXXX",
-    };
-    REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
-      fieldId,
-      alias
-    ]));
-  }
-});
 
 // node_modules/zod/v3/external.js
 var external_exports = {};
@@ -4277,7 +3855,7 @@ ZodNaN.create = (params) => {
     ...processCreateParams(params)
   });
 };
-var BRAND = /* @__PURE__ */ Symbol("zod_brand");
+var BRAND = Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -4479,14 +4057,14 @@ var ostring = () => stringType().optional();
 var onumber = () => numberType().optional();
 var oboolean = () => booleanType().optional();
 var coerce = {
-  string: ((arg) => ZodString.create({ ...arg, coerce: true })),
-  number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
-  boolean: ((arg) => ZodBoolean.create({
+  string: (arg) => ZodString.create({ ...arg, coerce: true }),
+  number: (arg) => ZodNumber.create({ ...arg, coerce: true }),
+  boolean: (arg) => ZodBoolean.create({
     ...arg,
     coerce: true
-  })),
-  bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
-  date: ((arg) => ZodDate.create({ ...arg, coerce: true }))
+  }),
+  bigint: (arg) => ZodBigInt.create({ ...arg, coerce: true }),
+  date: (arg) => ZodDate.create({ ...arg, coerce: true })
 };
 var NEVER = INVALID;
 
@@ -5352,7 +4930,7 @@ var Protocol = class {
    * Do not use this method to emit notifications! Use notification() instead.
    */
   request(request, resultSchema, options) {
-    return new Promise((resolve2, reject) => {
+    return new Promise((resolve, reject) => {
       var _a, _b, _c, _d;
       if (!this._transport) {
         reject(new Error("Not connected"));
@@ -5389,7 +4967,7 @@ var Protocol = class {
         }
         try {
           const result = resultSchema.parse(response.result);
-          resolve2(result);
+          resolve(result);
         } catch (error) {
           reject(error);
         }
@@ -5706,2887 +5284,1633 @@ var StdioServerTransport = class {
     (_a = this.onclose) === null || _a === void 0 ? void 0 : _a.call(this);
   }
   send(message) {
-    return new Promise((resolve2) => {
+    return new Promise((resolve) => {
       const json = serializeMessage(message);
       if (this._stdout.write(json)) {
-        resolve2();
+        resolve();
       } else {
-        this._stdout.once("drain", resolve2);
+        this._stdout.once("drain", resolve);
       }
     });
   }
 };
 
-// build/utils/auth.js
-var import_dotenv = __toESM(require_main(), 1);
-var import_path = require("path");
-var import_url = require("url");
-var JiraAuth = class {
-  jiraPat = null;
-  async getJiraPat() {
-    if (this.jiraPat) {
-      return this.jiraPat;
-    }
-    const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-    const __dirname = (0, import_path.dirname)(__filename);
-    const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-    console.error(`Loading .env from: ${envPath}`);
-    (0, import_dotenv.config)({ path: envPath });
-    if (process.env.JIRA_PAT) {
-      this.jiraPat = process.env.JIRA_PAT;
-      return this.jiraPat;
-    }
-    throw new Error(`JIRA PAT not found. Set JIRA_PAT environment variable or add JIRA_PAT=your_token to .env file. Tried loading from: ${envPath}`);
+// src/utils/types.ts
+var QtestApiError = class extends Error {
+  constructor(statusCode, responseBody, url) {
+    super(`qTest API error ${statusCode}: ${responseBody}`);
+    this.statusCode = statusCode;
+    this.responseBody = responseBody;
+    this.url = url;
+    this.name = "QtestApiError";
   }
 };
 
-// build/utils/jiraApi.js
-var JiraApiClient = class {
-  auth = new JiraAuth();
-  async fetchJiraTicket(ticketId, fields) {
-    const pat = await this.auth.getJiraPat();
-    const defaultFields = [
-      "summary",
-      "description",
-      "status",
-      "assignee",
-      "priority",
-      "created"
-    ];
-    const requestedFields = fields || defaultFields;
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
+// src/utils/qtestClient.ts
+var QtestApiClient = class _QtestApiClient {
+  baseUrl;
+  token;
+  constructor() {
+    this.baseUrl = process.env.QTEST_BASE_URL || "https://qtest.disney.com";
+    this.token = process.env.QTEST_BEARER_TOKEN;
+  }
+  static MAX_RETRIES = 3;
+  async request(method, path, body) {
+    const url = `${this.baseUrl}${path}`;
+    let response;
+    for (let attempt = 0; attempt <= _QtestApiClient.MAX_RETRIES; attempt++) {
+      try {
+        response = await fetch(url, {
+          method,
+          headers: {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "application/json"
+          },
+          body: body ? JSON.stringify(body) : void 0
+        });
+      } catch (error) {
+        if (error instanceof TypeError) {
+          throw new QtestApiError(0, error.message, url);
+        }
+        throw error;
       }
-    });
+      if (response.status !== 429 || attempt === _QtestApiClient.MAX_RETRIES)
+        break;
+      const delay = Math.pow(2, attempt) * 1e3;
+      console.error(`[qtest-mcp] Rate limited (429), retrying in ${delay}ms (attempt ${attempt + 1}/${_QtestApiClient.MAX_RETRIES})`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
     if (!response.ok) {
-      throw new Error(`Failed to fetch JIRA ticket: ${response.status} ${response.statusText}`);
+      const errorBody = await response.text();
+      throw new QtestApiError(response.status, errorBody, url);
     }
-    const result = await response.json();
-    console.error("Fetched ticket fields:", Object.keys(result.fields || {}));
-    return result;
+    return response.json();
   }
-  async updateJiraTicket(ticketId, updates) {
-    const pat = await this.auth.getJiraPat();
-    console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ fields: updates })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("JIRA API Error Response:", errorText);
-      throw new Error(`Failed to update JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    console.error("JIRA update successful");
+  async get(path) {
+    return this.request("GET", path);
   }
-  async transitionJiraTicket(ticketId, transitionId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ transition: { id: transitionId } })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to transition JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
-    }
+  async post(path, body) {
+    return this.request("POST", path, body);
   }
-  async getJiraTransitions(ticketId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to get JIRA transitions: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
+  async put(path, body) {
+    return this.request("PUT", path, body);
   }
-  async addJiraComment(ticketId, comment) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/comment`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ body: comment })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to add comment to JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
+};
+function resolveProjectId(argsProjectId) {
+  if (argsProjectId !== void 0 && argsProjectId !== null) {
+    return argsProjectId;
   }
-  async searchJiraIssues(jql, maxResults = 50, startAt = 0, extraFields = []) {
-    const pat = await this.auth.getJiraPat();
-    const baseFields = [
-      "summary",
-      "status",
-      "assignee",
-      "priority",
-      "issuetype",
-      "project",
-      "created",
-      "updated"
-    ];
-    const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/search`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        jql,
-        maxResults,
-        startAt,
-        fields
-      })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to search JIRA issues: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
+  const envId = process.env.QTEST_PROJECT_ID;
+  if (envId) {
+    const parsed = Number(envId);
+    if (!Number.isNaN(parsed))
+      return parsed;
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields) {
-    const pat = await this.auth.getJiraPat();
-    const fields = {
-      project: { key: projectKey },
-      summary,
-      issuetype: { name: issueType }
-    };
-    if (description) {
-      fields.description = description;
-    }
-    if (assignee) {
-      fields.assignee = { name: assignee };
-    }
-    if (epicLink) {
-      console.error(`Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`);
-    }
-    if (components && components.length > 0) {
-      fields.components = components.map((name) => ({ name }));
-    }
-    if (labels && labels.length > 0) {
-      fields.labels = labels;
-    }
-    if (sprint) {
-      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
-      const resolved = resolveCustomFieldIds2(["sprint"]);
-      if (resolved.length > 0) {
-        fields[resolved[0]] = Number(sprint);
-      }
-    }
-    if (customFields && Object.keys(customFields).length > 0) {
-      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
-      for (const [key, value] of Object.entries(customFields)) {
-        const resolved = resolveCustomFieldIds2([key]);
-        if (resolved.length > 0) {
-          fields[resolved[0]] = value;
+  throw new Error(
+    "No projectId provided and QTEST_PROJECT_ID is not configured. Pass projectId as a parameter or set QTEST_PROJECT_ID in your .env file."
+  );
+}
+function mapApiError(error) {
+  if (error.statusCode === 401) {
+    return "Authentication failed: bearer token is invalid or expired. Regenerate your qTest API token.";
+  }
+  if (error.statusCode === 403) {
+    return "Permission denied: insufficient permissions for this operation. Check your qTest role.";
+  }
+  if (error.statusCode === 404) {
+    return "Resource not found: the requested resource does not exist in qTest.";
+  }
+  if (error.statusCode === 0) {
+    return `Connection failed: unable to reach qTest API at ${error.url}. Check network and URL.`;
+  }
+  return `qTest API error ${error.statusCode}: ${error.responseBody}`;
+}
+async function withErrorHandling(fn) {
+  try {
+    return await fn();
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+var MODULE_CACHE_TTL_MS = 5 * 60 * 1e3;
+var moduleCache = /* @__PURE__ */ new Map();
+function buildModuleIndex(modules, index) {
+  for (const mod of modules) {
+    if (mod.pid)
+      index.set(mod.pid.toUpperCase(), mod.id);
+    const children = mod.sub_modules ?? mod.children ?? [];
+    if (children.length > 0)
+      buildModuleIndex(children, index);
+  }
+}
+async function resolveModulePid(client, projectId, mdPid) {
+  const pid = mdPid.toUpperCase();
+  const cached = moduleCache.get(projectId);
+  const now = Date.now();
+  let index;
+  if (cached && now - cached.timestamp < MODULE_CACHE_TTL_MS) {
+    index = cached.index;
+  } else {
+    const modules = await client.get(
+      `/api/v3/projects/${projectId}/modules?expand=descendants`
+    );
+    index = /* @__PURE__ */ new Map();
+    buildModuleIndex(modules, index);
+    moduleCache.set(projectId, { index, timestamp: now });
+  }
+  return index.get(pid) ?? null;
+}
+async function resolveRequirementPid(client, projectId, rqPid) {
+  try {
+    const resp = await client.get(
+      `/api/v3/projects/${projectId}/requirements/${rqPid.toLowerCase()}/comments`
+    );
+    const items = resp.items ?? [];
+    for (const item of items) {
+      for (const link of item.links ?? []) {
+        if (link.rel === "requirement" || link.rel === "self") {
+          const match = link.href?.match(/\/requirements\/(\d+)/);
+          if (match)
+            return Number(match[1]);
         }
       }
     }
-    console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ fields })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("JIRA API Error Response:", errorText);
-      throw new Error(`Failed to create JIRA issue: ${response.status} ${response.statusText} - ${errorText}`);
+    for (const link of resp.links ?? []) {
+      const match = link.href?.match(/\/requirements\/(\d+)/);
+      if (match)
+        return Number(match[1]);
     }
-    return await response.json();
+    return null;
+  } catch {
+    return null;
   }
-  async getJiraProjects() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/project`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get JIRA projects: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  async getJiraIssueTypes() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issuetype`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get JIRA issue types: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  async getJiraBoards(projectKey, boardType, name, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams({
-      startAt: startAt.toString(),
-      maxResults: maxResults.toString()
-    });
-    if (projectKey)
-      params.append("projectKeyOrId", projectKey);
-    if (boardType)
-      params.append("type", boardType);
-    if (name)
-      params.append("name", name);
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/board?${params}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get JIRA boards: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  async getJiraSprints(boardId, state, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams({
-      startAt: startAt.toString(),
-      maxResults: maxResults.toString()
-    });
-    if (state)
-      params.append("state", state);
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get JIRA sprints: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  async getJiraAttachments(ticketId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=attachment`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to get attachments: ${response.status} ${response.statusText}`);
-    }
-    const result = await response.json();
-    return result.fields?.attachment || [];
-  }
-  async downloadAttachment(url) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to download attachment: ${response.status} ${response.statusText}`);
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer);
-  }
-  async getJiraSprintIssues(sprintId, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams({
-      startAt: startAt.toString(),
-      maxResults: maxResults.toString(),
-      fields: "summary,status,assignee,priority,issuetype,project,created,updated"
-    });
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get JIRA sprint issues: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  // ==========================================
-  // XRay REST API Methods
-  // ==========================================
-  /**
-   * Get all test steps for a Test issue
-   * GET /rest/raven/2.0/api/test/{testKey}/step
-   */
-  async getXrayTestSteps(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test steps for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get a specific test step by ID
-   * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
-   */
-  async getXrayTestStep(testKey, stepId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test step ${stepId} for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get tests associated with a Test Execution
-   * GET /rest/raven/2.0/api/testexec/{testExecKey}/test
-   */
-  async getXrayTestExecTests(testExecKey, detailed = false, page, limit) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams();
-    if (detailed)
-      params.append("detailed", "true");
-    if (page !== void 0)
-      params.append("page", page.toString());
-    if (limit !== void 0)
-      params.append("limit", limit.toString());
-    const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test execution tests for ${testExecKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get pre-conditions for a Test
-   * GET /rest/raven/2.0/api/test/{testKey}/precondition
-   */
-  async getXrayTestPreConditions(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/precondition`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay pre-conditions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get test sets for a Test
-   * GET /rest/raven/2.0/api/test/{testKey}/testset
-   */
-  async getXrayTestSets(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testset`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test sets for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get test executions for a Test
-   * GET /rest/raven/2.0/api/test/{testKey}/testexecution
-   */
-  async getXrayTestExecutions(testKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams();
-    if (page !== void 0)
-      params.append("page", page.toString());
-    if (limit !== void 0)
-      params.append("limit", limit.toString());
-    const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test executions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get test plans for a Test
-   * GET /rest/raven/2.0/api/test/{testKey}/testplan
-   */
-  async getXrayTestPlans(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testplan`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test plans for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get tests in a Test Plan
-   * GET /rest/raven/2.0/api/testplan/{testPlanKey}/test
-   */
-  async getXrayTestPlanTests(testPlanKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams();
-    if (page !== void 0)
-      params.append("page", page.toString());
-    if (limit !== void 0)
-      params.append("limit", limit.toString());
-    const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test plan tests for ${testPlanKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get tests in a Test Set
-   * GET /rest/raven/2.0/api/testset/{testSetKey}/test
-   */
-  async getXrayTestSetTests(testSetKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams();
-    if (page !== void 0)
-      params.append("page", page.toString());
-    if (limit !== void 0)
-      params.append("limit", limit.toString());
-    const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test set tests for ${testSetKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Export test runs (execution results)
-   * GET /rest/raven/2.0/api/testruns
-   */
-  async getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit) {
-    const pat = await this.auth.getJiraPat();
-    const params = new URLSearchParams();
-    if (testExecKey)
-      params.append("testExecKey", testExecKey);
-    if (testKey)
-      params.append("testKey", testKey);
-    if (testPlanKey)
-      params.append("testPlanKey", testPlanKey);
-    if (testEnvironments)
-      params.append("testEnvironments", testEnvironments);
-    if (page !== void 0)
-      params.append("page", page.toString());
-    if (limit !== void 0)
-      params.append("limit", limit.toString());
-    const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test runs: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get all available test statuses in XRay
-   * GET /rest/raven/2.0/api/settings/teststatuses
-   */
-  async getXrayTestStatuses() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/settings/teststatuses`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay test statuses: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-  /**
-   * Get a full Test Case with all XRay details (steps, pre-conditions, test sets, executions, plans)
-   * Combines multiple XRay API calls into one comprehensive response
-   */
-  async getXrayTestCaseFull(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const issueResponse = await fetch(`https://myjira.disney.com/rest/api/2/issue/${testKey}`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!issueResponse.ok) {
-      throw new Error(`Failed to fetch issue ${testKey}: ${issueResponse.status} ${issueResponse.statusText}`);
-    }
-    const issue = await issueResponse.json();
-    const [steps, preConditions, testSets, testExecutions, testPlans] = await Promise.allSettled([
-      this.getXrayTestSteps(testKey),
-      this.getXrayTestPreConditions(testKey),
-      this.getXrayTestSets(testKey),
-      this.getXrayTestExecutions(testKey),
-      this.getXrayTestPlans(testKey)
-    ]);
-    return {
-      issue,
-      xray: {
-        steps: steps.status === "fulfilled" ? steps.value : { error: steps.reason?.message },
-        preConditions: preConditions.status === "fulfilled" ? preConditions.value : { error: preConditions.reason?.message },
-        testSets: testSets.status === "fulfilled" ? testSets.value : { error: testSets.reason?.message },
-        testExecutions: testExecutions.status === "fulfilled" ? testExecutions.value : { error: testExecutions.reason?.message },
-        testPlans: testPlans.status === "fulfilled" ? testPlans.value : { error: testPlans.reason?.message }
-      }
-    };
-  }
-  /**
-   * Get pre-condition tests (tests associated with a pre-condition issue)
-   * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
-   */
-  async getXrayPreConditionTests(preConditionKey) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      }
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to get XRay pre-condition tests for ${preConditionKey}: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    return await response.json();
-  }
-};
-
-// build/utils/formatting.js
-function formatDate(dateString) {
-  if (!dateString)
-    return "Unknown";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
-}
-function buildFormattedSummary(ticket, requestedFields) {
-  const summary = [`**${ticket.key}: ${ticket.fields.summary}**`, ""];
-  if (requestedFields.includes("status") && ticket.fields.status) {
-    summary.push(`**Status:** ${ticket.fields.status.name}`);
-  }
-  if (requestedFields.includes("assignee")) {
-    summary.push(`**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`);
-  }
-  if (requestedFields.includes("priority") && ticket.fields.priority) {
-    summary.push(`**Priority:** ${ticket.fields.priority.name}`);
-  }
-  if (requestedFields.includes("created")) {
-    summary.push(`**Created:** ${formatDate(ticket.fields.created)}`);
-  }
-  if (requestedFields.includes("updated")) {
-    summary.push(`**Updated:** ${formatDate(ticket.fields.updated)}`);
-  }
-  if (requestedFields.includes("labels") && ticket.fields.labels?.length) {
-    summary.push(`**Labels:** ${ticket.fields.labels.join(", ")}`);
-  }
-  if (requestedFields.includes("components") && ticket.fields.components?.length) {
-    const componentNames = ticket.fields.components.map((c) => c.name).join(", ");
-    summary.push(`**Components:** ${componentNames}`);
-  }
-  if (requestedFields.includes("description") && ticket.fields.description) {
-    summary.push("", "**Description:**", ticket.fields.description);
-  }
-  if (requestedFields.includes("comment") && ticket.fields.comment?.comments?.length) {
-    summary.push("", `**Comments (${ticket.fields.comment.comments.length}):**`);
-    ticket.fields.comment.comments.forEach((comment, index) => {
-      summary.push("", `**Comment ${index + 1}** by ${comment.author?.displayName || "Unknown"} on ${formatDate(comment.created)}:`, comment.body || "(no content)");
-    });
-  }
-  return summary.join("\n");
 }
 
-// build/utils/fileUtils.js
+// src/utils/fileUtils.ts
 var import_promises = require("fs/promises");
-var import_path2 = require("path");
-async function saveData(outputDir, filename, data, isGetOperation = true) {
+var import_path = require("path");
+async function saveData(outputDir, toolName, identifier, rawData, formattedSummary) {
   if (outputDir === false || outputDir === null)
     return null;
-  const finalOutputDir = typeof outputDir === "string" ? outputDir : "/tmp/jira-mcp";
-  if (!finalOutputDir)
-    return null;
-  await (0, import_promises.mkdir)(finalOutputDir, { recursive: true });
-  const filepath = (0, import_path2.join)(finalOutputDir, filename);
+  const finalDir = typeof outputDir === "string" ? outputDir : "/tmp/qtest-mcp";
+  await (0, import_promises.mkdir)(finalDir, { recursive: true });
+  const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
+  const filename = `${toolName}-${identifier}-${timestamp}.json`;
+  const data = {
+    fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    rawData,
+    formattedSummary
+  };
+  const filepath = (0, import_path.join)(finalDir, filename);
   await (0, import_promises.writeFile)(filepath, JSON.stringify(data, null, 2));
   return filepath;
 }
-async function saveTicketData(outputDir, ticketId, ticket, summary, isGetOperation = true) {
-  if (!shouldSaveOutput(outputDir, isGetOperation))
-    return null;
-  const finalOutputDir = typeof outputDir === "string" ? outputDir : "/tmp/jira-mcp";
-  const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
-  const filename = `${ticketId}_${timestamp}.json`;
-  const data = {
-    ticketId,
-    fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-    rawData: ticket,
-    formattedSummary: summary
-  };
-  return saveData(finalOutputDir, filename, data, isGetOperation);
-}
-function shouldSaveOutput(outputDir, isGetOperation) {
-  if (outputDir === false || outputDir === null)
-    return false;
-  return true;
-}
 
-// build/tools/jiraGetIssue.js
-init_customFields();
-var jiraGetIssueSchema = {
-  name: "jira_get_issue",
-  description: "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., ROS-1815)"
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the ticket data (optional, defaults to .amazonq/external-data)"
-      },
-      fields: {
-        type: "array",
-        items: {
-          type: "string",
-          enum: [
-            "summary",
-            "status",
-            "assignee",
-            "priority",
-            "created",
-            "updated",
-            "description",
-            "labels",
-            "components",
-            "customfield_10003"
-          ]
-        },
-        description: "Optional: Fields to include in response (default: all current fields)"
-      },
-      customFields: {
-        type: "array",
-        items: { type: "string" },
-        description: `Optional: Array of custom field IDs to fetch (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
-      }
-    },
-    required: ["ticketId"]
-  }
-};
-async function handleJiraGetIssue(args) {
-  try {
-    const { ticketId, outputDir, fields, customFields } = args;
-    const defaultFields = [
-      "summary",
-      "status",
-      "assignee",
-      "priority",
-      "created",
-      "description"
-    ];
-    const requestedFields = fields || defaultFields;
-    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
-    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
-    const apiClient = new JiraApiClient();
-    const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
-    const summary = buildFormattedSummary(ticket, requestedFields);
-    let customFieldSection = "";
-    if (resolvedCustomFields.length > 0) {
-      const lines = ["", "**Custom Fields:**"];
-      for (const fieldId of resolvedCustomFields) {
-        const label = getCustomFieldLabel(fieldId);
-        const rawValue = ticket.fields[fieldId];
-        const display = formatCustomFieldValue(rawValue);
-        lines.push(`**${label}:** ${display}`);
-      }
-      customFieldSection = lines.join("\n");
-    }
-    const fullSummary = `${summary}${customFieldSection}`;
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, fullSummary, true);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${fullSummary}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA ticket: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraUpdateIssue.js
-init_customFields();
-var jiraUpdateIssueSchema = {
-  name: "jira_update_issue",
-  description: "Update a JIRA ticket with support for custom fields and save the updated data",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the updated ticket data (optional)"
-      },
-      summary: {
-        type: "string",
-        description: "New ticket summary"
-      },
-      description: {
-        type: "string",
-        description: "New ticket description"
-      },
-      assignee: {
-        type: "string",
-        description: "Username of the new assignee"
-      },
-      epicLink: {
-        type: "string",
-        description: 'Epic ticket ID to link to (e.g., "SEWEB-46018") - will try common field IDs'
-      },
-      components: {
-        type: "array",
-        items: { type: "string" },
-        description: 'Array of component names (e.g., ["Client Platforms & Misc"])'
-      },
-      labels: {
-        type: "array",
-        items: { type: "string" },
-        description: 'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"])'
-      },
-      priority: {
-        type: "string",
-        description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
-      },
-      customFields: {
-        type: "object",
-        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
-      }
-    },
-    required: ["ticketId"]
-  }
-};
-async function handleJiraUpdateIssue(args) {
-  try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
-    const apiClient = new JiraApiClient();
-    const updates = {};
-    if (summary)
-      updates.summary = summary;
-    if (description)
-      updates.description = description;
-    if (assignee)
-      updates.assignee = { name: assignee };
-    if (components && components.length > 0) {
-      updates.components = components.map((name) => ({
-        name
-      }));
-    }
-    if (labels && labels.length > 0) {
-      updates.labels = labels;
-    }
-    if (priority) {
-      updates.priority = { name: priority };
-    }
-    if (customFields) {
-      for (const [key, value] of Object.entries(customFields)) {
-        const resolved = resolveCustomFieldIds([key]);
-        if (resolved.length > 0) {
-          updates[resolved[0]] = value;
-        }
-      }
-    }
-    if (epicLink) {
-      const epicFieldIds = [
-        "customfield_10014",
-        "customfield_10008",
-        "customfield_10006",
-        "customfield_10002"
-      ];
-      for (const fieldId of epicFieldIds) {
-        try {
-          const testUpdates = {
-            ...updates,
-            [fieldId]: epicLink
-          };
-          console.error(`Trying Epic Link field ID: ${fieldId}`);
-          await apiClient.updateJiraTicket(ticketId, testUpdates);
-          console.error(`Success! Epic Link field ID is: ${fieldId}`);
-          break;
-        } catch (error) {
-          console.error(`Failed with ${fieldId}: ${error instanceof Error ? error.message : "Unknown error"}`);
-          if (fieldId === epicFieldIds[epicFieldIds.length - 1]) {
-            console.error("All Epic Link field IDs failed, proceeding without Epic Link");
-            await apiClient.updateJiraTicket(ticketId, updates);
-          }
-        }
-      }
-    } else {
-      await apiClient.updateJiraTicket(ticketId, updates);
-    }
-    const ticket = await apiClient.fetchJiraTicket(ticketId);
-    const summaryText = `**${ticket.key}: ${ticket.fields.summary}**
-
-**Status:** ${ticket.fields.status?.name || "Unknown"}
-**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
-**Priority:** ${ticket.fields.priority?.name || "Unknown"}
-
-**Description:**
-${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `**Ticket Updated Successfully**
-
-${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error updating JIRA ticket: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraTransitionIssue.js
-var jiraTransitionIssueSchema = {
-  name: "jira_transition_issue",
-  description: "Transition a JIRA ticket to a new status",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
-      },
-      status: {
-        type: "string",
-        description: 'Target status name (e.g., "In Progress", "Done")'
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the updated ticket data (optional)"
-      }
-    },
-    required: ["ticketId", "status"]
-  }
-};
-async function handleJiraTransitionIssue(args) {
-  try {
-    const { ticketId, status, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const transitions = await apiClient.getJiraTransitions(ticketId);
-    const targetTransition = transitions.transitions.find((t) => t.name.toLowerCase() === status.toLowerCase());
-    if (!targetTransition) {
-      const availableStatuses = transitions.transitions.map((t) => t.name).join(", ");
-      throw new Error(`Status "${status}" not available. Available transitions: ${availableStatuses}`);
-    }
-    await apiClient.transitionJiraTicket(ticketId, targetTransition.id);
-    const ticket = await apiClient.fetchJiraTicket(ticketId);
-    const summaryText = `**${ticket.key}: ${ticket.fields.summary}**
-
-**Status:** ${ticket.fields.status?.name || "Unknown"}
-**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
-**Priority:** ${ticket.fields.priority?.name || "Unknown"}
-
-**Description:**
-${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `**Ticket Transitioned Successfully**
-
-${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error transitioning JIRA ticket: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraAssignIssue.js
-var jiraAssignIssueSchema = {
-  name: "jira_assign_issue",
-  description: "Assign a JIRA ticket to a user",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
-      },
-      assignee: {
-        type: "string",
-        description: "Email or username of the assignee"
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the updated ticket data (optional)"
-      }
-    },
-    required: ["ticketId", "assignee"]
-  }
-};
-async function handleJiraAssignIssue(args) {
-  try {
-    const { ticketId, assignee, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const updates = { assignee: { name: assignee } };
-    await apiClient.updateJiraTicket(ticketId, updates);
-    const ticket = await apiClient.fetchJiraTicket(ticketId);
-    const summaryText = `**${ticket.key}: ${ticket.fields.summary}**
-
-**Status:** ${ticket.fields.status?.name || "Unknown"}
-**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
-**Priority:** ${ticket.fields.priority?.name || "Unknown"}
-
-**Description:**
-${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `**Ticket Assigned Successfully**
-
-${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error assigning JIRA ticket: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraCommentOnIssue.js
-var import_promises2 = require("fs/promises");
-var import_path3 = require("path");
-var jiraCommentOnIssueSchema = {
-  name: "jira_comment_on_issue",
-  description: "Add a comment to a JIRA ticket",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
-      },
-      comment: {
-        type: "string",
-        description: "The comment text to add"
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the comment response data (optional)"
-      }
-    },
-    required: ["ticketId", "comment"]
-  }
-};
-async function handleJiraCommentOnIssue(args) {
-  try {
-    const { ticketId, comment, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const commentResponse = await apiClient.addJiraComment(ticketId, comment);
-    const ticket = await apiClient.fetchJiraTicket(ticketId);
-    const summaryText = `**Comment Added to ${ticket.key}: ${ticket.fields.summary}**
-
-**Comment:** ${comment}
-
-**Current Status:** ${ticket.fields.status?.name || "Unknown"}
-**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`;
-    let savedPath = null;
-    if (outputDir) {
-      const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
-      const filepath = (0, import_path3.join)(outputDir, `${ticketId}_comment_${timestamp}.json`);
-      await (0, import_promises2.mkdir)((0, import_path3.dirname)(filepath), { recursive: true });
-      const data = {
-        ticketId,
-        comment,
-        commentResponse,
-        ticket,
-        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-        formattedSummary: summaryText
-      };
-      await (0, import_promises2.writeFile)(filepath, JSON.stringify(data, null, 2));
-      savedPath = filepath;
-    }
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `**Comment Added Successfully**
-
-${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error adding comment to JIRA ticket: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraSearchIssues.js
-init_customFields();
-var jiraSearchIssuesSchema = {
-  name: "jira_search_issues",
-  description: "Search JIRA issues using JQL (JIRA Query Language) with support for custom fields",
-  inputSchema: {
-    type: "object",
-    properties: {
-      jql: {
-        type: "string",
-        description: 'JQL query string (e.g., "project = COREWEB AND status = Open")'
-      },
-      maxResults: {
-        type: "number",
-        description: "Maximum number of results to return (default: 50)"
-      },
-      startAt: {
-        type: "number",
-        description: "Starting index for pagination (default: 0)"
-      },
-      customFields: {
-        type: "array",
-        items: { type: "string" },
-        description: `Optional: Array of custom field IDs to include in results (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the search results (optional, defaults to .amazonq/external-data)"
-      }
-    },
-    required: ["jql"]
-  }
-};
-async function handleJiraSearchIssues(args) {
-  try {
-    const { jql, maxResults = 50, startAt = 0, customFields, outputDir } = args;
-    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
-    const apiClient = new JiraApiClient();
-    const searchResults = await apiClient.searchJiraIssues(jql, maxResults, startAt, resolvedCustomFields);
-    let summaryText = `**Search Results for JQL: "${jql}"**
-
-**Total Found:** ${searchResults.total}
-**Showing:** ${searchResults.issues.length} issues (starting at ${startAt})
-
-`;
-    searchResults.issues.forEach((issue, index) => {
-      summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
-- Status: ${issue.fields.status?.name || "Unknown"}
-- Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
-- Priority: ${issue.fields.priority?.name || "Unknown"}
-- Type: ${issue.fields.issuetype?.name || "Unknown"}
-- Project: ${issue.fields.project?.key || "Unknown"}`;
-      for (const fieldId of resolvedCustomFields) {
-        const label = getCustomFieldLabel(fieldId);
-        const display = formatCustomFieldValue(issue.fields[fieldId]);
-        summaryText += `
-- ${label}: ${display}`;
-      }
-      summaryText += "\n\n";
-    });
-    const savedPath = await saveData(outputDir, `search_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      jql,
-      maxResults,
-      startAt,
-      searchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: searchResults,
-      formattedSummary: summaryText
-    }, true);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error searching JIRA issues: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraCreateIssue.js
-var import_promises3 = require("fs/promises");
-var import_path4 = require("path");
-var jiraCreateIssueSchema = {
-  name: "jira_create_issue",
-  description: "Create a new JIRA issue with support for custom fields",
-  inputSchema: {
-    type: "object",
-    properties: {
-      projectKey: {
-        type: "string",
-        description: 'Project key (e.g., "COREWEB")'
-      },
-      summary: {
-        type: "string",
-        description: "Issue summary/title"
-      },
-      issueType: {
-        type: "string",
-        description: 'Issue type (e.g., "Bug", "Story", "Task")'
-      },
-      description: {
-        type: "string",
-        description: "Issue description (optional)"
-      },
-      assignee: {
-        type: "string",
-        description: "Username of assignee (optional)"
-      },
-      epicLink: {
-        type: "string",
-        description: 'Epic ticket ID to link to (e.g., "SEWEB-46018") - NOTE: Epic Link field ID needs configuration per JIRA instance (optional)'
-      },
-      components: {
-        type: "array",
-        items: { type: "string" },
-        description: 'Array of component names (e.g., ["Client Platforms & Misc"]) (optional)'
-      },
-      labels: {
-        type: "array",
-        items: { type: "string" },
-        description: 'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"]) (optional)'
-      },
-      sprint: {
-        type: "string",
-        description: "Sprint ID to assign the issue to (optional)"
-      },
-      customFields: {
-        type: "object",
-        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the created issue data (optional)"
-      }
-    },
-    required: ["projectKey", "summary", "issueType"]
-  }
-};
-async function handleJiraCreateIssue(args) {
-  try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields);
-    const ticket = await apiClient.fetchJiraTicket(createResponse.key);
-    let summaryText = `**Issue Created Successfully: ${ticket.key}**
-
-**${ticket.key}: ${ticket.fields.summary}**
-
-**Status:** ${ticket.fields.status?.name || "Unknown"}
-**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
-**Priority:** ${ticket.fields.priority?.name || "Unknown"}
-**Type:** ${issueType}
-**Project:** ${projectKey}`;
-    if (epicLink) {
-      summaryText += `
-**Epic Link:** ${epicLink} (WARNING: Not set - field ID needs configuration)`;
-    }
-    if (components && components.length > 0) {
-      summaryText += `
-**Components:** ${components.join(", ")}`;
-    }
-    if (labels && labels.length > 0) {
-      summaryText += `
-**Labels:** ${labels.join(", ")}`;
-    }
-    summaryText += `
-
-**Description:**
-${ticket.fields.description || "No description provided"}`;
-    let savedPath = null;
-    if (outputDir) {
-      await (0, import_promises3.mkdir)(outputDir, { recursive: true });
-      const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
-      const filename = `${createResponse.key}_created_${timestamp}.json`;
-      const filepath = (0, import_path4.join)(outputDir, filename);
-      const data = {
-        createdIssue: createResponse,
-        fullTicketData: ticket,
-        customFields: { epicLink, components, labels },
-        warnings: epicLink ? [
-          "Epic Link field ID not configured for this JIRA instance"
-        ] : [],
-        createdAt: (/* @__PURE__ */ new Date()).toISOString(),
-        formattedSummary: summaryText
-      };
-      await (0, import_promises3.writeFile)(filepath, JSON.stringify(data, null, 2));
-      savedPath = filepath;
-    }
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}
-
-**Issue URL:** https://myjira.disney.com/browse/${createResponse.key}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error creating JIRA issue: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraGetProjects.js
-var jiraGetProjectsSchema = {
-  name: "jira_get_projects",
-  description: "Get all JIRA projects",
-  inputSchema: {
-    type: "object",
-    properties: {
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the projects data (optional, defaults to .amazonq/external-data)"
-      }
-    },
-    required: []
-  }
-};
-async function handleJiraGetProjects(args) {
-  try {
-    const { outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const projects = await apiClient.getJiraProjects();
-    let summaryText = `**JIRA Projects**
+// src/utils/formatting.ts
+function formatProjects(projects) {
+  let output = `**qTest Projects**
 
 **Total Projects:** ${projects.length}
 
 `;
-    projects.forEach((project, index) => {
-      summaryText += `**${index + 1}. ${project.key}: ${project.name}**
-- Lead: ${project.lead?.displayName || "Unknown"}
-- Type: ${project.projectTypeKey || "Unknown"}
-- Category: ${project.projectCategory?.name || "None"}
+  projects.forEach((project, i) => {
+    output += `**${i + 1}. [${project.id}] ${project.name}**
+- Description: ${project.description}
 
 `;
+  });
+  return output;
+}
+function formatTestCase(tc) {
+  let output = `**Test Case: [${tc.pid}] ${tc.name}**
+- ID: ${tc.id}
+- Description: ${tc.description}
+- Precondition: ${tc.precondition}
+`;
+  if (tc.test_steps && tc.test_steps.length > 0) {
+    output += `**Test Steps:**
+`;
+    tc.test_steps.forEach((step) => {
+      output += `  ${step.order}. ${step.description} \u2192 Expected: ${step.expected}
+`;
     });
-    const savedPath = await saveData(outputDir, `projects_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: projects,
-      formattedSummary: summaryText
-    }, true);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA projects: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
   }
+  return output;
+}
+function formatTestRun(tr) {
+  return `**Test Run: ${tr.name}**
+- ID: ${tr.id}
+- Status: ${tr.status}
+- Assigned To: ${tr.assigned_to}
+- Test Case: [${tr.test_case.id}] ${tr.test_case.name}
+`;
+}
+function formatTestCycles(cycles) {
+  let output = `**Test Cycles** (${cycles.length})
+
+`;
+  cycles.forEach((cycle) => {
+    output += `**[${cycle.pid}] ${cycle.name}**
+- ID: ${cycle.id}
+- Description: ${cycle.description}
+
+`;
+  });
+  return output;
+}
+function formatTestSuites(suites) {
+  let output = `**Test Suites** (${suites.length})
+
+`;
+  suites.forEach((suite) => {
+    output += `**${suite.name}**
+- ID: ${suite.id}
+- Description: ${suite.description}
+- Test Cycle ID: ${suite.test_cycle_id}
+
+`;
+  });
+  return output;
+}
+function formatRequirements(reqs) {
+  let output = `**Requirements** (${reqs.length})
+
+`;
+  reqs.forEach((req) => {
+    output += `**[${req.pid}] ${req.name}**
+- ID: ${req.id}
+- Description: ${req.description}
+`;
+    if (req.linked_test_cases && req.linked_test_cases.length > 0) {
+      const linked = req.linked_test_cases.map((tc) => tc.pid ? `[${tc.pid}] ${tc.name}` : `${tc.id}: ${tc.name}`).join(", ");
+      output += `- Linked Test Cases (${req.linked_test_cases.length}): ${linked}
+`;
+    }
+    output += `
+`;
+  });
+  return output;
+}
+function formatDefects(defects) {
+  let output = `**Defects** (${defects.length})
+
+`;
+  defects.forEach((defect) => {
+    output += `**${defect.summary}**
+- ID: ${defect.id}
+- Status: ${defect.status}
+- Description: ${defect.description}
+- Linked Test Run: ${defect.linked_test_run_id}
+
+`;
+  });
+  return output;
 }
 
-// build/tools/jiraGetIssueTypes.js
-var jiraGetIssueTypesSchema = {
-  name: "jira_get_issue_types",
-  description: "Get all JIRA issue types",
+// src/tools/qtestGetProjects.ts
+var qtestGetProjectsSchema = {
+  name: "qtest_get_projects",
+  description: "List all qTest projects",
   inputSchema: {
     type: "object",
     properties: {
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save the issue types data (optional, defaults to .amazonq/external-data)"
+        description: "Directory to save the projects data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
     required: []
   }
 };
-async function handleJiraGetIssueTypes(args) {
-  try {
+async function handleQtestGetProjects(args) {
+  return withErrorHandling(async () => {
     const { outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const issueTypes = await apiClient.getJiraIssueTypes();
-    let summaryText = `**JIRA Issue Types**
-
-**Total Issue Types:** ${issueTypes.length}
-
-`;
-    issueTypes.forEach((issueType, index) => {
-      summaryText += `**${index + 1}. ${issueType.name}**
-- ID: ${issueType.id}
-- Description: ${issueType.description || "No description"}
-- Subtask: ${issueType.subtask ? "Yes" : "No"}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `issue_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: issueTypes,
-      formattedSummary: summaryText
-    }, true);
+    const client = new QtestApiClient();
+    const projects = await client.get("/api/v3/projects");
+    const summary = formatProjects(projects);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_projects",
+      "all",
+      projects,
+      summary
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA issue types: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/jiraGetTransitions.js
-var jiraGetTransitionsSchema = {
-  name: "jira_get_transitions",
-  description: "Get available transitions for a JIRA issue",
+var qtestGetProjectSchema = {
+  name: "qtest_get_project",
+  description: "Get a qTest project by ID",
   inputSchema: {
     type: "object",
     properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save the transitions data (optional, defaults to .amazonq/external-data)"
+        description: "Directory to save the project data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["ticketId"]
+    required: []
   }
 };
-async function handleJiraGetTransitions(args) {
-  try {
-    const { ticketId, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const transitions = await apiClient.getJiraTransitions(ticketId);
-    let summaryText = `**Available Transitions for ${ticketId}**
-
-**Total Transitions:** ${transitions.transitions.length}
-
-`;
-    transitions.transitions.forEach((transition, index) => {
-      summaryText += `**${index + 1}. ${transition.name}**
-- ID: ${transition.id}
-- To Status: ${transition.to?.name || "Unknown"}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `${ticketId}_transitions_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      ticketId,
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: transitions,
-      formattedSummary: summaryText
-    }, true);
+async function handleQtestGetProject(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const project = await client.get(`/api/v3/projects/${projectId}`);
+    const summary = formatProjects([project]);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_project",
+      String(projectId),
+      project,
+      summary
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA transitions: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
 
-// build/tools/jiraGetBoards.js
-var jiraGetBoardsSchema = {
-  name: "jira_get_boards",
-  description: "Get JIRA agile boards",
+// src/tools/qtestTestCases.ts
+var qtestGetTestCaseSchema = {
+  name: "qtest_get_test_case",
+  description: "Retrieve test case details from qTest. Accepts TC-#### format (e.g. TC-1234) or numeric ID.",
   inputSchema: {
     type: "object",
     properties: {
-      projectKey: {
-        type: "string",
-        description: "Filter by project key (optional)"
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
-      boardType: {
-        type: "string",
-        description: 'Filter by board type: "scrum" or "kanban" (optional)'
+      testCaseId: {
+        type: ["string", "number"],
+        description: "The test case identifier \u2014 TC-#### format (e.g. 'TC-1234') or numeric ID"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the test case data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["testCaseId"]
+  }
+};
+async function handleQtestGetTestCase(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCaseId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const tcIdStr = String(testCaseId);
+    const isPid = /^TC-\d+$/i.test(tcIdStr);
+    const lookupPath = isPid ? `/api/v3/projects/${projectId}/test-cases/${tcIdStr}` : `/api/v3/projects/${projectId}/test-cases/${testCaseId}`;
+    const testCase = await client.get(lookupPath);
+    const numericId = testCase.id;
+    const versionId = testCase.test_case_version_id ?? testCase.version;
+    if (versionId) {
+      try {
+        const steps = await client.get(
+          `/api/v3/projects/${projectId}/test-cases/${numericId}/versions/${versionId}/test-steps?expand=&showParamIdentifier=false`
+        );
+        if (steps && steps.length > 0) {
+          testCase.test_steps = steps;
+        }
+      } catch {
+      }
+    }
+    const summary = formatTestCase(testCase);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_test_case",
+      String(testCaseId),
+      testCase,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestCreateTestCaseSchema = {
+  name: "qtest_create_test_case",
+  description: "Create a new test case in qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
       name: {
         type: "string",
-        description: "Filter by board name (optional)"
+        description: "The test case name"
       },
-      maxResults: {
-        type: "number",
-        description: "Maximum number of results (default: 50)"
+      description: {
+        type: "string",
+        description: "The test case description (optional)"
       },
-      startAt: {
-        type: "number",
-        description: "Starting index for pagination (default: 0)"
+      precondition: {
+        type: "string",
+        description: "The test case precondition (optional)"
+      },
+      testSteps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            description: { type: "string" },
+            expected: { type: "string" }
+          },
+          required: ["description", "expected"]
+        },
+        description: "Array of test steps with description and expected result (optional)"
+      },
+      parentId: {
+        type: ["string", "number"],
+        description: 'Parent module for the test case \u2014 accepts MD-#### PID format (e.g., "MD-42") or a numeric ID (optional)'
       },
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save the boards data (optional, defaults to .amazonq/external-data)"
+        description: "Directory to save the test case data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["name"]
+  }
+};
+async function handleQtestCreateTestCase(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, name, description, precondition, testSteps, parentId: rawParentId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    let numericParentId;
+    if (rawParentId !== void 0 && rawParentId !== null) {
+      const parentIdStr = String(rawParentId);
+      const isMdPid = /^MD-\d+$/i.test(parentIdStr);
+      if (isMdPid) {
+        const resolved = await resolveModulePid(client, projectId, parentIdStr);
+        if (!resolved) {
+          return {
+            content: [{ type: "text", text: `Module "${parentIdStr}" not found in project ${projectId}.` }],
+            isError: true
+          };
+        }
+        numericParentId = resolved;
+      } else {
+        numericParentId = Number(rawParentId);
+        if (isNaN(numericParentId)) {
+          return {
+            content: [{ type: "text", text: `Invalid parentId: "${rawParentId}". Use MD-#### format (e.g., "MD-42") or a numeric ID.` }],
+            isError: true
+          };
+        }
+      }
+    }
+    const body = {
+      name,
+      description,
+      precondition,
+      test_steps: testSteps?.map((s, i) => ({ ...s, order: i + 1 })),
+      parent_id: numericParentId
+    };
+    const created = await client.post(
+      `/api/v3/projects/${projectId}/test-cases`,
+      body
+    );
+    const summary = `**Test Case Created**
+- ID: ${created.id}
+- PID: ${created.pid ?? "N/A"}
+- Name: ${created.name}
+- URL: ${created.web_url ?? "N/A"}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_create_test_case",
+      String(created.id),
+      created,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestUpdateTestCaseSchema = {
+  name: "qtest_update_test_case",
+  description: "Update test case fields in qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testCaseId: {
+        type: "number",
+        description: "The qTest test case ID to update"
+      },
+      name: {
+        type: "string",
+        description: "Updated test case name (optional)"
+      },
+      description: {
+        type: "string",
+        description: "Updated test case description (optional)"
+      },
+      precondition: {
+        type: "string",
+        description: "Updated test case precondition (optional)"
+      },
+      testSteps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            description: { type: "string" },
+            expected: { type: "string" }
+          },
+          required: ["description", "expected"]
+        },
+        description: "Updated array of test steps (optional)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the test case data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["testCaseId"]
+  }
+};
+async function handleQtestUpdateTestCase(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCaseId, name, description, precondition, testSteps, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {};
+    if (name !== void 0)
+      body.name = name;
+    if (description !== void 0)
+      body.description = description;
+    if (precondition !== void 0)
+      body.precondition = precondition;
+    if (testSteps !== void 0) {
+      body.test_steps = testSteps.map((s, i) => ({ ...s, order: i + 1 }));
+    }
+    const client = new QtestApiClient();
+    const updated = await client.put(
+      `/api/v3/projects/${projectId}/test-cases/${testCaseId}`,
+      body
+    );
+    const summary = `**Test Case Updated**
+- ID: ${updated.id}
+- Name: ${updated.name}
+- URL: ${updated.web_url ?? "N/A"}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_update_test_case",
+      String(testCaseId),
+      updated,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestSearchTestCasesSchema = {
+  name: "qtest_search_test_cases",
+  description: "Search test cases in a qTest project",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      query: {
+        type: "string",
+        description: "Search query string"
+      },
+      page: {
+        type: "number",
+        description: "Page number (optional, defaults to 1)"
+      },
+      pageSize: {
+        type: "number",
+        description: "Number of results per page (optional, defaults to 25)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the search results (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["query"]
+  }
+};
+async function handleQtestSearchTestCases(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, query, page = 1, pageSize = 25, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {
+      object_type: "test-cases",
+      query,
+      page,
+      page_size: pageSize
+    };
+    const client = new QtestApiClient();
+    const results = await client.post(
+      `/api/v3/projects/${projectId}/search`,
+      body
+    );
+    const items = results.items ?? results ?? [];
+    const total = results.total ?? items.length;
+    let summary = `**Test Case Search Results**
+- Query: "${query}"
+- Page: ${page}
+- Page Size: ${pageSize}
+- Total: ${total}
+
+`;
+    items.forEach((tc, i) => {
+      summary += `${i + 1}. [${tc.pid ?? tc.id}] ${tc.name}
+`;
+    });
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_search_test_cases",
+      `search-p${page}`,
+      results,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+
+// src/tools/qtestTestRuns.ts
+var qtestGetTestRunSchema = {
+  name: "qtest_get_test_run",
+  description: "Retrieve test run details from qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testRunId: {
+        type: "number",
+        description: "The qTest test run ID"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the test run data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["testRunId"]
+  }
+};
+async function handleQtestGetTestRun(args) {
+  try {
+    const { projectId: rawProjectId, testRunId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const testRun = await client.get(
+      `/api/v3/projects/${projectId}/test-runs/${testRunId}`
+    );
+    const summary = formatTestRun(testRun);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_test_run",
+      String(testRunId),
+      testRun,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+var qtestCreateTestRunSchema = {
+  name: "qtest_create_test_run",
+  description: "Create a new test run in qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testCaseId: {
+        type: "number",
+        description: "The qTest test case ID to create a run for"
+      },
+      parentId: {
+        type: "number",
+        description: "Parent test cycle or test suite ID"
+      },
+      name: {
+        type: "string",
+        description: "The test run name (optional)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the test run data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["testCaseId", "parentId"]
+  }
+};
+async function handleQtestCreateTestRun(args) {
+  try {
+    const { projectId: rawProjectId, testCaseId, parentId, name, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {
+      name,
+      test_case: { id: testCaseId },
+      parent_id: parentId
+    };
+    const client = new QtestApiClient();
+    const created = await client.post(
+      `/api/v3/projects/${projectId}/test-runs`,
+      body
+    );
+    const summary = `**Test Run Created**
+- ID: ${created.id}
+- Name: ${created.name}
+- Test Case ID: ${testCaseId}
+- Parent ID: ${parentId}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_create_test_run",
+      String(created.id),
+      created,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+var qtestUpdateTestRunResultSchema = {
+  name: "qtest_update_test_run_result",
+  description: "Submit a test execution result for a test run in qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testRunId: {
+        type: "number",
+        description: "The qTest test run ID"
+      },
+      status: {
+        type: "string",
+        enum: ["passed", "failed", "blocked", "incomplete"],
+        description: "The test execution status"
+      },
+      note: {
+        type: "string",
+        description: "Execution commentary or notes (optional)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the result data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["testRunId", "status"]
+  }
+};
+async function handleQtestUpdateTestRunResult(args) {
+  try {
+    const { projectId: rawProjectId, testRunId, status, note, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {
+      status,
+      note,
+      exe_start_date: (/* @__PURE__ */ new Date()).toISOString(),
+      exe_end_date: (/* @__PURE__ */ new Date()).toISOString()
+    };
+    const client = new QtestApiClient();
+    const result = await client.post(
+      `/api/v3/projects/${projectId}/test-runs/${testRunId}/auto-test-logs`,
+      body
+    );
+    const summary = `**Test Run Result Submitted**
+- Test Run ID: ${testRunId}
+- Status: ${status}
+- Note: ${note ?? "N/A"}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_update_test_run_result",
+      String(testRunId),
+      result,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
+}
+
+// src/tools/qtestTestCycles.ts
+var qtestGetTestCyclesSchema = {
+  name: "qtest_get_test_cycles",
+  description: "List test cycles for a qTest project",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the test cycles data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
     required: []
   }
 };
-async function handleJiraGetBoards(args) {
-  try {
-    const { projectKey, boardType, name, maxResults = 50, startAt = 0, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const boards = await apiClient.getJiraBoards(projectKey, boardType, name, startAt, maxResults);
-    let summaryText = `**JIRA Agile Boards**`;
-    if (projectKey)
-      summaryText += ` (Project: ${projectKey})`;
-    if (boardType)
-      summaryText += ` (Type: ${boardType})`;
-    if (name)
-      summaryText += ` (Name filter: ${name})`;
-    summaryText += `
-
-**Total Found:** ${boards.total}
-**Showing:** ${boards.values.length} boards (starting at ${startAt})
-
-`;
-    boards.values.forEach((board, index) => {
-      summaryText += `**${startAt + index + 1}. ${board.name}**
-- ID: ${board.id}
-- Type: ${board.type}
-- Location: ${board.location?.displayName || "Unknown"}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `boards_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      filters: {
-        projectKey,
-        boardType,
-        name,
-        maxResults,
-        startAt
-      },
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: boards,
-      formattedSummary: summaryText
-    }, true);
+async function handleQtestGetTestCycles(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const cycles = await client.get(
+      `/api/v3/projects/${projectId}/test-cycles`
+    );
+    const summary = formatTestCycles(cycles);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_test_cycles",
+      String(projectId),
+      cycles,
+      summary
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA boards: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/jiraGetSprints.js
-var jiraGetSprintsSchema = {
-  name: "jira_get_sprints",
-  description: "Get sprints for a JIRA agile board",
+var qtestCreateTestCycleSchema = {
+  name: "qtest_create_test_cycle",
+  description: "Create a new test cycle in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      boardId: {
-        type: "string",
-        description: "Board ID to get sprints for"
-      },
-      state: {
-        type: "string",
-        description: 'Filter by sprint state: "active", "closed", "future" (optional)'
-      },
-      maxResults: {
+      projectId: {
         type: "number",
-        description: "Maximum number of results (default: 50)"
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
-      startAt: {
+      name: {
+        type: "string",
+        description: "The test cycle name"
+      },
+      description: {
+        type: "string",
+        description: "The test cycle description (optional)"
+      },
+      parentId: {
         type: "number",
-        description: "Starting index for pagination (default: 0)"
+        description: "Parent test cycle ID for nesting (optional)"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save the sprints data (optional, defaults to .amazonq/external-data)"
+        description: "Directory to save the test cycle data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["boardId"]
+    required: ["name"]
   }
 };
-async function handleJiraGetSprints(args) {
-  try {
-    const { boardId, state, maxResults = 50, startAt = 0, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const sprints = await apiClient.getJiraSprints(boardId, state, startAt, maxResults);
-    let summaryText = `**Sprints for Board ${boardId}**`;
-    if (state)
-      summaryText += ` (State: ${state})`;
-    summaryText += `
-
-**Total Found:** ${sprints.total}
-**Showing:** ${sprints.values.length} sprints (starting at ${startAt})
-
-`;
-    sprints.values.forEach((sprint, index) => {
-      summaryText += `**${startAt + index + 1}. ${sprint.name}**
-- ID: ${sprint.id}
-- State: ${sprint.state}
-- Start: ${sprint.startDate ? new Date(sprint.startDate).toLocaleDateString() : "Not set"}
-- End: ${sprint.endDate ? new Date(sprint.endDate).toLocaleDateString() : "Not set"}
-- Goal: ${sprint.goal || "No goal set"}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `board_${boardId}_sprints_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      boardId,
-      filters: { state, maxResults, startAt },
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: sprints,
-      formattedSummary: summaryText
-    }, true);
+async function handleQtestCreateTestCycle(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, name, description, parentId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {
+      name,
+      description,
+      parent_id: parentId
+    };
+    const client = new QtestApiClient();
+    const created = await client.post(
+      `/api/v3/projects/${projectId}/test-cycles`,
+      body
+    );
+    const summary = `**Test Cycle Created**
+- ID: ${created.id}
+- Name: ${created.name}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_create_test_cycle",
+      String(created.id),
+      created,
+      summary
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA sprints: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/jiraGetSprintIssues.js
-var jiraGetSprintIssuesSchema = {
-  name: "jira_get_sprint_issues",
-  description: "Get issues in a specific JIRA sprint",
+var qtestGetTestSuitesSchema = {
+  name: "qtest_get_test_suites",
+  description: "List test suites within a test cycle in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      sprintId: {
-        type: "string",
-        description: "Sprint ID to get issues for"
-      },
-      maxResults: {
+      projectId: {
         type: "number",
-        description: "Maximum number of results (default: 50)"
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
-      startAt: {
+      testCycleId: {
         type: "number",
-        description: "Starting index for pagination (default: 0)"
+        description: "The qTest test cycle ID"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save the sprint issues data (optional, defaults to .amazonq/external-data)"
+        description: "Directory to save the test suites data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["sprintId"]
+    required: ["testCycleId"]
   }
 };
-async function handleJiraGetSprintIssues(args) {
-  try {
-    const { sprintId, maxResults = 50, startAt = 0, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const sprintIssues = await apiClient.getJiraSprintIssues(sprintId, startAt, maxResults);
-    let summaryText = `**Issues in Sprint ${sprintId}**
-
-**Total Found:** ${sprintIssues.total}
-**Showing:** ${sprintIssues.issues.length} issues (starting at ${startAt})
-
-`;
-    sprintIssues.issues.forEach((issue, index) => {
-      summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
-- Status: ${issue.fields.status?.name || "Unknown"}
-- Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
-- Priority: ${issue.fields.priority?.name || "Unknown"}
-- Type: ${issue.fields.issuetype?.name || "Unknown"}
-- Project: ${issue.fields.project?.key || "Unknown"}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `sprint_${sprintId}_issues_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      sprintId,
-      filters: { maxResults, startAt },
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: sprintIssues,
-      formattedSummary: summaryText
-    }, true);
+async function handleQtestGetTestSuites(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCycleId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const suites = await client.get(
+      `/api/v3/projects/${projectId}/test-cycles/${testCycleId}/test-suites`
+    );
+    const summary = formatTestSuites(suites);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_test_suites",
+      String(testCycleId),
+      suites,
+      summary
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA sprint issues: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/jiraGetAttachments.js
-var import_promises4 = require("fs/promises");
-var import_path5 = require("path");
-var jiraGetAttachmentsSchema = {
-  name: "jira_get_attachments",
-  description: "Get attachments from a JIRA ticket. Can list attachments or download a specific one. For images, downloads and saves to disk so they can be viewed.",
+var qtestCreateTestSuiteSchema = {
+  name: "qtest_create_test_suite",
+  description: "Create a new test suite in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., REMY-41705)"
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
-      download: {
-        type: "boolean",
-        description: "If true, downloads all attachments to outputDir. If false (default), just lists them."
+      testCycleId: {
+        type: "number",
+        description: "The qTest test cycle ID to create the suite in"
       },
-      attachmentFilename: {
+      name: {
         type: "string",
-        description: "Optional: Download only the attachment with this filename"
+        description: "The test suite name"
+      },
+      description: {
+        type: "string",
+        description: "The test suite description (optional)"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
-        description: "Directory to save downloaded attachments (defaults to .amazonq/external-data/attachments/{ticketId})"
+        description: "Directory to save the test suite data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["ticketId"]
+    required: ["testCycleId", "name"]
   }
 };
-async function handleJiraGetAttachments(args) {
+async function handleQtestCreateTestSuite(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testCycleId, name, description, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const body = {
+      name,
+      description,
+      test_cycle_id: testCycleId
+    };
+    const client = new QtestApiClient();
+    const created = await client.post(
+      `/api/v3/projects/${projectId}/test-suites`,
+      body
+    );
+    const summary = `**Test Suite Created**
+- ID: ${created.id}
+- Name: ${created.name}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_create_test_suite",
+      String(created.id),
+      created,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+
+// src/tools/qtestRequirements.ts
+async function fetchLinkedTestCases(client, projectId, requirementId) {
   try {
-    const { ticketId, download, attachmentFilename, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const attachments = await apiClient.getJiraAttachments(ticketId);
-    if (attachments.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `**${ticketId}** has no attachments.`
-          }
-        ]
-      };
+    const resp = await client.get(
+      `/api/v3/projects/${projectId}/linked-artifacts?type=requirements&ids=${requirementId}`
+    );
+    const entry = Array.isArray(resp) ? resp.find((r) => r.id === requirementId) : null;
+    const objects = entry?.objects ?? [];
+    if (objects.length > 0) {
+      return objects.map((tc) => ({ id: tc.id ?? 0, name: tc.pid ?? String(tc.id), pid: tc.pid }));
     }
-    const attachmentList = attachments.map((att, i) => {
-      const sizeKB = Math.round((att.size || 0) / 1024);
-      return `${i + 1}. **${att.filename}** (${att.mimeType}, ${sizeKB}KB) - Created: ${att.created}`;
-    });
-    let summaryText = `**Attachments for ${ticketId}** (${attachments.length} files)
+  } catch (e) {
+    console.error(`[qtest-mcp] Failed to fetch linked test cases: ${e instanceof Error ? e.message : e}`);
+  }
+  return void 0;
+}
+var qtestGetRequirementsSchema = {
+  name: "qtest_get_requirements",
+  description: "Retrieve requirements tree for a qTest project",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the requirements data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: []
+  }
+};
+async function handleQtestGetRequirements(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const requirements = await client.get(
+      `/api/v3/projects/${projectId}/requirements`
+    );
+    const summary = formatRequirements(requirements);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_requirements",
+      String(projectId),
+      requirements,
+      summary
+    );
+    const savedInfo = savedPath ? `
 
-${attachmentList.join("\n")}`;
-    if (download) {
-      const saveDir = typeof outputDir === "string" ? outputDir : `/tmp/jira-mcp/attachments/${ticketId}`;
-      await (0, import_promises4.mkdir)(saveDir, { recursive: true });
-      const downloaded = [];
-      for (const att of attachments) {
-        if (attachmentFilename && att.filename !== attachmentFilename) {
-          continue;
-        }
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestGetRequirementSchema = {
+  name: "qtest_get_requirement",
+  description: "Retrieve requirement details with linked test cases from qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      requirementId: {
+        type: ["string", "number"],
+        description: 'The qTest requirement identifier \u2014 accepts RQ-#### PID format (e.g., "RQ-1239") or a numeric ID'
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the requirement data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["requirementId"]
+  }
+};
+async function handleQtestGetRequirement(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, requirementId: rawReqId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const reqIdStr = String(rawReqId);
+    const isRqPid = /^RQ-\d+$/i.test(reqIdStr);
+    let numericReqId;
+    if (isRqPid) {
+      const resolved = await resolveRequirementPid(client, projectId, reqIdStr);
+      if (!resolved) {
+        return {
+          content: [{ type: "text", text: `Requirement "${reqIdStr}" not found in project ${projectId}.` }],
+          isError: true
+        };
+      }
+      numericReqId = resolved;
+    } else {
+      numericReqId = Number(rawReqId);
+      if (isNaN(numericReqId)) {
+        return {
+          content: [{ type: "text", text: `Invalid requirementId: "${rawReqId}". Use RQ-#### format (e.g., "RQ-1239") or a numeric ID.` }],
+          isError: true
+        };
+      }
+    }
+    const requirement = await client.get(
+      `/api/v3/projects/${projectId}/requirements/${numericReqId}`
+    );
+    requirement.linked_test_cases = await fetchLinkedTestCases(client, projectId, numericReqId);
+    const summary = formatRequirements([requirement]);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_requirement",
+      String(rawReqId),
+      requirement,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestLinkRequirementSchema = {
+  name: "qtest_link_requirement",
+  description: "Create a traceability link between a requirement and a test case in qTest",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      requirementId: {
+        type: ["string", "number"],
+        description: 'The qTest requirement \u2014 accepts RQ-#### PID format (e.g., "RQ-1239") or a numeric ID'
+      },
+      testCaseId: {
+        type: "number",
+        description: "The qTest test case ID to link"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link confirmation data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["requirementId", "testCaseId"]
+  }
+};
+async function handleQtestLinkRequirement(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, requirementId: rawReqId, testCaseId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const reqIdStr = String(rawReqId);
+    const isRqPid = /^RQ-\d+$/i.test(reqIdStr);
+    let numericReqId;
+    if (isRqPid) {
+      const resolved = await resolveRequirementPid(client, projectId, reqIdStr);
+      if (!resolved) {
+        return {
+          content: [{ type: "text", text: `Requirement "${reqIdStr}" not found in project ${projectId}.` }],
+          isError: true
+        };
+      }
+      numericReqId = resolved;
+    } else {
+      numericReqId = Number(rawReqId);
+      if (isNaN(numericReqId)) {
+        return {
+          content: [{ type: "text", text: `Invalid requirementId: "${rawReqId}". Use RQ-#### format (e.g., "RQ-1239") or a numeric ID.` }],
+          isError: true
+        };
+      }
+    }
+    const result = await client.post(
+      `/api/v3/projects/${projectId}/requirements/${numericReqId}/link?type=test-cases`,
+      [testCaseId]
+    );
+    const reqLabel = isRqPid ? `${reqIdStr} (${numericReqId})` : String(numericReqId);
+    const summary = `**Requirement-Test Case Link Created**
+- Requirement: ${reqLabel}
+- Test Case ID: ${testCaseId}
+- Project ID: ${projectId}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_link_requirement",
+      `${numericReqId}-tc-${testCaseId}`,
+      result,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return {
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
+    };
+  });
+}
+var qtestCreateRequirementSchema = {
+  name: "qtest_create_requirement",
+  description: "Create a new requirement in qTest. Useful for importing Jira stories as qTest requirements.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      name: {
+        type: "string",
+        description: "The requirement name/title"
+      },
+      description: {
+        type: "string",
+        description: "The requirement description (optional, supports HTML)"
+      },
+      parentId: {
+        type: ["string", "number"],
+        description: 'Parent requirement module \u2014 accepts MD-#### PID format (e.g., "MD-42") or a numeric ID. Determines where the requirement lands in the tree.'
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the created requirement data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
+      }
+    },
+    required: ["name", "parentId"]
+  }
+};
+async function handleQtestCreateRequirement(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, name, description, parentId: rawParentId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const parentIdStr = String(rawParentId);
+    const isMdPid = /^MD-\d+$/i.test(parentIdStr);
+    let numericParentId;
+    if (isMdPid) {
+      const resolved = await resolveModulePid(client, projectId, parentIdStr);
+      if (!resolved) {
+        return {
+          content: [{ type: "text", text: `Module "${parentIdStr}" not found in project ${projectId}. Use qtest_get_requirements to browse the module tree.` }],
+          isError: true
+        };
+      }
+      numericParentId = resolved;
+    } else {
+      numericParentId = Number(rawParentId);
+      if (isNaN(numericParentId)) {
+        return {
+          content: [{ type: "text", text: `Invalid parentId: "${rawParentId}". Use MD-#### format (e.g., "MD-42") or a numeric ID.` }],
+          isError: true
+        };
+      }
+    }
+    const body = {
+      name,
+      parent_id: numericParentId
+    };
+    const created = await client.post(
+      `/api/v3/projects/${projectId}/requirements`,
+      body
+    );
+    if (description) {
+      const descField = created.properties?.find(
+        (p) => p.field_name === "Description"
+      );
+      if (descField) {
         try {
-          const buffer = await apiClient.downloadAttachment(att.content);
-          const filePath = (0, import_path5.join)(saveDir, att.filename);
-          await (0, import_promises4.writeFile)(filePath, buffer);
-          downloaded.push(`\u2705 ${att.filename} \u2192 ${filePath}`);
-        } catch (err) {
-          downloaded.push(`\u274C ${att.filename} \u2192 Failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+          await client.put(
+            `/api/v3/projects/${projectId}/requirements/${created.id}`,
+            { properties: [{ field_id: descField.field_id, field_value: description }] }
+          );
+        } catch (descError) {
+          console.error(`[qtest-mcp] Warning: requirement created but description update failed: ${descError instanceof Error ? descError.message : descError}`);
         }
       }
-      summaryText += `
-
-**Downloaded to ${saveDir}:**
-${downloaded.join("\n")}`;
     }
+    const parentLabel = isMdPid ? `${parentIdStr} (${numericParentId})` : String(numericParentId);
+    const summary = `**Requirement Created**
+- ID: ${created.id}
+- PID: ${created.pid}
+- Name: ${created.name}
+- Parent: ${parentLabel}
+- Project ID: ${projectId}`;
+    try {
+      await client.post(
+        `/api/v3/projects/${projectId}/requirements/${created.id}/comments`,
+        { content: "Created with qTest MCP" }
+      );
+    } catch (commentError) {
+      console.error(`[qtest-mcp] Warning: requirement created but auto-comment failed: ${commentError instanceof Error ? commentError.message : commentError}`);
+    }
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_create_requirement",
+      String(created.id),
+      created,
+      summary
+    );
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
     return {
-      content: [
-        {
-          type: "text",
-          text: summaryText
-        }
-      ]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting attachments: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
 
-// build/tools/xrayGetTestCaseFull.js
-var xrayGetTestCaseFullSchema = {
-  name: "xray_get_test_case_full",
-  description: "Get a complete XRay Test Case with all details: Jira issue fields (summary, description, priority, status, labels, components, custom fields), test steps, pre-conditions, test sets, test executions, test plans, and recent test runs. This is the most comprehensive tool for inspecting a test case.",
+// src/tools/qtestDefects.ts
+var qtestGetDefectsSchema = {
+  name: "qtest_get_defects",
+  description: "Retrieve defects linked to a test run in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      testKey: {
-        type: "string",
-        description: "The JIRA Test issue key (e.g., DPAY-1234)"
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
       },
-      includeTestRuns: {
-        type: "boolean",
-        description: "If true, also fetches recent test run results for this test (default: true)"
+      testRunId: {
+        type: "number",
+        description: "The qTest test run ID"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the defects data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["testKey"]
+    required: ["testRunId"]
   }
 };
-async function handleXrayGetTestCaseFull(args) {
-  try {
-    const { testKey, includeTestRuns = true } = args;
-    const apiClient = new JiraApiClient();
-    const result = await apiClient.getXrayTestCaseFull(testKey);
-    const issue = result.issue;
-    const xray = result.xray;
-    const fields = issue.fields || {};
-    let text = `**${issue.key}: ${fields.summary || "(no summary)"}**
+async function handleQtestGetDefects(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const defects = await client.get(
+      `/api/v3/projects/${projectId}/test-runs/${testRunId}/defects`
+    );
+    const summary = formatDefects(defects);
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_get_defects",
+      `${projectId}-run-${testRunId}`,
+      defects,
+      summary
+    );
+    const savedInfo = savedPath ? `
 
-`;
-    text += `**Type:** ${fields.issuetype?.name || "Unknown"}
-`;
-    text += `**Status:** ${fields.status?.name || "Unknown"}
-`;
-    text += `**Priority:** ${fields.priority?.name || "Unknown"}
-`;
-    text += `**Assignee:** ${fields.assignee?.displayName || "Unassigned"}
-`;
-    text += `**Reporter:** ${fields.reporter?.displayName || "Unknown"}
-`;
-    text += `**Created:** ${fields.created || "Unknown"}
-`;
-    text += `**Updated:** ${fields.updated || "Unknown"}
-`;
-    if (fields.labels?.length) {
-      text += `**Labels:** ${fields.labels.join(", ")}
-`;
-    }
-    if (fields.components?.length) {
-      text += `**Components:** ${fields.components.map((c) => c.name).join(", ")}
-`;
-    }
-    if (fields.fixVersions?.length) {
-      text += `**Fix Versions:** ${fields.fixVersions.map((v) => v.name).join(", ")}
-`;
-    }
-    if (fields.description) {
-      text += `
-**Description:**
-${fields.description}
-`;
-    }
-    const customFieldKeys = Object.keys(fields).filter((k) => k.startsWith("customfield_") && fields[k] != null);
-    if (customFieldKeys.length > 0) {
-      text += `
-**Custom/XRay Fields:**
-`;
-      for (const key of customFieldKeys) {
-        const val = fields[key];
-        const displayVal = typeof val === "object" ? JSON.stringify(val) : String(val);
-        if (displayVal.length < 500) {
-          text += `- ${key}: ${displayVal}
-`;
-        } else {
-          text += `- ${key}: (large value, ${displayVal.length} chars)
-`;
-        }
-      }
-    }
-    text += `
----
-**Test Steps:**
-`;
-    if (xray.steps?.error) {
-      text += `(Error fetching steps: ${xray.steps.error})
-`;
-    } else if (Array.isArray(xray.steps) && xray.steps.length > 0) {
-      xray.steps.forEach((step, i) => {
-        const idx = step.index ?? i + 1;
-        text += `  ${idx}. Action: ${step.fields?.action || step.action || "(none)"}
-`;
-        text += `     Data: ${step.fields?.data || step.data || "(none)"}
-`;
-        text += `     Expected: ${step.fields?.["expected result"] || step.fields?.expectedResult || step.result || "(none)"}
-`;
-      });
-    } else {
-      text += "(no steps)\n";
-    }
-    text += `
-**Pre-Conditions:**
-`;
-    if (xray.preConditions?.error) {
-      text += `(Error: ${xray.preConditions.error})
-`;
-    } else if (Array.isArray(xray.preConditions) && xray.preConditions.length > 0) {
-      xray.preConditions.forEach((pc) => {
-        text += `- ${pc.key}: ${pc.condition || pc.summary || "(no description)"} (Type: ${pc.type || "Unknown"})
-`;
-      });
-    } else {
-      text += "(none)\n";
-    }
-    text += `
-**Test Sets:**
-`;
-    if (xray.testSets?.error) {
-      text += `(Error: ${xray.testSets.error})
-`;
-    } else if (Array.isArray(xray.testSets) && xray.testSets.length > 0) {
-      xray.testSets.forEach((ts) => {
-        text += `- ${ts.key}: ${ts.summary || "(no summary)"}
-`;
-      });
-    } else {
-      text += "(none)\n";
-    }
-    text += `
-**Test Executions:**
-`;
-    if (xray.testExecutions?.error) {
-      text += `(Error: ${xray.testExecutions.error})
-`;
-    } else {
-      const execs = Array.isArray(xray.testExecutions) ? xray.testExecutions : xray.testExecutions?.issues || xray.testExecutions;
-      if (Array.isArray(execs) && execs.length > 0) {
-        execs.forEach((te) => {
-          text += `- ${te.key}: ${te.summary || "(no summary)"} \u2014 Status: ${te.status || "Unknown"}
-`;
-        });
-      } else {
-        text += "(none)\n";
-      }
-    }
-    text += `
-**Test Plans:**
-`;
-    if (xray.testPlans?.error) {
-      text += `(Error: ${xray.testPlans.error})
-`;
-    } else if (Array.isArray(xray.testPlans) && xray.testPlans.length > 0) {
-      xray.testPlans.forEach((tp) => {
-        text += `- ${tp.key}: ${tp.summary || "(no summary)"}
-`;
-      });
-    } else {
-      text += "(none)\n";
-    }
-    if (includeTestRuns) {
-      text += `
-**Recent Test Runs:**
-`;
-      try {
-        const runs = await apiClient.getXrayTestRuns(void 0, testKey, void 0, void 0, void 0, 10);
-        const runList = Array.isArray(runs) ? runs : runs?.testRuns || runs;
-        if (Array.isArray(runList) && runList.length > 0) {
-          runList.forEach((run, i) => {
-            text += `- ${run.testExecKey || "Unknown Exec"}: ${run.status || "Unknown"} (${run.executedBy || "Unknown"}, ${run.finishedOn || run.startedOn || "Unknown date"})`;
-            if (run.defects?.length) {
-              text += ` \u2014 Defects: ${run.defects.map((d) => d.key || d).join(", ")}`;
-            }
-            text += "\n";
-          });
-        } else {
-          text += "(no test runs)\n";
-        }
-      } catch {
-        text += "(unable to fetch test runs)\n";
-      }
-    }
+**Saved to:** ${savedPath}` : "";
     return {
-      content: [{ type: "text", text }]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting XRay test case: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/xrayGetTestSteps.js
-var xrayGetTestStepsSchema = {
-  name: "xray_get_test_steps",
-  description: "Get all test steps for an XRay Test issue, including action, data, expected result, and attachments for each step",
+var qtestLinkDefectSchema = {
+  name: "qtest_link_defect",
+  description: "Link an existing defect to a test run in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      testKey: {
-        type: "string",
-        description: "The JIRA Test issue key (e.g., DPAY-1234)"
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testRunId: {
+        type: "number",
+        description: "The qTest test run ID"
+      },
+      defectId: {
+        type: "number",
+        description: "The qTest defect ID to link"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link confirmation data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["testKey"]
+    required: ["testRunId", "defectId"]
   }
 };
-async function handleXrayGetTestSteps(args) {
-  try {
-    const { testKey } = args;
-    const apiClient = new JiraApiClient();
-    const steps = await apiClient.getXrayTestSteps(testKey);
-    if (!Array.isArray(steps) || steps.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No test steps found for ${testKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Test Steps for ${testKey}** (${steps.length} steps)
+async function handleQtestLinkDefect(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, defectId, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const result = await client.post(
+      `/api/v3/projects/${projectId}/test-runs/${testRunId}/defects`,
+      { defect_id: defectId }
+    );
+    const summary = `**Defect Linked to Test Run**
+- Defect ID: ${defectId}
+- Test Run ID: ${testRunId}
+- Project ID: ${projectId}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_link_defect",
+      `${testRunId}-defect-${defectId}`,
+      result,
+      summary
+    );
+    const savedInfo = savedPath ? `
 
-`;
-    steps.forEach((step, index) => {
-      const stepIndex = step.index ?? index + 1;
-      text += `**Step ${stepIndex}:**
-`;
-      text += `- Action: ${step.fields?.action || step.action || "(none)"}
-`;
-      text += `- Data: ${step.fields?.data || step.data || "(none)"}
-`;
-      text += `- Expected Result: ${step.fields?.["expected result"] || step.fields?.expectedResult || step.result || "(none)"}
-`;
-      if (step.attachments && step.attachments.length > 0) {
-        text += `- Attachments: ${step.attachments.length} file(s)
-`;
-        step.attachments.forEach((att) => {
-          text += `  - ${att.filename || att.fileName || "unnamed"}
-`;
-        });
-      }
-      if (step.customFields && Object.keys(step.customFields).length > 0) {
-        text += `- Custom Fields: ${JSON.stringify(step.customFields)}
-`;
-      }
-      text += "\n";
-    });
+**Saved to:** ${savedPath}` : "";
     return {
-      content: [{ type: "text", text }]
+      content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting XRay test steps: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
-
-// build/tools/xrayGetTestExecTests.js
-var xrayGetTestExecTestsSchema = {
-  name: "xray_get_test_exec_tests",
-  description: "Get all tests associated with an XRay Test Execution issue, with optional detailed view including test run status",
+var qtestSubmitDefectSchema = {
+  name: "qtest_submit_defect",
+  description: "Create a new defect linked to a test run in qTest",
   inputSchema: {
     type: "object",
     properties: {
-      testExecKey: {
+      projectId: {
+        type: "number",
+        description: "The qTest project ID (optional, defaults to QTEST_PROJECT_ID env var)"
+      },
+      testRunId: {
+        type: "number",
+        description: "The qTest test run ID to link the defect to"
+      },
+      summary: {
         type: "string",
-        description: "The JIRA Test Execution issue key (e.g., DPAY-5678)"
+        description: "Summary/title of the defect"
       },
-      detailed: {
-        type: "boolean",
-        description: "If true, returns detailed info including test run status (default: false)"
+      description: {
+        type: "string",
+        description: "Detailed description of the defect (optional)"
       },
-      page: {
-        type: "number",
-        description: "Page number for pagination (starts at 1)"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page"
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the created defect data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
       }
     },
-    required: ["testExecKey"]
+    required: ["testRunId", "summary"]
   }
 };
-async function handleXrayGetTestExecTests(args) {
-  try {
-    const { testExecKey, detailed = false, page, limit } = args;
-    const apiClient = new JiraApiClient();
-    const result = await apiClient.getXrayTestExecTests(testExecKey, detailed, page, limit);
-    const tests = Array.isArray(result) ? result : result?.issues || result;
-    if (!Array.isArray(tests) || tests.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No tests found in Test Execution ${testExecKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Tests in Test Execution ${testExecKey}** (${tests.length} tests)
+async function handleQtestSubmitDefect(args) {
+  return withErrorHandling(async () => {
+    const { projectId: rawProjectId, testRunId, summary, description, outputDir } = args;
+    const projectId = resolveProjectId(rawProjectId);
+    const client = new QtestApiClient();
+    const result = await client.post(
+      `/api/v3/projects/${projectId}/defects`,
+      { summary, description, linked_test_run_id: testRunId }
+    );
+    const defectId = result.id ?? "unknown";
+    const responseSummary = `**Defect Created**
+- Defect ID: ${defectId}
+- Summary: ${summary}
+- Linked Test Run ID: ${testRunId}
+- Project ID: ${projectId}`;
+    const savedPath = await saveData(
+      outputDir,
+      "qtest_submit_defect",
+      String(defectId),
+      result,
+      responseSummary
+    );
+    const savedInfo = savedPath ? `
 
-`;
-    tests.forEach((test, index) => {
-      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
-`;
-      text += `   - Status: ${test.status || "Unknown"}
-`;
-      if (test.assignee)
-        text += `   - Assignee: ${test.assignee}
-`;
-      if (test.type)
-        text += `   - Type: ${test.type}
-`;
-      if (test.defects?.length) {
-        text += `   - Defects: ${test.defects.map((d) => d.key || d).join(", ")}
-`;
-      }
-      text += "\n";
-    });
+**Saved to:** ${savedPath}` : "";
     return {
-      content: [{ type: "text", text }]
+      content: [{ type: "text", text: `${responseSummary}${savedInfo}` }]
     };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting test execution tests: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
+  });
 }
 
-// build/tools/xrayGetTestPlanTests.js
-var xrayGetTestPlanTestsSchema = {
-  name: "xray_get_test_plan_tests",
-  description: "Get all tests associated with an XRay Test Plan issue",
-  inputSchema: {
-    type: "object",
-    properties: {
-      testPlanKey: {
-        type: "string",
-        description: "The JIRA Test Plan issue key (e.g., DPAY-9999)"
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination (starts at 1)"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page"
-      }
-    },
-    required: ["testPlanKey"]
-  }
-};
-async function handleXrayGetTestPlanTests(args) {
-  try {
-    const { testPlanKey, page, limit } = args;
-    const apiClient = new JiraApiClient();
-    const result = await apiClient.getXrayTestPlanTests(testPlanKey, page, limit);
-    const tests = Array.isArray(result) ? result : result?.issues || result;
-    if (!Array.isArray(tests) || tests.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No tests found in Test Plan ${testPlanKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Tests in Test Plan ${testPlanKey}** (${tests.length} tests)
-
-`;
-    tests.forEach((test, index) => {
-      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
-`;
-      if (test.status)
-        text += `   - Status: ${test.status}
-`;
-      if (test.type)
-        text += `   - Type: ${test.type}
-`;
-      if (test.assignee)
-        text += `   - Assignee: ${test.assignee}
-`;
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting test plan tests: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xrayGetTestSetTests.js
-var xrayGetTestSetTestsSchema = {
-  name: "xray_get_test_set_tests",
-  description: "Get all tests associated with an XRay Test Set issue",
-  inputSchema: {
-    type: "object",
-    properties: {
-      testSetKey: {
-        type: "string",
-        description: "The JIRA Test Set issue key (e.g., DPAY-7777)"
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination (starts at 1)"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page"
-      }
-    },
-    required: ["testSetKey"]
-  }
-};
-async function handleXrayGetTestSetTests(args) {
-  try {
-    const { testSetKey, page, limit } = args;
-    const apiClient = new JiraApiClient();
-    const result = await apiClient.getXrayTestSetTests(testSetKey, page, limit);
-    const tests = Array.isArray(result) ? result : result?.issues || result;
-    if (!Array.isArray(tests) || tests.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No tests found in Test Set ${testSetKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Tests in Test Set ${testSetKey}** (${tests.length} tests)
-
-`;
-    tests.forEach((test, index) => {
-      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
-`;
-      if (test.status)
-        text += `   - Status: ${test.status}
-`;
-      if (test.type)
-        text += `   - Type: ${test.type}
-`;
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting test set tests: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xrayGetTestRuns.js
-var xrayGetTestRunsSchema = {
-  name: "xray_get_test_runs",
-  description: "Export XRay test run results. Filter by test execution, test, test plan, or test environment. Returns execution status, defects, and step results.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      testExecKey: {
-        type: "string",
-        description: "Test Execution issue key to filter by (e.g., DPAY-5678)"
-      },
-      testKey: {
-        type: "string",
-        description: "Test issue key to filter by (e.g., DPAY-1234)"
-      },
-      testPlanKey: {
-        type: "string",
-        description: "Test Plan issue key to filter by (e.g., DPAY-9999)"
-      },
-      testEnvironments: {
-        type: "string",
-        description: "Test environment name to filter by (e.g., QA, Staging)"
-      },
-      page: {
-        type: "number",
-        description: "Page number for pagination"
-      },
-      limit: {
-        type: "number",
-        description: "Number of results per page"
-      }
-    }
-  }
-};
-async function handleXrayGetTestRuns(args) {
-  try {
-    const { testExecKey, testKey, testPlanKey, testEnvironments, page, limit } = args;
-    if (!testExecKey && !testKey && !testPlanKey) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "At least one of testExecKey, testKey, or testPlanKey must be provided."
-          }
-        ],
-        isError: true
-      };
-    }
-    const apiClient = new JiraApiClient();
-    const result = await apiClient.getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit);
-    const runs = Array.isArray(result) ? result : result?.testRuns || result;
-    if (!Array.isArray(runs) || runs.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "No test runs found for the given filters."
-          }
-        ]
-      };
-    }
-    let text = `**Test Runs** (${runs.length} results)
-
-`;
-    runs.forEach((run, index) => {
-      text += `**${index + 1}. ${run.testKey || run.key || "Unknown"}**
-`;
-      text += `   - Status: ${run.status || "Unknown"}
-`;
-      if (run.testExecKey)
-        text += `   - Test Execution: ${run.testExecKey}
-`;
-      if (run.assignee)
-        text += `   - Assignee: ${run.assignee}
-`;
-      if (run.executedBy)
-        text += `   - Executed By: ${run.executedBy}
-`;
-      if (run.startedOn)
-        text += `   - Started: ${run.startedOn}
-`;
-      if (run.finishedOn)
-        text += `   - Finished: ${run.finishedOn}
-`;
-      if (run.comment)
-        text += `   - Comment: ${run.comment}
-`;
-      if (run.defects?.length) {
-        text += `   - Defects: ${run.defects.map((d) => d.key || d).join(", ")}
-`;
-      }
-      if (run.steps?.length) {
-        text += `   - Steps (${run.steps.length}):
-`;
-        run.steps.forEach((step, si) => {
-          text += `     ${si + 1}. ${step.status || "Unknown"} \u2014 ${step.comment || "(no comment)"}
-`;
-        });
-      }
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting test runs: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xraySearchTestCases.js
-var xraySearchTestCasesSchema = {
-  name: "xray_search_test_cases",
-  description: "Search for XRay Test Cases using JQL. Automatically adds issuetype=Test filter. Returns test cases with full Jira fields including priority, status, labels, components, assignee, and all custom/XRay fields.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      jql: {
-        type: "string",
-        description: 'JQL query to filter test cases. The issuetype=Test filter is added automatically. Example: "project = DPAY AND status = Open"'
-      },
-      maxResults: {
-        type: "number",
-        description: "Maximum number of results (default: 50)"
-      },
-      startAt: {
-        type: "number",
-        description: "Starting index for pagination (default: 0)"
-      }
-    },
-    required: ["jql"]
-  }
-};
-async function handleXraySearchTestCases(args) {
-  try {
-    const { jql, maxResults = 50, startAt = 0 } = args;
-    const hasIssueType = /issuetype\s*[=!]/i.test(jql);
-    const fullJql = hasIssueType ? jql : `issuetype = Test AND (${jql})`;
-    const apiClient = new JiraApiClient();
-    const extraFields = [
-      "labels",
-      "components",
-      "fixVersions",
-      "reporter",
-      "description"
-    ];
-    const result = await apiClient.searchJiraIssues(fullJql, maxResults, startAt, extraFields);
-    const issues = result.issues || [];
-    if (issues.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No test cases found for JQL: ${fullJql}`
-          }
-        ]
-      };
-    }
-    let text = `**XRay Test Cases** (${issues.length} of ${result.total} total)
-`;
-    text += `JQL: \`${fullJql}\`
-
-`;
-    issues.forEach((issue, index) => {
-      const f = issue.fields || {};
-      text += `**${index + 1}. ${issue.key}: ${f.summary || "(no summary)"}**
-`;
-      text += `   - Status: ${f.status?.name || "Unknown"}
-`;
-      text += `   - Priority: ${f.priority?.name || "Unknown"}
-`;
-      text += `   - Assignee: ${f.assignee?.displayName || "Unassigned"}
-`;
-      text += `   - Reporter: ${f.reporter?.displayName || "Unknown"}
-`;
-      if (f.labels?.length)
-        text += `   - Labels: ${f.labels.join(", ")}
-`;
-      if (f.components?.length)
-        text += `   - Components: ${f.components.map((c) => c.name).join(", ")}
-`;
-      if (f.fixVersions?.length)
-        text += `   - Fix Versions: ${f.fixVersions.map((v) => v.name).join(", ")}
-`;
-      text += `   - Created: ${f.created || "Unknown"}
-`;
-      text += `   - Updated: ${f.updated || "Unknown"}
-`;
-      text += "\n";
-    });
-    if (result.total > issues.length) {
-      text += `
-_Showing ${startAt + 1}-${startAt + issues.length} of ${result.total}. Use startAt=${startAt + maxResults} for next page._
-`;
-    }
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error searching test cases: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xrayGetTestStatuses.js
-var xrayGetTestStatusesSchema = {
-  name: "xray_get_test_statuses",
-  description: "Get all available XRay test statuses configured in the JIRA instance. Returns status names, descriptions, and colors for test run results.",
-  inputSchema: {
-    type: "object",
-    properties: {}
-  }
-};
-async function handleXrayGetTestStatuses(args) {
-  try {
-    const apiClient = new JiraApiClient();
-    const statuses = await apiClient.getXrayTestStatuses();
-    if (!Array.isArray(statuses) || statuses.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "No XRay test statuses found."
-          }
-        ]
-      };
-    }
-    let text = `**XRay Test Statuses** (${statuses.length})
-
-`;
-    statuses.forEach((status, index) => {
-      text += `**${index + 1}. ${status.name || "Unknown"}**
-`;
-      if (status.description)
-        text += `   - Description: ${status.description}
-`;
-      if (status.color)
-        text += `   - Color: ${status.color}
-`;
-      if (status.final !== void 0)
-        text += `   - Final: ${status.final}
-`;
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting XRay test statuses: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xrayGetTestPreConditions.js
-var xrayGetTestPreConditionsSchema = {
-  name: "xray_get_test_preconditions",
-  description: "Get all pre-conditions associated with an XRay Test issue. Returns pre-condition keys, summaries, types, and conditions.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      testKey: {
-        type: "string",
-        description: "The JIRA Test issue key (e.g., DPAY-1234)"
-      }
-    },
-    required: ["testKey"]
-  }
-};
-async function handleXrayGetTestPreConditions(args) {
-  try {
-    const { testKey } = args;
-    const apiClient = new JiraApiClient();
-    const preConditions = await apiClient.getXrayTestPreConditions(testKey);
-    if (!Array.isArray(preConditions) || preConditions.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No pre-conditions found for ${testKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Pre-Conditions for ${testKey}** (${preConditions.length})
-
-`;
-    preConditions.forEach((pc, index) => {
-      text += `**${index + 1}. ${pc.key}:** ${pc.summary || pc.condition || "(no description)"}
-`;
-      if (pc.type)
-        text += `   - Type: ${pc.type}
-`;
-      if (pc.condition)
-        text += `   - Condition: ${pc.condition}
-`;
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting XRay pre-conditions: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/xrayGetPreConditionTests.js
-var xrayGetPreConditionTestsSchema = {
-  name: "xray_get_precondition_tests",
-  description: "Get all tests associated with an XRay Pre-Condition issue. Returns the test keys and summaries linked to a pre-condition.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preConditionKey: {
-        type: "string",
-        description: "The JIRA Pre-Condition issue key (e.g., DPAY-3333)"
-      }
-    },
-    required: ["preConditionKey"]
-  }
-};
-async function handleXrayGetPreConditionTests(args) {
-  try {
-    const { preConditionKey } = args;
-    const apiClient = new JiraApiClient();
-    const tests = await apiClient.getXrayPreConditionTests(preConditionKey);
-    if (!Array.isArray(tests) || tests.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No tests found for Pre-Condition ${preConditionKey}.`
-          }
-        ]
-      };
-    }
-    let text = `**Tests for Pre-Condition ${preConditionKey}** (${tests.length})
-
-`;
-    tests.forEach((test, index) => {
-      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
-`;
-      if (test.status)
-        text += `   - Status: ${test.status}
-`;
-      if (test.type)
-        text += `   - Type: ${test.type}
-`;
-      text += "\n";
-    });
-    return {
-      content: [{ type: "text", text }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error getting pre-condition tests: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/index.js
+// src/index.ts
 var tools = [
-  { schema: jiraGetIssueSchema, handler: handleJiraGetIssue },
-  { schema: jiraUpdateIssueSchema, handler: handleJiraUpdateIssue },
-  { schema: jiraTransitionIssueSchema, handler: handleJiraTransitionIssue },
-  { schema: jiraAssignIssueSchema, handler: handleJiraAssignIssue },
-  { schema: jiraCommentOnIssueSchema, handler: handleJiraCommentOnIssue },
-  { schema: jiraSearchIssuesSchema, handler: handleJiraSearchIssues },
-  { schema: jiraCreateIssueSchema, handler: handleJiraCreateIssue },
-  { schema: jiraGetProjectsSchema, handler: handleJiraGetProjects },
-  { schema: jiraGetIssueTypesSchema, handler: handleJiraGetIssueTypes },
-  { schema: jiraGetTransitionsSchema, handler: handleJiraGetTransitions },
-  { schema: jiraGetBoardsSchema, handler: handleJiraGetBoards },
-  { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
-  { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
-  { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
-  // XRay tools
-  { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
-  { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
-  { schema: xrayGetTestExecTestsSchema, handler: handleXrayGetTestExecTests },
-  { schema: xrayGetTestPlanTestsSchema, handler: handleXrayGetTestPlanTests },
-  { schema: xrayGetTestSetTestsSchema, handler: handleXrayGetTestSetTests },
-  { schema: xrayGetTestRunsSchema, handler: handleXrayGetTestRuns },
-  { schema: xraySearchTestCasesSchema, handler: handleXraySearchTestCases },
-  { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
-  { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
-  { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests }
+  { schema: qtestGetProjectsSchema, handler: handleQtestGetProjects },
+  { schema: qtestGetProjectSchema, handler: handleQtestGetProject },
+  { schema: qtestGetTestCaseSchema, handler: handleQtestGetTestCase },
+  { schema: qtestCreateTestCaseSchema, handler: handleQtestCreateTestCase },
+  { schema: qtestUpdateTestCaseSchema, handler: handleQtestUpdateTestCase },
+  { schema: qtestSearchTestCasesSchema, handler: handleQtestSearchTestCases },
+  { schema: qtestGetTestRunSchema, handler: handleQtestGetTestRun },
+  { schema: qtestCreateTestRunSchema, handler: handleQtestCreateTestRun },
+  { schema: qtestUpdateTestRunResultSchema, handler: handleQtestUpdateTestRunResult },
+  { schema: qtestGetTestCyclesSchema, handler: handleQtestGetTestCycles },
+  { schema: qtestCreateTestCycleSchema, handler: handleQtestCreateTestCycle },
+  { schema: qtestGetTestSuitesSchema, handler: handleQtestGetTestSuites },
+  { schema: qtestCreateTestSuiteSchema, handler: handleQtestCreateTestSuite },
+  { schema: qtestGetRequirementsSchema, handler: handleQtestGetRequirements },
+  { schema: qtestGetRequirementSchema, handler: handleQtestGetRequirement },
+  { schema: qtestLinkRequirementSchema, handler: handleQtestLinkRequirement },
+  { schema: qtestCreateRequirementSchema, handler: handleQtestCreateRequirement },
+  { schema: qtestGetDefectsSchema, handler: handleQtestGetDefects },
+  { schema: qtestLinkDefectSchema, handler: handleQtestLinkDefect },
+  { schema: qtestSubmitDefectSchema, handler: handleQtestSubmitDefect }
 ];
-var JiraMCPServer = class {
+var QtestMCPServer = class {
   server;
   constructor() {
-    this.server = new Server({
-      name: "jira-mcp",
-      version: "0.1.0"
-    }, {
-      capabilities: {
-        tools: {}
+    this.server = new Server(
+      {
+        name: "qtest-mcp",
+        version: "0.1.0"
+      },
+      {
+        capabilities: {
+          tools: {}
+        }
       }
-    });
+    );
     this.setupToolHandlers();
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: tools.map((t) => t.schema)
     }));
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
-      const tool = tools.find((t) => t.schema.name === request.params.name);
-      if (!tool)
-        throw new Error(`Unknown tool: ${request.params.name}`);
-      return await tool.handler(request.params.arguments);
-    });
+    this.server.setRequestHandler(
+      CallToolRequestSchema,
+      async (request) => {
+        const tool = tools.find(
+          (t) => t.schema.name === request.params.name
+        );
+        if (!tool)
+          throw new Error(`Unknown tool: ${request.params.name}`);
+        return await tool.handler(request.params.arguments);
+      }
+    );
   }
   async run() {
+    if (!process.env.QTEST_BEARER_TOKEN) {
+      console.error("Error: QTEST_BEARER_TOKEN is required");
+      process.exit(1);
+    }
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("JIRA MCP server running on stdio");
+    console.error("qTest MCP server running on stdio");
   }
 };
-var server = new JiraMCPServer();
+var server = new QtestMCPServer();
 server.run().catch(console.error);

@@ -404,6 +404,48 @@ export class JiraApiClient {
         return await response.json();
     }
 
+    async getJiraAttachments(ticketId: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=attachment`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to get attachments: ${response.status} ${response.statusText}`,
+            );
+        }
+
+        const result = await response.json();
+        return result.fields?.attachment || [];
+    }
+
+    async downloadAttachment(url: string): Promise<Buffer> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to download attachment: ${response.status} ${response.statusText}`,
+            );
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return Buffer.from(arrayBuffer);
+    }
+
     async getJiraSprintIssues(
         sprintId: string,
         startAt: number = 0,
@@ -431,6 +473,445 @@ export class JiraApiClient {
             const errorText = await response.text();
             throw new Error(
                 `Failed to get JIRA sprint issues: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    // ==========================================
+    // XRay REST API Methods
+    // ==========================================
+
+    /**
+     * Get all test steps for a Test issue
+     * GET /rest/raven/2.0/api/test/{testKey}/step
+     */
+    async getXrayTestSteps(testKey: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test steps for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get a specific test step by ID
+     * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
+     */
+    async getXrayTestStep(testKey: string, stepId: string): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test step ${stepId} for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get tests associated with a Test Execution
+     * GET /rest/raven/2.0/api/testexec/{testExecKey}/test
+     */
+    async getXrayTestExecTests(
+        testExecKey: string,
+        detailed: boolean = false,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const params = new URLSearchParams();
+        if (detailed) params.append("detailed", "true");
+        if (page !== undefined) params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+
+        const queryString = params.toString();
+        const url = `https://myjira.disney.com/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test execution tests for ${testExecKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get pre-conditions for a Test
+     * GET /rest/raven/2.0/api/test/{testKey}/precondition
+     */
+    async getXrayTestPreConditions(testKey: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/precondition`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay pre-conditions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get test sets for a Test
+     * GET /rest/raven/2.0/api/test/{testKey}/testset
+     */
+    async getXrayTestSets(testKey: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testset`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test sets for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get test executions for a Test
+     * GET /rest/raven/2.0/api/test/{testKey}/testexecution
+     */
+    async getXrayTestExecutions(
+        testKey: string,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+
+        const queryString = params.toString();
+        const url = `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test executions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get test plans for a Test
+     * GET /rest/raven/2.0/api/test/{testKey}/testplan
+     */
+    async getXrayTestPlans(testKey: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testplan`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test plans for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get tests in a Test Plan
+     * GET /rest/raven/2.0/api/testplan/{testPlanKey}/test
+     */
+    async getXrayTestPlanTests(
+        testPlanKey: string,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+
+        const queryString = params.toString();
+        const url = `https://myjira.disney.com/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test plan tests for ${testPlanKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get tests in a Test Set
+     * GET /rest/raven/2.0/api/testset/{testSetKey}/test
+     */
+    async getXrayTestSetTests(
+        testSetKey: string,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+
+        const queryString = params.toString();
+        const url = `https://myjira.disney.com/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test set tests for ${testSetKey}: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Export test runs (execution results)
+     * GET /rest/raven/2.0/api/testruns
+     */
+    async getXrayTestRuns(
+        testExecKey?: string,
+        testKey?: string,
+        testPlanKey?: string,
+        testEnvironments?: string,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const params = new URLSearchParams();
+        if (testExecKey) params.append("testExecKey", testExecKey);
+        if (testKey) params.append("testKey", testKey);
+        if (testPlanKey) params.append("testPlanKey", testPlanKey);
+        if (testEnvironments)
+            params.append("testEnvironments", testEnvironments);
+        if (page !== undefined) params.append("page", page.toString());
+        if (limit !== undefined) params.append("limit", limit.toString());
+
+        const queryString = params.toString();
+        const url = `https://myjira.disney.com/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Authorization: `Bearer ${pat}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test runs: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get all available test statuses in XRay
+     * GET /rest/raven/2.0/api/settings/teststatuses
+     */
+    async getXrayTestStatuses(): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/settings/teststatuses`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay test statuses: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get a full Test Case with all XRay details (steps, pre-conditions, test sets, executions, plans)
+     * Combines multiple XRay API calls into one comprehensive response
+     */
+    async getXrayTestCaseFull(testKey: string): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        // Fetch the Jira issue with all fields
+        const issueResponse = await fetch(
+            `https://myjira.disney.com/rest/api/2/issue/${testKey}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!issueResponse.ok) {
+            throw new Error(
+                `Failed to fetch issue ${testKey}: ${issueResponse.status} ${issueResponse.statusText}`,
+            );
+        }
+
+        const issue = await issueResponse.json();
+
+        // Fetch XRay-specific data in parallel
+        const [steps, preConditions, testSets, testExecutions, testPlans] =
+            await Promise.allSettled([
+                this.getXrayTestSteps(testKey),
+                this.getXrayTestPreConditions(testKey),
+                this.getXrayTestSets(testKey),
+                this.getXrayTestExecutions(testKey),
+                this.getXrayTestPlans(testKey),
+            ]);
+
+        return {
+            issue,
+            xray: {
+                steps:
+                    steps.status === "fulfilled" ? steps.value : { error: (steps as PromiseRejectedResult).reason?.message },
+                preConditions:
+                    preConditions.status === "fulfilled"
+                        ? preConditions.value
+                        : { error: (preConditions as PromiseRejectedResult).reason?.message },
+                testSets:
+                    testSets.status === "fulfilled"
+                        ? testSets.value
+                        : { error: (testSets as PromiseRejectedResult).reason?.message },
+                testExecutions:
+                    testExecutions.status === "fulfilled"
+                        ? testExecutions.value
+                        : { error: (testExecutions as PromiseRejectedResult).reason?.message },
+                testPlans:
+                    testPlans.status === "fulfilled"
+                        ? testPlans.value
+                        : { error: (testPlans as PromiseRejectedResult).reason?.message },
+            },
+        };
+    }
+
+    /**
+     * Get pre-condition tests (tests associated with a pre-condition issue)
+     * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
+     */
+    async getXrayPreConditionTests(preConditionKey: string): Promise<any[]> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/2.0/api/precondition/${preConditionKey}/test`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get XRay pre-condition tests for ${preConditionKey}: ${response.status} ${response.statusText} - ${errorText}`,
             );
         }
 

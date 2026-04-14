@@ -348,6 +348,18 @@ if conf and conf != "YOUR_TOKEN":
         env["CONFLUENCE_PAT"] = conf
         changed = True
 
+# Inject qTest tokens
+qtest_token = read_tok("QTEST_BEARER_TOKEN")
+qtest_project = read_tok("QTEST_PROJECT_ID")
+if "qtest" in servers:
+    env = servers["qtest"].get("env", {})
+    if qtest_token and "QTEST_BEARER_TOKEN" in env:
+        env["QTEST_BEARER_TOKEN"] = qtest_token
+        changed = True
+    if qtest_project and "QTEST_PROJECT_ID" in env:
+        env["QTEST_PROJECT_ID"] = qtest_project
+        changed = True
+
 # GitHub: per-remote injection or legacy fallback
 if "github" in servers:
     remotes = [r for r in remotes_raw.strip().split('\n') if r.strip()]
@@ -909,6 +921,24 @@ CONFEOF
             echo ""
         fi
         
+        # qTest token
+        echo "━━━ qTest ━━━"
+        read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
+        read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
+        if [ -n "$qtest_token" ]; then
+            qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+            cat > "$qtest_env" << QTESTEOF
+QTEST_BEARER_TOKEN=$qtest_token
+QTESTEOF
+            if [ -n "$qtest_project_id" ]; then
+                echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+            fi
+            echo "  ✓ Saved to qtest-mcp/.env"
+        else
+            echo "  ⏭ Skipped"
+        fi
+        echo ""
+        
         # Generate centralized tokens.env
         echo ""
         echo "🔧 Generating ~/.kiro/tokens.env..."
@@ -930,6 +960,11 @@ TOKHEADER
         github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
         if [ -f "$github_env" ]; then
             grep -E '^GITHUB_(TOKEN|HOST|API_PATH)_[a-zA-Z0-9_]+=' "$github_env" >> "$tokens_file" 2>/dev/null || true
+        fi
+        # Copy qTest tokens from qtest-mcp/.env
+        qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+        if [ -f "$qtest_env" ]; then
+            grep -E '^QTEST_(BEARER_TOKEN|PROJECT_ID)=' "$qtest_env" >> "$tokens_file" 2>/dev/null || true
         fi
         echo "  ✓ $tokens_file"
         
