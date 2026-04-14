@@ -12,7 +12,7 @@
       "memory_bank": "opsheet-plus-vas"
     }
   ],
-  "rules": ["conventional_commit", "general-node-development", "general-angular-development"],
+  "rules": ["conventional_commit", "general-node-development", "general-angular-development", "general-go-development"],
   "enable_tools": true,
   "jira_prefix": "OPS-"
 }
