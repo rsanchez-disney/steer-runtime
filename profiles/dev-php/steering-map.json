@@ -1,0 +1,8 @@
+{
+  "$schema": "Mapping from context files to Kiro IDE steering files.",
+  "mappings": [
+    { "context": "php_zend_conventions.md",  "steering": "zend-conventions.md",  "inclusion": "fileMatch", "fileMatchPattern": ["**/*.php", "composer.json", "phpunit.xml*"] },
+    { "context": "php_testing_strategy.md",  "steering": "testing-strategy.md",  "inclusion": "fileMatch", "fileMatchPattern": ["**/*.php", "phpunit.xml*"] },
+    { "context": "php_legacy_migration.md",  "steering": "legacy-migration.md",  "inclusion": "always" }
+  ]
+}

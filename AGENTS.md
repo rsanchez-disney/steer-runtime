@@ -65,6 +65,11 @@ graph TD
         DOTNET_SERVERLESS["dotnet_serverless_agent"]:::agent
     end
 
+    %% ─── dev-php ───────────────────────────────────
+    subgraph DEV_PHP["dev-php · 1 agent"]
+        PHP["php_agent<br/><i>context7</i>"]:::agent
+    end
+
     %% ─── ba ────────────────────────────────────────
     subgraph BA["ba · 8 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
@@ -120,6 +125,8 @@ graph TD
     DEV -.-> DEV_MOB
     DEV -.-> DEV_PY
     DEV -.-> DEV_INFRA
+    DEV -.-> DEV_DOTNET
+    DEV -.-> DEV_PHP
 
     %% ─── cross-profile delegation ──────────────────
     ORCH -.->|delegates| BACK
@@ -135,16 +142,17 @@ graph TD
 
 ---
 
-## Dev Profiles (26 agents total)
+## Dev Profiles (30 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 26 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
+koda install dev                    # All 30 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-dotnet    # .NET developer (19 agents)
+koda install dev-core dev-php       # PHP/Zend developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
@@ -349,6 +357,19 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 **Purpose:** Serverless specialist — thin handlers, service orchestration, explicit contracts, AWS adapter seams  
 **Use for:** Lambda handlers, event-driven workflows, stateless execution  
 **Tools:** code, execute_bash, fs_read, fs_write, grep
+
+---
+
+### Profile: dev-php (1 agent)
+
+PHP specialist for Zend Framework 3 (Laminas) and legacy ZF1/ZF2.
+
+#### php_agent
+**File:** `profiles/dev-php/agents/php_agent.json`  
+**Purpose:** PHP/Zend specialist — MVC, service managers, factory pattern, PSR-12, PHPUnit  
+**Use for:** Zend/Laminas MVC apps, legacy ZF1/ZF2 migration, module development  
+**MCP Servers:** context7  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
 
@@ -703,6 +724,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-dotnet** | dotnet_senior_agent | | | | | | |
 | **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
 | **dev-dotnet** | dotnet_serverless_agent | | | | | | |
+| **dev-php** | php_agent | | | | | ✅ | |
 | **dev-mobile** | flutter | | | | | ✅ | |
 | **dev-mobile** | android_native | | | | | ✅ | |
 | **dev-mobile** | ios_native | | | | | ✅ | |
@@ -764,6 +786,9 @@ Shared context loaded via agent `resources`:
 | `dotnet_aws_platform_guidance.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
 | `dotnet_self_host_api_guidance.md` | dotnet_senior, dotnet_self_host_api |
 | `dotnet_serverless_guidance.md` | dotnet_senior, dotnet_serverless |
+| `php_zend_conventions.md` | php_agent |
+| `php_testing_strategy.md` | php_agent |
+| `php_legacy_migration.md` | php_agent |
 
 ---
 
@@ -790,6 +815,9 @@ kiro-cli chat --agent terraform                 # Terraform/IaC
 kiro-cli chat --agent dotnet_senior_agent       # .NET senior persona
 kiro-cli chat --agent dotnet_self_host_api_agent  # ASP.NET Core APIs
 kiro-cli chat --agent dotnet_serverless_agent     # .NET serverless
+
+# Dev PHP
+kiro-cli chat --agent php_agent                   # PHP/Zend Framework
 
 # Dev Mobile
 kiro-cli chat --agent flutter                   # Flutter mobile
@@ -835,7 +863,7 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ## Installation
 
 ```bash
-koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
+koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev ba qa ops pm       # Install all profiles
@@ -844,5 +872,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 58 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
-**Last Updated:** April 3, 2026
+**Total Agents:** 59 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Last Updated:** April 14, 2026
