@@ -148,6 +148,34 @@ export class AppDynamicsApiClient {
         }
         throw new Error(`Application '${appName}' not found in AppDynamics`);
     }
+
+    async validate(): Promise<void> {
+        // 1. Check required env vars
+        const missing: string[] = [];
+        if (!process.env.APPD_CONTROLLER_URL) missing.push("APPD_CONTROLLER_URL");
+        if (!process.env.APPD_CLIENT_ID) missing.push("APPD_CLIENT_ID");
+        if (!process.env.APPD_CLIENT_SECRET) missing.push("APPD_CLIENT_SECRET");
+
+        if (missing.length) {
+            throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+        }
+
+        // 2. Load config
+        await this.loadConfig();
+        console.error(`[appdynamics-mcp] Controller URL: ${this.controllerUrl}`);
+        console.error(`[appdynamics-mcp] Client ID: ${this.clientId}`);
+
+        // 3. Test OAuth token acquisition
+        console.error("[appdynamics-mcp] Testing OAuth authentication...");
+        const token = await this.getOAuthToken();
+        console.error(`[appdynamics-mcp] OAuth token acquired (${token.substring(0, 8)}...)`);
+
+        // 4. Test API connectivity — list applications
+        console.error("[appdynamics-mcp] Testing API connectivity...");
+        const apps = await this.restGet("/applications");
+        const count = Array.isArray(apps) ? apps.length : 0;
+        console.error(`[appdynamics-mcp] Connected — ${count} application(s) found`);
+    }
 }
 
 export const apiClient = new AppDynamicsApiClient();

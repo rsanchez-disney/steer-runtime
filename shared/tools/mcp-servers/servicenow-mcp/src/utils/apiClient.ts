@@ -167,6 +167,32 @@ export class ServiceNowApiClient {
         const users = result?.result ?? [];
         return users.length ? users[0].sys_id : null;
     }
+
+    async validate(): Promise<void> {
+        // 1. Check required env vars
+        const missing: string[] = [];
+        if (!process.env.SNOW_INSTANCE) missing.push("SNOW_INSTANCE");
+        if (!process.env.SNOW_USERNAME) missing.push("SNOW_USERNAME");
+        if (!process.env.SNOW_PASSWORD) missing.push("SNOW_PASSWORD");
+
+        if (missing.length) {
+            throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+        }
+
+        // 2. Load config
+        await this.loadConfig();
+        console.error(`[servicenow-mcp] Instance URL: ${this.instanceUrl}`);
+        console.error(`[servicenow-mcp] Username: ${this.username}`);
+
+        // 3. Test API connectivity — query a single incident to verify auth
+        console.error("[servicenow-mcp] Testing API connectivity...");
+        const result = await this.get("/table/incident", {
+            sysparm_limit: "1",
+            sysparm_fields: "number",
+        });
+        const count = result?.result?.length ?? 0;
+        console.error(`[servicenow-mcp] Connected — auth OK (${count} test record returned)`);
+    }
 }
 
 export const apiClient = new ServiceNowApiClient();

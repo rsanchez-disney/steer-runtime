@@ -20,6 +20,7 @@ import { getCtaskSchema, handleGetCtask } from "./tools/getCtask.js";
 import { addCtaskWorkNoteSchema, handleAddCtaskWorkNote } from "./tools/addCtaskWorkNote.js";
 import { updateCtaskSchema, handleUpdateCtask } from "./tools/updateCtask.js";
 import { closeCtaskSchema, handleCloseCtask } from "./tools/closeCtask.js";
+import { apiClient } from "./utils/apiClient.js";
 
 const tools = [
     { schema: getIncidentSchema, handler: handleGetIncident },
@@ -78,6 +79,14 @@ class ServiceNowMCPServer {
     }
 
     async run() {
+        // Startup validation
+        try {
+            await apiClient.validate();
+        } catch (err) {
+            console.error(`[servicenow-mcp] Startup validation failed: ${err instanceof Error ? err.message : String(err)}`);
+            console.error("[servicenow-mcp] Server will start but tools may fail until config is fixed");
+        }
+
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         console.error("ServiceNow MCP server running on stdio");

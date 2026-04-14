@@ -15,8 +15,7 @@ import { getHealthViolationsSchema, handleGetHealthViolations } from "./tools/ge
 import { getErrorRateSchema, handleGetErrorRate } from "./tools/getErrorRate.js";
 import { getSnapshotsSchema, handleGetSnapshots } from "./tools/getSnapshots.js";
 import { getAnomaliesSchema, handleGetAnomalies } from "./tools/getAnomalies.js";
-
-const tools = [
+import { apiClient } from "./utils/apiClient.js";const tools = [
     { schema: listApplicationsSchema, handler: handleListApplications },
     { schema: getApplicationHealthSchema, handler: handleGetApplicationHealth },
     { schema: getBusinessTransactionsSchema, handler: handleGetBusinessTransactions },
@@ -68,6 +67,14 @@ class AppDynamicsMCPServer {
     }
 
     async run() {
+        // Startup validation
+        try {
+            await apiClient.validate();
+        } catch (err) {
+            console.error(`[appdynamics-mcp] Startup validation failed: ${err instanceof Error ? err.message : String(err)}`);
+            console.error("[appdynamics-mcp] Server will start but tools may fail until config is fixed");
+        }
+
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         console.error("AppDynamics MCP server running on stdio");
