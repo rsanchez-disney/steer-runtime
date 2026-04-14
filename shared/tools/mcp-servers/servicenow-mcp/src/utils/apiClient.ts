@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import fetch from "node-fetch";
 
 const DEFAULT_TIMEOUT_MS = 30000;
 

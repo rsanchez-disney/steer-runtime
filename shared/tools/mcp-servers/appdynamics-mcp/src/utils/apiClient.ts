@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import fetch from "node-fetch";
 
 const DEFAULT_TIMEOUT_MS = 30000;
 
@@ -76,7 +77,7 @@ export class AppDynamicsApiClient {
                 throw new Error(`OAuth token error: ${response.status} - ${errorText}`);
             }
 
-            const data = await response.json();
+            const data = (await response.json()) as any;
             this.tokenCache.accessToken = data.access_token;
             this.tokenCache.expiresAt = now + (data.expires_in || 300);
             return data.access_token;

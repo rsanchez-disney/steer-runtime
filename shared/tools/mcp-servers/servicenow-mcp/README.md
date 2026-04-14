@@ -1,17 +1,17 @@
-# ServiceNow Node MCP Server
+# ServiceNow MCP Server
 
-Node.js/TypeScript MCP server for ServiceNow incidents, problems, change requests, and CTASKs via the ServiceNow REST API. Functionally equivalent to `servicenow-mcp` (Python).
+Node.js/TypeScript MCP server for ServiceNow incidents, problems, change requests, and CTASKs via the ServiceNow REST API.
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 16+
 - npm
 - A ServiceNow service account with API access
 
 ## Installation
 
 ```bash
-cd shared/tools/mcp-servers/servicenow-node-mcp
+cd shared/tools/mcp-servers/servicenow-mcp
 npm install
 npm run build
 ```
@@ -23,13 +23,13 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json` or `.kiro/settings/mcp.
 ```json
 {
   "mcpServers": {
-    "servicenow": {
+    "servicenow-mcp": {
       "command": "node",
       "args": [
-        "/full/path/to/servicenow-node-mcp/build/index.js"
+        "/full/path/to/servicenow-mcp/build/index.js"
       ],
       "env": {
-        "SNOW_INSTANCE": "https://disney.service-now.com",
+        "SNOW_INSTANCE": "https://your-instance.service-now.com",
         "SNOW_USERNAME": "your-service-account",
         "SNOW_PASSWORD": "your-password"
       },
@@ -94,6 +94,7 @@ npm run inspector   # Launch MCP Inspector for testing
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `Cannot find module` | Not built | Run `npm run build` |
+| `fetch is not defined` | Node.js < 16 or missing `node-fetch` | Run `npm install` to ensure `node-fetch` is installed |
 | `Missing required environment variables` | Env vars not set | Check `env` block in mcp.json |
 | `401 Unauthorized` | Bad credentials | Verify `SNOW_USERNAME` and `SNOW_PASSWORD` |
 | `No record found` | Wrong number format | Include the prefix (e.g. `INC`, `CTASK`, `CHG`) |

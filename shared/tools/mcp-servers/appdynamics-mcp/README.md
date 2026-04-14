@@ -1,17 +1,17 @@
-# AppDynamics Node MCP Server
+# AppDynamics MCP Server
 
-Node.js/TypeScript MCP server that provides tools to query the AppDynamics REST API using OAuth client credentials authentication. Functionally equivalent to `appdynamics-mcp` (Python).
+Node.js/TypeScript MCP server that provides tools to query the AppDynamics REST API using OAuth client credentials authentication.
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 16+
 - npm
 - An AppDynamics SaaS controller with API client credentials (client ID + client secret)
 
 ## Installation
 
 ```bash
-cd shared/tools/mcp-servers/appdynamics-node-mcp
+cd shared/tools/mcp-servers/appdynamics-mcp
 npm install
 npm run build
 ```
@@ -26,10 +26,10 @@ Add the server to your Kiro MCP config file.
 ```json
 {
   "mcpServers": {
-    "appdynamics": {
+    "appdynamics-mcp": {
       "command": "node",
       "args": [
-        "/full/path/to/appdynamics-node-mcp/build/index.js"
+        "/full/path/to/appdynamics-mcp/build/index.js"
       ],
       "env": {
         "APPD_CONTROLLER_URL": "https://your-controller.saas.appdynamics.com",
@@ -44,7 +44,7 @@ Add the server to your Kiro MCP config file.
 ```
 
 Replace:
-- `/full/path/to/appdynamics-node-mcp/build/index.js` with the absolute path to the built entry point
+- `/full/path/to/appdynamics-mcp/build/index.js` with the absolute path to the built entry point
 - `APPD_CONTROLLER_URL` with your AppDynamics SaaS controller URL (no trailing slash)
 - `APPD_CLIENT_ID` with your OAuth client ID (format: `username@account-name`)
 - `APPD_CLIENT_SECRET` with your OAuth client secret
@@ -106,6 +106,7 @@ npm run inspector   # Launch MCP Inspector for testing
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | `Cannot find module` | Not built | Run `npm run build` |
+| `fetch is not defined` | Node.js < 16 or missing `node-fetch` | Run `npm install` to ensure `node-fetch` is installed |
 | `Missing required environment variables` | Env vars not set | Check `env` block in mcp.json |
 | `OAuth token error: 401` | Bad credentials | Verify `APPD_CLIENT_ID` and `APPD_CLIENT_SECRET` |
 | Empty metric results | Metric path doesn't exist | Use `get_tiers` first to find valid tier names |
