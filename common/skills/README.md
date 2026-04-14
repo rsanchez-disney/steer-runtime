@@ -23,7 +23,10 @@ Skills are standalone prompt files that define a complete workflow — from cont
 | [generate-base-specifications](generate-base-specifications.md) | Bootstrap project spec documents from codebase analysis |
 | [generate-spec-document](generate-spec-document.md) | Generate a single spec from a template |
 
-## Usage
+### Operations
+| Skill | Description |
+|-------|-------------|
+| [appdynamics-health-check](appdynamics-health-check.md) | Application health check and incident triage using AppDynamics MCP |## Usage
 
 ### Kiro CLI
 ```bash
