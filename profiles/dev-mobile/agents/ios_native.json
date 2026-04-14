@@ -1,0 +1,28 @@
+{
+  "name": "ios_native",
+  "description": "iOS native specialist for Swift/Objective-C and platform channels",
+  "prompt": "ios_native.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "ios/Runner/**",
+        "ios/Podfile",
+        "ios/Runner.xcodeproj/**",
+        "ios/Runner.xcworkspace/**",
+        "ios/Runner/Info.plist"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "allowedTools": [],
+  "includeMcpJson": true
+}

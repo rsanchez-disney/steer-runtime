@@ -28,10 +28,18 @@ mcp-config.json
 # mcp-servers/
 
 # MCP servers internal files
-.kiro/tools/mcp-servers/*/node_modules/
+node_modules/
 .kiro/tools/mcp-servers/*/.git/
 .kiro/tools/mcp-servers/*/.env
 .kiro/tools/mcp-servers/*/build/
 !.kiro/tools/mcp-servers/*/dist/
 .kiro/tools/mcp-servers/*/*.log
 .kiro/tools/mcp-servers/*/package-lock.json
+tests/runs/
+.kiro/settings/
+steer-runtime-*.tar.gz
+._*
+VERSION
+
+# Kiro IDE hooks (workspace-level, not committed)
+.kiro/hooks/

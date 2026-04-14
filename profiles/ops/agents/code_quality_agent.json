@@ -1,0 +1,16 @@
+{
+  "name": "code_quality_agent",
+  "description": "Retrieves and analyzes code quality metrics from SonarQube",
+  "prompt": "code_quality_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@sonarqube/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}

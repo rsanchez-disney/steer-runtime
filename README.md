@@ -1,285 +1,134 @@
 # steer-runtime
 
-Portable, IDE-agnostic AI agent platform for software teams — 40 specialized agents across 5 SDLC profiles, deployable to any AI-powered IDE or CLI.
+AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-Define agents, standards, and integrations once. Run them everywhere — Kiro CLI, Cursor, Kite, or the next tool your team adopts.
-
-```bash
-./setup.sh install dev ba qa ops pm   # Install all profiles
-./setup.sh mcp-install                # Configure shared MCP servers
-```
-
-> 🆕 **Getting started?** See [Getting Started](docs/GETTING_STARTED.md) · 🪟 **Windows?** See [Windows Setup](docs/WINDOWS_SETUP.md)
+55 agents, 9 profiles, one setup. Define your standards once, run them everywhere.
 
 ---
 
-## Why steer-runtime?
+## Get Started
 
-AI coding assistants are powerful, but without shared standards they produce inconsistent output across developers, projects, and IDEs. steer-runtime solves this:
-
-- **Consistent output** — Every agent enforces the same coding standards, review criteria, and documentation patterns regardless of who runs it or which IDE they use
-- **Role-based profiles** — Developers, BAs, QA, Ops, and PMs each get purpose-built agents tuned to their workflow
-- **IDE-portable** — Agent knowledge (prompts, context, rules) is authored once and compiled to each IDE's native format
-- **Project-portable** — Memory banks and project mappings let the same agents work across any codebase, team, or tech stack
-- **Extensible** — Add new profiles, new IDE targets, or new MCP integrations without changing existing agents
-
----
-
-## Supported IDEs
-
-| IDE | How agents run | Setup | Status |
-|-----|---------------|-------|--------|
-| **Kiro CLI** | Native agent JSON + prompt markdown | `./setup.sh install <profiles>` | ✅ Primary |
-| **Cursor** | `.mdc` rule files + shared MCP config | `./setup.sh cursor install <dir>` | ✅ Supported |
-| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) | ✅ Companion |
-
-All three share the same MCP server bundles (Jira, Confluence, GitHub, Mermaid) and the same source-of-truth for coding standards. Adding a new IDE target means writing one adapter — the agent definitions, context files, and integrations stay the same.
-
----
-
-## Quick Start
+1. [Request access and sign in](docs/GETTING_STARTED.md) with Disney SSO
+2. Install tools and agents: [macOS / Linux](docs/SETUP.md) · [Windows](docs/WINDOWS_SETUP.md)
+3. Start chatting:
 
 ```bash
-git clone <repo-url> ~/steer-runtime
-cd ~/steer-runtime
-
-./setup.sh list                 # See available profiles
-./setup.sh install dev          # Install dev profile (or: dev ba qa ops pm)
-./setup.sh mcp-install          # Setup MCP servers + tokens
-./setup.sh enable-tools         # Enable thinking, todo, knowledge (optional)
+koda chat --agent orchestrator    # Dev orchestrator
+koda chat --agent qa_orchestrator_agent  # QA orchestrator
+koda chat --agent ba_orchestrator_agent  # BA orchestrator
 ```
 
-Then use agents:
-```bash
-# Kiro CLI
-kiro-cli chat --agent orchestrator              # Dev orchestrator
-kiro-cli chat --agent ba_orchestrator_agent      # BA orchestrator
-kiro-cli chat --agent qa_orchestrator_agent      # QA orchestrator
-kiro-cli chat --agent ops_orchestrator_agent     # Ops orchestrator
-kiro-cli chat --agent pm_orchestrator_agent      # PM/Scrum Master orchestrator
-
-# Cursor — agents activate automatically via glob patterns and manual rules
-./setup.sh cursor install ~/my-project
-
-# Kite — visual interface over Kiro CLI agents
-# See https://github.disney.com/SANCR225/Kite
-```
+> `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
+> 👥 Joining a team? Run `koda workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
 
 ---
 
 ## Profiles
 
-| Profile | Agents | Focus | Docs |
-|---------|:------:|-------|------|
-| **dev** | 19 | Backend, WebAPI, UI, mobile, security, code review | [Prompt Guide](docs/PROMPT_GUIDE.md) |
-| **ba** | 4 | Requirements, scope, user stories, acceptance criteria | [BA Guide](docs/BA_PROMPT_GUIDE.md) |
-| **qa** | 6 | Test planning, automation, defect analysis, API/perf testing | [QA Guide](docs/QA_PROMPT_GUIDE.md) |
-| **ops** | 5 | AI metrics, infrastructure, deployments, code quality | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) |
-| **pm** | 6 | Sprint management, standups, retros, risk tracking, delivery reports | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
-
-Full agent reference: [AGENTS.md](AGENTS.md)
-
-Profiles are additive — install only what your role needs, or install all five for full SDLC coverage.
-
----
-
-## Using Across Projects and Teams
-
-steer-runtime is designed to move between projects without reconfiguration:
+Pick what fits your role, or install everything:
 
 ```bash
-# Initialize any project with a memory bank
-./setup.sh init-memory ~/my-project
-
-# Cursor projects get the same treatment
-./setup.sh cursor init-memory ~/my-project
+koda install dev ba qa ops pm
 ```
 
-Memory banks give agents project-specific context (tech stack, repo structure, conventions) while the agents themselves stay generic. The same `backend` agent works on a Java Spring Boot service, a Node.js API, or a Go microservice — the memory bank tells it which one it's looking at.
+| Profile | Agents | What it does |
+|---------|:------:|-------------|
+| **dev** | 23 | Code, review, test, security, PRs — the full dev loop |
+| **ba** | 8 | Requirements, scope, stories, PRD generation, quality gates |
+| **qa** | 10 | Test planning, automation, E2E generation, defect analysis, API & perf testing |
+| **ops** | 7 | AI metrics, infra, deployments, code quality, release management |
+| **pm** | 6 | Sprints, standups, retros, risk tracking, delivery reports |
 
-Pre-built memory banks ship for 9 Disney Payments projects. Adding a new project takes minutes — create a memory template in `common/memory-templates/` and run `init-memory`.
-
----
-
-## Architecture
-
-```mermaid
-graph TD
-    subgraph src["steer-runtime (source of truth)"]
-        profiles["Profiles<br/>dev / ba / qa / ops / pm"]
-        context["Context<br/>rules, prompts, memory"]
-        mcp["MCP Servers<br/>(shared bundles)"]
-    end
-
-    profiles --> setup
-    context --> setup
-    mcp --> setup
-
-    setup["setup.sh / setup.ps1<br/>compile + install + configure"]
-
-    setup --> kiro["Kiro CLI<br/>.kiro/"]
-    setup --> cursor["Cursor<br/>.cursor/"]
-    setup --> kite["Kite<br/>Desktop GUI"]
-
-    style src fill:#1a1a2e,stroke:#e94560,color:#eee
-    style setup fill:#0f3460,stroke:#e94560,color:#eee
-    style kiro fill:#16213e,stroke:#0f3460,color:#eee
-    style cursor fill:#16213e,stroke:#0f3460,color:#eee
-    style kite fill:#16213e,stroke:#0f3460,color:#eee
-```
-
-The key insight: agent knowledge (what to do, how to review code, what standards to enforce) is authored once in profile directories. `setup.sh` compiles that knowledge into each IDE's native format. When you improve an agent prompt, every IDE gets the update on next sync.
-
----
-
-## Commands
-
-```bash
-# Core
-./setup.sh                      # Show help
-./setup.sh list                 # List available profiles
-./setup.sh install <profiles>   # Install one or more profiles
-./setup.sh sync                 # Update installed profiles
-./setup.sh remove <profiles>    # Remove specific profiles
-./setup.sh check                # Verify installation + validate agents
-./setup.sh clean                # Remove all installed profiles
-
-# MCP & Tools
-./setup.sh mcp-install          # Setup MCP servers + configure tokens
-./setup.sh configure            # Reconfigure MCP tokens only
-./setup.sh enable-tools         # Enable thinking, todo, knowledge
-
-# Content
-./setup.sh rules list           # List available coding rules
-./setup.sh rules install --all  # Install rules to project
-./setup.sh prompts list         # List available prompts
-./setup.sh init-memory <dir>    # Initialize project memory bank
-
-# Cursor IDE
-./setup.sh cursor install <dir>  # Install Cursor rules + MCP config
-./setup.sh cursor sync <dir>     # Update Cursor rules from templates
-./setup.sh cursor remove <dir>   # Remove .cursor/ directory
-./setup.sh cursor init-memory <dir> # Generate project context rule
-
-# Kiro UI (project-specific install)
-./setup.sh install dev --project ~/my-project
-```
-
----
-
-## MCP Servers
-
-MCP servers are pre-built and bundled — no `npm install` required. Shared across all IDEs.
-
-```bash
-./setup.sh mcp-install          # Verify bundles + configure tokens
-./setup.sh configure            # Reconfigure tokens only
-```
-
-| Server | Purpose | Token URL |
-|--------|---------|-----------|
-| jira-mcp | Jira issue management | [Generate token](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
-| confluence-mcp | Confluence wiki | [Generate token](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| mywiki-mcp | MyWiki instance | [Generate token](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| github-mcp | GitHub Enterprise | [Generate token](https://github.disney.com/settings/tokens) |
-| mermaid-diagram-mcp | Diagram generation | No token needed |
-
----
-
-## Project Structure
-
-```
-steer-runtime/
-├── .kiro-dev/                # Dev profile (19 agents)
-├── .kiro-ba/                 # BA profile (4 agents)
-├── .kiro-qa/                 # QA profile (6 agents)
-├── .kiro-ops/                # Ops profile (5 agents)
-├── .kiro-pm/                 # PM/Scrum Master profile (6 agents)
-├── .kiro/context/            # Shared context files (golden rules, guidelines)
-├── .kiro/hooks/              # Reusable agent hook scripts
-├── .kiro/tools/mcp-servers/  # Pre-built MCP bundles (shared across IDEs)
-├── .cursor-templates/        # Cursor IDE rule templates (19 .mdc files)
-├── common/                   # Shared rules, prompts, memory templates
-├── docs/                     # All documentation
-├── setup.sh                  # macOS/Linux setup
-└── setup.ps1                 # Windows setup
-```
-
----
-
-## Extending steer-runtime
-
-### Add a new profile
-
-1. Create `.kiro-<name>/agents/` and `.kiro-<name>/prompts/`
-2. Add agent JSON configs and prompt markdown files
-3. Run `./setup.sh install <name>` — auto-discovered
-
-### Add a new IDE target
-
-1. Create a templates directory (e.g., `.windsurf-templates/`)
-2. Add a compile command to `setup.sh` that transforms agent prompts into the IDE's format
-3. The agent definitions, context, and MCP servers stay the same
-
-### Add a new MCP server
-
-1. Bundle the server into `.kiro/tools/mcp-servers/<name>/`
-2. Reference it in agent configs (`mcpServers` key)
-3. Add token configuration to `setup.sh mcp-install`
-
-### Reuse across a new project
-
-```bash
-./setup.sh init-memory ~/new-project           # Kiro CLI
-./setup.sh cursor init-memory ~/new-project    # Cursor
-```
-
----
-
-## Documentation
-
-| Audience | Guides |
-|----------|--------|
-| **Everyone** | [Project Overview](docs/PROJECT_OVERVIEW.md) · [Agent Reference](AGENTS.md) · [Getting Started](docs/GETTING_STARTED.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) |
-| **Developers** | [Prompt Guide](docs/PROMPT_GUIDE.md) · [Mobile Setup](docs/MOBILE_AGENTS_SETUP.md) · [Architecture](docs/DESIGN.md) · [MCP Config](docs/MCP_SETUP.md) |
-| **BA / PO** | [BA Guide](docs/BA_PROMPT_GUIDE.md) · [Workflows](docs/BA_WORKFLOWS.md) · [Quick Ref](docs/BA_QUICK_REFERENCE.md) |
-| **QA** | [QA Guide](docs/QA_PROMPT_GUIDE.md) · [Workflows](docs/QA_WORKFLOWS.md) · [Quick Ref](docs/QA_QUICK_REFERENCE.md) · [Overview](docs/QA_PROFILE_OVERVIEW.md) |
-| **Ops** | [Ops Guide](docs/OPS_PROMPT_GUIDE.md) · [Workflows](docs/OPS_WORKFLOWS.md) · [Quick Ref](docs/OPS_QUICK_REFERENCE.md) |
-| **PM / Scrum** | [PM Guide](docs/PM_PROMPT_GUIDE.md) |
-| **Cursor users** | [Cursor Setup](docs/CURSOR_SETUP.md) |
-| **Windows** | [Windows Setup](docs/WINDOWS_SETUP.md) |
+`dev` is five composable sub-profiles: `dev-core` (16), `dev-web` (5), `dev-python` (1), `dev-infra` (1), `dev-mobile` (3).
 
 ---
 
 ## Features
 
-✅ 40 specialized agents across 5 SDLC profiles  
-✅ IDE-agnostic — same agents run on Kiro CLI, Cursor, and Kite  
-✅ Project-portable — memory banks adapt agents to any codebase or tech stack  
-✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Mermaid, shared across IDEs  
-✅ Cross-platform — macOS/Linux (`setup.sh`) + Windows (`setup.ps1`)  
-✅ Extensible — add profiles, IDE targets, or MCP servers without changing existing agents  
-✅ Agent hooks — write guards, git context injection, destructive command warnings  
-✅ Advanced tools — thinking, todo, delegate, knowledge (opt-in)  
-✅ Auto-discovery of `.kiro-*` profile directories  
-✅ Common rules and standalone prompts reusable across teams  
+| Feature | What it is |
+|---------|-----------|
+| **Agents** | 55 specialized AI assistants — each with a focused role (code review, test planning, sprint management, etc.) |
+| **Profiles** | Role-based bundles of agents — dev, BA, QA, ops, PM. Install only what your role needs |
+| **Orchestrators** | Multi-agent coordinators that break down tasks and delegate to specialists automatically |
+| **Skills** | Reusable multi-step workflows — implement-ticket, ship-it, generate-plan, fix-failing-test |
+| **Rules** | Coding standards per tech stack (Java, Node, Go, C#, Python, React, K8s, AWS, Docker, etc.) |
+| **Golden Rules** | Organization-wide standards enforced across all agents — security, quality, consistency |
+| **Hooks** | Guardrails that run before/after agent actions — write guards, secret scanning, branch protection |
+| **MCP Servers** | Pre-built integrations — Jira, Confluence, GitHub, Mermaid, Context7. No setup beyond tokens |
+| **Workspaces** | One-command team setup — profiles, rules, context, and Jira/board config per team |
+| **Memory Banks** | Project-specific knowledge that agents carry across sessions — tech stack, patterns, conventions |
+| **Project Manifest** | `project.yaml` — structured config so agents know your stack, commands, and integrations without forking |
+| **Spec Templates** | Architecture, API contracts, domain models, business rules, workflows, data dictionary templates |
+| **Artifact Templates** | PRD, backlog, test plan, ADR templates for structured document generation |
+| **Quality Gates** | Formal approve/reject/revise checkpoints between generation steps |
+| **IDE Portable** | Same agents run on Kiro CLI, Kiro IDE, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
+| **Evals** | Agent quality scoring — structural checks + LLM-as-judge. Run via `koda eval` or CI. [Details](docs/EVAL_FRAMEWORK.md) |
 
 ---
 
-**Version:** 3.3.0 · **Agents:** 40 (dev 19, ba 4, qa 6, ops 5, pm 6) · **Updated:** March 19, 2026
+## What's New
 
-## Resources
+| Date | Change |
+|------|--------|
+| Apr 9 | Orchestrator execution modes — **review mode** (pause after each specialist, show diff, approve) and **autopilot mode** (run straight through) |
+| Apr 9 | Kiro IDE setup — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
+| Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
+| Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
+| Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
+| Apr 2 | [Nested workspaces](docs/TEAM_WORKSPACES.md) — child workspaces inside parent folders |
+| Apr 1 | [Figma MCP](docs/MCP_SETUP.md) + `dev-python` and `dev-infra` profiles |
+| Apr 1 | RA enrichment — agents gain context files, skills library, and spec awareness |
+| Mar 31 | [MCP bundles](docs/MCP_SETUP.md) — self-contained `dist/index.cjs` for all MCP servers |
+| Mar 30 | [Eval Framework](docs/EVAL_FRAMEWORK.md) — automated agent quality scoring with fixtures and rubrics |
+| Mar 28 | [project.yaml](common/templates/project.yaml) — structured project manifest (stack, commands, Jira, GitHub) |
+| Mar 27 | 7 new agents — architecture_spec, bounded_context, compliance, performance, steery, release_manager, release_documenter |
+| Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces `setup.sh` |
+| Mar 24 | [Hierarchical workspaces](docs/TEAM_WORKSPACES.md) — `extends` support, 7 team workspaces |
+| Mar 22 | Agent hooks — git context injection, write guards, destructive command warnings |
+| Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
+| Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |
 
-### 🪁 Kite — Desktop GUI
+> **Current:** 9 profiles · 55+ agents · 8 MCP servers · 7 team workspaces
 
-[Kite](https://github.disney.com/SANCR225/Kite) is a native desktop companion app (Tauri + React) that wraps Kiro CLI with a visual interface — streaming chat, agent/profile switching, prompt scoring, session management, and plugins for steering files, GitHub, and MCP servers. See the [Kite repository](https://github.disney.com/SANCR225/Kite) for installation and binary releases.
+---
 
-### Recordings & Sessions
+## Learn More
+
+| What                                                         | Where                                                                                                                                                                              |
+|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md)                                                                                                                                                     |
+| All 55 agents with tools, hooks, and MCP coverage            | [AGENTS.md](AGENTS.md)                                                                                                                                                             |
+| Eval framework — fixtures, rubrics, scoring                  | [Eval Framework](docs/EVAL_FRAMEWORK.md)                                                                                                                                           |
+| First-time Kiro setup (SSO, downloads)                       | [Getting Started](docs/GETTING_STARTED.md)                                                                                                                                         |
+| Detailed installation (macOS/Linux)                          | [Setup](docs/SETUP.md)                                                                                                                                                             |
+| How to prompt agents effectively                             | [Prompt Guide](docs/PROMPT_GUIDE.md)                                                                                                                                               |
+| Role-specific guides                                         | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md)                                                    |
+| Cursor / Amazon Q / Kite / Kiro IDE setup                    | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
+| Roadmap & feature requests                                   | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)                                                                              |
+| IDE concepts comparison                                      | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md)                                                                                                                                    |
+| Troubleshooting                                              | [Troubleshooting](docs/TROUBLESHOOTING.md)                                                                                                                                         |
+
+---
+
+## Recordings & Sessions
 
 | Date | Description | Link |
 |------|-------------|------|
 | March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
+| April 2, 2026 | Q&A Session with OpSheet Team | [Recording](https://drive.google.com/file/d/1dyEmmOJOiPxmi7GgzqWsNBUv7zlhT8t-/view?usp=sharing) |
 
 ---
+
+## Contribute
+
+Got an idea or found a bug? We'd love to hear from you.
+
+- 💡 [Propose a feature](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=feature_request.md)
+- 🐛 [Report a bug](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=bug_report.md)
+- 📋 [Track progress on Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)
+
+---
+
+**Version:** 3.7.0 · **Agents:** 55 · **Updated:** April 13, 2026
 
 Internal Disney tool — not for external distribution.

@@ -1,0 +1,51 @@
+agent: code_review_agent
+description: Code reviewer — checks quality, security, standards compliance
+
+structural_checks:
+  - name: has_findings
+    description: Identifies at least one issue or suggestion
+    pattern: "(?i)(issue|concern|suggest|recommend|improve|missing|should|consider|warning)"
+    required: true
+
+  - name: checks_error_handling
+    description: Reviews error handling
+    pattern: "(?i)(error handling|exception|try.catch|error response|400|500)"
+    required: true
+
+  - name: checks_security
+    description: Reviews security aspects
+    pattern: "(?i)(security|injection|validat|sanitiz|auth|xss|sql)"
+    required: true
+
+  - name: checks_testing
+    description: Mentions test coverage
+    pattern: "(?i)(test|coverage|unit test|integration test)"
+    required: true
+
+  - name: checks_logging
+    description: Reviews logging practices
+    pattern: "(?i)(log|logging|audit|trace)"
+    required: false
+
+quality_dimensions:
+  - name: thoroughness
+    weight: 35
+    description: >
+      Does the review cover all aspects: error handling, security,
+      testing, logging, backward compatibility, coding standards?
+
+  - name: actionability
+    weight: 35
+    description: >
+      Are findings specific and actionable? Does it explain what
+      to fix and how, not just what's wrong?
+
+  - name: accuracy
+    weight: 30
+    description: >
+      Are the findings correct? Does it identify real issues in the
+      code (e.g., missing type safety, no DTO, no logging)?
+
+thresholds:
+  structural: 100
+  quality: 70

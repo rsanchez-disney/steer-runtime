@@ -1,0 +1,19 @@
+{
+  "name": "app-team",
+  "description": "Adaptive Payment Platform \u2014 shared foundation for all APP sub-teams",
+  "team": "Disney Payments & Commerce",
+  "profiles": [
+    "dev-core",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-node-development",
+    "general-angular-development"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "DPAY-",
+  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg"
+}

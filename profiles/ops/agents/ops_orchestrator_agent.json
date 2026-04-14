@@ -1,0 +1,47 @@
+{
+  "name": "ops_orchestrator_agent",
+  "description": "Coordinates ops workflows: AI metrics, deployments, infrastructure checks, code quality",
+  "prompt": "ops_orchestrator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "execute_bash",
+    "fs_read",
+    "grep",
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/rules/**/*.md"
+  ],
+  "welcomeMessage": "\ud83d\udc4b Ops orchestrator ready!\n\nI can help you:\n  \u2022 Track AI productivity metrics for Jira tickets\n  \u2022 Check ECS/AWS infrastructure status\n  \u2022 Review code quality via SonarQube\n  \u2022 Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ]
+  }
+}

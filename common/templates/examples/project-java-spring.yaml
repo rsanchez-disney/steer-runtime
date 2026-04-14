@@ -1,0 +1,24 @@
+name: wdpr-config-services
+stack: java
+baseBranch: develop
+
+commands:
+  build: mvn clean package -DskipTests
+  test: mvn test
+  lint: mvn checkstyle:check
+  format: mvn spotless:apply
+
+integrations:
+  jira:
+    projectKey: DPAY
+    statuses:
+      inProgress: "In Progress"
+      review: "Code Review"
+      done: "Done"
+  github:
+    org: SANCR225
+    repo: wdpr-config-services
+
+workspace:
+  specsDir: docs/specs/
+  useSpecs: false

@@ -1,0 +1,20 @@
+{
+  "name": "ux_specialist_agent",
+  "description": "Reviews UI code for accessibility (WCAG 2.1 AA), usability patterns, and UX best practices",
+  "prompt": "ux_specialist_agent.md",
+  "tools": [
+    "fs_read",
+    "execute_bash",
+    "code",
+    "grep",
+    "@figma/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@figma/*"
+  ],
+  "includeMcpJson": true
+}

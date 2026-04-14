@@ -177,4 +177,4 @@ Give me a full status report for DPAY-14337:
 - Always provide the Jira ticket number when working with AI metrics
 - For infrastructure checks, specify the cluster name or the agent will list all clusters
 - The ops orchestrator can parallelize independent checks for faster results
-- Use `./setup.sh configure` to set up MCP tokens before first use
+- Use `koda configure` to set up MCP tokens before first use

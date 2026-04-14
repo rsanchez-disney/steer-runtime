@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "steer-runtime project manifest",
+  "description": "Structured project config for AI agents. Drop in your project root as project.yaml.",
+  "type": "object",
+  "required": ["name", "stack", "baseBranch"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Project name"
+    },
+    "stack": {
+      "type": "string",
+      "enum": ["java", "node", "angular", "go", "flutter", "csharp", "python", "typescript", "react"],
+      "description": "Primary tech stack"
+    },
+    "baseBranch": {
+      "type": "string",
+      "default": "main",
+      "description": "Default branch for PRs and diffs"
+    },
+    "commands": {
+      "type": "object",
+      "properties": {
+        "build": { "type": "string", "description": "Build command" },
+        "test": { "type": "string", "description": "Test command" },
+        "lint": { "type": "string", "description": "Lint command" },
+        "format": { "type": "string", "description": "Format command" }
+      },
+      "additionalProperties": false
+    },
+    "integrations": {
+      "type": "object",
+      "properties": {
+        "jira": {
+          "type": "object",
+          "properties": {
+            "projectKey": { "type": "string", "description": "Jira project prefix (e.g., DPAY)" },
+            "statuses": {
+              "type": "object",
+              "properties": {
+                "inProgress": { "type": "string" },
+                "review": { "type": "string" },
+                "done": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "github": {
+          "type": "object",
+          "properties": {
+            "org": { "type": "string", "description": "GitHub org or user" },
+            "repo": { "type": "string", "description": "Repository name" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "workspace": {
+      "type": "object",
+      "properties": {
+        "specsDir": { "type": "string", "default": "docs/specs/", "description": "Specs directory" },
+        "useSpecs": { "type": "boolean", "default": false, "description": "Whether agents reference specs" },
+        "memoryBank": { "type": "string", "description": "Memory bank name" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

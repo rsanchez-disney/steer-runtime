@@ -1,0 +1,22 @@
+{
+  "name": "scope_definer_agent",
+  "description": "Defines project and feature scope by analyzing requirements, stakeholder needs, and constraints",
+  "prompt": "scope_definer_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ],
+  "includeMcpJson": true
+}

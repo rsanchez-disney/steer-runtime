@@ -1,0 +1,35 @@
+{
+  "name": "terraform",
+  "description": "Terraform/IaC specialist for infrastructure provisioning, modules, and state management",
+  "prompt": "terraform.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@context7/*"
+  ],
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ]
+  }
+}

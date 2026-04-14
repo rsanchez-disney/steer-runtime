@@ -1,0 +1,42 @@
+{
+  "name": "api_tester_agent",
+  "description": "Tests REST APIs, validates contracts, and creates API test suites",
+  "prompt": "api_tester_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "@bruno/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/api_test_patterns.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@bruno/*"
+  ],
+  "includeMcpJson": true
+}

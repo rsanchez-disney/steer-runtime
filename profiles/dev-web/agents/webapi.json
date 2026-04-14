@@ -1,0 +1,53 @@
+{
+  "name": "webapi",
+  "description": "Config Studio WebAPI specialist (Node gateway)",
+  "prompt": "webapi.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "@bruno/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "package.json",
+        "tsconfig*.json",
+        ".eslintrc*",
+        "jest.config*"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md",
+    "file://.kiro/context/node_conventions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@bruno/*"
+  ],
+  "includeMcpJson": true
+}

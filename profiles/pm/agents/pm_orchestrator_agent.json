@@ -1,0 +1,49 @@
+{
+  "name": "pm_orchestrator_agent",
+  "description": "Coordinates PM/Scrum Master workflows and delegates to specialized agents for sprint management, standups, retros, risk tracking, and delivery reporting",
+  "prompt": "pm_orchestrator_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep",
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@github/*"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "\ud83d\udc4b PM/Scrum Master orchestrator ready!\n\nI can help you:\n  \u2022 Manage sprint planning and capacity\n  \u2022 Generate standup summaries from Jira\n  \u2022 Facilitate retrospectives with metrics\n  \u2022 Track blockers, risks, and dependencies\n  \u2022 Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health for DPAY board\"",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ]
+  }
+}

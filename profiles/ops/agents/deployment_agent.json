@@ -1,0 +1,16 @@
+{
+  "name": "deployment_agent",
+  "description": "Manages CI/CD pipelines and deployment status via Harness",
+  "prompt": "deployment_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@harness/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}

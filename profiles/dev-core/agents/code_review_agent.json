@@ -1,0 +1,22 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
+  "prompt": "code_review_agent.md",
+  "tools": [
+    "@github/*",
+    "@jira/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true
+}

@@ -1,0 +1,26 @@
+{
+  "name": "test_planner_agent",
+  "description": "Creates test plans, test cases, and test scenarios from requirements",
+  "prompt": "test_planner_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "knowledge",
+    "@bruno/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "@bruno/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/test_templates.md"
+  ],
+  "includeMcpJson": true
+}

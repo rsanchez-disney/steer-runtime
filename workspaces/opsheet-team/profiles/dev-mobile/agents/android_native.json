@@ -1,0 +1,27 @@
+{
+  "name": "android_native",
+  "description": "Android native specialist for Kotlin/Java and platform channels",
+  "prompt": "android_native.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "android/app/src/**",
+        "android/build.gradle",
+        "android/app/build.gradle",
+        "android/gradle.properties",
+        "android/settings.gradle",
+        "android/app/src/main/AndroidManifest.xml"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

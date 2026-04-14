@@ -25,7 +25,7 @@ kiro-cli chat --agent <agent_name>
 
 ### Configure MCP tokens
 ```bash
-./setup.sh configure
+koda configure
 ```
 
 ---
@@ -90,7 +90,7 @@ Show quality gate status for wdpr-config-services
 
 | Agent | MCP Server |
 |-------|------------|
-| ai_metrics_agent | mcp-atlassian (Docker) |
+| ai_metrics_agent | jira, confluence, mywiki, github |
 | deployment_agent | harness (Docker) |
 | code_quality_agent | sonarqube (Docker) |
 | infra_check_agent | AWS CLI (local) |

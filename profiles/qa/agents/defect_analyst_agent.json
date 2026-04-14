@@ -1,0 +1,24 @@
+{
+  "name": "defect_analyst_agent",
+  "description": "Analyzes defects, performs root cause analysis, and creates detailed bug reports",
+  "prompt": "defect_analyst_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/defect_templates.md"
+  ],
+  "includeMcpJson": true
+}

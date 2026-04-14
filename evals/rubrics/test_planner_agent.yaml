@@ -1,0 +1,51 @@
+agent: test_planner_agent
+description: Test planner — creates comprehensive test plans with coverage strategy
+
+structural_checks:
+  - name: has_unit_tests
+    description: Includes unit test cases
+    pattern: "(?i)(unit test|@Test|test.*method|test.*class)"
+    required: true
+
+  - name: has_integration_tests
+    description: Includes integration test cases
+    pattern: "(?i)(integration test|MockMvc|@SpringBootTest|@WebMvcTest)"
+    required: true
+
+  - name: has_edge_cases
+    description: Covers edge cases
+    pattern: "(?i)(edge case|boundary|null|empty|zero|negative|overflow|max)"
+    required: true
+
+  - name: has_error_scenarios
+    description: Covers error scenarios
+    pattern: "(?i)(error|invalid|malformed|missing|400|404|500|exception)"
+    required: true
+
+  - name: mentions_coverage
+    description: References coverage target
+    pattern: "(?i)(coverage|90%|≥90|>= ?90)"
+    required: false
+
+quality_dimensions:
+  - name: completeness
+    weight: 35
+    description: >
+      Does the plan cover unit, integration, edge cases, error
+      scenarios, and performance? Are all acceptance criteria tested?
+
+  - name: specificity
+    weight: 35
+    description: >
+      Are test cases specific with clear inputs, expected outputs,
+      and assertions? Not just categories but actual test scenarios.
+
+  - name: practicality
+    weight: 30
+    description: >
+      Are the tests implementable with the stated tools (JUnit 5,
+      Mockito, MockMvc)? Is the approach realistic for the codebase?
+
+thresholds:
+  structural: 100
+  quality: 70

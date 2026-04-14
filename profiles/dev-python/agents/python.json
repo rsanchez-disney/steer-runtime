@@ -1,0 +1,42 @@
+{
+  "name": "python",
+  "description": "Python specialist for FastAPI, Flask, Django, and general Python development",
+  "prompt": "python.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@context7/*"
+  ],
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  }
+}

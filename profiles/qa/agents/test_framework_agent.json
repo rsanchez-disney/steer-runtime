@@ -1,0 +1,7 @@
+{
+  "name": "test_framework_agent",
+  "description": "Generates test automation scaffolding based on tech stack",
+  "prompt": "test_framework_agent.md",
+  "tools": ["code", "grep", "fs_read", "fs_write", "execute_bash"],
+  "resources": ["file://.kiro/context/qa_guidelines.md"]
+}

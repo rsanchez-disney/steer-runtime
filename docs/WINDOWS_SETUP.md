@@ -1,89 +1,162 @@
 # Windows Setup Guide
 
-Windows users use `setup.ps1` (PowerShell) instead of `setup.sh`. All commands are identical.
+> **First time here?** Start with [Getting Started](GETTING_STARTED.md) to request access and sign in with Disney SSO before following this guide.
+>
+> **On macOS / Linux?** See [Setup](SETUP.md) instead.
+
+> **⚠️ Deprecated:** `setup.ps1` is deprecated. Use [Koda](https://github.disney.com/SANCR225/Koda) instead.
 
 ---
 
 ## Prerequisites
 
-- PowerShell 5.1+ (included in Windows 10/11) or PowerShell 7+
-- Node.js
+- Windows 10 (version 2004+) or Windows 11
+- [Node.js](https://nodejs.org) (includes npm)
 - Git
-- Kiro CLI (`kiro-cli`)
+- WSL with required Windows features (see below)
 
-If script execution is blocked, run once:
+> **Enable WSL features** — either run `wsl --install` in an elevated PowerShell (enables everything automatically), or manually open "Turn Windows features on or off" and enable:
+> - Hyper-V
+> - Windows Hypervisor Platform
+> - Virtual Machine Platform
+> - Windows Subsystem for Linux
+>
+> Restart after enabling.
+
+---
+
+## 1. Install WSL
+
+Kiro CLI does not have a native Windows binary yet (expected mid-April 2026). The official way to run it on Windows is through the **Windows Subsystem for Linux (WSL)**.
+
+Open **PowerShell as Administrator** and run:
+
 ```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+wsl --install
+```
+
+Restart your computer when prompted. On reboot, WSL will finish setting up Ubuntu and ask you to create a Linux username and password.
+
+Verify WSL is working:
+
+```powershell
+wsl --version
+```
+
+> All remaining steps run **inside the WSL terminal** (search "Ubuntu" in the Start menu).
+
+---
+
+## 2. Install Kiro CLI (inside WSL)
+
+```bash
+curl -fsSL https://cli.kiro.dev/install | bash
+```
+
+If the script fails, download the Universal Linux zip manually:
+
+```bash
+# Download and extract
+curl -fsSL -o kiro-cli.zip https://kiro.dev/downloads/kiro-cli-linux.zip
+unzip kiro-cli.zip
+./install.sh
+```
+
+Verify:
+
+```bash
+kiro-cli --version
+```
+
+### Authenticate
+
+```bash
+kiro-cli login
+```
+
+This opens a URL in your Windows browser. Sign in with your AWS Builder ID (Disney SSO — see [Getting Started](GETTING_STARTED.md) for details).
+
+---
+
+## 3. Install Koda (inside WSL)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
+```
+
+Verify:
+
+```bash
+koda version
 ```
 
 ---
 
-## Quick Start
+## 4. Install Agents
 
-```powershell
-git clone <repo-url> C:\steer-runtime
-cd C:\steer-runtime
+```bash
+koda setup                        # Check dependencies
+koda install dev                  # Install dev agents
+koda mcp-install                  # Setup MCP servers + tokens
+```
 
-.\setup.ps1 list                     # List profiles
-.\setup.ps1 install dev              # Install dev profile
-.\setup.ps1 install dev ba qa        # Install multiple
-.\setup.ps1 install dev --project C:\my-project   # Project-specific
-.\setup.ps1 mcp-install              # Setup MCP servers + tokens
+Or launch the interactive dashboard:
+
+```bash
+koda                              # TUI — press [p] for profiles, [t] for tokens
 ```
 
 ---
 
-## Commands
+## 5. Start Chatting
 
-```powershell
-.\setup.ps1                          # Show help
-.\setup.ps1 list                     # List available profiles
-.\setup.ps1 install <profiles>       # Install one or more profiles
-.\setup.ps1 sync                     # Update installed profiles
-.\setup.ps1 remove <profiles>        # Remove specific profiles
-.\setup.ps1 check                    # Verify installation
-.\setup.ps1 mcp-install              # Setup MCP servers + configure tokens
-.\setup.ps1 rules list               # List available coding rules
-.\setup.ps1 rules install --all      # Install rules to project
-.\setup.ps1 prompts list             # List available prompts
-.\setup.ps1 init-memory C:\myapp     # Initialize project memory bank
-.\setup.ps1 configure                # Configure MCP tokens
+```bash
+koda chat --agent orchestrator           # Dev orchestrator
+koda chat --agent qa_orchestrator_agent  # QA orchestrator
 ```
 
 ---
 
-## Key Differences from macOS/Linux
+## Tips for WSL Users
 
-| | macOS/Linux | Windows |
-|---|---|---|
-| Script | `./setup.sh` | `.\setup.ps1` |
-| Home dir | `~/.kiro` | `%USERPROFILE%\.kiro` |
-| Path separator | `/` | `\` |
-| File copy | `rsync` | `robocopy` |
+- **Access Windows files** from WSL at `/mnt/c/Users/<your-name>/`
+- **Clone repos inside WSL** (e.g., `~/steer-runtime`) for best performance — avoid `/mnt/c/` for git repos
+- **VS Code** integrates with WSL natively — install the [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) and run `code .` from WSL
+- **Node.js** — install inside WSL, not on Windows, to avoid path issues:
+  ```bash
+  curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+  ```
 
 ---
 
 ## Troubleshooting
 
+| Issue | Fix |
+|-------|-----|
+| `wsl --install` fails | Ensure virtualization is enabled in BIOS. Run `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart` then restart |
+| `kiro-cli: command not found` | Re-run the install script, or add `~/.local/bin` to your PATH: `export PATH="$HOME/.local/bin:$PATH"` |
+| Browser doesn't open for login | Copy the URL from the terminal and paste it into your Windows browser manually |
+| Slow git/npm in `/mnt/c/` | Move your repos to the Linux filesystem (`~/`) instead of the Windows mount |
+| `koda: command not found` | Re-run the Koda install script, or check `~/.local/bin/koda` exists |
+
+---
+
+## Legacy: setup.ps1
+
+<details>
+<summary>Click to expand (deprecated)</summary>
+
+The `setup.ps1` PowerShell script ran natively on Windows without WSL. It is now deprecated.
+
 ```powershell
-# Check installation
-.\setup.ps1 check
-
-# Verify agents installed
-Get-ChildItem $env:USERPROFILE\.kiro\agents\*.json
-
-# Reinstall
-.\setup.ps1 install dev ba
-
-# MCP servers not working
-.\setup.ps1 mcp-install
-
-# Verify .env files
-Get-ChildItem $env:USERPROFILE\.kiro\tools\mcp-servers\*\.env
-
-# Reconfigure tokens only
-.\setup.ps1 configure
+.\setup.ps1 list                     # List profiles
+.\setup.ps1 install dev              # Install dev profile
+.\setup.ps1 mcp-install              # Setup MCP servers + tokens
+.\setup.ps1 check                    # Verify installation
 ```
+
+</details>
 
 ---
 

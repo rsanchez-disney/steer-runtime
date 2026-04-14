@@ -141,7 +141,7 @@ Update "Feature Overview" page with new requirements
 → Provide examples of what you want
 
 **Can't access Jira**  
-→ Check `./setup.sh mcp-install` was run
+→ Check `koda mcp-install` was run
 
 **Wrong format**  
 → Show example of desired format in prompt

@@ -699,3 +699,24 @@ Follow existing Provider patterns in the codebase.
 
 **Updated:** March 12, 2026  
 **Mobile Agents Added:** flutter, android_native, ios_native
+
+---
+
+## Execution Modes
+
+The orchestrator supports two execution modes:
+
+- **Review mode** (default): Pauses after each specialist completes a task. Shows the diff and waits for your approval before continuing.
+- **Autopilot mode**: Runs all tasks without pausing. Only stops at the plan approval gate and the quality report gate.
+
+Select at the start of your prompt:
+```
+Implement DPAY-1234 in review mode
+Implement DPAY-1234 in autopilot mode
+```
+
+Switch mid-session:
+```
+Switch to autopilot
+Switch to review mode
+```

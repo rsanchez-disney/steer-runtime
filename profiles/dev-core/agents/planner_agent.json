@@ -1,0 +1,20 @@
+{
+  "name": "planner_agent",
+  "description": "Creates detailed implementation plans with tasks, dependencies, and test strategy",
+  "prompt": "planner_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@jira/*",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true
+}

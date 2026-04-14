@@ -1,0 +1,22 @@
+{
+  "name": "pr_creator_agent",
+  "description": "Creates GitHub pull requests with proper formatting and metadata",
+  "prompt": "pr_creator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "execute_bash",
+    "fs_read",
+    "fs_write"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ]
+}
