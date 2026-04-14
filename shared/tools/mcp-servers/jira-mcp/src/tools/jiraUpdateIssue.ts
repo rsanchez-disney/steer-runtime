@@ -50,6 +50,11 @@ export const jiraUpdateIssueSchema = {
                 description:
                     'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"])',
             },
+            priority: {
+                type: "string",
+                description:
+                    'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")',
+            },
             customFields: {
                 type: "object",
                 description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`,
@@ -70,6 +75,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             epicLink,
             components,
             labels,
+            priority,
             customFields,
         } = args as {
             ticketId: string;
@@ -80,6 +86,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             epicLink?: string;
             components?: string[];
             labels?: string[];
+            priority?: string;
             customFields?: Record<string, unknown>;
         };
 
@@ -97,6 +104,10 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
 
         if (labels && labels.length > 0) {
             updates.labels = labels;
+        }
+
+        if (priority) {
+            updates.priority = { name: priority };
         }
 
         // Resolve custom field aliases and merge into updates
