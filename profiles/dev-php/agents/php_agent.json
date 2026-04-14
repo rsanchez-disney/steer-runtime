@@ -1,0 +1,45 @@
+{
+  "name": "php_agent",
+  "description": "PHP specialist for Zend Framework 3 (Laminas), legacy ZF1/ZF2 migration, MVC architecture, service managers, and PSR-12 compliant development",
+  "prompt": "prompts/php_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@context7/*"
+  ],
+  "allowedTools": [
+    "@context7/*"
+  ],
+  "resources": [
+    "context/php_zend_conventions.md",
+    "context/php_testing_strategy.md",
+    "context/php_legacy_migration.md",
+    "context/php_review_checklist.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to vendor, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "welcomeMessage": "Ready for PHP/Zend development. Point me to your module or describe the task."
+}
