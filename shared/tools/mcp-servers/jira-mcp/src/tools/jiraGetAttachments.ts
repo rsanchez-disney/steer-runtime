@@ -70,7 +70,7 @@ export async function handleJiraGetAttachments(args: any): Promise<any> {
             const saveDir =
                 typeof outputDir === "string"
                     ? outputDir
-                    : `.amazonq/external-data/attachments/${ticketId}`;
+                    : `/tmp/jira-mcp/attachments/${ticketId}`;
 
             await mkdir(saveDir, { recursive: true });
 

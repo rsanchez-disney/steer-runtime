@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const __import_meta_url = require("url").pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
@@ -7,6 +6,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -36,7 +38,7 @@ var require_package = __commonJS({
   "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
-      version: "16.6.1",
+      version: "16.4.5",
       description: "Loads environment variables from .env file",
       main: "lib/main.js",
       types: "lib/main.d.ts",
@@ -57,9 +59,10 @@ var require_package = __commonJS({
       scripts: {
         "dts-check": "tsc --project tests/types/tsconfig.json",
         lint: "standard",
+        "lint-readme": "standard-markdown",
         pretest: "npm run lint && npm run dts-check",
-        test: "tap run --allow-empty-coverage --disable-coverage --timeout=60000",
-        "test:coverage": "tap run --show-full-coverage --timeout=60000 --coverage-report=text --coverage-report=lcov",
+        test: "tap tests/*.js --100 -Rspec",
+        "test:coverage": "tap --coverage-report=lcov",
         prerelease: "npm test",
         release: "standard-version"
       },
@@ -67,7 +70,6 @@ var require_package = __commonJS({
         type: "git",
         url: "git://github.com/motdotla/dotenv.git"
       },
-      homepage: "https://github.com/motdotla/dotenv#readme",
       funding: "https://dotenvx.com",
       keywords: [
         "dotenv",
@@ -81,12 +83,15 @@ var require_package = __commonJS({
       readmeFilename: "README.md",
       license: "BSD-2-Clause",
       devDependencies: {
+        "@definitelytyped/dtslint": "^0.0.133",
         "@types/node": "^18.11.3",
-        decache: "^4.6.2",
+        decache: "^4.6.1",
         sinon: "^14.0.1",
         standard: "^17.0.0",
+        "standard-markdown": "^7.1.0",
         "standard-version": "^9.5.0",
-        tap: "^19.2.0",
+        tap: "^16.3.0",
+        tar: "^6.1.11",
         typescript: "^4.8.4"
       },
       engines: {
@@ -129,10 +134,8 @@ var require_main = __commonJS({
       return obj;
     }
     function _parseVault(options) {
-      options = options || {};
       const vaultPath = _vaultPath(options);
-      options.path = vaultPath;
-      const result = DotenvModule.configDotenv(options);
+      const result = DotenvModule.configDotenv({ path: vaultPath });
       if (!result.parsed) {
         const err = new Error(`MISSING_DATA: Cannot parse ${vaultPath} for an unknown reason`);
         err.code = "MISSING_DATA";
@@ -155,14 +158,14 @@ var require_main = __commonJS({
       }
       return DotenvModule.parse(decrypted);
     }
+    function _log(message) {
+      console.log(`[dotenv@${version}][INFO] ${message}`);
+    }
     function _warn(message) {
       console.log(`[dotenv@${version}][WARN] ${message}`);
     }
     function _debug(message) {
       console.log(`[dotenv@${version}][DEBUG] ${message}`);
-    }
-    function _log(message) {
-      console.log(`[dotenv@${version}] ${message}`);
     }
     function _dotenvKey(options) {
       if (options && options.DOTENV_KEY && options.DOTENV_KEY.length > 0) {
@@ -230,11 +233,7 @@ var require_main = __commonJS({
       return envPath[0] === "~" ? path.join(os.homedir(), envPath.slice(1)) : envPath;
     }
     function _configVault(options) {
-      const debug = Boolean(options && options.debug);
-      const quiet = options && "quiet" in options ? options.quiet : true;
-      if (debug || !quiet) {
-        _log("Loading env from encrypted .env.vault");
-      }
+      _log("Loading env from encrypted .env.vault");
       const parsed = DotenvModule._parseVault(options);
       let processEnv = process.env;
       if (options && options.processEnv != null) {
@@ -247,7 +246,6 @@ var require_main = __commonJS({
       const dotenvPath = path.resolve(process.cwd(), ".env");
       let encoding = "utf8";
       const debug = Boolean(options && options.debug);
-      const quiet = options && "quiet" in options ? options.quiet : true;
       if (options && options.encoding) {
         encoding = options.encoding;
       } else {
@@ -284,22 +282,6 @@ var require_main = __commonJS({
         processEnv = options.processEnv;
       }
       DotenvModule.populate(processEnv, parsedAll, options);
-      if (debug || !quiet) {
-        const keysCount = Object.keys(parsedAll).length;
-        const shortPaths = [];
-        for (const filePath of optionPaths) {
-          try {
-            const relative = path.relative(process.cwd(), filePath);
-            shortPaths.push(relative);
-          } catch (e) {
-            if (debug) {
-              _debug(`Failed to load ${filePath} ${e.message}`);
-            }
-            lastError = e;
-          }
-        }
-        _log(`injecting env (${keysCount}) from ${shortPaths.join(",")}`);
-      }
       if (lastError) {
         return { parsed: parsedAll, error: lastError };
       } else {
@@ -386,6 +368,84 @@ var require_main = __commonJS({
     module2.exports.parse = DotenvModule.parse;
     module2.exports.populate = DotenvModule.populate;
     module2.exports = DotenvModule;
+  }
+});
+
+// build/utils/customFields.js
+var customFields_exports = {};
+__export(customFields_exports, {
+  CUSTOM_FIELD_ALIASES: () => CUSTOM_FIELD_ALIASES,
+  formatCustomFieldValue: () => formatCustomFieldValue,
+  getCustomFieldLabel: () => getCustomFieldLabel,
+  resolveCustomFieldIds: () => resolveCustomFieldIds
+});
+function resolveCustomFieldIds(input) {
+  const resolved = [];
+  for (const token of input) {
+    const lower = token.toLowerCase();
+    const aliasMatch = Object.entries(CUSTOM_FIELD_ALIASES).find(([alias]) => alias.toLowerCase() === lower);
+    if (aliasMatch) {
+      resolved.push(aliasMatch[1]);
+      continue;
+    }
+    if (/^customfield_\d+$/i.test(token)) {
+      resolved.push(token);
+      continue;
+    }
+    console.error(`[customFields] Unknown alias or field ID: "${token}" \u2013 skipping`);
+  }
+  return [...new Set(resolved)];
+}
+function getCustomFieldLabel(fieldId) {
+  const alias = REVERSE_ALIASES[fieldId];
+  return alias ? `${alias} (${fieldId})` : fieldId;
+}
+function formatCustomFieldValue(value) {
+  if (value === null || value === void 0)
+    return "Not set";
+  if (typeof value === "string")
+    return value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  if (typeof value === "object" && value !== null) {
+    const obj = value;
+    if (obj.name)
+      return String(obj.name);
+    if (obj.value)
+      return String(obj.value);
+    if (obj.displayName)
+      return String(obj.displayName);
+    if (Array.isArray(value)) {
+      return value.map((v) => formatCustomFieldValue(v)).join(", ");
+    }
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+var CUSTOM_FIELD_ALIASES, REVERSE_ALIASES;
+var init_customFields = __esm({
+  "build/utils/customFields.js"() {
+    "use strict";
+    CUSTOM_FIELD_ALIASES = {
+      // ── Team / Org ───────────────────────────────────
+      team: "customfield_22600",
+      // ── App / Release ────────────────────────────────
+      appVersion: "customfield_15301",
+      // ── QA / Defect ──────────────────────────────────
+      rootCauseAnalysis: "customfield_20805",
+      // ── Agile ────────────────────────────────────────
+      sprint: "customfield_10003",
+      storyPoints: "customfield_10004",
+      epicLink: "customfield_10014",
+      // ── Studio / Programme ───────────────────────────
+      studio: "customfield_20001"
+      // Add more aliases below as needed:
+      // myAlias: "customfield_XXXXX",
+    };
+    REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
+      fieldId,
+      alias
+    ]));
   }
 });
 
@@ -5769,8 +5829,19 @@ var JiraApiClient = class {
     }
     return await response.json();
   }
-  async searchJiraIssues(jql, maxResults = 50, startAt = 0) {
+  async searchJiraIssues(jql, maxResults = 50, startAt = 0, extraFields = []) {
     const pat = await this.auth.getJiraPat();
+    const baseFields = [
+      "summary",
+      "status",
+      "assignee",
+      "priority",
+      "issuetype",
+      "project",
+      "created",
+      "updated"
+    ];
+    const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
     const response = await fetch(`https://myjira.disney.com/rest/api/2/search`, {
       method: "POST",
       headers: {
@@ -5781,16 +5852,7 @@ var JiraApiClient = class {
         jql,
         maxResults,
         startAt,
-        fields: [
-          "summary",
-          "status",
-          "assignee",
-          "priority",
-          "issuetype",
-          "project",
-          "created",
-          "updated"
-        ]
+        fields
       })
     });
     if (!response.ok) {
@@ -5799,7 +5861,7 @@ var JiraApiClient = class {
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels) {
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields) {
     const pat = await this.auth.getJiraPat();
     const fields = {
       project: { key: projectKey },
@@ -5820,6 +5882,22 @@ var JiraApiClient = class {
     }
     if (labels && labels.length > 0) {
       fields.labels = labels;
+    }
+    if (sprint) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["sprint"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = Number(sprint);
+      }
+    }
+    if (customFields && Object.keys(customFields).length > 0) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      for (const [key, value] of Object.entries(customFields)) {
+        const resolved = resolveCustomFieldIds2([key]);
+        if (resolved.length > 0) {
+          fields[resolved[0]] = value;
+        }
+      }
     }
     console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
     const response = await fetch(`https://myjira.disney.com/rest/api/2/issue`, {
@@ -6337,15 +6415,16 @@ function shouldSaveOutput(outputDir, isGetOperation) {
 }
 
 // build/tools/jiraGetIssue.js
+init_customFields();
 var jiraGetIssueSchema = {
   name: "jira_get_issue",
-  description: "Fetch a JIRA ticket by ID and optionally save to output directory",
+  description: "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
   inputSchema: {
     type: "object",
     properties: {
       ticketId: {
         type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
+        description: "The JIRA ticket ID (e.g., ROS-1815)"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
@@ -6364,10 +6443,16 @@ var jiraGetIssueSchema = {
             "updated",
             "description",
             "labels",
-            "components"
+            "components",
+            "customfield_10003"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
+      },
+      customFields: {
+        type: "array",
+        items: { type: "string" },
+        description: `Optional: Array of custom field IDs to fetch (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
       }
     },
     required: ["ticketId"]
@@ -6375,7 +6460,7 @@ var jiraGetIssueSchema = {
 };
 async function handleJiraGetIssue(args) {
   try {
-    const { ticketId, outputDir, fields } = args;
+    const { ticketId, outputDir, fields, customFields } = args;
     const defaultFields = [
       "summary",
       "status",
@@ -6385,10 +6470,24 @@ async function handleJiraGetIssue(args) {
       "description"
     ];
     const requestedFields = fields || defaultFields;
+    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
+    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
-    const ticket = await apiClient.fetchJiraTicket(ticketId, requestedFields);
+    const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
     const summary = buildFormattedSummary(ticket, requestedFields);
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summary, true);
+    let customFieldSection = "";
+    if (resolvedCustomFields.length > 0) {
+      const lines = ["", "**Custom Fields:**"];
+      for (const fieldId of resolvedCustomFields) {
+        const label = getCustomFieldLabel(fieldId);
+        const rawValue = ticket.fields[fieldId];
+        const display = formatCustomFieldValue(rawValue);
+        lines.push(`**${label}:** ${display}`);
+      }
+      customFieldSection = lines.join("\n");
+    }
+    const fullSummary = `${summary}${customFieldSection}`;
+    const savedPath = await saveTicketData(outputDir, ticketId, ticket, fullSummary, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6396,7 +6495,7 @@ async function handleJiraGetIssue(args) {
       content: [
         {
           type: "text",
-          text: `${summary}${savedInfo}`
+          text: `${fullSummary}${savedInfo}`
         }
       ]
     };
@@ -6414,9 +6513,10 @@ async function handleJiraGetIssue(args) {
 }
 
 // build/tools/jiraUpdateIssue.js
+init_customFields();
 var jiraUpdateIssueSchema = {
   name: "jira_update_issue",
-  description: "Update a JIRA ticket and save the updated data",
+  description: "Update a JIRA ticket with support for custom fields and save the updated data",
   inputSchema: {
     type: "object",
     properties: {
@@ -6457,6 +6557,10 @@ var jiraUpdateIssueSchema = {
       priority: {
         type: "string",
         description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
+      },
+      customFields: {
+        type: "object",
+        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
       }
     },
     required: ["ticketId"]
@@ -6464,7 +6568,7 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
     if (summary)
@@ -6483,6 +6587,14 @@ async function handleJiraUpdateIssue(args) {
     }
     if (priority) {
       updates.priority = { name: priority };
+    }
+    if (customFields) {
+      for (const [key, value] of Object.entries(customFields)) {
+        const resolved = resolveCustomFieldIds([key]);
+        if (resolved.length > 0) {
+          updates[resolved[0]] = value;
+        }
+      }
     }
     if (epicLink) {
       const epicFieldIds = [
@@ -6763,9 +6875,10 @@ ${summaryText}${savedInfo}`
 }
 
 // build/tools/jiraSearchIssues.js
+init_customFields();
 var jiraSearchIssuesSchema = {
   name: "jira_search_issues",
-  description: "Search JIRA issues using JQL (JIRA Query Language)",
+  description: "Search JIRA issues using JQL (JIRA Query Language) with support for custom fields",
   inputSchema: {
     type: "object",
     properties: {
@@ -6781,6 +6894,11 @@ var jiraSearchIssuesSchema = {
         type: "number",
         description: "Starting index for pagination (default: 0)"
       },
+      customFields: {
+        type: "array",
+        items: { type: "string" },
+        description: `Optional: Array of custom field IDs to include in results (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the search results (optional, defaults to .amazonq/external-data)"
@@ -6791,9 +6909,10 @@ var jiraSearchIssuesSchema = {
 };
 async function handleJiraSearchIssues(args) {
   try {
-    const { jql, maxResults = 50, startAt = 0, outputDir } = args;
+    const { jql, maxResults = 50, startAt = 0, customFields, outputDir } = args;
+    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
     const apiClient = new JiraApiClient();
-    const searchResults = await apiClient.searchJiraIssues(jql, maxResults, startAt);
+    const searchResults = await apiClient.searchJiraIssues(jql, maxResults, startAt, resolvedCustomFields);
     let summaryText = `**Search Results for JQL: "${jql}"**
 
 **Total Found:** ${searchResults.total}
@@ -6806,9 +6925,14 @@ async function handleJiraSearchIssues(args) {
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
-- Project: ${issue.fields.project?.key || "Unknown"}
-
-`;
+- Project: ${issue.fields.project?.key || "Unknown"}`;
+      for (const fieldId of resolvedCustomFields) {
+        const label = getCustomFieldLabel(fieldId);
+        const display = formatCustomFieldValue(issue.fields[fieldId]);
+        summaryText += `
+- ${label}: ${display}`;
+      }
+      summaryText += "\n\n";
     });
     const savedPath = await saveData(outputDir, `search_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
       jql,
@@ -6847,7 +6971,7 @@ var import_promises3 = require("fs/promises");
 var import_path4 = require("path");
 var jiraCreateIssueSchema = {
   name: "jira_create_issue",
-  description: "Create a new JIRA issue",
+  description: "Create a new JIRA issue with support for custom fields",
   inputSchema: {
     type: "object",
     properties: {
@@ -6885,6 +7009,14 @@ var jiraCreateIssueSchema = {
         items: { type: "string" },
         description: 'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"]) (optional)'
       },
+      sprint: {
+        type: "string",
+        description: "Sprint ID to assign the issue to (optional)"
+      },
+      customFields: {
+        type: "object",
+        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the created issue data (optional)"
@@ -6895,9 +7027,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, outputDir } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels);
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
@@ -7473,7 +7605,7 @@ async function handleJiraGetAttachments(args) {
 
 ${attachmentList.join("\n")}`;
     if (download) {
-      const saveDir = typeof outputDir === "string" ? outputDir : `.amazonq/external-data/attachments/${ticketId}`;
+      const saveDir = typeof outputDir === "string" ? outputDir : `/tmp/jira-mcp/attachments/${ticketId}`;
       await (0, import_promises4.mkdir)(saveDir, { recursive: true });
       const downloaded = [];
       for (const att of attachments) {
@@ -8150,42 +8282,14 @@ async function handleXraySearchTestCases(args) {
     const hasIssueType = /issuetype\s*[=!]/i.test(jql);
     const fullJql = hasIssueType ? jql : `issuetype = Test AND (${jql})`;
     const apiClient = new JiraApiClient();
-    const pat = apiClient.auth ? await apiClient.auth.getJiraPat() : null;
-    if (!pat) {
-      throw new Error("Unable to get JIRA PAT for authentication");
-    }
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/search`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        jql: fullJql,
-        maxResults,
-        startAt,
-        fields: [
-          "summary",
-          "status",
-          "assignee",
-          "priority",
-          "issuetype",
-          "project",
-          "created",
-          "updated",
-          "labels",
-          "components",
-          "fixVersions",
-          "reporter",
-          "description"
-        ]
-      })
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to search test cases: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    const result = await response.json();
+    const extraFields = [
+      "labels",
+      "components",
+      "fixVersions",
+      "reporter",
+      "description"
+    ];
+    const result = await apiClient.searchJiraIssues(fullJql, maxResults, startAt, extraFields);
     const issues = result.issues || [];
     if (issues.length === 0) {
       return {

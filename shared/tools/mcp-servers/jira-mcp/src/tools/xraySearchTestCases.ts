@@ -41,54 +41,21 @@ export async function handleXraySearchTestCases(args: any): Promise<any> {
 
         const apiClient = new JiraApiClient();
 
-        // Use the search endpoint but request all fields for full XRay data
-        const pat = (apiClient as any).auth
-            ? await (apiClient as any).auth.getJiraPat()
-            : null;
+        const extraFields = [
+            "labels",
+            "components",
+            "fixVersions",
+            "reporter",
+            "description",
+        ];
 
-        if (!pat) {
-            throw new Error("Unable to get JIRA PAT for authentication");
-        }
-
-        const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/search`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${pat}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    jql: fullJql,
-                    maxResults,
-                    startAt,
-                    fields: [
-                        "summary",
-                        "status",
-                        "assignee",
-                        "priority",
-                        "issuetype",
-                        "project",
-                        "created",
-                        "updated",
-                        "labels",
-                        "components",
-                        "fixVersions",
-                        "reporter",
-                        "description",
-                    ],
-                }),
-            },
+        const result = await apiClient.searchJiraIssues(
+            fullJql,
+            maxResults,
+            startAt,
+            extraFields,
         );
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(
-                `Failed to search test cases: ${response.status} ${response.statusText} - ${errorText}`,
-            );
-        }
-
-        const result = await response.json();
         const issues = result.issues || [];
 
         if (issues.length === 0) {
