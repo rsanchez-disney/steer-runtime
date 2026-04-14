@@ -1,0 +1,26 @@
+{
+  "name": "mywiki-mcp",
+  "version": "0.1.0",
+  "description": "MyWiki Confluence instance MCP server with unique tool names",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mywiki-mcp": "./dist/index.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node' --external:node:* && chmod 755 dist/index.cjs",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.3.3"
+  }
+}

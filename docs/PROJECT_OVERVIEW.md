@@ -6,13 +6,13 @@ A unified LLMOps platform that packages AI-assisted workflows for the entire sof
 
 ## What is steer-runtime?
 
-steer-runtime is a curated collection of 40 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), and [Kite](https://github.disney.com/SANCR225/Kite).
+steer-runtime is a curated collection of 41 specialized AI agents organized into 5 role-based profiles (dev, BA, QA, ops, PM) deployable to any AI-powered IDE or CLI. Each agent is purpose-built for a specific SDLC task — from writing code to planning sprints — and comes pre-wired with the tools, context, and integrations it needs. Currently supported: [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), [Amazon Q Developer](https://aws.amazon.com/q/developer/), and [Kite](https://github.disney.com/SANCR225/Kite).
 
 Instead of one general-purpose AI assistant, steer-runtime gives every team role a set of agents that already understand Disney Payments' repositories, coding standards, Jira workflows, and organizational conventions.
 
 ```mermaid
 graph LR
-    dev["👨‍💻 Developer"] --> devp["dev profile<br/>19 agents"]
+    dev["👨‍💻 Developer"] --> devp["dev profile<br/>20 agents"]
     devp --> devt["code, review, test, PR"]
 
     ba["📋 BA / PO"] --> bap["ba profile<br/>4 agents"]
@@ -50,14 +50,15 @@ steer-runtime solves this by encoding organizational knowledge into agent config
 
 | Advantage | How |
 |-----------|-----|
-| **Zero-setup onboarding** | `./setup.sh install dev` — one command, 19 agents ready |
+| **Zero-setup onboarding** | `koda install dev` — one command, 19 agents ready |
 | **Role-appropriate tooling** | A BA agent can't accidentally run `rm -rf`; a dev agent can't skip code review |
 | **Consistent quality** | Golden rules, compliance checks, and write guards are enforced by hooks, not hope |
 | **Institutional memory** | Context files, steering rules, and knowledge tool persist what the team has learned |
 | **Multi-repo coordination** | Orchestrator agents understand which repos map to which Jira prefixes and coordinate across them |
 | **No vendor lock-in on context** | All config is plain JSON + Markdown — portable, version-controlled, reviewable |
 | **Pre-built integrations** | MCP servers are bundled as single-file Node.js bundles — no npm install, no Nexus credentials needed |
-| **Cross-platform** | macOS/Linux (`setup.sh`) + Windows (`setup.ps1`) |
+| **Cross-platform** | Koda (Go binary, all platforms) + `setup.sh` / `setup.ps1` fallback |
+| **Multi-IDE** | Kiro CLI (agents) + Cursor IDE (rules) + Kite (desktop GUI) — same source, different runtimes |
 
 ---
 
@@ -118,12 +119,12 @@ Hooks run as shell scripts with exit codes — `exit 2` blocks the action, `exit
 Not every team member needs every agent. Profiles are installed independently:
 
 ```bash
-./setup.sh install dev          # Developer gets 19 agents
-./setup.sh install pm           # Scrum master gets 6 agents
-./setup.sh install dev ba qa    # Full-stack team gets 29 agents
+koda install dev          # Developer gets 19 agents
+koda install pm           # Scrum master gets 6 agents
+koda install dev ba qa    # Full-stack team gets 29 agents
 ```
 
-Advanced tools (`thinking`, `todo`, `knowledge`) are opt-in via `./setup.sh enable-tools`. Agents degrade gracefully when features aren't enabled.
+Advanced tools (`thinking`, `todo`, `knowledge`) are opt-in via `koda enable-tools`. Agents degrade gracefully when features aren't enabled.
 
 ### 6. Pre-built, Not Just Configured
 
@@ -131,7 +132,7 @@ MCP servers are bundled as single `.cjs` files using esbuild — no `npm install
 
 ### 7. Observability
 
-- `./setup.sh check` validates installation and runs `kiro-cli agent validate` on every config
+- `koda check` validates installation and runs `kiro-cli agent validate` on every config
 - `/hooks` command in chat shows active hooks for the current agent
 - `kiro-cli mcp list` shows MCP server status per agent
 - Memory banks and todo lists persist across sessions for auditability
@@ -146,7 +147,7 @@ graph TD
 
     terminal --> runtime
 
-    subgraph runtime["IDE Runtime (Kiro CLI / Cursor / Kite)"]
+    subgraph runtime["IDE Runtime (Kiro CLI / Cursor / Amazon Q / Kite)"]
         config["Agent Config (.json)"] --> tools["Tools + Hooks + Resources"]
         prompt["System Prompt (.md)"] --> llm["LLM Context"]
         mcpcfg["MCP Servers"] --> integrations["Jira, Confluence, GitHub"]
@@ -158,6 +159,7 @@ graph TD
     runtime --> github["GitHub MCP<br/>(node)"]
     runtime --> mermaid["Mermaid MCP<br/>(node)"]
     runtime --> mywiki["MyWiki MCP<br/>(node)"]
+    runtime --> context7["Context7 MCP<br/>(npx)"]
 
     style terminal fill:#1a1a2e,stroke:#e94560,color:#eee
     style runtime fill:#0f3460,stroke:#e94560,color:#eee
@@ -166,6 +168,7 @@ graph TD
     style github fill:#16213e,stroke:#0f3460,color:#eee
     style mermaid fill:#16213e,stroke:#0f3460,color:#eee
     style mywiki fill:#16213e,stroke:#0f3460,color:#eee
+    style context7 fill:#16213e,stroke:#0f3460,color:#eee
 ```
 
 ### Profile Layout
@@ -197,18 +200,19 @@ Shared resources live in `.kiro/`:
 
 | Metric | Value |
 |--------|-------|
-| Total agents | 40 |
+| Total agents | 41 |
 | Profiles | 5 (dev, ba, qa, ops, pm) |
 | MCP servers | 5 (jira, confluence, mywiki, github, mermaid) |
 | Agents with MCP integration | 22 |
 | Agents with hooks | 11 |
 | Agents with advanced tools | 11 |
 | Context files | 12 |
+| Cursor rule templates | 19 |
 | Steering rules | 10 |
 | Skills | 16 |
 | Hook scripts | 3 |
 | Supported projects | 9 (with pre-built memory banks) |
-| Setup commands | 13 (+ 4 cursor subcommands) |
+| Setup commands | 14 (+ 7 IDE subcommands) |
 
 ---
 
@@ -217,9 +221,9 @@ Shared resources live in `.kiro/`:
 ```bash
 git clone <repo-url> ~/steer-runtime && cd ~/steer-runtime
 
-./setup.sh install dev ba qa ops pm   # Install all profiles
-./setup.sh mcp-install                # Configure MCP tokens
-./setup.sh enable-tools               # Enable advanced tools
+koda install dev ba qa ops pm   # Install all profiles
+koda mcp-install                # Configure MCP tokens
+koda enable-tools               # Enable advanced tools
 
 kiro-cli chat --agent orchestrator    # Start working
 ```
@@ -232,19 +236,72 @@ For troubleshooting: [Troubleshooting](TROUBLESHOOTING.md)
 
 ## Multi-IDE Strategy
 
-steer-runtime is runtime-agnostic. Teams pick the IDE they prefer — Kiro CLI, Cursor, or Kite — and share the same organizational context, guardrails, and agent behaviors. The agent configs (JSON + Markdown) are the single source of truth; `setup.sh` compiles them into each IDE's native format.
+steer-runtime is runtime-agnostic. The same organizational knowledge powers both Kiro CLI and Cursor IDE today, with each runtime consuming the source material in its native format.
+
+```
+steer-runtime (source of truth)
+│
+├── Kiro CLI    → 40 agents (JSON + Markdown prompts)
+│                 Multi-agent orchestration, hooks, delegation
+│
+├── Kite        → Desktop GUI for Kiro CLI (Tauri + React)
+│                 Visual chat, agent switching, prompt scoring
+│
+└── Cursor IDE  → 19 rules (.mdc files with glob activation)
+                  Single-agent with same standards + MCP tools
+```
+
+### How It Works
+
+The `.cursor-templates/` directory contains 19 `.mdc` rule files derived from the same source material as Kiro agents — golden rules, coding standards, project mappings, role guidelines, and guardrails. Each rule uses Cursor's native activation model:
+
+| Range | Category | Activation |
+|-------|----------|------------|
+| 00-09 | Foundation (golden rules, mappings, commits) | Always on |
+| 10-19 | Language specialists (Java, Node, Angular, Go, Flutter) | File glob patterns |
+| 20-29 | Quality (testing, security, architecture) | Glob or always on |
+| 30-39 | Role guides (BA, QA, Ops, PM) | Manual `@` mention |
+| 40-49 | Guardrails (write protection, destructive warnings) | Always on |
+| 50-59 | Workflow (SDLC steps, PR templates, story analysis) | Manual `@` mention |
+
+MCP servers are shared — both Kiro and Cursor point to the same pre-built bundles in `~/.kiro/tools/mcp-servers/`.
+
+```bash
+./setup.sh cursor install ~/my-project   # Install rules + MCP config
+./setup.sh cursor sync ~/my-project      # Update from latest templates
+```
+
+### Kiro vs Cursor — Complementary Strengths
+
+| Capability | Kiro CLI | Cursor |
+|-----------|----------|--------|
+| Multi-agent orchestration | ✅ 40 agents, 5 profiles | — |
+| Automated SDLC pipeline | ✅ story → plan → code → review → PR | — |
+| Programmatic hooks | ✅ guard-writes, git-context | — |
+| Persistent memory (knowledge) | ✅ | — |
+| Inline code suggestions | — | ✅ Tab completion |
+| Multi-file Composer | — | ✅ |
+| Codebase indexing | — | ✅ @codebase |
+| Coding standards | ✅ via agent prompts | ✅ via .mdc rules |
+| MCP tools (Jira, Confluence, GitHub) | ✅ | ✅ |
+
+The recommendation: use Kiro for complex orchestrated workflows (implement a Jira story end-to-end), Cursor for day-to-day coding with the same standards and MCP access.
+
+See [Cursor Setup](CURSOR_SETUP.md) for detailed installation and usage.
 
 ```mermaid
 graph TD
     src["steer-runtime<br/>(source of truth)"]
-    src --> kiro["Kiro CLI<br/>Native agent JSON + prompts<br/><code>./setup.sh install</code>"]
+    src --> kiro["Kiro CLI<br/>Native agent JSON + prompts<br/><code>koda install</code>"]
     src --> cursor["Cursor<br/>.mdc rules + shared MCP<br/><code>./setup.sh cursor install</code>"]
+    src --> amazonq["Amazon Q<br/>Plain .md rules<br/><code>koda amazonq install</code>"]
     src --> kite["Kite<br/>Desktop GUI over Kiro CLI"]
     src -.-> next["Next IDE<br/><i>write one adapter</i>"]
 
     style src fill:#1a1a2e,stroke:#e94560,color:#eee
     style kiro fill:#16213e,stroke:#0f3460,color:#eee
     style cursor fill:#16213e,stroke:#0f3460,color:#eee
+    style amazonq fill:#16213e,stroke:#0f3460,color:#eee
     style kite fill:#16213e,stroke:#0f3460,color:#eee
     style next fill:#16213e,stroke:#0f3460,color:#eee,stroke-dasharray: 5 5
 ```
@@ -253,5 +310,5 @@ Adding a new IDE target means writing one adapter — the agent definitions, con
 
 ---
 
-**Version:** 3.3.0 · **Last Updated:** March 19, 2026  
+**Version:** 3.4.0 · **Last Updated:** March 20, 2026  
 Internal Disney tool — not for external distribution.

@@ -1,0 +1,1 @@
+Fetch Jira ticket {{TICKET}} using your Jira MCP tools. Extract: title, description, acceptance criteria, story points, priority, linked issues, and any referenced Confluence pages. Return a structured summary.

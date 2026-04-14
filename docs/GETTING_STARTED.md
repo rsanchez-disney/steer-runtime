@@ -1,4 +1,4 @@
-# Getting Started with Kiro
+# Getting Started
 
 First-time setup guide for Disney Payments team members.
 
@@ -23,41 +23,71 @@ First-time setup guide for Disney Payments team members.
 4. Sign in using your **@disney.com** email address
 5. Click "Allow" to grant Kiro IDE access
 
-## 4. Verify Installation
+## 4. Verify Kiro
 
 ```bash
 kiro-cli --version
 ```
 
-You should now be able to use Kiro CLI and Kiro UI.
+---
+
+## 5. Install Tools & Agents
+
+Follow the platform-specific setup guide to install Koda, GitHub CLI, kiro-cli, and agent profiles:
+
+- **macOS / Linux:** [Setup Guide](SETUP.md)
+- **Windows:** [Windows Setup Guide](WINDOWS_SETUP.md)
 
 ---
 
+## 6. Add a Project Manifest (optional)
 
-## 5. Install GitHub CLI (optional, recommended)
-
-```bash
-brew install gh                          # macOS
-gh auth login --hostname github.disney.com
-```
-
-Select HTTPS, authenticate via browser. This enables PR creation and repo management from agents.
-
-## 6. Enable Advanced Tools (optional)
-
-After installing profiles, enable advanced kiro-cli features used by orchestrators and planning agents:
+Drop a `project.yaml` in your project root so agents know your stack, commands, and integrations:
 
 ```bash
-./setup.sh enable-tools
+cp ~/steer-runtime/common/templates/project.yaml ~/my-project/project.yaml
+# Edit with your project's details
 ```
 
-This enables:
-- **thinking** — step-by-step reasoning for complex decisions
-- **todo** — persistent task tracking across sessions
-- **knowledge** — long-term semantic memory across conversations
+See [project.yaml reference](REFERENCE.md#project-manifest-projectyaml) for all fields. Agents work without it (they fall back to memory banks), but it's the fastest way to get accurate results.
 
-Agents degrade gracefully if these aren't enabled — they just won't have access to those tools.
+---
 
-## Next Steps
+## 7. Start Chatting
 
-Return to the [README](../README.md) to install agent profiles.
+```bash
+koda chat                         # Chat with last-used agent
+koda chat --agent orchestrator    # Dev orchestrator
+koda chat --agent qa_orchestrator_agent  # QA orchestrator
+koda chat --agent ba_orchestrator_agent  # BA orchestrator
+```
+
+Or use Kiro CLI directly:
+```bash
+kiro-cli chat --agent orchestrator
+```
+
+---
+
+## 8. Join a Team Workspace (optional)
+
+```bash
+koda workspace list               # See available team configs
+koda workspace apply payments-core  # Apply your team's config
+```
+
+This installs the right profiles, rules, and memory banks for your team in one command.
+
+---
+
+## 9. Enable Advanced Tools (optional)
+
+```bash
+koda enable-tools
+```
+
+Enables **thinking**, **todo**, and **knowledge** tools used by orchestrators.
+
+---
+
+Back to [README](../README.md)

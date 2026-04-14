@@ -1,0 +1,15 @@
+{
+  "name": "pr_creator_agent",
+  "description": "Creates GitHub pull requests with proper formatting and metadata",
+  "prompt": "pr_creator_agent.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

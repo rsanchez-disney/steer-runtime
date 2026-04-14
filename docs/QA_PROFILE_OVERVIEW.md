@@ -380,13 +380,13 @@ kiro-cli chat --agent performance_tester_agent
 
 ```bash
 # Install QA profile
-./setup.sh install qa
+koda install qa
 
 # Install to project (for Kiro UI)
-./setup.sh install qa --project ~/my-project
+koda install qa --project ~/my-project
 
 # Install with other profiles
-./setup.sh install dev qa
+koda install dev qa
 ```
 
 ---

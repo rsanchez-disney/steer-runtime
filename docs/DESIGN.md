@@ -37,7 +37,7 @@ steer-runtime/
 │   ├── context/               # Project context
 │   └── tools/                 # Utilities
 ├── docs/                       # Documentation
-└── setup.sh                    # Unified setup
+└── setup.sh                    # Bash fallback (Koda is primary)
 ```
 
 ### Agent Architecture
@@ -205,7 +205,7 @@ find_tests({path, framework})   // Locate tests
 test_coverage({command})        // Coverage analysis
 ```
 
-See `.kiro/powers/GUIDE.md` for creating custom powers.
+See [`profiles/dev-core/powers/GUIDE.md`](../profiles/dev-core/powers/GUIDE.md) for creating custom powers.
 
 ---
 
@@ -374,7 +374,7 @@ State persists across:
 2. Write prompt in `.kiro/prompts/`
 3. Add skills in `.kiro/skills/` (optional)
 4. Update `AGENTS.md`
-5. Test with `./setup.sh cli --sync`
+5. Test with `koda cli --sync`
 
 ### Adding New Powers
 
@@ -500,7 +500,6 @@ State persists across:
 - **[README.md](../README.md)** - Quick start
 - **[AGENTS.md](../AGENTS.md)** - Agent reference
 - **[PROMPT_GUIDE.md](PROMPT_GUIDE.md)** - Usage examples
-- **[.kiro/README.md](../.kiro/README.md)** - Configuration structure
 
 ---
 

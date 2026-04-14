@@ -1,0 +1,56 @@
+{
+  "name": "default",
+  "description": "Organization-wide baseline — all projects and profiles",
+  "team": "Disney Payments & Commerce",
+  "profiles": ["dev-core", "dev-web", "dev-mobile", "ba", "qa", "ops", "pm"],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "wdpr-config-services",
+      "path": "../wdpr-config-services",
+      "memory_bank": "wdpr-config-services"
+    },
+    {
+      "name": "wdpr-payment-controls-api",
+      "path": "../wdpr-payment-controls-api",
+      "memory_bank": "wdpr-payment-controls-api"
+    },
+    {
+      "name": "wdpr-payment-controls-client",
+      "path": "../wdpr-payment-controls-client",
+      "memory_bank": "wdpr-payment-controls-client"
+    },
+    {
+      "name": "wdpr-gcp-admin-api",
+      "path": "../wdpr-gcp-admin-api",
+      "memory_bank": "wdpr-gcp-admin-api"
+    },
+    {
+      "name": "wdpr-cap-rev-rec-svc",
+      "path": "../wdpr-cap-rev-rec-svc",
+      "memory_bank": "wdpr-cap-rev-rec-svc"
+    },
+    {
+      "name": "wdpr-payment-svc",
+      "path": "../wdpr-payment-svc",
+      "memory_bank": "wdpr-payment-svc"
+    },
+    {
+      "name": "cart-service-java8",
+      "path": "../cart-service-java8",
+      "memory_bank": "cart-service-java8"
+    },
+    {
+      "name": "spr-router",
+      "path": "../spr-router",
+      "memory_bank": "spr-router"
+    },
+    {
+      "name": "spr-ai-adapter",
+      "path": "../spr-ai-adapter",
+      "memory_bank": "spr-ai-adapter"
+    }
+  ],
+  "rules": ["conventional_commit"],
+  "enable_tools": true
+}

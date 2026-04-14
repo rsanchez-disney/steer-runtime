@@ -1,0 +1,14 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
+  "prompt": "code_review_agent.md",
+  "tools": [
+    "read",
+    "shell"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "web_discovery_agent",
+  "description": "Analyzes web applications to discover testable elements, page objects, and interaction patterns",
+  "prompt": "web_discovery_agent.md",
+  "tools": ["code", "grep", "fs_read", "execute_bash"],
+  "resources": ["file://.kiro/context/qa_guidelines.md"]
+}

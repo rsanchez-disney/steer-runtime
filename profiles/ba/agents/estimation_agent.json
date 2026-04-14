@@ -1,0 +1,22 @@
+{
+  "name": "estimation_agent",
+  "description": "Dual-mode project estimation \u2014 CCV (traditional hours/story points) and DRIFT (AI token economics)",
+  "prompt": "estimation_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ccv-estimation.md",
+    "file://.kiro/context/drift-estimation.md",
+    "file://.kiro/context/ba_guidelines.md"
+  ],
+  "includeMcpJson": true
+}

@@ -1,0 +1,29 @@
+{
+  "name": "payments-core",
+  "description": "Config Studio & Payment Services — fullstack web development",
+  "team": "Disney Payments Core",
+  "profiles": ["dev-core", "dev-web", "qa", "ops"],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "wdpr-config-services",
+      "path": "../wdpr-config-services",
+      "memory_bank": "wdpr-config-services"
+    },
+    {
+      "name": "wdpr-payment-controls-api",
+      "path": "../wdpr-payment-controls-api",
+      "memory_bank": "wdpr-payment-controls-api"
+    },
+    {
+      "name": "wdpr-payment-controls-client",
+      "path": "../wdpr-payment-controls-client",
+      "memory_bank": "wdpr-payment-controls-client"
+    }
+  ],
+  "rules": ["conventional_commit", "general-java-development", "general-node-development", "general-angular-development"],
+  "enable_tools": true,
+  "jira_prefix": "DPAY-",
+  "services": ["config-services"],
+  "channels": ["config-studio"]
+}

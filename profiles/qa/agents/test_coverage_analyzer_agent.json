@@ -1,0 +1,27 @@
+{
+  "name": "test_coverage_analyzer_agent",
+  "description": "Analyzes test coverage for epics against Jira/Xray and discovers reusable tests to fill gaps",
+  "prompt": "test_coverage_analyzer_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "@mywiki/*",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "@bruno/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "@mywiki/*",
+    "@bruno/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/coverage_matrix_template.md"
+  ],
+  "includeMcpJson": true
+}

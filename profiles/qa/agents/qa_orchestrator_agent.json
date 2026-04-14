@@ -1,0 +1,51 @@
+{
+  "name": "qa_orchestrator_agent",
+  "description": "Orchestrates QA tasks and coordinates specialized testing agents for test planning, automation, defect analysis, API testing, performance testing, and coverage analysis",
+  "prompt": "qa_orchestrator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "use_subagent",
+    "thinking",
+    "todo",
+    "delegate",
+    "@bruno/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "@bruno/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/test_templates.md"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "👋 QA orchestrator ready!\n\nI can help you:\n  • Create test plans from Jira stories\n  • Generate automated test scripts\n  • Analyze defects and find root causes\n  • Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\"",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "retro_agent",
+  "description": "Facilitates sprint retrospectives with data-driven insights, pattern analysis, and action item tracking",
+  "prompt": "retro_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/pm_guidelines.md"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "includeMcpJson": true
+}

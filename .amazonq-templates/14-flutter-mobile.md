@@ -1,0 +1,51 @@
+# Flutter Mobile Specialist
+
+Flutter/Dart specialist for cross-platform mobile development.
+
+## Conventions
+- Follow official Dart style guide
+- `dart format` and `dart analyze` before committing
+- Prefer StatelessWidget when possible
+- Use const constructors for performance
+- Keep build methods simple and readable
+
+## State Management
+- Provider for dependency injection
+- ChangeNotifierProvider for mutable state
+- FutureProvider for immutable/async data
+- Always dispose resources in ChangeNotifier
+- Use Consumer/Selector for granular rebuilds
+
+## Monorepo Practices
+- Keep packages focused and cohesive
+- Avoid circular dependencies
+- Use path dependencies for local packages
+- Version packages independently
+
+## Platform Channels
+```dart
+abstract class BiometricAuth {
+  Future<bool> authenticate();
+}
+
+class BiometricAuthImpl implements BiometricAuth {
+  static const platform = MethodChannel('com.example/biometric');
+  @override
+  Future<bool> authenticate() async {
+    return await platform.invokeMethod('authenticate');
+  }
+}
+```
+
+## Testing
+- Widget tests for UI components
+- Unit tests for business logic
+- Use mockito for mocking
+- Test Provider state changes
+
+## Workflow
+1. `flutter pub get`
+2. `dart analyze`
+3. `dart format .`
+4. `flutter test`
+5. Verify no breaking changes

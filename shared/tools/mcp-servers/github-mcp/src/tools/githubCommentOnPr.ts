@@ -1,0 +1,73 @@
+import { getClient, parseRepo } from "../utils/apiClient.js";
+import { saveToFile } from "../utils/fileUtils.js";
+import { formatTimestamp, formatRepoId } from "../utils/formatting.js";
+
+export const githubCommentOnPrSchema = {
+    name: "github_comment_on_pr",
+    description: "Add a comment to a GitHub pull request",
+    inputSchema: {
+        type: "object",
+        properties: {
+            repo: {
+                type: "string",
+                description: "Repository in format 'owner/repo' or full URL",
+            },
+            prNumber: {
+                type: "string",
+                description: "Pull request number",
+            },
+            body: {
+                type: "string",
+                description: "Comment text",
+            },
+            outputDir: {
+                type: "string",
+                description: "Optional: Directory to save comment data",
+            },
+        },
+        required: ["repo", "prNumber", "body"],
+    },
+};
+
+export async function handleGithubCommentOnPr(args: any) {
+    const {
+        repo,
+        prNumber,
+        body,
+        outputDir,
+    } = args as {
+        repo: string;
+        prNumber: string;
+        body: string;
+        outputDir?: string | false | null;
+    };
+
+    const { owner,
+        repo: repoName,
+    } = parseRepo(repo);
+    const octokit = getClient();
+    const prNum = parseInt(prNumber);
+
+    const { data: comment } = await octokit.issues.createComment({
+        owner,
+        repo: repoName,
+        issue_number: prNum,
+        body,
+    });
+
+    let savedInfo = "";
+    if (outputDir !== false && outputDir !== null) {
+        const filename = `github-pr-comment-${formatRepoId(`${owner}/${repoName}`)}-${prNumber}-${comment.id}_${formatTimestamp()}.json`;
+        const filepath = await saveToFile(comment, filename, outputDir);
+        savedInfo = ` and saved to ${filepath}`;
+    }
+
+    return {
+        content: [
+            {
+                type: "text",
+                text: `Comment added to GitHub PR #${prNumber} successfully${savedInfo}\n\nComment ID: ${comment.id}\nURL: ${comment.html_url}`,
+            },
+        ],
+    };
+}

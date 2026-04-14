@@ -1,0 +1,13 @@
+{
+  "name": "koda_reviewer_agent",
+  "description": "Reviews Koda Go PRs for backward compatibility, model safety, and CLI consistency",
+  "prompt": "prompts/koda_reviewer_agent.md",
+  "tools": [],
+  "resources": [
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://profiles/steer-master/context/workspace_schema.md"
+  ],
+  "allowedTools": ["@github/*"],
+  "includeMcpJson": true
+}

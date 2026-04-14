@@ -9,8 +9,8 @@ Steer-runtime is a unified multi-profile agent system for Disney Payments that p
 │                         User Terminal                           │
 │                                                                 │
 │  $ kiro-cli chat --agent story_analyzer_agent                   │
-│  $ ./setup.sh install dev ba                                    │
-│  $ ./setup.sh mcp-install                                       │
+│  $ koda install dev ba                                    │
+│  $ koda mcp-install                                       │
 └──────────────────────────┬──────────────────────────────────────┘
                            │
                            ▼
@@ -38,7 +38,7 @@ Steer-runtime is a unified multi-profile agent system for Disney Payments that p
 ```
 steer-runtime/
 │
-├── setup.sh                        # Single entry point for all operations
+├── setup.sh                        # ⚠️ Deprecated — use Koda instead
 │
 ├── .kiro-dev/                      # ── Dev Profile (18 agents) ──
 │   ├── agents/                     #   Agent JSON configs (MCP, tools, resources)
@@ -94,7 +94,8 @@ steer-runtime/
 │   │       ├── confluence-mcp/     #     Confluence integration
 │   │       ├── mywiki-mcp/         #     MyWiki instance (reuses confluence-mcp)
 │   │       ├── github-mcp/         #     GitHub Enterprise integration
-│   │       └── mermaid-diagram-mcp/#     Diagram generation
+│   │       ├── mermaid-diagram-mcp/#     Diagram generation
+│       └── (context7)           #     npx-based, no local bundle
 │   └── memory-bank/                #   steer-runtime's own memory bank
 │       ├── project-brief.md
 │       ├── tech-context.md
@@ -118,7 +119,7 @@ steer-runtime/
 │       ├── structure.md.template
 │       └── tech.md.template
 │
-├── Projects/                       # ── Known Project Memory Banks (9 projects) ──
+│   ├── default/projects/            # ── Known Project Memory Banks (9 projects) ──
 │   ├── wdpr-payment-svc/
 │   ├── cart-service-java8/
 │   ├── wdpr-config-services/
@@ -148,7 +149,7 @@ steer-runtime/
 ### 1. Installation Flow
 
 ```
-setup.sh install <profiles>
+koda install <profiles>
          │
          ├─→ Copy agents/*.json to ~/.kiro/agents/     (with $HOME expansion)
          ├─→ Copy prompts/*.md to ~/.kiro/prompts/
@@ -160,7 +161,7 @@ setup.sh install <profiles>
 ### 2. MCP Install Flow
 
 ```
-setup.sh mcp-install
+koda mcp-install
          │
          ├─→ Check ~/.npmrc exists (Disney Nexus auth)
          ├─→ Copy ~/.npmrc to each MCP server directory
@@ -251,6 +252,8 @@ Each agent consists of two files:
 │   └── .env               GITHUB_TOKEN_disney + GITHUB_HOST_disney
 │
 └── mermaid-diagram-mcp/   Diagram generation
+
+# context7 is npx-based (@upstash/context7-mcp) — no local bundle
 ```
 
 Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file** (dotenv doesn't override existing env vars)
@@ -259,16 +262,18 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ## Profile × MCP Matrix
 
-| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Other |
-|---------|--------|:----:|:----------:|:------:|:------:|-------|
-| **dev** | 18 | 4 | 3 | 3 | 4 | — |
-| **ba** | 4 | 4 | 4 | 4 | 4 | — |
-| **qa** | 6 | 3 | 3 | 3 | 3 | — |
-| **ops** | 5 | 2 | 2 | 2 | 2 | SonarQube, Harness |
+| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
+|---------|--------|:----:|:----------:|:------:|:------:|:--------:|-------|
+| **dev** | 20 | 4 | 3 | 3 | 4 | 6 | — |
+| **ba** | 4 | 4 | 4 | 4 | 4 | — | — |
+| **qa** | 6 | 3 | 3 | 3 | 3 | 2 | — |
+| **ops** | 5 | 2 | 2 | 2 | 2 | — | SonarQube, Harness |
 
 ---
 
-## setup.sh Commands
+## CLI Commands (Koda)
+
+> `setup.sh` is deprecated. All commands below are available via `koda`.
 
 | Command | Purpose |
 |---------|---------|
@@ -290,7 +295,7 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 1. **Profiles are additive** — Installing multiple profiles merges agents into `~/.kiro/agents/`. No conflicts because agent names are unique across profiles.
 
-2. **`$HOME` in source, absolute paths when installed** — Source repo uses `$HOME` for portability. `setup.sh install` expands to absolute paths because Kiro CLI doesn't resolve shell variables in JSON.
+2. **`$HOME` in source, absolute paths when installed** — Source repo uses `$HOME` for portability. `koda install` / `setup.sh install` expands to absolute paths because Kiro CLI doesn't resolve shell variables in JSON.
 
 3. **Token injection via `env` blocks** — Agent JSON `env` blocks override `.env` files (dotenv doesn't overwrite existing env vars). This makes tokens work even if `.env` loading fails.
 

@@ -1,0 +1,22 @@
+{
+  "name": "requirements_analyst_agent",
+  "description": "Analyzes existing requirements, identifies gaps, and ensures completeness",
+  "prompt": "requirements_analyst_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "grep",
+    "knowledge"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ],
+  "includeMcpJson": true
+}

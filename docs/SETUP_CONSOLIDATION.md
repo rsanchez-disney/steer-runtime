@@ -57,7 +57,7 @@ All scripts now correctly reference:
 
 ## Documentation
 
-Created `SETUP_GUIDE.md` with:
+Created `SETUP.md` with:
 - Prerequisites
 - Setup instructions for CLI and UI
 - MCP configuration

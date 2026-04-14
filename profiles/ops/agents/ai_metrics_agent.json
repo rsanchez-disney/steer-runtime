@@ -1,0 +1,21 @@
+{
+  "name": "ai_metrics_agent",
+  "description": "Tracks AI-assisted development metrics and updates Jira tickets",
+  "prompt": "ai_metrics_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "execute_bash",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}

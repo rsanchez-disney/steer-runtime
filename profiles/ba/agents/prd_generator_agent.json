@@ -1,0 +1,22 @@
+{
+  "name": "prd_generator_agent",
+  "description": "Generates Product Requirements Documents from Jira epics and stakeholder context",
+  "prompt": "prd_generator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "fs_write"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ],
+  "includeMcpJson": true
+}

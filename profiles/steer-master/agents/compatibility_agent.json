@@ -1,0 +1,14 @@
+{
+  "name": "compatibility_agent",
+  "description": "Detects cross-repo impacts between steer-runtime and Koda changes",
+  "prompt": "prompts/compatibility_agent.md",
+  "tools": [],
+  "resources": [
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://shared/memory-bank/steer-master/schema-inventory.md",
+    "file://shared/memory-bank/steer-master/breaking-change-log.md"
+  ],
+  "allowedTools": ["@github/*"],
+  "includeMcpJson": true
+}

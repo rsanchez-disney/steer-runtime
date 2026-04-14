@@ -1,0 +1,21 @@
+{
+  "name": "sprint_manager_agent",
+  "description": "Manages sprint planning, capacity analysis, backlog grooming, and sprint health monitoring",
+  "prompt": "sprint_manager_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "execute_bash",
+    "fs_read",
+    "grep",
+    "todo"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "includeMcpJson": true
+}

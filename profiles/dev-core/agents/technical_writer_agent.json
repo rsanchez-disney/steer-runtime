@@ -1,0 +1,23 @@
+{
+  "name": "technical_writer_agent",
+  "description": "Creates and maintains technical documentation including READMEs, API docs, architecture guides, runbooks, and onboarding materials",
+  "prompt": "technical_writer_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*"
+  ],
+  "includeMcpJson": true
+}
