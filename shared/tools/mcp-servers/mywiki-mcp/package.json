@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node' --external:node:* && chmod 755 dist/index.cjs",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --outfile=dist/index.cjs --banner:js='#!/usr/bin/env node\nconst __import_meta_url = require(\"url\").pathToFileURL(__filename).href;' --external:node:* --define:import.meta.url=__import_meta_url && chmod 755 dist/index.cjs",
     "prepare": "npm run build"
   },
   "dependencies": {
