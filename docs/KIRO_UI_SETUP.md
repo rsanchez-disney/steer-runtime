@@ -99,7 +99,7 @@ echo "Open this project in Kiro UI and select orchestrator_agent"
 
 1. **Open your project** in Kiro UI
 2. **Select agent** from dropdown: `orchestrator_agent`
-3. **Provide Jira URL**: `Implement https://jira.disney.com/browse/DPAY-14337`
+3. **Provide Jira URL**: `Implement https://myjira.disney.com/browse/DPAY-14337`
 4. **Approve at gates** when prompted
 5. **PR created** automatically
 
