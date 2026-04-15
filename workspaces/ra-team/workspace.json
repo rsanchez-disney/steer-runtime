@@ -1,0 +1,28 @@
+{
+  "name": "ra-team",
+  "description": "Reference Architecture shared foundation for all RA sub-teams",
+  "team": "Reference Architecture",
+  "profiles": [
+    "dev-core",
+    "dev-python",
+    "ops",
+    "dev-web"
+  ],
+  "default_agent": "",
+  "projects": null,
+  "rules": [
+    "conventional_commit",
+    "general-angular-development",
+    "general-api-design",
+    "general-aws",
+    "general-docker",
+    "general-java-development",
+    "general-kubernetes",
+    "general-node-development",
+    "general-python-development",
+    "general-terraform"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "",
+  "workspace_path": "~/workspace/reference-architecture"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "phoenix",
+  "extends": "ra-team",
+  "description": "Phoenix sub-team",
+  "team": "Phoenix Team",
+  "profiles": null,
+  "default_agent": "",
+  "projects": null,
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "",
+  "workspace_path": "~/workspace/reference-architecture/phoenix"
+}
