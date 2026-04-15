@@ -7,12 +7,9 @@
     "fs_write",
     "execute_bash",
     "code",
-    "grep",
-    "@context7/*"
+    "grep"
   ],
-  "allowedTools": [
-    "@context7/*"
-  ],
+  "allowedTools": [],
   "resources": [
     "context/php_zend_conventions.md",
     "context/php_testing_strategy.md",

@@ -17,7 +17,6 @@
 | mywiki | `confluence-mcp/dist/index.cjs` | mywiki.disney.com — reuses confluence-mcp binary with CONFLUENCE_URL env |
 | github | `github-mcp/dist/index.cjs` | github.disney.com |
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | SDK 0.6.0, two-arg Server constructor |
-| context7 | `npx @upstash/context7-mcp` | no local bundle |
 | sonarqube | `docker mcp/sonarqube` | disabled by default |
 | harness | `docker harness/mcp-server` | disabled by default |
 

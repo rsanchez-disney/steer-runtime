@@ -8,11 +8,9 @@
     "execute_bash",
     "code",
     "grep",
-    "@context7/*",
     "@figma/*"
   ],
   "allowedTools": [
-    "@context7/*",
     "@figma/*"
   ],
   "resources": [

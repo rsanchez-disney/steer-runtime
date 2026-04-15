@@ -19,7 +19,6 @@ Python development specialist for API services, data pipelines, and CLI tools.
 
 ## Capabilities
 
-- ✅ **Context7** — Up-to-date library documentation
 - ✅ **Code Tools** — Read/write Python code
 - ✅ **Execution** — Run pytest, linters, formatters
 - ✅ **File Operations** — Manage project files

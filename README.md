@@ -54,7 +54,7 @@ koda install dev ba qa ops pm
 | **Rules** | Coding standards per tech stack (Java, Node, Go, C#, Python, React, K8s, AWS, Docker, etc.) |
 | **Golden Rules** | Organization-wide standards enforced across all agents — security, quality, consistency |
 | **Hooks** | Guardrails that run before/after agent actions — write guards, secret scanning, branch protection |
-| **MCP Servers** | Pre-built integrations — Jira, Confluence, GitHub, Mermaid, Context7. No setup beyond tokens |
+| **MCP Servers** | Pre-built integrations — Jira, Confluence, GitHub, Mermaid. No setup beyond tokens |
 | **Workspaces** | One-command team setup — profiles, rules, context, and Jira/board config per team |
 | **Memory Banks** | Project-specific knowledge that agents carry across sessions — tech stack, patterns, conventions |
 | **Project Manifest** | `project.yaml` — structured config so agents know your stack, commands, and integrations without forking |

@@ -17,7 +17,6 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 | figma | `figma-mcp/dist/index.cjs` | `FIGMA_TOKEN` | Figma files, nodes, styles, comments, image export |
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | none | Mermaid diagram rendering |
 | bruno | `bruno-mcp/dist/index.cjs` | none | Bruno API collection runner |
-| context7 | `npx @upstash/context7-mcp` | none | Library documentation lookup |
 
 ### Remote Servers (SSE)
 
@@ -263,7 +262,6 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 |-------------------------------------|---------------------------------------------------------------------------------------------------|
 | `0 MCP servers available`           | steer-runtime hasn't been synced yet — run `koda sync` first                                      |
 | Bundle missing for a server         | Server shows `(bundle missing)` in the selector — run `koda sync --update` to re-download bundles |
-| context7 install fails              | Requires `npm` on your PATH — run `koda setup` to install Node.js                                 |
 | Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                 |
 | Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                            |
 | MyWiki tools rejected as duplicates | mywiki uses confluence-mcp binary — ensure mcp.json "mywiki" server has `CONFLUENCE_URL=https://mywiki.disney.com` |

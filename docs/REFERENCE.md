@@ -141,7 +141,6 @@ Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 | github-mcp | GitHub Enterprise | [Generate](https://github.disney.com/settings/tokens) |
 | bruno-mcp | API testing via Bruno collections | No token needed |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
-| context7-mcp | Up-to-date library/framework docs | No token needed ([context7.com](https://context7.com)) |
 | figma-mcp | Figma design files, components, styles, comments | [Generate](https://www.figma.com/developers/api#access-tokens) |
 | compass-mcp | Compass service catalog and API discovery (SSE) | Compass token (contact your team lead) |
 
@@ -318,7 +317,7 @@ steer-runtime/
 ✅ Spec-driven development — templates + spec-aware agents
 ✅ Artifact generation — PRD, backlog, test plan, ADR templates with quality gates
 ✅ Release management — tag comparison, release notes, Confluence documentation
-✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Bruno, Mermaid, Context7
+✅ Pre-built MCP bundles — Jira, Confluence, GitHub, Bruno, Mermaid
 ✅ Agent hooks — write guards, secret scanning, branch protection, lint-on-write
 ✅ Team workspaces — one-command setup per team
 ✅ Memory banks — project-specific knowledge across sessions
