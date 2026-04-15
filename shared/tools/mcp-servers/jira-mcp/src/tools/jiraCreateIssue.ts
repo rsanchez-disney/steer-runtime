@@ -171,7 +171,7 @@ ${ticket.fields.description || "No description provided"}`;
                     type: "text",
                     text: `${summaryText}
 
-**Issue URL:** https://myjira.disney.com/browse/${createResponse.key}${savedInfo}`,
+**Issue URL:** ${apiClient.auth.getBaseUrl()}/browse/${createResponse.key}${savedInfo}`,
                 },
             ],
         };

@@ -5721,28 +5721,45 @@ var StdioServerTransport = class {
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var DEFAULT_JIRA_URL = "https://myjira.disney.com";
 var JiraAuth = class {
   jiraPat = null;
+  jiraUrl = null;
+  loadEnv() {
+    if (this.jiraPat)
+      return;
+    this.jiraPat = process.env.JIRA_PAT || null;
+    this.jiraUrl = process.env.JIRA_URL || null;
+    if (!this.jiraPat) {
+      try {
+        const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+        const __dirname = (0, import_path.dirname)(__filename);
+        const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+        (0, import_dotenv.config)({ path: envPath });
+        this.jiraPat = process.env.JIRA_PAT || null;
+        this.jiraUrl = this.jiraUrl || process.env.JIRA_URL || null;
+      } catch (e) {
+      }
+    }
+  }
   async getJiraPat() {
-    if (this.jiraPat) {
+    this.loadEnv();
+    if (this.jiraPat)
       return this.jiraPat;
-    }
-    const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-    const __dirname = (0, import_path.dirname)(__filename);
-    const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-    console.error(`Loading .env from: ${envPath}`);
-    (0, import_dotenv.config)({ path: envPath });
-    if (process.env.JIRA_PAT) {
-      this.jiraPat = process.env.JIRA_PAT;
-      return this.jiraPat;
-    }
-    throw new Error(`JIRA PAT not found. Set JIRA_PAT environment variable or add JIRA_PAT=your_token to .env file. Tried loading from: ${envPath}`);
+    throw new Error("JIRA_PAT not found. Set JIRA_PAT environment variable or add it to .env file.");
+  }
+  getBaseUrl() {
+    this.loadEnv();
+    return (this.jiraUrl || DEFAULT_JIRA_URL).replace(/\/+$/, "");
   }
 };
 
 // build/utils/jiraApi.js
 var JiraApiClient = class {
   auth = new JiraAuth();
+  get baseUrl() {
+    return this.auth.getBaseUrl();
+  }
   async fetchJiraTicket(ticketId, fields) {
     const pat = await this.auth.getJiraPat();
     const defaultFields = [
@@ -5754,7 +5771,7 @@ var JiraApiClient = class {
       "created"
     ];
     const requestedFields = fields || defaultFields;
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5770,7 +5787,7 @@ var JiraApiClient = class {
   async updateJiraTicket(ticketId, updates) {
     const pat = await this.auth.getJiraPat();
     console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -5787,7 +5804,7 @@ var JiraApiClient = class {
   }
   async transitionJiraTicket(ticketId, transitionId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -5802,7 +5819,7 @@ var JiraApiClient = class {
   }
   async getJiraTransitions(ticketId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5815,7 +5832,7 @@ var JiraApiClient = class {
   }
   async addJiraComment(ticketId, comment) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}/comment`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/comment`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -5842,7 +5859,7 @@ var JiraApiClient = class {
       "updated"
     ];
     const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/search`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/search`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -5900,7 +5917,7 @@ var JiraApiClient = class {
       }
     }
     console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -5917,7 +5934,7 @@ var JiraApiClient = class {
   }
   async getJiraProjects() {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/project`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/project`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5931,7 +5948,7 @@ var JiraApiClient = class {
   }
   async getJiraIssueTypes() {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issuetype`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issuetype`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5955,7 +5972,7 @@ var JiraApiClient = class {
       params.append("type", boardType);
     if (name)
       params.append("name", name);
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/board?${params}`, {
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board?${params}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5975,7 +5992,7 @@ var JiraApiClient = class {
     });
     if (state)
       params.append("state", state);
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -5989,7 +6006,7 @@ var JiraApiClient = class {
   }
   async getJiraAttachments(ticketId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=attachment`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=attachment`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6021,7 +6038,7 @@ var JiraApiClient = class {
       maxResults: maxResults.toString(),
       fields: "summary,status,assignee,priority,issuetype,project,created,updated"
     });
-    const response = await fetch(`https://myjira.disney.com/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6042,7 +6059,7 @@ var JiraApiClient = class {
    */
   async getXrayTestSteps(testKey) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6060,7 +6077,7 @@ var JiraApiClient = class {
    */
   async getXrayTestStep(testKey, stepId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6086,7 +6103,7 @@ var JiraApiClient = class {
     if (limit !== void 0)
       params.append("limit", limit.toString());
     const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -6105,7 +6122,7 @@ var JiraApiClient = class {
    */
   async getXrayTestPreConditions(testKey) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/precondition`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6123,7 +6140,7 @@ var JiraApiClient = class {
    */
   async getXrayTestSets(testKey) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testset`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6147,7 +6164,7 @@ var JiraApiClient = class {
     if (limit !== void 0)
       params.append("limit", limit.toString());
     const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
+    const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -6166,7 +6183,7 @@ var JiraApiClient = class {
    */
   async getXrayTestPlans(testKey) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testplan`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6190,7 +6207,7 @@ var JiraApiClient = class {
     if (limit !== void 0)
       params.append("limit", limit.toString());
     const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -6215,7 +6232,7 @@ var JiraApiClient = class {
     if (limit !== void 0)
       params.append("limit", limit.toString());
     const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -6248,7 +6265,7 @@ var JiraApiClient = class {
     if (limit !== void 0)
       params.append("limit", limit.toString());
     const queryString = params.toString();
-    const url = `https://myjira.disney.com/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${pat}`,
@@ -6267,7 +6284,7 @@ var JiraApiClient = class {
    */
   async getXrayTestStatuses() {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/settings/teststatuses`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6285,7 +6302,7 @@ var JiraApiClient = class {
    */
   async getXrayTestCaseFull(testKey) {
     const pat = await this.auth.getJiraPat();
-    const issueResponse = await fetch(`https://myjira.disney.com/rest/api/2/issue/${testKey}`, {
+    const issueResponse = await fetch(`${this.baseUrl}/rest/api/2/issue/${testKey}`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -6319,7 +6336,7 @@ var JiraApiClient = class {
    */
   async getXrayPreConditionTests(preConditionKey) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
       headers: {
         Authorization: `Bearer ${pat}`,
         "Content-Type": "application/json"
@@ -7084,7 +7101,7 @@ ${ticket.fields.description || "No description provided"}`;
           type: "text",
           text: `${summaryText}
 
-**Issue URL:** https://myjira.disney.com/browse/${createResponse.key}${savedInfo}`
+**Issue URL:** ${apiClient.auth.getBaseUrl()}/browse/${createResponse.key}${savedInfo}`
         }
       ]
     };
