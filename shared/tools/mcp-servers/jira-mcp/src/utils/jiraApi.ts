@@ -2,7 +2,11 @@ import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
 
 export class JiraApiClient {
-    private auth = new JiraAuth();
+    auth = new JiraAuth();
+
+    private get baseUrl(): string {
+        return this.auth.getBaseUrl();
+    }
 
     async fetchJiraTicket(
         ticketId: string,
@@ -21,7 +25,7 @@ export class JiraApiClient {
         const requestedFields = fields || defaultFields;
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -53,7 +57,7 @@ export class JiraApiClient {
         );
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}`,
             {
                 method: "PUT",
                 headers: {
@@ -82,7 +86,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`,
             {
                 method: "POST",
                 headers: {
@@ -105,7 +109,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -127,7 +131,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}/comment`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}/comment`,
             {
                 method: "POST",
                 headers: {
@@ -169,7 +173,7 @@ export class JiraApiClient {
         const fields = [...new Set([...baseFields, ...extraFields])];
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/search`,
+            `${this.baseUrl}/rest/api/2/search`,
             {
                 method: "POST",
                 headers: {
@@ -263,7 +267,7 @@ export class JiraApiClient {
         );
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue`,
+            `${this.baseUrl}/rest/api/2/issue`,
             {
                 method: "POST",
                 headers: {
@@ -289,7 +293,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/project`,
+            `${this.baseUrl}/rest/api/2/project`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -312,7 +316,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issuetype`,
+            `${this.baseUrl}/rest/api/2/issuetype`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -350,7 +354,7 @@ export class JiraApiClient {
         if (name) params.append("name", name);
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/agile/1.0/board?${params}`,
+            `${this.baseUrl}/rest/agile/1.0/board?${params}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -385,7 +389,7 @@ export class JiraApiClient {
         if (state) params.append("state", state);
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/agile/1.0/board/${boardId}/sprint?${params}`,
+            `${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -408,7 +412,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=attachment`,
+            `${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=attachment`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -460,7 +464,7 @@ export class JiraApiClient {
         });
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/agile/1.0/sprint/${sprintId}/issue?${params}`,
+            `${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -491,7 +495,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step`,
+            `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -518,7 +522,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
+            `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -555,7 +559,7 @@ export class JiraApiClient {
         if (limit !== undefined) params.append("limit", limit.toString());
 
         const queryString = params.toString();
-        const url = `https://myjira.disney.com/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
+        const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url, {
             headers: {
@@ -582,7 +586,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/precondition`,
+            `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -609,7 +613,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testset`,
+            `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -644,7 +648,7 @@ export class JiraApiClient {
         if (limit !== undefined) params.append("limit", limit.toString());
 
         const queryString = params.toString();
-        const url = `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
+        const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url, {
             headers: {
@@ -671,7 +675,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/test/${testKey}/testplan`,
+            `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -706,7 +710,7 @@ export class JiraApiClient {
         if (limit !== undefined) params.append("limit", limit.toString());
 
         const queryString = params.toString();
-        const url = `https://myjira.disney.com/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
+        const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url, {
             headers: {
@@ -741,7 +745,7 @@ export class JiraApiClient {
         if (limit !== undefined) params.append("limit", limit.toString());
 
         const queryString = params.toString();
-        const url = `https://myjira.disney.com/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
+        const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url, {
             headers: {
@@ -784,7 +788,7 @@ export class JiraApiClient {
         if (limit !== undefined) params.append("limit", limit.toString());
 
         const queryString = params.toString();
-        const url = `https://myjira.disney.com/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
+        const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
 
         const response = await fetch(url, {
             headers: {
@@ -811,7 +815,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/settings/teststatuses`,
+            `${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -839,7 +843,7 @@ export class JiraApiClient {
 
         // Fetch the Jira issue with all fields
         const issueResponse = await fetch(
-            `https://myjira.disney.com/rest/api/2/issue/${testKey}`,
+            `${this.baseUrl}/rest/api/2/issue/${testKey}`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
@@ -899,7 +903,7 @@ export class JiraApiClient {
         const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `https://myjira.disney.com/rest/raven/2.0/api/precondition/${preConditionKey}/test`,
+            `${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`,
             {
                 headers: {
                     Authorization: `Bearer ${pat}`,
