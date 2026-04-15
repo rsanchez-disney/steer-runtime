@@ -20,8 +20,16 @@ if ($ws) {
     Write-Output ""
     Write-Output "- **Active workspace:** $ws"
 
-    $wsFile = Get-ChildItem -Path (Join-Path $steerRoot "workspaces") -Filter "workspace.json" -Recurse -ErrorAction SilentlyContinue |
-        Where-Object { (Get-Content $_.FullName -Raw | ConvertFrom-Json).name -eq $ws } | Select-Object -First 1
+    # Fast path: read resolved snapshot from settings
+    $wsSnapshot = Join-Path $kiroDir "settings\workspace.json"
+    $wsFile = $null
+    if (Test-Path $wsSnapshot) {
+        $wsFile = Get-Item $wsSnapshot
+    } else {
+        # Fallback: search steer-runtime recursively
+        $wsFile = Get-ChildItem -Path (Join-Path $steerRoot "workspaces") -Filter "workspace.json" -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { (Get-Content $_.FullName -Raw | ConvertFrom-Json).name -eq $ws } | Select-Object -First 1
+    }
     if ($wsFile) {
         $d = Get-Content $wsFile.FullName -Raw | ConvertFrom-Json
         if ($d.team) { Write-Output "- **Team:** $($d.team)" }

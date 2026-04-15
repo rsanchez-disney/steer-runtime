@@ -17,8 +17,14 @@ if [ -n "$ws" ]; then
   echo ""
   echo "- **Active workspace:** $ws"
 
-  # Search recursively for workspace.json (handles nested workspaces)
-  WS_FILE=$(find "$STEER_ROOT/workspaces" -name "workspace.json" -exec grep -l "\"name\".*\"$ws\"" {} \; 2>/dev/null | head -1)
+  # Fast path: read resolved snapshot from settings
+  WS_SNAPSHOT="$KIRO_DIR/settings/workspace.json"
+  if [ -f "$WS_SNAPSHOT" ]; then
+    WS_FILE="$WS_SNAPSHOT"
+  else
+    # Fallback: search steer-runtime recursively
+    WS_FILE=$(find "$STEER_ROOT/workspaces" -name "workspace.json" -exec grep -l "\"name\".*\"$ws\"" {} \; 2>/dev/null | head -1)
+  fi
   if [ -n "$WS_FILE" ]; then
     python3 -c "
 import json
