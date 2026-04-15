@@ -27,6 +27,17 @@
 - <name> (mario.y.ojeda.-nd@disney.com)
 
 ## Branch Naming
+
+### General (Web / Go / VAS)
 - Feature: `feat/OPS-{ticket}`
 - Bugfix: `fix/OPS-{ticket}`
 - Hotfix: `hotfix/OPS-{ticket}`
+
+### Mobile (Flutter Monorepo)
+- Feature: `applications/{app-name}/feat/OPS-{ticket}-{description}`
+- Bugfix: `applications/{app-name}/fix/OPS-{ticket}-{description}`
+- Refactor: `applications/{app-name}/refactor/{description}`
+- Monorepo-wide: `monorepo/{type}/{description}`
+- Chassis layer: `layer1_chassis/chassis/{type}/{description}`
+- App foundation: `layer2_app_foundation/app_foundation/{type}/{description}`
+- BC extension: `layer3_bc_extension/bc/{type}/{description}`
