@@ -92,7 +92,7 @@ steer-runtime/
 │   │   └── mcp-servers/            #   MCP server source code
 │   │       ├── jira-mcp/           #     Jira integration (Node.js/TypeScript)
 │   │       ├── confluence-mcp/     #     Confluence integration
-│   │       ├── mywiki-mcp/         #     MyWiki instance (reuses confluence-mcp)
+│   │       ├── confluence-mcp/     #     Confluence (also used for mywiki via env)
 │   │       ├── github-mcp/         #     GitHub Enterprise integration
 │   │       ├── mermaid-diagram-mcp/#     Diagram generation
 │       └── (context7)           #     npx-based, no local bundle
@@ -244,7 +244,7 @@ Each agent consists of two files:
 │   ├── .env               CONFLUENCE_URL + CONFLUENCE_PAT
 │   └── .env.mywiki        MyWiki instance tokens
 │
-├── mywiki-mcp/            Placeholder (uses confluence-mcp binary via agent env block)
+├── mywiki-mcp/            Removed — mywiki uses confluence-mcp binary with CONFLUENCE_URL=https://mywiki.disney.com
 │   └── .env.example
 │
 ├── github-mcp/            Node.js/TypeScript
