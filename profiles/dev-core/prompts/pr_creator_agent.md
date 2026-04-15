@@ -81,7 +81,7 @@ Coverage: <percentage>%
 
 ```markdown
 ## Story
-[DPAY-14337](https://jira.disney.com/browse/DPAY-14337): Add export progress indicator
+[DPAY-14337](https://myjira.disney.com/browse/DPAY-14337): Add export progress indicator
 
 ## Type
 Feature

@@ -5,7 +5,7 @@
 ### Complete Workflow (11 Steps + 5 Gates)
 
 ```
-User Input: "Implement https://jira.disney.com/browse/DPAY-14337"
+User Input: "Implement https://myjira.disney.com/browse/DPAY-14337"
     ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Step 1: Story Analysis                                  │

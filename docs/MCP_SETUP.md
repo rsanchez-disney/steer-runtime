@@ -131,7 +131,7 @@ Configurable URLs and endpoints in `~/.kiro/env.vars`:
 |-----|---------|-------------|
 | `CONFLUENCE_URL` | `https://confluence.disney.com` | Confluence base URL |
 | `MYWIKI_URL` | `https://mywiki.disney.com` | MyWiki base URL |
-| `JIRA_URL` | `https://jira.disney.com` | Jira base URL |
+| `JIRA_URL` | `https://myjira.disney.com` | Jira base URL |
 | `COMPASS_URL` | `https://compass.wdprapps.disney.com/api/mcp/mcp-...` | Compass MCP endpoint (user-configurable) |
 
 Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
@@ -149,7 +149,7 @@ Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 
 | Service | URL |
 |---------|-----|
-| Jira | https://myjira.disney.com/secure/ViewProfile.jspa → Personal Access Tokens |
+| Jira | https://mymyjira.disney.com/secure/ViewProfile.jspa → Personal Access Tokens |
 | Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action |
 | MyWiki | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action |
 | GitHub | `https://{host}/settings/tokens` (one per remote) |
