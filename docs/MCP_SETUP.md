@@ -12,7 +12,7 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 |--------|--------|------|-------------|
 | jira | `jira-mcp/dist/index.cjs` | `JIRA_PAT` | Jira issues, boards, sprints |
 | confluence | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT` | Confluence pages, search |
-| mywiki | `mywiki-mcp/dist/index.cjs` | `MYWIKI_PAT` | MyWiki (separate Confluence instance) |
+| mywiki | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT` | MyWiki (confluence-mcp with `CONFLUENCE_URL=https://mywiki.disney.com`) |
 | github | `github-mcp/dist/index.cjs` | `GITHUB_TOKEN_{remote}` | GitHub PRs, repos, issues (multi-instance) |
 | figma | `figma-mcp/dist/index.cjs` | `FIGMA_TOKEN` | Figma files, nodes, styles, comments, image export |
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | none | Mermaid diagram rendering |
@@ -266,7 +266,7 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 | context7 install fails              | Requires `npm` on your PATH — run `koda setup` to install Node.js                                 |
 | Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                 |
 | Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                            |
-| MyWiki tools rejected as duplicates | Rebuild: `cd ~/.kiro/tools/mcp-servers/mywiki-mcp && npm run build`                               |
+| MyWiki tools rejected as duplicates | mywiki uses confluence-mcp binary — ensure mcp.json "mywiki" server has `CONFLUENCE_URL=https://mywiki.disney.com` |
 | Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                      |
 | Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                |
 | Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                |

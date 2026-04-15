@@ -137,7 +137,7 @@ Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 |--------|---------|-------|
 | jira-mcp | Jira issue management | [Generate](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
 | confluence-mcp | Confluence wiki | [Generate](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| mywiki-mcp | MyWiki instance | [Generate](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
+| mywiki | MyWiki instance (uses confluence-mcp binary) | [Generate](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
 | github-mcp | GitHub Enterprise | [Generate](https://github.disney.com/settings/tokens) |
 | bruno-mcp | API testing via Bruno collections | No token needed |
 | mermaid-diagram-mcp | Diagram generation | No token needed |

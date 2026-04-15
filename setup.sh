@@ -62,7 +62,7 @@ precompute_mcp_paths() {
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
-    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs")"
+    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then

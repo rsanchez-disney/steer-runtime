@@ -40,8 +40,8 @@ koda mcp-install
 If you see "tools rejected because they conflict in names" for mywiki:
 
 ```bash
-# mywiki-mcp must have unique tool names (get_mywiki_page, not get_confluence_page)
-cd ~/.kiro/tools/mcp-servers/mywiki-mcp && npm run build
+# mywiki uses confluence-mcp binary — no separate build needed
+# Configure via mcp.json: "mywiki" server with CONFLUENCE_URL=https://mywiki.disney.com
 ```
 
 ## Mermaid MCP Init Failure
