@@ -135,10 +135,9 @@ Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 
 | Server | Purpose | Token |
 |--------|---------|-------|
-| jira-mcp | Jira issue management | [Generate](https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens) |
-| confluence-mcp | Confluence wiki | [Generate](https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| mywiki | MyWiki instance (uses confluence-mcp binary) | [Generate](https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action) |
-| github-mcp | GitHub Enterprise | [Generate](https://github.disney.com/settings/tokens) |
+| jira-mcp | Jira issue management (multi-instance) | `JIRA_PAT_{name}` in tokens.env |
+| confluence-mcp | Confluence wiki (multi-instance) | `CONFLUENCE_PAT_{name}` in tokens.env |
+| github-mcp | GitHub Enterprise (multi-instance) | `GITHUB_TOKEN_{name}` in tokens.env |
 | bruno-mcp | API testing via Bruno collections | No token needed |
 | mermaid-diagram-mcp | Diagram generation | No token needed |
 | figma-mcp | Figma design files, components, styles, comments | [Generate](https://www.figma.com/developers/api#access-tokens) |
