@@ -1,0 +1,13 @@
+{
+  "name": "log_analyzer_agent",
+  "description": "Analyzes application logs to identify errors, patterns, anomalies, and generate incident summaries",
+  "prompt": "log_analyzer_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write"
+  ],
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ]
+}
