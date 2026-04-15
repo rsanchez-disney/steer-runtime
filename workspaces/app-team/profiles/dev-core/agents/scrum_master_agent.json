@@ -1,0 +1,17 @@
+{
+  "name": "scrum_master_agent",
+  "description": "Tracks sprint progress, velocity, generates sprint reports, and facilitates retrospectives via Jira",
+  "prompt": "scrum_master_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write"
+  ],
+  "resources": [
+    "file://.kiro/context/team_context.md"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true
+}
