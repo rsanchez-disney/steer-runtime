@@ -13,7 +13,8 @@ Node.js/TypeScript MCP server for ServiceNow incidents, problems, change request
 ```bash
 cd shared/tools/mcp-servers/servicenow-mcp
 npm install
-npm run build
+npm run build    # TypeScript compile (build/index.js)
+npm run bundle   # Single-file bundle (dist/index.cjs) — recommended for deployment
 ```
 
 ## Configuration
@@ -26,7 +27,7 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json` or `.kiro/settings/mcp.
     "servicenow-mcp": {
       "command": "node",
       "args": [
-        "/full/path/to/servicenow-mcp/build/index.js"
+        "/full/path/to/servicenow-mcp/dist/index.cjs"
       ],
       "env": {
         "SNOW_INSTANCE": "https://your-instance.service-now.com",

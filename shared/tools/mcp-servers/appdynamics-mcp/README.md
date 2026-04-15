@@ -13,7 +13,8 @@ Node.js/TypeScript MCP server that provides tools to query the AppDynamics REST 
 ```bash
 cd shared/tools/mcp-servers/appdynamics-mcp
 npm install
-npm run build
+npm run build    # TypeScript compile (build/index.js)
+npm run bundle   # Single-file bundle (dist/index.cjs) — recommended for deployment
 ```
 
 ## Configuration
@@ -29,7 +30,7 @@ Add the server to your Kiro MCP config file.
     "appdynamics-mcp": {
       "command": "node",
       "args": [
-        "/full/path/to/appdynamics-mcp/build/index.js"
+        "/full/path/to/appdynamics-mcp/dist/index.cjs"
       ],
       "env": {
         "APPD_CONTROLLER_URL": "https://your-controller.saas.appdynamics.com",

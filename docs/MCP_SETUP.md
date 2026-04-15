@@ -18,6 +18,17 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | none | Mermaid diagram rendering |
 | bruno | `bruno-mcp/dist/index.cjs` | none | Bruno API collection runner |
 | context7 | `npx @upstash/context7-mcp` | none | Library documentation lookup |
+| appdynamics | `appdynamics-mcp/dist/index.cjs` | `APPD_CLIENT_ID` + `APPD_CLIENT_SECRET` | AppDynamics health, metrics, tiers, snapshots, anomalies (10 tools) |
+| servicenow | `servicenow-mcp/dist/index.cjs` | `SNOW_USERNAME` + `SNOW_PASSWORD` | ServiceNow incidents, problems, change requests, CTASKs (15 tools) |
+
+### Local Servers (Node.js, built from source)
+
+| Server | Bundle | Auth | Description |
+|--------|--------|------|-------------|
+| appdynamics | `appdynamics-mcp/build/index.js` | `APPD_CLIENT_ID` + `APPD_CLIENT_SECRET` | AppDynamics health, metrics, tiers, snapshots, anomalies (10 tools) |
+| servicenow | `servicenow-mcp/build/index.js` | `SNOW_USERNAME` + `SNOW_PASSWORD` | ServiceNow incidents, problems, change requests, CTASKs (15 tools) |
+
+> These servers require `npm install && npm run build` before first use. See individual READMEs for setup.
 
 ### Remote Servers (SSE)
 
@@ -107,6 +118,16 @@ COMPASS_TOKEN=your-compass-token
 # SONARQUBE_TOKEN=
 # HARNESS_API_KEY=
 
+# AppDynamics OAuth (client credentials)
+# APPD_CONTROLLER_URL=https://your-controller.saas.appdynamics.com
+# APPD_CLIENT_ID=your-client-id@your-account
+# APPD_CLIENT_SECRET=your-client-secret
+
+# ServiceNow (basic auth)
+# SNOW_INSTANCE=https://your-instance.service-now.com
+# SNOW_USERNAME=your-service-account
+# SNOW_PASSWORD=your-password
+
 # GitHub remotes (suffixed — one pair per host)
 GITHUB_TOKEN_disney=ghp_xxxxxxxxxxxxxxxxxxxx
 GITHUB_HOST_disney=github.disney.com
@@ -155,6 +176,8 @@ Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 | GitHub | `https://{host}/settings/tokens` (one per remote) |
 | Figma | https://www.figma.com/developers/api#access-tokens |
 | Compass | Contact your team lead |
+| AppDynamics | Controller → Settings → Administration → API Clients (OAuth client credentials) |
+| ServiceNow | Service account with API access — contact your ServiceNow admin |
 
 ## Multi-Instance GitHub
 
@@ -241,6 +264,83 @@ export CONTAINER_RUNTIME=podman   # or docker, nerdctl
 
 > See [MEMORY_MCP.md](MEMORY_MCP.md) for full details — data model, tools reference, and troubleshooting.
 
+## AppDynamics MCP
+
+Queries the AppDynamics REST API using OAuth 2.0 client credentials. Provides 10 tools for application health monitoring.
+
+### Setup
+
+```bash
+cd shared/tools/mcp-servers/appdynamics-mcp
+npm install
+npm run build
+```
+
+### mcp.json entry
+
+```json
+"appdynamics-mcp": {
+  "command": "node",
+  "args": ["/path/to/appdynamics-mcp/dist/index.cjs"],
+  "env": {
+    "APPD_CONTROLLER_URL": "https://your-controller.saas.appdynamics.com",
+    "APPD_CLIENT_ID": "your-client-id@your-account",
+    "APPD_CLIENT_SECRET": "your-client-secret"
+  }
+}
+```
+
+### Tools
+
+`list_applications`, `get_application_health`, `get_business_transactions`, `get_metric_data`, `get_tiers`, `get_nodes`, `get_health_violations`, `get_error_rate`, `get_snapshots`, `get_anomalies`
+
+### Skills
+
+- `appdynamics-health-check` — 7-step health assessment with 24h baseline comparison and per-tier analysis
+
+> See [appdynamics-mcp README](../shared/tools/mcp-servers/appdynamics-mcp/README.md) for full details.
+
+## ServiceNow MCP
+
+Manages ServiceNow incidents, problems, change requests, and CTASKs via the REST API using HTTP Basic Auth. Provides 15 tools.
+
+### Setup
+
+```bash
+cd shared/tools/mcp-servers/servicenow-mcp
+npm install
+npm run build
+```
+
+### mcp.json entry
+
+```json
+"servicenow-mcp": {
+  "command": "node",
+  "args": ["/path/to/servicenow-mcp/dist/index.cjs"],
+  "env": {
+    "SNOW_INSTANCE": "https://your-instance.service-now.com",
+    "SNOW_USERNAME": "your-service-account",
+    "SNOW_PASSWORD": "your-password"
+  }
+}
+```
+
+### Tools
+
+`get_incident`, `add_work_note`, `change_ci`, `change_assignment_group`, `add_parent_incident`, `resolve_incident`, `update_incident`, `query_incidents`, `create_incident`, `create_problem`, `create_change_request`, `get_ctask`, `add_ctask_work_note`, `update_ctask`, `close_ctask`
+
+### Skills
+
+- `servicenow-incident-ops` — 9 workflows for incident triage, routing, resolution, CTASK management, and reporting
+
+### Disney Instance Notes
+
+- State codes are non-standard: `12` = Pending Vendor, `14` = Canceled
+- Use `sysparm_display_value=all` in queries to see both raw and display values
+
+> See [servicenow-mcp README](../shared/tools/mcp-servers/servicenow-mcp/README.md) for full details.
+
 ## Verification
 
 ```bash
@@ -271,6 +371,10 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 | Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                |
 | Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                |
 | memory-mcp tools unavailable        | Run `koda memory start` — containers must be running. Check port 9377                             |
+| appdynamics-mcp `fetch is not defined` | Node.js < 16 or missing `node-fetch` — run `npm install` in the server directory                |
+| appdynamics-mcp `OAuth token error` | Verify `APPD_CLIENT_ID` and `APPD_CLIENT_SECRET` in mcp.json env block                           |
+| servicenow-mcp `401 Unauthorized`   | Verify `SNOW_USERNAME` and `SNOW_PASSWORD` in mcp.json env block                                  |
+| servicenow-mcp query returns wrong results | State codes are instance-specific — use numeric values (12=Pending Vendor, 14=Canceled)     |
 
 ---
 
