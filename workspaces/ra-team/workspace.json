@@ -8,8 +8,7 @@
     "ops",
     "dev-web"
   ],
-  "default_agent": "",
-  "projects": null,
+  "default_agent": "orchestrator",
   "rules": [
     "conventional_commit",
     "general-angular-development",
