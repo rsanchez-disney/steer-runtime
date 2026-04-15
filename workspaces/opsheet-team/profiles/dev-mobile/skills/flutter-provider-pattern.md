@@ -1,218 +1,203 @@
-# Flutter Provider Pattern Implementation
+# Flutter Riverpod Pattern Implementation
 
 ## When to Use
 
-Use Provider for:
-- Dependency injection
-- State management
+Use Riverpod for:
+- Dependency injection (repositories, API clients)
+- State management (controllers, async data)
 - Sharing data across widget tree
-- Reactive UI updates
+- Reactive UI updates with compile-time safety
 
-## Provider Types
+## Provider Types (Code-Generated — Preferred)
 
-### Provider (Immutable)
+### @riverpod Controller (Complex State)
 ```dart
-Provider<ApiClient>(
-  create: (_) => ApiClient(),
-  child: MyApp(),
-)
-```
+@riverpod
+class EntityStatus extends _$EntityStatus {
+  @override
+  Future<EntityStatusModel?> build(String entityId) async {
+    return _fetch(entityId);
+  }
 
-### ChangeNotifierProvider (Mutable State)
-```dart
-ChangeNotifierProvider(
-  create: (_) => CartModel(),
-  child: MyApp(),
-)
+  Future<void> refresh(String entityId) async {
+    if (state.isLoading) return;
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _fetch(entityId));
+  }
 
-class CartModel extends ChangeNotifier {
-  final List<Item> _items = [];
-  
-  void add(Item item) {
-    _items.add(item);
-    notifyListeners();
+  Future<EntityStatusModel?> _fetch(String entityId) async {
+    final repo = ref.read(entityRepositoryProvider);
+    return repo.getStatus(entityId);
   }
 }
 ```
 
-### FutureProvider (Async Init)
+### @riverpod Function (Computed/Simple)
 ```dart
-FutureProvider<Config>(
-  create: (_) => fetchConfig(),
-  initialData: Config.empty(),
-  child: MyApp(),
-)
+@riverpod
+Future<List<Entity>> filteredEntities(
+  FilteredEntitiesRef ref, {
+  required String parkId,
+}) async {
+  final repo = ref.read(entityRepositoryProvider);
+  return repo.getByPark(parkId);
+}
 ```
 
-### StreamProvider (Real-time Data)
+### Legacy Provider (Wiring Only — Acceptable in Existing Code)
 ```dart
-StreamProvider<User>(
-  create: (_) => authStream(),
-  initialData: User.guest(),
-  child: MyApp(),
-)
+final entityRepositoryProvider = Provider<EntityRepository>((ref) {
+  return EntityRepository(
+    apiClient: ref.read(opsApiClientProvider),
+  );
+});
+```
+
+## Provider Modifiers
+
+### autoDispose (Default with @riverpod)
+Code-generated providers are autoDispose by default. Use `keepAlive()` to opt out:
+
+```dart
+@riverpod
+class MyController extends _$MyController {
+  @override
+  Future<Data?> build() async {
+    ref.keepAlive(); // Prevent disposal when no listeners
+    return _fetch();
+  }
+}
+```
+
+### family (Parameters via build args)
+```dart
+@riverpod
+class EntityDetail extends _$EntityDetail {
+  @override
+  Future<EntityModel?> build(String entityId) async {
+    return ref.read(entityRepositoryProvider).getById(entityId);
+  }
+}
+
+// Usage
+ref.watch(entityDetailProvider('entity-123'));
 ```
 
 ## Consuming Providers
 
-### context.watch (Rebuilds on Change)
+### ref.watch (Reactive — Use in build)
 ```dart
-Widget build(BuildContext context) {
-  final cart = context.watch<CartModel>();
-  return Text('Items: ${cart.items.length}');
+class EntityPage extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statusAsync = ref.watch(entityStatusProvider(entityId));
+    return statusAsync.when(
+      data: (status) => EntityStatusWidget(status: status),
+      loading: () => const LoadingIndicator(),
+      error: (err, stack) => ErrorWidget(error: err),
+    );
+  }
 }
 ```
 
-### context.read (No Rebuild)
+### ref.read (One-off — Use in callbacks)
 ```dart
 onPressed: () {
-  context.read<CartModel>().add(item);
+  ref.read(entityStatusProvider(entityId).notifier).refresh(entityId);
 }
 ```
 
-### Consumer (Granular Rebuild)
+### ref.listen (Side Effects)
 ```dart
-Consumer<CartModel>(
-  builder: (context, cart, child) {
-    return Text('Items: ${cart.items.length}');
-  },
-)
-```
-
-### Selector (Optimized Rebuild)
-```dart
-Selector<CartModel, int>(
-  selector: (_, cart) => cart.items.length,
-  builder: (_, count, __) {
-    return Text('Items: $count');
-  },
-)
-```
-
-## MultiProvider Pattern
-
-```dart
-MultiProvider(
-  providers: [
-    Provider<ApiClient>(create: (_) => ApiClient()),
-    ChangeNotifierProvider(create: (_) => AuthModel()),
-    ChangeNotifierProvider(create: (_) => CartModel()),
-  ],
-  child: MyApp(),
-)
-```
-
-## ProxyProvider (Dependencies)
-
-```dart
-MultiProvider(
-  providers: [
-    Provider<ApiClient>(create: (_) => ApiClient()),
-    ProxyProvider<ApiClient, UserRepository>(
-      update: (_, api, __) => UserRepository(api),
-    ),
-  ],
-  child: MyApp(),
-)
-```
-
-## Testing with Provider
-
-```dart
-testWidgets('cart updates', (tester) async {
-  final cart = CartModel();
-  
-  await tester.pumpWidget(
-    ChangeNotifierProvider.value(
-      value: cart,
-      child: MyApp(),
+ref.listen(entityStatusProvider(entityId), (prev, next) {
+  next.whenOrNull(
+    error: (err, _) => ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: $err')),
     ),
   );
-  
-  cart.add(Item('test'));
-  await tester.pump();
-  
-  expect(find.text('Items: 1'), findsOneWidget);
 });
+```
+
+### ref.invalidate (Force Refresh)
+```dart
+onRefresh: () {
+  ref.invalidate(entityStatusProvider(entityId));
+}
+```
+
+## AsyncValue Handling
+
+### Pattern Matching (Preferred)
+```dart
+asyncValue.when(
+  data: (data) => DataWidget(data: data),
+  loading: () => const LoadingIndicator(),
+  error: (err, stack) => ErrorDisplay(error: err),
+);
+```
+
+### Guard (In Controllers)
+```dart
+state = await AsyncValue.guard(() => repository.fetchData());
+```
+
+### Skip Loading on Refresh
+```dart
+asyncValue.when(
+  data: (data) => DataWidget(data: data),
+  loading: () => const LoadingIndicator(),
+  error: (err, stack) => ErrorDisplay(error: err),
+  skipLoadingOnRefresh: true,
+);
+```
+
+## Code Generation
+
+After creating or modifying `@riverpod` controllers:
+
+```bash
+fvm dart run build_runner build --delete-conflicting-outputs
+```
+
+Generated files: `*.g.dart` (part files alongside source)
+
+## Testing with Riverpod
+
+```dart
+void main() {
+  late ProviderContainer container;
+  late MockEntityRepository mockRepo;
+
+  setUp(() {
+    mockRepo = MockEntityRepository();
+    container = ProviderContainer(
+      overrides: [
+        entityRepositoryProvider.overrideWithValue(mockRepo),
+      ],
+    );
+  });
+
+  tearDown(() => container.dispose());
+
+  test('fetches entity status', () async {
+    when(() => mockRepo.getStatus('entity-123'))
+        .thenAnswer((_) async => EntityStatusModel(id: 'entity-123'));
+
+    final result = await container.read(
+      entityStatusProvider('entity-123').future,
+    );
+
+    expect(result?.id, 'entity-123');
+  });
+}
 ```
 
 ## Best Practices
 
-1. **Scope providers appropriately**
-   - Global: App-level state (auth, theme)
-   - Feature: Feature-level state (form, list)
-
-2. **Dispose resources**
-   ```dart
-   @override
-   void dispose() {
-     _controller.dispose();
-     super.dispose();
-   }
-   ```
-
-3. **Avoid Provider.of in build**
-   - Use context.watch instead
-   - Provider.of doesn't support null safety well
-
-4. **Use Selector for performance**
-   - Only rebuild when specific data changes
-   - Reduces unnecessary rebuilds
-
-5. **Keep ChangeNotifier simple**
-   - Single responsibility
-   - Clear API
-   - Minimal logic in notifyListeners
-
-## Common Patterns
-
-### Loading State
-```dart
-class DataModel extends ChangeNotifier {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  
-  Future<void> load() async {
-    _isLoading = true;
-    notifyListeners();
-    
-    await fetchData();
-    
-    _isLoading = false;
-    notifyListeners();
-  }
-}
-```
-
-### Error Handling
-```dart
-class DataModel extends ChangeNotifier {
-  String? _error;
-  String? get error => _error;
-  
-  Future<void> load() async {
-    try {
-      await fetchData();
-      _error = null;
-    } catch (e) {
-      _error = e.toString();
-    }
-    notifyListeners();
-  }
-}
-```
-
-### Form State
-```dart
-class FormModel extends ChangeNotifier {
-  String _name = '';
-  String get name => _name;
-  
-  void updateName(String value) {
-    _name = value;
-    notifyListeners();
-  }
-  
-  bool get isValid => _name.isNotEmpty;
-}
-```
+1. **Use `@riverpod` for all new code** — avoid manual provider declarations
+2. **Keep controllers focused** — one controller per feature/screen concern
+3. **Use `AsyncValue.guard`** — never raw try-catch in controllers
+4. **Prefer `ref.watch` in build** — `ref.read` only in callbacks and initialization
+5. **Don't store ref** — always access it fresh from the method parameter
+6. **Use `ref.invalidate`** — instead of manual refresh logic when possible
+7. **Scope providers correctly** — autoDispose for screen-level, keepAlive for app-level
