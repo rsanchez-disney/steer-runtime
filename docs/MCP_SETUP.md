@@ -10,9 +10,8 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 
 | Server | Bundle | Auth | Description |
 |--------|--------|------|-------------|
-| jira | `jira-mcp/dist/index.cjs` | `JIRA_PAT` | Jira issues, boards, sprints |
-| confluence | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT` | Confluence pages, search |
-| mywiki | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT` | MyWiki (confluence-mcp with `CONFLUENCE_URL=https://mywiki.disney.com`) |
+| jira | `jira-mcp/dist/index.cjs` | `JIRA_PAT_{name}` | Jira issues, boards, sprints (multi-instance) |
+| confluence | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT_{name}` | Confluence pages, search (multi-instance) |
 | github | `github-mcp/dist/index.cjs` | `GITHUB_TOKEN_{remote}` | GitHub PRs, repos, issues (multi-instance) |
 | figma | `figma-mcp/dist/index.cjs` | `FIGMA_TOKEN` | Figma files, nodes, styles, comments, image export |
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | none | Mermaid diagram rendering |
@@ -42,7 +41,7 @@ koda install dev ba qa ops pm       # Install agents with tokens injected
 
 Or use the Koda TUI:
 - `[t]` Tokens — set Jira, Confluence, MyWiki, SonarQube, Harness, Figma, Compass tokens
-- `[g]` GitHub — manage GitHub remotes (multi-instance)
+- `[g]` GitHub — opens MCP screen at GitHub section (multi-instance)
 - `[e]` Env Vars — configure URLs (Confluence, MyWiki, Compass endpoint)
 
 ## Command Modes
@@ -94,24 +93,40 @@ echo "" | koda mcp-install
 
 ### tokens.env
 
-All tokens live in `~/.kiro/tokens.env`:
+All tokens live in `~/.kiro/tokens.env`. Jira, Confluence, and GitHub use suffixed keys for multi-instance support:
 
 ```env
-# Simple tokens (one per service)
-JIRA_PAT=your-jira-pat
-CONFLUENCE_PAT=your-confluence-pat
-MYWIKI_PAT=your-mywiki-pat
-FIGMA_TOKEN=your-figma-token
-COMPASS_TOKEN=your-compass-token
-# SONARQUBE_TOKEN=
-# HARNESS_API_KEY=
-
-# GitHub remotes (suffixed — one pair per host)
+# GitHub instances (suffixed — one pair per host)
 GITHUB_TOKEN_disney=ghp_xxxxxxxxxxxxxxxxxxxx
 GITHUB_HOST_disney=github.disney.com
 GITHUB_TOKEN_public=ghp_yyyyyyyyyyyyyyyyyyyy
 GITHUB_HOST_public=github.com
+
+# Jira instances (suffixed — one pair per host)
+JIRA_PAT_myjira=your-myjira-pat
+JIRA_URL_myjira=https://myjira.disney.com
+JIRA_PAT_jira=your-jira-pat
+JIRA_URL_jira=https://jira.disney.com
+
+# Confluence instances (suffixed — one pair per host)
+CONFLUENCE_PAT_confluence=your-confluence-pat
+CONFLUENCE_URL_confluence=https://confluence.disney.com
+CONFLUENCE_PAT_mywiki=your-mywiki-pat
+CONFLUENCE_URL_mywiki=https://mywiki.disney.com
+
+# Simple tokens (one per service)
+FIGMA_TOKEN=your-figma-token
+COMPASS_TOKEN=your-compass-token
+# SONARQUBE_TOKEN=
+# HARNESS_API_KEY=
 ```
+
+Default instances (URLs pre-populated by Koda — just set the token):
+- GitHub: `disney` (github.disney.com), `public` (github.com)
+- Jira: `myjira` (myjira.disney.com), `jira` (jira.disney.com)
+- Confluence: `confluence` (confluence.disney.com), `mywiki` (mywiki.disney.com)
+
+Only instances with tokens set get MCP server entries in `mcp.json`.
 
 ### Configure tokens
 
@@ -128,10 +143,9 @@ Configurable URLs and endpoints in `~/.kiro/env.vars`:
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `CONFLUENCE_URL` | `https://confluence.disney.com` | Confluence base URL |
-| `MYWIKI_URL` | `https://mywiki.disney.com` | MyWiki base URL |
-| `JIRA_URL` | `https://myjira.disney.com` | Jira base URL |
 | `COMPASS_URL` | `https://compass.wdprapps.disney.com/api/mcp/mcp-...` | Compass MCP endpoint (user-configurable) |
+
+> **Note:** Jira, Confluence, and GitHub URLs are now managed as suffixed keys in `tokens.env` (e.g., `JIRA_URL_myjira`), not in `env.vars`.
 
 Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 
