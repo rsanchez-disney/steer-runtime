@@ -3,15 +3,18 @@
   "description": "Tracks sprint progress, velocity, generates sprint reports, and facilitates retrospectives via Jira",
   "prompt": "scrum_master_agent.md",
   "tools": [
-    "execute_bash",
+    "@jira/*",
     "fs_read",
-    "fs_write"
-  ],
-  "resources": [
-    "file://.kiro/context/team_context.md"
+    "fs_write",
+    "thinking"
   ],
   "allowedTools": [
     "@jira/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/agile_practices.md"
+  ],
+  "welcomeMessage": "👋 Scrum Master Agent ready!\n\nI can help with:\n • Sprint status and progress tracking\n • Velocity analysis and trends\n • Carry-over reports with reasons\n • Sprint review and retrospective summaries\n\nWhat would you like to review?"
 }
