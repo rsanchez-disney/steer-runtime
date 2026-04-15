@@ -1,0 +1,19 @@
+{
+  "name": "log_analyzer_agent",
+  "description": "Analyzes application logs across Splunk, ServiceNow, and other systems via Compass to trace errors, patterns, and incidents",
+  "prompt": "log_analyzer_agent.md",
+  "tools": [
+    "@compass/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md"
+  ],
+  "welcomeMessage": "👋 Log Analyzer ready!\n\nI can search logs across Splunk, ServiceNow, and other systems via Compass.\n\nProvide me with:\n • An error message or pattern\n • A correlation/trace/request ID\n • A service name and time window\n • A user or session identifier\n\nI'll reconstruct the event timeline and identify root cause."
+}
