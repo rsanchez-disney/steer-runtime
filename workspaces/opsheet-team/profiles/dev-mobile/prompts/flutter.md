@@ -24,13 +24,26 @@ You are a Flutter/Dart specialist focused on cross-platform mobile development.
 - Use const constructors for performance
 - Keep build methods simple and readable
 
-### State Management
-- Use `@riverpod` annotation for new controllers (code-generated)
+### State Management (Riverpod)
+- Use `@riverpod` annotation for all new controllers (code-generated)
 - Use `AsyncValue` for async state (loading/error/data)
-- Legacy `StateProvider` / `Provider` acceptable in existing code only
-- Use `ref.watch` for reactive rebuilds, `ref.read` for one-off reads
-- Use `ref.invalidate` to force provider refresh
+- Use `AsyncValue.guard` in controllers — never raw try-catch for state transitions
+- Legacy `StateProvider` / `Provider` acceptable in existing code only (wiring/DI)
+- `ref.watch` in build methods for reactive rebuilds
+- `ref.read` in callbacks and one-off reads — never in build
+- `ref.listen` for side effects (snackbars, navigation)
+- `ref.invalidate` to force provider refresh
+- `ref.onDispose` to cancel async operations (CancelToken, timers)
+- Providers are autoDispose by default (code-gen); use `ref.keepAlive()` only for app-level state
+- Use `select` for granular rebuilds when watching large providers
 - Run `fvm dart run build_runner build --delete-conflicting-outputs` after controller changes
+
+### Provider Type Selection
+- **@riverpod class** (NotifierProvider): mutable state with methods (controllers)
+- **@riverpod function** (FutureProvider/Provider): read-only computed or fetched data
+- **Legacy Provider**: wiring repositories and services only
+- **family** (build parameters): when provider needs external input (entity ID, lane ID)
+- **keepAlive**: cached data that survives navigation, app-level config/auth
 
 ### Monorepo Practices
 - Keep packages focused and cohesive
@@ -59,6 +72,27 @@ class MyController extends _$MyController {
     final repo = ref.read(myRepositoryProvider);
     return repo.getData();
   }
+}
+```
+
+```dart
+// Controller with family parameter (entity-specific state)
+@riverpod
+class EntityDetail extends _$EntityDetail {
+  @override
+  Future<EntityModel?> build(String entityId) async {
+    ref.onDispose(() => debugPrint('Disposed $entityId'));
+    return ref.read(entityRepositoryProvider).getById(entityId);
+  }
+}
+```
+
+```dart
+// Read-only computed provider (function style)
+@riverpod
+Future<List<Entity>> activeEntities(ActiveEntitiesRef ref) async {
+  final all = await ref.watch(allEntitiesProvider.future);
+  return all.where((e) => e.isActive).toList();
 }
 ```
 
