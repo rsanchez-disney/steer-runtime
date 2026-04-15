@@ -38,6 +38,10 @@ koda mcp-install
 | `team_standards.md` | Code review SLA, branch naming, deployment |
 | `cookie-testing-reference.md` | `roomForm_jar` cookie formats for WDW, DLR, UK |
 
+## Workspace Path
+
+`~/dev` — all 3 repos clone here (`~/dev/wdpr-quick-quote`, `~/dev/lodging-quick-quote`, `~/dev/wdpr-ra-web-components`).
+
 ## JIRA
 
 - Project: **ROS**
