@@ -1,0 +1,1 @@
+Run the appdynamics-health-check skill for prod_pci_S0001663_WDPR-Ticketing-Booking_aws. Focus on Step 3c (per-tier error analysis): get all tiers, query errors, calls, and average response time for each active tier, build the per-tier summary table, and flag any tiers with elevated error rates or response times.

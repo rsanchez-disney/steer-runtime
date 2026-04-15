@@ -1,0 +1,1 @@
+Run the servicenow-incident-ops skill Workflow 1 (Incident Triage) for INC28845352. Get incident details, check for related incidents on the same CI, assess impact using AppDynamics if the CI maps to an application, and provide a triage recommendation (route, update, resolve, or escalate).
