@@ -21,15 +21,6 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 | appdynamics | `appdynamics-mcp/dist/index.cjs` | `APPD_CLIENT_ID` + `APPD_CLIENT_SECRET` | AppDynamics health, metrics, tiers, snapshots, anomalies (10 tools) |
 | servicenow | `servicenow-mcp/dist/index.cjs` | `SNOW_USERNAME` + `SNOW_PASSWORD` | ServiceNow incidents, problems, change requests, CTASKs (15 tools) |
 
-### Local Servers (Node.js, built from source)
-
-| Server | Bundle | Auth | Description |
-|--------|--------|------|-------------|
-| appdynamics | `appdynamics-mcp/build/index.js` | `APPD_CLIENT_ID` + `APPD_CLIENT_SECRET` | AppDynamics health, metrics, tiers, snapshots, anomalies (10 tools) |
-| servicenow | `servicenow-mcp/build/index.js` | `SNOW_USERNAME` + `SNOW_PASSWORD` | ServiceNow incidents, problems, change requests, CTASKs (15 tools) |
-
-> These servers require `npm install && npm run build` before first use. See individual READMEs for setup.
-
 ### Remote Servers (SSE)
 
 | Server | Type | Auth | Description |
