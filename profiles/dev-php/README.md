@@ -22,7 +22,6 @@ PHP/Zend Framework specialist — MVC architecture, service managers, factory pa
 
 ## Capabilities
 
-- ✅ **Context7** — Up-to-date PHP/Laminas documentation
 - ✅ **Code Tools** — Read/write PHP source code
 - ✅ **Execution** — Run composer, phpunit, phpcs
 - ✅ **File Operations** — Manage module files

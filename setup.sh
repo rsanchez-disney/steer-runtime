@@ -816,11 +816,6 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
-        # Install context7 from public npm (blocked by corporate proxy via npx)
-        echo "📦 Installing context7-mcp from public registry..."
-        if [ -f "$KIRO_ROOT/tools/mcp-servers/context7-mcp/package.json" ]; then
-            (cd "$KIRO_ROOT/tools/mcp-servers/context7-mcp" && npm install --registry https://registry.npmjs.org --silent 2>/dev/null)
-            echo "  ✓ context7"
         fi
         echo ""
         

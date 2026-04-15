@@ -33,29 +33,29 @@ graph TD
 
     %% ─── dev-web ───────────────────────────────────
     subgraph DEV_WEB["dev-web · 5 agents"]
-        BACK["backend<br/><i>context7 · bruno</i>"]:::agent
-        WAPI["webapi<br/><i>context7 · bruno</i>"]:::agent
-        UI["ui<br/><i>context7 · figma</i>"]:::agent
+        BACK["backend<br/><i>bruno</i>"]:::agent
+        WAPI["webapi<br/><i>bruno</i>"]:::agent
+        UI["ui<br/><i>figma</i>"]:::agent
         UX["ux_specialist<br/><i>figma</i>"]:::agent
-        ASTRO["astro<br/><i>context7 · figma</i>"]:::agent
+        ASTRO["astro<br/><i>figma</i>"]:::agent
     end
 
     %% ─── dev-mobile ────────────────────────────────
     subgraph DEV_MOB["dev-mobile · 3 agents"]
-        FLUTTER["flutter<br/><i>context7</i>"]:::agent
-        ANDROID["android_native<br/><i>context7</i>"]:::agent
-        IOS["ios_native<br/><i>context7</i>"]:::agent
+        FLUTTER["flutter<br/>"]:::agent
+        ANDROID["android_native<br/>"]:::agent
+        IOS["ios_native<br/>"]:::agent
     end
 
 
     %% ─── dev-python ────────────────────────────────
     subgraph DEV_PY["dev-python · 1 agent"]
-        PYTHON["python<br/><i>context7</i>"]:::agent
+        PYTHON["python<br/>"]:::agent
     end
 
     %% ─── dev-infra ─────────────────────────────────
     subgraph DEV_INFRA["dev-infra · 1 agent"]
-        TERRAFORM["terraform<br/><i>context7</i>"]:::agent
+        TERRAFORM["terraform<br/>"]:::agent
     end
 
     %% ─── dev-dotnet ──────────────────────────────────
@@ -67,7 +67,7 @@ graph TD
 
     %% ─── dev-php ───────────────────────────────────
     subgraph DEV_PHP["dev-php · 1 agent"]
-        PHP["php_agent<br/><i>context7</i>"]:::agent
+        PHP["php_agent<br/>"]:::agent
     end
 
     %% ─── ba ────────────────────────────────────────
@@ -86,9 +86,9 @@ graph TD
     subgraph QA["qa · 11 agents"]
         QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
         QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
-        QA_ORCH --> TAUTO["test_automation<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> TAUTO["test_automation<br/><i>bruno</i>"]:::agent
         QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · mywiki · github</i>"]:::agent
-        QA_ORCH --> APITEST["api_tester<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> APITEST["api_tester<br/><i>bruno</i>"]:::agent
         QA_ORCH --> PERFTEST["performance_tester"]:::agent
         QA_ORCH --> QESTRAT["qe_strategy<br/><i>jira · confluence</i>"]:::agent
         QA_ORCH --> E2EGEN["e2e_test_generator<br/><i>jira</i>"]:::agent
@@ -277,21 +277,19 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 **File:** `profiles/dev-web/agents/backend.json`  
 **Purpose:** Java services specialist for wdpr-config-services  
 **Use for:** Backend API development, database changes, Java services  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### webapi
 **File:** `profiles/dev-web/agents/webapi.json`  
 **Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
 **Use for:** API layer, BFF logic, TypeScript interfaces  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ui
 **File:** `profiles/dev-web/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
 **Use for:** Frontend development, components, services, routing  
-**MCP Servers:** context7, figma  
+**MCP Servers:** figma  
 **Hooks:** preToolUse (guard writes)
 
 #### ux_specialist_agent
@@ -304,7 +302,7 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 **File:** `profiles/dev-web/agents/astro.json`  
 **Purpose:** Astro SSR specialist with React components and TypeScript  
 **Use for:** Astro pages, React islands, server actions, Nanostores state  
-**MCP Servers:** context7, figma  
+**MCP Servers:** figma  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -318,7 +316,6 @@ Python specialist for FastAPI, Flask, Django, and general Python development.
 **File:** `profiles/dev-python/agents/python.json`  
 **Purpose:** Python development specialist for API services and general Python  
 **Use for:** FastAPI/Flask/Django development, pytest, async patterns  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -331,7 +328,6 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 **File:** `profiles/dev-infra/agents/terraform.json`  
 **Purpose:** Terraform/IaC specialist for modules, state management, and provisioning  
 **Use for:** Terraform modules, plan/apply workflows, security scanning  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan)
 
 ---
@@ -368,7 +364,6 @@ PHP specialist for Zend Framework 3 (Laminas) and legacy ZF1/ZF2.
 **File:** `profiles/dev-php/agents/php_agent.json`  
 **Purpose:** PHP/Zend specialist — MVC, service managers, factory pattern, PSR-12, PHPUnit  
 **Use for:** Zend/Laminas MVC apps, legacy ZF1/ZF2 migration, module development  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -381,20 +376,17 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 **File:** `profiles/dev-mobile/agents/flutter.json`  
 **Purpose:** Dart/Flutter cross-platform development  
 **Use for:** Flutter widgets, state management, platform channels  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### android_native
 **File:** `profiles/dev-mobile/agents/android_native.json`  
 **Purpose:** Kotlin/Java platform channels for Android  
 **Use for:** Android-specific implementations, native integrations  
-**MCP Servers:** context7
 
 #### ios_native
 **File:** `profiles/dev-mobile/agents/ios_native.json`  
 **Purpose:** Swift/Obj-C platform channels for iOS  
 **Use for:** iOS-specific implementations, native integrations  
-**MCP Servers:** context7
 
 ---
 
@@ -507,7 +499,6 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/api_tester_agent.json`  
 **Purpose:** Tests REST APIs and validates contracts  
 **Use for:** API test suites, contract testing, endpoint validation  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### performance_tester_agent
@@ -707,45 +698,45 @@ Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `koda mcp-install` or `koda configure`).
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | qTest | Other |
-|---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|:-----:|
-| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **dev-core** | code_review_agent | ✅ | | | ✅ | | | |
-| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | | |
-| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | | |
-| **dev-web** | backend | | | | | ✅ | | |
-| **dev-web** | webapi | | | | | ✅ | | |
-| **dev-web** | ui | | | | | ✅ | | Figma |
-| **dev-web** | ux_specialist_agent | | | | | | | Figma |
-| **dev-web** | astro | | | | | ✅ | | Figma |
-| **dev-python** | python | | | | | ✅ | | |
-| **dev-infra** | terraform | | | | | ✅ | | |
-| **dev-dotnet** | dotnet_senior_agent | | | | | | | |
-| **dev-dotnet** | dotnet_self_host_api_agent | | | | | | | |
-| **dev-dotnet** | dotnet_serverless_agent | | | | | | | |
-| **dev-php** | php_agent | | | | | ✅ | | |
-| **dev-mobile** | flutter | | | | | ✅ | | |
-| **dev-mobile** | android_native | | | | | ✅ | | |
-| **dev-mobile** | ios_native | | | | | ✅ | | |
-| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | ✅ | |
-| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | | ✅ | |
-| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **qa** | test_automation_agent | | | | | | | |
-| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **ops** | code_quality_agent | | | | | | | SonarQube |
-| **ops** | deployment_agent | | | | | | | Harness |
-| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | | |
-| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | | |
-| **pm** | standup_agent | ✅ | | | | | | |
-| **pm** | retro_agent | ✅ | ✅ | ✅ | | | | |
-| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | | |
-| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | | |
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
+|---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
+| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | code_review_agent | ✅ | | | ✅ | | |
+| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
+| **dev-web** | backend | | | | | | |
+| **dev-web** | webapi | | | | | | |
+| **dev-web** | ui | | | | | | Figma |
+| **dev-web** | ux_specialist_agent | | | | | | Figma |
+| **dev-web** | astro | | | | | | Figma |
+| **dev-python** | python | | | | | | |
+| **dev-infra** | terraform | | | | | | |
+| **dev-dotnet** | dotnet_senior_agent | | | | | | |
+| **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
+| **dev-dotnet** | dotnet_serverless_agent | | | | | | |
+| **dev-php** | php_agent | | | | | | |
+| **dev-mobile** | flutter | | | | | | |
+| **dev-mobile** | android_native | | | | | | |
+| **dev-mobile** | ios_native | | | | | | |
+| **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_automation_agent | | | | | | |
+| **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **ops** | code_quality_agent | | | | | | SonarQube |
+| **ops** | deployment_agent | | | | | | Harness |
+| **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | standup_agent | ✅ | | | | | |
+| **pm** | retro_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | |
+| **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | |
 
 ---
 
