@@ -11,10 +11,9 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "use_subagent",
+    "subagent",
     "thinking",
-    "todo",
-    "delegate"
+    "todo_list"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -26,7 +25,7 @@
     "@github/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "\ud83d\udc4b PM/Scrum Master orchestrator ready!\n\nI can help you:\n  \u2022 Manage sprint planning and capacity\n  \u2022 Generate standup summaries from Jira\n  \u2022 Facilitate retrospectives with metrics\n  \u2022 Track blockers, risks, and dependencies\n  \u2022 Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health for DPAY board\"",
+  "welcomeMessage": "👋 PM/Scrum Master orchestrator ready!\n\nI can help you:\n  • Manage sprint planning and capacity\n  • Generate standup summaries from Jira\n  • Facilitate retrospectives with metrics\n  • Track blockers, risks, and dependencies\n  • Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health for DPAY board\"",
   "hooks": {
     "agentSpawn": [
       {

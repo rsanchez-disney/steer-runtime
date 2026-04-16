@@ -11,10 +11,9 @@
     "fs_read",
     "fs_write",
     "grep",
-    "use_subagent",
+    "subagent",
     "thinking",
-    "todo",
-    "delegate",
+    "todo_list",
     "@bruno/*"
   ],
   "allowedTools": [

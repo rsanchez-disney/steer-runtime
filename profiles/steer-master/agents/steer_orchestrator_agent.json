@@ -3,15 +3,14 @@
   "description": "Orchestrates development and review workflows for steer-runtime and Koda",
   "prompt": "prompts/steer_orchestrator_agent.md",
   "tools": [
-    "use_subagent",
+    "subagent",
     "execute_bash",
     "grep",
     "code",
     "fs_read",
     "fs_write",
     "thinking",
-    "todo",
-    "delegate"
+    "todo_list"
   ],
   "resources": [
     "file://profiles/steer-master/context/agent_schema.md",
@@ -66,6 +65,9 @@
       }
     ]
   },
-  "allowedTools": ["@github/*", "@jira/*"],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*"
+  ],
   "includeMcpJson": true
 }

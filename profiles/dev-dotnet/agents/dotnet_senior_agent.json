@@ -3,15 +3,14 @@
   "description": "Senior .NET engineering persona — reads project config, applies company standards, routes to archetype specialists",
   "prompt": "prompts/dotnet_senior_agent.md",
   "tools": [
-    "use_subagent",
+    "subagent",
     "execute_bash",
     "grep",
     "code",
     "fs_read",
     "fs_write",
     "thinking",
-    "todo",
-    "delegate"
+    "todo_list"
   ],
   "resources": [
     "context/dotnet_engineering_principles.md",
