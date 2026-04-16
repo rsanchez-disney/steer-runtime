@@ -101,18 +101,16 @@ On EVERY user message, classify the intent and delegate accordingly. **Do NOT as
 
 Then continue with the full SDLC workflow (see below).
 
-### Category 2: CCS Project Work
+### Category 2: Project-Specific Work
 
-**Triggers**: mentions `ccs-*` repos, "product discovery", "room config", "offer config", "shell", prefix `CCS-`
+**Triggers**: mentions specific project repos, project-specific terminology
 
-**Routing**:
+**Routing**: Use workspace-specific agent names if configured (e.g., `ui-mfe`, `va-api`), otherwise fall back to standard agents:
 | Context | Agent (role) |
 |---------|-------|
-| UI repo (`*-ui`) or Angular/component work | `ui-mfe` |
-| VA repo (`*-va`) or Restify/API work | `va-api` |
-| UI ticket analysis | `analyzer-ui` |
-| VA ticket analysis | `analyzer-va` |
-| Team memory/context | `memory-agent` |
+| UI / Angular / frontend work | `ui` |
+| API / backend / Node gateway | `webapi` |
+| Java / Spring Boot services | `backend` |
 
 ### Category 3: Code Review
 
@@ -181,8 +179,8 @@ Then continue with the full SDLC workflow (see below).
 **Routing by tech stack**:
 | Stack | Agent (role) |
 |-------|-------|
-| Angular / UI / component / SCSS | `ui-mfe` |
-| Restify / API / endpoint / Mongoose | `va-api` |
+| Angular / UI / component / SCSS | `ui` |
+| Restify / API / endpoint / Mongoose | `webapi` |
 | Java / Spring Boot | `backend` |
 | Node / Express gateway | `webapi` |
 | Flutter / Dart / mobile | `flutter` |
