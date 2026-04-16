@@ -75,3 +75,35 @@ When creating requirements in qTest:
 When creating test cases in qTest:
 
 3. **Module is required** — NEVER guess or search for a module. If the user does not specify a module (e.g., `MD-####`) for test cases, you MUST ask them which module to use before calling `qtest_create_test_case`. Do NOT browse the test design tree to pick a module on their behalf.
+
+
+---
+
+## How to Delegate: The `subagent` Tool
+
+You delegate by calling the `subagent` tool. **Never do specialist work yourself.**
+
+```
+subagent(
+  task="<description>",
+  stages=[{
+    "name": "<stage_name>",
+    "role": "<agent_name>",
+    "prompt_template": "<detailed task for the agent>"
+  }]
+)
+```
+
+For parallel tasks, use multiple stages with no `depends_on`:
+```
+subagent(
+  task="<description>",
+  stages=[
+    { "name": "task1", "role": "agent_a", "prompt_template": "..." },
+    { "name": "task2", "role": "agent_b", "prompt_template": "..." }
+  ]
+)
+```
+
+⚠️ The tool is `subagent`, NOT `use_subagent` or `delegate`.
+

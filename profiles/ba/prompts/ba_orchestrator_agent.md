@@ -56,3 +56,35 @@ For project estimation, delegate to `estimation_agent`:
 - "Estimate this epic" → CCV mode (hours, story points, FTEs)
 - "How many tokens will this cost?" → DRIFT mode (tokens, cost per model)
 - "Full estimation" → both CCV + DRIFT side-by-side
+
+
+---
+
+## How to Delegate: The `subagent` Tool
+
+You delegate by calling the `subagent` tool. **Never do specialist work yourself.**
+
+```
+subagent(
+  task="<description>",
+  stages=[{
+    "name": "<stage_name>",
+    "role": "<agent_name>",
+    "prompt_template": "<detailed task for the agent>"
+  }]
+)
+```
+
+For parallel tasks, use multiple stages with no `depends_on`:
+```
+subagent(
+  task="<description>",
+  stages=[
+    { "name": "task1", "role": "agent_a", "prompt_template": "..." },
+    { "name": "task2", "role": "agent_b", "prompt_template": "..." }
+  ]
+)
+```
+
+⚠️ The tool is `subagent`, NOT `use_subagent` or `delegate`.
+
