@@ -7,13 +7,12 @@
     "@confluence/*",
     "@mywiki/*",
     "@compass/*",
-    "use_subagent",
+    "subagent",
     "execute_bash",
     "fs_read",
     "fs_write",
     "thinking",
-    "todo",
-    "delegate"
+    "todo_list"
   ],
   "allowedTools": [
     "@jira/*",
