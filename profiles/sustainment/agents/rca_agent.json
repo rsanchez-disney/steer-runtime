@@ -18,6 +18,7 @@
   "includeMcpJson": true,
   "resources": [
     "context/sustainment_guidelines.md",
-    "context/observability_tools.md"
+    "context/observability_tools.md",
+    "file://.kiro/context/servicenow_reference.md"
   ]
 }
