@@ -58,6 +58,13 @@ graph TD
         TERRAFORM["terraform<br/><i>context7</i>"]:::agent
     end
 
+    %% ─── dev-dotnet ──────────────────────────────────
+    subgraph DEV_DOTNET["dev-dotnet · 3 agents"]
+        DOTNET_SENIOR["dotnet_senior_agent"]:::agent
+        DOTNET_API["dotnet_self_host_api_agent"]:::agent
+        DOTNET_SERVERLESS["dotnet_serverless_agent"]:::agent
+    end
+
     %% ─── ba ────────────────────────────────────────
     subgraph BA["ba · 8 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
@@ -137,6 +144,7 @@ koda install dev                    # All 26 dev agents (alias → dev-core + de
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
+koda install dev-core dev-dotnet    # .NET developer (19 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
@@ -320,6 +328,30 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 
 ---
 
+### Profile: dev-dotnet (3 agents)
+
+.NET specialists for self-hosted APIs and serverless applications.
+
+#### dotnet_senior_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_senior_agent.json`  
+**Purpose:** Senior .NET persona — reads project config, applies company standards, routes to archetype specialists  
+**Use for:** Project scaffolding, archetype routing, cross-cutting .NET tasks  
+**Tools:** thinking, todo, delegate, code, execute_bash, fs_read, fs_write, grep
+
+#### dotnet_self_host_api_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_self_host_api_agent.json`  
+**Purpose:** ASP.NET Core specialist — thin controllers, explicit DI, Swagger/OpenAPI, health checks  
+**Use for:** Self-hosted APIs, Windows Services, Kubernetes backends  
+**Tools:** code, execute_bash, fs_read, fs_write, grep
+
+#### dotnet_serverless_agent
+**File:** `profiles/dev-dotnet/agents/dotnet_serverless_agent.json`  
+**Purpose:** Serverless specialist — thin handlers, service orchestration, explicit contracts, AWS adapter seams  
+**Use for:** Lambda handlers, event-driven workflows, stateless execution  
+**Tools:** code, execute_bash, fs_read, fs_write, grep
+
+---
+
 ### Profile: dev-mobile (3 agents)
 
 Mobile specialists for Flutter cross-platform and native platform channels.
@@ -422,7 +454,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Use for:** Complex QA workflows requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 **Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent
 
@@ -435,20 +467,20 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Creates test plans, test cases, and test scenarios from requirements  
 **Use for:** Test planning, test case design, coverage analysis  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### test_automation_agent
 **File:** `profiles/qa/agents/test_automation_agent.json`  
 **Purpose:** Creates and maintains automated test scripts  
 **Use for:** UI tests, API tests, integration tests, test frameworks  
-**MCP Servers:** context7  
-**Hooks:** preToolUse (guard writes)
+**Hooks:** preToolUse (guard writes)  
+**MCP Servers:** qtest
 
 #### defect_analyst_agent
 **File:** `profiles/qa/agents/defect_analyst_agent.json`  
 **Purpose:** Analyzes defects, performs root cause analysis  
 **Use for:** Bug triage, root cause analysis, detailed bug reports  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, mywiki, github, qtest
 
 #### api_tester_agent
 **File:** `profiles/qa/agents/api_tester_agent.json`  
@@ -654,39 +686,24 @@ Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `koda mcp-install` or `koda configure`).
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | Context7 | Other |
-|---------|-------|:----:|:----------:|:------:|:------:|:--------:|:-----:|
-| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev-core** | code_review_agent | ✅ | | | ✅ | | |
-| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | |
-| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
-| **dev-web** | backend | | | | | ✅ | |
-| **dev-web** | webapi | | | | | ✅ | |
-| **dev-web** | ui | | | | | ✅ | Figma |
-| **dev-web** | ux_specialist_agent | | | | | | Figma |
-| **dev-web** | astro | | | | | ✅ | Figma |
-| **dev-python** | python | | | | | ✅ | |
-| **dev-infra** | terraform | | | | | ✅ | |
-| **dev-mobile** | flutter | | | | | ✅ | |
-| **dev-mobile** | android_native | | | | | ✅ | |
-| **dev-mobile** | ios_native | | | | | ✅ | |
+| Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
+|---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
+| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev** | code_review_agent | ✅ | | | ✅ | | |
+| **dev** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | scope_definer_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **ba** | estimation_agent | ✅ | ✅ | | | | |
-| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_automation_agent | | | | | ✅ | |
-| **qa** | api_tester_agent | | | | | ✅ | |
+| **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_coverage_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **qa** | test_automation_agent | | | | |  | |
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | code_quality_agent | | | | | | SonarQube |
-| **ops** | release_manager_agent | ✅ | | | ✅ | | |
-| **ops** | release_documenter_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | deployment_agent | | | | | | Harness |
 | **pm** | pm_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **pm** | sprint_manager_agent | ✅ | ✅ | ✅ | | | |
@@ -714,6 +731,7 @@ Shared context loaded via agent `resources`:
 | `automation_patterns.md` | test_automation |
 | `defect_templates.md` | defect_analyst |
 | `api_test_patterns.md` | api_tester |
+| `qtest_guidelines.md` | qa_orchestrator, test_planner |
 | `performance_patterns.md` | performance_tester |
 | `coverage_matrix_template.md` | test_coverage_analyzer |
 | `python_guidelines.md` | python |
@@ -723,6 +741,12 @@ Shared context loaded via agent `resources`:
 | `astro_project_patterns.md` | astro |
 | `vista_web_components.md` | astro, ui, ux_specialist |
 | `terraform_guidelines.md` | terraform |
+| `dotnet_engineering_principles.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_tech_standards.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_testing_strategy.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_aws_platform_guidance.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
+| `dotnet_self_host_api_guidance.md` | dotnet_senior, dotnet_self_host_api |
+| `dotnet_serverless_guidance.md` | dotnet_senior, dotnet_serverless |
 
 ---
 
@@ -746,6 +770,9 @@ kiro-cli chat --agent python                    # Python development
 
 # Dev Infra
 kiro-cli chat --agent terraform                 # Terraform/IaC
+kiro-cli chat --agent dotnet_senior_agent       # .NET senior persona
+kiro-cli chat --agent dotnet_self_host_api_agent  # ASP.NET Core APIs
+kiro-cli chat --agent dotnet_serverless_agent     # .NET serverless
 
 # Dev Mobile
 kiro-cli chat --agent flutter                   # Flutter mobile
@@ -800,5 +827,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 55 (dev-core: 16, dev-web: 5, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
+**Total Agents:** 58 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
 **Last Updated:** April 3, 2026
