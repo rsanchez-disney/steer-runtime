@@ -1,0 +1,24 @@
+{
+  "name": "gsm_analyst_agent",
+  "description": "GSM analysis — impact summaries, SLA tracking, incident trends, and service health reporting",
+  "prompt": "gsm_analyst_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@compass/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "context/sustainment_guidelines.md"
+  ]
+}

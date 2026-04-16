@@ -1,0 +1,38 @@
+{
+  "name": "sustainment_orchestrator_agent",
+  "description": "Coordinates sustainment workflows: incident triage, root cause analysis, stability validation, and GSM reporting",
+  "prompt": "sustainment_orchestrator_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@compass/*",
+    "use_subagent",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo",
+    "delegate"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry"
+      }
+    ]
+  },
+  "welcomeMessage": "👋 Sustainment Orchestrator ready!\n\nI coordinate incident response and stability workflows.\n\nProvide me with:\n • A ServiceNow INC or CTASK number\n • A Jira ticket or defect\n • An alert or error to investigate\n • An application to validate stability\n\nI'll route to the right specialist and coordinate the response."
+}
