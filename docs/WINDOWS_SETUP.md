@@ -58,7 +58,11 @@ Verify:
 gh --version
 ```
 
-run gh auth login --hostname github.disney.com
+Authenticate with Disney GitHub Enterprise:
+
+```powershell
+gh auth login --hostname github.disney.com
+```
 
 ---
 
@@ -72,11 +76,13 @@ ssh -T git@github.disney.com
 
 You should see a message like `Hi <username>! You've been authenticated...`. If not, follow [GitHub's SSH setup guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
 
+> If you have problems using PowerShell, use Git Bash.
+
 ---
 
 ## 5. Install Koda
 
-Open **PowerShell** and run:
+Open **PowerShell** as administrator and run:
 
 ```powershell
 irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
