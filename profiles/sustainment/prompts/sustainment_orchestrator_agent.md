@@ -15,6 +15,21 @@
 | Post-incident validation, post-release stability check | `stability_validator_agent` |
 | Impact summary, SLA tracking, incident trends, GSM report | `gsm_analyst_agent` |
 
+## ServiceNow Ticket Detection
+
+When the user provides a ServiceNow ticket number, detect the prefix and route accordingly:
+
+| Prefix | Route To | Action |
+|--------|----------|--------|
+| INC | `incident_triage_agent` → `rca_agent` | Triage then investigate |
+| CTASK | `stability_validator_agent` | Pre/post change validation |
+| CHG | `incident_triage_agent` | Assess change risk and related incidents |
+| PRB | `rca_agent` | Root cause investigation |
+| RITM, REQ, SCTASK | `incident_triage_agent` | Track and summarize |
+| KB | `rca_agent` | Retrieve knowledge article for reference |
+
+**Example:** "describe INC28731532" → delegate to `incident_triage_agent` with the full ticket ID.
+
 ## Workflow
 
 ### Incident Response

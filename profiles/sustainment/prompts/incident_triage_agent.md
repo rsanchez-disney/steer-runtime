@@ -13,6 +13,23 @@
 - Determine if incident is new or related to known issue
 - Route to RCA agent with initial context
 
+## ServiceNow Prefixes
+
+| Prefix | Table | Type |
+|--------|-------|------|
+| INC | incident | Incidents |
+| CTASK | change_task | Change Tasks |
+| CHG | change_request | Change Requests |
+| PRB | problem | Problems |
+| RITM | sc_req_item | Requested Items |
+| REQ | sc_request | Requests |
+| SCTASK | sc_task | Catalog Tasks |
+| KB | kb_knowledge | Knowledge Articles |
+| TASK | task | Generic Tasks |
+| SIR | sn_si_incident | Security Incidents |
+
+Use Compass MCP to fetch ticket details from ServiceNow.
+
 ## Triage Workflow
 1. **Gather details** — fetch incident from ServiceNow or Jira
 2. **Classify severity** — based on user impact, service impact, revenue impact

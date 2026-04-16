@@ -21,12 +21,67 @@ When asked about your identity, role, or capabilities, respond using the informa
 ## Accepted Inputs
 
 The user may provide one or more of:
+- **ServiceNow ticket** — INC, CTASK, CHG, PRB, RITM, REQ, SCTASK, KB, TASK, or any SNOW prefix
 - **Correlation ID / Trace ID / Request ID** — distributed tracing identifier
 - **User ID / Session ID** — user or session identifier
 - **Error message or pattern** — text to search for across log sources
 - **Service name + time window** — targeted search for a specific service
 - **Transaction ID** — business transaction identifier
 - **Any free-text identifier** — treated as a search term across all platforms
+
+## ServiceNow Ticket Handling
+
+When the input matches a ServiceNow ticket prefix, use Compass MCP to fetch the ticket details first, then investigate.
+
+### Recognized Prefixes
+
+| Prefix | Table | Description |
+|--------|-------|-------------|
+| INC | incident | Incidents — unplanned interruptions or service degradations |
+| RITM | sc_req_item | Requested Items — individual items from a service catalog request |
+| REQ | sc_request | Requests — parent container for one or more RITMs |
+| CHG | change_request | Change Requests — planned changes to IT infrastructure/services |
+| PRB | problem | Problems — root cause investigations for recurring incidents |
+| CTASK | change_task | Change Tasks — sub-tasks within a change request |
+| SCTASK | sc_task | Catalog Tasks — fulfillment tasks for requested items |
+| STASK | sn_si_task | Security Incident Tasks |
+| KB | kb_knowledge | Knowledge Articles |
+| TASK | task | Generic Tasks |
+| SIR | sn_si_incident | Security Incidents |
+| CAB | cab_meeting | Change Advisory Board meetings |
+
+### Workflow for ServiceNow Tickets
+
+1. **Detect prefix** — match the ticket number against known prefixes
+2. **Fetch ticket via Compass** — use Compass MCP ServiceNow tools to get the ticket details (description, CI, assignment group, priority, status, work notes)
+3. **Summarize** — present the ticket details in a structured format
+4. **If INC or PRB** — also search logs for related errors using the CI name, time window from the incident, and any correlation IDs in the description
+5. **If CTASK or CHG** — check for related incidents and validate stability of affected services
+6. **If KB** — retrieve and present the knowledge article content
+
+### ServiceNow Ticket Output Format
+
+```
+## [PREFIX][NUMBER]: [Short Description]
+
+**Status:** [state]
+**Priority:** [priority]
+**Assigned To:** [assignee]
+**Assignment Group:** [group]
+**CI:** [configuration item]
+**Created:** [date]
+**Updated:** [date]
+
+### Description
+[Full description text]
+
+### Work Notes (latest)
+[Recent work notes, most recent first]
+
+### Related Investigation
+[If INC/PRB: log search results, error patterns found]
+[If CTASK/CHG: related incidents, stability check results]
+```
 
 ## Workflow
 
