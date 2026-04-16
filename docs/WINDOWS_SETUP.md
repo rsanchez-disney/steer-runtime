@@ -4,129 +4,118 @@
 >
 > **On macOS / Linux?** See [Setup](SETUP.md) instead.
 
-> **⚠️ Deprecated:** `setup.ps1` is deprecated. Use [Koda](https://github.disney.com/SANCR225/Koda) instead.
-
 ---
 
 ## Prerequisites
 
 - Windows 10 (version 2004+) or Windows 11
-- [Node.js](https://nodejs.org) (includes npm)
 - Git
-- WSL with required Windows features (see below)
-
-> **Enable WSL features** — either run `wsl --install` in an elevated PowerShell (enables everything automatically), or manually open "Turn Windows features on or off" and enable:
-> - Hyper-V
-> - Windows Hypervisor Platform
-> - Virtual Machine Platform
-> - Windows Subsystem for Linux
->
-> Restart after enabling.
+- SSH connection to GitHub configured (required for Koda)
 
 ---
 
-## 1. Install WSL
+## 1. Install Kiro CLI
 
-Kiro CLI does not have a native Windows binary yet (expected mid-April 2026). The official way to run it on Windows is through the **Windows Subsystem for Linux (WSL)**.
-
-Open **PowerShell as Administrator** and run:
+Open **PowerShell** and run:
 
 ```powershell
-wsl --install
-```
-
-Restart your computer when prompted. On reboot, WSL will finish setting up Ubuntu and ask you to create a Linux username and password.
-
-Verify WSL is working:
-
-```powershell
-wsl --version
-```
-
-> All remaining steps run **inside the WSL terminal** (search "Ubuntu" in the Start menu).
-
----
-
-## 2. Install Kiro CLI (inside WSL)
-
-```bash
-curl -fsSL https://cli.kiro.dev/install | bash
-```
-
-If the script fails, download the Universal Linux zip manually:
-
-```bash
-# Download and extract
-curl -fsSL -o kiro-cli.zip https://kiro.dev/downloads/kiro-cli-linux.zip
-unzip kiro-cli.zip
-./install.sh
+irm 'https://cli.kiro.dev/install.ps1' | iex
 ```
 
 Verify:
 
-```bash
+```powershell
 kiro-cli --version
 ```
 
 ### Authenticate
 
-```bash
+```powershell
 kiro-cli login
 ```
 
-This opens a URL in your Windows browser. Sign in with your AWS Builder ID (Disney SSO — see [Getting Started](GETTING_STARTED.md) for details).
+This opens a URL in your browser. Sign in with your AWS Builder ID (Disney SSO — see [Getting Started](GETTING_STARTED.md) for details).
 
 ---
 
-## 3. Install Koda (inside WSL)
+## 2. Install Kiro IDE
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
+Download and install the native Windows IDE from:
+
+👉 [https://kiro.dev/docs/](https://kiro.dev/docs/)
+
+---
+
+## 3. Install GitHub CLI
+
+Download and install `gh` from:
+
+👉 [https://cli.github.com/](https://cli.github.com/)
+
+Verify:
+
+```powershell
+gh --version
+```
+
+run gh auth login --hostname github.disney.com
+
+---
+
+## 4. Verify SSH Connection to GitHub
+
+Koda uses SSH to communicate with GitHub. Make sure your SSH key is configured:
+
+```powershell
+ssh -T git@github.disney.com
+```
+
+You should see a message like `Hi <username>! You've been authenticated...`. If not, follow [GitHub's SSH setup guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
+
+---
+
+## 5. Install Koda
+
+Open **PowerShell** and run:
+
+```powershell
+irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
 ```
 
 Verify:
 
-```bash
+```powershell
 koda version
 ```
 
 ---
 
-## 4. Install Agents
+## 6. Setup Koda and Install Agents
 
-```bash
-koda setup                        # Check dependencies
-koda install dev                  # Install dev agents
-koda mcp-install                  # Setup MCP servers + tokens
+Select the fork `wdpr-parkops-opsheet-suite/steer-runtime`, then select the workspace `opsheet-team` and install the `dev-web` profile:
+
+```powershell
+koda setup
+koda install dev
+koda mcp-install
 ```
+
+For detailed MCP server configuration, see [MCP Setup](MCP_SETUP.md).
 
 Or launch the interactive dashboard:
 
-```bash
+```powershell
 koda                              # TUI — press [p] for profiles, [t] for tokens
 ```
 
 ---
 
-## 5. Start Chatting
+## 7. Start Chatting
 
-```bash
+```powershell
 koda chat --agent orchestrator           # Dev orchestrator
 koda chat --agent qa_orchestrator_agent  # QA orchestrator
 ```
-
----
-
-## Tips for WSL Users
-
-- **Access Windows files** from WSL at `/mnt/c/Users/<your-name>/`
-- **Clone repos inside WSL** (e.g., `~/steer-runtime`) for best performance — avoid `/mnt/c/` for git repos
-- **VS Code** integrates with WSL natively — install the [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) and run `code .` from WSL
-- **Node.js** — install inside WSL, not on Windows, to avoid path issues:
-  ```bash
-  curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-  sudo apt-get install -y nodejs
-  ```
 
 ---
 
@@ -134,29 +123,11 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 | Issue | Fix |
 |-------|-----|
-| `wsl --install` fails | Ensure virtualization is enabled in BIOS. Run `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart` then restart |
-| `kiro-cli: command not found` | Re-run the install script, or add `~/.local/bin` to your PATH: `export PATH="$HOME/.local/bin:$PATH"` |
-| Browser doesn't open for login | Copy the URL from the terminal and paste it into your Windows browser manually |
-| Slow git/npm in `/mnt/c/` | Move your repos to the Linux filesystem (`~/`) instead of the Windows mount |
-| `koda: command not found` | Re-run the Koda install script, or check `~/.local/bin/koda` exists |
-
----
-
-## Legacy: setup.ps1
-
-<details>
-<summary>Click to expand (deprecated)</summary>
-
-The `setup.ps1` PowerShell script ran natively on Windows without WSL. It is now deprecated.
-
-```powershell
-.\setup.ps1 list                     # List profiles
-.\setup.ps1 install dev              # Install dev profile
-.\setup.ps1 mcp-install              # Setup MCP servers + tokens
-.\setup.ps1 check                    # Verify installation
-```
-
-</details>
+| `kiro-cli: command not found` | Close and reopen PowerShell, or check that the install path is in your system PATH |
+| Browser doesn't open for login | Copy the URL from the terminal and paste it into your browser manually |
+| `koda: command not found` | Close and reopen PowerShell, or re-run the Koda install script |
+| SSH connection fails | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
+| `gh` not recognized | Restart PowerShell after installing GitHub CLI |
 
 ---
 
