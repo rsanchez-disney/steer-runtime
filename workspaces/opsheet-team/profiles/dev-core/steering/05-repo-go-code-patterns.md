@@ -184,8 +184,59 @@ logger.Error("failed to process", "entityID", entityID, "error", err)
 
 ## Concurrency
 
-### Channels
+### Parallelize independent queries
 
+When a handler or service needs results from multiple independent data sources, fetch them concurrently with `errgroup` instead of sequentially.
+
+```go
+// ❌ Sequential — total latency = A + B + C
+entity, err := s.repo.GetEntity(ctx, id)
+if err != nil {
+    return nil, err
+}
+schedule, err := s.repo.GetSchedule(ctx, id)
+if err != nil {
+    return nil, err
+}
+waitTimes, err := s.repo.GetWaitTimes(ctx, id)
+if err != nil {
+    return nil, err
+}
+
+// ✅ Parallel — total latency = max(A, B, C)
+var (
+    entity    *models.Entity
+    schedule  *models.Schedule
+    waitTimes []models.WaitTime
+)
+
+g, ctx := errgroup.WithContext(ctx)
+
+g.Go(func() (err error) {
+    entity, err = s.repo.GetEntity(ctx, id)
+    return
+})
+g.Go(func() (err error) {
+    schedule, err = s.repo.GetSchedule(ctx, id)
+    return
+})
+g.Go(func() (err error) {
+    waitTimes, err = s.repo.GetWaitTimes(ctx, id)
+    return
+})
+
+if err := g.Wait(); err != nil {
+    return nil, err
+}
+```
+
+Apply this pattern whenever:
+- Queries hit different tables or services
+- Results are not inputs to each other
+- Latency matters (user-facing endpoints)
+
+
+### Channels 
 Use channels to communicate data or signals between goroutines. Keep ownership clear: one goroutine writes, one reads.
 
 ```go
