@@ -31,6 +31,53 @@ if err != nil {
 }
 ```
 
+### Collecting multiple errors
+
+Use `errors.Join` (Go 1.20+) when you need to accumulate several independent errors and return them all at once — common in validation, batch processing, and multi-step teardown:
+
+```go
+// ✅ Validation — collect all failures before returning
+func validateInput(input *models.CountsInput) error {
+    var errs []error
+    if input.EntityID == "" {
+        errs = append(errs, errors.New("entityID is required"))
+    }
+    if input.Count < 0 {
+        errs = append(errs, errors.New("count must be non-negative"))
+    }
+    return errors.Join(errs...)
+}
+
+// ✅ Batch processing — continue on failure, report all errors
+func (s *Service) ProcessBatch(ctx context.Context, items []models.Item) error {
+    var errs []error
+    for _, item := range items {
+        if err := s.process(ctx, item); err != nil {
+            errs = append(errs, fmt.Errorf("item %s: %w", item.ID, err))
+        }
+    }
+    return errors.Join(errs...)
+}
+
+// ✅ Teardown — close multiple resources, capture all failures
+func (s *Service) Close() error {
+    return errors.Join(s.db.Close(), s.cache.Close())
+}
+```
+
+`errors.Join` returns `nil` when all values are `nil`, so callers can check `err != nil` as usual. Each wrapped error remains individually inspectable via `errors.Is` / `errors.As`.
+
+```go
+// ❌ Wrong — only the last error survives
+var lastErr error
+for _, item := range items {
+    if err := s.process(ctx, item); err != nil {
+        lastErr = err // previous errors are lost
+    }
+}
+return lastErr
+```
+
 ### Custom errors
 
 Define domain errors in `core/` or `models/`:
@@ -135,9 +182,96 @@ logger.Info("processing entity", "entityID", entityID, "action", "update")
 logger.Error("failed to process", "entityID", entityID, "error", err)
 ```
 
-## TODOs
+## Concurrency
 
-New TODOs must include owner and ticket:
+### Channels
+
+Use channels to communicate data or signals between goroutines. Keep ownership clear: one goroutine writes, one reads.
+
+```go
+// ✅ Fan-out: dispatch work, collect results
+func fetchAll(ctx context.Context, ids []string) ([]Result, error) {
+    results := make(chan Result, len(ids))
+
+    for _, id := range ids {
+        go func() {
+            r, err := fetch(ctx, id)
+            if err != nil {
+                results <- Result{Err: err}
+                return
+            }
+            results <- r
+        }()
+    }
+
+    out := make([]Result, 0, len(ids))
+    for range ids {
+        out = append(out, <-results)
+    }
+    return out, nil
+}
+
+// ✅ Done signal — unblock a waiting goroutine
+done := make(chan struct{})
+go func() {
+    doWork()
+    close(done)
+}()
+<-done
+
+// ❌ Wrong — unbuffered channel with no receiver causes goroutine leak
+go func() {
+    result <- compute() // blocks forever if nobody reads
+}()
+```
+
+Rules:
+- Buffer channels when the sender must not block (`make(chan T, n)`)
+- Close channels from the **sender** side only, never the receiver
+- Use `select` with a `ctx.Done()` case to respect cancellation
+- Prefer `close(done)` over sending a value for pure signals
+
+### errgroup over WaitGroup
+
+Prefer `golang.org/x/sync/errgroup` over `sync.WaitGroup` whenever goroutines can return errors. It propagates the first error, cancels the shared context, and eliminates the boilerplate of a separate error channel.
+
+```go
+// ✅ Preferred — errgroup with context cancellation
+import "golang.org/x/sync/errgroup"
+
+func (s *Service) ProcessAll(ctx context.Context, items []models.Item) error {
+    g, ctx := errgroup.WithContext(ctx)
+
+    for _, item := range items {
+        item := item // capture loop var (pre-Go 1.22)
+        g.Go(func() error {
+            return s.process(ctx, item)
+        })
+    }
+
+    return g.Wait() // returns first non-nil error; all goroutines finish
+}
+
+// ❌ Avoid — WaitGroup requires a separate error channel and manual wiring
+var wg sync.WaitGroup
+errc := make(chan error, len(items))
+for _, item := range items {
+    wg.Add(1)
+    go func(item models.Item) {
+        defer wg.Done()
+        if err := s.process(ctx, item); err != nil {
+            errc <- err
+        }
+    }(item)
+}
+wg.Wait()
+close(errc)
+// still need to drain errc...
+```
+
+Use `sync.WaitGroup` only when goroutines do not return errors
+
+# New TODOs must include owner and ticket:
 
 ```go
 // TODO(OPS-XXXXX): description of what needs to be done

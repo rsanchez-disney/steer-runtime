@@ -6,6 +6,10 @@ description: Testing patterns, mockery configuration, coverage, and test convent
 
 # OpSheet+ Go — Testing Patterns
 
+## Mocks directory location
+
+All the necessary mocks are located in ./mocks
+
 ## Test File Location
 
 Tests live alongside the code they test:

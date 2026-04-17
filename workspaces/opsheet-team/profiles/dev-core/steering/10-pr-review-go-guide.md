@@ -83,6 +83,93 @@ For monorepo services, flag:
 
 ## 3. Code Quality
 
+### Redundant Logic
+
+Flag conditions and branches that are logically unnecessary or duplicate existing checks.
+
+**Redundant boolean comparisons:**
+```go
+// ❌ comparing bool to literal
+if isActive == true { ... }
+if isActive == false { ... }
+
+// ✅
+if isActive { ... }
+if !isActive { ... }
+```
+
+**Unnecessary else after return:**
+```go
+// ❌ else is unreachable — if already returns
+if err != nil {
+    return err
+} else {
+    doSomething()
+}
+
+// ✅
+if err != nil {
+    return err
+}
+doSomething()
+```
+
+**Duplicate conditions in if/else-if chains:**
+```go
+// ❌ second branch can never be reached
+if status == "open" {
+    handleOpen()
+} else if status == "open" {
+    handleOpenAgain()
+}
+```
+
+**Both branches return the same value:**
+```go
+// ❌
+if !found {
+    return defaultValue
+} else {
+    return defaultValue
+}
+
+// ✅
+return defaultValue
+```
+
+**Unnecessary nil guard before a nil-safe operation:**
+```go
+// ❌ len() on nil slice is 0 — guard is redundant
+if items != nil && len(items) > 0 { ... }
+
+// ✅
+if len(items) > 0 { ... }
+```
+
+**Redundant assignment before unconditional overwrite:**
+```go
+// ❌ initial value is never read
+result := ""
+result = computeResult()
+```
+
+**Pointer compared as if it were a value:**
+```go
+// ❌ compares addresses, not the underlying values
+var a, b *string
+if a == b { ... }
+
+if user1 == user2 { ... }
+
+// ✅ nil-guard then dereference for scalars
+if a != nil && b != nil && *a == *b { ... }
+
+// ✅ use reflect.DeepEqual for structs with unexported fields
+if reflect.DeepEqual(user1, user2) { ... }
+```
+
+---
+
 ### Error Handling
 
 Flag:
@@ -133,6 +220,7 @@ Flag:
 - Mocks not regenerated after interface changes
 - `mock.Anything` overuse when specific values should be asserted
 - Missing `t` parameter in mock constructors
+- service method, controller method, repository method without any tests
 
 ### Mock Usage
 
@@ -162,6 +250,34 @@ Flag:
 - N+1 query patterns
 - Large allocations in hot paths (use `sync.Pool` or pre-allocate)
 - Missing `defer` for resource cleanup (connections, files)
+
+**Unbounded goroutine creation:**
+```go
+// ❌ spawns one goroutine per item — no limit, no error collection
+for _, item := range items {
+    go process(item)
+}
+```
+
+**Bounded with `errgroup.SetLimit`:**
+```go
+// ✅ limits concurrency and collects the first error
+import "golang.org/x/sync/errgroup"
+
+g, ctx := errgroup.WithContext(ctx)
+g.SetLimit(10)
+
+for _, item := range items {
+    item := item // capture loop var
+    g.Go(func() error {
+        return process(ctx, item)
+    })
+}
+
+if err := g.Wait(); err != nil {
+    return err
+}
+```
 
 ---
 
