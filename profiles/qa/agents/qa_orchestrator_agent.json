@@ -27,7 +27,7 @@
     "file://.kiro/context/test_templates.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 QA orchestrator ready!\n\nI can help you:\n  • Create test plans from Jira stories\n  • Generate automated test scripts\n  • Analyze defects and find root causes\n  • Run API and performance tests\n\nTry: \"Create test plan for DPAY-14561\"",
+  "welcomeMessage": "👋 QA orchestrator ready!\n\nI can help you:\n  • Create test plans from Jira stories\n  • Generate automated test scripts\n  • Analyze defects and find root causes\n  • Run API and performance tests\n\nTry: \"Create test plan for <JIRA-ID>\"",
   "hooks": {
     "agentSpawn": [
       {

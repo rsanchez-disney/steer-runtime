@@ -22,7 +22,7 @@
     "file://.kiro/context/ba_guidelines.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 BA/PO orchestrator ready!\n\nI can help you:\n  • Gather and analyze requirements from Jira epics\n  • Define scope boundaries and constraints\n  • Write user stories with acceptance criteria\n  • Validate requirements completeness\n\nTry: \"Analyze requirements for DPAY-500\"",
+  "welcomeMessage": "👋 BA/PO orchestrator ready!\n\nI can help you:\n  • Gather and analyze requirements from Jira epics\n  • Define scope boundaries and constraints\n  • Write user stories with acceptance criteria\n  • Validate requirements completeness\n\nTry: \"Analyze requirements for <JIRA-ID>\"",
   "hooks": {
     "agentSpawn": [
       {

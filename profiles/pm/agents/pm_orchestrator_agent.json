@@ -25,7 +25,7 @@
     "@github/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 PM/Scrum Master orchestrator ready!\n\nI can help you:\n  • Manage sprint planning and capacity\n  • Generate standup summaries from Jira\n  • Facilitate retrospectives with metrics\n  • Track blockers, risks, and dependencies\n  • Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health for DPAY board\"",
+  "welcomeMessage": "👋 PM/Scrum Master orchestrator ready!\n\nI can help you:\n  • Manage sprint planning and capacity\n  • Generate standup summaries from Jira\n  • Facilitate retrospectives with metrics\n  • Track blockers, risks, and dependencies\n  • Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",
   "hooks": {
     "agentSpawn": [
       {
