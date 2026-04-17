@@ -241,6 +241,8 @@ If any agent fails: show error, ask user retry / skip / abort.
 
 You have `@yax` tools for persistent memory across sessions. Use them to build institutional knowledge.
 
+> If `@yax` tools are not available (yax not installed), skip all memory steps. The workflow operates normally without persistent memory.
+
 ### Session Lifecycle
 
 - **Start of workflow**: Call `yax_session_start` with a unique session ID and the project name.
@@ -269,8 +271,8 @@ Save observations at key moments during the workflow. Use `yax_save` with:
 
 ### Naming Conventions
 
-- **`project`**: Use the repo name (e.g., `ccs-product-discovery-ui`, `wdpr-config-services`) or Jira project key (e.g., `CCS`, `DPAY`).
-- **`topic_key`**: Use a stable key for deduplication (e.g., `auth-pattern`, `CCS-1176-plan`). Same `topic_key` + `project` overwrites the previous observation.
+- **`project`**: Use the repo name or Jira project key from the active workspace context.
+- **`topic_key`**: Use a stable key for deduplication (e.g., `auth-pattern`, `<JIRA-ID>-plan`). Same `topic_key` + `project` overwrites the previous observation.
 - **`scope`**: Use `"project"` for project-specific knowledge, `"personal"` for user preferences.
 
 ### Save User Prompts
