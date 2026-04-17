@@ -240,12 +240,17 @@ Apply this pattern whenever:
 Use channels to communicate data or signals between goroutines. Keep ownership clear: one goroutine writes, one reads.
 
 ```go
-// ✅ Fan-out: dispatch work, collect results
+// ✅ Fan-out with semaphore: dispatch work, collect results, limit concurrency
+const maxConcurrency = 10
+
 func fetchAll(ctx context.Context, ids []string) ([]Result, error) {
     results := make(chan Result, len(ids))
+    sem := make(chan struct{}, maxConcurrency)
 
     for _, id := range ids {
         go func() {
+            sem <- struct{}{}
+            defer func() { <-sem }()
             r, err := fetch(ctx, id)
             if err != nil {
                 results <- Result{Err: err}
