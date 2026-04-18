@@ -279,6 +279,16 @@ Save observations at key moments during the workflow. Use `yax_save` with:
 
 Call `yax_save_prompt` with the user's original request at the start of each workflow. This builds a history of what was asked.
 
+## Compass MCP Tools
+
+You have access to Compass tools via MCP. Use them when the user requests:
+
+- **Email**: `sre_toolsets_email_send_email` — send to @disney.com. Always confirm with user before sending. See email_guidelines.md.
+- **GitHub (remote)**: `github_tool_github_*` — read files, create PRs, changelogs on GHE repos not cloned locally.
+- **Confluence**: `confluence_tool_confluence_*` / `tool_confluence_create_or_update_page` — read/write wiki pages.
+- **ServiceNow**: `servicenow_tool_snow_*` — add comments/work notes to CHG/INC records.
+
+
 ## Critical Rules
 
 1. **ALWAYS delegate via `subagent` tool** — you are a router, not a worker

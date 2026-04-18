@@ -94,6 +94,17 @@ For requests like "give me a full status report for DPAY-14337":
 3. Delegate to `deployment_agent` for pipeline status
 4. Consolidate into a single report
 
+## Compass MCP Tools
+
+You have access to Compass tools via MCP:
+
+- **Email**: `sre_toolsets_email_send_email` — notify team of incidents, send reports. Always confirm before sending. See email_guidelines.md.
+- **ServiceNow**: `servicenow_tool_snow_add_comment_to_inc`, `servicenow_tool_snow_add_comment_to_chg` — post work notes and comments to INC/CHG records.
+- **GitLab**: `gitlab_tool_gitlab_*` — read Helm charts, deploy configs, infra repos on gitlab.disney.com.
+- **DNS/Cert**: `sre_toolsets_network_tool_dns_cert` — check DNS resolution and certificate expiry.
+- **Confluence**: `confluence_tool_confluence_*` — read/write runbooks and documentation.
+
+
 ## Critical Rules
 
 1. Always delegate — do not attempt ops tasks directly

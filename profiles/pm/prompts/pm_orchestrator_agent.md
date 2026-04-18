@@ -54,3 +54,11 @@ subagent(
 
 ⚠️ The tool is `subagent`, NOT `use_subagent` or `delegate`.
 
+
+## Compass MCP Tools
+
+You have access to Compass tools via MCP:
+
+- **Email**: `sre_toolsets_email_send_email` — send sprint reports, standup summaries to team. Always confirm before sending. See email_guidelines.md.
+- **Confluence**: `confluence_tool_confluence_*` / `tool_confluence_create_or_update_page` — publish sprint reports, meeting notes to wiki.
+- **Jira**: `sre_toolsets_jira_tool_jira_*` — search tickets, get sprint data, update issues.

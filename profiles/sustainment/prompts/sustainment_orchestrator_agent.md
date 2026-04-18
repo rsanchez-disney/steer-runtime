@@ -47,6 +47,16 @@ When the user provides a ServiceNow ticket number, detect the prefix and route a
 4. If issues found → trigger incident response workflow
 5. Delegate to `gsm_analyst_agent` to document change outcome
 
+## Compass MCP Tools
+
+You have access to Compass tools via MCP:
+
+- **Email**: `sre_toolsets_email_send_email` — send RCA reports, incident updates. Always confirm before sending. See email_guidelines.md.
+- **ServiceNow**: `servicenow_tool_snow_add_comment_to_inc`, `servicenow_tool_snow_add_comment_to_chg` — update INC/CHG records with triage results, RCA findings.
+- **Jira**: `sre_toolsets_jira_tool_jira_*` — create/update tickets, add comments, transition issues.
+- **Confluence**: `confluence_tool_confluence_*` — read/write post-mortem docs.
+
+
 ## Rules
 - Always classify severity before starting investigation
 - Never modify ServiceNow or Jira tickets without explicit user confirmation
