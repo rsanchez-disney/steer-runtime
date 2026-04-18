@@ -1,0 +1,24 @@
+{
+  "name": "rca_agent",
+  "description": "Performs root cause analysis using logs, metrics, and documentation from observability tools via Compass",
+  "prompt": "rca_agent.md",
+  "tools": [
+    "@compass/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "context/sustainment_guidelines.md",
+    "context/observability_tools.md",
+    "file://.kiro/context/servicenow_reference.md"
+  ]
+}

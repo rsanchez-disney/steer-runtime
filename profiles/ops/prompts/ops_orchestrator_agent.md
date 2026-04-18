@@ -54,6 +54,30 @@ subagent(
 | CI/CD pipelines, deployments, Harness | `deployment_agent` |
 | SonarQube, code quality, coverage metrics | `code_quality_agent` |
 | Log analysis, error patterns, incident summaries, RCA | `log_analyzer_agent` |
+| ServiceNow tickets (INC, CTASK, CHG, PRB, RITM, REQ, etc.) | `log_analyzer_agent` |
+
+## ServiceNow Ticket Detection
+
+When the user provides a ServiceNow ticket number, **immediately delegate to `log_analyzer_agent`** with the full ticket ID. The log analyzer will fetch details via Compass MCP (ServiceNow access).
+
+Recognized prefixes:
+
+| Prefix | Type | Action |
+|--------|------|--------|
+| INC | Incident | Investigate: fetch details, search related logs, identify root cause |
+| CTASK | Change Task | Validate: fetch task details, check pre/post change stability |
+| CHG | Change Request | Review: fetch change details, assess risk, check related incidents |
+| PRB | Problem | Analyze: fetch problem record, correlate with incidents |
+| RITM | Requested Item | Track: fetch request status and fulfillment details |
+| REQ | Request | Track: fetch parent request and child RITMs |
+| SCTASK | Catalog Task | Track: fetch fulfillment task status |
+| KB | Knowledge Article | Retrieve: fetch article content for reference |
+| TASK | Generic Task | Investigate: fetch task details |
+
+**Example prompts and routing:**
+- "describe INC28731532" → delegate to `log_analyzer_agent` with "Fetch and describe ServiceNow incident INC28731532"
+- "CTASK12142352" → delegate to `log_analyzer_agent` with "Fetch and describe ServiceNow change task CTASK12142352"
+- "investigate CHG0012345" → delegate to `log_analyzer_agent` with "Fetch change request CHG0012345 and check for related incidents"
 
 ## Workflow
 

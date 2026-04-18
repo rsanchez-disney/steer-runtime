@@ -15,7 +15,8 @@
   ],
   "resources": [
     "file://AGENTS.md",
-    "file://.kiro/rules/**/*.md"
+    "file://.kiro/rules/**/*.md",
+    "file://.kiro/context/servicenow_reference.md"
   ],
   "welcomeMessage": "👋 Ops orchestrator ready!\n\nI can help you:\n  • Track AI productivity metrics for Jira tickets\n  • Check ECS/AWS infrastructure status\n  • Review code quality via SonarQube\n  • Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
   "allowedTools": [
