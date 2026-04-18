@@ -237,6 +237,48 @@ If any agent fails: show error, ask user retry / skip / abort.
 - Show progress after each step
 - Wait for user input ONLY at approval gates
 
+## Persistent Memory (yax)
+
+You have `@yax` tools for persistent memory across sessions. Use them to build institutional knowledge.
+
+> If `@yax` tools are not available (yax not installed), skip all memory steps. The workflow operates normally without persistent memory.
+
+### Session Lifecycle
+
+- **Start of workflow**: Call `yax_session_start` with a unique session ID and the project name.
+- **End of workflow**: Call `yax_session_summary` with a concise summary of what was done, then `yax_session_end`.
+
+### Retrieve Context First
+
+At the beginning of every workflow (after step 1 — Fetch & Validate Story):
+
+1. `yax_search(query="<story keywords>", project="<project>")` — find prior decisions, patterns, or bugfixes related to this work.
+2. `yax_context(project="<project>", limit=10)` — get the 10 most recent observations for the project.
+3. Incorporate relevant findings into the plan and share them with specialist agents.
+
+### What to Save
+
+Save observations at key moments during the workflow. Use `yax_save` with:
+
+| When | Type | What to save |
+|------|------|-------------|
+| Architecture decisions (step 3) | `architecture` | Patterns chosen, trade-offs evaluated, rejected alternatives |
+| Plan approved (step 5) | `decision` | Approved plan summary, scope, key constraints |
+| Implementation issues (step 6) | `bugfix` or `discovery` | Unexpected problems, workarounds, edge cases found |
+| Reusable patterns (step 6) | `pattern` | New patterns established that other stories should follow |
+| Config changes (step 6) | `config` | Build config, env vars, dependency changes |
+| Quality findings (steps 7-9) | `learning` | Test failures root causes, review findings, security issues |
+
+### Naming Conventions
+
+- **`project`**: Use the repo name or Jira project key from the active workspace context.
+- **`topic_key`**: Use a stable key for deduplication (e.g., `auth-pattern`, `<JIRA-ID>-plan`). Same `topic_key` + `project` overwrites the previous observation.
+- **`scope`**: Use `"project"` for project-specific knowledge, `"personal"` for user preferences.
+
+### Save User Prompts
+
+Call `yax_save_prompt` with the user's original request at the start of each workflow. This builds a history of what was asked.
+
 ## Critical Rules
 
 1. **ALWAYS delegate via `subagent` tool** — you are a router, not a worker
