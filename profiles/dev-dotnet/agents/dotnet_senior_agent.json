@@ -1,6 +1,6 @@
 {
   "name": "dotnet_senior_agent",
-  "description": "Senior .NET engineering persona — reads project config, applies company standards, routes to archetype specialists",
+  "description": "Senior .NET engineering persona \u2014 reads project config, applies company standards, routes to archetype specialists",
   "prompt": "prompts/dotnet_senior_agent.md",
   "tools": [
     "subagent",
@@ -13,22 +13,22 @@
     "todo_list"
   ],
   "resources": [
-    "context/dotnet_engineering_principles.md",
-    "context/dotnet_company_common_integration.md",
-    "context/dotnet_aws_platform_guidance.md",
-    "context/dotnet_testing_strategy.md",
-    "context/dotnet_product.md",
-    "context/dotnet_tech_standards.md",
-    "context/dotnet_structure_rules.md",
-    "context/dotnet_aws_rules.md",
-    "context/dotnet_company_common_rules.md",
-    "context/dotnet_testing_rules.md",
-    "context/dotnet_self_host_api_context.md",
-    "context/dotnet_self_host_api_guidance.md",
-    "context/dotnet_self_host_api_structure.md",
-    "context/dotnet_serverless_context.md",
-    "context/dotnet_serverless_guidance.md",
-    "context/dotnet_serverless_structure.md"
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_product.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_structure_rules.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_self_host_api_context.md",
+    "file://.kiro/context/dotnet_self_host_api_guidance.md",
+    "file://.kiro/context/dotnet_self_host_api_structure.md",
+    "file://.kiro/context/dotnet_serverless_context.md",
+    "file://.kiro/context/dotnet_serverless_guidance.md",
+    "file://.kiro/context/dotnet_serverless_structure.md"
   ],
   "welcomeMessage": "Ready to apply .NET Studio standards. Tell me about your project or point me to your project-config.json."
 }
