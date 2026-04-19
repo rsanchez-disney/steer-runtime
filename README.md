@@ -145,6 +145,8 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 |------|-------------|------|
 | March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
 | April 2, 2026 | Q&A Session with OpSheet Team | [Recording](https://drive.google.com/file/d/1dyEmmOJOiPxmi7GgzqWsNBUv7zlhT8t-/view?usp=sharing) |
+| April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
+| April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
 
 ---
 
