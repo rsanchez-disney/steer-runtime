@@ -646,6 +646,51 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 
 ---
 
+## Profile: leadership (5 agents)
+
+Cross-team analytics, quarterly reporting, and executive briefings for Tech Directors and Delivery Managers.
+
+### Leadership Orchestrator (1)
+
+#### leadership_orchestrator_agent
+**File:** `profiles/leadership/agents/leadership_orchestrator_agent.json`  
+**Purpose:** Coordinates cross-team queries, quarterly reports, and executive briefings  
+**Use for:** Multi-team analysis, report coordination, delegation to specialists  
+**Tools:** thinking, todo, delegate, use_subagent  
+**MCP Servers:** jira, confluence, mywiki
+
+**Delegates to:** portfolio_analyst_agent, quarterly_reporter_agent, cross_team_coordinator_agent, executive_briefing_agent
+
+---
+
+### Leadership Specialists (4)
+
+#### portfolio_analyst_agent
+**File:** `profiles/leadership/agents/portfolio_analyst_agent.json`  
+**Purpose:** Cross-team Jira analytics — velocity, delivery accuracy, carry-over rates, cycle time  
+**Use for:** Multi-team velocity comparison, capacity analysis, trend identification  
+**MCP Servers:** jira
+
+#### quarterly_reporter_agent
+**File:** `profiles/leadership/agents/quarterly_reporter_agent.json`  
+**Purpose:** Generates 10-section quarterly business reports for Disney directors  
+**Use for:** Quarterly reviews, business impact reporting, achievement summaries  
+**MCP Servers:** jira, confluence, mywiki
+
+#### cross_team_coordinator_agent
+**File:** `profiles/leadership/agents/cross_team_coordinator_agent.json`  
+**Purpose:** Tracks cross-team dependencies, shared blockers, and integration risks  
+**Use for:** Dependency mapping, blocker escalation, coordination risk assessment  
+**MCP Servers:** jira
+
+#### executive_briefing_agent
+**File:** `profiles/leadership/agents/executive_briefing_agent.json`  
+**Purpose:** Produces audience-tailored executive summaries for directors, colleagues, and partners  
+**Use for:** Executive briefings, stakeholder updates, partner communications  
+**MCP Servers:** jira, confluence, mywiki
+
+---
+
 ## Other IDEs
 
 The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
@@ -844,6 +889,13 @@ kiro-cli chat --agent standup_agent             # Standup summaries
 kiro-cli chat --agent retro_agent               # Retrospectives
 kiro-cli chat --agent risk_tracker_agent        # Risk tracking
 kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
+
+# Leadership
+kiro-cli chat --agent leadership_orchestrator_agent  # Cross-team orchestrator
+kiro-cli chat --agent portfolio_analyst_agent         # Multi-team Jira analytics
+kiro-cli chat --agent quarterly_reporter_agent        # Quarterly business reports
+kiro-cli chat --agent cross_team_coordinator_agent    # Dependency tracking
+kiro-cli chat --agent executive_briefing_agent        # Executive summaries
 ```
 
 ---
@@ -860,5 +912,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 59 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
-**Last Updated:** April 14, 2026
+**Total Agents:** 64 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6, leadership: 5)  
+**Last Updated:** April 18, 2026
