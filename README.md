@@ -40,26 +40,29 @@ All checks should pass. If kiro-cli shows issues on Windows, see [Windows Troubl
 
 ### 4. Install Profiles
 
-Open Koda and select your profiles:
+> **Install only the profiles that match your role.** You don't need all of them — pick what's relevant to your day-to-day work.
 
-```bash
-koda
-```
+| Your Role | Recommended Profiles | Command |
+|-----------|---------------------|---------|
+| Developer | dev | `koda install dev` |
+| Fullstack Developer | dev, qa | `koda install dev qa` |
+| Business Analyst / PO | ba | `koda install ba` |
+| QA Engineer | qa, dev-core | `koda install qa dev-core` |
+| Ops / SRE | ops, dev-core | `koda install ops dev-core` |
+| Project Manager / Scrum Master | pm | `koda install pm` |
+| Tech Director / Delivery Manager | leadership | `koda install leadership` |
+| All roles | dev, ba, qa, ops, pm | `koda install dev ba qa ops pm` |
 
-Press `[p]` to toggle profiles, or install from CLI:
+Open Koda TUI and press `[p]` to toggle profiles interactively, or install from CLI.
 
-```bash
-koda install dev qa        # Dev + QA
-koda install dev ba qa ops pm  # Everything
-```
-
-| Profile | Agents | Role |
-|---------|:------:|------|
-| **dev** | 23 | Code, review, test, security, PRs |
-| **ba** | 8 | Requirements, scope, stories, PRDs |
-| **qa** | 10 | Test planning, automation, defect analysis |
-| **ops** | 8 | Infra, deployments, incidents, releases |
+| Profile | Agents | Description |
+|---------|:------:|-------------|
+| **dev** | 30 | Code, review, test, security, PRs (dev-core + dev-web + dev-mobile) |
+| **ba** | 8 | Requirements, scope, stories, PRDs, estimation |
+| **qa** | 11 | Test planning, automation, defect analysis, coverage |
+| **ops** | 8 | Infra, deployments, log analysis, releases |
 | **pm** | 6 | Sprints, standups, retros, delivery reports |
+| **leadership** | 5 | Cross-team analytics, quarterly reports, executive briefings |
 
 ### 5. Select Workspace (optional)
 
