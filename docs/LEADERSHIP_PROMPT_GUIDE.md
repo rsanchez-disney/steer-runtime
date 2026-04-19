@@ -6,10 +6,107 @@ Practical prompts for Tech Directors, Delivery Directors, and Tech Managers usin
 
 ## Setup
 
+### Step 1: Install the leadership profile
+
 ```bash
 koda install leadership
+```
+
+This installs 5 agents: leadership_orchestrator, portfolio_analyst, quarterly_reporter, cross_team_coordinator, executive_briefing.
+
+### Step 2: Create your vertical workspace
+
+Create a workspace that defines all teams under your vertical. In steer-runtime:
+
+```
+workspaces/
+  my-vertical/
+    workspace.json
+    README.md
+```
+
+**workspace.json** — define your teams with their Jira projects and board IDs:
+
+```json
+{
+  "name": "my-vertical",
+  "description": "All teams under my vertical",
+  "team": "My Organization",
+  "profiles": ["leadership"],
+  "default_agent": "leadership_orchestrator_agent",
+  "teams": [
+    {
+      "name": "Team Alpha",
+      "workspace": "team-alpha",
+      "jira_projects": ["ALPHA"],
+      "board_ids": [1234]
+    },
+    {
+      "name": "Team Beta",
+      "workspace": "team-beta",
+      "jira_projects": ["BETA"],
+      "board_ids": [5678]
+    },
+    {
+      "name": "Team Gamma",
+      "workspace": "team-gamma",
+      "jira_projects": ["GAMMA"],
+      "board_ids": []
+    }
+  ],
+  "rules": ["conventional_commit"],
+  "enable_tools": true,
+  "workspace_path": "~/Workspace"
+}
+```
+
+**Fields:**
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Team display name |
+| `workspace` | No | Reference to the team's own workspace (for drill-down) |
+| `jira_projects` | Yes | Jira project keys the agents will query |
+| `board_ids` | No | Jira board IDs for sprint data |
+
+### Step 3: Apply the vertical workspace
+
+```bash
+koda workspace apply my-vertical
+```
+
+This sets the active workspace and makes the `teams` array available to all leadership agents.
+
+### Step 4: Configure MCP tokens
+
+Ensure your Jira and Confluence tokens are set (the agents need them to query across teams):
+
+```bash
+koda mcp-install
+# Or from the TUI: koda → [m] MCP → enter to edit tokens
+```
+
+### Step 5: Start using the agents
+
+```bash
+kiro-cli chat --agent leadership_orchestrator_agent
+> "Show me delivery health across all teams for the last 3 sprints"
+```
+
+Or use a specific agent directly:
+
+```bash
+kiro-cli chat --agent portfolio_analyst_agent
+> "Compare velocity trends for Team Alpha and Team Beta"
+```
+
+### Example: Payments Vertical
+
+The `payments-vertical` workspace is pre-configured with all Payments & Commerce teams:
+
+```bash
 koda workspace apply payments-vertical
 kiro-cli chat --agent leadership_orchestrator_agent
+> "Generate the Q2 quarterly report"
 ```
 
 ---
