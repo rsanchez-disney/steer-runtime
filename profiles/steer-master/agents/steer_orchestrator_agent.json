@@ -21,7 +21,7 @@
     "file://profiles/steer-master/context/cross_repo_map.md",
     "file://shared/memory-bank/steer-master/schema-inventory.md",
     "file://shared/memory-bank/steer-master/breaking-change-log.md",
-    "file://docs/FORK_STRATEGY.md"
+    "file://docs/reference/FORK_STRATEGY.md"
   ],
   "welcomeMessage": "🛠️ Steer-master orchestrator ready!\n\nI can help you:\n  • Implement features for steer-runtime and Koda\n  • Review PRs for breaking changes and consistency\n  • Validate schemas and cross-repo compatibility\n  • Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
   "hooks": {

@@ -23,4 +23,4 @@ All child workspaces get:
 - **Rules**: conventional_commit, general-angular-development, general-api-design, general-aws, general-docker, general-kubernetes, general-node-development, general-python-development, general-terraform
 - **Workspace path**: ~/workspace/guest-experience
 
-See [Team Workspaces Guide](../../docs/TEAM_WORKSPACES.md) for details on hierarchy and inheritance.
+See [Team Workspaces Guide](../../docs/reference/TEAM_WORKSPACES.md) for details on hierarchy and inheritance.

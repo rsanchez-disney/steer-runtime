@@ -1,88 +1,49 @@
-# steer-runtime Documentation Index
-
-Complete guide to all documentation.
+# Documentation Index
 
 ## Getting Started
+- [Getting Started](getting-started/GETTING_STARTED.md) — First-time setup
+- [Setup (macOS/Linux)](getting-started/SETUP.md) — Detailed setup guide
+- [Windows Setup](getting-started/WINDOWS_SETUP.md) — Windows-specific instructions
+- [Dev Quick Start](getting-started/DEV_QUICK_START.md) — Developer quick start
+- [Mobile Agents Setup](getting-started/MOBILE_AGENTS_SETUP.md) — Flutter/native setup
+- [Kiro UI Setup](getting-started/KIRO_UI_SETUP.md) — Kiro IDE configuration
+- [Cursor Setup](getting-started/CURSOR_SETUP.md) — Cursor IDE configuration
+- [IDE Comparison](getting-started/IDE_CONCEPTS_COMPARISON.md) — Kiro vs Cursor vs Amazon Q vs Copilot
+- [Kiro CLI vs UI](getting-started/KIRO_CLI_VS_UI.md) — CLI and UI comparison
 
-1. **[README.md](../README.md)** - Quick start guide
-2. **[GETTING_STARTED.md](GETTING_STARTED.md)** - First-time setup (SSO, access, downloads)
-3. **[SETUP.md](SETUP.md)** - Detailed installation (macOS/Linux)
-4. **[WINDOWS_SETUP.md](WINDOWS_SETUP.md)** - Windows installation (WSL)
-5. **[AGENTS.md](../AGENTS.md)** - Complete agent reference (55 agents)
+## Profile Guides
+- [Dev — Prompt Guide](profiles/dev/PROMPT_GUIDE.md)
+- [BA — Prompt Guide](profiles/ba/BA_PROMPT_GUIDE.md) · [Quick Reference](profiles/ba/BA_QUICK_REFERENCE.md) · [Workflows](profiles/ba/BA_WORKFLOWS.md)
+- [QA — Prompt Guide](profiles/qa/QA_PROMPT_GUIDE.md) · [Quick Reference](profiles/qa/QA_QUICK_REFERENCE.md) · [Workflows](profiles/qa/QA_WORKFLOWS.md) · [Overview](profiles/qa/QA_PROFILE_OVERVIEW.md)
+- [Ops — Prompt Guide](profiles/ops/OPS_PROMPT_GUIDE.md) · [Quick Reference](profiles/ops/OPS_QUICK_REFERENCE.md) · [Workflows](profiles/ops/OPS_WORKFLOWS.md)
+- [PM — Prompt Guide](profiles/pm/PM_PROMPT_GUIDE.md) · [Workspaces Guide](profiles/pm/PM_WORKSPACES_GUIDE.md)
+- [Leadership — Prompt Guide](profiles/leadership/LEADERSHIP_PROMPT_GUIDE.md)
+- [Steer Master — Quick Start](profiles/steer-master/STEER_MASTER_QUICK_START.md)
 
-## Usage Guides
+## Architecture
+- [Architecture](architecture/ARCHITECTURE.md) — System architecture
+- [Design](architecture/DESIGN.md) — Design decisions
+- [Project Overview](architecture/PROJECT_OVERVIEW.md) — Full project overview
+- [Orchestrator Delegation](architecture/ORCHESTRATOR_DELEGATION_REVIEW.md) — How orchestrators delegate
 
-- **[PROMPT_GUIDE.md](PROMPT_GUIDE.md)** - How to use agents effectively with examples
-- **[KIRO_CLI_VS_UI.md](KIRO_CLI_VS_UI.md)** - When to use CLI vs UI
-- **[Powers Guide](../profiles/dev-core/powers/GUIDE.md)** - Creating custom powers
+## Reference
+- [Reference](reference/REFERENCE.md) — Full command and config reference
+- [MCP Setup](reference/MCP_SETUP.md) — MCP servers, tokens, env vars
+- [Hooks & Powers](reference/HOOKS_AND_POWERS.md) — Hook scripts and advanced tools
+- [Troubleshooting](reference/TROUBLESHOOTING.md) — Common issues and fixes
+- [Team Workspaces](reference/TEAM_WORKSPACES.md) — Workspace hierarchy and inheritance
+- [Fork Strategy](reference/FORK_STRATEGY.md) — How to fork steer-runtime
+- [Eval Framework](reference/EVAL_FRAMEWORK.md) — Agent evaluation framework
 
-## Setup & Configuration
+## Memory
+- [Memory MCP](memory/MEMORY_MCP.md) — Persistent memory for agents
+- [yax Architecture](memory/yax-architecture.md) — yax design
+- [Enterprise Memory Bank](memory/ENTERPRISE_MEMORY_BANK_ASSESSMENT.md) — Assessment
+- [Memory Bank Diagrams](memory/ENTERPRISE_MEMORY_BANK_DIAGRAMS.md) — Diagrams
 
-- **[GETTING_STARTED.md](GETTING_STARTED.md)** - First-time setup (SSO, access)
-- **[SETUP.md](SETUP.md)** - Complete setup instructions (macOS/Linux)
-- **[WINDOWS_SETUP.md](WINDOWS_SETUP.md)** - Windows setup (WSL)
-- **[MCP_SETUP.md](MCP_SETUP.md)** - MCP server configuration (Jira, GitHub)
-- **[KIRO_UI_SETUP.md](KIRO_UI_SETUP.md)** - Kiro UI specific setup
-- **[MOBILE_AGENTS_SETUP.md](MOBILE_AGENTS_SETUP.md)** - Mobile development setup
+## Meta
+- [Roadmap](ROADMAP.md)
+- [Documentation Status](DOCUMENTATION_STATUS.md)
 
-## Architecture & Design
-
-- **[DESIGN.md](DESIGN.md)** - System architecture and design decisions
-- **[ORCHESTRATOR_DELEGATION_REVIEW.md](ORCHESTRATOR_DELEGATION_REVIEW.md)** - Orchestration patterns
-
-## Change History
-
-- **[SETUP_CONSOLIDATION.md](SETUP_CONSOLIDATION.md)** - Setup script consolidation (March 2026)
-
-## Quick Links
-
-### For New Users
-1. [README.md](../README.md) - Start here
-2. [GETTING_STARTED.md](GETTING_STARTED.md) - Access & SSO
-3. [SETUP.md](SETUP.md) / [WINDOWS_SETUP.md](WINDOWS_SETUP.md) - Installation
-4. [AGENTS.md](../AGENTS.md) - Available agents
-
-### For Developers
-1. [PROMPT_GUIDE.md](PROMPT_GUIDE.md) - Effective prompts
-2. [DESIGN.md](DESIGN.md) - Architecture
-3. [Powers Guide](../profiles/dev-core/powers/GUIDE.md) - Custom powers
-
-### For Mobile Development
-1. [MOBILE_AGENTS_SETUP.md](MOBILE_AGENTS_SETUP.md) - Setup
-2. [AGENTS.md](../AGENTS.md#mobile-agents) - Mobile agents
-3. [PROMPT_GUIDE.md](PROMPT_GUIDE.md) - Mobile prompts
-
-## File Organization
-
-```
-steer-runtime/
-├── README.md              # Main entry point
-├── AGENTS.md              # Agent reference
-├── setup.sh               # Bash fallback (Koda is primary)
-├── docs/                  # All documentation
-│   ├── INDEX.md          # This file
-│   ├── GETTING_STARTED.md
-│   ├── SETUP.md
-│   ├── WINDOWS_SETUP.md
-│   ├── PROMPT_GUIDE.md
-│   ├── KIRO_CLI_VS_UI.md
-│   ├── MCP_SETUP.md
-│   ├── KIRO_UI_SETUP.md
-│   ├── MOBILE_AGENTS_SETUP.md
-│   ├── DESIGN.md
-│   ├── DOCUMENTATION_STATUS.md
-│   ├── HOOKS_AND_POWERS.md
-│   ├── ORCHESTRATOR_DELEGATION_REVIEW.md
-│   └── SETUP_CONSOLIDATION.md
-```
-
-## Need Help?
-
-1. Check [SETUP.md](SETUP.md) troubleshooting section
-2. Run `koda check` to verify dependencies
-3. Review [AGENTS.md](../AGENTS.md) for agent capabilities
-4. See [PROMPT_GUIDE.md](PROMPT_GUIDE.md) for usage examples
-
----
-
-**Last Updated:** April 13, 2026
+## Projects
+- [steer-autopilot](steer-autopilot/README.md) — Distributed multi-agent AI-SDLC orchestration
