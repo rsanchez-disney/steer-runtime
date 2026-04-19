@@ -1404,7 +1404,7 @@ YAMLEOF
         [ -n "$gh_org" ] && echo "   github: $gh_org/$gh_repo"
         [ -n "$jira_key" ] && echo "   jira: $jira_key"
         echo ""
-        echo "Review and edit as needed. See: docs/REFERENCE.md#project-manifest-projectyaml"
+        echo "Review and edit as needed. See: docs/reference/REFERENCE.md#project-manifest-projectyaml"
         ;;
         
     configure)

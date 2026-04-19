@@ -20,7 +20,7 @@
 ### PR #18 — Cursor IDE Support
 - Created `.cursor-templates/` with 19 .mdc rule files
 - Added `setup.sh cursor install|sync|remove|init-memory` commands
-- Created docs/CURSOR_SETUP.md
+- Created docs/getting-started/CURSOR_SETUP.md
 
 ### PR #20 — IDE-Agnostic Rewrite + Amazon Q + Mermaid + Golden Rule
 - Rewrote README as IDE-agnostic multi-team agent platform

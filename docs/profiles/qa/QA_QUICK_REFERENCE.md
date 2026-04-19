@@ -306,9 +306,9 @@ Update bug DPAY-XXX with root cause analysis
 
 ## Getting Help
 
-📖 **Detailed guide:** `docs/QA_PROMPT_GUIDE.md`  
-📖 **Workflows:** `docs/QA_WORKFLOWS.md`  
-📖 **Overview:** `docs/QA_PROFILE_OVERVIEW.md`  
+📖 **Detailed guide:** `docs/profiles/qa/QA_PROMPT_GUIDE.md`  
+📖 **Workflows:** `docs/profiles/qa/QA_WORKFLOWS.md`  
+📖 **Overview:** `docs/profiles/qa/QA_PROFILE_OVERVIEW.md`  
 📖 **Guidelines:** `.kiro-qa/context/qa_guidelines.md`  
 📖 **Templates:** `.kiro-qa/context/test_templates.md`  
 📖 **Patterns:** `.kiro-qa/context/automation_patterns.md`  

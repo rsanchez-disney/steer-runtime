@@ -697,7 +697,7 @@ The coding standards, MCP integrations, and workflow guidance from these agents 
 
 | IDE | Format | Setup |
 |-----|--------|-------|
-| **Cursor** | `.mdc` rule files + shared MCP | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **Cursor** | `.mdc` rule files + shared MCP | [Cursor Setup](docs/getting-started/CURSOR_SETUP.md) |
 | **Amazon Q** | Plain `.md` rule files | [Amazon Q README](.amazonq-templates/README.md) |
 | **Kite** | Desktop GUI over Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
 
@@ -735,7 +735,7 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 | `warn-destructive.sh` | postToolUse (execute_bash) | dev-core orchestrator | Warns on `rm -rf`, `DROP TABLE`, `--force` |
 | `lint-on-write.sh` | postToolUse (fs_write) | 6 write agents | Auto-runs linter/formatter after file writes |
 
-Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
+Full reference: [Hooks & Powers](docs/reference/HOOKS_AND_POWERS.md)
 
 ---
 

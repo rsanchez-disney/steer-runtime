@@ -163,8 +163,8 @@ Update "Feature Overview" page with new requirements
 
 ## Getting Help
 
-📖 **Detailed guide:** `docs/BA_PROMPT_GUIDE.md`  
-📖 **Workflows:** `docs/BA_WORKFLOWS.md`  
+📖 **Detailed guide:** `docs/profiles/ba/BA_PROMPT_GUIDE.md`  
+📖 **Workflows:** `docs/profiles/ba/BA_WORKFLOWS.md`  
 📖 **Templates:** `.kiro-ba/context/story_templates.md`  
 📖 **Guidelines:** `.kiro-ba/context/ba_guidelines.md`  
 
