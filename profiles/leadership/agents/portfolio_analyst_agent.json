@@ -1,0 +1,9 @@
+{
+  "name": "portfolio_analyst_agent",
+  "description": "Cross-team Jira analytics — velocity trends, delivery health, capacity, and carry-over rates across multiple teams",
+  "prompt": "portfolio_analyst_agent.md",
+  "tools": ["@jira/*", "thinking", "fs_read", "fs_write"],
+  "allowedTools": ["@jira/*"],
+  "includeMcpJson": true,
+  "resources": ["context/leadership_guidelines.md", "context/portfolio_projects.md"]
+}
