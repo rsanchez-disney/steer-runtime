@@ -13,7 +13,7 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "context/sustainment_guidelines.md",
-    "context/observability_tools.md"
+    "file://.kiro/context/sustainment_guidelines.md",
+    "file://.kiro/context/observability_tools.md"
   ]
 }

@@ -11,10 +11,10 @@
   ],
   "allowedTools": [],
   "resources": [
-    "context/php_zend_conventions.md",
-    "context/php_testing_strategy.md",
-    "context/php_legacy_migration.md",
-    "context/php_review_checklist.md"
+    "file://.kiro/context/php_zend_conventions.md",
+    "file://.kiro/context/php_testing_strategy.md",
+    "file://.kiro/context/php_legacy_migration.md",
+    "file://.kiro/context/php_review_checklist.md"
   ],
   "includeMcpJson": true,
   "hooks": {

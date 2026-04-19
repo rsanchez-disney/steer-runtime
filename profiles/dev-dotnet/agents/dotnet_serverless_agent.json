@@ -1,6 +1,6 @@
 {
   "name": "dotnet_serverless_agent",
-  "description": "Specialist for .NET serverless applications — thin handlers, service orchestration, explicit contracts, stateless execution, AWS adapter seams",
+  "description": "Specialist for .NET serverless applications \u2014 thin handlers, service orchestration, explicit contracts, stateless execution, AWS adapter seams",
   "prompt": "prompts/dotnet_serverless_agent.md",
   "tools": [
     "code",
@@ -10,17 +10,17 @@
     "grep"
   ],
   "resources": [
-    "context/dotnet_engineering_principles.md",
-    "context/dotnet_company_common_integration.md",
-    "context/dotnet_aws_platform_guidance.md",
-    "context/dotnet_testing_strategy.md",
-    "context/dotnet_tech_standards.md",
-    "context/dotnet_aws_rules.md",
-    "context/dotnet_company_common_rules.md",
-    "context/dotnet_testing_rules.md",
-    "context/dotnet_serverless_context.md",
-    "context/dotnet_serverless_guidance.md",
-    "context/dotnet_serverless_structure.md"
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_serverless_context.md",
+    "file://.kiro/context/dotnet_serverless_guidance.md",
+    "file://.kiro/context/dotnet_serverless_structure.md"
   ],
   "welcomeMessage": "Ready to build a .NET serverless application. Point me to your project."
 }

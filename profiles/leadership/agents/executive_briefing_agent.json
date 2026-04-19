@@ -1,9 +1,23 @@
 {
   "name": "executive_briefing_agent",
-  "description": "Produces audience-tailored executive summaries — adjusts tone, detail, and focus for directors, colleagues, and partners",
+  "description": "Produces audience-tailored executive summaries \u2014 adjusts tone, detail, and focus for directors, colleagues, and partners",
   "prompt": "executive_briefing_agent.md",
-  "tools": ["@jira/*", "@confluence/*", "@mywiki/*", "thinking", "fs_read", "fs_write"],
-  "allowedTools": ["@jira/*", "@confluence/*", "@mywiki/*"],
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "thinking",
+    "fs_read",
+    "fs_write"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
   "includeMcpJson": true,
-  "resources": ["context/leadership_guidelines.md", "context/executive_communication.md"]
+  "resources": [
+    "file://.kiro/context/leadership_guidelines.md",
+    "file://.kiro/context/executive_communication.md"
+  ]
 }
