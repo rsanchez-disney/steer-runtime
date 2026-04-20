@@ -11,7 +11,7 @@
     "file://profiles/steer-master/context/cross_repo_map.md",
     "file://shared/memory-bank/steer-master/schema-inventory.md",
     "file://shared/memory-bank/steer-master/breaking-change-log.md",
-    "file://docs/FORK_STRATEGY.md"
+    "file://docs/reference/FORK_STRATEGY.md"
   ],
   "hooks": {
     "preToolUse": [

@@ -166,7 +166,7 @@ function Install-Hooks($dir) {
 function Install-McpServers {
     Write-Host "`nConfiguring MCP servers (user-level)..."
     $mcpBundleDir = Join-Path $KiroHome "tools\mcp-servers"
-    $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp","mywiki-mcp")
+    $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp")
     $bundleCount = 0
     foreach ($s in $servers) {
         $src = "$SteerRoot\shared\tools\mcp-servers\$s\dist\index.cjs"
@@ -202,7 +202,7 @@ function Install-McpServers {
     $mcpConfig.mcpServers["github"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\github-mcp\dist\index.cjs"); env = [ordered]@{ GITHUB_HOST = "github.disney.com"; GITHUB_TOKEN = ""; GITHUB_API_PATH = "/api/v3" } }
     $mcpConfig.mcpServers["jira"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\jira-mcp\dist\index.cjs"); env = [ordered]@{ JIRA_PAT = "" } }
     $mcpConfig.mcpServers["mermaid"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs") }
-    $mcpConfig.mcpServers["mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mywiki-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
+    $mcpConfig.mcpServers["mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
 
     $mcpJsonPath = Join-Path $KiroHome "settings\mcp.json"
     New-Item -ItemType Directory -Force -Path (Split-Path $mcpJsonPath) | Out-Null

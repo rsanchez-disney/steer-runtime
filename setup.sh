@@ -62,7 +62,7 @@ precompute_mcp_paths() {
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
-    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs")"
+    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then
@@ -816,11 +816,6 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
-        # Install context7 from public npm (blocked by corporate proxy via npx)
-        echo "📦 Installing context7-mcp from public registry..."
-        if [ -f "$KIRO_ROOT/tools/mcp-servers/context7-mcp/package.json" ]; then
-            (cd "$KIRO_ROOT/tools/mcp-servers/context7-mcp" && npm install --registry https://registry.npmjs.org --silent 2>/dev/null)
-            echo "  ✓ context7"
         fi
         echo ""
         
@@ -1409,7 +1404,7 @@ YAMLEOF
         [ -n "$gh_org" ] && echo "   github: $gh_org/$gh_repo"
         [ -n "$jira_key" ] && echo "   jira: $jira_key"
         echo ""
-        echo "Review and edit as needed. See: docs/REFERENCE.md#project-manifest-projectyaml"
+        echo "Review and edit as needed. See: docs/reference/REFERENCE.md#project-manifest-projectyaml"
         ;;
         
     configure)
