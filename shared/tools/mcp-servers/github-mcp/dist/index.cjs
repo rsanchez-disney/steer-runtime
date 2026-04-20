@@ -16655,6 +16655,97 @@ ${sections.join("\n\n")}`
   };
 }
 
+// build/tools/githubCreateReview.js
+var githubCreateReviewSchema = {
+  name: "github_create_review",
+  description: "Create a pull request review with inline comments on specific lines of code. Supports COMMENT, APPROVE, or REQUEST_CHANGES events.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      repo: {
+        type: "string",
+        description: "Repository in format 'owner/repo' or full URL"
+      },
+      prNumber: {
+        type: "string",
+        description: "Pull request number"
+      },
+      event: {
+        type: "string",
+        enum: ["COMMENT", "APPROVE", "REQUEST_CHANGES"],
+        description: "Review action: COMMENT (neutral), APPROVE, or REQUEST_CHANGES"
+      },
+      body: {
+        type: "string",
+        description: "Optional: Top-level review body text"
+      },
+      comments: {
+        type: "array",
+        description: "Inline comments to attach to specific lines",
+        items: {
+          type: "object",
+          properties: {
+            path: {
+              type: "string",
+              description: "File path relative to repo root"
+            },
+            line: {
+              type: "number",
+              description: "Line number in the diff to comment on (new file line)"
+            },
+            body: {
+              type: "string",
+              description: "Comment text (supports markdown)"
+            },
+            side: {
+              type: "string",
+              enum: ["LEFT", "RIGHT"],
+              description: "Side of the diff: LEFT (deletion) or RIGHT (addition). Defaults to RIGHT"
+            }
+          },
+          required: ["path", "line", "body"]
+        }
+      }
+    },
+    required: ["repo", "prNumber", "event", "comments"]
+  }
+};
+async function handleGithubCreateReview(args) {
+  const { repo, prNumber, event, body, comments } = args;
+  const { owner, repo: repoName } = parseRepo(repo);
+  const octokit2 = getClient();
+  const prNum = parseInt(prNumber);
+  const reviewComments = (comments || []).map((c) => ({
+    path: c.path,
+    line: c.line,
+    body: c.body,
+    side: c.side || "RIGHT"
+  }));
+  const params = {
+    owner,
+    repo: repoName,
+    pull_number: prNum,
+    event: event || "COMMENT",
+    comments: reviewComments
+  };
+  if (body)
+    params.body = body;
+  const { data: review } = await octokit2.pulls.createReview(params);
+  return {
+    content: [
+      {
+        type: "text",
+        text: `Review submitted on PR #${prNum} (${event})
+
+Review ID: ${review.id}
+State: ${review.state}
+Comments: ${reviewComments.length} inline comment(s)
+URL: ${review.html_url}`
+      }
+    ]
+  };
+}
+
 // build/index.js
 var import_meta2 = {};
 var scriptDir2 = (() => {
@@ -16675,7 +16766,8 @@ var allSchemas = [
   githubSearchPrsSchema,
   githubListRemotesSchema,
   githubGetFileSchema,
-  githubGetFilesSchema
+  githubGetFilesSchema,
+  githubCreateReviewSchema
 ];
 var prefixedSchemas = allSchemas.map((schema) => ({
   ...schema,
@@ -16691,7 +16783,8 @@ var baseHandlers = {
   github_search_prs: handleGithubSearchPrs,
   github_list_remotes: handleGithubListRemotes,
   github_get_file: handleGithubGetFile,
-  github_get_files: handleGithubGetFiles
+  github_get_files: handleGithubGetFiles,
+  github_create_review: handleGithubCreateReview
 };
 var toolHandlers = {};
 for (const [name, handler2] of Object.entries(baseHandlers)) {
