@@ -82,6 +82,19 @@ HTTP Basic Auth against the ServiceNow REST API (`/api/now/table/*` endpoints).
 | `update_ctask` | Update arbitrary fields on a CTASK (JSON input) |
 | `close_ctask` | Close a CTASK with close notes |
 
+### Investigation & Triage
+
+| Tool | Description |
+|------|-------------|
+| `get_incident_comments` | Get all comments and work notes history |
+| `get_related_incidents` | Find incidents related by CI or parent |
+| `get_change_request` | Get change request details by number |
+| `get_ci_details` | Get CI details (owner, environment, support group) |
+| `search_knowledge_base` | Search KB articles for known solutions |
+| `get_on_call` | Get on-call person/rotation for a group |
+| `bulk_update_incidents` | Update multiple incidents at once |
+| `get_incident_timeline` | Full activity timeline (state changes, notes, assignments) |
+
 ## Development
 
 ```bash

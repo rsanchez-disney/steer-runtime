@@ -20,6 +20,14 @@ import { getCtaskSchema, handleGetCtask } from "./tools/getCtask.js";
 import { addCtaskWorkNoteSchema, handleAddCtaskWorkNote } from "./tools/addCtaskWorkNote.js";
 import { updateCtaskSchema, handleUpdateCtask } from "./tools/updateCtask.js";
 import { closeCtaskSchema, handleCloseCtask } from "./tools/closeCtask.js";
+import { getIncidentCommentsSchema, handleGetIncidentComments } from "./tools/getIncidentComments.js";
+import { getRelatedIncidentsSchema, handleGetRelatedIncidents } from "./tools/getRelatedIncidents.js";
+import { getChangeRequestSchema, handleGetChangeRequest } from "./tools/getChangeRequest.js";
+import { getCiDetailsSchema, handleGetCiDetails } from "./tools/getCiDetails.js";
+import { searchKnowledgeBaseSchema, handleSearchKnowledgeBase } from "./tools/searchKnowledgeBase.js";
+import { getOnCallSchema, handleGetOnCall } from "./tools/getOnCall.js";
+import { bulkUpdateIncidentsSchema, handleBulkUpdateIncidents } from "./tools/bulkUpdateIncidents.js";
+import { getIncidentTimelineSchema, handleGetIncidentTimeline } from "./tools/getIncidentTimeline.js";
 import { apiClient } from "./utils/apiClient.js";
 
 const tools = [
@@ -38,6 +46,14 @@ const tools = [
     { schema: addCtaskWorkNoteSchema, handler: handleAddCtaskWorkNote },
     { schema: updateCtaskSchema, handler: handleUpdateCtask },
     { schema: closeCtaskSchema, handler: handleCloseCtask },
+    { schema: getIncidentCommentsSchema, handler: handleGetIncidentComments },
+    { schema: getRelatedIncidentsSchema, handler: handleGetRelatedIncidents },
+    { schema: getChangeRequestSchema, handler: handleGetChangeRequest },
+    { schema: getCiDetailsSchema, handler: handleGetCiDetails },
+    { schema: searchKnowledgeBaseSchema, handler: handleSearchKnowledgeBase },
+    { schema: getOnCallSchema, handler: handleGetOnCall },
+    { schema: bulkUpdateIncidentsSchema, handler: handleBulkUpdateIncidents },
+    { schema: getIncidentTimelineSchema, handler: handleGetIncidentTimeline },
 ];
 
 class ServiceNowMCPServer {
