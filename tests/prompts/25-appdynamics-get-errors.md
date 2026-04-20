@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get errors for prod_cart-service_aws with duration 60 minutes. Verify the response includes application name, error count, and an errors array with errorName, totalErrors, and errorsPerMinute fields.

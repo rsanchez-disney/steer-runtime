@@ -1,0 +1,1 @@
+Using the servicenow MCP, get change request details for a CHG number. Verify the response includes number, short_description, state, type, priority, assignment_group, cmdb_ci, start_date, and end_date fields.

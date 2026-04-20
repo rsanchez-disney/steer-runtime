@@ -16,8 +16,9 @@ export async function handleGetActions(args: any) {
     const { appName } = args;
     const appId = await apiClient.resolveAppId(appName);
 
+    // Use the v1 alerting REST API which returns JSON natively
     const data = await apiClient.rawGet(
-        `/controller/actions/${appId}`,
+        `/controller/alerting/rest/v1/applications/${appId}/actions`,
     );
 
     if (Array.isArray(data)) {
@@ -25,8 +26,6 @@ export async function handleGetActions(args: any) {
             id: a.id,
             name: a.name,
             actionType: a.actionType,
-            emails: a.emails,
-            httpRequestUrl: a.httpRequestUrl,
         }));
 
         return {
