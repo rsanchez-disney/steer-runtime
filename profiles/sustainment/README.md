@@ -29,6 +29,16 @@
 
 Splunk · AppDynamics · AWS CloudWatch · New Relic · GCP · Datadog · Grafana · Archer · LogInsights
 
+## Direct MCP Integrations
+
+The sustainment orchestrator also has direct access to these MCP servers (no Compass proxy needed):
+
+| MCP Server | Tools | Use Case |
+|------------|-------|----------|
+| `appdynamics-mcp` | 17 | Application health, metrics, tiers, backends, errors, events, snapshots, anomalies, policies |
+| `servicenow-mcp` | 23 | Incidents, CTASKs, change requests, CI details, KB search, on-call, timeline, bulk ops |
+| `splunk-mcp` | 21 | Log search, dashboards, alerts, saved searches, reports, data models, field discovery |
+
 ---
 
 ## Quick Start
