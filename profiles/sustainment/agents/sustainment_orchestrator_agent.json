@@ -7,6 +7,8 @@
     "@confluence/*",
     "@mywiki/*",
     "@compass/*",
+    "@appdynamics-mcp/*",
+    "@servicenow-mcp/*",
     "subagent",
     "execute_bash",
     "fs_read",
@@ -18,7 +20,9 @@
     "@jira/*",
     "@confluence/*",
     "@mywiki/*",
-    "@compass/*"
+    "@compass/*",
+    "@appdynamics-mcp/*",
+    "@servicenow-mcp/*"
   ],
   "includeMcpJson": true,
   "hooks": {
