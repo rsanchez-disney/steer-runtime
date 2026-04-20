@@ -7,7 +7,7 @@ STEER_ROOT="$KIRO_DIR/steer-runtime"
 
 # --- Workspace Context ---
 ws=""
-for f in "$KIRO_DIR/settings/koda/steer_settings.json" "$KIRO_DIR/settings/koda/shared_settings.json"; do
+for f in "$KIRO_DIR/settings/kite.json" "$KIRO_DIR/settings/koda/steer_settings.json" "$KIRO_DIR/settings/koda/shared_settings.json"; do
   [ -f "$f" ] && [ -z "$ws" ] && \
     ws=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('steerRuntime',{}).get('activeWorkspace',''))" 2>/dev/null)
 done
@@ -37,6 +37,17 @@ if d.get('jira_prefix'): print(f'- **Jira prefix:** {d[\"jira_prefix\"]}')
 if d.get('projects'): print(f'- **Projects:** {len(d[\"projects\"])}')
 if d.get('services'): print(f'- **Services:** {\", \".join(d[\"services\"])}')
 if d.get('channels'): print(f'- **Channels:** {\", \".join(d[\"channels\"])}')
+if d.get('teams'):
+    print(f'- **Teams:** {len(d[\"teams\"])}')
+    for t in d['teams']:
+        info = t['name']
+        projs = ', '.join(t.get('jira_projects', []))
+        if projs: info += f' ({projs})'
+        if t.get('studio'): info += f' — Studio: {t[\"studio\"]}'
+        elif t.get('team_id'): info += f' — Team ID: {t[\"team_id\"]}'
+        boards = ', '.join(str(b) for b in t.get('board_ids', []))
+        if boards: info += f' [boards: {boards}]'
+        print(f'  - {info}')
 " 2>/dev/null
   fi
   echo ""
