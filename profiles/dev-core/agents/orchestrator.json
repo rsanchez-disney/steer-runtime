@@ -10,7 +10,7 @@
     "fs_read",
     "thinking",
     "todo_list",
-    "@yax",
+    "@yax/*",
     "@compass/*"
   ],
   "resources": [
