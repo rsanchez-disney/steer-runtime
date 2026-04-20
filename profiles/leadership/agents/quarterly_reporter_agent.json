@@ -22,6 +22,11 @@
     "file://.kiro/context/quarterly_template.md"
   ],
   "hooks": {
-    "agentSpawn": "$HOME/.kiro/hooks/agent-registry.sh"
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject workspace context and agent registry"
+      }
+    ]
   }
 }
