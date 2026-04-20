@@ -1,1 +1,0 @@
-Run the servicenow-incident-ops skill Workflow 3 (Route Incident) for INC28844834. Get current incident details first, then change the CI to "WDPRD Ticket Management Service" and route to assignment group "web-global-salestickets". Add a work note explaining the routing reason. Pause at the checkpoint for user confirmation before executing.

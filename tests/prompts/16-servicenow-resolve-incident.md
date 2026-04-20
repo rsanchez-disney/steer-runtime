@@ -1,1 +1,0 @@
-Run the servicenow-incident-ops skill Workflow 2 (Resolve Incident) for INC28845352. Get current incident details, verify the associated service is healthy using AppDynamics if the CI maps to an application, then prepare the resolution with close notes summarizing the findings. Pause at the checkpoint for user confirmation before resolving.

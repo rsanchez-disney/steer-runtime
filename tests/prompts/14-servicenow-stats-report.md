@@ -1,1 +1,0 @@
-Run the servicenow-incident-ops skill Workflow 9 (Assignment Group Stats Report) for web-global-salestickets. Query active incidents (states: New, In Progress, Assigned, Pending Vendor) and generate a report with counts by priority and state, including a list of individual incidents.

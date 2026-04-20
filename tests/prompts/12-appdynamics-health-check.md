@@ -1,1 +1,0 @@
-Run the appdynamics-health-check skill for prod_ecommerce_S0001477_cme-dlr_aws. Execute all steps: health violations, error analysis with baseline comparison, per-tier breakdown, infrastructure check, anomaly detection, and generate the full summary report with HEALTHY/DEGRADED/CRITICAL status.

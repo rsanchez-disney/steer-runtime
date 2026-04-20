@@ -1,1 +1,0 @@
-Run the servicenow-incident-ops skill Workflow 8 (Create New Incident). Create a new P3 incident with short description "CME DLR - Reservation creation failing with timeout errors", assigned to app-global-cme, CI "DLR Capacity Managed Events", category "Software". Report the new incident number after creation.

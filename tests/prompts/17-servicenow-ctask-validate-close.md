@@ -1,1 +1,0 @@
-Run the servicenow-incident-ops skill Workflow 7 (Service Validation and CTASK Closure). Get CTASK details, identify the service/CI, validate the service health using AppDynamics, generate a validation summary work note, add it to the CTASK, and close it. Pause at the checkpoint for user confirmation before closing.
