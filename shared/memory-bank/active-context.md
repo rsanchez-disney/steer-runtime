@@ -20,7 +20,7 @@
 ### PR #18 — Cursor IDE Support
 - Created `.cursor-templates/` with 19 .mdc rule files
 - Added `setup.sh cursor install|sync|remove|init-memory` commands
-- Created docs/CURSOR_SETUP.md
+- Created docs/getting-started/CURSOR_SETUP.md
 
 ### PR #20 — IDE-Agnostic Rewrite + Amazon Q + Mermaid + Golden Rule
 - Rewrote README as IDE-agnostic multi-team agent platform
@@ -35,4 +35,4 @@
 - QA agents missing Jira MCP configs (api_tester, test_automation, performance_tester)
 - setup.ps1 parity: needs enable-tools, cursor, amazonq subcommands
 - Stale branches to clean: fix/phase1-harden-agents, feature/v3.1.0-ops-profile
-- mywiki-mcp source divergence from confluence-mcp
+- mywiki uses confluence-mcp binary with different CONFLUENCE_URL env var

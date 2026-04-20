@@ -1,0 +1,34 @@
+{
+  "name": "dotnet_senior_agent",
+  "description": "Senior .NET engineering persona \u2014 reads project config, applies company standards, routes to archetype specialists",
+  "prompt": "prompts/dotnet_senior_agent.md",
+  "tools": [
+    "subagent",
+    "execute_bash",
+    "grep",
+    "code",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo_list"
+  ],
+  "resources": [
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_product.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_structure_rules.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_self_host_api_context.md",
+    "file://.kiro/context/dotnet_self_host_api_guidance.md",
+    "file://.kiro/context/dotnet_self_host_api_structure.md",
+    "file://.kiro/context/dotnet_serverless_context.md",
+    "file://.kiro/context/dotnet_serverless_guidance.md",
+    "file://.kiro/context/dotnet_serverless_structure.md"
+  ],
+  "welcomeMessage": "Ready to apply .NET Studio standards. Tell me about your project or point me to your project-config.json."
+}

@@ -54,7 +54,7 @@ const remotesArb = (minLength: number, maxLength: number) =>
 
 
 /** Arbitrary for other (non-github) mcpServers entries */
-const otherServerNameArb = fc.constantFrom("jira", "confluence", "mermaid", "context7");
+const otherServerNameArb = fc.constantFrom("jira", "confluence", "mermaid");
 
 const otherServerEntryArb = fc.record({
     command: fc.constant("node"),

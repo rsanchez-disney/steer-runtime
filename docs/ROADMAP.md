@@ -88,7 +88,7 @@ Structured document generation with formal review gates.
 
 | Version | Highlights |
 |---------|-----------|
-| v3.5.0 | Team workspaces, Context7 MCP, dev profile split, fork strategy |
+| v3.5.0 | Team workspaces, dev profile split, fork strategy |
 | v3.0.0 | 41 agents across 5 SDLC profiles, IDE-portable (Kiro CLI, Cursor, Amazon Q, Kite) |
 
 ---

@@ -30,4 +30,4 @@ koda workspace apply app-config-studio # Resolves inheritance
 koda workspace show payments-core      # View details
 ```
 
-See [Team Workspaces Guide](../docs/TEAM_WORKSPACES.md) for full documentation.
+See [Team Workspaces Guide](../docs/reference/TEAM_WORKSPACES.md) for full documentation.

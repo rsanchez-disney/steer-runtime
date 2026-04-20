@@ -20,7 +20,6 @@ Infrastructure as Code specialist for Terraform, cloud provisioning, and module 
 
 ## Capabilities
 
-- ✅ **Context7** — Up-to-date provider documentation
 - ✅ **Code Tools** — Read/write HCL code
 - ✅ **Execution** — Run terraform, tflint, tfsec, infracost
 - ✅ **File Operations** — Manage module files

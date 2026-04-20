@@ -59,6 +59,52 @@ import {
     jiraGetSprintIssuesSchema,
     handleJiraGetSprintIssues,
 } from "./tools/jiraGetSprintIssues.js";
+import {
+    jiraGetAttachmentsSchema,
+    handleJiraGetAttachments,
+} from "./tools/jiraGetAttachments.js";
+
+// XRay tools
+import {
+    xrayGetTestCaseFullSchema,
+    handleXrayGetTestCaseFull,
+} from "./tools/xrayGetTestCaseFull.js";
+import {
+    xrayGetTestStepsSchema,
+    handleXrayGetTestSteps,
+} from "./tools/xrayGetTestSteps.js";
+import {
+    xrayGetTestExecTestsSchema,
+    handleXrayGetTestExecTests,
+} from "./tools/xrayGetTestExecTests.js";
+import {
+    xrayGetTestPlanTestsSchema,
+    handleXrayGetTestPlanTests,
+} from "./tools/xrayGetTestPlanTests.js";
+import {
+    xrayGetTestSetTestsSchema,
+    handleXrayGetTestSetTests,
+} from "./tools/xrayGetTestSetTests.js";
+import {
+    xrayGetTestRunsSchema,
+    handleXrayGetTestRuns,
+} from "./tools/xrayGetTestRuns.js";
+import {
+    xraySearchTestCasesSchema,
+    handleXraySearchTestCases,
+} from "./tools/xraySearchTestCases.js";
+import {
+    xrayGetTestStatusesSchema,
+    handleXrayGetTestStatuses,
+} from "./tools/xrayGetTestStatuses.js";
+import {
+    xrayGetTestPreConditionsSchema,
+    handleXrayGetTestPreConditions,
+} from "./tools/xrayGetTestPreConditions.js";
+import {
+    xrayGetPreConditionTestsSchema,
+    handleXrayGetPreConditionTests,
+} from "./tools/xrayGetPreConditionTests.js";
 
 // Tool registry
 const tools = [
@@ -75,6 +121,18 @@ const tools = [
     { schema: jiraGetBoardsSchema, handler: handleJiraGetBoards },
     { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
     { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
+    { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
+    // XRay tools
+    { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
+    { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
+    { schema: xrayGetTestExecTestsSchema, handler: handleXrayGetTestExecTests },
+    { schema: xrayGetTestPlanTestsSchema, handler: handleXrayGetTestPlanTests },
+    { schema: xrayGetTestSetTestsSchema, handler: handleXrayGetTestSetTests },
+    { schema: xrayGetTestRunsSchema, handler: handleXrayGetTestRuns },
+    { schema: xraySearchTestCasesSchema, handler: handleXraySearchTestCases },
+    { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
+    { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
+    { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests },
 ];
 
 class JiraMCPServer {

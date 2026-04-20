@@ -1,0 +1,7 @@
+{
+  "name": "trips",
+  "extends": "ge-team",
+  "description": "Trips sub-team",
+  "profiles": [],
+  "projects": []
+}

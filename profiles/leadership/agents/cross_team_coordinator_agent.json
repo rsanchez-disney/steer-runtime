@@ -1,0 +1,18 @@
+{
+  "name": "cross_team_coordinator_agent",
+  "description": "Tracks cross-team dependencies, shared blockers, integration risks, and coordination needs across a vertical",
+  "prompt": "cross_team_coordinator_agent.md",
+  "tools": [
+    "@jira/*",
+    "thinking",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/leadership_guidelines.md",
+    "file://.kiro/context/portfolio_projects.md"
+  ]
+}

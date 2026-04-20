@@ -62,7 +62,7 @@ precompute_mcp_paths() {
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
-    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mywiki-mcp/dist/index.cjs")"
+    _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then
@@ -346,6 +346,18 @@ if conf and conf != "YOUR_TOKEN":
     env = servers.get("confluence", {}).get("env", {})
     if "CONFLUENCE_PAT" in env:
         env["CONFLUENCE_PAT"] = conf
+        changed = True
+
+# Inject qTest tokens
+qtest_token = read_tok("QTEST_BEARER_TOKEN")
+qtest_project = read_tok("QTEST_PROJECT_ID")
+if "qtest" in servers:
+    env = servers["qtest"].get("env", {})
+    if qtest_token and "QTEST_BEARER_TOKEN" in env:
+        env["QTEST_BEARER_TOKEN"] = qtest_token
+        changed = True
+    if qtest_project and "QTEST_PROJECT_ID" in env:
+        env["QTEST_PROJECT_ID"] = qtest_project
         changed = True
 
 # GitHub: per-remote injection or legacy fallback
@@ -804,11 +816,6 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
-        # Install context7 from public npm (blocked by corporate proxy via npx)
-        echo "📦 Installing context7-mcp from public registry..."
-        if [ -f "$KIRO_ROOT/tools/mcp-servers/context7-mcp/package.json" ]; then
-            (cd "$KIRO_ROOT/tools/mcp-servers/context7-mcp" && npm install --registry https://registry.npmjs.org --silent 2>/dev/null)
-            echo "  ✓ context7"
         fi
         echo ""
         
@@ -909,6 +916,24 @@ CONFEOF
             echo ""
         fi
         
+        # qTest token
+        echo "━━━ qTest ━━━"
+        read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
+        read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
+        if [ -n "$qtest_token" ]; then
+            qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+            cat > "$qtest_env" << QTESTEOF
+QTEST_BEARER_TOKEN=$qtest_token
+QTESTEOF
+            if [ -n "$qtest_project_id" ]; then
+                echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+            fi
+            echo "  ✓ Saved to qtest-mcp/.env"
+        else
+            echo "  ⏭ Skipped"
+        fi
+        echo ""
+        
         # Generate centralized tokens.env
         echo ""
         echo "🔧 Generating ~/.kiro/tokens.env..."
@@ -930,6 +955,11 @@ TOKHEADER
         github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
         if [ -f "$github_env" ]; then
             grep -E '^GITHUB_(TOKEN|HOST|API_PATH)_[a-zA-Z0-9_]+=' "$github_env" >> "$tokens_file" 2>/dev/null || true
+        fi
+        # Copy qTest tokens from qtest-mcp/.env
+        qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+        if [ -f "$qtest_env" ]; then
+            grep -E '^QTEST_(BEARER_TOKEN|PROJECT_ID)=' "$qtest_env" >> "$tokens_file" 2>/dev/null || true
         fi
         echo "  ✓ $tokens_file"
         
@@ -1374,7 +1404,7 @@ YAMLEOF
         [ -n "$gh_org" ] && echo "   github: $gh_org/$gh_repo"
         [ -n "$jira_key" ] && echo "   jira: $jira_key"
         echo ""
-        echo "Review and edit as needed. See: docs/REFERENCE.md#project-manifest-projectyaml"
+        echo "Review and edit as needed. See: docs/reference/REFERENCE.md#project-manifest-projectyaml"
         ;;
         
     configure)

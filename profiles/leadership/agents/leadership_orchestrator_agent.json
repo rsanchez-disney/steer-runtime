@@ -1,0 +1,27 @@
+{
+  "name": "leadership_orchestrator_agent",
+  "description": "Coordinates cross-team queries, quarterly reports, and executive briefings across a vertical",
+  "prompt": "leadership_orchestrator_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "thinking",
+    "todo",
+    "delegate",
+    "use_subagent",
+    "@compass/*"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*",
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/leadership_guidelines.md",
+    "file://.kiro/context/portfolio_projects.md"
+  ],
+  "welcomeMessage": "\ud83d\udc4b Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n \u2022 Cross-team velocity and delivery health\n \u2022 Quarterly reports for Disney directors\n \u2022 Dependency tracking and risk assessment\n \u2022 Executive briefings tailored by audience\n\nWhat would you like to review?"
+}

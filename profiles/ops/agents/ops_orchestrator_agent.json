@@ -9,20 +9,22 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "use_subagent",
+    "subagent",
     "thinking",
-    "todo",
-    "delegate"
+    "todo_list",
+    "@compass/*"
   ],
   "resources": [
     "file://AGENTS.md",
-    "file://.kiro/rules/**/*.md"
+    "file://.kiro/rules/**/*.md",
+    "file://.kiro/context/servicenow_reference.md"
   ],
   "welcomeMessage": "\ud83d\udc4b Ops orchestrator ready!\n\nI can help you:\n  \u2022 Track AI productivity metrics for Jira tickets\n  \u2022 Check ECS/AWS infrastructure status\n  \u2022 Review code quality via SonarQube\n  \u2022 Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
   "allowedTools": [
     "@confluence/*",
     "@github/*",
-    "@jira/*"
+    "@jira/*",
+    "@compass/*"
   ],
   "includeMcpJson": true,
   "hooks": {

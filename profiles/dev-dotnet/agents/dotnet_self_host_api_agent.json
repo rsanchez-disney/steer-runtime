@@ -1,0 +1,26 @@
+{
+  "name": "dotnet_self_host_api_agent",
+  "description": "Specialist for .NET self-hosted APIs \u2014 thin controllers, explicit DI, Swagger/OpenAPI, health checks, Windows Service and Kubernetes compatibility",
+  "prompt": "prompts/dotnet_self_host_api_agent.md",
+  "tools": [
+    "code",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_self_host_api_context.md",
+    "file://.kiro/context/dotnet_self_host_api_guidance.md",
+    "file://.kiro/context/dotnet_self_host_api_structure.md"
+  ],
+  "welcomeMessage": "Ready to build a .NET self-hosted API. Point me to your project."
+}

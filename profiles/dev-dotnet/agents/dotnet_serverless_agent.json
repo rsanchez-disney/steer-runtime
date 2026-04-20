@@ -1,0 +1,26 @@
+{
+  "name": "dotnet_serverless_agent",
+  "description": "Specialist for .NET serverless applications \u2014 thin handlers, service orchestration, explicit contracts, stateless execution, AWS adapter seams",
+  "prompt": "prompts/dotnet_serverless_agent.md",
+  "tools": [
+    "code",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_serverless_context.md",
+    "file://.kiro/context/dotnet_serverless_guidance.md",
+    "file://.kiro/context/dotnet_serverless_structure.md"
+  ],
+  "welcomeMessage": "Ready to build a .NET serverless application. Point me to your project."
+}

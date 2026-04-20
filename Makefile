@@ -40,6 +40,35 @@ release: package ## Tag + package + publish to github.com (make release TAG=v3.7
 clean: ## Remove build artifacts
 	rm -f steer-runtime-*.tar.gz steer-runtime-*.tar.gz.enc
 
+MCP_DIR := shared/tools/mcp-servers
+MCP_SERVERS := $(wildcard $(MCP_DIR)/*/package.json)
+
+mcp-build: ## Build all MCP server dist bundles (npm install + build/bundle)
+	@echo "🔨 Building MCP server bundles..."
+	@for pkg in $(MCP_SERVERS); do \
+		dir=$$(dirname $$pkg); \
+		name=$$(basename $$dir); \
+		echo "  ⏳ $$name"; \
+		(cd $$dir && npm install --silent 2>/dev/null && \
+			if npm run --silent bundle 2>/dev/null; then true; \
+			elif npm run --silent build 2>/dev/null; then true; \
+			else echo "    ⚠ no build/bundle script"; fi \
+		) && \
+		if [ -f "$$dir/dist/index.cjs" ]; then echo "  ✅ $$name"; \
+		else echo "  ⚠ $$name (no dist/index.cjs)"; fi; \
+	done
+	@echo "✅ MCP build complete"
+
+mcp-build-%: ## Build a single MCP server (e.g., make mcp-build-jira-mcp)
+	@dir=$(MCP_DIR)/$*; \
+	test -f "$$dir/package.json" || { echo "❌ $$dir/package.json not found"; exit 1; }; \
+	echo "🔨 Building $*..."; \
+	cd $$dir && npm install --silent 2>/dev/null && \
+		if npm run --silent bundle 2>/dev/null; then true; \
+		elif npm run --silent build 2>/dev/null; then true; \
+		else echo "⚠ no build/bundle script"; fi; \
+	echo "✅ $*"
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 

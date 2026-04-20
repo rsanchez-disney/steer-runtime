@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-const __import_meta_url = require('url').pathToFileURL(__filename).href;
+const __import_meta_url = require("url").pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -7,6 +6,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -31,9 +33,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// jira-mcp/node_modules/dotenv/package.json
+// node_modules/dotenv/package.json
 var require_package = __commonJS({
-  "jira-mcp/node_modules/dotenv/package.json"(exports2, module2) {
+  "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
       version: "16.4.5",
@@ -102,9 +104,9 @@ var require_package = __commonJS({
   }
 });
 
-// jira-mcp/node_modules/dotenv/lib/main.js
+// node_modules/dotenv/lib/main.js
 var require_main = __commonJS({
-  "jira-mcp/node_modules/dotenv/lib/main.js"(exports2, module2) {
+  "node_modules/dotenv/lib/main.js"(exports2, module2) {
     var fs = require("fs");
     var path = require("path");
     var os = require("os");
@@ -369,7 +371,85 @@ var require_main = __commonJS({
   }
 });
 
-// jira-mcp/node_modules/zod/v3/external.js
+// build/utils/customFields.js
+var customFields_exports = {};
+__export(customFields_exports, {
+  CUSTOM_FIELD_ALIASES: () => CUSTOM_FIELD_ALIASES,
+  formatCustomFieldValue: () => formatCustomFieldValue,
+  getCustomFieldLabel: () => getCustomFieldLabel,
+  resolveCustomFieldIds: () => resolveCustomFieldIds
+});
+function resolveCustomFieldIds(input) {
+  const resolved = [];
+  for (const token of input) {
+    const lower = token.toLowerCase();
+    const aliasMatch = Object.entries(CUSTOM_FIELD_ALIASES).find(([alias]) => alias.toLowerCase() === lower);
+    if (aliasMatch) {
+      resolved.push(aliasMatch[1]);
+      continue;
+    }
+    if (/^customfield_\d+$/i.test(token)) {
+      resolved.push(token);
+      continue;
+    }
+    console.error(`[customFields] Unknown alias or field ID: "${token}" \u2013 skipping`);
+  }
+  return [...new Set(resolved)];
+}
+function getCustomFieldLabel(fieldId) {
+  const alias = REVERSE_ALIASES[fieldId];
+  return alias ? `${alias} (${fieldId})` : fieldId;
+}
+function formatCustomFieldValue(value) {
+  if (value === null || value === void 0)
+    return "Not set";
+  if (typeof value === "string")
+    return value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  if (typeof value === "object" && value !== null) {
+    const obj = value;
+    if (obj.name)
+      return String(obj.name);
+    if (obj.value)
+      return String(obj.value);
+    if (obj.displayName)
+      return String(obj.displayName);
+    if (Array.isArray(value)) {
+      return value.map((v) => formatCustomFieldValue(v)).join(", ");
+    }
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+var CUSTOM_FIELD_ALIASES, REVERSE_ALIASES;
+var init_customFields = __esm({
+  "build/utils/customFields.js"() {
+    "use strict";
+    CUSTOM_FIELD_ALIASES = {
+      // ── Team / Org ───────────────────────────────────
+      team: "customfield_22600",
+      // ── App / Release ────────────────────────────────
+      appVersion: "customfield_15301",
+      // ── QA / Defect ──────────────────────────────────
+      rootCauseAnalysis: "customfield_20805",
+      // ── Agile ────────────────────────────────────────
+      sprint: "customfield_10003",
+      storyPoints: "customfield_10004",
+      epicLink: "customfield_10014",
+      // ── Studio / Programme ───────────────────────────
+      studio: "customfield_20001"
+      // Add more aliases below as needed:
+      // myAlias: "customfield_XXXXX",
+    };
+    REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
+      fieldId,
+      alias
+    ]));
+  }
+});
+
+// node_modules/zod/v3/external.js
 var external_exports = {};
 __export(external_exports, {
   BRAND: () => BRAND,
@@ -481,7 +561,7 @@ __export(external_exports, {
   void: () => voidType
 });
 
-// jira-mcp/node_modules/zod/v3/helpers/util.js
+// node_modules/zod/v3/helpers/util.js
 var util;
 (function(util2) {
   util2.assertEqual = (_) => {
@@ -615,7 +695,7 @@ var getParsedType = (data) => {
   }
 };
 
-// jira-mcp/node_modules/zod/v3/ZodError.js
+// node_modules/zod/v3/ZodError.js
 var ZodIssueCode = util.arrayToEnum([
   "invalid_type",
   "invalid_literal",
@@ -733,7 +813,7 @@ ZodError.create = (issues) => {
   return error;
 };
 
-// jira-mcp/node_modules/zod/v3/locales/en.js
+// node_modules/zod/v3/locales/en.js
 var errorMap = (issue, _ctx) => {
   let message;
   switch (issue.code) {
@@ -836,7 +916,7 @@ var errorMap = (issue, _ctx) => {
 };
 var en_default = errorMap;
 
-// jira-mcp/node_modules/zod/v3/errors.js
+// node_modules/zod/v3/errors.js
 var overrideErrorMap = en_default;
 function setErrorMap(map) {
   overrideErrorMap = map;
@@ -845,7 +925,7 @@ function getErrorMap() {
   return overrideErrorMap;
 }
 
-// jira-mcp/node_modules/zod/v3/helpers/parseUtil.js
+// node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
   const { data, path, errorMaps, issueData } = params;
   const fullPath = [...path, ...issueData.path || []];
@@ -955,14 +1035,14 @@ var isDirty = (x) => x.status === "dirty";
 var isValid = (x) => x.status === "valid";
 var isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 
-// jira-mcp/node_modules/zod/v3/helpers/errorUtil.js
+// node_modules/zod/v3/helpers/errorUtil.js
 var errorUtil;
 (function(errorUtil2) {
   errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
   errorUtil2.toString = (message) => typeof message === "string" ? message : message?.message;
 })(errorUtil || (errorUtil = {}));
 
-// jira-mcp/node_modules/zod/v3/types.js
+// node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
   constructor(parent, value, path, key) {
     this._cachedPath = [];
@@ -4410,7 +4490,7 @@ var coerce = {
 };
 var NEVER = INVALID;
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/types.js
 var LATEST_PROTOCOL_VERSION = "2024-11-05";
 var SUPPORTED_PROTOCOL_VERSIONS = [
   LATEST_PROTOCOL_VERSION,
@@ -5116,7 +5196,7 @@ var McpError = class extends Error {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -5393,7 +5473,7 @@ var Protocol = class {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -5546,10 +5626,10 @@ var Server = class extends Protocol {
   }
 };
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var import_node_process = __toESM(require("node:process"), 1);
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
 var ReadBuffer = class {
   append(chunk) {
     this._buffer = this._buffer ? Buffer.concat([this._buffer, chunk]) : chunk;
@@ -5577,7 +5657,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// jira-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = import_node_process.default.stdin, _stdout = import_node_process.default.stdout) {
     this._stdin = _stdin;
@@ -5637,34 +5717,49 @@ var StdioServerTransport = class {
   }
 };
 
-// jira-mcp/src/utils/auth.ts
+// build/utils/auth.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var DEFAULT_JIRA_URL = "https://myjira.disney.com";
 var JiraAuth = class {
   jiraPat = null;
+  jiraUrl = null;
+  loadEnv() {
+    if (this.jiraPat)
+      return;
+    this.jiraPat = process.env.JIRA_PAT || null;
+    this.jiraUrl = process.env.JIRA_URL || null;
+    if (!this.jiraPat) {
+      try {
+        const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+        const __dirname = (0, import_path.dirname)(__filename);
+        const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+        (0, import_dotenv.config)({ path: envPath });
+        this.jiraPat = process.env.JIRA_PAT || null;
+        this.jiraUrl = this.jiraUrl || process.env.JIRA_URL || null;
+      } catch (e) {
+      }
+    }
+  }
   async getJiraPat() {
-    if (this.jiraPat) {
+    this.loadEnv();
+    if (this.jiraPat)
       return this.jiraPat;
-    }
-    const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-    const __dirname = (0, import_path.dirname)(__filename);
-    const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-    console.error(`Loading .env from: ${envPath}`);
-    (0, import_dotenv.config)({ path: envPath });
-    if (process.env.JIRA_PAT) {
-      this.jiraPat = process.env.JIRA_PAT;
-      return this.jiraPat;
-    }
-    throw new Error(
-      `JIRA PAT not found. Set JIRA_PAT environment variable or add JIRA_PAT=your_token to .env file. Tried loading from: ${envPath}`
-    );
+    throw new Error("JIRA_PAT not found. Set JIRA_PAT environment variable or add it to .env file.");
+  }
+  getBaseUrl() {
+    this.loadEnv();
+    return (this.jiraUrl || DEFAULT_JIRA_URL).replace(/\/+$/, "");
   }
 };
 
-// jira-mcp/src/utils/jiraApi.ts
+// build/utils/jiraApi.js
 var JiraApiClient = class {
   auth = new JiraAuth();
+  get baseUrl() {
+    return this.auth.getBaseUrl();
+  }
   async fetchJiraTicket(ticketId, fields) {
     const pat = await this.auth.getJiraPat();
     const defaultFields = [
@@ -5676,148 +5771,114 @@ var JiraApiClient = class {
       "created"
     ];
     const requestedFields = fields || defaultFields;
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch JIRA ticket: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`Failed to fetch JIRA ticket: ${response.status} ${response.statusText}`);
     }
     const result = await response.json();
-    console.error(
-      "Fetched ticket fields:",
-      Object.keys(result.fields || {})
-    );
+    console.error("Fetched ticket fields:", Object.keys(result.fields || {}));
     return result;
   }
   async updateJiraTicket(ticketId, updates) {
     const pat = await this.auth.getJiraPat();
-    console.error(
-      "Updating JIRA ticket with fields:",
-      JSON.stringify(updates, null, 2)
-    );
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue/${ticketId}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ fields: updates })
-      }
-    );
+    console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ fields: updates })
+    });
     if (!response.ok) {
       const errorText = await response.text();
       console.error("JIRA API Error Response:", errorText);
-      throw new Error(
-        `Failed to update JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to update JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
     }
     console.error("JIRA update successful");
   }
   async transitionJiraTicket(ticketId, transitionId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ transition: { id: transitionId } })
-      }
-    );
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ transition: { id: transitionId } })
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to transition JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to transition JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
     }
   }
   async getJiraTransitions(ticketId) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue/${ticketId}/transitions`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
-      throw new Error(
-        `Failed to get JIRA transitions: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`Failed to get JIRA transitions: ${response.status} ${response.statusText}`);
     }
     return await response.json();
   }
   async addJiraComment(ticketId, comment) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue/${ticketId}/comment`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ body: comment })
-      }
-    );
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/comment`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ body: comment })
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to add comment to JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to add comment to JIRA ticket: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
-  async searchJiraIssues(jql, maxResults = 50, startAt = 0) {
+  async searchJiraIssues(jql, maxResults = 50, startAt = 0, extraFields = []) {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/search`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          jql,
-          maxResults,
-          startAt,
-          fields: [
-            "summary",
-            "status",
-            "assignee",
-            "priority",
-            "issuetype",
-            "project",
-            "created",
-            "updated"
-          ]
-        })
-      }
-    );
+    const baseFields = [
+      "summary",
+      "status",
+      "assignee",
+      "priority",
+      "issuetype",
+      "project",
+      "created",
+      "updated"
+    ];
+    const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
+    const response = await fetch(`${this.baseUrl}/rest/api/2/search`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        jql,
+        maxResults,
+        startAt,
+        fields
+      })
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to search JIRA issues: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to search JIRA issues: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels) {
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields) {
     const pat = await this.auth.getJiraPat();
     const fields = {
       project: { key: projectKey },
@@ -5831,9 +5892,7 @@ var JiraApiClient = class {
       fields.assignee = { name: assignee };
     }
     if (epicLink) {
-      console.error(
-        `Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`
-      );
+      console.error(`Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`);
     }
     if (components && components.length > 0) {
       fields.components = components.map((name) => ({ name }));
@@ -5841,65 +5900,63 @@ var JiraApiClient = class {
     if (labels && labels.length > 0) {
       fields.labels = labels;
     }
-    console.error(
-      "Creating JIRA issue with fields:",
-      JSON.stringify(fields, null, 2)
-    );
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issue`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ fields })
+    if (sprint) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["sprint"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = Number(sprint);
       }
-    );
+    }
+    if (customFields && Object.keys(customFields).length > 0) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      for (const [key, value] of Object.entries(customFields)) {
+        const resolved = resolveCustomFieldIds2([key]);
+        if (resolved.length > 0) {
+          fields[resolved[0]] = value;
+        }
+      }
+    }
+    console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ fields })
+    });
     if (!response.ok) {
       const errorText = await response.text();
       console.error("JIRA API Error Response:", errorText);
-      throw new Error(
-        `Failed to create JIRA issue: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to create JIRA issue: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
   async getJiraProjects() {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/project`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`${this.baseUrl}/rest/api/2/project`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to get JIRA projects: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to get JIRA projects: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
   async getJiraIssueTypes() {
     const pat = await this.auth.getJiraPat();
-    const response = await fetch(
-      `https://myjira.disney.com/rest/api/2/issuetype`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issuetype`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to get JIRA issue types: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to get JIRA issue types: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
@@ -5909,23 +5966,21 @@ var JiraApiClient = class {
       startAt: startAt.toString(),
       maxResults: maxResults.toString()
     });
-    if (projectKey) params.append("projectKeyOrId", projectKey);
-    if (boardType) params.append("type", boardType);
-    if (name) params.append("name", name);
-    const response = await fetch(
-      `https://myjira.disney.com/rest/agile/1.0/board?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    if (projectKey)
+      params.append("projectKeyOrId", projectKey);
+    if (boardType)
+      params.append("type", boardType);
+    if (name)
+      params.append("name", name);
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board?${params}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to get JIRA boards: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to get JIRA boards: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
@@ -5935,23 +5990,46 @@ var JiraApiClient = class {
       startAt: startAt.toString(),
       maxResults: maxResults.toString()
     });
-    if (state) params.append("state", state);
-    const response = await fetch(
-      `https://myjira.disney.com/rest/agile/1.0/board/${boardId}/sprint?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    if (state)
+      params.append("state", state);
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to get JIRA sprints: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to get JIRA sprints: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
+  }
+  async getJiraAttachments(ticketId) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=attachment`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to get attachments: ${response.status} ${response.statusText}`);
+    }
+    const result = await response.json();
+    return result.fields?.attachment || [];
+  }
+  async downloadAttachment(url) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to download attachment: ${response.status} ${response.statusText}`);
+    }
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
   async getJiraSprintIssues(sprintId, startAt = 0, maxResults = 50) {
     const pat = await this.auth.getJiraPat();
@@ -5960,28 +6038,322 @@ var JiraApiClient = class {
       maxResults: maxResults.toString(),
       fields: "summary,status,assignee,priority,issuetype,project,created,updated"
     });
-    const response = await fetch(
-      `https://myjira.disney.com/rest/agile/1.0/sprint/${sprintId}/issue?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
       }
-    );
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Failed to get JIRA sprint issues: ${response.status} ${response.statusText} - ${errorText}`
-      );
+      throw new Error(`Failed to get JIRA sprint issues: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  // ==========================================
+  // XRay REST API Methods
+  // ==========================================
+  /**
+   * Get all test steps for a Test issue
+   * GET /rest/raven/2.0/api/test/{testKey}/step
+   */
+  async getXrayTestSteps(testKey) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test steps for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get a specific test step by ID
+   * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
+   */
+  async getXrayTestStep(testKey, stepId) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test step ${stepId} for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get tests associated with a Test Execution
+   * GET /rest/raven/2.0/api/testexec/{testExecKey}/test
+   */
+  async getXrayTestExecTests(testExecKey, detailed = false, page, limit) {
+    const pat = await this.auth.getJiraPat();
+    const params = new URLSearchParams();
+    if (detailed)
+      params.append("detailed", "true");
+    if (page !== void 0)
+      params.append("page", page.toString());
+    if (limit !== void 0)
+      params.append("limit", limit.toString());
+    const queryString = params.toString();
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test execution tests for ${testExecKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get pre-conditions for a Test
+   * GET /rest/raven/2.0/api/test/{testKey}/precondition
+   */
+  async getXrayTestPreConditions(testKey) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay pre-conditions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get test sets for a Test
+   * GET /rest/raven/2.0/api/test/{testKey}/testset
+   */
+  async getXrayTestSets(testKey) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test sets for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get test executions for a Test
+   * GET /rest/raven/2.0/api/test/{testKey}/testexecution
+   */
+  async getXrayTestExecutions(testKey, page, limit) {
+    const pat = await this.auth.getJiraPat();
+    const params = new URLSearchParams();
+    if (page !== void 0)
+      params.append("page", page.toString());
+    if (limit !== void 0)
+      params.append("limit", limit.toString());
+    const queryString = params.toString();
+    const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test executions for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get test plans for a Test
+   * GET /rest/raven/2.0/api/test/{testKey}/testplan
+   */
+  async getXrayTestPlans(testKey) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test plans for ${testKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get tests in a Test Plan
+   * GET /rest/raven/2.0/api/testplan/{testPlanKey}/test
+   */
+  async getXrayTestPlanTests(testPlanKey, page, limit) {
+    const pat = await this.auth.getJiraPat();
+    const params = new URLSearchParams();
+    if (page !== void 0)
+      params.append("page", page.toString());
+    if (limit !== void 0)
+      params.append("limit", limit.toString());
+    const queryString = params.toString();
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test plan tests for ${testPlanKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get tests in a Test Set
+   * GET /rest/raven/2.0/api/testset/{testSetKey}/test
+   */
+  async getXrayTestSetTests(testSetKey, page, limit) {
+    const pat = await this.auth.getJiraPat();
+    const params = new URLSearchParams();
+    if (page !== void 0)
+      params.append("page", page.toString());
+    if (limit !== void 0)
+      params.append("limit", limit.toString());
+    const queryString = params.toString();
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test set tests for ${testSetKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Export test runs (execution results)
+   * GET /rest/raven/2.0/api/testruns
+   */
+  async getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit) {
+    const pat = await this.auth.getJiraPat();
+    const params = new URLSearchParams();
+    if (testExecKey)
+      params.append("testExecKey", testExecKey);
+    if (testKey)
+      params.append("testKey", testKey);
+    if (testPlanKey)
+      params.append("testPlanKey", testPlanKey);
+    if (testEnvironments)
+      params.append("testEnvironments", testEnvironments);
+    if (page !== void 0)
+      params.append("page", page.toString());
+    if (limit !== void 0)
+      params.append("limit", limit.toString());
+    const queryString = params.toString();
+    const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test runs: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get all available test statuses in XRay
+   * GET /rest/raven/2.0/api/settings/teststatuses
+   */
+  async getXrayTestStatuses() {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay test statuses: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get a full Test Case with all XRay details (steps, pre-conditions, test sets, executions, plans)
+   * Combines multiple XRay API calls into one comprehensive response
+   */
+  async getXrayTestCaseFull(testKey) {
+    const pat = await this.auth.getJiraPat();
+    const issueResponse = await fetch(`${this.baseUrl}/rest/api/2/issue/${testKey}`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!issueResponse.ok) {
+      throw new Error(`Failed to fetch issue ${testKey}: ${issueResponse.status} ${issueResponse.statusText}`);
+    }
+    const issue = await issueResponse.json();
+    const [steps, preConditions, testSets, testExecutions, testPlans] = await Promise.allSettled([
+      this.getXrayTestSteps(testKey),
+      this.getXrayTestPreConditions(testKey),
+      this.getXrayTestSets(testKey),
+      this.getXrayTestExecutions(testKey),
+      this.getXrayTestPlans(testKey)
+    ]);
+    return {
+      issue,
+      xray: {
+        steps: steps.status === "fulfilled" ? steps.value : { error: steps.reason?.message },
+        preConditions: preConditions.status === "fulfilled" ? preConditions.value : { error: preConditions.reason?.message },
+        testSets: testSets.status === "fulfilled" ? testSets.value : { error: testSets.reason?.message },
+        testExecutions: testExecutions.status === "fulfilled" ? testExecutions.value : { error: testExecutions.reason?.message },
+        testPlans: testPlans.status === "fulfilled" ? testPlans.value : { error: testPlans.reason?.message }
+      }
+    };
+  }
+  /**
+   * Get pre-condition tests (tests associated with a pre-condition issue)
+   * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
+   */
+  async getXrayPreConditionTests(preConditionKey) {
+    const pat = await this.auth.getJiraPat();
+    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
+      headers: {
+        Authorization: `Bearer ${pat}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get XRay pre-condition tests for ${preConditionKey}: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
   }
 };
 
-// jira-mcp/src/utils/formatting.ts
+// build/utils/formatting.js
 function formatDate(dateString) {
-  if (!dateString) return "Unknown";
+  if (!dateString)
+    return "Unknown";
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -5995,9 +6367,7 @@ function buildFormattedSummary(ticket, requestedFields) {
     summary.push(`**Status:** ${ticket.fields.status.name}`);
   }
   if (requestedFields.includes("assignee")) {
-    summary.push(
-      `**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`
-    );
+    summary.push(`**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`);
   }
   if (requestedFields.includes("priority") && ticket.fields.priority) {
     summary.push(`**Priority:** ${ticket.fields.priority.name}`);
@@ -6019,37 +6389,31 @@ function buildFormattedSummary(ticket, requestedFields) {
     summary.push("", "**Description:**", ticket.fields.description);
   }
   if (requestedFields.includes("comment") && ticket.fields.comment?.comments?.length) {
-    summary.push(
-      "",
-      `**Comments (${ticket.fields.comment.comments.length}):**`
-    );
-    ticket.fields.comment.comments.forEach(
-      (comment, index) => {
-        summary.push(
-          "",
-          `**Comment ${index + 1}** by ${comment.author?.displayName || "Unknown"} on ${formatDate(comment.created)}:`,
-          comment.body || "(no content)"
-        );
-      }
-    );
+    summary.push("", `**Comments (${ticket.fields.comment.comments.length}):**`);
+    ticket.fields.comment.comments.forEach((comment, index) => {
+      summary.push("", `**Comment ${index + 1}** by ${comment.author?.displayName || "Unknown"} on ${formatDate(comment.created)}:`, comment.body || "(no content)");
+    });
   }
   return summary.join("\n");
 }
 
-// jira-mcp/src/utils/fileUtils.ts
+// build/utils/fileUtils.js
 var import_promises = require("fs/promises");
 var import_path2 = require("path");
 async function saveData(outputDir, filename, data, isGetOperation = true) {
-  if (outputDir === false || outputDir === null) return null;
+  if (outputDir === false || outputDir === null)
+    return null;
   const finalOutputDir = typeof outputDir === "string" ? outputDir : "/tmp/jira-mcp";
-  if (!finalOutputDir) return null;
+  if (!finalOutputDir)
+    return null;
   await (0, import_promises.mkdir)(finalOutputDir, { recursive: true });
   const filepath = (0, import_path2.join)(finalOutputDir, filename);
   await (0, import_promises.writeFile)(filepath, JSON.stringify(data, null, 2));
   return filepath;
 }
 async function saveTicketData(outputDir, ticketId, ticket, summary, isGetOperation = true) {
-  if (!shouldSaveOutput(outputDir, isGetOperation)) return null;
+  if (!shouldSaveOutput(outputDir, isGetOperation))
+    return null;
   const finalOutputDir = typeof outputDir === "string" ? outputDir : "/tmp/jira-mcp";
   const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
   const filename = `${ticketId}_${timestamp}.json`;
@@ -6062,20 +6426,22 @@ async function saveTicketData(outputDir, ticketId, ticket, summary, isGetOperati
   return saveData(finalOutputDir, filename, data, isGetOperation);
 }
 function shouldSaveOutput(outputDir, isGetOperation) {
-  if (outputDir === false || outputDir === null) return false;
+  if (outputDir === false || outputDir === null)
+    return false;
   return true;
 }
 
-// jira-mcp/src/tools/jiraGetIssue.ts
+// build/tools/jiraGetIssue.js
+init_customFields();
 var jiraGetIssueSchema = {
   name: "jira_get_issue",
-  description: "Fetch a JIRA ticket by ID and optionally save to output directory",
+  description: "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
   inputSchema: {
     type: "object",
     properties: {
       ticketId: {
         type: "string",
-        description: "The JIRA ticket ID (e.g., COREWEB-1815)"
+        description: "The JIRA ticket ID (e.g., ROS-1815)"
       },
       outputDir: {
         type: ["string", "boolean", "null"],
@@ -6094,10 +6460,16 @@ var jiraGetIssueSchema = {
             "updated",
             "description",
             "labels",
-            "components"
+            "components",
+            "customfield_10003"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
+      },
+      customFields: {
+        type: "array",
+        items: { type: "string" },
+        description: `Optional: Array of custom field IDs to fetch (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
       }
     },
     required: ["ticketId"]
@@ -6105,7 +6477,7 @@ var jiraGetIssueSchema = {
 };
 async function handleJiraGetIssue(args) {
   try {
-    const { ticketId, outputDir, fields } = args;
+    const { ticketId, outputDir, fields, customFields } = args;
     const defaultFields = [
       "summary",
       "status",
@@ -6115,19 +6487,24 @@ async function handleJiraGetIssue(args) {
       "description"
     ];
     const requestedFields = fields || defaultFields;
+    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
+    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
-    const ticket = await apiClient.fetchJiraTicket(
-      ticketId,
-      requestedFields
-    );
+    const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
     const summary = buildFormattedSummary(ticket, requestedFields);
-    const savedPath = await saveTicketData(
-      outputDir,
-      ticketId,
-      ticket,
-      summary,
-      true
-    );
+    let customFieldSection = "";
+    if (resolvedCustomFields.length > 0) {
+      const lines = ["", "**Custom Fields:**"];
+      for (const fieldId of resolvedCustomFields) {
+        const label = getCustomFieldLabel(fieldId);
+        const rawValue = ticket.fields[fieldId];
+        const display = formatCustomFieldValue(rawValue);
+        lines.push(`**${label}:** ${display}`);
+      }
+      customFieldSection = lines.join("\n");
+    }
+    const fullSummary = `${summary}${customFieldSection}`;
+    const savedPath = await saveTicketData(outputDir, ticketId, ticket, fullSummary, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6135,7 +6512,7 @@ async function handleJiraGetIssue(args) {
       content: [
         {
           type: "text",
-          text: `${summary}${savedInfo}`
+          text: `${fullSummary}${savedInfo}`
         }
       ]
     };
@@ -6152,10 +6529,11 @@ async function handleJiraGetIssue(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraUpdateIssue.ts
+// build/tools/jiraUpdateIssue.js
+init_customFields();
 var jiraUpdateIssueSchema = {
   name: "jira_update_issue",
-  description: "Update a JIRA ticket and save the updated data",
+  description: "Update a JIRA ticket with support for custom fields and save the updated data",
   inputSchema: {
     type: "object",
     properties: {
@@ -6192,6 +6570,14 @@ var jiraUpdateIssueSchema = {
         type: "array",
         items: { type: "string" },
         description: 'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"])'
+      },
+      priority: {
+        type: "string",
+        description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
+      },
+      customFields: {
+        type: "object",
+        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
       }
     },
     required: ["ticketId"]
@@ -6199,21 +6585,15 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const {
-      ticketId,
-      outputDir,
-      summary,
-      description,
-      assignee,
-      epicLink,
-      components,
-      labels
-    } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
-    if (summary) updates.summary = summary;
-    if (description) updates.description = description;
-    if (assignee) updates.assignee = { name: assignee };
+    if (summary)
+      updates.summary = summary;
+    if (description)
+      updates.description = description;
+    if (assignee)
+      updates.assignee = { name: assignee };
     if (components && components.length > 0) {
       updates.components = components.map((name) => ({
         name
@@ -6221,6 +6601,17 @@ async function handleJiraUpdateIssue(args) {
     }
     if (labels && labels.length > 0) {
       updates.labels = labels;
+    }
+    if (priority) {
+      updates.priority = { name: priority };
+    }
+    if (customFields) {
+      for (const [key, value] of Object.entries(customFields)) {
+        const resolved = resolveCustomFieldIds([key]);
+        if (resolved.length > 0) {
+          updates[resolved[0]] = value;
+        }
+      }
     }
     if (epicLink) {
       const epicFieldIds = [
@@ -6240,13 +6631,9 @@ async function handleJiraUpdateIssue(args) {
           console.error(`Success! Epic Link field ID is: ${fieldId}`);
           break;
         } catch (error) {
-          console.error(
-            `Failed with ${fieldId}: ${error instanceof Error ? error.message : "Unknown error"}`
-          );
+          console.error(`Failed with ${fieldId}: ${error instanceof Error ? error.message : "Unknown error"}`);
           if (fieldId === epicFieldIds[epicFieldIds.length - 1]) {
-            console.error(
-              "All Epic Link field IDs failed, proceeding without Epic Link"
-            );
+            console.error("All Epic Link field IDs failed, proceeding without Epic Link");
             await apiClient.updateJiraTicket(ticketId, updates);
           }
         }
@@ -6263,13 +6650,7 @@ async function handleJiraUpdateIssue(args) {
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(
-      outputDir,
-      ticketId,
-      ticket,
-      summaryText,
-      false
-    );
+    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6296,7 +6677,7 @@ ${summaryText}${savedInfo}`
   }
 }
 
-// jira-mcp/src/tools/jiraTransitionIssue.ts
+// build/tools/jiraTransitionIssue.js
 var jiraTransitionIssueSchema = {
   name: "jira_transition_issue",
   description: "Transition a JIRA ticket to a new status",
@@ -6324,14 +6705,10 @@ async function handleJiraTransitionIssue(args) {
     const { ticketId, status, outputDir } = args;
     const apiClient = new JiraApiClient();
     const transitions = await apiClient.getJiraTransitions(ticketId);
-    const targetTransition = transitions.transitions.find(
-      (t) => t.name.toLowerCase() === status.toLowerCase()
-    );
+    const targetTransition = transitions.transitions.find((t) => t.name.toLowerCase() === status.toLowerCase());
     if (!targetTransition) {
       const availableStatuses = transitions.transitions.map((t) => t.name).join(", ");
-      throw new Error(
-        `Status "${status}" not available. Available transitions: ${availableStatuses}`
-      );
+      throw new Error(`Status "${status}" not available. Available transitions: ${availableStatuses}`);
     }
     await apiClient.transitionJiraTicket(ticketId, targetTransition.id);
     const ticket = await apiClient.fetchJiraTicket(ticketId);
@@ -6343,13 +6720,7 @@ async function handleJiraTransitionIssue(args) {
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(
-      outputDir,
-      ticketId,
-      ticket,
-      summaryText,
-      false
-    );
+    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6376,7 +6747,7 @@ ${summaryText}${savedInfo}`
   }
 }
 
-// jira-mcp/src/tools/jiraAssignIssue.ts
+// build/tools/jiraAssignIssue.js
 var jiraAssignIssueSchema = {
   name: "jira_assign_issue",
   description: "Assign a JIRA ticket to a user",
@@ -6414,13 +6785,7 @@ async function handleJiraAssignIssue(args) {
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
-    const savedPath = await saveTicketData(
-      outputDir,
-      ticketId,
-      ticket,
-      summaryText,
-      false
-    );
+    const savedPath = await saveTicketData(outputDir, ticketId, ticket, summaryText, false);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6447,7 +6812,7 @@ ${summaryText}${savedInfo}`
   }
 }
 
-// jira-mcp/src/tools/jiraCommentOnIssue.ts
+// build/tools/jiraCommentOnIssue.js
 var import_promises2 = require("fs/promises");
 var import_path3 = require("path");
 var jiraCommentOnIssueSchema = {
@@ -6476,10 +6841,7 @@ async function handleJiraCommentOnIssue(args) {
   try {
     const { ticketId, comment, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const commentResponse = await apiClient.addJiraComment(
-      ticketId,
-      comment
-    );
+    const commentResponse = await apiClient.addJiraComment(ticketId, comment);
     const ticket = await apiClient.fetchJiraTicket(ticketId);
     const summaryText = `**Comment Added to ${ticket.key}: ${ticket.fields.summary}**
 
@@ -6490,10 +6852,7 @@ async function handleJiraCommentOnIssue(args) {
     let savedPath = null;
     if (outputDir) {
       const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
-      const filepath = (0, import_path3.join)(
-        outputDir,
-        `${ticketId}_comment_${timestamp}.json`
-      );
+      const filepath = (0, import_path3.join)(outputDir, `${ticketId}_comment_${timestamp}.json`);
       await (0, import_promises2.mkdir)((0, import_path3.dirname)(filepath), { recursive: true });
       const data = {
         ticketId,
@@ -6532,10 +6891,11 @@ ${summaryText}${savedInfo}`
   }
 }
 
-// jira-mcp/src/tools/jiraSearchIssues.ts
+// build/tools/jiraSearchIssues.js
+init_customFields();
 var jiraSearchIssuesSchema = {
   name: "jira_search_issues",
-  description: "Search JIRA issues using JQL (JIRA Query Language)",
+  description: "Search JIRA issues using JQL (JIRA Query Language) with support for custom fields",
   inputSchema: {
     type: "object",
     properties: {
@@ -6551,6 +6911,11 @@ var jiraSearchIssuesSchema = {
         type: "number",
         description: "Starting index for pagination (default: 0)"
       },
+      customFields: {
+        type: "array",
+        items: { type: "string" },
+        description: `Optional: Array of custom field IDs to include in results (e.g., ["customfield_20001", "customfield_10803"]). You can also use aliases: ${Object.keys(CUSTOM_FIELD_ALIASES).map((a) => `"${a}"`).join(", ")}`
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the search results (optional, defaults to .amazonq/external-data)"
@@ -6561,18 +6926,10 @@ var jiraSearchIssuesSchema = {
 };
 async function handleJiraSearchIssues(args) {
   try {
-    const {
-      jql,
-      maxResults = 50,
-      startAt = 0,
-      outputDir
-    } = args;
+    const { jql, maxResults = 50, startAt = 0, customFields, outputDir } = args;
+    const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
     const apiClient = new JiraApiClient();
-    const searchResults = await apiClient.searchJiraIssues(
-      jql,
-      maxResults,
-      startAt
-    );
+    const searchResults = await apiClient.searchJiraIssues(jql, maxResults, startAt, resolvedCustomFields);
     let summaryText = `**Search Results for JQL: "${jql}"**
 
 **Total Found:** ${searchResults.total}
@@ -6585,23 +6942,23 @@ async function handleJiraSearchIssues(args) {
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
-- Project: ${issue.fields.project?.key || "Unknown"}
-
-`;
+- Project: ${issue.fields.project?.key || "Unknown"}`;
+      for (const fieldId of resolvedCustomFields) {
+        const label = getCustomFieldLabel(fieldId);
+        const display = formatCustomFieldValue(issue.fields[fieldId]);
+        summaryText += `
+- ${label}: ${display}`;
+      }
+      summaryText += "\n\n";
     });
-    const savedPath = await saveData(
-      outputDir,
-      `search_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        jql,
-        maxResults,
-        startAt,
-        searchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: searchResults,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `search_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      jql,
+      maxResults,
+      startAt,
+      searchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: searchResults,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6626,12 +6983,12 @@ async function handleJiraSearchIssues(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraCreateIssue.ts
+// build/tools/jiraCreateIssue.js
 var import_promises3 = require("fs/promises");
 var import_path4 = require("path");
 var jiraCreateIssueSchema = {
   name: "jira_create_issue",
-  description: "Create a new JIRA issue",
+  description: "Create a new JIRA issue with support for custom fields",
   inputSchema: {
     type: "object",
     properties: {
@@ -6669,6 +7026,14 @@ var jiraCreateIssueSchema = {
         items: { type: "string" },
         description: 'Array of label names (e.g., ["SPORTSWEB", "olympics", "2026"]) (optional)'
       },
+      sprint: {
+        type: "string",
+        description: "Sprint ID to assign the issue to (optional)"
+      },
+      customFields: {
+        type: "object",
+        description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the created issue data (optional)"
@@ -6679,28 +7044,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const {
-      projectKey,
-      summary,
-      issueType,
-      description,
-      assignee,
-      epicLink,
-      components,
-      labels,
-      outputDir
-    } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(
-      projectKey,
-      summary,
-      issueType,
-      description,
-      assignee,
-      epicLink,
-      components,
-      labels
-    );
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
@@ -6755,7 +7101,7 @@ ${ticket.fields.description || "No description provided"}`;
           type: "text",
           text: `${summaryText}
 
-**Issue URL:** https://myjira.disney.com/browse/${createResponse.key}${savedInfo}`
+**Issue URL:** ${apiClient.auth.getBaseUrl()}/browse/${createResponse.key}${savedInfo}`
         }
       ]
     };
@@ -6772,7 +7118,7 @@ ${ticket.fields.description || "No description provided"}`;
   }
 }
 
-// jira-mcp/src/tools/jiraGetProjects.ts
+// build/tools/jiraGetProjects.js
 var jiraGetProjectsSchema = {
   name: "jira_get_projects",
   description: "Get all JIRA projects",
@@ -6805,16 +7151,11 @@ async function handleJiraGetProjects(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `projects_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: projects,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `projects_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: projects,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6839,7 +7180,7 @@ async function handleJiraGetProjects(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraGetIssueTypes.ts
+// build/tools/jiraGetIssueTypes.js
 var jiraGetIssueTypesSchema = {
   name: "jira_get_issue_types",
   description: "Get all JIRA issue types",
@@ -6872,16 +7213,11 @@ async function handleJiraGetIssueTypes(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `issue_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: issueTypes,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `issue_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: issueTypes,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6906,7 +7242,7 @@ async function handleJiraGetIssueTypes(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraGetTransitions.ts
+// build/tools/jiraGetTransitions.js
 var jiraGetTransitionsSchema = {
   name: "jira_get_transitions",
   description: "Get available transitions for a JIRA issue",
@@ -6942,17 +7278,12 @@ async function handleJiraGetTransitions(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `${ticketId}_transitions_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        ticketId,
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: transitions,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `${ticketId}_transitions_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      ticketId,
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: transitions,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -6977,7 +7308,7 @@ async function handleJiraGetTransitions(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraGetBoards.ts
+// build/tools/jiraGetBoards.js
 var jiraGetBoardsSchema = {
   name: "jira_get_boards",
   description: "Get JIRA agile boards",
@@ -7014,26 +7345,16 @@ var jiraGetBoardsSchema = {
 };
 async function handleJiraGetBoards(args) {
   try {
-    const {
-      projectKey,
-      boardType,
-      name,
-      maxResults = 50,
-      startAt = 0,
-      outputDir
-    } = args;
+    const { projectKey, boardType, name, maxResults = 50, startAt = 0, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const boards = await apiClient.getJiraBoards(
-      projectKey,
-      boardType,
-      name,
-      startAt,
-      maxResults
-    );
+    const boards = await apiClient.getJiraBoards(projectKey, boardType, name, startAt, maxResults);
     let summaryText = `**JIRA Agile Boards**`;
-    if (projectKey) summaryText += ` (Project: ${projectKey})`;
-    if (boardType) summaryText += ` (Type: ${boardType})`;
-    if (name) summaryText += ` (Name filter: ${name})`;
+    if (projectKey)
+      summaryText += ` (Project: ${projectKey})`;
+    if (boardType)
+      summaryText += ` (Type: ${boardType})`;
+    if (name)
+      summaryText += ` (Name filter: ${name})`;
     summaryText += `
 
 **Total Found:** ${boards.total}
@@ -7048,23 +7369,18 @@ async function handleJiraGetBoards(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `boards_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        filters: {
-          projectKey,
-          boardType,
-          name,
-          maxResults,
-          startAt
-        },
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: boards,
-        formattedSummary: summaryText
+    const savedPath = await saveData(outputDir, `boards_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      filters: {
+        projectKey,
+        boardType,
+        name,
+        maxResults,
+        startAt
       },
-      true
-    );
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: boards,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -7089,7 +7405,7 @@ async function handleJiraGetBoards(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraGetSprints.ts
+// build/tools/jiraGetSprints.js
 var jiraGetSprintsSchema = {
   name: "jira_get_sprints",
   description: "Get sprints for a JIRA agile board",
@@ -7122,22 +7438,12 @@ var jiraGetSprintsSchema = {
 };
 async function handleJiraGetSprints(args) {
   try {
-    const {
-      boardId,
-      state,
-      maxResults = 50,
-      startAt = 0,
-      outputDir
-    } = args;
+    const { boardId, state, maxResults = 50, startAt = 0, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const sprints = await apiClient.getJiraSprints(
-      boardId,
-      state,
-      startAt,
-      maxResults
-    );
+    const sprints = await apiClient.getJiraSprints(boardId, state, startAt, maxResults);
     let summaryText = `**Sprints for Board ${boardId}**`;
-    if (state) summaryText += ` (State: ${state})`;
+    if (state)
+      summaryText += ` (State: ${state})`;
     summaryText += `
 
 **Total Found:** ${sprints.total}
@@ -7154,18 +7460,13 @@ async function handleJiraGetSprints(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `board_${boardId}_sprints_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        boardId,
-        filters: { state, maxResults, startAt },
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: sprints,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `board_${boardId}_sprints_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      boardId,
+      filters: { state, maxResults, startAt },
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: sprints,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -7190,7 +7491,7 @@ async function handleJiraGetSprints(args) {
   }
 }
 
-// jira-mcp/src/tools/jiraGetSprintIssues.ts
+// build/tools/jiraGetSprintIssues.js
 var jiraGetSprintIssuesSchema = {
   name: "jira_get_sprint_issues",
   description: "Get issues in a specific JIRA sprint",
@@ -7219,18 +7520,9 @@ var jiraGetSprintIssuesSchema = {
 };
 async function handleJiraGetSprintIssues(args) {
   try {
-    const {
-      sprintId,
-      maxResults = 50,
-      startAt = 0,
-      outputDir
-    } = args;
+    const { sprintId, maxResults = 50, startAt = 0, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const sprintIssues = await apiClient.getJiraSprintIssues(
-      sprintId,
-      startAt,
-      maxResults
-    );
+    const sprintIssues = await apiClient.getJiraSprintIssues(sprintId, startAt, maxResults);
     let summaryText = `**Issues in Sprint ${sprintId}**
 
 **Total Found:** ${sprintIssues.total}
@@ -7247,18 +7539,13 @@ async function handleJiraGetSprintIssues(args) {
 
 `;
     });
-    const savedPath = await saveData(
-      outputDir,
-      `sprint_${sprintId}_issues_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`,
-      {
-        sprintId,
-        filters: { maxResults, startAt },
-        fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-        rawData: sprintIssues,
-        formattedSummary: summaryText
-      },
-      true
-    );
+    const savedPath = await saveData(outputDir, `sprint_${sprintId}_issues_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
+      sprintId,
+      filters: { maxResults, startAt },
+      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      rawData: sprintIssues,
+      formattedSummary: summaryText
+    }, true);
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
@@ -7283,7 +7570,984 @@ async function handleJiraGetSprintIssues(args) {
   }
 }
 
-// jira-mcp/src/index.ts
+// build/tools/jiraGetAttachments.js
+var import_promises4 = require("fs/promises");
+var import_path5 = require("path");
+var jiraGetAttachmentsSchema = {
+  name: "jira_get_attachments",
+  description: "Get attachments from a JIRA ticket. Can list attachments or download a specific one. For images, downloads and saves to disk so they can be viewed.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      ticketId: {
+        type: "string",
+        description: "The JIRA ticket ID (e.g., REMY-41705)"
+      },
+      download: {
+        type: "boolean",
+        description: "If true, downloads all attachments to outputDir. If false (default), just lists them."
+      },
+      attachmentFilename: {
+        type: "string",
+        description: "Optional: Download only the attachment with this filename"
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save downloaded attachments (defaults to .amazonq/external-data/attachments/{ticketId})"
+      }
+    },
+    required: ["ticketId"]
+  }
+};
+async function handleJiraGetAttachments(args) {
+  try {
+    const { ticketId, download, attachmentFilename, outputDir } = args;
+    const apiClient = new JiraApiClient();
+    const attachments = await apiClient.getJiraAttachments(ticketId);
+    if (attachments.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `**${ticketId}** has no attachments.`
+          }
+        ]
+      };
+    }
+    const attachmentList = attachments.map((att, i) => {
+      const sizeKB = Math.round((att.size || 0) / 1024);
+      return `${i + 1}. **${att.filename}** (${att.mimeType}, ${sizeKB}KB) - Created: ${att.created}`;
+    });
+    let summaryText = `**Attachments for ${ticketId}** (${attachments.length} files)
+
+${attachmentList.join("\n")}`;
+    if (download) {
+      const saveDir = typeof outputDir === "string" ? outputDir : `/tmp/jira-mcp/attachments/${ticketId}`;
+      await (0, import_promises4.mkdir)(saveDir, { recursive: true });
+      const downloaded = [];
+      for (const att of attachments) {
+        if (attachmentFilename && att.filename !== attachmentFilename) {
+          continue;
+        }
+        try {
+          const buffer = await apiClient.downloadAttachment(att.content);
+          const filePath = (0, import_path5.join)(saveDir, att.filename);
+          await (0, import_promises4.writeFile)(filePath, buffer);
+          downloaded.push(`\u2705 ${att.filename} \u2192 ${filePath}`);
+        } catch (err) {
+          downloaded.push(`\u274C ${att.filename} \u2192 Failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+        }
+      }
+      summaryText += `
+
+**Downloaded to ${saveDir}:**
+${downloaded.join("\n")}`;
+    }
+    return {
+      content: [
+        {
+          type: "text",
+          text: summaryText
+        }
+      ]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting attachments: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestCaseFull.js
+var xrayGetTestCaseFullSchema = {
+  name: "xray_get_test_case_full",
+  description: "Get a complete XRay Test Case with all details: Jira issue fields (summary, description, priority, status, labels, components, custom fields), test steps, pre-conditions, test sets, test executions, test plans, and recent test runs. This is the most comprehensive tool for inspecting a test case.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: {
+        type: "string",
+        description: "The JIRA Test issue key (e.g., DPAY-1234)"
+      },
+      includeTestRuns: {
+        type: "boolean",
+        description: "If true, also fetches recent test run results for this test (default: true)"
+      }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayGetTestCaseFull(args) {
+  try {
+    const { testKey, includeTestRuns = true } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayTestCaseFull(testKey);
+    const issue = result.issue;
+    const xray = result.xray;
+    const fields = issue.fields || {};
+    let text = `**${issue.key}: ${fields.summary || "(no summary)"}**
+
+`;
+    text += `**Type:** ${fields.issuetype?.name || "Unknown"}
+`;
+    text += `**Status:** ${fields.status?.name || "Unknown"}
+`;
+    text += `**Priority:** ${fields.priority?.name || "Unknown"}
+`;
+    text += `**Assignee:** ${fields.assignee?.displayName || "Unassigned"}
+`;
+    text += `**Reporter:** ${fields.reporter?.displayName || "Unknown"}
+`;
+    text += `**Created:** ${fields.created || "Unknown"}
+`;
+    text += `**Updated:** ${fields.updated || "Unknown"}
+`;
+    if (fields.labels?.length) {
+      text += `**Labels:** ${fields.labels.join(", ")}
+`;
+    }
+    if (fields.components?.length) {
+      text += `**Components:** ${fields.components.map((c) => c.name).join(", ")}
+`;
+    }
+    if (fields.fixVersions?.length) {
+      text += `**Fix Versions:** ${fields.fixVersions.map((v) => v.name).join(", ")}
+`;
+    }
+    if (fields.description) {
+      text += `
+**Description:**
+${fields.description}
+`;
+    }
+    const customFieldKeys = Object.keys(fields).filter((k) => k.startsWith("customfield_") && fields[k] != null);
+    if (customFieldKeys.length > 0) {
+      text += `
+**Custom/XRay Fields:**
+`;
+      for (const key of customFieldKeys) {
+        const val = fields[key];
+        const displayVal = typeof val === "object" ? JSON.stringify(val) : String(val);
+        if (displayVal.length < 500) {
+          text += `- ${key}: ${displayVal}
+`;
+        } else {
+          text += `- ${key}: (large value, ${displayVal.length} chars)
+`;
+        }
+      }
+    }
+    text += `
+---
+**Test Steps:**
+`;
+    if (xray.steps?.error) {
+      text += `(Error fetching steps: ${xray.steps.error})
+`;
+    } else if (Array.isArray(xray.steps) && xray.steps.length > 0) {
+      xray.steps.forEach((step, i) => {
+        const idx = step.index ?? i + 1;
+        text += `  ${idx}. Action: ${step.fields?.action || step.action || "(none)"}
+`;
+        text += `     Data: ${step.fields?.data || step.data || "(none)"}
+`;
+        text += `     Expected: ${step.fields?.["expected result"] || step.fields?.expectedResult || step.result || "(none)"}
+`;
+      });
+    } else {
+      text += "(no steps)\n";
+    }
+    text += `
+**Pre-Conditions:**
+`;
+    if (xray.preConditions?.error) {
+      text += `(Error: ${xray.preConditions.error})
+`;
+    } else if (Array.isArray(xray.preConditions) && xray.preConditions.length > 0) {
+      xray.preConditions.forEach((pc) => {
+        text += `- ${pc.key}: ${pc.condition || pc.summary || "(no description)"} (Type: ${pc.type || "Unknown"})
+`;
+      });
+    } else {
+      text += "(none)\n";
+    }
+    text += `
+**Test Sets:**
+`;
+    if (xray.testSets?.error) {
+      text += `(Error: ${xray.testSets.error})
+`;
+    } else if (Array.isArray(xray.testSets) && xray.testSets.length > 0) {
+      xray.testSets.forEach((ts) => {
+        text += `- ${ts.key}: ${ts.summary || "(no summary)"}
+`;
+      });
+    } else {
+      text += "(none)\n";
+    }
+    text += `
+**Test Executions:**
+`;
+    if (xray.testExecutions?.error) {
+      text += `(Error: ${xray.testExecutions.error})
+`;
+    } else {
+      const execs = Array.isArray(xray.testExecutions) ? xray.testExecutions : xray.testExecutions?.issues || xray.testExecutions;
+      if (Array.isArray(execs) && execs.length > 0) {
+        execs.forEach((te) => {
+          text += `- ${te.key}: ${te.summary || "(no summary)"} \u2014 Status: ${te.status || "Unknown"}
+`;
+        });
+      } else {
+        text += "(none)\n";
+      }
+    }
+    text += `
+**Test Plans:**
+`;
+    if (xray.testPlans?.error) {
+      text += `(Error: ${xray.testPlans.error})
+`;
+    } else if (Array.isArray(xray.testPlans) && xray.testPlans.length > 0) {
+      xray.testPlans.forEach((tp) => {
+        text += `- ${tp.key}: ${tp.summary || "(no summary)"}
+`;
+      });
+    } else {
+      text += "(none)\n";
+    }
+    if (includeTestRuns) {
+      text += `
+**Recent Test Runs:**
+`;
+      try {
+        const runs = await apiClient.getXrayTestRuns(void 0, testKey, void 0, void 0, void 0, 10);
+        const runList = Array.isArray(runs) ? runs : runs?.testRuns || runs;
+        if (Array.isArray(runList) && runList.length > 0) {
+          runList.forEach((run, i) => {
+            text += `- ${run.testExecKey || "Unknown Exec"}: ${run.status || "Unknown"} (${run.executedBy || "Unknown"}, ${run.finishedOn || run.startedOn || "Unknown date"})`;
+            if (run.defects?.length) {
+              text += ` \u2014 Defects: ${run.defects.map((d) => d.key || d).join(", ")}`;
+            }
+            text += "\n";
+          });
+        } else {
+          text += "(no test runs)\n";
+        }
+      } catch {
+        text += "(unable to fetch test runs)\n";
+      }
+    }
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting XRay test case: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestSteps.js
+var xrayGetTestStepsSchema = {
+  name: "xray_get_test_steps",
+  description: "Get all test steps for an XRay Test issue, including action, data, expected result, and attachments for each step",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: {
+        type: "string",
+        description: "The JIRA Test issue key (e.g., DPAY-1234)"
+      }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayGetTestSteps(args) {
+  try {
+    const { testKey } = args;
+    const apiClient = new JiraApiClient();
+    const steps = await apiClient.getXrayTestSteps(testKey);
+    if (!Array.isArray(steps) || steps.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No test steps found for ${testKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Test Steps for ${testKey}** (${steps.length} steps)
+
+`;
+    steps.forEach((step, index) => {
+      const stepIndex = step.index ?? index + 1;
+      text += `**Step ${stepIndex}:**
+`;
+      text += `- Action: ${step.fields?.action || step.action || "(none)"}
+`;
+      text += `- Data: ${step.fields?.data || step.data || "(none)"}
+`;
+      text += `- Expected Result: ${step.fields?.["expected result"] || step.fields?.expectedResult || step.result || "(none)"}
+`;
+      if (step.attachments && step.attachments.length > 0) {
+        text += `- Attachments: ${step.attachments.length} file(s)
+`;
+        step.attachments.forEach((att) => {
+          text += `  - ${att.filename || att.fileName || "unnamed"}
+`;
+        });
+      }
+      if (step.customFields && Object.keys(step.customFields).length > 0) {
+        text += `- Custom Fields: ${JSON.stringify(step.customFields)}
+`;
+      }
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting XRay test steps: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestExecTests.js
+var xrayGetTestExecTestsSchema = {
+  name: "xray_get_test_exec_tests",
+  description: "Get all tests associated with an XRay Test Execution issue, with optional detailed view including test run status",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testExecKey: {
+        type: "string",
+        description: "The JIRA Test Execution issue key (e.g., DPAY-5678)"
+      },
+      detailed: {
+        type: "boolean",
+        description: "If true, returns detailed info including test run status (default: false)"
+      },
+      page: {
+        type: "number",
+        description: "Page number for pagination (starts at 1)"
+      },
+      limit: {
+        type: "number",
+        description: "Number of results per page"
+      }
+    },
+    required: ["testExecKey"]
+  }
+};
+async function handleXrayGetTestExecTests(args) {
+  try {
+    const { testExecKey, detailed = false, page, limit } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayTestExecTests(testExecKey, detailed, page, limit);
+    const tests = Array.isArray(result) ? result : result?.issues || result;
+    if (!Array.isArray(tests) || tests.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No tests found in Test Execution ${testExecKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Tests in Test Execution ${testExecKey}** (${tests.length} tests)
+
+`;
+    tests.forEach((test, index) => {
+      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
+`;
+      text += `   - Status: ${test.status || "Unknown"}
+`;
+      if (test.assignee)
+        text += `   - Assignee: ${test.assignee}
+`;
+      if (test.type)
+        text += `   - Type: ${test.type}
+`;
+      if (test.defects?.length) {
+        text += `   - Defects: ${test.defects.map((d) => d.key || d).join(", ")}
+`;
+      }
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting test execution tests: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestPlanTests.js
+var xrayGetTestPlanTestsSchema = {
+  name: "xray_get_test_plan_tests",
+  description: "Get all tests associated with an XRay Test Plan issue",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testPlanKey: {
+        type: "string",
+        description: "The JIRA Test Plan issue key (e.g., DPAY-9999)"
+      },
+      page: {
+        type: "number",
+        description: "Page number for pagination (starts at 1)"
+      },
+      limit: {
+        type: "number",
+        description: "Number of results per page"
+      }
+    },
+    required: ["testPlanKey"]
+  }
+};
+async function handleXrayGetTestPlanTests(args) {
+  try {
+    const { testPlanKey, page, limit } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayTestPlanTests(testPlanKey, page, limit);
+    const tests = Array.isArray(result) ? result : result?.issues || result;
+    if (!Array.isArray(tests) || tests.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No tests found in Test Plan ${testPlanKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Tests in Test Plan ${testPlanKey}** (${tests.length} tests)
+
+`;
+    tests.forEach((test, index) => {
+      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
+`;
+      if (test.status)
+        text += `   - Status: ${test.status}
+`;
+      if (test.type)
+        text += `   - Type: ${test.type}
+`;
+      if (test.assignee)
+        text += `   - Assignee: ${test.assignee}
+`;
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting test plan tests: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestSetTests.js
+var xrayGetTestSetTestsSchema = {
+  name: "xray_get_test_set_tests",
+  description: "Get all tests associated with an XRay Test Set issue",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testSetKey: {
+        type: "string",
+        description: "The JIRA Test Set issue key (e.g., DPAY-7777)"
+      },
+      page: {
+        type: "number",
+        description: "Page number for pagination (starts at 1)"
+      },
+      limit: {
+        type: "number",
+        description: "Number of results per page"
+      }
+    },
+    required: ["testSetKey"]
+  }
+};
+async function handleXrayGetTestSetTests(args) {
+  try {
+    const { testSetKey, page, limit } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayTestSetTests(testSetKey, page, limit);
+    const tests = Array.isArray(result) ? result : result?.issues || result;
+    if (!Array.isArray(tests) || tests.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No tests found in Test Set ${testSetKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Tests in Test Set ${testSetKey}** (${tests.length} tests)
+
+`;
+    tests.forEach((test, index) => {
+      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
+`;
+      if (test.status)
+        text += `   - Status: ${test.status}
+`;
+      if (test.type)
+        text += `   - Type: ${test.type}
+`;
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting test set tests: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestRuns.js
+var xrayGetTestRunsSchema = {
+  name: "xray_get_test_runs",
+  description: "Export XRay test run results. Filter by test execution, test, test plan, or test environment. Returns execution status, defects, and step results.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testExecKey: {
+        type: "string",
+        description: "Test Execution issue key to filter by (e.g., DPAY-5678)"
+      },
+      testKey: {
+        type: "string",
+        description: "Test issue key to filter by (e.g., DPAY-1234)"
+      },
+      testPlanKey: {
+        type: "string",
+        description: "Test Plan issue key to filter by (e.g., DPAY-9999)"
+      },
+      testEnvironments: {
+        type: "string",
+        description: "Test environment name to filter by (e.g., QA, Staging)"
+      },
+      page: {
+        type: "number",
+        description: "Page number for pagination"
+      },
+      limit: {
+        type: "number",
+        description: "Number of results per page"
+      }
+    }
+  }
+};
+async function handleXrayGetTestRuns(args) {
+  try {
+    const { testExecKey, testKey, testPlanKey, testEnvironments, page, limit } = args;
+    if (!testExecKey && !testKey && !testPlanKey) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "At least one of testExecKey, testKey, or testPlanKey must be provided."
+          }
+        ],
+        isError: true
+      };
+    }
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit);
+    const runs = Array.isArray(result) ? result : result?.testRuns || result;
+    if (!Array.isArray(runs) || runs.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "No test runs found for the given filters."
+          }
+        ]
+      };
+    }
+    let text = `**Test Runs** (${runs.length} results)
+
+`;
+    runs.forEach((run, index) => {
+      text += `**${index + 1}. ${run.testKey || run.key || "Unknown"}**
+`;
+      text += `   - Status: ${run.status || "Unknown"}
+`;
+      if (run.testExecKey)
+        text += `   - Test Execution: ${run.testExecKey}
+`;
+      if (run.assignee)
+        text += `   - Assignee: ${run.assignee}
+`;
+      if (run.executedBy)
+        text += `   - Executed By: ${run.executedBy}
+`;
+      if (run.startedOn)
+        text += `   - Started: ${run.startedOn}
+`;
+      if (run.finishedOn)
+        text += `   - Finished: ${run.finishedOn}
+`;
+      if (run.comment)
+        text += `   - Comment: ${run.comment}
+`;
+      if (run.defects?.length) {
+        text += `   - Defects: ${run.defects.map((d) => d.key || d).join(", ")}
+`;
+      }
+      if (run.steps?.length) {
+        text += `   - Steps (${run.steps.length}):
+`;
+        run.steps.forEach((step, si) => {
+          text += `     ${si + 1}. ${step.status || "Unknown"} \u2014 ${step.comment || "(no comment)"}
+`;
+        });
+      }
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting test runs: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xraySearchTestCases.js
+var xraySearchTestCasesSchema = {
+  name: "xray_search_test_cases",
+  description: "Search for XRay Test Cases using JQL. Automatically adds issuetype=Test filter. Returns test cases with full Jira fields including priority, status, labels, components, assignee, and all custom/XRay fields.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      jql: {
+        type: "string",
+        description: 'JQL query to filter test cases. The issuetype=Test filter is added automatically. Example: "project = DPAY AND status = Open"'
+      },
+      maxResults: {
+        type: "number",
+        description: "Maximum number of results (default: 50)"
+      },
+      startAt: {
+        type: "number",
+        description: "Starting index for pagination (default: 0)"
+      }
+    },
+    required: ["jql"]
+  }
+};
+async function handleXraySearchTestCases(args) {
+  try {
+    const { jql, maxResults = 50, startAt = 0 } = args;
+    const hasIssueType = /issuetype\s*[=!]/i.test(jql);
+    const fullJql = hasIssueType ? jql : `issuetype = Test AND (${jql})`;
+    const apiClient = new JiraApiClient();
+    const extraFields = [
+      "labels",
+      "components",
+      "fixVersions",
+      "reporter",
+      "description"
+    ];
+    const result = await apiClient.searchJiraIssues(fullJql, maxResults, startAt, extraFields);
+    const issues = result.issues || [];
+    if (issues.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No test cases found for JQL: ${fullJql}`
+          }
+        ]
+      };
+    }
+    let text = `**XRay Test Cases** (${issues.length} of ${result.total} total)
+`;
+    text += `JQL: \`${fullJql}\`
+
+`;
+    issues.forEach((issue, index) => {
+      const f = issue.fields || {};
+      text += `**${index + 1}. ${issue.key}: ${f.summary || "(no summary)"}**
+`;
+      text += `   - Status: ${f.status?.name || "Unknown"}
+`;
+      text += `   - Priority: ${f.priority?.name || "Unknown"}
+`;
+      text += `   - Assignee: ${f.assignee?.displayName || "Unassigned"}
+`;
+      text += `   - Reporter: ${f.reporter?.displayName || "Unknown"}
+`;
+      if (f.labels?.length)
+        text += `   - Labels: ${f.labels.join(", ")}
+`;
+      if (f.components?.length)
+        text += `   - Components: ${f.components.map((c) => c.name).join(", ")}
+`;
+      if (f.fixVersions?.length)
+        text += `   - Fix Versions: ${f.fixVersions.map((v) => v.name).join(", ")}
+`;
+      text += `   - Created: ${f.created || "Unknown"}
+`;
+      text += `   - Updated: ${f.updated || "Unknown"}
+`;
+      text += "\n";
+    });
+    if (result.total > issues.length) {
+      text += `
+_Showing ${startAt + 1}-${startAt + issues.length} of ${result.total}. Use startAt=${startAt + maxResults} for next page._
+`;
+    }
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error searching test cases: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestStatuses.js
+var xrayGetTestStatusesSchema = {
+  name: "xray_get_test_statuses",
+  description: "Get all available XRay test statuses configured in the JIRA instance. Returns status names, descriptions, and colors for test run results.",
+  inputSchema: {
+    type: "object",
+    properties: {}
+  }
+};
+async function handleXrayGetTestStatuses(args) {
+  try {
+    const apiClient = new JiraApiClient();
+    const statuses = await apiClient.getXrayTestStatuses();
+    if (!Array.isArray(statuses) || statuses.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "No XRay test statuses found."
+          }
+        ]
+      };
+    }
+    let text = `**XRay Test Statuses** (${statuses.length})
+
+`;
+    statuses.forEach((status, index) => {
+      text += `**${index + 1}. ${status.name || "Unknown"}**
+`;
+      if (status.description)
+        text += `   - Description: ${status.description}
+`;
+      if (status.color)
+        text += `   - Color: ${status.color}
+`;
+      if (status.final !== void 0)
+        text += `   - Final: ${status.final}
+`;
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting XRay test statuses: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetTestPreConditions.js
+var xrayGetTestPreConditionsSchema = {
+  name: "xray_get_test_preconditions",
+  description: "Get all pre-conditions associated with an XRay Test issue. Returns pre-condition keys, summaries, types, and conditions.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: {
+        type: "string",
+        description: "The JIRA Test issue key (e.g., DPAY-1234)"
+      }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayGetTestPreConditions(args) {
+  try {
+    const { testKey } = args;
+    const apiClient = new JiraApiClient();
+    const preConditions = await apiClient.getXrayTestPreConditions(testKey);
+    if (!Array.isArray(preConditions) || preConditions.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No pre-conditions found for ${testKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Pre-Conditions for ${testKey}** (${preConditions.length})
+
+`;
+    preConditions.forEach((pc, index) => {
+      text += `**${index + 1}. ${pc.key}:** ${pc.summary || pc.condition || "(no description)"}
+`;
+      if (pc.type)
+        text += `   - Type: ${pc.type}
+`;
+      if (pc.condition)
+        text += `   - Condition: ${pc.condition}
+`;
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting XRay pre-conditions: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetPreConditionTests.js
+var xrayGetPreConditionTestsSchema = {
+  name: "xray_get_precondition_tests",
+  description: "Get all tests associated with an XRay Pre-Condition issue. Returns the test keys and summaries linked to a pre-condition.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      preConditionKey: {
+        type: "string",
+        description: "The JIRA Pre-Condition issue key (e.g., DPAY-3333)"
+      }
+    },
+    required: ["preConditionKey"]
+  }
+};
+async function handleXrayGetPreConditionTests(args) {
+  try {
+    const { preConditionKey } = args;
+    const apiClient = new JiraApiClient();
+    const tests = await apiClient.getXrayPreConditionTests(preConditionKey);
+    if (!Array.isArray(tests) || tests.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No tests found for Pre-Condition ${preConditionKey}.`
+          }
+        ]
+      };
+    }
+    let text = `**Tests for Pre-Condition ${preConditionKey}** (${tests.length})
+
+`;
+    tests.forEach((test, index) => {
+      text += `**${index + 1}. ${test.key}:** ${test.summary || "(no summary)"}
+`;
+      if (test.status)
+        text += `   - Status: ${test.status}
+`;
+      if (test.type)
+        text += `   - Type: ${test.type}
+`;
+      text += "\n";
+    });
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting pre-condition tests: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/index.js
 var tools = [
   { schema: jiraGetIssueSchema, handler: handleJiraGetIssue },
   { schema: jiraUpdateIssueSchema, handler: handleJiraUpdateIssue },
@@ -7297,39 +8561,43 @@ var tools = [
   { schema: jiraGetTransitionsSchema, handler: handleJiraGetTransitions },
   { schema: jiraGetBoardsSchema, handler: handleJiraGetBoards },
   { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
-  { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues }
+  { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
+  { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
+  // XRay tools
+  { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
+  { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
+  { schema: xrayGetTestExecTestsSchema, handler: handleXrayGetTestExecTests },
+  { schema: xrayGetTestPlanTestsSchema, handler: handleXrayGetTestPlanTests },
+  { schema: xrayGetTestSetTestsSchema, handler: handleXrayGetTestSetTests },
+  { schema: xrayGetTestRunsSchema, handler: handleXrayGetTestRuns },
+  { schema: xraySearchTestCasesSchema, handler: handleXraySearchTestCases },
+  { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
+  { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
+  { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests }
 ];
 var JiraMCPServer = class {
   server;
   constructor() {
-    this.server = new Server(
-      {
-        name: "jira-mcp",
-        version: "0.1.0"
-      },
-      {
-        capabilities: {
-          tools: {}
-        }
+    this.server = new Server({
+      name: "jira-mcp",
+      version: "0.1.0"
+    }, {
+      capabilities: {
+        tools: {}
       }
-    );
+    });
     this.setupToolHandlers();
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: tools.map((t) => t.schema)
     }));
-    this.server.setRequestHandler(
-      CallToolRequestSchema,
-      async (request) => {
-        const tool = tools.find(
-          (t) => t.schema.name === request.params.name
-        );
-        if (!tool)
-          throw new Error(`Unknown tool: ${request.params.name}`);
-        return await tool.handler(request.params.arguments);
-      }
-    );
+    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      const tool = tools.find((t) => t.schema.name === request.params.name);
+      if (!tool)
+        throw new Error(`Unknown tool: ${request.params.name}`);
+      return await tool.handler(request.params.arguments);
+    });
   }
   async run() {
     const transport = new StdioServerTransport();
