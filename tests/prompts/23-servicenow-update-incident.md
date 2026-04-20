@@ -1,0 +1,1 @@
+Using the servicenow MCP, update incident INC28844834 with fields JSON '{"work_notes": "MCP test — update_incident tool validation"}'. Verify the response returns status success with updated_fields list. Then test with invalid JSON input "not valid json" and verify the tool returns a clear error message instead of crashing.

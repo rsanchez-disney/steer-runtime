@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get error rate (60 min) and snapshots (30 min, max 20) for prod_pci_S0001663_WDPR-Ticketing-Booking_aws. Verify error rate returns errors and calls data, and snapshots return an array with URL, timeTakenInMilliSecs, and userExperience fields.
