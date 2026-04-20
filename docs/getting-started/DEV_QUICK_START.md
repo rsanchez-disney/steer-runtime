@@ -15,19 +15,19 @@ koda mcp-install          # Setup MCP servers + tokens
 
 Open Kiro IDE or invoke it from the command line:
 
-![Invoke Kiro](images/invoke-kiro.png)
+![Invoke Kiro](../images/invoke-kiro.png)
 
 ### Step 2 — Wait for the agent to be ready
 
 Kiro will load the orchestrator agent and show a welcome message:
 
-![Kiro Welcome — Ready for Prompt](images/kiro-welcome.png)
+![Kiro Welcome — Ready for Prompt](../images/kiro-welcome.png)
 
 ### Step 3 — Send your prompt
 
 Type or paste any of the prompts below and hit Enter:
 
-![Sending a Prompt](images/sending-prompt.png)
+![Sending a Prompt](../images/sending-prompt.png)
 
 You can also use the CLI directly:
 ```bash
