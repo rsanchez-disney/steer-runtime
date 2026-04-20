@@ -10,6 +10,7 @@
     "@appdynamics-mcp/*",
     "@servicenow-mcp/*",
     "@splunk-mcp/*",
+    "@ecommerce-mcp/*",
     "subagent",
     "execute_bash",
     "fs_read",
@@ -24,7 +25,8 @@
     "@compass/*",
     "@appdynamics-mcp/*",
     "@servicenow-mcp/*",
-    "@splunk-mcp/*"
+    "@splunk-mcp/*",
+    "@ecommerce-mcp/*"
   ],
   "includeMcpJson": true,
   "hooks": {
