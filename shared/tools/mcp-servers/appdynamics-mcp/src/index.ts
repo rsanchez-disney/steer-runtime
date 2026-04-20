@@ -15,7 +15,16 @@ import { getHealthViolationsSchema, handleGetHealthViolations } from "./tools/ge
 import { getErrorRateSchema, handleGetErrorRate } from "./tools/getErrorRate.js";
 import { getSnapshotsSchema, handleGetSnapshots } from "./tools/getSnapshots.js";
 import { getAnomaliesSchema, handleGetAnomalies } from "./tools/getAnomalies.js";
-import { apiClient } from "./utils/apiClient.js";const tools = [
+import { getBackendsSchema, handleGetBackends } from "./tools/getBackends.js";
+import { getErrorsSchema, handleGetErrors } from "./tools/getErrors.js";
+import { getEventsSchema, handleGetEvents } from "./tools/getEvents.js";
+import { getPoliciesSchema, handleGetPolicies } from "./tools/getPolicies.js";
+import { getActionsSchema, handleGetActions } from "./tools/getActions.js";
+import { getDashboardsSchema, handleGetDashboards } from "./tools/getDashboards.js";
+import { compareMetricsSchema, handleCompareMetrics } from "./tools/compareMetrics.js";
+import { apiClient } from "./utils/apiClient.js";
+
+const tools = [
     { schema: listApplicationsSchema, handler: handleListApplications },
     { schema: getApplicationHealthSchema, handler: handleGetApplicationHealth },
     { schema: getBusinessTransactionsSchema, handler: handleGetBusinessTransactions },
@@ -26,6 +35,13 @@ import { apiClient } from "./utils/apiClient.js";const tools = [
     { schema: getErrorRateSchema, handler: handleGetErrorRate },
     { schema: getSnapshotsSchema, handler: handleGetSnapshots },
     { schema: getAnomaliesSchema, handler: handleGetAnomalies },
+    { schema: getBackendsSchema, handler: handleGetBackends },
+    { schema: getErrorsSchema, handler: handleGetErrors },
+    { schema: getEventsSchema, handler: handleGetEvents },
+    { schema: getPoliciesSchema, handler: handleGetPolicies },
+    { schema: getActionsSchema, handler: handleGetActions },
+    { schema: getDashboardsSchema, handler: handleGetDashboards },
+    { schema: compareMetricsSchema, handler: handleCompareMetrics },
 ];
 
 class AppDynamicsMCPServer {

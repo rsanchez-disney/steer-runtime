@@ -77,6 +77,13 @@ To create API client credentials in AppDynamics:
 | `get_error_rate` | Error count and total call count for an app |
 | `get_snapshots` | Recent slow/error transaction snapshots |
 | `get_anomalies` | AI-detected anomalies with suspected root causes (requires controller 26.x+) |
+| `get_backends` | List backend/exit point calls (databases, HTTP, queues) |
+| `get_errors` | List specific error types with counts and rates |
+| `get_events` | Application events (deployments, config changes, restarts) |
+| `get_policies` | List health rule policies and conditions |
+| `get_actions` | List configured alert actions (email, webhook, etc.) |
+| `get_dashboards` | List custom AppDynamics dashboards |
+| `compare_metrics` | Compare a metric across two time ranges (before/after analysis) |
 
 ## Common Metric Paths
 
