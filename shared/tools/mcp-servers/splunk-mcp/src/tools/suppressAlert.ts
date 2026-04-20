@@ -2,7 +2,7 @@ import { apiClient } from "../utils/apiClient.js";
 
 export const suppressAlertSchema = {
     name: "suppress_alert",
-    description: "Temporarily disable (suppress) an alert. Use during maintenance windows or known issues to reduce noise. Can also re-enable.",
+    description: "Temporarily disable (suppress) an alert. Use during maintenance windows or known issues to reduce noise. Can also re-enable. WARNING: This is a destructive operation — disabling an alert stops all notifications. Always confirm with the user before suppressing.",
     inputSchema: {
         type: "object",
         properties: {

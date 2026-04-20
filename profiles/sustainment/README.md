@@ -39,6 +39,8 @@ The sustainment orchestrator also has direct access to these MCP servers (no Com
 | `servicenow-mcp` | 23 | Incidents, CTASKs, change requests, CI details, KB search, on-call, timeline, bulk ops |
 | `splunk-mcp` | 21 | Log search, dashboards, alerts, saved searches, reports, data models, field discovery |
 
+> `ecommerce-mcp` (Compass SSE) is also available but requires a Compass token. Contact your team lead for `COMPASS_TOKEN` and configure it in `~/.kiro/settings/mcp.json`. Without it, Compass-based tools will not be available.
+
 ---
 
 ## Quick Start

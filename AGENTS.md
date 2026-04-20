@@ -782,6 +782,11 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **pm** | retro_agent | ✅ | ✅ | ✅ | | | |
 | **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | |
 | **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | |
+| **sustainment** | sustainment_orchestrator_agent | ✅ | ✅ | ✅ | | | AppDynamics, ServiceNow, Splunk, Compass |
+| **sustainment** | incident_triage_agent | | | | | | |
+| **sustainment** | rca_agent | | | | | | |
+| **sustainment** | stability_validator_agent | | | | | | |
+| **sustainment** | gsm_analyst_agent | | | | | | |
 
 ---
 
