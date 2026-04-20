@@ -75,7 +75,10 @@ export async function handleGithubCreateReview(args: any) {
 
     const { owner, repo: repoName } = parseRepo(repo);
     const octokit = getClient();
-    const prNum = parseInt(prNumber);
+    const prNum = parseInt(prNumber, 10);
+    if (isNaN(prNum)) {
+        throw new Error(`Invalid PR number: "${prNumber}"`);
+    }
 
     const reviewComments = (comments || []).map((c) => ({
         path: c.path,
@@ -84,16 +87,14 @@ export async function handleGithubCreateReview(args: any) {
         side: c.side || ("RIGHT" as const),
     }));
 
-    const params: any = {
+    const { data: review } = await octokit.pulls.createReview({
         owner,
         repo: repoName,
         pull_number: prNum,
         event: event || "COMMENT",
         comments: reviewComments,
-    };
-    if (body) params.body = body;
-
-    const { data: review } = await octokit.pulls.createReview(params);
+        ...(body ? { body } : {}),
+    });
 
     return {
         content: [
