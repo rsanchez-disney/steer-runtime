@@ -19,7 +19,8 @@
   "resources": [
     "file://.kiro/context/leadership_guidelines.md",
     "file://.kiro/context/portfolio_projects.md",
-    "file://.kiro/context/quarterly_template.md"
+    "file://.kiro/context/quarterly_template.md",
+    "file://.kiro/context/fiscal_calendar.md"
   ],
   "hooks": {
     "agentSpawn": [
