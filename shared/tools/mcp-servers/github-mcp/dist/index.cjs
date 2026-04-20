@@ -16714,23 +16714,24 @@ async function handleGithubCreateReview(args) {
   const { repo, prNumber, event, body, comments } = args;
   const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
-  const prNum = parseInt(prNumber);
+  const prNum = parseInt(prNumber, 10);
+  if (isNaN(prNum)) {
+    throw new Error(`Invalid PR number: "${prNumber}"`);
+  }
   const reviewComments = (comments || []).map((c) => ({
     path: c.path,
     line: c.line,
     body: c.body,
     side: c.side || "RIGHT"
   }));
-  const params = {
+  const { data: review } = await octokit2.pulls.createReview({
     owner,
     repo: repoName,
     pull_number: prNum,
     event: event || "COMMENT",
-    comments: reviewComments
-  };
-  if (body)
-    params.body = body;
-  const { data: review } = await octokit2.pulls.createReview(params);
+    comments: reviewComments,
+    ...body ? { body } : {}
+  });
   return {
     content: [
       {
