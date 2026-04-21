@@ -6050,6 +6050,85 @@ var JiraApiClient = class {
     return await response.json();
   }
   // ==========================================
+  // Development Status API
+  // ==========================================
+  /**
+   * Get development status (PRs, branches, commits) for an issue.
+   * Uses the JIRA dev-status REST API (same data as the Development Panel).
+   * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=GitHub&dataType=pullrequest
+   */
+  async getDevStatus(issueId) {
+    const pat = await this.auth.getJiraPat();
+    const dataTypes = ["pullrequest", "branch", "repository"];
+    const results = await Promise.allSettled(dataTypes.map(async (dataType) => {
+      const params = new URLSearchParams({
+        issueId,
+        applicationType: "githube",
+        dataType
+      });
+      const response = await fetch(`https://myjira.disney.com/rest/dev-status/1.0/issue/detail?${params}`, {
+        headers: {
+          Authorization: `Bearer ${pat}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      return await response.json();
+    }));
+    const mergedDetail = [];
+    for (const result of results) {
+      if (result.status === "fulfilled" && result.value?.detail) {
+        for (const provider of result.value.detail) {
+          const existing = mergedDetail.find((d) => d.instanceName === provider.instanceName);
+          if (existing) {
+            if (provider.pullRequests) {
+              const seen = new Set((existing.pullRequests || []).map((pr) => pr.url));
+              for (const pr of provider.pullRequests) {
+                if (!seen.has(pr.url)) {
+                  existing.pullRequests = [
+                    ...existing.pullRequests || [],
+                    pr
+                  ];
+                  seen.add(pr.url);
+                }
+              }
+            }
+            if (provider.branches) {
+              const seen = new Set((existing.branches || []).map((b) => b.url));
+              for (const b of provider.branches) {
+                if (!seen.has(b.url)) {
+                  existing.branches = [
+                    ...existing.branches || [],
+                    b
+                  ];
+                  seen.add(b.url);
+                }
+              }
+            }
+            if (provider.commits) {
+              const seen = new Set((existing.commits || []).map((c) => c.id));
+              for (const c of provider.commits) {
+                if (!seen.has(c.id)) {
+                  existing.commits = [
+                    ...existing.commits || [],
+                    c
+                  ];
+                  seen.add(c.id);
+                }
+              }
+            }
+          } else {
+            mergedDetail.push({ ...provider });
+          }
+        }
+      }
+    }
+    return { detail: mergedDetail };
+  }
+  // ==========================================
   // XRay REST API Methods
   // ==========================================
   /**
@@ -7670,6 +7749,122 @@ ${downloaded.join("\n")}`;
   }
 }
 
+// build/tools/jiraGetDevStatus.js
+var jiraGetDevStatusSchema = {
+  name: "jira_get_dev_status",
+  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub. This is the same data shown in the JIRA Development Panel sidebar.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      ticketId: {
+        type: "string",
+        description: "The JIRA ticket ID (e.g., OPS-26420)"
+      }
+    },
+    required: ["ticketId"]
+  }
+};
+async function handleJiraGetDevStatus(args) {
+  try {
+    const { ticketId } = args;
+    const apiClient = new JiraApiClient();
+    const ticket = await apiClient.fetchJiraTicket(ticketId, ["summary"]);
+    const issueId = ticket.id;
+    if (!issueId) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Could not resolve internal issue ID for ${ticketId}.`
+          }
+        ],
+        isError: true
+      };
+    }
+    const devStatus = await apiClient.getDevStatus(issueId);
+    const lines = [
+      `**Development Status for ${ticketId}** (issue ID: ${issueId})`,
+      ""
+    ];
+    const detail = devStatus?.detail;
+    if (!detail || detail.length === 0) {
+      lines.push("No development data found for this ticket.");
+      return {
+        content: [{ type: "text", text: lines.join("\n") }]
+      };
+    }
+    for (const provider of detail) {
+      const instanceName = provider.instanceName || provider.name || "Unknown";
+      lines.push(`## ${instanceName}`);
+      lines.push("");
+      const prs = provider.pullRequests || [];
+      if (prs.length > 0) {
+        lines.push(`**Pull Requests (${prs.length}):**`);
+        for (const pr of prs) {
+          const status = pr.status || "UNKNOWN";
+          const repo = pr.repositoryName || pr.destination?.repository?.name || "";
+          const url = pr.url || "";
+          const title = pr.name || pr.title || "(no title)";
+          const author = pr.author?.name || pr.author?.login || "";
+          const sourceBranch = pr.source?.branch || "";
+          const targetBranch = pr.destination?.branch || "";
+          lines.push(`- [${status}] **${title}** (${repo})`);
+          if (sourceBranch || targetBranch) {
+            lines.push(`  Branch: ${sourceBranch} \u2192 ${targetBranch}`);
+          }
+          if (author)
+            lines.push(`  Author: ${author}`);
+          if (url)
+            lines.push(`  URL: ${url}`);
+          lines.push("");
+        }
+      }
+      const branches = provider.branches || [];
+      if (branches.length > 0) {
+        lines.push(`**Branches (${branches.length}):**`);
+        for (const branch of branches) {
+          const repo = branch.repository?.name || "";
+          const name = branch.name || "(unnamed)";
+          const url = branch.url || "";
+          lines.push(`- **${name}** (${repo})`);
+          if (url)
+            lines.push(`  URL: ${url}`);
+        }
+        lines.push("");
+      }
+      const commits = provider.commits || [];
+      if (commits.length > 0) {
+        lines.push(`**Commits (${commits.length}):**`);
+        for (const commit of commits) {
+          const msg = commit.message || "(no message)";
+          const author = commit.author?.name || "";
+          const hash = commit.id?.substring(0, 8) || "";
+          const url = commit.url || "";
+          lines.push(`- \`${hash}\` ${msg}`);
+          if (author)
+            lines.push(`  Author: ${author}`);
+          if (url)
+            lines.push(`  URL: ${url}`);
+        }
+        lines.push("");
+      }
+    }
+    return {
+      content: [{ type: "text", text: lines.join("\n") }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error fetching dev status: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
 // build/tools/xrayGetTestCaseFull.js
 var xrayGetTestCaseFullSchema = {
   name: "xray_get_test_case_full",
@@ -8569,6 +8764,7 @@ var tools = [
   { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
   { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
   { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
+  { schema: jiraGetDevStatusSchema, handler: handleJiraGetDevStatus },
   // XRay tools
   { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
   { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },

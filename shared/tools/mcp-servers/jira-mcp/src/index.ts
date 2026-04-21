@@ -63,6 +63,10 @@ import {
     jiraGetAttachmentsSchema,
     handleJiraGetAttachments,
 } from "./tools/jiraGetAttachments.js";
+import {
+    jiraGetDevStatusSchema,
+    handleJiraGetDevStatus,
+} from "./tools/jiraGetDevStatus.js";
 
 // XRay tools
 import {
@@ -122,6 +126,7 @@ const tools = [
     { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
     { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
     { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
+    { schema: jiraGetDevStatusSchema, handler: handleJiraGetDevStatus },
     // XRay tools
     { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
     { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },

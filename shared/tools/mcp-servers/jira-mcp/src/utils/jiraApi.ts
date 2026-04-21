@@ -1,6 +1,13 @@
 import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
 
+const JIRA_BASE_URL = "https://myjira.disney.com";
+
+function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
+    const seen = new Set(existing.map(key));
+    return [...existing, ...incoming.filter((i) => !seen.has(key(i)))];
+}
+
 export class JiraApiClient {
     private auth = new JiraAuth();
 
@@ -477,6 +484,90 @@ export class JiraApiClient {
         }
 
         return await response.json();
+    }
+
+    // ==========================================
+    // Development Status API
+    // ==========================================
+
+    /**
+     * Get development status (PRs, branches, commits) for an issue.
+     * Uses the JIRA dev-status REST API (same data as the Development Panel).
+     * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=GitHub&dataType=pullrequest
+     */
+    async getDevStatus(issueId: string): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        // Fetch all data types: pullrequest, branch, repository
+        // Note: applicationType is "githube" for GitHub Enterprise instances
+        const dataTypes = ["pullrequest", "branch", "repository"];
+        const results = await Promise.allSettled(
+            dataTypes.map(async (dataType) => {
+                const params = new URLSearchParams({
+                    issueId,
+                    applicationType: "githube",
+                    dataType,
+                });
+
+                const response = await fetch(
+                    `${JIRA_BASE_URL}/rest/dev-status/1.0/issue/detail?${params}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${pat}`,
+                            "Content-Type": "application/json",
+                        },
+                    },
+                );
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(
+                        `Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`,
+                    );
+                }
+
+                return await response.json();
+            }),
+        );
+
+        // Merge detail arrays from all responses and deduplicate
+        const mergedDetail: any[] = [];
+        for (const result of results) {
+            if (result.status === "fulfilled" && result.value?.detail) {
+                for (const provider of result.value.detail) {
+                    const existing = mergedDetail.find(
+                        (d) => d.instanceName === provider.instanceName,
+                    );
+                    if (existing) {
+                        if (provider.pullRequests) {
+                            existing.pullRequests = dedup(
+                                existing.pullRequests || [],
+                                provider.pullRequests,
+                                (pr: any) => pr.url,
+                            );
+                        }
+                        if (provider.branches) {
+                            existing.branches = dedup(
+                                existing.branches || [],
+                                provider.branches,
+                                (b: any) => b.url,
+                            );
+                        }
+                        if (provider.commits) {
+                            existing.commits = dedup(
+                                existing.commits || [],
+                                provider.commits,
+                                (c: any) => c.id,
+                            );
+                        }
+                    } else {
+                        mergedDetail.push({ ...provider });
+                    }
+                }
+            }
+        }
+
+        return { detail: mergedDetail };
     }
 
     // ==========================================
