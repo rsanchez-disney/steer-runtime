@@ -1,0 +1,1 @@
+Using the splunk MCP, first run a search for 'index=wdpr_booking_service | head 1' then use the returned SID to get job status. Verify the response includes sid, isDone, eventCount, and dispatchState fields.

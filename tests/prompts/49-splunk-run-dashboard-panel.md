@@ -1,0 +1,1 @@
+Using the splunk MCP, run dashboard panel index 0 from dashboard "4_pcs_tower__top_10_failure_detection_dashboard_trend_chart" in the ticketing app with earliest time -15m. Verify the response includes dashboard name, panelIndex, query, and results array.
