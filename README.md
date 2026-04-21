@@ -46,9 +46,14 @@ All checks should pass. If kiro-cli shows issues on Windows, see [Windows Troubl
 |-----------|---------------------|---------|
 | Developer | dev | `koda install dev` |
 | Fullstack Developer | dev, qa | `koda install dev qa` |
+| .NET Developer | dev, dev-dotnet | `koda install dev dev-dotnet` |
+| PHP Developer | dev, dev-php | `koda install dev dev-php` |
+| Python Developer | dev, dev-python | `koda install dev dev-python` |
+| Infra / Terraform | dev-core, dev-infra | `koda install dev-core dev-infra` |
 | Business Analyst / PO | ba | `koda install ba` |
 | QA Engineer | qa, dev-core | `koda install qa dev-core` |
 | Ops / SRE | ops, dev-core | `koda install ops dev-core` |
+| Sustainment / L3 Support | sustainment, dev-core | `koda install sustainment dev-core` |
 | Project Manager / Scrum Master | pm | `koda install pm` |
 | Tech Director / Delivery Manager | leadership | `koda install leadership` |
 | All roles | dev, ba, qa, ops, pm | `koda install dev ba qa ops pm` |
@@ -57,12 +62,21 @@ Open Koda TUI and press `[p]` to toggle profiles interactively, or install from 
 
 | Profile | Agents | Description |
 |---------|:------:|-------------|
-| **dev** | 30 | Code, review, test, security, PRs (dev-core + dev-web + dev-mobile) |
-| **ba** | 8 | Requirements, scope, stories, PRDs, estimation |
+| **dev** | 26 | Alias for dev-core + dev-web + dev-mobile |
+| **dev-core** | 18 | Code, review, test, security, PRs, architecture |
+| **dev-web** | 5 | Angular UI, Node gateway, Astro SSR, UX, backend |
+| **dev-mobile** | 3 | Mobile development agents |
+| **dev-dotnet** | 3 | .NET / C# development and review |
+| **dev-php** | 1 | PHP development and review |
+| **dev-python** | 1 | Python (FastAPI, Flask, Django) |
+| **dev-infra** | 1 | Terraform / IaC |
+| **ba** | 7 | Requirements, scope, stories, PRDs, estimation |
 | **qa** | 11 | Test planning, automation, defect analysis, coverage |
 | **ops** | 8 | Infra, deployments, log analysis, releases |
+| **sustainment** | 5 | Incident response, AppDynamics, ServiceNow, Splunk |
 | **pm** | 6 | Sprints, standups, retros, delivery reports |
-| **leadership** | 5 | Cross-team analytics, quarterly reports, executive briefings |
+| **leadership** | 5 | Cross-studio analytics, quarterly reports, executive briefings |
+| **steer-master** | 5 | steer-runtime/Koda development and review |
 
 ### 5. Select Workspace (optional)
 
