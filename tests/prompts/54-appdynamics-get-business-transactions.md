@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get business transactions for the application "prod_ecommerce_S0001479_cme-wdw_aws". Verify the response includes an array of business transactions with id, name, and tierName fields.

@@ -1,0 +1,1 @@
+Using the servicenow MCP, create a problem record with shortDescription "MCP Test Problem - Auto Delete", ciName "DLR Capacity Managed Events", and description "Automated test for MCP create_problem tool. Safe to delete.". Verify the response includes the new problem number and sys_id. Note: Disney ServiceNow requires a Configuration Item (CI) for problem records.

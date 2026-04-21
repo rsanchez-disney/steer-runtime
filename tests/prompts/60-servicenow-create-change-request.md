@@ -1,0 +1,1 @@
+Using the servicenow MCP, create a change request with shortDescription "MCP Test Change - Auto Delete", changeType "normal", and description "Automated test for MCP create_change_request tool. Safe to delete.". Verify the response includes the new change number and sys_id.
