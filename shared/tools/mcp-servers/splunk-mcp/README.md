@@ -43,11 +43,10 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json`):
 
 ## Authentication
 
-The server uses Splunk session-based authentication:
-1. Authenticates via `/services/auth/login` with username/password
-2. Receives a session key (valid ~1 hour)
-3. Caches the session key and refreshes automatically before expiry
-4. All API calls use `Authorization: Splunk {sessionKey}`
+The server uses HTTP Basic Auth:
+1. Credentials are sent as `Authorization: Basic {base64(username:password)}` on every request
+2. No session management or token caching required
+3. Compatible with Splunk instances that restrict session-based auth (e.g. Disney Splunk 9.4.x)
 
 ## Tools
 
@@ -107,5 +106,7 @@ npm run inspector   # Launch MCP Inspector for testing
 | `Cannot find module` | Not built | Run `npm run build` or `npm run bundle` |
 | `fetch is not defined` | Node < 16 or missing node-fetch | Run `npm install` |
 | `Splunk auth error: 401` | Bad credentials | Verify `SPLUNK_USERNAME` and `SPLUNK_PASSWORD` |
+| `404 Not Found` on v2 endpoints | Splunk version < 9.5 | Server uses v1 REST API only — this is expected |
 | `Search timed out` | Query too broad | Add time bounds or reduce scope, increase `maxWaitSeconds` |
 | Empty results | Wrong index or time range | Check index name and `earliestTime`/`latestTime` |
+| `Cannot edit/create a saved search for wildcarded users` | RBAC limitation | Service account can't dispatch saved searches owned by other users |
