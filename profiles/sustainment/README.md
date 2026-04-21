@@ -95,8 +95,37 @@ koda install sustainment              # Sustainment only
 koda install dev-core sustainment     # Dev + Sustainment
 ```
 
+### MCP Server Setup
+
+The direct MCP integrations require tokens in `~/.kiro/tokens.env`:
+
+```env
+# AppDynamics (OAuth client credentials)
+APPD_CONTROLLER_URL=https://disney-prod.saas.appdynamics.com
+APPD_CLIENT_ID=your-client-id@your-account
+APPD_CLIENT_SECRET=your-client-secret
+
+# ServiceNow (basic auth)
+SNOW_INSTANCE=https://disney.service-now.com
+SNOW_USERNAME=your-service-account
+SNOW_PASSWORD=your-password
+
+# Splunk (session auth)
+SPLUNK_BASE_URL=https://splunk.wdprapps.disney.com:8089
+SPLUNK_USERNAME=your-api-account
+SPLUNK_PASSWORD=your-password
+```
+
+Then run `koda mcp-install` to generate the mcp.json entries automatically. Servers without tokens are silently skipped.
+
+Build the MCP bundles:
+```bash
+make mcp-build                        # Build all MCP servers
+make mcp-build-appdynamics-mcp        # Build one server
+```
+
 ---
 
-**Profile Version:** 1.0
+**Profile Version:** 1.1
 **Agents:** 5
-**Last Updated:** April 16, 2026
+**Last Updated:** April 21, 2026
