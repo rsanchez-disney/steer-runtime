@@ -1,7 +1,7 @@
 {
   "name": "sustainment_orchestrator_agent",
   "description": "Coordinates sustainment workflows: incident triage, root cause analysis, stability validation, and GSM reporting",
-  "prompt": "prompts/sustainment_orchestrator_agent.md",
+  "prompt": "sustainment_orchestrator_agent.md",
   "tools": [
     "@jira/*",
     "@confluence/*",
@@ -41,6 +41,6 @@
   },
   "welcomeMessage": "\ud83d\udc4b Sustainment Orchestrator ready!\n\nI coordinate incident response and stability workflows.\n\nProvide me with:\n \u2022 A ServiceNow INC or CTASK number\n \u2022 A Jira ticket or defect\n \u2022 An alert or error to investigate\n \u2022 An application to validate stability\n\nI'll route to the right specialist and coordinate the response.",
   "resources": [
-    "file://profiles/sustainment/context/servicenow_reference.md"
+    "file://.kiro/context/servicenow_reference.md"
   ]
 }
