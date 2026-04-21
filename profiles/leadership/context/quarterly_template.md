@@ -1,44 +1,47 @@
 # Quarterly Report Template
 
+> Q{N} FY{YEAR} — {Vertical Name} Quarterly Report
+> {quarter_start_date} – {quarter_end_date}
+
 ## Report Structure
 
 ### 1. Executive Summary
 2-3 paragraphs: what was achieved, key metrics, top risks, outlook.
 
 ### 2. Delivery Achievements
-Per team: epics delivered, business impact, notable milestones.
+Per studio: epics delivered, business impact, notable milestones.
 
-| Team | Epics Delivered | Key Achievement | Business Impact |
-|------|----------------|-----------------|-----------------|
+| Studio | Epics Delivered | Key Achievement | Business Impact |
+|--------|----------------|-----------------|-----------------|
 
 ### 3. Delivery Metrics
-| Team | Avg Velocity | Delivery Accuracy | Carry-Over Rate | Cycle Time |
-|------|-------------|-------------------|-----------------|------------|
+| Studio | Avg Velocity | Delivery Accuracy | Carry-Over Rate | Cycle Time |
+|--------|-------------|-------------------|-----------------|------------|
 
 Trends: improving ↑, declining ↓, stable →
 
 ### 4. Quality Metrics
-| Team | Defect Escape Rate | SonarQube Gate | Test Coverage |
-|------|-------------------|----------------|---------------|
+| Studio | Defect Escape Rate | SonarQube Gate | Test Coverage |
+|--------|-------------------|----------------|---------------|
 
 ### 5. Risks & Escalations
-| Risk | Impact | Teams Affected | Mitigation | Status |
-|------|--------|---------------|------------|--------|
+| Risk | Impact | Studios Affected | Mitigation | Status |
+|------|--------|-----------------|------------|--------|
 
-### 6. Cross-Team Dependencies
+### 6. Cross-Studio Dependencies
 | Dependency | From | To | Status | Risk Level |
 |-----------|------|-----|--------|------------|
 
 ### 7. AI Adoption
-| Team | AI-Assisted PRs | AI Usage Level | Tools | Estimated Savings |
-|------|----------------|----------------|-------|-------------------|
+| Studio | AI-Assisted PRs | AI Usage Level | Tools | Estimated Savings |
+|--------|----------------|----------------|-------|-------------------|
 
 ### 8. Roadmap — Next Quarter
-Per team: planned epics, capacity, key milestones.
+Per studio: planned epics, capacity, key milestones.
 
-### 9. Team Health
-| Team | Capacity | Attrition Impact | Skill Gaps | Notes |
-|------|----------|------------------|------------|-------|
+### 9. Studio Health
+| Studio | Capacity | Attrition Impact | Skill Gaps | Notes |
+|--------|----------|------------------|------------|-------|
 
 ### 10. Recommendations
 Numbered list of actionable recommendations for the next quarter.

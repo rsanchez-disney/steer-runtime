@@ -15,5 +15,13 @@
   "resources": [
     "file://.kiro/context/leadership_guidelines.md",
     "file://.kiro/context/portfolio_projects.md"
-  ]
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject workspace context and agent registry"
+      }
+    ]
+  }
 }

@@ -151,7 +151,8 @@ For Amazon Q CLI agents, reference the tools directly:
     "@github/github_search_prs",
     "@github/github_list_remotes",
     "@github/github_get_file",
-    "@github/github_get_files"
+    "@github/github_get_files",
+    "@github/github_create_review"
   ],
   "allowedTools": [
     "@github/github_get_pr",
@@ -163,7 +164,8 @@ For Amazon Q CLI agents, reference the tools directly:
     "@github/github_search_prs",
     "@github/github_list_remotes",
     "@github/github_get_file",
-    "@github/github_get_files"
+    "@github/github_get_files",
+    "@github/github_create_review"
   ]
 }
 ```
@@ -314,6 +316,52 @@ github_get_files({
 })
 ```
 
+### Create Pull Request Review (Inline Comments)
+
+```typescript
+// Post inline review comments on specific lines
+github_create_review({
+  repo: "team/project",
+  prNumber: "123",
+  event: "COMMENT",
+  comments: [
+    {
+      path: "src/utils/helper.dart",
+      line: 42,
+      body: "Consider extracting this into a separate method",
+      side: "RIGHT"
+    },
+    {
+      path: "src/main.dart",
+      line: 15,
+      body: "This import is unused"
+    }
+  ]
+})
+
+// Approve with inline feedback
+github_create_review({
+  repo: "team/project",
+  prNumber: "456",
+  event: "APPROVE",
+  body: "LGTM! Minor suggestions below.",
+  comments: [
+    { path: "lib/widget.dart", line: 30, body: "Nit: prefer `const` constructor here" }
+  ]
+})
+
+// Request changes
+github_create_review({
+  repo: "team/project",
+  prNumber: "789",
+  event: "REQUEST_CHANGES",
+  body: "Security concern — see inline comment.",
+  comments: [
+    { path: "src/auth.ts", line: 12, body: "**Critical:** This exposes the token in logs", side: "RIGHT" }
+  ]
+})
+```
+
 ## Adding New Remotes
 
 To add a new GitHub instance, add these environment variables:
@@ -342,6 +390,7 @@ The remote name can be anything (e.g., `espn_code`, `twdcgrid`, `my_github`).
 - `github_list_remotes` - List configured remotes
 - `github_get_file` - Read a single file from a repository (decoded text content)
 - `github_get_files` - Read multiple files from a repository in one call
+- `github_create_review` - Create a PR review with inline comments on specific diff lines
 
 ## Output
 

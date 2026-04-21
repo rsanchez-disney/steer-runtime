@@ -7,6 +7,7 @@ $steerRoot = Join-Path $kiroDir "steer-runtime"
 # --- Workspace Context ---
 $ws = ""
 foreach ($f in @(
+    (Join-Path $kiroDir "settings\kite.json"),
     (Join-Path $kiroDir "settings\koda\steer_settings.json"),
     (Join-Path $kiroDir "settings\koda\shared_settings.json")
 )) {
@@ -40,6 +41,17 @@ if ($ws) {
         if ($d.projects) { Write-Output "- **Projects:** $($d.projects.Count)" }
         if ($d.services) { Write-Output "- **Services:** $($d.services -join ', ')" }
         if ($d.channels) { Write-Output "- **Channels:** $($d.channels -join ', ')" }
+        if ($d.teams) {
+            Write-Output "- **Teams:** $($d.teams.Count)"
+            foreach ($t in $d.teams) {
+                $info = $t.name
+                if ($t.jira_projects) { $info += " ($($t.jira_projects -join ', '))" }
+                if ($t.studio) { $info += " — Studio: $($t.studio)" }
+                elseif ($t.team_id) { $info += " — Team ID: $($t.team_id)" }
+                if ($t.board_ids) { $info += " [boards: $($t.board_ids -join ', ')]" }
+                Write-Output "  - $info"
+            }
+        }
     }
     Write-Output ""
 }

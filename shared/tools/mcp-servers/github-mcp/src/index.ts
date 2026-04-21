@@ -57,6 +57,10 @@ import {
     githubGetFilesSchema,
     handleGithubGetFiles,
 } from "./tools/githubGetFiles.js";
+import {
+    githubCreateReviewSchema,
+    handleGithubCreateReview,
+} from "./tools/githubCreateReview.js";
 
 // Load environment variables from .env file in the script's directory
 config({ path: path.join(scriptDir, "..", ".env") });
@@ -73,6 +77,7 @@ const allSchemas = [
     githubListRemotesSchema,
     githubGetFileSchema,
     githubGetFilesSchema,
+    githubCreateReviewSchema,
 ];
 
 // Build schemas with prefixed names
@@ -93,6 +98,7 @@ const baseHandlers: Record<string, (args: any) => Promise<any>> = {
     github_list_remotes: handleGithubListRemotes,
     github_get_file: handleGithubGetFile,
     github_get_files: handleGithubGetFiles,
+    github_create_review: handleGithubCreateReview,
 };
 
 // Build handler map with prefixed keys
