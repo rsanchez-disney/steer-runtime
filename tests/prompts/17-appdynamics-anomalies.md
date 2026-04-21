@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get anomalies for prod_ecommerce_S0001477_cme-dlr_aws with duration 24 hours and include suspected causes. Verify the response either returns anomaly data with summary counts or a clear message that the Anomaly Detection API is not available (controller < 26.x).

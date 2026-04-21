@@ -1,0 +1,1 @@
+Using the servicenow MCP, get related incidents for INC28844834. Verify the response includes the incident number, relatedCount, and a related array with number, relationship, and shortDescription fields.

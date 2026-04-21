@@ -54,3 +54,10 @@ When querying for a team's work:
 - quarterly_reporter_agent: groups achievements by team name
 - cross_team_coordinator_agent: maps dependencies between teams using jira_projects overlap
 - executive_briefing_agent: summarizes per-team status using board_ids for sprint data
+
+## Jira Custom Field Mapping
+
+| JQL Name | API Field | Type |
+|----------|-----------|------|
+| Studio | `customfield_20001` | `{value, id}` |
+| Team | `customfield_22600` | `{name, id}` |

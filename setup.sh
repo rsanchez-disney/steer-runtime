@@ -62,6 +62,9 @@ precompute_mcp_paths() {
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+    _p_splunk="$(to_win_path "$HOME/.kiro/tools/mcp-servers/splunk-mcp/dist/index.cjs")"
+    _p_appdynamics="$(to_win_path "$HOME/.kiro/tools/mcp-servers/appdynamics-mcp/dist/index.cjs")"
+    _p_servicenow="$(to_win_path "$HOME/.kiro/tools/mcp-servers/servicenow-mcp/dist/index.cjs")"
     _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _p_qtest="$(to_win_path "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs")"
@@ -1045,6 +1048,9 @@ p_confluence = r'$_p_confluence'
 p_github = r'$_p_github'
 p_mermaid = r'$_p_mermaid'
 p_bruno = r'$_p_bruno'
+p_splunk = r'$_p_splunk'
+p_appdynamics = r'$_p_appdynamics'
+p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
 
 def read_tok(key):
@@ -1115,6 +1121,48 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [p_bruno]
 }
+
+splunk_user = read_tok('SPLUNK_USERNAME')
+splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_url = read_tok('SPLUNK_BASE_URL')
+if splunk_user and splunk_pass:
+    mcp['mcpServers']['splunk-mcp'] = {
+        'command': 'node',
+        'args': [p_splunk],
+        'env': {
+            'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
+            'SPLUNK_USERNAME': splunk_user,
+            'SPLUNK_PASSWORD': splunk_pass,
+        }
+    }
+
+appd_id = read_tok('APPD_CLIENT_ID')
+appd_secret = read_tok('APPD_CLIENT_SECRET')
+appd_url = read_tok('APPD_CONTROLLER_URL')
+if appd_id and appd_secret:
+    mcp['mcpServers']['appdynamics-mcp'] = {
+        'command': 'node',
+        'args': [p_appdynamics],
+        'env': {
+            'APPD_CONTROLLER_URL': appd_url or 'https://disney-prod.saas.appdynamics.com',
+            'APPD_CLIENT_ID': appd_id,
+            'APPD_CLIENT_SECRET': appd_secret,
+        }
+    }
+
+snow_user = read_tok('SNOW_USERNAME')
+snow_pass = read_tok('SNOW_PASSWORD')
+snow_url = read_tok('SNOW_INSTANCE')
+if snow_user and snow_pass:
+    mcp['mcpServers']['servicenow-mcp'] = {
+        'command': 'node',
+        'args': [p_servicenow],
+        'env': {
+            'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
+            'SNOW_USERNAME': snow_user,
+            'SNOW_PASSWORD': snow_pass,
+        }
+    }
 
 qtest_token = read_tok('QTEST_BEARER_TOKEN')
 qtest_project = read_tok('QTEST_PROJECT_ID')
@@ -1950,6 +1998,9 @@ p_confluence = r'$_p_confluence'
 p_github = r'$_p_github'
 p_mermaid = r'$_p_mermaid'
 p_bruno = r'$_p_bruno'
+p_splunk = r'$_p_splunk'
+p_appdynamics = r'$_p_appdynamics'
+p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
 
 def read_tok(key):
@@ -2020,6 +2071,47 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+splunk_user = read_tok('SPLUNK_USERNAME')
+splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_url = read_tok('SPLUNK_BASE_URL')
+if splunk_user and splunk_pass:
+    mcp['mcpServers']['splunk-mcp'] = {
+        'command': 'node',
+        'args': [p_splunk],
+        'env': {
+            'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
+            'SPLUNK_USERNAME': splunk_user,
+            'SPLUNK_PASSWORD': splunk_pass,
+        }
+    }
+
+appd_id = read_tok('APPD_CLIENT_ID')
+appd_secret = read_tok('APPD_CLIENT_SECRET')
+appd_url = read_tok('APPD_CONTROLLER_URL')
+if appd_id and appd_secret:
+    mcp['mcpServers']['appdynamics-mcp'] = {
+        'command': 'node',
+        'args': [p_appdynamics],
+        'env': {
+            'APPD_CONTROLLER_URL': appd_url or 'https://disney-prod.saas.appdynamics.com',
+            'APPD_CLIENT_ID': appd_id,
+            'APPD_CLIENT_SECRET': appd_secret,
+        }
+    }
+
+snow_user = read_tok('SNOW_USERNAME')
+snow_pass = read_tok('SNOW_PASSWORD')
+snow_url = read_tok('SNOW_INSTANCE')
+if snow_user and snow_pass:
+    mcp['mcpServers']['servicenow-mcp'] = {
+        'command': 'node',
+        'args': [p_servicenow],
+        'env': {
+            'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
+            'SNOW_USERNAME': snow_user,
+            'SNOW_PASSWORD': snow_pass,
+        }
+    }
 qtest_token = read_tok('QTEST_BEARER_TOKEN')
 qtest_project = read_tok('QTEST_PROJECT_ID')
 if qtest_token:
