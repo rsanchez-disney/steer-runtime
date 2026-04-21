@@ -65,6 +65,19 @@ Use board IDs from the teams config:
 @jira/get_board_sprints with board_id from the studio's board_ids array
 ```
 
+
+## Jira Custom Field Mapping
+
+When reading ticket data from the API, these fields map to:
+
+| JQL Name | API Field | Type | Example Value |
+|----------|-----------|------|---------------|
+| Studio | `customfield_20001` | `{value, id}` | `{"value": "ROS - Gamora | Ruth", "id": "49374"}` |
+| Team | `customfield_22600` | `{name, id}` | `{"name": "TEP3 | Cosmo", "id": 1988}` |
+
+In JQL queries, use the display names:
+- `Studio = "ROS - Gamora | Ruth"` or `Studio = 49374`
+- `Team = "TEP3 | Cosmo"` or `Team = 1988`
 ## Data Collection
 - Achievements: epics with `status = Done` in the quarter date range
 - Velocity: story points completed per sprint from board data
