@@ -18,7 +18,7 @@ Requires `dev-core` as a base.
 .kiro-dev-mobile/
 ├── agents/       # 3 agent JSON configs
 ├── prompts/      # 3 agent prompt files
-├── steering/     # Flutter monorepo, mobile coordination
+├── steering/     # Flutter monorepo, mobile coordination, defect resolution
 └── skills/       # 4 skills: flutter-*, android-*, ios-*
 ```
 

@@ -25,6 +25,7 @@ Three specialized agents for Flutter and native mobile development have been cre
 
 **Steering:**
 - `20-repo-flutter-monorepo.md` - Repository structure
+- `30-defect-resolution.md` - Defect investigation and resolution workflow
 
 ---
 
@@ -156,10 +157,11 @@ All agents coordinate on:
 │       ├── agents/flutter.json         # Agent config
 │       ├── prompts/flutter.md          # Agent instructions
 │       ├── skills/
-│       │   ├── flutter-provider-pattern.md
-│       │   └── flutter-monorepo-packages.md
+│       │   ├── flutter-monorepo-packages.md
+│       │   └── flutter-provider-pattern.md
 │       └── steering/
-│           └── 20-repo-flutter-monorepo.md
+│           ├── 20-repo-flutter-monorepo.md
+│           └── 30-defect-resolution.md
 ├── android_native/
 │   └── .kiro/
 │       ├── agents/android_native.json
@@ -208,4 +210,4 @@ All agents coordinate through the orchestrator for cross-platform features.
 **Created:** March 11, 2026
 **Agents:** 3 (flutter, android_native, ios_native)
 **Skills:** 4 documents
-**Steering:** 2 documents
+**Steering:** 3 documents

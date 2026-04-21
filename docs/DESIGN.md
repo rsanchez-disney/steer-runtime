@@ -168,7 +168,9 @@ Specialized capabilities in `.kiro/skills/`:
 - `backend-endpoint-implementation.md`
 - `ui-feature-implementation.md`
 - `flutter-provider-pattern.md`
+- `flutter-monorepo-packages.md`
 - `android-platform-channels.md`
+- `ios-platform-channels.md`
 - And more...
 
 ---

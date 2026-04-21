@@ -2,7 +2,15 @@
   "name": "opsheet-team",
   "description": "OpSheet+ workspaces for fullstack development",
   "team": "OpSheet+ Product Team",
-  "profiles": ["dev-core", "dev-web", "dev-mobile", "qa", "ops", "dev-vas"],
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "dev-mobile",
+    "qa",
+    "ops",
+    "dev-vas",
+    "dev-tools"
+  ],
   "default_agent": "orchestrator",
   "projects": [
     {
@@ -12,7 +20,13 @@
       "memory_bank": "opsheet-plus-vas"
     }
   ],
-  "rules": ["conventional_commit", "general-node-development", "general-angular-development", "general-go-development", "general-flutter-development"],
+  "rules": [
+    "conventional_commit",
+    "general-node-development",
+    "general-angular-development",
+    "general-go-development",
+    "general-flutter-development"
+  ],
   "enable_tools": true,
   "jira_prefix": "OPS-"
 }

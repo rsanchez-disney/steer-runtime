@@ -43,3 +43,6 @@ VERSION
 
 # Kiro IDE hooks (workspace-level, not committed)
 .kiro/hooks/
+
+# Temporary ticket context files (created by fetch-ticket-context skill in dev-tools)
+.kiro/context/
