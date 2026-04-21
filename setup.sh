@@ -62,6 +62,7 @@ precompute_mcp_paths() {
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
+    _p_splunk="$(to_win_path "$HOME/.kiro/tools/mcp-servers/splunk-mcp/dist/index.cjs")"
     _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _node_cmd="node"
@@ -1080,6 +1081,20 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+splunk_user = read_tok('SPLUNK_USERNAME')
+splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_url = read_tok('SPLUNK_BASE_URL')
+if splunk_user and splunk_pass:
+    mcp['mcpServers']['splunk-mcp'] = {
+        'command': 'node',
+        'args': [p_splunk],
+        'env': {
+            'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
+            'SPLUNK_USERNAME': splunk_user,
+            'SPLUNK_PASSWORD': splunk_pass,
+        }
+    }
+
 compass_token = read_tok('COMPASS_TOKEN')
 if compass_token:
     mcp['mcpServers']['compass'] = {
@@ -1902,6 +1917,7 @@ p_confluence = r'$_p_confluence'
 p_github = r'$_p_github'
 p_mermaid = r'$_p_mermaid'
 p_bruno = r'$_p_bruno'
+p_splunk = r'$_p_splunk'
 
 def read_tok(key):
     try:
@@ -1971,6 +1987,19 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+splunk_user = read_tok('SPLUNK_USERNAME')
+splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_url = read_tok('SPLUNK_BASE_URL')
+if splunk_user and splunk_pass:
+    mcp['mcpServers']['splunk-mcp'] = {
+        'command': 'node',
+        'args': [p_splunk],
+        'env': {
+            'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
+            'SPLUNK_USERNAME': splunk_user,
+            'SPLUNK_PASSWORD': splunk_pass,
+        }
+    }
 
 compass_token = read_tok('COMPASS_TOKEN')
 if compass_token:
