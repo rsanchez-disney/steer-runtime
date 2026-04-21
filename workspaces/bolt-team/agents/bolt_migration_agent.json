@@ -1,0 +1,69 @@
+{
+  "name": "bolt_migration_agent",
+  "description": "BOLT frontend migration specialist — AngularJS 1.4 → Angular 20 with WAM → WebTier BFF replacement",
+  "prompt": "bolt_migration_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "code",
+    "thinking",
+    "todo_list",
+    "subagent"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "libs/**",
+        "apps/**",
+        "e2e/**",
+        "package.json",
+        "angular.json",
+        "nx.json",
+        "tsconfig*.json",
+        ".eslintrc*",
+        "tailwind.config.*",
+        "Dockerfile",
+        "*.yaml",
+        "*.yml"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/angular_modern_patterns.md",
+    "file://.kiro/context/node_conventions.md",
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "/Users/ricardo.sanchez/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "/Users/ricardo.sanchez/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "/Users/ricardo.sanchez/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "/Users/ricardo.sanchez/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}
