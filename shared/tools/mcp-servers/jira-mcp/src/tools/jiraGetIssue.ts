@@ -39,6 +39,7 @@ export const jiraGetIssueSchema = {
                         "labels",
                         "components",
                         "customfield_10003",
+                        "customfield_20104",
                     ],
                 },
                 description:

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const __import_meta_url = require("url").pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
@@ -438,14 +439,18 @@ var init_customFields = __esm({
       storyPoints: "customfield_10004",
       epicLink: "customfield_10014",
       // ── Studio / Programme ───────────────────────────
-      studio: "customfield_20001"
+      studio: "customfield_20001",
+      // ── Test / QA ────────────────────────────────────
+      testDetails: "customfield_20104"
       // Add more aliases below as needed:
       // myAlias: "customfield_XXXXX",
     };
-    REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
-      fieldId,
-      alias
-    ]));
+    REVERSE_ALIASES = Object.fromEntries(
+      Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
+        fieldId,
+        alias
+      ])
+    );
   }
 });
 
@@ -5721,26 +5726,37 @@ var StdioServerTransport = class {
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var import_meta = {};
 var JiraAuth = class {
   jiraPat = null;
   async getJiraPat() {
     if (this.jiraPat) {
       return this.jiraPat;
     }
-    const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-    const __dirname = (0, import_path.dirname)(__filename);
-    const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-    console.error(`Loading .env from: ${envPath}`);
-    (0, import_dotenv.config)({ path: envPath });
     if (process.env.JIRA_PAT) {
       this.jiraPat = process.env.JIRA_PAT;
       return this.jiraPat;
     }
-    throw new Error(`JIRA PAT not found. Set JIRA_PAT environment variable or add JIRA_PAT=your_token to .env file. Tried loading from: ${envPath}`);
+    try {
+      const __filename = (0, import_url.fileURLToPath)(import_meta.url);
+      const __dirname = (0, import_path.dirname)(__filename);
+      const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+      console.error(`Loading .env from: ${envPath}`);
+      (0, import_dotenv.config)({ path: envPath });
+      if (process.env.JIRA_PAT) {
+        this.jiraPat = process.env.JIRA_PAT;
+        return this.jiraPat;
+      }
+    } catch (e) {
+      console.error(`Failed to load .env file: ${e.message}`);
+    }
+    throw new Error(
+      `JIRA PAT not found. Set JIRA_PAT environment variable or add JIRA_PAT=your_token to .env file.`
+    );
   }
 };
 
-// build/utils/jiraApi.js
+// src/utils/jiraApi.ts
 var JiraApiClient = class {
   auth = new JiraAuth();
   async fetchJiraTicket(ticketId, fields) {
@@ -6444,7 +6460,8 @@ var jiraGetIssueSchema = {
             "description",
             "labels",
             "components",
-            "customfield_10003"
+            "customfield_10003",
+            "customfield_20104"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
@@ -6487,7 +6504,13 @@ async function handleJiraGetIssue(args) {
       customFieldSection = lines.join("\n");
     }
     const fullSummary = `${summary}${customFieldSection}`;
-    const savedPath = await saveTicketData(outputDir, ticketId, ticket, fullSummary, true);
+    const savedPath = await saveTicketData(
+      outputDir,
+      ticketId,
+      ticket,
+      fullSummary,
+      true
+    );
     const savedInfo = savedPath ? `
 
 **Saved to:** ${savedPath}` : "";
