@@ -50,6 +50,7 @@ export async function handleQtestGetTestCase(args: GetTestCaseArgs): Promise<Too
     const testCase = await client.get<QtestTestCase>(lookupPath);
 
     // Fetch test steps from the versioned endpoint
+    let stepsWarning = "";
     const numericId = testCase.id;
     const versionId = (testCase as any).test_case_version_id ?? (testCase as any).version;
     if (versionId) {
@@ -60,12 +61,14 @@ export async function handleQtestGetTestCase(args: GetTestCaseArgs): Promise<Too
         if (steps && steps.length > 0) {
           testCase.test_steps = steps;
         }
-      } catch {
-        // Steps fetch failed — continue with whatever test_steps came from the main response
+      } catch (stepsError) {
+        const msg = stepsError instanceof Error ? stepsError.message : String(stepsError);
+        console.error(`[qtest-mcp] Warning: failed to fetch test steps: ${msg}`);
+        stepsWarning = `\n\n**⚠️ Warning:** Test steps could not be loaded from the versioned endpoint. Showing steps from the base response (may be incomplete).`;
       }
     }
 
-    const summary = formatTestCase(testCase);
+    const summary = formatTestCase(testCase) + stepsWarning;
 
     const savedPath = await saveData(
       outputDir as string | false | null | undefined,
