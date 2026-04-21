@@ -39,6 +39,13 @@
   ],
   "rules": ["conventional_commit", "general-node-development", "general-angular-development"],
   "enable_tools": true,
-  "jira_prefix": "BOLT-",
+  "jira_prefix": "GRPS-",
+  "jira_components": [
+    "wdprt-bolt-admin-spa",
+    "wdprt-bolt-admin-wam",
+    "wdprt-bolt-service",
+    "bolt-admin",
+    "bolt-docs"
+  ],
   "workspace_path": "/Users/ricardo.sanchez/Workspace/Disney/wdprd-development"
 }
