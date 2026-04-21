@@ -1,0 +1,1 @@
+Using the servicenow MCP, get the incident timeline for INC28844834. Verify the response includes the incident number, entryCount, and a timeline array with timestamp, field, newValue, user, and type fields sorted by most recent first.

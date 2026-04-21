@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get events for prod_ecommerce_S0001477_cme-dlr_aws with duration 1440 minutes (24h). Verify the response includes eventCount and an events array with id, type, severity, and summary fields.
