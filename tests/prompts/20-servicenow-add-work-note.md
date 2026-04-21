@@ -1,1 +1,1 @@
-Using the servicenow MCP, add a work note to incident INC28844834 with text "MCP integration test — work note added via appdynamics/servicenow MCP test suite". Verify the response returns status success and the incident number.
+Using the servicenow MCP, verify the add_work_note tool exists and accepts parameters incidentNumber and workNote. Do NOT actually add a work note. Instead, confirm the tool is callable by checking its schema/availability only.

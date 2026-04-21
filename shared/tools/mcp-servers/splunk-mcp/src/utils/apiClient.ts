@@ -3,18 +3,12 @@ import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import fetch from "node-fetch";
 
-const DEFAULT_TIMEOUT_MS = 60000; // Splunk searches can take longer
-
-interface TokenCache {
-    sessionKey: string | null;
-    expiresAt: number;
-}
+const DEFAULT_TIMEOUT_MS = 60000;
 
 export class SplunkApiClient {
     private baseUrl: string | null = null;
     private username: string | null = null;
     private password: string | null = null;
-    private tokenCache: TokenCache = { sessionKey: null, expiresAt: 0 };
 
     async loadConfig() {
         if (!this.baseUrl || !this.username || !this.password) {
@@ -46,48 +40,12 @@ export class SplunkApiClient {
         }
     }
 
-    private async getSessionKey(): Promise<string> {
-        await this.loadConfig();
-        const now = Date.now() / 1000;
-
-        if (this.tokenCache.sessionKey && this.tokenCache.expiresAt > now + 60) {
-            return this.tokenCache.sessionKey;
-        }
-
-        const url = `${this.baseUrl}/services/auth/login`;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-
-        try {
-            const body = new URLSearchParams({
-                username: this.username!,
-                password: this.password!,
-                output_mode: "json",
-            });
-
-            const response = await fetch(url, {
-                method: "POST",
-                body,
-                signal: controller.signal,
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Splunk auth error: ${response.status} - ${errorText}`);
-            }
-
-            const data = (await response.json()) as any;
-            this.tokenCache.sessionKey = data.sessionKey;
-            // Splunk session keys last ~1 hour by default
-            this.tokenCache.expiresAt = now + 3600;
-            return data.sessionKey;
-        } finally {
-            clearTimeout(timeout);
-        }
+    private authHeader(): string {
+        return "Basic " + Buffer.from(`${this.username}:${this.password}`).toString("base64");
     }
 
     async get(path: string, params: Record<string, string> = {}): Promise<any> {
-        const sessionKey = await this.getSessionKey();
+        await this.loadConfig();
         params.output_mode = "json";
         const qs = new URLSearchParams(params).toString();
         const url = `${this.baseUrl}${path}${qs ? `?${qs}` : ""}`;
@@ -97,7 +55,10 @@ export class SplunkApiClient {
 
         try {
             const response = await fetch(url, {
-                headers: { Authorization: `Splunk ${sessionKey}` },
+                headers: {
+                    Authorization: this.authHeader(),
+                    Accept: "application/json",
+                },
                 signal: controller.signal,
             });
 
@@ -113,7 +74,7 @@ export class SplunkApiClient {
     }
 
     async post(path: string, params: Record<string, string> = {}): Promise<any> {
-        const sessionKey = await this.getSessionKey();
+        await this.loadConfig();
         params.output_mode = "json";
         const url = `${this.baseUrl}${path}`;
 
@@ -124,7 +85,10 @@ export class SplunkApiClient {
             const response = await fetch(url, {
                 method: "POST",
                 body: new URLSearchParams(params),
-                headers: { Authorization: `Splunk ${sessionKey}` },
+                headers: {
+                    Authorization: this.authHeader(),
+                    Accept: "application/json",
+                },
                 signal: controller.signal,
             });
 
@@ -141,7 +105,7 @@ export class SplunkApiClient {
 
     async createSearch(query: string, params: Record<string, string> = {}): Promise<string> {
         const result = await this.post("/services/search/jobs", {
-            search: query.startsWith("search") ? query : `search ${query}`,
+            search: (query.startsWith("search") || query.startsWith("|")) ? query : `search ${query}`,
             ...params,
         });
         return result.sid;
@@ -183,10 +147,7 @@ export class SplunkApiClient {
         await this.loadConfig();
         console.error(`[splunk-mcp] Base URL: ${this.baseUrl}`);
         console.error(`[splunk-mcp] Username: ${this.username}`);
-
-        console.error("[splunk-mcp] Testing authentication...");
-        const sessionKey = await this.getSessionKey();
-        console.error(`[splunk-mcp] Session key acquired (${sessionKey.substring(0, 8)}...)`);
+        console.error("[splunk-mcp] Auth: Basic Auth");
 
         console.error("[splunk-mcp] Testing API connectivity...");
         const info = await this.get("/services/server/info");

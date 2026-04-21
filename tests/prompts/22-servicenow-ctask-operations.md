@@ -1,1 +1,1 @@
-Using the servicenow MCP, get CTASK details for a CTASK number provided by the user. Verify the response includes number, short_description, state, assignment_group, assigned_to, change_request, and sys_created_on fields. Then add a work note "MCP integration test — CTASK work note" and verify success.
+Using the servicenow MCP, get CTASK details for CTASK0010001 (or any valid CTASK). Verify the response includes number, short_description, state, assignment_group, assigned_to, change_request, and sys_created_on fields. Do NOT add work notes or modify the CTASK.

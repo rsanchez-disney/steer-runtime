@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the bulk_update_incidents tool exists and accepts parameters incidentNumbers and fieldsJson. Do NOT actually update any incidents. Instead, confirm the tool is callable by checking its schema/availability only.

@@ -1,0 +1,1 @@
+Using the splunk MCP, get alert history for "CME DLR No Show -  Daily Penalty Lift Process Not Completed" with count 10. Verify the response includes summary with totalTriggers and avgIntervalMinutes, and history array.

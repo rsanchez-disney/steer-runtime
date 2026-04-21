@@ -1,0 +1,1 @@
+Using the splunk MCP, get alert details for "CME DLR No Show -  Daily Penalty Lift Process Not Completed" in the search app. Verify the response includes config with name, search, and actions fields, and recentTriggers array.
