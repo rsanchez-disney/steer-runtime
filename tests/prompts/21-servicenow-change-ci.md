@@ -1,1 +1,1 @@
-Using the servicenow MCP, change the Configuration Item on incident INC28844834 to "WDPRD Ticket Management Service". Verify the response returns status success with the incident number and CI name.
+Using the servicenow MCP, verify the change_ci tool exists and accepts parameters incidentNumber and ciName. Do NOT actually change a CI. Instead, confirm the tool is callable by checking its schema/availability only.

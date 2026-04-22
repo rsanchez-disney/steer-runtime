@@ -1,0 +1,1 @@
+Using the splunk MCP, get dashboard definition for "4_pcs_tower__top_10_failure_detection_dashboard_trend_chart" in the ticketing app. Verify the response includes name, label, panelCount, and panels array with title and search fields.

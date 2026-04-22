@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the create_problem tool exists and accepts parameters shortDescription, description, ciName, assignmentGroup, category, and priority. Do NOT actually create a problem record. Instead, confirm the tool is callable by checking its schema/availability only.

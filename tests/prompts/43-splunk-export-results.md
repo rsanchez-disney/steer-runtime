@@ -1,0 +1,1 @@
+Using the splunk MCP, export results for query 'index=wdpr_booking_service OrderAnalyticsLogger | head 5' with earliest time -15m. Verify the response contains CSV formatted output with column headers and rows.
