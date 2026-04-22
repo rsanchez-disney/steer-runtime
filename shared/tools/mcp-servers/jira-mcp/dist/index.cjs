@@ -5726,9 +5726,11 @@ var JiraAuth = class {
   jiraPat = null;
   jiraUrl = null;
   jiraEmail = null;
+  loaded = false;
   loadEnv() {
-    if (this.jiraPat)
+    if (this.loaded)
       return;
+    this.loaded = true;
     this.jiraPat = process.env.JIRA_PAT || null;
     this.jiraUrl = process.env.JIRA_URL || null;
     this.jiraEmail = process.env.JIRA_EMAIL || null;
@@ -5782,9 +5784,16 @@ var JiraAuth = class {
 };
 
 // build/utils/jiraApi.js
-var JiraApiClient = class {
+function toADF(text) {
+  return {
+    type: "doc",
+    version: 1,
+    content: [{ type: "paragraph", content: [{ type: "text", text }] }]
+  };
+}
+var JiraApiClient = class _JiraApiClient {
   auth = new JiraAuth();
-  fieldCache = null;
+  static fieldCache = null;
   /** Resolves custom field names to IDs. Caches the field list on first call. */
   async resolveCustomFields() {
     const raw = this.auth.getRawCustomFields();
@@ -5792,26 +5801,26 @@ var JiraApiClient = class {
       return [];
     if (raw.every((f) => f.startsWith("customfield_")))
       return raw;
-    if (!this.fieldCache) {
+    if (!_JiraApiClient.fieldCache) {
       try {
         const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`, { headers: { Authorization: await this.auth.getAuthHeader() } });
         if (response.ok) {
           const fields = await response.json();
-          this.fieldCache = /* @__PURE__ */ new Map();
+          _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
           for (const f of fields) {
-            this.fieldCache.set(f.name.toLowerCase(), f.id);
+            _JiraApiClient.fieldCache.set(f.name.toLowerCase(), f.id);
           }
         } else {
-          this.fieldCache = /* @__PURE__ */ new Map();
+          _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
         }
       } catch {
-        this.fieldCache = /* @__PURE__ */ new Map();
+        _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
       }
     }
     return raw.map((entry) => {
       if (entry.startsWith("customfield_"))
         return entry;
-      const id = this.fieldCache.get(entry.toLowerCase());
+      const id = _JiraApiClient.fieldCache.get(entry.toLowerCase());
       if (id)
         return id;
       console.error(`Custom field "${entry}" not found \u2014 skipping`);
@@ -5902,7 +5911,7 @@ var JiraApiClient = class {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ body: comment })
+      body: JSON.stringify({ body: this.auth.isCloud() ? toADF(comment) : comment })
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -5948,10 +5957,10 @@ var JiraApiClient = class {
       issuetype: { name: issueType }
     };
     if (description) {
-      fields.description = description;
+      fields.description = this.auth.isCloud() ? toADF(description) : description;
     }
     if (assignee) {
-      fields.assignee = { name: assignee };
+      fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
     }
     if (epicLink) {
       const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
@@ -6119,11 +6128,17 @@ var JiraApiClient = class {
   // ==========================================
   // XRay REST API Methods
   // ==========================================
+  assertXRayServer() {
+    if (this.auth.isCloud()) {
+      throw new Error("XRay tools are not supported on Jira Cloud. XRay Cloud uses a different API (xray.cloud.getxray.app).");
+    }
+  }
   /**
    * Get all test steps for a Test issue
    * GET /rest/raven/2.0/api/test/{testKey}/step
    */
   async getXrayTestSteps(testKey) {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6141,6 +6156,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
    */
   async getXrayTestStep(testKey, stepId) {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6158,6 +6174,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testexec/{testExecKey}/test
    */
   async getXrayTestExecTests(testExecKey, detailed = false, page, limit) {
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (detailed)
       params.append("detailed", "true");
@@ -6184,6 +6201,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/precondition
    */
   async getXrayTestPreConditions(testKey) {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6201,6 +6219,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testset
    */
   async getXrayTestSets(testKey) {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6218,6 +6237,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testexecution
    */
   async getXrayTestExecutions(testKey, page, limit) {
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6242,6 +6262,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testplan
    */
   async getXrayTestPlans(testKey) {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6259,6 +6280,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testplan/{testPlanKey}/test
    */
   async getXrayTestPlanTests(testPlanKey, page, limit) {
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6283,6 +6305,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testset/{testSetKey}/test
    */
   async getXrayTestSetTests(testSetKey, page, limit) {
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6307,6 +6330,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testruns
    */
   async getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit) {
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (testExecKey)
       params.append("testExecKey", testExecKey);
@@ -6339,6 +6363,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/settings/teststatuses
    */
   async getXrayTestStatuses() {
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6356,6 +6381,8 @@ var JiraApiClient = class {
    * Combines multiple XRay API calls into one comprehensive response
    */
   async getXrayTestCaseFull(testKey) {
+    this.assertXRayServer();
+    this.assertXRayServer();
     const issueResponse = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6389,6 +6416,8 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
    */
   async getXrayPreConditionTests(preConditionKey) {
+    this.assertXRayServer();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -7769,6 +7798,9 @@ var jiraGetChildIssuesSchema = {
 async function handleJiraGetChildIssues(args) {
   try {
     const { parentKey, maxResults = 100 } = args;
+    if (!/^[A-Z][A-Z0-9_]+-\d+$/.test(parentKey)) {
+      throw new Error(`Invalid JIRA key format: ${parentKey}`);
+    }
     const apiClient = new JiraApiClient();
     const jql = `parent = ${parentKey} ORDER BY created ASC`;
     const result = await apiClient.searchJiraIssues(jql, maxResults, 0, [
@@ -7794,6 +7826,11 @@ async function handleJiraGetChildIssues(args) {
     });
     if (issues.length === 0)
       text += "No child issues found.\n";
+    if (result.total > issues.length) {
+      text += `
+_Showing ${issues.length} of ${result.total} children._
+`;
+    }
     return { content: [{ type: "text", text }] };
   } catch (error) {
     return {

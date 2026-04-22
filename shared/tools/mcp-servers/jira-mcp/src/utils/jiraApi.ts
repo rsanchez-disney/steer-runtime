@@ -1,10 +1,19 @@
 import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
 
+/** Wrap plain text in Atlassian Document Format (required by Jira Cloud API v3). */
+function toADF(text: string): object {
+    return {
+        type: "doc",
+        version: 1,
+        content: [{ type: "paragraph", content: [{ type: "text", text }] }],
+    };
+}
+
 export class JiraApiClient {
     auth = new JiraAuth();
 
-    private fieldCache: Map<string, string> | null = null;
+    private static fieldCache: Map<string, string> | null = null;
 
     /** Resolves custom field names to IDs. Caches the field list on first call. */
     async resolveCustomFields(): Promise<string[]> {
@@ -15,7 +24,7 @@ export class JiraApiClient {
         if (raw.every(f => f.startsWith("customfield_"))) return raw;
 
         // Fetch field metadata once
-        if (!this.fieldCache) {
+        if (!JiraApiClient.fieldCache) {
             try {
                 const response = await fetch(
                     `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`,
@@ -23,22 +32,22 @@ export class JiraApiClient {
                 );
                 if (response.ok) {
                     const fields: Array<{ id: string; name: string }> = await response.json();
-                    this.fieldCache = new Map();
+                    JiraApiClient.fieldCache = new Map();
                     for (const f of fields) {
-                        this.fieldCache.set(f.name.toLowerCase(), f.id);
+                        JiraApiClient.fieldCache.set(f.name.toLowerCase(), f.id);
                     }
                 } else {
-                    this.fieldCache = new Map();
+                    JiraApiClient.fieldCache = new Map();
                 }
             } catch {
-                this.fieldCache = new Map();
+                JiraApiClient.fieldCache = new Map();
             }
         }
 
         // Resolve names to IDs
         return raw.map(entry => {
             if (entry.startsWith("customfield_")) return entry;
-            const id = this.fieldCache!.get(entry.toLowerCase());
+            const id = JiraApiClient.fieldCache!.get(entry.toLowerCase());
             if (id) return id;
             console.error(`Custom field "${entry}" not found — skipping`);
             return "";
@@ -182,7 +191,7 @@ export class JiraApiClient {
                     Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ body: comment }),
+                body: JSON.stringify({ body: this.auth.isCloud() ? toADF(comment) : comment }),
             },
         );
 
@@ -263,11 +272,11 @@ export class JiraApiClient {
         };
 
         if (description) {
-            fields.description = description;
+            fields.description = this.auth.isCloud() ? toADF(description) : description;
         }
 
         if (assignee) {
-            fields.assignee = { name: assignee };
+            fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
         }
 
         if (epicLink) {
@@ -533,11 +542,18 @@ export class JiraApiClient {
     // XRay REST API Methods
     // ==========================================
 
+    private assertXRayServer() {
+        if (this.auth.isCloud()) {
+            throw new Error("XRay tools are not supported on Jira Cloud. XRay Cloud uses a different API (xray.cloud.getxray.app).");
+        }
+    }
+
     /**
      * Get all test steps for a Test issue
      * GET /rest/raven/2.0/api/test/{testKey}/step
      */
     async getXrayTestSteps(testKey: string): Promise<any[]> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`,
@@ -564,6 +580,7 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
      */
     async getXrayTestStep(testKey: string, stepId: string): Promise<any> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
@@ -595,6 +612,7 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
+        this.assertXRayServer();
 
         const params = new URLSearchParams();
         if (detailed) params.append("detailed", "true");
@@ -626,6 +644,7 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/precondition
      */
     async getXrayTestPreConditions(testKey: string): Promise<any[]> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`,
@@ -652,6 +671,7 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/testset
      */
     async getXrayTestSets(testKey: string): Promise<any[]> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`,
@@ -682,6 +702,7 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
+        this.assertXRayServer();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -712,6 +733,7 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/testplan
      */
     async getXrayTestPlans(testKey: string): Promise<any[]> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`,
@@ -742,6 +764,7 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
+        this.assertXRayServer();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -776,6 +799,7 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
+        this.assertXRayServer();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -813,6 +837,7 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
+        this.assertXRayServer();
 
         const params = new URLSearchParams();
         if (testExecKey) params.append("testExecKey", testExecKey);
@@ -848,6 +873,7 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/settings/teststatuses
      */
     async getXrayTestStatuses(): Promise<any[]> {
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`,
@@ -874,6 +900,8 @@ export class JiraApiClient {
      * Combines multiple XRay API calls into one comprehensive response
      */
     async getXrayTestCaseFull(testKey: string): Promise<any> {
+        this.assertXRayServer();
+        this.assertXRayServer();
 
         // Fetch the Jira issue with all fields
         const issueResponse = await fetch(
@@ -934,6 +962,8 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
      */
     async getXrayPreConditionTests(preConditionKey: string): Promise<any[]> {
+        this.assertXRayServer();
+        this.assertXRayServer();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`,

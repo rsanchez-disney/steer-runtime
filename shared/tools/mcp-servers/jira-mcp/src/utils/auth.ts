@@ -9,8 +9,11 @@ export class JiraAuth {
     private jiraUrl: string | null = null;
     private jiraEmail: string | null = null;
 
+    private loaded = false;
+
     private loadEnv() {
-        if (this.jiraPat) return;
+        if (this.loaded) return;
+        this.loaded = true;
         this.jiraPat = process.env.JIRA_PAT || null;
         this.jiraUrl = process.env.JIRA_URL || null;
         this.jiraEmail = process.env.JIRA_EMAIL || null;

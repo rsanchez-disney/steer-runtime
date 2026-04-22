@@ -25,6 +25,9 @@ export async function handleJiraGetChildIssues(args: any): Promise<any> {
             parentKey: string;
             maxResults?: number;
         };
+        if (!/^[A-Z][A-Z0-9_]+-\d+$/.test(parentKey)) {
+            throw new Error(`Invalid JIRA key format: ${parentKey}`);
+        }
         const apiClient = new JiraApiClient();
         const jql = `parent = ${parentKey} ORDER BY created ASC`;
         const result = await apiClient.searchJiraIssues(jql, maxResults, 0, [
@@ -42,6 +45,9 @@ export async function handleJiraGetChildIssues(args: any): Promise<any> {
             text += `- Priority: ${f.priority?.name || "Unknown"}\n\n`;
         });
         if (issues.length === 0) text += "No child issues found.\n";
+        if (result.total > issues.length) {
+            text += `\n_Showing ${issues.length} of ${result.total} children._\n`;
+        }
 
         return { content: [{ type: "text", text }] };
     } catch (error) {
