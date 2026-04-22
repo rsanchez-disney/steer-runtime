@@ -309,5 +309,6 @@ When multiple MCP servers can handle the same task, use this priority order:
 3. **Jira keys trigger story_analyzer_agent** — `CCS-1176`, `DPAY-14337`, any `XXX-1234` pattern
 4. **NEVER say "I don't have access to Jira"** — delegate to story_analyzer_agent instead
 5. **NEVER ask for ticket details** — story_analyzer_agent fetches them via @jira/* MCP tools
+6. **NEVER call Jira or Confluence tools directly** — always delegate to story_analyzer_agent for Jira and to agents with @confluence/* for Confluence. You do NOT have @jira/* or @compass/* tools.
 6. **Approval gates are mandatory** — never skip gates
 7. **Test coverage ≥90%** — enforce at quality gate

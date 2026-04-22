@@ -10,8 +10,7 @@
     "fs_read",
     "thinking",
     "todo_list",
-    "@yax/*",
-    "@compass/*"
+    "@yax/*"
   ],
   "resources": [
     "file://AGENTS.md",
