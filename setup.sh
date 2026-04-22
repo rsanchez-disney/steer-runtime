@@ -1086,6 +1086,10 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+# NOTE: Splunk, AppDynamics, and ServiceNow MCP registration below is handled
+# automatically by Koda (v0.4.66+) via GenerateMcpJson. These blocks remain
+# for non-Koda installs. If using Koda, configure tokens in the TUI (press m).
+
 splunk_user = read_tok('SPLUNK_USERNAME')
 splunk_pass = read_tok('SPLUNK_PASSWORD')
 splunk_url = read_tok('SPLUNK_BASE_URL')
@@ -2021,6 +2025,8 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [p_bruno]
 }
+
+# NOTE: See comment at line ~1089 — these blocks are for non-Koda installs only.
 
 splunk_user = read_tok('SPLUNK_USERNAME')
 splunk_pass = read_tok('SPLUNK_PASSWORD')
