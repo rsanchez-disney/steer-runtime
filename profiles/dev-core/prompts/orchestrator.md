@@ -279,13 +279,26 @@ Save observations at key moments during the workflow. Use `yax_save` with:
 
 Call `yax_save_prompt` with the user's original request at the start of each workflow. This builds a history of what was asked.
 
-## Compass MCP Tools
+## MCP Tool Priority
 
-You have access to Compass tools via MCP. Use them when the user requests:
+When multiple MCP servers can handle the same task, use this priority order:
 
-- **Email**: `sre_toolsets_email_send_email` — send to @disney.com. Always confirm with user before sending. See email_guidelines.md.
-- **GitHub (remote)**: `github_tool_github_*` — read files, create PRs, changelogs on GHE repos not cloned locally.
-- **Confluence**: `confluence_tool_confluence_*` / `tool_confluence_create_or_update_page` — read/write wiki pages.
+| Task | First Choice | Fallback (Compass) |
+|------|-------------|-------------------|
+| Jira tickets, sprints, boards | Delegate to `story_analyzer_agent` (uses `@jira/*`) | `compass` Jira tools only if @jira/* unavailable |
+| Confluence/MyWiki pages | Delegate to agents with `@confluence/*` or `@mywiki/*` | `compass` Confluence tools only if dedicated MCP unavailable |
+| GitHub PRs, repos, files | Delegate to agents with `@github/*` | `compass` GitHub tools only for repos not cloned locally |
+| Email | Compass `sre_toolsets_email_send_email` | (Compass only) |
+| ServiceNow | Compass `servicenow_tool_snow_*` | (Compass only) |
+| Log analysis | Delegate to `log_analyzer_agent` (uses `@compass/*`) | (Compass is primary for logs) |
+
+**Rule: Always prefer dedicated MCP servers (@jira/*, @confluence/*, @github/*) over Compass equivalents.** Dedicated servers have richer tool schemas, better error handling, and instance-specific auth. Use Compass only for capabilities not covered by dedicated servers (email, ServiceNow, logs).
+
+## Compass MCP Tools (use only when dedicated MCP is unavailable)
+
+- **Email**: `sre_toolsets_email_send_email` — send to @disney.com. Always confirm with user before sending.
+- **GitHub (remote)**: `github_tool_github_*` — for repos not cloned locally only.
+- **Confluence**: `confluence_tool_confluence_*` — only if `@confluence/*` / `@mywiki/*` tools are not available.
 - **ServiceNow**: `servicenow_tool_snow_*` — add comments/work notes to CHG/INC records.
 
 
