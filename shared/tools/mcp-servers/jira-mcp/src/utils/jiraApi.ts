@@ -231,9 +231,11 @@ export class JiraApiClient {
         }
 
         if (epicLink) {
-            console.error(
-                `Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`,
-            );
+            const { resolveCustomFieldIds } = await import("./customFields.js");
+            const resolved = resolveCustomFieldIds(["epicLink"]);
+            if (resolved.length > 0) {
+                fields[resolved[0]] = epicLink;
+            }
         }
 
         if (components && components.length > 0) {
@@ -666,6 +668,42 @@ export class JiraApiClient {
     }
 
     /**
+     * Add tests to a Test Execution
+     * POST /rest/raven/2.0/api/testexec/{testExecKey}/test
+     */
+    async addTestsToTestExec(
+        testExecKey: string,
+        testKeys: string[],
+    ): Promise<void> {
+        const pat = await this.auth.getJiraPat();
+
+        // Xray Server REST API — POST /rest/raven/1.0/api/testexec/{key}/test
+        // Body: {"add": ["KEY-1", "KEY-2"]} — CollectionBean format
+        const payload = JSON.stringify({ add: testKeys });
+        console.error(`[xray] POST /rest/raven/1.0/api/testexec/${testExecKey}/test body=${payload}`);
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/raven/1.0/api/testexec/${testExecKey}/test`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+                body: payload,
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            console.error(`[xray] Response: ${response.status} ${errText}`);
+            throw new Error(
+                `Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+    }
+
+    /**
      * Get pre-conditions for a Test
      * GET /rest/raven/2.0/api/test/{testKey}/precondition
      */
@@ -1065,6 +1103,33 @@ export class JiraApiClient {
             const errorText = await response.text();
             throw new Error(
                 `Failed to get JIRA issue link types: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get the currently authenticated user's profile
+     * GET /rest/api/2/myself
+     */
+    async getMyself(): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/api/2/myself`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get current user: ${response.status} ${response.statusText} - ${errorText}`,
             );
         }
 

@@ -75,6 +75,10 @@ import {
     jiraGetLinkTypesSchema,
     handleJiraGetLinkTypes,
 } from "./tools/jiraGetLinkTypes.js";
+import {
+    jiraGetMyselfSchema,
+    handleJiraGetMyself,
+} from "./tools/jiraGetMyself.js";
 
 // XRay tools
 import {
@@ -117,6 +121,10 @@ import {
     xrayGetPreConditionTestsSchema,
     handleXrayGetPreConditionTests,
 } from "./tools/xrayGetPreConditionTests.js";
+import {
+    xrayAddTestsToTestExecSchema,
+    handleXrayAddTestsToTestExec,
+} from "./tools/xrayAddTestsToTestExec.js";
 
 // Tool registry
 const tools = [
@@ -137,6 +145,7 @@ const tools = [
     { schema: jiraGetDevStatusSchema, handler: handleJiraGetDevStatus },
     { schema: jiraLinkIssuesSchema, handler: handleJiraLinkIssues },
     { schema: jiraGetLinkTypesSchema, handler: handleJiraGetLinkTypes },
+    { schema: jiraGetMyselfSchema, handler: handleJiraGetMyself },
     // XRay tools
     { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
     { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
@@ -148,6 +157,7 @@ const tools = [
     { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
     { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
     { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests },
+    { schema: xrayAddTestsToTestExecSchema, handler: handleXrayAddTestsToTestExec },
 ];
 
 class JiraMCPServer {
