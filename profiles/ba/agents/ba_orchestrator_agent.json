@@ -11,8 +11,7 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list",
-    "@compass/*"
+    "todo_list"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -21,7 +20,8 @@
     "@compass/*"
   ],
   "resources": [
-    "file://.kiro/context/ba_guidelines.md"
+    "file://.kiro/context/ba_guidelines.md",
+    "file://.kiro/context/mcp_priority.md"
   ],
   "includeMcpJson": true,
   "welcomeMessage": "\ud83d\udc4b BA/PO orchestrator ready!\n\nI can help you:\n  \u2022 Gather and analyze requirements from Jira epics\n  \u2022 Define scope boundaries and constraints\n  \u2022 Write user stories with acceptance criteria\n  \u2022 Validate requirements completeness\n\nTry: \"Analyze requirements for <JIRA-ID>\"",

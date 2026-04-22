@@ -11,13 +11,13 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list",
-    "@compass/*"
+    "todo_list"
   ],
   "resources": [
     "file://AGENTS.md",
     "file://.kiro/rules/**/*.md",
-    "file://.kiro/context/servicenow_reference.md"
+    "file://.kiro/context/servicenow_reference.md",
+    "file://.kiro/context/mcp_priority.md"
   ],
   "welcomeMessage": "\ud83d\udc4b Ops orchestrator ready!\n\nI can help you:\n  \u2022 Track AI productivity metrics for Jira tickets\n  \u2022 Check ECS/AWS infrastructure status\n  \u2022 Review code quality via SonarQube\n  \u2022 Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
   "allowedTools": [
