@@ -97,7 +97,7 @@ When an INC arrives, classify it by keywords to determine the correct investigat
 |-------|---------|---------|
 | `wdpr_wdw_ordervas` | WDW Order Vas | WDW ticket/AP/package/room orders |
 | `wdpr_dlr_ordervas` | DLR Order Vas | DLR ticket/AP/package/room orders |
-| `wdpr_booking_service` | EC Booking Service | MK renewals, new sales, trade tickets, AP sales ⚠️ NO ACCESS |
+| `wdpr_booking_service` | EC Booking Service | MK renewals, new sales, trade tickets, AP sales |
 | `wdpr-ecommerce` | CME, TMS, EVAS, LexVas | Park reservations, entitlement retrieval, product data |
 | `wdpr_egalaxy_dlr` | eGalaxy DLR | DLR ticket/pass status, lineage, usage, supplements |
 | `wdpr_dtigw_svc` | DTI Gateway | Ticket fulfillment |
@@ -198,12 +198,42 @@ state=6^ORstate=7^assignment_group.name={{AG}}^short_descriptionLIKE{{KEYWORD}}^
 Fields: number,short_description,close_notes,close_code,resolved_at
 ```
 
-### 3.4 Access Limitations
+### 3.4 Booking Service Queries (Rule 21)
 
-⚠️ The agent does NOT have Splunk access to `wdpr_booking_service`. For Magic Key renewals/new sales (Rule 21) and ticket-to-pass upgrades (Rule 30):
-1. Skip booking service queries (Steps 1-2)
-2. Start at TMS (Step 3) and eGalaxy (Step 4)
-3. Note in findings that order status could not be verified
+The Splunk MCP has access to `wdpr_booking_service`. Use these queries for Magic Key renewals/new sales and ticket-to-pass upgrades.
+
+**Step 1 — Find Conversation ID by SWID:**
+```spl
+search index=wdpr_booking_service guestIdValueParameter "{{SWID}}" earliest=-7d latest=now
+| sort -_time | head 30
+```
+If zero results, try broader: `search index=wdpr_booking_service "{{SWID}}" earliest=-7d latest=now | sort -_time | head 30`
+
+**Step 2 — Check Order Status (BOOKED / PENDED / FAILED):**
+```spl
+search index=wdpr_booking_service "{{ConversationId}}" Orderanalyticslogger earliest=-7d latest=now
+| sort -_time | head 30
+```
+- `BOOKED` → order completed. Extract `payloadId`. If pass not visible → downstream sync issue (TMS/eGalaxy).
+- `PENDED` → extract `payloadId`. Check if gift (`isGift=true` → expected) or stuck.
+- `FAILED` → extract `payloadId` and error code/description.
+- Zero results → check for UNSUBMITTED: `search index=wdpr_booking_service "{{ConversationId}}" unsubmitted earliest=-7d latest=now | sort -_time | head 20`
+
+**Step 3 — Payment Decline Check (Rule 30 — if UNSUBMITTED):**
+```spl
+search index=wdpr_booking_service "{{ConversationId}}" "unsubmitted" earliest=-7d latest=now
+| rex field=_raw "paymentSessionToken[\":]+(?\<paymentSessionToken\>[a-zA-Z0-9]+)"
+| where isnotnull(paymentSessionToken)
+| dedup paymentSessionToken
+| table _time paymentSessionToken | head 5
+```
+Then cross-reference with payment service:
+```spl
+search index=wdpr_payment "{{paymentSessionToken}}" earliest=-7d latest=now
+| sort _time | head 30
+```
+
+**Important:** The `payloadId` from Orderanalyticslogger is the identifier for DTI (`wdpr_dtigw_svc`) and eGalaxy (`wdpr_egalaxy_dlr`) lookups — NOT the conversation ID.
 
 ---
 
