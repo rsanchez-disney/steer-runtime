@@ -32,35 +32,35 @@
     }
   },
   "resources": [
-    "file://workspaces/bolt-team/context/bolt-project.md",
-    "file://workspaces/bolt-team/context/bolt-migration-rules.md",
-    "file://workspaces/bolt-team/context/bolt-team.md",
-    "file://common/rules/general-angular-development.md",
-    "file://common/rules/general-node-development.md"
+    "file://.kiro/context/bolt-project.md",
+    "file://.kiro/context/bolt-migration-rules.md",
+    "file://.kiro/context/bolt-team.md",
+    "file://.kiro/context/angular_modern_patterns.md",
+    "file://.kiro/context/node_conventions.md"
   ],
   "hooks": {
     "agentSpawn": [
       {
-        "command": "shared/hooks/git-context.sh",
+        "command": "~/.kiro/hooks/git-context.sh",
         "description": "Inject git branch and status"
       }
     ],
     "preToolUse": [
       {
         "matcher": "fs_write",
-        "command": "shared/hooks/guard-writes.sh",
+        "command": "~/.kiro/hooks/guard-writes.sh",
         "description": "Block writes to node_modules, dist, .git"
       },
       {
         "matcher": "fs_write",
-        "command": "shared/hooks/secret-scan.sh",
+        "command": "~/.kiro/hooks/secret-scan.sh",
         "description": "Scan for potential secrets before writing"
       }
     ],
     "postToolUse": [
       {
         "matcher": "fs_write",
-        "command": "shared/hooks/lint-on-write.sh",
+        "command": "~/.kiro/hooks/lint-on-write.sh",
         "description": "Auto-lint after file writes"
       }
     ]
