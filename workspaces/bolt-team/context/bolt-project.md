@@ -24,6 +24,7 @@ Target:  Browser → Angular 20 SPA (:4200) → WebTier BFF (Node.js :8625) → 
 | wdprt-bolt-admin-wam | Legacy WAM (Node.js) | 🟡 Being replaced |
 | wdprt-bolt-service | Java backend (Spring/CXF) | 🟢 Unchanged |
 | bolt-admin | New Angular 20 SPA | 🔵 In development |
+| bolt-docs | Migration planning & documentation | 🟢 Active |
 
 ## Key Domain Concepts
 - **Store Instance**: Configured store with products, delivery methods, payment methods
