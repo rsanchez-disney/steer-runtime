@@ -1,0 +1,16 @@
+{
+  "name": "email_agent",
+  "description": "Sends emails via Compass MCP. Confirms with user before sending.",
+  "prompt": "email_agent.md",
+  "tools": [
+    "@compass/*",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@compass/*"
+  ],
+  "resources": [
+    "file://.kiro/context/email_guidelines.md"
+  ],
+  "includeMcpJson": true
+}

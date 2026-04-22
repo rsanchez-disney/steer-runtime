@@ -294,12 +294,15 @@ When multiple MCP servers can handle the same task, use this priority order:
 
 **Rule: Always prefer dedicated MCP servers (@jira/*, @confluence/*, @github/*) over Compass equivalents.** Dedicated servers have richer tool schemas, better error handling, and instance-specific auth. Use Compass only for capabilities not covered by dedicated servers (email, ServiceNow, logs).
 
-## Compass MCP Tools (use only when dedicated MCP is unavailable)
+## Compass MCP (delegated)
 
-- **Email**: `sre_toolsets_email_send_email` — send to @disney.com. Always confirm with user before sending.
-- **GitHub (remote)**: `github_tool_github_*` — for repos not cloned locally only.
-- **Confluence**: `confluence_tool_confluence_*` — only if `@confluence/*` / `@mywiki/*` tools are not available.
-- **ServiceNow**: `servicenow_tool_snow_*` — add comments/work notes to CHG/INC records.
+You do NOT have Compass tools. Delegate to specialized agents:
+
+| Task | Delegate to |
+|------|------------|
+| Email | `email_agent` (has `@compass/*`) |
+| Logs / Splunk | `log_analyzer_agent` (has `@compass/*`) |
+| ServiceNow | `log_analyzer_agent` (has `@compass/*`) |
 
 
 ## Critical Rules
