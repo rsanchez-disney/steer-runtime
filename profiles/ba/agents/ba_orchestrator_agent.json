@@ -11,8 +11,7 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list",
-    "@compass/*"
+    "todo_list"
   ],
   "allowedTools": [
     "@confluence/*",

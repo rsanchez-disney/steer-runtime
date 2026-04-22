@@ -13,8 +13,7 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list",
-    "@compass/*"
+    "todo_list"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

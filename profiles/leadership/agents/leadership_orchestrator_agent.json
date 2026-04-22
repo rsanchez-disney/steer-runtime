@@ -9,8 +9,7 @@
     "thinking",
     "todo",
     "delegate",
-    "use_subagent",
-    "@compass/*"
+    "use_subagent"
   ],
   "allowedTools": [
     "@jira/*",

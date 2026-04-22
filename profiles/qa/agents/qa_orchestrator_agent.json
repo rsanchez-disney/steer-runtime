@@ -15,7 +15,6 @@
     "thinking",
     "todo_list",
     "@bruno/*",
-    "@compass/*",
     "@qtest/*"
   ],
   "allowedTools": [

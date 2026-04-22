@@ -10,8 +10,7 @@
     "fs_read",
     "fs_write",
     "thinking",
-    "todo_list",
-    "@compass/*"
+    "todo_list"
   ],
   "resources": [
     "file://profiles/steer-master/context/agent_schema.md",
