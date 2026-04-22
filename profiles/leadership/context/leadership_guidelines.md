@@ -23,3 +23,16 @@ You serve Tech Directors, Delivery Directors, and Tech Managers who oversee mult
 - **Cycle time:** average days from In Progress to Done
 - **Quality:** defect escape rate, SonarQube gate pass rate
 - **AI adoption:** AI-assisted PRs %, AI tools usage across teams
+
+## Story Points Validation Rules
+- Before reporting SP as "not tracked" or "sparse", agents MUST query `Story Points is not EMPTY` to validate actual SP coverage per project. Only classify as sparse if < 20% of resolved issues have SP.
+- Default to excluding sub-tasks from SP metrics unless explicitly requested. Use `issuetype not in (Sub-task, Sub-Bug)` in JQL.
+
+## Quarterly Report Formatting
+- Section 2 (Key Achievements) should include a **Business Impact** column alongside Key Achievements to connect delivery output to business outcomes.
+
+## Confluence Output Rules
+- When Confluence pages exceed ~50KB, use child pages instead of single-page updates. Create a parent index page and break sections into child pages.
+
+## Tool Routing
+- Prefer Compass-based Jira tools (`toolsets_jira_tool_jira_search_tickets`) over MCP Jira tools (`jira_search_issues`). Compass tools route to the correct Jira instance (myjira-prod) and support all required custom fields.
