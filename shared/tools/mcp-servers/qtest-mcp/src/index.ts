@@ -1,5 +1,17 @@
 #!/usr/bin/env node
 
+import { config } from "dotenv";
+import { join } from "path";
+import { homedir } from "os";
+
+// Load ~/.kiro/env.vars (dotenv won't overwrite existing env vars)
+config({ path: join(homedir(), ".kiro", "env.vars") });
+
+// Accept QTEST_TOKEN from env.vars as alias for QTEST_BEARER_TOKEN
+if (!process.env.QTEST_BEARER_TOKEN && process.env.QTEST_TOKEN) {
+  process.env.QTEST_BEARER_TOKEN = process.env.QTEST_TOKEN;
+}
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -136,7 +148,7 @@ class QtestMCPServer {
 
     async run() {
         if (!process.env.QTEST_BEARER_TOKEN) {
-            console.error("Error: QTEST_BEARER_TOKEN is required");
+            console.error("Error: QTEST_BEARER_TOKEN (or QTEST_TOKEN) is required. Set it in ~/.kiro/env.vars.");
             process.exit(1);
         }
         const transport = new StdioServerTransport();

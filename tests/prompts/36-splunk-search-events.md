@@ -1,0 +1,1 @@
+Using the splunk MCP, run a search query 'index=wdpr_dti* sourcetype=dti_gateway "COREAPI Quote Svc Failed" | head 10' with earliest time -1h. Verify the response includes sid, count, and results array.
