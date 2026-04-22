@@ -20,7 +20,8 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\""
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.6.0",
@@ -33,7 +34,9 @@
     "eslint": "^8.57.0",
     "eslint-config-disney": "^1.0.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "fast-check": "^3.23.2",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^3.2.3"
   }
 }

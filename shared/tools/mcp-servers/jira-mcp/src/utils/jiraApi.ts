@@ -1008,4 +1008,66 @@ export class JiraApiClient {
 
         return await response.json();
     }
+
+    /**
+     * Create a link between two Jira issues
+     * POST /rest/api/2/issueLink
+     */
+    async linkJiraIssues(
+        inwardTicketId: string,
+        outwardTicketId: string,
+        linkType: string,
+    ): Promise<void> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/api/2/issueLink`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    type: { name: linkType },
+                    inwardIssue: { key: inwardTicketId },
+                    outwardIssue: { key: outwardTicketId },
+                }),
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to link JIRA issues: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+    }
+
+    /**
+     * Get all available issue link types
+     * GET /rest/api/2/issueLinkType
+     */
+    async getJiraIssueLinkTypes(): Promise<any> {
+        const pat = await this.auth.getJiraPat();
+
+        const response = await fetch(
+            `https://myjira.disney.com/rest/api/2/issueLinkType`,
+            {
+                headers: {
+                    Authorization: `Bearer ${pat}`,
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get JIRA issue link types: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
 }
