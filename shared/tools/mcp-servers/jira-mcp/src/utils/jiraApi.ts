@@ -4,6 +4,47 @@ import { JiraAuth } from "./auth.js";
 export class JiraApiClient {
     auth = new JiraAuth();
 
+    private fieldCache: Map<string, string> | null = null;
+
+    /** Resolves custom field names to IDs. Caches the field list on first call. */
+    async resolveCustomFields(): Promise<string[]> {
+        const raw = this.auth.getRawCustomFields();
+        if (raw.length === 0) return [];
+
+        // If all entries are already IDs, skip resolution
+        if (raw.every(f => f.startsWith("customfield_"))) return raw;
+
+        // Fetch field metadata once
+        if (!this.fieldCache) {
+            try {
+                const response = await fetch(
+                    `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`,
+                    { headers: { Authorization: await this.auth.getAuthHeader() } },
+                );
+                if (response.ok) {
+                    const fields: Array<{ id: string; name: string }> = await response.json();
+                    this.fieldCache = new Map();
+                    for (const f of fields) {
+                        this.fieldCache.set(f.name.toLowerCase(), f.id);
+                    }
+                } else {
+                    this.fieldCache = new Map();
+                }
+            } catch {
+                this.fieldCache = new Map();
+            }
+        }
+
+        // Resolve names to IDs
+        return raw.map(entry => {
+            if (entry.startsWith("customfield_")) return entry;
+            const id = this.fieldCache!.get(entry.toLowerCase());
+            if (id) return id;
+            console.error(`Custom field "${entry}" not found — skipping`);
+            return "";
+        }).filter(f => f.length > 0);
+    }
+
     private get baseUrl(): string {
         return this.auth.getBaseUrl();
     }
@@ -29,7 +70,7 @@ export class JiraApiClient {
             "issuelinks",
             "fixVersions",
         ];
-        const requestedFields = fields || [...defaultFields, ...this.auth.getCustomFields()];
+        const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
 
         const response = await fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`,

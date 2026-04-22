@@ -54,8 +54,8 @@ export class JiraAuth {
         return this.isCloud() ? "3" : "2";
     }
 
-    /** Returns custom field IDs from JIRA_CUSTOM_FIELDS env var (comma-separated). */
-    getCustomFields(): string[] {
+    /** Returns raw custom field entries from JIRA_CUSTOM_FIELDS (names or IDs, comma-separated). */
+    getRawCustomFields(): string[] {
         this.loadEnv();
         const raw = process.env.JIRA_CUSTOM_FIELDS || "";
         return raw.split(",").map(f => f.trim()).filter(f => f.length > 0);
