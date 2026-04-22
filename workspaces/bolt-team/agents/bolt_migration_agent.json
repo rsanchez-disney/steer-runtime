@@ -1,0 +1,69 @@
+{
+  "name": "bolt_migration_agent",
+  "description": "BOLT frontend migration specialist — AngularJS 1.4 → Angular 20 with WAM → WebTier BFF replacement",
+  "prompt": "prompts/bolt_migration_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "code",
+    "thinking",
+    "todo_list",
+    "subagent"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "libs/**",
+        "apps/**",
+        "e2e/**",
+        "package.json",
+        "angular.json",
+        "nx.json",
+        "tsconfig*.json",
+        ".eslintrc*",
+        "tailwind.config.*",
+        "Dockerfile",
+        "*.yaml",
+        "*.yml"
+      ]
+    }
+  },
+  "resources": [
+    "file://workspaces/bolt-team/context/bolt-project.md",
+    "file://workspaces/bolt-team/context/bolt-migration-rules.md",
+    "file://workspaces/bolt-team/context/bolt-team.md",
+    "file://common/rules/general-angular-development.md",
+    "file://common/rules/general-node-development.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "shared/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "shared/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "shared/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "shared/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}
