@@ -1,0 +1,24 @@
+{
+  "name": "story_analyzer_agent",
+  "description": "Fetches and analyzes Jira stories, Confluence pages, and GitHub repos.",
+  "prompt": "story_analyzer_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "grep",
+    "web_fetch",
+    "knowledge"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}
