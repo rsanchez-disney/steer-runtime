@@ -6,9 +6,6 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -29,369 +26,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-
-// node_modules/dotenv/package.json
-var require_package = __commonJS({
-  "node_modules/dotenv/package.json"(exports2, module2) {
-    module2.exports = {
-      name: "dotenv",
-      version: "16.6.1",
-      description: "Loads environment variables from .env file",
-      main: "lib/main.js",
-      types: "lib/main.d.ts",
-      exports: {
-        ".": {
-          types: "./lib/main.d.ts",
-          require: "./lib/main.js",
-          default: "./lib/main.js"
-        },
-        "./config": "./config.js",
-        "./config.js": "./config.js",
-        "./lib/env-options": "./lib/env-options.js",
-        "./lib/env-options.js": "./lib/env-options.js",
-        "./lib/cli-options": "./lib/cli-options.js",
-        "./lib/cli-options.js": "./lib/cli-options.js",
-        "./package.json": "./package.json"
-      },
-      scripts: {
-        "dts-check": "tsc --project tests/types/tsconfig.json",
-        lint: "standard",
-        pretest: "npm run lint && npm run dts-check",
-        test: "tap run --allow-empty-coverage --disable-coverage --timeout=60000",
-        "test:coverage": "tap run --show-full-coverage --timeout=60000 --coverage-report=text --coverage-report=lcov",
-        prerelease: "npm test",
-        release: "standard-version"
-      },
-      repository: {
-        type: "git",
-        url: "git://github.com/motdotla/dotenv.git"
-      },
-      homepage: "https://github.com/motdotla/dotenv#readme",
-      funding: "https://dotenvx.com",
-      keywords: [
-        "dotenv",
-        "env",
-        ".env",
-        "environment",
-        "variables",
-        "config",
-        "settings"
-      ],
-      readmeFilename: "README.md",
-      license: "BSD-2-Clause",
-      devDependencies: {
-        "@types/node": "^18.11.3",
-        decache: "^4.6.2",
-        sinon: "^14.0.1",
-        standard: "^17.0.0",
-        "standard-version": "^9.5.0",
-        tap: "^19.2.0",
-        typescript: "^4.8.4"
-      },
-      engines: {
-        node: ">=12"
-      },
-      browser: {
-        fs: false
-      }
-    };
-  }
-});
-
-// node_modules/dotenv/lib/main.js
-var require_main = __commonJS({
-  "node_modules/dotenv/lib/main.js"(exports2, module2) {
-    var fs = require("fs");
-    var path = require("path");
-    var os = require("os");
-    var crypto = require("crypto");
-    var packageJson = require_package();
-    var version = packageJson.version;
-    var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
-    function parse(src) {
-      const obj = {};
-      let lines = src.toString();
-      lines = lines.replace(/\r\n?/mg, "\n");
-      let match;
-      while ((match = LINE.exec(lines)) != null) {
-        const key = match[1];
-        let value = match[2] || "";
-        value = value.trim();
-        const maybeQuote = value[0];
-        value = value.replace(/^(['"`])([\s\S]*)\1$/mg, "$2");
-        if (maybeQuote === '"') {
-          value = value.replace(/\\n/g, "\n");
-          value = value.replace(/\\r/g, "\r");
-        }
-        obj[key] = value;
-      }
-      return obj;
-    }
-    function _parseVault(options) {
-      options = options || {};
-      const vaultPath = _vaultPath(options);
-      options.path = vaultPath;
-      const result = DotenvModule.configDotenv(options);
-      if (!result.parsed) {
-        const err = new Error(`MISSING_DATA: Cannot parse ${vaultPath} for an unknown reason`);
-        err.code = "MISSING_DATA";
-        throw err;
-      }
-      const keys = _dotenvKey(options).split(",");
-      const length = keys.length;
-      let decrypted;
-      for (let i = 0; i < length; i++) {
-        try {
-          const key = keys[i].trim();
-          const attrs = _instructions(result, key);
-          decrypted = DotenvModule.decrypt(attrs.ciphertext, attrs.key);
-          break;
-        } catch (error) {
-          if (i + 1 >= length) {
-            throw error;
-          }
-        }
-      }
-      return DotenvModule.parse(decrypted);
-    }
-    function _warn(message) {
-      console.log(`[dotenv@${version}][WARN] ${message}`);
-    }
-    function _debug(message) {
-      console.log(`[dotenv@${version}][DEBUG] ${message}`);
-    }
-    function _log(message) {
-      console.log(`[dotenv@${version}] ${message}`);
-    }
-    function _dotenvKey(options) {
-      if (options && options.DOTENV_KEY && options.DOTENV_KEY.length > 0) {
-        return options.DOTENV_KEY;
-      }
-      if (process.env.DOTENV_KEY && process.env.DOTENV_KEY.length > 0) {
-        return process.env.DOTENV_KEY;
-      }
-      return "";
-    }
-    function _instructions(result, dotenvKey) {
-      let uri;
-      try {
-        uri = new URL(dotenvKey);
-      } catch (error) {
-        if (error.code === "ERR_INVALID_URL") {
-          const err = new Error("INVALID_DOTENV_KEY: Wrong format. Must be in valid uri format like dotenv://:key_1234@dotenvx.com/vault/.env.vault?environment=development");
-          err.code = "INVALID_DOTENV_KEY";
-          throw err;
-        }
-        throw error;
-      }
-      const key = uri.password;
-      if (!key) {
-        const err = new Error("INVALID_DOTENV_KEY: Missing key part");
-        err.code = "INVALID_DOTENV_KEY";
-        throw err;
-      }
-      const environment = uri.searchParams.get("environment");
-      if (!environment) {
-        const err = new Error("INVALID_DOTENV_KEY: Missing environment part");
-        err.code = "INVALID_DOTENV_KEY";
-        throw err;
-      }
-      const environmentKey = `DOTENV_VAULT_${environment.toUpperCase()}`;
-      const ciphertext = result.parsed[environmentKey];
-      if (!ciphertext) {
-        const err = new Error(`NOT_FOUND_DOTENV_ENVIRONMENT: Cannot locate environment ${environmentKey} in your .env.vault file.`);
-        err.code = "NOT_FOUND_DOTENV_ENVIRONMENT";
-        throw err;
-      }
-      return { ciphertext, key };
-    }
-    function _vaultPath(options) {
-      let possibleVaultPath = null;
-      if (options && options.path && options.path.length > 0) {
-        if (Array.isArray(options.path)) {
-          for (const filepath of options.path) {
-            if (fs.existsSync(filepath)) {
-              possibleVaultPath = filepath.endsWith(".vault") ? filepath : `${filepath}.vault`;
-            }
-          }
-        } else {
-          possibleVaultPath = options.path.endsWith(".vault") ? options.path : `${options.path}.vault`;
-        }
-      } else {
-        possibleVaultPath = path.resolve(process.cwd(), ".env.vault");
-      }
-      if (fs.existsSync(possibleVaultPath)) {
-        return possibleVaultPath;
-      }
-      return null;
-    }
-    function _resolveHome(envPath) {
-      return envPath[0] === "~" ? path.join(os.homedir(), envPath.slice(1)) : envPath;
-    }
-    function _configVault(options) {
-      const debug = Boolean(options && options.debug);
-      const quiet = options && "quiet" in options ? options.quiet : true;
-      if (debug || !quiet) {
-        _log("Loading env from encrypted .env.vault");
-      }
-      const parsed = DotenvModule._parseVault(options);
-      let processEnv = process.env;
-      if (options && options.processEnv != null) {
-        processEnv = options.processEnv;
-      }
-      DotenvModule.populate(processEnv, parsed, options);
-      return { parsed };
-    }
-    function configDotenv(options) {
-      const dotenvPath = path.resolve(process.cwd(), ".env");
-      let encoding = "utf8";
-      const debug = Boolean(options && options.debug);
-      const quiet = options && "quiet" in options ? options.quiet : true;
-      if (options && options.encoding) {
-        encoding = options.encoding;
-      } else {
-        if (debug) {
-          _debug("No encoding is specified. UTF-8 is used by default");
-        }
-      }
-      let optionPaths = [dotenvPath];
-      if (options && options.path) {
-        if (!Array.isArray(options.path)) {
-          optionPaths = [_resolveHome(options.path)];
-        } else {
-          optionPaths = [];
-          for (const filepath of options.path) {
-            optionPaths.push(_resolveHome(filepath));
-          }
-        }
-      }
-      let lastError;
-      const parsedAll = {};
-      for (const path2 of optionPaths) {
-        try {
-          const parsed = DotenvModule.parse(fs.readFileSync(path2, { encoding }));
-          DotenvModule.populate(parsedAll, parsed, options);
-        } catch (e) {
-          if (debug) {
-            _debug(`Failed to load ${path2} ${e.message}`);
-          }
-          lastError = e;
-        }
-      }
-      let processEnv = process.env;
-      if (options && options.processEnv != null) {
-        processEnv = options.processEnv;
-      }
-      DotenvModule.populate(processEnv, parsedAll, options);
-      if (debug || !quiet) {
-        const keysCount = Object.keys(parsedAll).length;
-        const shortPaths = [];
-        for (const filePath of optionPaths) {
-          try {
-            const relative = path.relative(process.cwd(), filePath);
-            shortPaths.push(relative);
-          } catch (e) {
-            if (debug) {
-              _debug(`Failed to load ${filePath} ${e.message}`);
-            }
-            lastError = e;
-          }
-        }
-        _log(`injecting env (${keysCount}) from ${shortPaths.join(",")}`);
-      }
-      if (lastError) {
-        return { parsed: parsedAll, error: lastError };
-      } else {
-        return { parsed: parsedAll };
-      }
-    }
-    function config2(options) {
-      if (_dotenvKey(options).length === 0) {
-        return DotenvModule.configDotenv(options);
-      }
-      const vaultPath = _vaultPath(options);
-      if (!vaultPath) {
-        _warn(`You set DOTENV_KEY but you are missing a .env.vault file at ${vaultPath}. Did you forget to build it?`);
-        return DotenvModule.configDotenv(options);
-      }
-      return DotenvModule._configVault(options);
-    }
-    function decrypt(encrypted, keyStr) {
-      const key = Buffer.from(keyStr.slice(-64), "hex");
-      let ciphertext = Buffer.from(encrypted, "base64");
-      const nonce = ciphertext.subarray(0, 12);
-      const authTag = ciphertext.subarray(-16);
-      ciphertext = ciphertext.subarray(12, -16);
-      try {
-        const aesgcm = crypto.createDecipheriv("aes-256-gcm", key, nonce);
-        aesgcm.setAuthTag(authTag);
-        return `${aesgcm.update(ciphertext)}${aesgcm.final()}`;
-      } catch (error) {
-        const isRange = error instanceof RangeError;
-        const invalidKeyLength = error.message === "Invalid key length";
-        const decryptionFailed = error.message === "Unsupported state or unable to authenticate data";
-        if (isRange || invalidKeyLength) {
-          const err = new Error("INVALID_DOTENV_KEY: It must be 64 characters long (or more)");
-          err.code = "INVALID_DOTENV_KEY";
-          throw err;
-        } else if (decryptionFailed) {
-          const err = new Error("DECRYPTION_FAILED: Please check your DOTENV_KEY");
-          err.code = "DECRYPTION_FAILED";
-          throw err;
-        } else {
-          throw error;
-        }
-      }
-    }
-    function populate(processEnv, parsed, options = {}) {
-      const debug = Boolean(options && options.debug);
-      const override = Boolean(options && options.override);
-      if (typeof parsed !== "object") {
-        const err = new Error("OBJECT_REQUIRED: Please check the processEnv argument being passed to populate");
-        err.code = "OBJECT_REQUIRED";
-        throw err;
-      }
-      for (const key of Object.keys(parsed)) {
-        if (Object.prototype.hasOwnProperty.call(processEnv, key)) {
-          if (override === true) {
-            processEnv[key] = parsed[key];
-          }
-          if (debug) {
-            if (override === true) {
-              _debug(`"${key}" is already defined and WAS overwritten`);
-            } else {
-              _debug(`"${key}" is already defined and was NOT overwritten`);
-            }
-          }
-        } else {
-          processEnv[key] = parsed[key];
-        }
-      }
-    }
-    var DotenvModule = {
-      configDotenv,
-      _configVault,
-      _parseVault,
-      config: config2,
-      decrypt,
-      parse,
-      populate
-    };
-    module2.exports.configDotenv = DotenvModule.configDotenv;
-    module2.exports._configVault = DotenvModule._configVault;
-    module2.exports._parseVault = DotenvModule._parseVault;
-    module2.exports.config = DotenvModule.config;
-    module2.exports.decrypt = DotenvModule.decrypt;
-    module2.exports.parse = DotenvModule.parse;
-    module2.exports.populate = DotenvModule.populate;
-    module2.exports = DotenvModule;
-  }
-});
-
-// src/index.ts
-var import_dotenv = __toESM(require_main(), 1);
-var import_path2 = require("path");
-var import_os = require("os");
 
 // node_modules/zod/v3/external.js
 var external_exports = {};
@@ -5678,23 +5312,13 @@ var QtestApiClient = class _QtestApiClient {
   token;
   constructor() {
     this.baseUrl = process.env.QTEST_BASE_URL || "https://qtest.disney.com";
-    const token = process.env.QTEST_BEARER_TOKEN ?? "";
-    if (!token || !token.trim() || token.trim() !== token) {
-      throw new Error(
-        "QTEST_BEARER_TOKEN is missing or contains leading/trailing whitespace. Set QTEST_BEARER_TOKEN (or QTEST_TOKEN) in ~/.kiro/env.vars or your .env file."
-      );
-    }
-    this.token = token;
+    this.token = process.env.QTEST_BEARER_TOKEN;
   }
   static MAX_RETRIES = 3;
-  static REQUEST_TIMEOUT_MS = 3e4;
   async request(method, path, body) {
     const url = `${this.baseUrl}${path}`;
     let response;
-    let lastError;
     for (let attempt = 0; attempt <= _QtestApiClient.MAX_RETRIES; attempt++) {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), _QtestApiClient.REQUEST_TIMEOUT_MS);
       try {
         response = await fetch(url, {
           method,
@@ -5702,42 +5326,25 @@ var QtestApiClient = class _QtestApiClient {
             "Authorization": `Bearer ${this.token}`,
             "Content-Type": "application/json"
           },
-          body: body ? JSON.stringify(body) : void 0,
-          signal: controller.signal
+          body: body ? JSON.stringify(body) : void 0
         });
       } catch (error) {
-        clearTimeout(timer);
-        if (error instanceof DOMException && error.name === "AbortError") {
-          throw new QtestApiError(0, `Request timed out after ${_QtestApiClient.REQUEST_TIMEOUT_MS}ms`, url);
-        }
         if (error instanceof TypeError) {
           throw new QtestApiError(0, error.message, url);
         }
         throw error;
-      } finally {
-        clearTimeout(timer);
       }
-      const retryable = response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504;
-      if (!retryable || attempt === _QtestApiClient.MAX_RETRIES)
+      if (response.status !== 429 || attempt === _QtestApiClient.MAX_RETRIES)
         break;
-      const label = response.status === 429 ? "Rate limited" : `Server error ${response.status}`;
       const delay = Math.pow(2, attempt) * 1e3;
-      console.error(`[qtest-mcp] ${label}, retrying in ${delay}ms (attempt ${attempt + 1}/${_QtestApiClient.MAX_RETRIES})`);
-      lastError = new QtestApiError(response.status, await response.text(), url);
+      console.error(`[qtest-mcp] Rate limited (429), retrying in ${delay}ms (attempt ${attempt + 1}/${_QtestApiClient.MAX_RETRIES})`);
       await new Promise((r) => setTimeout(r, delay));
-    }
-    if (!response) {
-      throw lastError ?? new QtestApiError(0, "No response received after retries", url);
     }
     if (!response.ok) {
       const errorBody = await response.text();
-      const suffix = response.status === 429 ? ` (after ${_QtestApiClient.MAX_RETRIES} retries)` : "";
-      throw new QtestApiError(response.status, errorBody + suffix, url);
+      throw new QtestApiError(response.status, errorBody, url);
     }
-    const text = await response.text();
-    if (!text)
-      return void 0;
-    return JSON.parse(text);
+    return response.json();
   }
   async get(path) {
     return this.request("GET", path);
@@ -5760,7 +5367,7 @@ function resolveProjectId(argsProjectId) {
       return parsed;
   }
   throw new Error(
-    "No projectId provided and QTEST_PROJECT_ID is not configured. Pass projectId as a parameter or set QTEST_PROJECT_ID in ~/.kiro/env.vars."
+    "No projectId provided and QTEST_PROJECT_ID is not configured. Pass projectId as a parameter or set QTEST_PROJECT_ID in your .env file."
   );
 }
 function mapApiError(error) {
@@ -5836,10 +5443,7 @@ async function resolveRequirementPid(client, projectId, rqPid) {
         return Number(match[1]);
     }
     return null;
-  } catch (error) {
-    if (error instanceof QtestApiError && error.statusCode !== 404) {
-      throw error;
-    }
+  } catch {
     return null;
   }
 }
@@ -6074,7 +5678,6 @@ async function handleQtestGetTestCase(args) {
     const isPid = /^TC-\d+$/i.test(tcIdStr);
     const lookupPath = isPid ? `/api/v3/projects/${projectId}/test-cases/${tcIdStr}` : `/api/v3/projects/${projectId}/test-cases/${testCaseId}`;
     const testCase = await client.get(lookupPath);
-    let stepsWarning = "";
     const numericId = testCase.id;
     const versionId = testCase.test_case_version_id ?? testCase.version;
     if (versionId) {
@@ -6085,15 +5688,10 @@ async function handleQtestGetTestCase(args) {
         if (steps && steps.length > 0) {
           testCase.test_steps = steps;
         }
-      } catch (stepsError) {
-        const msg = stepsError instanceof Error ? stepsError.message : String(stepsError);
-        console.error(`[qtest-mcp] Warning: failed to fetch test steps: ${msg}`);
-        stepsWarning = `
-
-**\u26A0\uFE0F Warning:** Test steps could not be loaded from the versioned endpoint. Showing steps from the base response (may be incomplete).`;
+      } catch {
       }
     }
-    const summary = formatTestCase(testCase) + stepsWarning;
+    const summary = formatTestCase(testCase);
     const savedPath = await saveData(
       outputDir,
       "qtest_get_test_case",
@@ -6396,7 +5994,7 @@ var qtestGetTestRunSchema = {
   }
 };
 async function handleQtestGetTestRun(args) {
-  return withErrorHandling(async () => {
+  try {
     const { projectId: rawProjectId, testRunId, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const client = new QtestApiClient();
@@ -6417,7 +6015,11 @@ async function handleQtestGetTestRun(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  });
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
 }
 var qtestCreateTestRunSchema = {
   name: "qtest_create_test_run",
@@ -6450,7 +6052,7 @@ var qtestCreateTestRunSchema = {
   }
 };
 async function handleQtestCreateTestRun(args) {
-  return withErrorHandling(async () => {
+  try {
     const { projectId: rawProjectId, testCaseId, parentId, name, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
     const body = {
@@ -6481,7 +6083,11 @@ async function handleQtestCreateTestRun(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  });
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
 }
 var qtestUpdateTestRunResultSchema = {
   name: "qtest_update_test_run_result",
@@ -6506,14 +6112,6 @@ var qtestUpdateTestRunResultSchema = {
         type: "string",
         description: "Execution commentary or notes (optional)"
       },
-      exeStartDate: {
-        type: "string",
-        description: "Execution start date in ISO 8601 format (optional, defaults to current time)"
-      },
-      exeEndDate: {
-        type: "string",
-        description: "Execution end date in ISO 8601 format (optional, defaults to current time)"
-      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the result data (optional, defaults to /tmp/qtest-mcp/). Set to false or null to skip saving."
@@ -6523,15 +6121,14 @@ var qtestUpdateTestRunResultSchema = {
   }
 };
 async function handleQtestUpdateTestRunResult(args) {
-  return withErrorHandling(async () => {
-    const { projectId: rawProjectId, testRunId, status, note, exeStartDate, exeEndDate, outputDir } = args;
+  try {
+    const { projectId: rawProjectId, testRunId, status, note, outputDir } = args;
     const projectId = resolveProjectId(rawProjectId);
-    const now = (/* @__PURE__ */ new Date()).toISOString();
     const body = {
       status,
       note,
-      exe_start_date: exeStartDate ?? now,
-      exe_end_date: exeEndDate ?? now
+      exe_start_date: (/* @__PURE__ */ new Date()).toISOString(),
+      exe_end_date: (/* @__PURE__ */ new Date()).toISOString()
     };
     const client = new QtestApiClient();
     const result = await client.post(
@@ -6555,7 +6152,11 @@ async function handleQtestUpdateTestRunResult(args) {
     return {
       content: [{ type: "text", text: `${summary}${savedInfo}` }]
     };
-  });
+  } catch (error) {
+    const message = error instanceof QtestApiError ? mapApiError(error) : `Unexpected error: ${error instanceof Error ? error.message : "Unknown"}`;
+    console.error(`[qtest-mcp] ${message}`);
+    return { content: [{ type: "text", text: message }], isError: true };
+  }
 }
 
 // src/tools/qtestTestCycles.ts
@@ -7038,7 +6639,6 @@ async function handleQtestCreateRequirement(args) {
       `/api/v3/projects/${projectId}/requirements`,
       body
     );
-    const warnings = [];
     if (description) {
       const descField = created.properties?.find(
         (p) => p.field_name === "Description"
@@ -7050,14 +6650,12 @@ async function handleQtestCreateRequirement(args) {
             { properties: [{ field_id: descField.field_id, field_value: description }] }
           );
         } catch (descError) {
-          const msg = `Description update failed: ${descError instanceof Error ? descError.message : descError}`;
-          console.error(`[qtest-mcp] Warning: ${msg}`);
-          warnings.push(msg);
+          console.error(`[qtest-mcp] Warning: requirement created but description update failed: ${descError instanceof Error ? descError.message : descError}`);
         }
       }
     }
     const parentLabel = isMdPid ? `${parentIdStr} (${numericParentId})` : String(numericParentId);
-    let summary = `**Requirement Created**
+    const summary = `**Requirement Created**
 - ID: ${created.id}
 - PID: ${created.pid}
 - Name: ${created.name}
@@ -7069,15 +6667,7 @@ async function handleQtestCreateRequirement(args) {
         { content: "Created with qTest MCP" }
       );
     } catch (commentError) {
-      const msg = `Auto-comment failed (PID resolution for this requirement may not work): ${commentError instanceof Error ? commentError.message : commentError}`;
-      console.error(`[qtest-mcp] Warning: ${msg}`);
-      warnings.push(msg);
-    }
-    if (warnings.length > 0) {
-      summary += `
-
-**\u26A0\uFE0F Warnings:**
-${warnings.map((w) => `- ${w}`).join("\n")}`;
+      console.error(`[qtest-mcp] Warning: requirement created but auto-comment failed: ${commentError instanceof Error ? commentError.message : commentError}`);
     }
     const savedPath = await saveData(
       outputDir,
@@ -7258,10 +6848,6 @@ async function handleQtestSubmitDefect(args) {
 }
 
 // src/index.ts
-(0, import_dotenv.config)({ path: (0, import_path2.join)((0, import_os.homedir)(), ".kiro", "env.vars") });
-if (!process.env.QTEST_BEARER_TOKEN && process.env.QTEST_TOKEN) {
-  process.env.QTEST_BEARER_TOKEN = process.env.QTEST_TOKEN;
-}
 var tools = [
   { schema: qtestGetProjectsSchema, handler: handleQtestGetProjects },
   { schema: qtestGetProjectSchema, handler: handleQtestGetProject },
@@ -7318,7 +6904,7 @@ var QtestMCPServer = class {
   }
   async run() {
     if (!process.env.QTEST_BEARER_TOKEN) {
-      console.error("Error: QTEST_BEARER_TOKEN (or QTEST_TOKEN) is required. Set it in ~/.kiro/env.vars.");
+      console.error("Error: QTEST_BEARER_TOKEN is required");
       process.exit(1);
     }
     const transport = new StdioServerTransport();

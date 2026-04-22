@@ -1,4 +1,4 @@
-import { QtestApiClient, resolveProjectId, withErrorHandling } from "../utils/qtestClient.js";
+import { QtestApiClient, mapApiError, resolveProjectId, withErrorHandling } from "../utils/qtestClient.js";
 import { saveData } from "../utils/fileUtils.js";
 import { formatDefects } from "../utils/formatting.js";
 import type { QtestDefect, ToolResponse } from "../utils/types.js";

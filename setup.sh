@@ -67,6 +67,7 @@ precompute_mcp_paths() {
     _p_servicenow="$(to_win_path "$HOME/.kiro/tools/mcp-servers/servicenow-mcp/dist/index.cjs")"
     _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
+    _p_qtest="$(to_win_path "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then
         _node_cmd="wsl.exe -d $_wsl_distro node"
@@ -803,6 +804,10 @@ case "${1:-help}" in
             exit 1
         fi
         
+        # Sync shared MCP bundles to ~/.kiro
+        install_shared "$KIRO_ROOT"
+        echo ""
+
         # Verify pre-built bundles exist
         echo "🔍 Verifying MCP server bundles..."
         available_mcps=()
@@ -819,6 +824,11 @@ case "${1:-help}" in
         fi
         echo ""
         echo "✅ ${#available_mcps[@]} MCP servers ready (pre-built, no npm install needed)"
+        # Install context7 from public npm (blocked by corporate proxy via npx)
+        echo "📦 Installing context7-mcp from public registry..."
+        if [ -f "$KIRO_ROOT/tools/mcp-servers/context7-mcp/package.json" ]; then
+            (cd "$KIRO_ROOT/tools/mcp-servers/context7-mcp" && npm install --registry https://registry.npmjs.org --silent 2>/dev/null)
+            echo "  ✓ context7"
         fi
         echo ""
         
@@ -837,6 +847,9 @@ case "${1:-help}" in
         echo ""
         echo "  GitHub:"
         echo "  https://github.disney.com/settings/tokens"
+        echo ""
+        echo "  qTest:"
+        echo "  Your qTest instance → Profile → API Token"
         echo ""
         
         read -p "Would you like to configure tokens now? (y/N): " configure_tokens
@@ -917,54 +930,76 @@ CONFEOF
                 fi
             done
             echo ""
-        fi
-        
-        # qTest token
-        echo "━━━ qTest ━━━"
-        read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
-        read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
-        if [ -n "$qtest_token" ]; then
-            qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
-            cat > "$qtest_env" << QTESTEOF
+            # qTest token
+            echo "━━━ qTest ━━━"
+            read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
+            read -r -p "Enter your qTest Project ID (or Enter to skip): " qtest_project_id
+            if [ -n "$qtest_token" ]; then
+                qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+                cat > "$qtest_env" << QTESTEOF
 QTEST_BEARER_TOKEN=$qtest_token
 QTESTEOF
-            if [ -n "$qtest_project_id" ]; then
-                echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+                if [ -n "$qtest_project_id" ]; then
+                    echo "QTEST_PROJECT_ID=$qtest_project_id" >> "$qtest_env"
+                fi
+                echo "  ✓ Saved to qtest-mcp/.env"
+            else
+                echo "  ⏭ Skipped"
             fi
-            echo "  ✓ Saved to qtest-mcp/.env"
-        else
-            echo "  ⏭ Skipped"
-        fi
-        echo ""
+            echo ""
         
-        # Generate centralized tokens.env
-        echo ""
-        echo "🔧 Generating ~/.kiro/tokens.env..."
-        tokens_file="$KIRO_ROOT/tokens.env"
-        cat > "$tokens_file" << 'TOKHEADER'
+            # Merge newly entered tokens into ~/.kiro/tokens.env (preserves existing tokens from koda)
+            echo ""
+            echo "🔧 Updating ~/.kiro/tokens.env..."
+            tokens_file="$KIRO_ROOT/tokens.env"
+            
+            # Create tokens.env with header if it doesn't exist
+            if [ ! -f "$tokens_file" ]; then
+                cat > "$tokens_file" << 'TOKHEADER'
 # Kiro Agent Tokens — Single Source of Truth
 # Run: ./setup.sh mcp-install   to configure interactively
 # Or edit this file directly, then: ./setup.sh install <profiles>
 TOKHEADER
-        # Read from individual .env files (backward compat) or use just-entered values
-        _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
-        jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
-        cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
-        [ -n "$jp" ] && echo "JIRA_PAT=$jp" >> "$tokens_file"
-        [ -n "$cp" ] && echo "CONFLUENCE_PAT=$cp" >> "$tokens_file"
-        ct=$(_tok "COMPASS_TOKEN" "$KIRO_ROOT/tokens.env")
-        [ -n "$ct" ] && echo "COMPASS_TOKEN=$ct" >> "$tokens_file"
-        # Copy all GITHUB_TOKEN_{remote}, GITHUB_HOST_{remote}, GITHUB_API_PATH_{remote} from github-mcp/.env
-        github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
-        if [ -f "$github_env" ]; then
-            grep -E '^GITHUB_(TOKEN|HOST|API_PATH)_[a-zA-Z0-9_]+=' "$github_env" >> "$tokens_file" 2>/dev/null || true
+            fi
+            
+            # Helper: upsert a key=value into tokens_file (update if exists, append if not)
+            _upsert_token() {
+                local key="$1" val="$2"
+                [ -z "$val" ] && return
+                if grep -q "^${key}=" "$tokens_file" 2>/dev/null; then
+                    sed -i '' "s|^${key}=.*|${key}=${val}|" "$tokens_file"
+                else
+                    echo "${key}=${val}" >> "$tokens_file"
+                fi
+            }
+            
+            # Read from individual .env files written by the prompts above
+            _tok() { grep -s "^$1=" "$2" 2>/dev/null | head -1 | cut -d= -f2-; }
+            
+            jp=$(_tok "JIRA_PAT" "$KIRO_ROOT/tools/mcp-servers/jira-mcp/.env")
+            [ -n "$jp" ] && _upsert_token "JIRA_PAT" "$jp"
+            
+            cp=$(_tok "CONFLUENCE_PAT" "$KIRO_ROOT/tools/mcp-servers/confluence-mcp/.env")
+            [ -n "$cp" ] && _upsert_token "CONFLUENCE_PAT" "$cp"
+            
+            # GitHub remotes from github-mcp/.env
+            github_env="$KIRO_ROOT/tools/mcp-servers/github-mcp/.env"
+            if [ -f "$github_env" ]; then
+                while IFS='=' read -r key val; do
+                    [[ "$key" =~ ^GITHUB_(TOKEN|HOST|API_PATH)_ ]] && _upsert_token "$key" "$val"
+                done < "$github_env"
+            fi
+            
+            # qTest tokens from qtest-mcp/.env
+            qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
+            if [ -f "$qtest_env" ]; then
+                while IFS='=' read -r key val; do
+                    [[ "$key" =~ ^QTEST_(BEARER_TOKEN|PROJECT_ID) ]] && _upsert_token "$key" "$val"
+                done < "$qtest_env"
+            fi
+            
+            echo "  ✓ $tokens_file"
         fi
-        # Copy qTest tokens from qtest-mcp/.env
-        qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
-        if [ -f "$qtest_env" ]; then
-            grep -E '^QTEST_(BEARER_TOKEN|PROJECT_ID)=' "$qtest_env" >> "$tokens_file" 2>/dev/null || true
-        fi
-        echo "  ✓ $tokens_file"
         
         # Resolve $HOME in installed agent configs
         for agent_json in "$KIRO_ROOT/agents/"*.json; do
@@ -1016,6 +1051,7 @@ p_bruno = r'$_p_bruno'
 p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
+p_qtest = r'$_p_qtest'
 
 def read_tok(key):
     try:
@@ -1126,6 +1162,18 @@ if snow_user and snow_pass:
             'SNOW_USERNAME': snow_user,
             'SNOW_PASSWORD': snow_pass,
         }
+    }
+
+qtest_token = read_tok('QTEST_BEARER_TOKEN')
+qtest_project = read_tok('QTEST_PROJECT_ID')
+if qtest_token:
+    qtest_env = {'QTEST_BEARER_TOKEN': qtest_token}
+    if qtest_project:
+        qtest_env['QTEST_PROJECT_ID'] = qtest_project
+    mcp['mcpServers']['qtest'] = {
+        'command': 'node',
+        'args': [p_qtest],
+        'env': qtest_env
     }
 
 compass_token = read_tok('COMPASS_TOKEN')
@@ -1452,7 +1500,7 @@ YAMLEOF
         [ -n "$gh_org" ] && echo "   github: $gh_org/$gh_repo"
         [ -n "$jira_key" ] && echo "   jira: $jira_key"
         echo ""
-        echo "Review and edit as needed. See: docs/reference/REFERENCE.md#project-manifest-projectyaml"
+        echo "Review and edit as needed. See: docs/REFERENCE.md#project-manifest-projectyaml"
         ;;
         
     configure)
@@ -1953,6 +2001,7 @@ p_bruno = r'$_p_bruno'
 p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
+p_qtest = r'$_p_qtest'
 
 def read_tok(key):
     try:
@@ -2062,6 +2111,17 @@ if snow_user and snow_pass:
             'SNOW_USERNAME': snow_user,
             'SNOW_PASSWORD': snow_pass,
         }
+    }
+qtest_token = read_tok('QTEST_BEARER_TOKEN')
+qtest_project = read_tok('QTEST_PROJECT_ID')
+if qtest_token:
+    qtest_env = {'QTEST_BEARER_TOKEN': qtest_token}
+    if qtest_project:
+        qtest_env['QTEST_PROJECT_ID'] = qtest_project
+    mcp['mcpServers']['qtest'] = {
+        'command': 'node',
+        'args': [p_qtest],
+        'env': qtest_env
     }
 
 compass_token = read_tok('COMPASS_TOKEN')

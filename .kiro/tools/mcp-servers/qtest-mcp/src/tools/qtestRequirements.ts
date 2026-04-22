@@ -341,8 +341,6 @@ export async function handleQtestCreateRequirement(args: CreateRequirementArgs):
       body,
     );
 
-    const warnings: string[] = [];
-
     // Set description via properties — qTest requires it as a property field, not a top-level field
     if (description) {
       const descField = (created as any).properties?.find(
@@ -355,15 +353,13 @@ export async function handleQtestCreateRequirement(args: CreateRequirementArgs):
             { properties: [{ field_id: descField.field_id, field_value: description }] },
           );
         } catch (descError) {
-          const msg = `Description update failed: ${descError instanceof Error ? descError.message : descError}`;
-          console.error(`[qtest-mcp] Warning: ${msg}`);
-          warnings.push(msg);
+          console.error(`[qtest-mcp] Warning: requirement created but description update failed: ${descError instanceof Error ? descError.message : descError}`);
         }
       }
     }
 
     const parentLabel = isMdPid ? `${parentIdStr} (${numericParentId})` : String(numericParentId);
-    let summary = `**Requirement Created**\n- ID: ${created.id}\n- PID: ${created.pid}\n- Name: ${created.name}\n- Parent: ${parentLabel}\n- Project ID: ${projectId}`;
+    const summary = `**Requirement Created**\n- ID: ${created.id}\n- PID: ${created.pid}\n- Name: ${created.name}\n- Parent: ${parentLabel}\n- Project ID: ${projectId}`;
 
     // Auto-comment so the comments endpoint can resolve this requirement by PID later
     try {
@@ -372,13 +368,7 @@ export async function handleQtestCreateRequirement(args: CreateRequirementArgs):
         { content: "Created with qTest MCP" },
       );
     } catch (commentError) {
-      const msg = `Auto-comment failed (PID resolution for this requirement may not work): ${commentError instanceof Error ? commentError.message : commentError}`;
-      console.error(`[qtest-mcp] Warning: ${msg}`);
-      warnings.push(msg);
-    }
-
-    if (warnings.length > 0) {
-      summary += `\n\n**⚠️ Warnings:**\n${warnings.map(w => `- ${w}`).join("\n")}`;
+      console.error(`[qtest-mcp] Warning: requirement created but auto-comment failed: ${commentError instanceof Error ? commentError.message : commentError}`);
     }
 
     const savedPath = await saveData(

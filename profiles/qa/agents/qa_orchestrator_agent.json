@@ -15,21 +15,24 @@
     "thinking",
     "todo_list",
     "@bruno/*",
-    "@compass/*"
+    "@compass/*",
+    "@qtest/*"
   ],
   "allowedTools": [
     "@confluence/*",
     "@github/*",
     "@jira/*",
     "@bruno/*",
-    "@compass/*"
+    "@compass/*",
+    "@qtest/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
-    "file://.kiro/context/test_templates.md"
+    "file://.kiro/context/test_templates.md",
+    "file://.kiro/context/qtest_guidelines.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for <JIRA-ID>\"",
+  "welcomeMessage": "👋 QA orchestrator ready!\n\nI can help you:\n  • Create test plans from Jira stories\n  • Generate automated test scripts\n  • Analyze defects and find root causes\n  • Run API and performance tests\n\nTry: \"Create test plan for <JIRA-ID>\"",
   "hooks": {
     "agentSpawn": [
       {
