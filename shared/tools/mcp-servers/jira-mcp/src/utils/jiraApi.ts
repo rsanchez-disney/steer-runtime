@@ -252,6 +252,7 @@ export class JiraApiClient {
         components?: string[],
         labels?: string[],
         sprint?: string,
+        storyPoints?: number,
         customFields?: Record<string, unknown>,
     ): Promise<any> {
 
@@ -270,9 +271,19 @@ export class JiraApiClient {
         }
 
         if (epicLink) {
-            console.error(
-                `Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`,
-            );
+            const { resolveCustomFieldIds } = await import("./customFields.js");
+            const resolved = resolveCustomFieldIds(["epicLink"]);
+            if (resolved.length > 0) {
+                fields[resolved[0]] = epicLink;
+            }
+        }
+
+        if (storyPoints !== undefined) {
+            const { resolveCustomFieldIds } = await import("./customFields.js");
+            const resolved = resolveCustomFieldIds(["storyPoints"]);
+            if (resolved.length > 0) {
+                fields[resolved[0]] = storyPoints;
+            }
         }
 
         if (components && components.length > 0) {

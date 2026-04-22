@@ -5941,7 +5941,7 @@ var JiraApiClient = class {
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields) {
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields) {
     const fields = {
       project: { key: projectKey },
       summary,
@@ -5954,7 +5954,18 @@ var JiraApiClient = class {
       fields.assignee = { name: assignee };
     }
     if (epicLink) {
-      console.error(`Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`);
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["epicLink"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = epicLink;
+      }
+    }
+    if (storyPoints !== void 0) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["storyPoints"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = storyPoints;
+      }
     }
     if (components && components.length > 0) {
       fields.components = components.map((name) => ({ name }));
@@ -7098,6 +7109,10 @@ var jiraCreateIssueSchema = {
         type: "string",
         description: "Sprint ID to assign the issue to (optional)"
       },
+      storyPoints: {
+        type: "number",
+        description: "Story points estimate"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`
@@ -7112,9 +7127,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields, outputDir } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields);
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
