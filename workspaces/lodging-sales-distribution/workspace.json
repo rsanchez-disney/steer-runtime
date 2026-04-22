@@ -54,7 +54,7 @@
     },
     {
       "name": "Yondu",
-      "jira_projects": ["ROS"],
+      "jira_projects": ["TEP3"],
       "board_ids": [12887],
       "studio": "ROS - Yondu | Ruth"
     },

@@ -41,7 +41,7 @@ Each test case contains:
 
 ## Available qTest MCP Tools
 
-For the full tool reference with parameters and usage details, see the [qTest MCP README](../../.kiro/tools/mcp-servers/qtest-mcp/README.md).
+For the full tool reference with parameters and usage details, see the [qTest MCP README](../../shared/tools/mcp-servers/qtest-mcp/README.md).
 
 **Quick reference of available tools:**
 - `qtest_get_projects` / `qtest_get_project` — Project listing and details

@@ -10,17 +10,20 @@
     "fs_write",
     "grep",
     "knowledge",
-    "@bruno/*"
+    "@bruno/*",
+    "@qtest/*"
   ],
   "allowedTools": [
     "@confluence/*",
     "@github/*",
     "@jira/*",
-    "@bruno/*"
+    "@bruno/*",
+    "@qtest/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
-    "file://.kiro/context/test_templates.md"
+    "file://.kiro/context/test_templates.md",
+    "file://.kiro/context/qtest_guidelines.md"
   ],
   "includeMcpJson": true
 }
