@@ -5764,6 +5764,12 @@ var JiraAuth = class {
   apiVersion() {
     return this.isCloud() ? "3" : "2";
   }
+  /** Returns custom field IDs from JIRA_CUSTOM_FIELDS env var (comma-separated). */
+  getCustomFields() {
+    this.loadEnv();
+    const raw = process.env.JIRA_CUSTOM_FIELDS || "";
+    return raw.split(",").map((f) => f.trim()).filter((f) => f.length > 0);
+  }
   /** Returns the correct Authorization header for Cloud (Basic) or Server (Bearer). */
   async getAuthHeader() {
     this.loadEnv();
@@ -5798,7 +5804,7 @@ var JiraApiClient = class {
       "issuelinks",
       "fixVersions"
     ];
-    const requestedFields = fields || defaultFields;
+    const requestedFields = fields || [...defaultFields, ...this.auth.getCustomFields()];
     const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),

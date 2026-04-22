@@ -54,6 +54,13 @@ export class JiraAuth {
         return this.isCloud() ? "3" : "2";
     }
 
+    /** Returns custom field IDs from JIRA_CUSTOM_FIELDS env var (comma-separated). */
+    getCustomFields(): string[] {
+        this.loadEnv();
+        const raw = process.env.JIRA_CUSTOM_FIELDS || "";
+        return raw.split(",").map(f => f.trim()).filter(f => f.length > 0);
+    }
+
     /** Returns the correct Authorization header for Cloud (Basic) or Server (Bearer). */
     async getAuthHeader(): Promise<string> {
         this.loadEnv();

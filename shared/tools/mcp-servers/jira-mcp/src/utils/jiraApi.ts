@@ -29,7 +29,7 @@ export class JiraApiClient {
             "issuelinks",
             "fixVersions",
         ];
-        const requestedFields = fields || defaultFields;
+        const requestedFields = fields || [...defaultFields, ...this.auth.getCustomFields()];
 
         const response = await fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`,
