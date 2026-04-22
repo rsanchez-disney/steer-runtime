@@ -12,7 +12,6 @@ export class JiraApiClient {
         ticketId: string,
         fields?: string[],
     ): Promise<JiraTicket> {
-        const pat = await this.auth.getJiraPat();
 
         const defaultFields = [
             "summary",
@@ -21,14 +20,22 @@ export class JiraApiClient {
             "assignee",
             "priority",
             "created",
+            "updated",
+            "issuetype",
+            "parent",
+            "components",
+            "subtasks",
+            "labels",
+            "issuelinks",
+            "fixVersions",
         ];
         const requestedFields = fields || defaultFields;
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -49,7 +56,6 @@ export class JiraApiClient {
     }
 
     async updateJiraTicket(ticketId: string, updates: any): Promise<void> {
-        const pat = await this.auth.getJiraPat();
 
         console.error(
             "Updating JIRA ticket with fields:",
@@ -57,11 +63,11 @@ export class JiraApiClient {
         );
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`,
             {
                 method: "PUT",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ fields: updates }),
@@ -83,14 +89,13 @@ export class JiraApiClient {
         ticketId: string,
         transitionId: string,
     ): Promise<void> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ transition: { id: transitionId } }),
@@ -106,13 +111,12 @@ export class JiraApiClient {
     }
 
     async getJiraTransitions(ticketId: string): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -128,14 +132,13 @@ export class JiraApiClient {
     }
 
     async addJiraComment(ticketId: string, comment: string): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}/comment`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/comment`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ body: comment }),
@@ -158,7 +161,6 @@ export class JiraApiClient {
         startAt: number = 0,
         extraFields: string[] = [],
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const baseFields = [
             "summary",
@@ -173,11 +175,11 @@ export class JiraApiClient {
         const fields = [...new Set([...baseFields, ...extraFields])];
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/search`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
@@ -211,7 +213,6 @@ export class JiraApiClient {
         sprint?: string,
         customFields?: Record<string, unknown>,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const fields: any = {
             project: { key: projectKey },
@@ -267,11 +268,11 @@ export class JiraApiClient {
         );
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ fields }),
@@ -290,13 +291,12 @@ export class JiraApiClient {
     }
 
     async getJiraProjects(): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/project`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -313,13 +313,12 @@ export class JiraApiClient {
     }
 
     async getJiraIssueTypes(): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issuetype`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issuetype`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -342,7 +341,6 @@ export class JiraApiClient {
         startAt: number = 0,
         maxResults: number = 50,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams({
             startAt: startAt.toString(),
@@ -357,7 +355,7 @@ export class JiraApiClient {
             `${this.baseUrl}/rest/agile/1.0/board?${params}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -379,7 +377,6 @@ export class JiraApiClient {
         startAt: number = 0,
         maxResults: number = 50,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams({
             startAt: startAt.toString(),
@@ -392,7 +389,7 @@ export class JiraApiClient {
             `${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -409,13 +406,12 @@ export class JiraApiClient {
     }
 
     async getJiraAttachments(ticketId: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=attachment`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=attachment`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -432,11 +428,10 @@ export class JiraApiClient {
     }
 
     async downloadAttachment(url: string): Promise<Buffer> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
             },
         });
 
@@ -455,7 +450,6 @@ export class JiraApiClient {
         startAt: number = 0,
         maxResults: number = 50,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams({
             startAt: startAt.toString(),
@@ -467,7 +461,7 @@ export class JiraApiClient {
             `${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -492,13 +486,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/step
      */
     async getXrayTestSteps(testKey: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -519,13 +512,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
      */
     async getXrayTestStep(testKey: string, stepId: string): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -551,7 +543,6 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams();
         if (detailed) params.append("detailed", "true");
@@ -563,7 +554,7 @@ export class JiraApiClient {
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
             },
         });
@@ -583,13 +574,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/precondition
      */
     async getXrayTestPreConditions(testKey: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -610,13 +600,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/testset
      */
     async getXrayTestSets(testKey: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -641,7 +630,6 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -652,7 +640,7 @@ export class JiraApiClient {
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
             },
         });
@@ -672,13 +660,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/test/{testKey}/testplan
      */
     async getXrayTestPlans(testKey: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -703,7 +690,6 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -714,7 +700,7 @@ export class JiraApiClient {
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
             },
         });
@@ -738,7 +724,6 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams();
         if (page !== undefined) params.append("page", page.toString());
@@ -749,7 +734,7 @@ export class JiraApiClient {
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
             },
         });
@@ -776,7 +761,6 @@ export class JiraApiClient {
         page?: number,
         limit?: number,
     ): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         const params = new URLSearchParams();
         if (testExecKey) params.append("testExecKey", testExecKey);
@@ -792,7 +776,7 @@ export class JiraApiClient {
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${pat}`,
+                Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
             },
         });
@@ -812,13 +796,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/settings/teststatuses
      */
     async getXrayTestStatuses(): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -839,14 +822,13 @@ export class JiraApiClient {
      * Combines multiple XRay API calls into one comprehensive response
      */
     async getXrayTestCaseFull(testKey: string): Promise<any> {
-        const pat = await this.auth.getJiraPat();
 
         // Fetch the Jira issue with all fields
         const issueResponse = await fetch(
-            `${this.baseUrl}/rest/api/2/issue/${testKey}`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -900,13 +882,12 @@ export class JiraApiClient {
      * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
      */
     async getXrayPreConditionTests(preConditionKey: string): Promise<any[]> {
-        const pat = await this.auth.getJiraPat();
 
         const response = await fetch(
             `${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
