@@ -7,14 +7,17 @@ const DEFAULT_JIRA_URL = "https://myjira.disney.com";
 export class JiraAuth {
     private jiraPat: string | null = null;
     private jiraUrl: string | null = null;
+    private jiraEmail: string | null = null;
+
+    private loaded = false;
 
     private loadEnv() {
-        if (this.jiraPat) return;
-        // Try env vars first (set by MCP config)
+        if (this.loaded) return;
+        this.loaded = true;
         this.jiraPat = process.env.JIRA_PAT || null;
         this.jiraUrl = process.env.JIRA_URL || null;
+        this.jiraEmail = process.env.JIRA_EMAIL || null;
 
-        // Fallback: load .env file
         if (!this.jiraPat) {
             try {
                 const __filename = fileURLToPath(import.meta.url);
@@ -23,6 +26,7 @@ export class JiraAuth {
                 config({ path: envPath });
                 this.jiraPat = process.env.JIRA_PAT || null;
                 this.jiraUrl = this.jiraUrl || process.env.JIRA_URL || null;
+                this.jiraEmail = this.jiraEmail || process.env.JIRA_EMAIL || null;
             } catch (e) {
                 // ignore
             }
@@ -40,5 +44,33 @@ export class JiraAuth {
     getBaseUrl(): string {
         this.loadEnv();
         return (this.jiraUrl || DEFAULT_JIRA_URL).replace(/\/+$/, "");
+    }
+
+    /** Returns true if configured for Jira Cloud (JIRA_EMAIL is set). */
+    isCloud(): boolean {
+        this.loadEnv();
+        return !!this.jiraEmail;
+    }
+
+    /** Returns the correct API version path: /rest/api/3 for Cloud, /rest/api/2 for Server. */
+    apiVersion(): string {
+        return this.isCloud() ? "3" : "2";
+    }
+
+    /** Returns raw custom field entries from JIRA_CUSTOM_FIELDS (names or IDs, comma-separated). */
+    getRawCustomFields(): string[] {
+        this.loadEnv();
+        const raw = process.env.JIRA_CUSTOM_FIELDS || "";
+        return raw.split(",").map(f => f.trim()).filter(f => f.length > 0);
+    }
+
+    /** Returns the correct Authorization header for Cloud (Basic) or Server (Bearer). */
+    async getAuthHeader(): Promise<string> {
+        this.loadEnv();
+        const pat = await this.getJiraPat();
+        if (this.jiraEmail) {
+            return "Basic " + Buffer.from(this.jiraEmail + ":" + pat).toString("base64");
+        }
+        return "Bearer " + pat;
     }
 }

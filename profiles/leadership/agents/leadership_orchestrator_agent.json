@@ -22,7 +22,8 @@
   "resources": [
     "file://.kiro/context/leadership_guidelines.md",
     "file://.kiro/context/portfolio_projects.md",
-    "file://.kiro/context/fiscal_calendar.md"
+    "file://.kiro/context/fiscal_calendar.md",
+    "file://.kiro/context/mcp_priority.md"
   ],
   "welcomeMessage": "\ud83d\udc4b Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n \u2022 Cross-team velocity and delivery health\n \u2022 Quarterly reports for Disney directors\n \u2022 Dependency tracking and risk assessment\n \u2022 Executive briefings tailored by audience\n\nWhat would you like to review?",
   "hooks": {

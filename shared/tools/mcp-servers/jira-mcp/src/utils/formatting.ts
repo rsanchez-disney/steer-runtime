@@ -70,5 +70,31 @@ export function buildFormattedSummary(
         );
     }
 
-    return summary.join("\n");
+    if (requestedFields.includes("fixVersions") && ticket.fields.fixVersions?.length) {
+        summary.push(`**Fix Versions:** ${ticket.fields.fixVersions.map((v: any) => v.name).join(", ")}`);
+    }
+    if (requestedFields.includes("issuetype") && ticket.fields.issuetype) {
+        summary.push(`**Issue Type:** ${ticket.fields.issuetype.name}`);
+    }
+    if (requestedFields.includes("parent") && ticket.fields.parent) {
+        summary.push(`**Parent:** ${ticket.fields.parent.key} - ${ticket.fields.parent.fields?.summary || "Unknown"}`);
+    }
+    if (requestedFields.includes("subtasks") && ticket.fields.subtasks?.length) {
+        summary.push("", `**Sub-tasks (${ticket.fields.subtasks.length}):**`);
+        ticket.fields.subtasks.forEach((st: any) => {
+            summary.push(`- ${st.key}: ${st.fields?.summary || "Unknown"} [${st.fields?.status?.name || "Unknown"}]`);
+        });
+    }
+    if (requestedFields.includes("issuelinks") && ticket.fields.issuelinks?.length) {
+        summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
+        ticket.fields.issuelinks.forEach((link: any) => {
+            if (link.outwardIssue) {
+                summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+            }
+            if (link.inwardIssue) {
+                summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+            }
+        });
+    }
+        return summary.join("\n");
 }

@@ -18,7 +18,8 @@
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/mcp_priority.md"
   ],
   "allowedTools": [
     "@jira/*",
