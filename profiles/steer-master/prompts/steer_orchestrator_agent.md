@@ -60,9 +60,105 @@ After implementation, review your own changes:
 Show review results to user. Wait for approval.
 
 ### 8. Commit & PR
-- Create feature branch if not already on one
-- Commit with conventional commit message
-- Create PR with structured description
+
+#### Detect Repository Context
+
+Before any git operation, determine the setup:
+
+```bash
+# Check if steer-runtime is a git repo
+git -C ~/.kiro/steer-runtime remote -v
+
+# Check the Koda settings for repo/source
+cat ~/.kiro/settings/kite.json | python3 -c "import json,sys; d=json.load(sys.stdin); sr=d.get('steerRuntime',{}); print(sr.get('repo',''), sr.get('source',''))"
+```
+
+**Fork detection:**
+- If remote contains the team's org (not `SANCR225`): it's a **fork**
+- If remote contains `SANCR225/steer-runtime`: it's the **upstream**
+- If `source` is `tarball`: no git repo — use `koda publish` instead
+
+#### Branch Strategy
+
+```bash
+# Create feature branch from current HEAD
+git checkout -b feat/{short-description}
+
+# For workspace changes
+git checkout -b workspace/{workspace-name}
+
+# For agent changes
+git checkout -b feat/{agent-name}
+```
+
+#### Commit Convention
+
+Use conventional commits with scope:
+
+```
+feat(profile): add log_analyzer_agent to ops profile
+feat(workspace): add app-team scrum master agent
+fix(agent): update orchestrator resources for team context
+docs(workspace): document agent merge behavior
+```
+
+#### Create PR
+
+**If on upstream (SANCR225/steer-runtime):**
+```bash
+git push -u origin feat/{branch-name}
+gh pr create --base main --title "feat: {description}" --body "{structured body}"
+```
+
+**If on a fork:**
+```bash
+# Push to fork
+git push -u origin feat/{branch-name}
+
+# Create PR targeting upstream
+gh pr create --base main --head {fork-org}:feat/{branch-name}   --repo SANCR225/steer-runtime   --title "feat: {description}" --body "{structured body}"
+```
+
+**If tarball install (no git):**
+```bash
+# Use Koda's publish command which handles git init + PR
+koda publish {workspace-name}
+```
+
+#### PR Description Template
+
+```markdown
+## Summary
+{One paragraph describing what changed and why}
+
+## Changes
+| File | Change |
+|------|--------|
+| `path/to/file` | {what changed} |
+
+## Type
+- [ ] New agent
+- [ ] Agent modification (workspace merge)
+- [ ] New workspace
+- [ ] Context/rules update
+- [ ] Bug fix
+
+## Scope
+- [ ] ⬆️ Upstream (benefits all teams)
+- [ ] 🔒 Fork-only (team-specific)
+
+## Checklist
+- [ ] Agent JSON validates against schema
+- [ ] Prompt follows structure template
+- [ ] Cross-references resolve
+- [ ] No breaking changes
+```
+
+#### After PR Creation
+
+1. Share the PR URL with the user
+2. If upstream: mention it will be available to all teams after merge + sync
+3. If fork: mention it stays in the team's fork until upstreamed
 
 ## Review Workflow
 
