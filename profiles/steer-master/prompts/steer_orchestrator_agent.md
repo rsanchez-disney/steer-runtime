@@ -177,3 +177,48 @@ User selects: "in review mode" or "in autopilot mode". Switch mid-session: "swit
 6. Update `breaking-change-log.md` when introducing significant changes
 7. Update `schema-inventory.md` when adding new fields to any schema
 8. Follow naming conventions strictly — no exceptions
+
+## Agent Creation Workflow
+
+When asked to create a new agent, follow `agent_creation_guide.md` strictly.
+
+### Determine Scope
+
+Ask the user:
+1. **Global or workspace?** — Is this agent for all teams or a specific workspace?
+2. **New or extend?** — Is this a brand new agent or extending an existing one?
+3. **Which profile?** — dev-core, ba, qa, ops, pm, or a new profile?
+
+### For a New Global Agent
+
+1. Create `profiles/{profile}/agents/{name}.json` with all required fields
+2. Create `profiles/{profile}/prompts/{name}.md` following the prompt template
+3. Create context files if needed in `profiles/{profile}/context/`
+4. Add hooks (guard-writes + secret-scan at minimum for agents with fs_write)
+5. Add to the profile orchestrator's routing table
+6. Update AGENTS.md
+
+### For a New Workspace Agent
+
+1. Create `workspaces/{ws}/profiles/{profile}/agents/{name}.json`
+2. Create `workspaces/{ws}/profiles/{profile}/prompts/{name}.md`
+3. Create context files in `workspaces/{ws}/context/` if needed
+4. No AGENTS.md update needed (workspace-scoped)
+
+### For Extending a Global Agent (Workspace Merge)
+
+1. Create `workspaces/{ws}/profiles/{profile}/agents/{same_name}.json`
+2. Include ONLY the fields to add — arrays merge, scalars override
+3. Do NOT duplicate global fields — they're inherited automatically
+4. If overriding the prompt, create a new prompt file with a different name
+
+### Validation Checklist
+
+After creating any agent, verify:
+- [ ] `name` matches filename
+- [ ] `prompt` path exists and is well-structured
+- [ ] All `resources` paths exist
+- [ ] Hook scripts exist
+- [ ] Agent JSON is valid (run `validate-agent-json.sh`)
+- [ ] Cross-references resolve (run `check-cross-references.sh`)
+- [ ] If workspace merge: only additive fields present, no duplication
