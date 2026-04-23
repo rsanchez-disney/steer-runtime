@@ -307,3 +307,9 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 ## Version
 
 **v3.1.0** — 33 agents across 4 profiles, 5 MCP servers, 5 common rules, 9 known projects.
+
+---
+
+## See also
+
+- [System Layers & Responsibilities](SYSTEM_LAYERS.md) — layer-by-layer breakdown of the full ecosystem (LLM, IDE runtime, Koda, steer-runtime, workspaces, profiles, agents, MCP servers, hooks, powers)
