@@ -5839,6 +5839,7 @@ var JiraApiClient = class _JiraApiClient {
       "priority",
       "created",
       "updated",
+      "comment",
       "issuetype",
       "parent",
       "components",
@@ -6567,6 +6568,7 @@ var jiraGetIssueSchema = {
             "created",
             "updated",
             "description",
+            "comment",
             "labels",
             "components",
             "customfield_10003"
@@ -6592,7 +6594,8 @@ async function handleJiraGetIssue(args) {
       "assignee",
       "priority",
       "created",
-      "description"
+      "description",
+      "comment"
     ];
     const requestedFields = fields || defaultFields;
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];

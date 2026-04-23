@@ -36,6 +36,7 @@ export const jiraGetIssueSchema = {
                         "created",
                         "updated",
                         "description",
+            "comment",
                         "labels",
                         "components",
                         "customfield_10003",
@@ -70,6 +71,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             "priority",
             "created",
             "description",
+            "comment",
         ];
         const requestedFields = fields || defaultFields;
 

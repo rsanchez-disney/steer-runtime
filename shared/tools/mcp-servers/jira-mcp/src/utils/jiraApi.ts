@@ -71,6 +71,7 @@ export class JiraApiClient {
             "priority",
             "created",
             "updated",
+            "comment",
             "issuetype",
             "parent",
             "components",
