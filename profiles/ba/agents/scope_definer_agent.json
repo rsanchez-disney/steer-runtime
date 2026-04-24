@@ -4,6 +4,7 @@
   "prompt": "scope_definer_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "fs_read",
@@ -12,6 +13,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*"
   ],

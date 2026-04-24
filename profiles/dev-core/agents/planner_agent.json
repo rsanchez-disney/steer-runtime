@@ -4,6 +4,7 @@
   "prompt": "planner_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@jira/*",
     "fs_read",
     "thinking"
@@ -14,6 +15,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@jira/*"
   ],
   "includeMcpJson": true

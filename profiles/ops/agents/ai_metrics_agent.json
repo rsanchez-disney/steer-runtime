@@ -4,6 +4,7 @@
   "prompt": "ai_metrics_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "execute_bash",
@@ -11,6 +12,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*"
   ],

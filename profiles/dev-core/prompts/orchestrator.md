@@ -187,9 +187,9 @@ Then continue with the full SDLC workflow (see below).
 | Terraform / IaC | `terraform` |
 | Astro / SSR | `astro` |
 
-### Category 14: Confluence / Wiki / GitHub
+### Category 14: Confluence / MyWiki / GitHub
 
-**Triggers**: Confluence URL, GitHub URL, "search confluence", "check repo"
+**Triggers**: Confluence URL, MyWiki URL, GitHub URL, "search confluence", "search mywiki", "check repo", "mywiki.disney.com", "confluence.disney.com"
 
 **Action**: Delegate to `story_analyzer_agent` (it has @confluence/*, @mywiki/*, @github/* tools).
 
