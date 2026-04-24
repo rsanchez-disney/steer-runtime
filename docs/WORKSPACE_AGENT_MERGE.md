@@ -112,6 +112,24 @@ workspaces/app-team/
 
 Prompts are **not merged** — they're files, not JSON. If the workspace provides a prompt with the same filename, it replaces the global one. If you want to extend a prompt, use a different filename and reference it in the workspace agent's `"prompt"` field.
 
+## Common Mistake: Agents at Workspace Root
+
+**Do NOT place agents directly under `workspaces/{name}/agents/`.** Koda only discovers workspace agents inside profile overlay directories:
+
+```
+❌ workspaces/bolt-team/agents/my_agent.json          ← NOT installed
+❌ workspaces/bolt-team/prompts/my_agent.md            ← NOT installed
+
+✅ workspaces/bolt-team/profiles/dev-core/agents/my_agent.json   ← Installed
+✅ workspaces/bolt-team/profiles/dev-core/prompts/my_agent.md    ← Installed
+```
+
+Choose the profile that best matches the agent's role:
+- **dev-core** — development, planning, code review agents
+- **dev-web** — frontend/backend specialist agents
+- **qa** — testing agents
+- **pm** — project management agents
+
 ## Install Order
 
 1. `InstallShared` — hooks, shared context, MCP bundles
