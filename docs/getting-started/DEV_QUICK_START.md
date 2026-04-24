@@ -283,4 +283,4 @@ Switch mid-session: `Switch to autopilot` or `Switch to review mode`
 
 ---
 
-Back to [Getting Started](GETTING_STARTED.md) · [Prompt Guide](PROMPT_GUIDE.md) · [README](../README.md)
+Back to [Getting Started](GETTING_STARTED.md) · [PROMPT_GUIDE.md](../profiles/dev/PROMPT_GUIDE.md) · [README](../README.md)

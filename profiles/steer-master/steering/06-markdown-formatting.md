@@ -62,9 +62,20 @@ Good:
 
 ## Links and References
 
-- Use inline links `[text](url)` for short references
-- Use reference-style links `[text][ref]` when the same URL appears multiple times
-- Relative links for internal docs: `[SETUP](docs/getting-started/SETUP.md)` — not absolute paths
+- Prefer reference-style links `[text][ref]` with a `<!-- Links -->` section at the bottom of the file
+- Use inline links `[text](url)` only for single-use short references that won't be reused
+- When a file has two or more links, collect all link definitions in a `<!-- Links -->` block at the end:
+
+```md
+Paragraph referencing [Setup Guide][setup] and [MCP Config][mcp-setup].
+
+<!-- Links -->
+[mcp-setup]: docs/reference/MCP_SETUP.md
+[setup]: docs/getting-started/SETUP.md
+```
+
+- Sort link definitions alphabetically by reference name inside the `<!-- Links -->` block
+- Relative links for internal docs: `docs/getting-started/SETUP.md` — not absolute paths
 - Do not use bare URLs in prose — always wrap in `<url>` or `[text](url)`
 
 ---

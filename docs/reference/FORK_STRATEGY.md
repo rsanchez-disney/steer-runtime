@@ -51,21 +51,21 @@ graph TD
 
 ## What to Customize vs. What to Keep in Sync
 
-| Layer | Customize in fork? | Sync from upstream? | Notes |
-|-------|:------------------:|:-------------------:|-------|
-| **Agent JSON configs** | ⚠️ Rarely | ✅ Yes | Only customize if adding team-specific MCP servers |
-| **Agent prompts** (`.md`) | ⚠️ Rarely | ✅ Yes | Upstream prompts are generic by design |
-| **Golden rules** | ❌ No | ✅ Yes | Org-wide standards — changes go upstream |
-| **Profile structure** | ❌ No | ✅ Yes | Profile definitions are shared |
-| **Setup scripts** | ❌ No | ✅ Yes | `setup.sh` / `setup.ps1` are shared (Koda is primary) |
-| **MCP server bundles** | ❌ No | ✅ Yes | Shared infrastructure |
-| **MCP tokens** (`.env`) | ✅ Yes | ❌ No | Per-user, gitignored |
-| **Memory banks** | ✅ Yes | ❌ No | Project-specific context |
-| **`workspaces/` directory** | ✅ Yes | ❌ No | Team workspace configs & project memory templates |
-| **Custom profiles** | ✅ Yes | ❌ No | Team-specific `.kiro-<name>/` directories |
-| **Team workspaces** | ✅ Yes | ❌ No | `workspaces/<team>/` — one-command team setup |
-| **Custom rules** | ✅ Yes | ⚠️ Merge | Team rules in `common/rules/` |
-| **Context files** | ⚠️ Additive | ✅ Yes | Add new files, don't modify upstream ones |
+| Layer                       | Customize in fork? | Sync from upstream? | Notes                                                 |
+|-----------------------------|:------------------:|:-------------------:|-------------------------------------------------------|
+| **Agent JSON configs**      |     ⚠️ Rarely      |        ✅ Yes        | Only customize if adding team-specific MCP servers    |
+| **Agent prompts** (`.md`)   |     ⚠️ Rarely      |        ✅ Yes        | Upstream prompts are generic by design                |
+| **Golden rules**            |        ❌ No        |        ✅ Yes        | Org-wide standards — changes go upstream              |
+| **Profile structure**       |        ❌ No        |        ✅ Yes        | Profile definitions are shared                        |
+| **Setup scripts**           |        ❌ No        |        ✅ Yes        | `setup.sh` / `setup.ps1` are shared (Koda is primary) |
+| **MCP server bundles**      |        ❌ No        |        ✅ Yes        | Shared infrastructure                                 |
+| **MCP tokens** (`.env`)     |       ✅ Yes        |        ❌ No         | Per-user, gitignored                                  |
+| **Memory banks**            |       ✅ Yes        |        ❌ No         | Project-specific context                              |
+| **`workspaces/` directory** |       ✅ Yes        |        ❌ No         | Team workspace configs & project memory templates     |
+| **Custom profiles**         |       ✅ Yes        |        ❌ No         | Team-specific `.kiro-<name>/` directories             |
+| **Team workspaces**         |       ✅ Yes        |        ❌ No         | `workspaces/<team>/` — one-command team setup         |
+| **Custom rules**            |       ✅ Yes        |      ⚠️ Merge       | Team rules in `common/rules/`                         |
+| **Context files**           |    ⚠️ Additive     |        ✅ Yes        | Add new files, don't modify upstream ones             |
 
 **Rule of thumb**: If a change benefits all teams, it goes upstream. If it's team-specific, it stays in the fork.
 
@@ -295,10 +295,10 @@ Ensure `.env` files with tokens are never committed:
 
 Upstream uses semantic versioning with tags:
 
-| Tag | Meaning | Fork action |
-|-----|---------|-------------|
-| `v3.4.0` | New feature (agents, MCP, profiles) | Sync recommended |
-| `v3.4.1` | Bug fix or doc update | Sync at convenience |
+| Tag      | Meaning                                                  | Fork action                   |
+|----------|----------------------------------------------------------|-------------------------------|
+| `v3.4.0` | New feature (agents, MCP, profiles)                      | Sync recommended              |
+| `v3.4.1` | Bug fix or doc update                                    | Sync at convenience           |
 | `v4.0.0` | Breaking change (agent config format, koda/setup.sh API) | Sync required, read changelog |
 
 ### Subscribing to Releases
@@ -315,11 +315,11 @@ git merge upstream/main              # Sync
 
 ## Governance Roles
 
-| Role | Responsibility | Who |
-|------|---------------|-----|
-| **Upstream maintainer** | Reviews upstream PRs, tags releases, sets standards | Platform team (SANCR225) |
-| **Fork owner** | Manages team fork, runs weekly syncs, resolves conflicts | One person per team |
-| **Contributor** | Submits improvements back to upstream | Any developer |
+| Role                    | Responsibility                                           | Who                      |
+|-------------------------|----------------------------------------------------------|--------------------------|
+| **Upstream maintainer** | Reviews upstream PRs, tags releases, sets standards      | Platform team (SANCR225) |
+| **Fork owner**          | Manages team fork, runs weekly syncs, resolves conflicts | One person per team      |
+| **Contributor**         | Submits improvements back to upstream                    | Any developer            |
 
 ---
 
@@ -332,7 +332,7 @@ git merge upstream/main              # Sync
 - [ ] Add project memory banks via `koda init-memory`
 - [ ] Set up weekly upstream sync (manual or automated)
 - [ ] Designate a fork owner
-- [ ] Read [Golden Rules](../.kiro/context/golden_rules.md)
+- [ ] Read [Golden Rules](../../shared/context/golden_rules.md)
 
 ---
 

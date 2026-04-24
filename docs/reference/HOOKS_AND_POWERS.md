@@ -23,11 +23,11 @@ graph LR
     style warn fill:#8b8000,stroke:#ffff00,color:#eee
 ```
 
-| Exit code | Behavior |
-|:---------:|----------|
-| `0` | Allow — action proceeds |
-| `2` | Block — action is rejected with the stderr message |
-| Other | Allow — hook output shown as warning |
+| Exit code | Behavior                                           |
+|:---------:|----------------------------------------------------|
+|    `0`    | Allow — action proceeds                            |
+|    `2`    | Block — action is rejected with the stderr message |
+|   Other   | Allow — hook output shown as warning               |
 
 ### Available Hooks
 
@@ -69,14 +69,14 @@ graph LR
 
 ### Hook × Agent Matrix
 
-| Hook | Orchestrators | Write Agents | Event |
-|------|:------------:|:------------:|-------|
-| `git-context.sh` | ✅ 5 | | agentSpawn |
-| `guard-writes.sh` | | ✅ 6 | preToolUse |
-| `secret-scan.sh` | | ✅ 6 | preToolUse |
-| `warn-destructive.sh` | ✅ 1 | | postToolUse |
-| `branch-guard.sh` | ✅ 5 | | preToolUse |
-| `lint-on-write.sh` | | ✅ 6 | postToolUse |
+| Hook                  | Orchestrators | Write Agents | Event       |
+|-----------------------|:-------------:|:------------:|-------------|
+| `git-context.sh`      |      ✅ 5      |              | agentSpawn  |
+| `guard-writes.sh`     |               |     ✅ 6      | preToolUse  |
+| `secret-scan.sh`      |               |     ✅ 6      | preToolUse  |
+| `warn-destructive.sh` |      ✅ 1      |              | postToolUse |
+| `branch-guard.sh`     |      ✅ 5      |              | preToolUse  |
+| `lint-on-write.sh`    |               |     ✅ 6      | postToolUse |
 
 ### Wiring a Hook
 
@@ -133,53 +133,53 @@ Powers in `.kiro-dev-core/powers/` are custom tool extensions. Each power is a d
 #### git-ops
 Git operations for development workflows.
 
-| Tool | Description |
-|------|-------------|
-| `git_status` | Current branch, changes, uncommitted files |
-| `git_diff` | Show file differences (optional: specific file, staged) |
-| `git_log` | Recent commit history (configurable limit) |
+| Tool         | Description                                             |
+|--------------|---------------------------------------------------------|
+| `git_status` | Current branch, changes, uncommitted files              |
+| `git_diff`   | Show file differences (optional: specific file, staged) |
+| `git_log`    | Recent commit history (configurable limit)              |
 
 #### code-analysis
 Code search and analysis utilities.
 
-| Tool | Description |
-|------|-------------|
-| `find_files` | Find files by pattern or extension |
-| `search_code` | Search text/regex in code files |
-| `count_lines` | Count lines of code by file type |
+| Tool          | Description                        |
+|---------------|------------------------------------|
+| `find_files`  | Find files by pattern or extension |
+| `search_code` | Search text/regex in code files    |
+| `count_lines` | Count lines of code by file type   |
 
 #### file-ops
 Advanced file operations.
 
-| Tool | Description |
-|------|-------------|
-| `backup_file` | Create timestamped backup of a file |
-| `compare_files` | Diff two files and show differences |
+| Tool              | Description                          |
+|-------------------|--------------------------------------|
+| `backup_file`     | Create timestamped backup of a file  |
+| `compare_files`   | Diff two files and show differences  |
 | `find_duplicates` | Find duplicate files by content hash |
 
 #### test-runner
 Test execution and discovery.
 
-| Tool | Description |
-|------|-------------|
-| `run_tests` | Execute test commands (npm test, mvn test, etc.) |
-| `find_tests` | Locate test files by framework |
-| `test_coverage` | Run coverage analysis |
+| Tool            | Description                                      |
+|-----------------|--------------------------------------------------|
+| `run_tests`     | Execute test commands (npm test, mvn test, etc.) |
+| `find_tests`    | Locate test files by framework                   |
+| `test_coverage` | Run coverage analysis                            |
 
 #### dependency-check
 Dependency vulnerability and freshness analysis.
 
-| Tool | Description |
-|------|-------------|
-| `check_outdated` | List outdated dependencies (npm/maven) |
+| Tool                    | Description                             |
+|-------------------------|-----------------------------------------|
+| `check_outdated`        | List outdated dependencies (npm/maven)  |
 | `check_vulnerabilities` | Scan for known security vulnerabilities |
 
 #### api-docs
 API documentation extraction and validation.
 
-| Tool | Description |
-|------|-------------|
-| `extract_openapi` | Find and extract OpenAPI/Swagger specs |
+| Tool                | Description                                    |
+|---------------------|------------------------------------------------|
+| `extract_openapi`   | Find and extract OpenAPI/Swagger specs         |
 | `validate_contract` | Validate spec for completeness and correctness |
 
 ### Wiring a Power
@@ -225,7 +225,7 @@ Add to an agent's JSON config:
    };
    ```
 
-See [`profiles/dev-core/powers/GUIDE.md`](../profiles/dev-core/powers/GUIDE.md) for the full creation guide.
+See [`profiles/dev-core/powers/GUIDE.md`](../../profiles/dev-core/powers/GUIDE.md) for the full creation guide.
 
 ---
 

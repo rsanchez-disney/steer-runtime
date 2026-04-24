@@ -467,24 +467,24 @@ Hooks are wired in agent JSON configs:
 
 Custom tool extensions that give agents capabilities beyond the built-in tool set.
 
-| Aspect       | Detail                                                                                                                                                                                                                                                                                                                  |
-|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Owns         | Domain-specific tooling — git operations, code analysis, file operations, test execution, dependency checking, API doc extraction                                                                                                                                                                                        |
-| Does not own | Agent behavior, prompt content, guardrails                                                                                                                                                                                                                                                                              |
+| Aspect       | Detail                                                                                                                                                                                                                                              |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Owns         | Domain-specific tooling — git operations, code analysis, file operations, test execution, dependency checking, API doc extraction                                                                                                                   |
+| Does not own | Agent behavior, prompt content, guardrails                                                                                                                                                                                                          |
 | Relationship | Authored in `profiles/dev-core/powers/` in steer-runtime. Each power is a directory with `power.json` (tool definitions) + `index.js` (implementation). Loaded by a `loader.js` module. Wired to agents via the `powers` key in agent JSON configs. |
 
 Powers are different from MCP servers — they're lightweight JavaScript modules that run in-process rather than as separate child processes. They don't need tokens or network access (though they can shell out to git, npm, etc.). They're also different from hooks — powers *add* capabilities, hooks *constrain* them.
 
 Available powers:
 
-| Power            | Tools                                          | Purpose                                          |
-|------------------|------------------------------------------------|--------------------------------------------------|
-| git-ops          | `git_status`, `git_diff`, `git_log`            | Git operations for development workflows         |
-| code-analysis    | `find_files`, `search_code`, `count_lines`     | Code search and analysis                         |
-| file-ops         | `backup_file`, `compare_files`, `find_duplicates` | Advanced file operations                      |
-| test-runner      | `run_tests`, `find_tests`, `test_coverage`     | Test execution and discovery                     |
-| dependency-check | `check_outdated`, `check_vulnerabilities`      | Dependency health analysis                       |
-| api-docs         | `extract_openapi`, `validate_contract`         | API documentation extraction and validation      |
+| Power            | Tools                                             | Purpose                                     |
+|------------------|---------------------------------------------------|---------------------------------------------|
+| git-ops          | `git_status`, `git_diff`, `git_log`               | Git operations for development workflows    |
+| code-analysis    | `find_files`, `search_code`, `count_lines`        | Code search and analysis                    |
+| file-ops         | `backup_file`, `compare_files`, `find_duplicates` | Advanced file operations                    |
+| test-runner      | `run_tests`, `find_tests`, `test_coverage`        | Test execution and discovery                |
+| dependency-check | `check_outdated`, `check_vulnerabilities`         | Dependency health analysis                  |
+| api-docs         | `extract_openapi`, `validate_contract`            | API documentation extraction and validation |
 
 Power structure:
 
@@ -579,19 +579,19 @@ The key insight: the LLM never touches the filesystem, Jira, or GitHub directly.
 
 ## Ownership Summary
 
-| Layer           | What it owns                                                                    | What it doesn't own                              |
-|-----------------|---------------------------------------------------------------------------------|--------------------------------------------------|
-| LLM             | Inference (text generation)                                                     | Memory, tools, files, secrets, guardrails        |
-| IDE Runtime     | Agent loading, tool routing, hook enforcement, MCP lifecycle, power loading      | Agent definitions, organizational knowledge      |
-| MCP Servers     | Protocol translation to external systems (Jira, GitHub, Confluence, etc.)       | Business logic, agent behavior, token storage    |
-| Hooks           | Guardrails — blocking/warning/allowing tool executions via exit codes            | Agent behavior, tool implementation              |
-| Powers          | Domain-specific tool extensions (git, code analysis, testing, file ops)         | Agent behavior, guardrails, external integrations |
-| Installed Files | Nothing (output artifacts)                                                      | —                                                |
-| Koda            | Installation, updates, tokens, workspace resolution                             | Agent behavior, runtime execution                |
-| steer-runtime   | All source definitions (agents, prompts, context, hooks, MCP, powers, workspaces) | Runtime execution, user tokens                 |
-| Workspace       | Team-level profile selection, team context, project mappings                     | Profile definitions, agent behavior              |
-| Profile         | Role-scoped agent group, profile context, steering rules                        | Cross-profile resources, MCP code                |
-| Agent           | One SDLC task, its tools, its constraints                                       | Orchestration, other agents' tasks               |
+| Layer           | What it owns                                                                      | What it doesn't own                               |
+|-----------------|-----------------------------------------------------------------------------------|---------------------------------------------------|
+| LLM             | Inference (text generation)                                                       | Memory, tools, files, secrets, guardrails         |
+| IDE Runtime     | Agent loading, tool routing, hook enforcement, MCP lifecycle, power loading       | Agent definitions, organizational knowledge       |
+| MCP Servers     | Protocol translation to external systems (Jira, GitHub, Confluence, etc.)         | Business logic, agent behavior, token storage     |
+| Hooks           | Guardrails — blocking/warning/allowing tool executions via exit codes             | Agent behavior, tool implementation               |
+| Powers          | Domain-specific tool extensions (git, code analysis, testing, file ops)           | Agent behavior, guardrails, external integrations |
+| Installed Files | Nothing (output artifacts)                                                        | —                                                 |
+| Koda            | Installation, updates, tokens, workspace resolution                               | Agent behavior, runtime execution                 |
+| steer-runtime   | All source definitions (agents, prompts, context, hooks, MCP, powers, workspaces) | Runtime execution, user tokens                    |
+| Workspace       | Team-level profile selection, team context, project mappings                      | Profile definitions, agent behavior               |
+| Profile         | Role-scoped agent group, profile context, steering rules                          | Cross-profile resources, MCP code                 |
+| Agent           | One SDLC task, its tools, its constraints                                         | Orchestration, other agents' tasks                |
 
 ---
 

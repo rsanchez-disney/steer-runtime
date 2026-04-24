@@ -24,21 +24,21 @@ A 5-layer Enterprise Memory Bank for Walt Disney World:
 
 ### What works today
 
-| Proposed Layer | steer-runtime Equivalent | Status |
-|---|---|---|
-| Shared Knowledge | `shared/context/` (golden_rules.md, project_mappings.md) + `common/rules/` | ✅ Works — agents load these as `resources` |
-| Project Banks | `workspaces/<team>/projects/<project>/.kiro/rules/memory-bank/` | ✅ Works — TEP3 already follows this pattern |
-| Templates | `common/memory-bank-templates/` + `common/templates/specs/` | ✅ `koda init-memory` scaffolds from these |
-| Workspace inheritance | `workspace.json` → `extends` field | ✅ Child workspaces inherit parent config |
+| Proposed Layer        | steer-runtime Equivalent                                                   | Status                                      |
+|-----------------------|----------------------------------------------------------------------------|---------------------------------------------|
+| Shared Knowledge      | `shared/context/` (golden_rules.md, project_mappings.md) + `common/rules/` | ✅ Works — agents load these as `resources`  |
+| Project Banks         | `workspaces/<team>/projects/<project>/.kiro/rules/memory-bank/`            | ✅ Works — TEP3 already follows this pattern |
+| Templates             | `common/memory-bank-templates/` + `common/templates/specs/`                | ✅ `koda init-memory` scaffolds from these   |
+| Workspace inheritance | `workspace.json` → `extends` field                                         | ✅ Child workspaces inherit parent config    |
 
 ### What needs work
 
-| Proposed Layer | Gap | Effort |
-|---|---|---|
-| Service Banks | No shared cross-team service context directory | Medium |
-| Channel Banks | No channel-specific context directory | Medium |
-| Auto-resolution | `project.yaml` doesn't resolve service/channel references at install time | Medium |
-| Shared Knowledge (expanded) | Missing enterprise architecture, glossary, environments docs | Low (content only) |
+| Proposed Layer              | Gap                                                                       | Effort             |
+|-----------------------------|---------------------------------------------------------------------------|--------------------|
+| Service Banks               | No shared cross-team service context directory                            | Medium             |
+| Channel Banks               | No channel-specific context directory                                     | Medium             |
+| Auto-resolution             | `project.yaml` doesn't resolve service/channel references at install time | Medium             |
+| Shared Knowledge (expanded) | Missing enterprise architecture, glossary, environments docs              | Low (content only) |
 
 ---
 
@@ -173,23 +173,23 @@ Running `koda workspace apply tep3` installs profiles + copies service/channel c
 
 ### Pros
 
-| # | Benefit |
-|---|---------|
+| # | Benefit                                                                                                                                                                                                |
+|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1 | **Eliminates duplication** — Service knowledge lives in one place. When Cart Service's API changes, one update propagates to every project that references it. Today each team maintains its own copy. |
-| 2 | **Faster onboarding** — New project = create workspace + declare services/channels. No need to manually assemble context from scratch. |
-| 3 | **Agents get richer context** — Instead of a generic memory bank, agents see the actual service contracts and channel flows relevant to the project. Better answers, fewer hallucinations. |
-| 4 | **Scales with the org** — Adding a new service or channel is one PR. Every workspace that references it gets the update on next sync. |
-| 5 | **Composable** — Teams pick exactly which services and channels they need. A mobile team working on Flutter + Cart + DTC gets different context than a backend team working on PEOS + TTC. |
+| 2 | **Faster onboarding** — New project = create workspace + declare services/channels. No need to manually assemble context from scratch.                                                                 |
+| 3 | **Agents get richer context** — Instead of a generic memory bank, agents see the actual service contracts and channel flows relevant to the project. Better answers, fewer hallucinations.             |
+| 4 | **Scales with the org** — Adding a new service or channel is one PR. Every workspace that references it gets the update on next sync.                                                                  |
+| 5 | **Composable** — Teams pick exactly which services and channels they need. A mobile team working on Flutter + Cart + DTC gets different context than a backend team working on PEOS + TTC.             |
 
 ### Cons
 
-| # | Risk | Mitigation |
-|---|------|------------|
-| 1 | **Content maintenance burden** — Service banks are only valuable if kept current. Stale docs are worse than no docs (agents confidently give wrong answers). | Assign owners per service bank. Add `last-updated` headers. `koda doctor` flags stale banks (>60 days). |
-| 2 | **Repo size growth** — Each service bank adds 4-6 markdown files. With 15+ services and 4+ channels, that's 80-100 new files. | Keep it markdown-only. No swagger specs, no postman collections — reference those by URL. |
+| # | Risk                                                                                                                                                                | Mitigation                                                                                                     |
+|---|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| 1 | **Content maintenance burden** — Service banks are only valuable if kept current. Stale docs are worse than no docs (agents confidently give wrong answers).        | Assign owners per service bank. Add `last-updated` headers. `koda doctor` flags stale banks (>60 days).        |
+| 2 | **Repo size growth** — Each service bank adds 4-6 markdown files. With 15+ services and 4+ channels, that's 80-100 new files.                                       | Keep it markdown-only. No swagger specs, no postman collections — reference those by URL.                      |
 | 3 | **Context window pressure** — If a project references 6 services and 2 channels, that's 30+ files loaded into agent context. May hit token limits on complex tasks. | Phase 2 flattens each service into a single merged file (`svc-cart-service.md`). Agents see 6-8 files, not 30. |
-| 4 | **Coordination overhead** — Who approves changes to a shared service bank? A bad merge could affect multiple teams. | `CODEOWNERS` per service directory. PR reviews required. Same model as `shared/context/` today. |
-| 5 | **Adoption friction** — Teams need to learn the new `services`/`channels` fields and restructure their project.yaml. | Phase 1 requires zero changes to existing workflows. Phase 2-3 are opt-in. Teams adopt when ready. |
+| 4 | **Coordination overhead** — Who approves changes to a shared service bank? A bad merge could affect multiple teams.                                                 | `CODEOWNERS` per service directory. PR reviews required. Same model as `shared/context/` today.                |
+| 5 | **Adoption friction** — Teams need to learn the new `services`/`channels` fields and restructure their project.yaml.                                                | Phase 1 requires zero changes to existing workflows. Phase 2-3 are opt-in. Teams adopt when ready.             |
 
 ---
 
@@ -245,12 +245,12 @@ This is designed to be enabled per-workspace, not globally. Each workspace contr
 
 **What this means in practice:**
 
-| Scenario | What happens |
-|---|---|
-| Team runs `koda workspace apply tep3` | Installs profiles + copies cart-service, order-service, peos, digital-dtc, ttc context |
-| Team runs `koda workspace apply dta-team` | Installs profiles only — no service/channel context (same as today) |
-| Team adds `services: [cart-service]` to their workspace | Next `koda sync` picks up cart-service context. No other workspace affected. |
-| Team removes `services` field | Next `koda sync` stops copying service context. Existing files remain until `koda clean`. |
+| Scenario                                                | What happens                                                                              |
+|---------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| Team runs `koda workspace apply tep3`                   | Installs profiles + copies cart-service, order-service, peos, digital-dtc, ttc context    |
+| Team runs `koda workspace apply dta-team`               | Installs profiles only — no service/channel context (same as today)                       |
+| Team adds `services: [cart-service]` to their workspace | Next `koda sync` picks up cart-service context. No other workspace affected.              |
+| Team removes `services` field                           | Next `koda sync` stops copying service context. Existing files remain until `koda clean`. |
 
 **Per-project override is also possible** via `project.yaml`:
 
@@ -321,12 +321,12 @@ The Koda automation (Phase 2-3) can follow once the content proves valuable.
 
 ## Effort Estimate
 
-| Phase | What | Effort | Dependency |
-|---|---|---|---|
-| **Phase 1** | Directory structure + initial content | 1-2 days | None — start immediately |
-| **Phase 2** | `project.yaml` schema + `koda install` resolution | 2-3 days | Phase 1 content exists |
-| **Phase 3** | Workspace `services`/`channels` fields + `koda workspace apply` | 1 day | Phase 2 |
-| **Phase 4** | `koda doctor` staleness checks + validation scripts | 1 day | Phase 1 |
+| Phase       | What                                                            | Effort   | Dependency               |
+|-------------|-----------------------------------------------------------------|----------|--------------------------|
+| **Phase 1** | Directory structure + initial content                           | 1-2 days | None — start immediately |
+| **Phase 2** | `project.yaml` schema + `koda install` resolution               | 2-3 days | Phase 1 content exists   |
+| **Phase 3** | Workspace `services`/`channels` fields + `koda workspace apply` | 1 day    | Phase 2                  |
+| **Phase 4** | `koda doctor` staleness checks + validation scripts             | 1 day    | Phase 1                  |
 
 ---
 

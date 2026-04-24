@@ -322,16 +322,16 @@ kiro-cli chat "check logs for errors"
 
 ## Performance Comparison
 
-| Aspect | CLI | UI |
-|--------|-----|-----|
-| Startup Time | < 1 second | 3-5 seconds |
-| Memory Usage | ~50MB | ~200-500MB |
-| Response Time | Fast | Moderate |
-| File Navigation | Manual | Visual |
-| Multi-tasking | Easy | Requires switching |
-| Scriptable | Yes | No |
-| Visual Context | Limited | Excellent |
-| History | Session only | Persistent |
+| Aspect          | CLI          | UI                 |
+|-----------------|--------------|--------------------|
+| Startup Time    | < 1 second   | 3-5 seconds        |
+| Memory Usage    | ~50MB        | ~200-500MB         |
+| Response Time   | Fast         | Moderate           |
+| File Navigation | Manual       | Visual             |
+| Multi-tasking   | Easy         | Requires switching |
+| Scriptable      | Yes          | No                 |
+| Visual Context  | Limited      | Excellent          |
+| History         | Session only | Persistent         |
 
 ---
 

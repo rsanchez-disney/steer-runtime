@@ -8,14 +8,14 @@ This guide shows how to use QA agents in your daily testing workflow with real-w
 
 ## Quick Reference
 
-| Task | Agent | Example Prompt |
-|------|-------|----------------|
-| Create test plan | `test_planner_agent` | "Create test plan for payment validation feature DPAY-500" |
-| Write automated tests | `test_automation_agent` | "Create Playwright tests for login flow with POM pattern" |
-| Analyze bug | `defect_analyst_agent` | "Analyze bug DPAY-550 and provide root cause analysis" |
-| Test API | `api_tester_agent` | "Create API tests for /api/payments with contract validation" |
-| Performance test | `performance_tester_agent` | "Create JMeter load test for checkout, 100 concurrent users" |
-| Complex workflow | `qa_orchestrator_agent` | "Complete QA workflow for epic DPAY-500" |
+| Task                  | Agent                      | Example Prompt                                                |
+|-----------------------|----------------------------|---------------------------------------------------------------|
+| Create test plan      | `test_planner_agent`       | "Create test plan for payment validation feature DPAY-500"    |
+| Write automated tests | `test_automation_agent`    | "Create Playwright tests for login flow with POM pattern"     |
+| Analyze bug           | `defect_analyst_agent`     | "Analyze bug DPAY-550 and provide root cause analysis"        |
+| Test API              | `api_tester_agent`         | "Create API tests for /api/payments with contract validation" |
+| Performance test      | `performance_tester_agent` | "Create JMeter load test for checkout, 100 concurrent users"  |
+| Complex workflow      | `qa_orchestrator_agent`    | "Complete QA workflow for epic DPAY-500"                      |
 
 ---
 
