@@ -388,18 +388,18 @@ profiles:
 
 Write fixtures + rubrics for the 10 highest-impact agents:
 
-| Agent | Fixtures | Focus |
-|-------|:--------:|-------|
-| `orchestrator` | 2 | Delegation, plan quality, approval gates |
-| `ba_orchestrator_agent` | 2 | Scope extraction, story quality |
-| `qa_orchestrator_agent` | 2 | Test strategy, coverage planning |
-| `code_review_agent` | 2 | Review thoroughness, golden rule compliance |
-| `backend` | 1 | Code quality, pattern adherence |
-| `test_planner_agent` | 1 | Test plan completeness |
-| `security_scanner_agent` | 1 | Vulnerability detection |
-| `pr_creator_agent` | 1 | PR description quality, conventional commits |
-| `story_analyzer_agent` | 1 | Ticket extraction completeness |
-| `planner_agent` | 1 | Plan actionability, task granularity |
+| Agent                    | Fixtures | Focus                                        |
+|--------------------------|:--------:|----------------------------------------------|
+| `orchestrator`           |    2     | Delegation, plan quality, approval gates     |
+| `ba_orchestrator_agent`  |    2     | Scope extraction, story quality              |
+| `qa_orchestrator_agent`  |    2     | Test strategy, coverage planning             |
+| `code_review_agent`      |    2     | Review thoroughness, golden rule compliance  |
+| `backend`                |    1     | Code quality, pattern adherence              |
+| `test_planner_agent`     |    1     | Test plan completeness                       |
+| `security_scanner_agent` |    1     | Vulnerability detection                      |
+| `pr_creator_agent`       |    1     | PR description quality, conventional commits |
+| `story_analyzer_agent`   |    1     | Ticket extraction completeness               |
+| `planner_agent`          |    1     | Plan actionability, task granularity         |
 
 **Deliverable:** 16 fixtures covering the critical path. `koda eval --all` runs the full suite.
 
@@ -436,11 +436,11 @@ jobs:
 
 ## 8. Cost & Performance
 
-| Mode | LLM calls per agent | Time per agent | Cost |
-|------|:-------------------:|:--------------:|------|
-| `--structural` | 1 (agent run only) | 30-60s | Normal agent cost |
-| `--deep` | 2 (agent run + judge) | 60-120s | 2× agent cost |
-| `--all --deep` (10 agents) | 20 | ~15 min | 20× agent cost |
+| Mode                       |  LLM calls per agent  | Time per agent | Cost              |
+|----------------------------|:---------------------:|:--------------:|-------------------|
+| `--structural`             |  1 (agent run only)   |     30-60s     | Normal agent cost |
+| `--deep`                   | 2 (agent run + judge) |    60-120s     | 2× agent cost     |
+| `--all --deep` (10 agents) |          20           |    ~15 min     | 20× agent cost    |
 
 Mitigations:
 - Default to `--structural` (fast, free scoring)
@@ -453,19 +453,19 @@ Mitigations:
 
 ## 9. File Summary
 
-| File | Purpose |
-|------|---------|
-| `evals/config.yaml` | Thresholds, judge config, profile groups |
-| `evals/judge.md` | LLM-as-judge system prompt |
-| `evals/fixtures/<agent>/<name>.md` | Input scenarios (YAML frontmatter + prompt body) |
-| `evals/rubrics/<agent>.yaml` | Structural checks + quality dimensions per agent |
-| `evals/baselines/<agent>/<name>.md` | Known-good outputs for diff comparison |
-| `evals/results/<timestamp>/` | Score reports (gitignored) |
-| `internal/eval/runner.go` | ACP-based agent execution |
-| `internal/eval/scorer.go` | Structural checks + LLM-as-judge |
-| `internal/eval/reporter.go` | Terminal output + JSON export |
-| `internal/eval/types.go` | Shared types |
-| `internal/cli/eval.go` | `koda eval` command |
+| File                                | Purpose                                          |
+|-------------------------------------|--------------------------------------------------|
+| `evals/config.yaml`                 | Thresholds, judge config, profile groups         |
+| `evals/judge.md`                    | LLM-as-judge system prompt                       |
+| `evals/fixtures/<agent>/<name>.md`  | Input scenarios (YAML frontmatter + prompt body) |
+| `evals/rubrics/<agent>.yaml`        | Structural checks + quality dimensions per agent |
+| `evals/baselines/<agent>/<name>.md` | Known-good outputs for diff comparison           |
+| `evals/results/<timestamp>/`        | Score reports (gitignored)                       |
+| `internal/eval/runner.go`           | ACP-based agent execution                        |
+| `internal/eval/scorer.go`           | Structural checks + LLM-as-judge                 |
+| `internal/eval/reporter.go`         | Terminal output + JSON export                    |
+| `internal/eval/types.go`            | Shared types                                     |
+| `internal/cli/eval.go`              | `koda eval` command                              |
 
 ---
 

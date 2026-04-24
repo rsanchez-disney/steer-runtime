@@ -13,13 +13,13 @@ koda mcp-install                      # Setup MCP servers (GitHub required)
 
 ## Agents
 
-| Agent | When to use | Command |
-|---|---|---|
-| `steer_orchestrator_agent` | Full workflows — develop features + review PRs | `kiro-cli chat --agent steer_orchestrator_agent` |
-| `steer_reviewer_agent` | Review a steer-runtime PR | `kiro-cli chat --agent steer_reviewer_agent` |
-| `koda_reviewer_agent` | Review a Koda PR | `kiro-cli chat --agent koda_reviewer_agent` |
-| `schema_validator_agent` | Validate agent JSON, workspace JSON, profile structure | `kiro-cli chat --agent schema_validator_agent` |
-| `compatibility_agent` | Check cross-repo impact | `kiro-cli chat --agent compatibility_agent` |
+| Agent                      | When to use                                            | Command                                          |
+|----------------------------|--------------------------------------------------------|--------------------------------------------------|
+| `steer_orchestrator_agent` | Full workflows — develop features + review PRs         | `kiro-cli chat --agent steer_orchestrator_agent` |
+| `steer_reviewer_agent`     | Review a steer-runtime PR                              | `kiro-cli chat --agent steer_reviewer_agent`     |
+| `koda_reviewer_agent`      | Review a Koda PR                                       | `kiro-cli chat --agent koda_reviewer_agent`      |
+| `schema_validator_agent`   | Validate agent JSON, workspace JSON, profile structure | `kiro-cli chat --agent schema_validator_agent`   |
+| `compatibility_agent`      | Check cross-repo impact                                | `kiro-cli chat --agent compatibility_agent`      |
 
 ---
 
@@ -251,4 +251,4 @@ Switch mid-session: `Switch to autopilot` or `Switch to review mode`
 
 ---
 
-Back to [Getting Started](GETTING_STARTED.md) · [Dev Quick Start](DEV_QUICK_START.md) · [README](../README.md)
+Back to [Getting Started](../../getting-started/GETTING_STARTED.md) · [Dev Quick Start](../../getting-started/DEV_QUICK_START.md) · [README](../../README.md)

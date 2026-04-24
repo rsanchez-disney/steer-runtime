@@ -4,6 +4,7 @@
   "prompt": "story_analyzer_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "fs_read",
@@ -13,6 +14,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*"
   ],

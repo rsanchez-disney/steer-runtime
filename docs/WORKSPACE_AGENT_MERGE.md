@@ -14,11 +14,11 @@ Merged agent (installed to ~/.kiro/agents/)
 
 ### Merge Rules
 
-| Field Type | Fields | Behavior |
-|-----------|--------|----------|
-| **Arrays** | `tools`, `allowedTools`, `resources` | Append unique — workspace items added to global list |
-| **Scalars** | `prompt`, `description`, `welcomeMessage` | Workspace wins if non-empty |
-| **Objects** | `hooks`, `toolsSettings`, `mcpServers` | Deep merge — workspace keys override, global keys preserved |
+| Field Type  | Fields                                    | Behavior                                                    |
+|-------------|-------------------------------------------|-------------------------------------------------------------|
+| **Arrays**  | `tools`, `allowedTools`, `resources`      | Append unique — workspace items added to global list        |
+| **Scalars** | `prompt`, `description`, `welcomeMessage` | Workspace wins if non-empty                                 |
+| **Objects** | `hooks`, `toolsSettings`, `mcpServers`    | Deep merge — workspace keys override, global keys preserved |
 
 ### New agents
 
@@ -101,16 +101,34 @@ workspaces/app-team/
 
 ## When to Use
 
-| Scenario | Approach |
-|----------|----------|
-| Add tools/resources to an existing agent | Workspace agent with same name, only the fields you want to add |
-| Override an agent's prompt entirely | Workspace agent with `"prompt": "new_prompt.md"` |
-| Add a new team-specific agent | Workspace agent with a unique name |
-| Add team context to all agents | Add files to `workspaces/{ws}/context/` (copied to `~/.kiro/context/`) |
+| Scenario                                 | Approach                                                               |
+|------------------------------------------|------------------------------------------------------------------------|
+| Add tools/resources to an existing agent | Workspace agent with same name, only the fields you want to add        |
+| Override an agent's prompt entirely      | Workspace agent with `"prompt": "new_prompt.md"`                       |
+| Add a new team-specific agent            | Workspace agent with a unique name                                     |
+| Add team context to all agents           | Add files to `workspaces/{ws}/context/` (copied to `~/.kiro/context/`) |
 
 ## Prompts
 
 Prompts are **not merged** — they're files, not JSON. If the workspace provides a prompt with the same filename, it replaces the global one. If you want to extend a prompt, use a different filename and reference it in the workspace agent's `"prompt"` field.
+
+## Common Mistake: Agents at Workspace Root
+
+**Do NOT place agents directly under `workspaces/{name}/agents/`.** Koda only discovers workspace agents inside profile overlay directories:
+
+```
+❌ workspaces/bolt-team/agents/my_agent.json          ← NOT installed
+❌ workspaces/bolt-team/prompts/my_agent.md            ← NOT installed
+
+✅ workspaces/bolt-team/profiles/dev-core/agents/my_agent.json   ← Installed
+✅ workspaces/bolt-team/profiles/dev-core/prompts/my_agent.md    ← Installed
+```
+
+Choose the profile that best matches the agent's role:
+- **dev-core** — development, planning, code review agents
+- **dev-web** — frontend/backend specialist agents
+- **qa** — testing agents
+- **pm** — project management agents
 
 ## Install Order
 

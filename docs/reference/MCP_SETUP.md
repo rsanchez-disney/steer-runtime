@@ -8,27 +8,27 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 
 ### Local Servers (pre-built bundles)
 
-| Server | Bundle | Auth | Description |
-|--------|--------|------|-------------|
-| jira | `jira-mcp/dist/index.cjs` | `JIRA_PAT_{name}` | Jira issues, boards, sprints (multi-instance) |
-| confluence | `confluence-mcp/dist/index.cjs` | `CONFLUENCE_PAT_{name}` | Confluence pages, search (multi-instance) |
-| github | `github-mcp/dist/index.cjs` | `GITHUB_TOKEN_{remote}` | GitHub PRs, repos, issues (multi-instance) |
-| figma | `figma-mcp/dist/index.cjs` | `FIGMA_TOKEN` | Figma files, nodes, styles, comments, image export |
-| mermaid | `mermaid-diagram-mcp/dist/index.cjs` | none | Mermaid diagram rendering |
-| bruno | `bruno-mcp/dist/index.cjs` | none | Bruno API collection runner |
+| Server     | Bundle                               | Auth                    | Description                                        |
+|------------|--------------------------------------|-------------------------|----------------------------------------------------|
+| jira       | `jira-mcp/dist/index.cjs`            | `JIRA_PAT_{name}`       | Jira issues, boards, sprints (multi-instance)      |
+| confluence | `confluence-mcp/dist/index.cjs`      | `CONFLUENCE_PAT_{name}` | Confluence pages, search (multi-instance)          |
+| github     | `github-mcp/dist/index.cjs`          | `GITHUB_TOKEN_{remote}` | GitHub PRs, repos, issues (multi-instance)         |
+| figma      | `figma-mcp/dist/index.cjs`           | `FIGMA_TOKEN`           | Figma files, nodes, styles, comments, image export |
+| mermaid    | `mermaid-diagram-mcp/dist/index.cjs` | none                    | Mermaid diagram rendering                          |
+| bruno      | `bruno-mcp/dist/index.cjs`           | none                    | Bruno API collection runner                        |
 
 ### Remote Servers (SSE)
 
-| Server | Type | Auth | Description |
-|--------|------|------|-------------|
-| compass | SSE | `COMPASS_TOKEN` | Compass service catalog — custom discoverable tools |
+| Server  | Type | Auth            | Description                                         |
+|---------|------|-----------------|-----------------------------------------------------|
+| compass | SSE  | `COMPASS_TOKEN` | Compass service catalog — custom discoverable tools |
 
 > `mywiki` and `confluence` are separate Confluence instances with separate binaries and unique tool names.
 
 ### Docker Servers
 
-| Server | Type | Port | Description |
-|--------|------|------|-------------|
+| Server | Type         | Port | Description                                                         |
+|--------|--------------|------|---------------------------------------------------------------------|
 | memory | Docker (SSE) | 9377 | Persistent semantic memory — Redis vector search + local embeddings |
 
 ## Quick Setup
@@ -141,8 +141,8 @@ Only instances with tokens set get MCP server entries in `mcp.json`.
 
 Configurable URLs and endpoints in `~/.kiro/env.vars`:
 
-| Key | Default | Description |
-|-----|---------|-------------|
+| Key           | Default                                               | Description                              |
+|---------------|-------------------------------------------------------|------------------------------------------|
 | `COMPASS_URL` | `https://compass.wdprapps.disney.com/api/mcp/mcp-...` | Compass MCP endpoint (user-configurable) |
 
 > **Note:** Jira, Confluence, and GitHub URLs are now managed as suffixed keys in `tokens.env` (e.g., `JIRA_URL_myjira`), not in `env.vars`.
@@ -160,14 +160,14 @@ Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 
 ### Generate tokens
 
-| Service | URL |
-|---------|-----|
-| Jira | https://mymyjira.disney.com/secure/ViewProfile.jspa → Personal Access Tokens |
+| Service    | URL                                                                          |
+|------------|------------------------------------------------------------------------------|
+| Jira       | https://myjira.disney.com/secure/ViewProfile.jspa → Personal Access Tokens |
 | Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action |
-| MyWiki | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action |
-| GitHub | `https://{host}/settings/tokens` (one per remote) |
-| Figma | https://www.figma.com/developers/api#access-tokens |
-| Compass | Contact your team lead |
+| MyWiki     | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action     |
+| GitHub     | `https://{host}/settings/tokens` (one per remote)                            |
+| Figma      | https://www.figma.com/developers/api#access-tokens                           |
+| Compass    | Contact your team lead                                                       |
 
 ## Multi-Instance GitHub
 
@@ -187,9 +187,9 @@ GITHUB_HOST_public=github.com
 
 ### Behavior
 
-| Remotes | mcp.json entry | Tool prefix |
-|---------|---------------|-------------|
-| 1 remote | `"github"` (backward compat) | none |
+| Remotes    | mcp.json entry                       | Tool prefix          |
+|------------|--------------------------------------|----------------------|
+| 1 remote   | `"github"` (backward compat)         | none                 |
 | 2+ remotes | `"github-disney"`, `"github-public"` | `disney_`, `public_` |
 
 Each process gets flat env vars: `GITHUB_REMOTE`, `GITHUB_HOST`, `GITHUB_TOKEN`. Tool names are prefixed with the remote name to avoid collisions.
@@ -272,17 +272,17 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 
 ## Troubleshooting
 
-| Issue                               | Fix                                                                                               |
-|-------------------------------------|---------------------------------------------------------------------------------------------------|
-| `0 MCP servers available`           | steer-runtime hasn't been synced yet — run `koda sync` first                                      |
-| Bundle missing for a server         | Server shows `(bundle missing)` in the selector — run `koda sync --update` to re-download bundles |
-| Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                 |
-| Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                            |
+| Issue                               | Fix                                                                                                                |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `0 MCP servers available`           | steer-runtime hasn't been synced yet — run `koda sync` first                                                       |
+| Bundle missing for a server         | Server shows `(bundle missing)` in the selector — run `koda sync --update` to re-download bundles                  |
+| Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                                  |
+| Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                                             |
 | MyWiki tools rejected as duplicates | mywiki uses confluence-mcp binary — ensure mcp.json "mywiki" server has `CONFLUENCE_URL=https://mywiki.disney.com` |
-| Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                      |
-| Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                |
-| Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                |
-| memory-mcp tools unavailable        | Run `koda memory start` — containers must be running. Check port 9377                             |
+| Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                                       |
+| Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                                 |
+| Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                                 |
+| memory-mcp tools unavailable        | Run `koda memory start` — containers must be running. Check port 9377                                              |
 
 ---
 

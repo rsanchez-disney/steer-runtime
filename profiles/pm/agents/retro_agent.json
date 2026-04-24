@@ -5,6 +5,7 @@
   "tools": [
     "@jira/*",
     "@confluence/*",
+    "@mywiki/*",
     "execute_bash",
     "fs_read",
     "grep"
@@ -14,7 +15,8 @@
   ],
   "allowedTools": [
     "@jira/*",
-    "@confluence/*"
+    "@confluence/*",
+    "@mywiki/*"
   ],
   "includeMcpJson": true
 }

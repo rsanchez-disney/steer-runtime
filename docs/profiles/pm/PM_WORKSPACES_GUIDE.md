@@ -71,11 +71,11 @@ koda workspace apply uad-ongoing       # Switch to Cast Sales Experience
 
 ## Available workspaces
 
-| Workspace | Project | Board |
-|-----------|---------|-------|
-| `dta-team` | Digital Travel Trade | Digital Travel Trade Projects |
-| `uad-sustainment` | Resort Sales | DLR UAD - Development |
-| `uad-ongoing` | Cast Sales Experience | Unified Agent Desktop |
+| Workspace         | Project               | Board                         |
+|-------------------|-----------------------|-------------------------------|
+| `dta-team`        | Digital Travel Trade  | Digital Travel Trade Projects |
+| `uad-sustainment` | Resort Sales          | DLR UAD - Development         |
+| `uad-ongoing`     | Cast Sales Experience | Unified Agent Desktop         |
 
 ---
 
@@ -88,4 +88,4 @@ Workspace creation is done through the Koda TUI:
 3. Fill in your team's details, profiles, and Jira prefix
 4. `ctrl+s` to save — Koda publishes via PR
 
-See the [Team Workspaces Guide](TEAM_WORKSPACES.md) for full documentation on creating, editing, and extending workspaces.
+See the [Team Workspaces Guide](../../reference/TEAM_WORKSPACES.md) for full documentation on creating, editing, and extending workspaces.

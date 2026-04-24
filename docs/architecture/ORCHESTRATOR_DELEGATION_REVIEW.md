@@ -123,20 +123,20 @@ User Input: "Implement https://myjira.disney.com/browse/DPAY-14337"
 
 ## Agent Delegation Matrix
 
-| Step | Agent | Input | Output | Required |
-|------|-------|-------|--------|----------|
-| 1 | story_analyzer_agent | Jira URL | Story JSON | Yes |
-| 2 | codebase_explorer_agent | Components | Files, patterns | Yes |
-| 3 | discussion_agent | Story details | User preferences | Optional |
-| 3.5 | architecture_agent | Story + exploration | Architecture guidance | Optional |
-| 4 | planner_agent | All context | Plan with XML tasks | Yes |
-| 6 | backend_agent | Task XML | Files changed | Per task |
-| 6 | ui_agent | Task XML | Files changed | Per task |
-| 6 | webapi_agent | Task XML | Files changed | Per task |
-| 6 | test_runner_agent | Changed files | Test results | Yes |
-| 7 | code_review_agent | Changed files | Review status | Yes |
-| 8 | security_scanner_agent | Changed files | Vulnerabilities | Yes |
-| 10 | pr_creator_agent | Story + changes | PR URL | Yes |
+| Step | Agent                   | Input               | Output                | Required |
+|------|-------------------------|---------------------|-----------------------|----------|
+| 1    | story_analyzer_agent    | Jira URL            | Story JSON            | Yes      |
+| 2    | codebase_explorer_agent | Components          | Files, patterns       | Yes      |
+| 3    | discussion_agent        | Story details       | User preferences      | Optional |
+| 3.5  | architecture_agent      | Story + exploration | Architecture guidance | Optional |
+| 4    | planner_agent           | All context         | Plan with XML tasks   | Yes      |
+| 6    | backend_agent           | Task XML            | Files changed         | Per task |
+| 6    | ui_agent                | Task XML            | Files changed         | Per task |
+| 6    | webapi_agent            | Task XML            | Files changed         | Per task |
+| 6    | test_runner_agent       | Changed files       | Test results          | Yes      |
+| 7    | code_review_agent       | Changed files       | Review status         | Yes      |
+| 8    | security_scanner_agent  | Changed files       | Vulnerabilities       | Yes      |
+| 10   | pr_creator_agent        | Story + changes     | PR URL                | Yes      |
 
 ## Delegation Patterns
 

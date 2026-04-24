@@ -87,19 +87,19 @@ git pull
 
 ## Cursor vs Kiro
 
-| Feature | Kiro CLI | Cursor |
-|---------|----------|--------|
-| Coding standards | ✅ via agent prompts | ✅ via .mdc rules |
-| MCP tools (Jira, Confluence, GitHub) | ✅ | ✅ |
-| Multi-agent orchestration | ✅ 40 agents | ❌ single agent |
-| Automated SDLC workflow | ✅ 12-step pipeline | ⚠️ manual guidance |
-| Programmatic hooks | ✅ guard-writes, git-context | ⚠️ rule instructions |
-| Profile switching (dev/ba/qa/ops/pm) | ✅ | ❌ all rules present |
-| Persistent memory (knowledge tool) | ✅ | ❌ session only |
-| Agent/rule count | ✅ 40 agents, 5 profiles | ✅ 19 rules (glob-activated) |
-| Inline code suggestions | ❌ | ✅ Tab completion |
-| Multi-file Composer | ❌ | ✅ |
-| Codebase indexing | ❌ | ✅ @codebase |
+| Feature                              | Kiro CLI                    | Cursor                       |
+|--------------------------------------|-----------------------------|------------------------------|
+| Coding standards                     | ✅ via agent prompts         | ✅ via .mdc rules             |
+| MCP tools (Jira, Confluence, GitHub) | ✅                           | ✅                            |
+| Multi-agent orchestration            | ✅ 40 agents                 | ❌ single agent               |
+| Automated SDLC workflow              | ✅ 12-step pipeline          | ⚠️ manual guidance           |
+| Programmatic hooks                   | ✅ guard-writes, git-context | ⚠️ rule instructions         |
+| Profile switching (dev/ba/qa/ops/pm) | ✅                           | ❌ all rules present          |
+| Persistent memory (knowledge tool)   | ✅                           | ❌ session only               |
+| Agent/rule count                     | ✅ 40 agents, 5 profiles     | ✅ 19 rules (glob-activated)  |
+| Inline code suggestions              | ❌                           | ✅ Tab completion             |
+| Multi-file Composer                  | ❌                           | ✅                            |
+| Codebase indexing                    | ❌                           | ✅ @codebase                  |
 
 Use both: Kiro for complex orchestrated workflows, Cursor for day-to-day coding with the same standards.
 

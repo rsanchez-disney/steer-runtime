@@ -6,14 +6,14 @@
 
 ## Agent Selection
 
-| I need to... | Use this agent |
-|--------------|----------------|
-| Create test plan | `test_planner_agent` |
-| Write automated tests | `test_automation_agent` |
-| Analyze bugs | `defect_analyst_agent` |
-| Test APIs | `api_tester_agent` |
-| Performance test | `performance_tester_agent` |
-| Complex QA workflow | `qa_orchestrator_agent` |
+| I need to...          | Use this agent             |
+|-----------------------|----------------------------|
+| Create test plan      | `test_planner_agent`       |
+| Write automated tests | `test_automation_agent`    |
+| Analyze bugs          | `defect_analyst_agent`     |
+| Test APIs             | `api_tester_agent`         |
+| Performance test      | `performance_tester_agent` |
+| Complex QA workflow   | `qa_orchestrator_agent`    |
 
 ---
 
@@ -257,14 +257,14 @@ Update bug DPAY-XXX with root cause analysis
 
 ## Time Estimates
 
-| Task | Time | Agent |
-|------|------|-------|
-| Test plan | 30 min | test_planner_agent |
-| UI automation | 2-3 hrs | test_automation_agent |
-| API tests | 1-2 hrs | api_tester_agent |
-| Bug analysis | 30-60 min | defect_analyst_agent |
-| Load test | 1-2 hrs | performance_tester_agent |
-| Framework setup | 4-6 hrs | test_automation_agent |
+| Task            | Time      | Agent                    |
+|-----------------|-----------|--------------------------|
+| Test plan       | 30 min    | test_planner_agent       |
+| UI automation   | 2-3 hrs   | test_automation_agent    |
+| API tests       | 1-2 hrs   | api_tester_agent         |
+| Bug analysis    | 30-60 min | defect_analyst_agent     |
+| Load test       | 1-2 hrs   | performance_tester_agent |
+| Framework setup | 4-6 hrs   | test_automation_agent    |
 
 ---
 

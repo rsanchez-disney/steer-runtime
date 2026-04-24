@@ -67,12 +67,12 @@ graph TD
 
 ### Problems with current model
 
-| # | Problem | Impact |
-|---|---------|--------|
-| 1 | **Service knowledge duplicated** across project memory banks | Cart Service API docs exist in 3+ places, drift over time |
-| 2 | **No channel context** | Each project re-documents DTC/TTC/UAD flows independently |
-| 3 | **Shared knowledge is thin** | Only golden_rules.md and project_mappings.md — no architecture, glossary, API standards |
-| 4 | **No cross-project references** | Projects can't declare "I depend on Cart Service" — they copy-paste |
+| # | Problem                                                      | Impact                                                                                  |
+|---|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 1 | **Service knowledge duplicated** across project memory banks | Cart Service API docs exist in 3+ places, drift over time                               |
+| 2 | **No channel context**                                       | Each project re-documents DTC/TTC/UAD flows independently                               |
+| 3 | **Shared knowledge is thin**                                 | Only golden_rules.md and project_mappings.md — no architecture, glossary, API standards |
+| 4 | **No cross-project references**                              | Projects can't declare "I depend on Cart Service" — they copy-paste                     |
 
 ---
 
@@ -176,13 +176,13 @@ graph TD
 
 ### What changes
 
-| # | Before | After |
-|---|--------|-------|
-| 1 | Cart Service docs in 3+ memory banks | **One** `shared/services/cart-service/` — all projects reference it |
-| 2 | No channel context | `channels/digital-dtc/`, `channels/ttc/` etc. — referenced by workspace |
-| 3 | Thin shared knowledge | Enterprise architecture, glossary, API standards, security docs |
-| 4 | Copy-paste between projects | `services: [cart-service]` in workspace.json — `koda install` resolves |
-| 5 | Agents see nested dirs | Agents see **flat** `~/.kiro/context/` with merged files |
+| # | Before                               | After                                                                   |
+|---|--------------------------------------|-------------------------------------------------------------------------|
+| 1 | Cart Service docs in 3+ memory banks | **One** `shared/services/cart-service/` — all projects reference it     |
+| 2 | No channel context                   | `channels/digital-dtc/`, `channels/ttc/` etc. — referenced by workspace |
+| 3 | Thin shared knowledge                | Enterprise architecture, glossary, API standards, security docs         |
+| 4 | Copy-paste between projects          | `services: [cart-service]` in workspace.json — `koda install` resolves  |
+| 5 | Agents see nested dirs               | Agents see **flat** `~/.kiro/context/` with merged files                |
 
 ---
 

@@ -4,12 +4,6 @@
   "team": "BOLT Migration Team",
   "profiles": ["dev-core", "dev-web", "ba", "qa", "pm"],
   "default_agent": "bolt_migration_agent",
-  "agents": [
-    {
-      "name": "bolt_migration_agent",
-      "path": "agents/bolt_migration_agent.json"
-    }
-  ],
   "projects": [
     {
       "name": "wdprt-bolt-admin-spa",
