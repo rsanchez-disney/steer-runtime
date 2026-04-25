@@ -133,3 +133,52 @@ Definitions of key concepts, terms, and components used across steer-runtime.
 | **$HOME Expansion** | Source repo uses `$HOME` for portability; Koda expands to absolute paths during install. |
 | **setup.sh** | Deprecated bash fallback for Koda; still supports cursor install/sync. |
 | **project.yaml** | Project manifest dropped in a repo root to give agents structured config without forking steer-runtime. |
+
+---
+
+## AI Fundamentals
+
+| Term | Definition |
+|------|-----------|
+| **Chain-of-Thought (CoT)** | Prompting strategy where the model reasons step-by-step before producing a final answer, improving accuracy on multi-step tasks. |
+| **Context Window** | Maximum number of tokens an LLM can process in a single request — system prompt, conversation history, retrieved documents, and tool outputs combined. |
+| **Embedding** | Dense vector representation of text produced by an encoder model. Semantically similar inputs produce nearby vectors, enabling similarity search and retrieval. |
+| **Few-Shot Prompting** | Including labeled input-output examples in the prompt to demonstrate desired behavior, allowing the model to generalize without weight updates. |
+| **Fine-tuning** | Supervised training of a pre-trained model on domain-specific data to adapt its weights, as opposed to in-context learning which leaves weights unchanged. |
+| **Foundation Model** | A large model trained on broad data at scale that can be adapted to downstream tasks — the base layer upon which fine-tuned or prompted variants are built (e.g., Claude, GPT-4). |
+| **Grounding** | Anchoring LLM responses to verifiable external sources (retrieved documents, API responses) to reduce hallucination and increase factual reliability. |
+| **Hallucination** | Model output that is fluent and confident but factually incorrect or unsupported by context. Mitigated via RAG, chain-of-thought verification, and structured output schemas. |
+| **Human-in-the-Loop (HITL)** | Design pattern where agent execution pauses at defined checkpoints for human review or approval before proceeding. |
+| **Prompt Engineering** | Crafting model inputs — system prompts, few-shot examples, chain-of-thought prefixes, output constraints — to reliably elicit desired behavior without changing weights. |
+| **RAG (Retrieval-Augmented Generation)** | Architecture combining a retrieval step (fetching documents from a vector store) with a generation step (passing context to an LLM), grounding responses in external knowledge. |
+| **ReAct (Reason + Act)** | Agent pattern alternating between Thought (reasoning), Action (tool call), and Observation (tool result) in a structured loop. |
+| **RLHF** | Reinforcement Learning from Human Feedback — training technique using human preference rankings to steer model behavior toward preferred outputs. |
+| **Safety** | Ensuring AI systems behave reliably and without unintended harm — spanning alignment, robustness, interpretability, and policy enforcement. |
+| **System Prompt** | Top-level instruction block establishing persona, constraints, output format, and context before any user message is processed. |
+| **Token** | Fundamental unit of LLM input/output (~4 characters). Cost, latency, and context limits are measured in tokens. |
+| **Tool Use (Function Calling)** | Ability for an LLM to emit structured calls to external functions mid-generation, enabling agents to act on the world rather than only produce text. |
+| **Tree of Thought (ToT)** | Reasoning strategy generating multiple candidate paths in parallel, evaluating their promise, and pruning dead ends — outperforming linear CoT on complex planning. |
+| **Vector Store** | Database optimized for storing and querying high-dimensional embedding vectors by approximate nearest-neighbor search (e.g., pgvector, Pinecone). |
+| **Planner** | Agent component producing a structured plan (sequence of steps or sub-goals) before execution begins, reducing mid-task course corrections. |
+
+---
+
+## SteerMesh Ecosystem
+
+| Term | Definition |
+|------|-----------|
+| **SteerMesh** | The ecosystem of agent-native tooling: atelier (TUI), Kite (desktop UI), Spool (mobile), and the broker/adapter architecture for multi-runtime agentic workflows. |
+| **ACP (Agent Communication Protocol)** | JSON-RPC 2.0 based protocol for structured communication between Kite and Kiro CLI over stdio, enabling bidirectional command and event streaming. |
+| **Atelier** | Agent-native terminal TUI (Go + Bubbletea) managing agent sessions, broker wiring, topology enforcement, and session replay across concurrent runtimes. |
+| **Kite** | Tauri 2.0 + React desktop app acting as a UI layer over Kiro CLI via ACP, providing visual chat, agent switching, and prompt scoring. |
+| **Broker** | The sole inter-agent communication channel in SteerMesh. All events flow through the broker; agents never communicate peer-to-peer. Provides audit trail for session replay. |
+| **Adapter** | Wraps an external runtime (Claude Code, Kiro CLI, OpenAI endpoint) behind a single interface, decoupling domain logic from concrete integrations. |
+| **Domain Layer** | Core business logic layer with zero adapter imports — all external dependencies injected, keeping the domain pure and testable. |
+| **Event Bus** | Message-passing backbone where producers emit typed events and consumers subscribe by type, enabling decoupled async communication between agents. |
+| **Session Replay** | Reconstructing the full event sequence of an agent session from the broker's log, enabling debugging, auditing, and deterministic re-execution. |
+| **Steering File** | Markdown document encoding persistent instructions, constraints, and context for an agentic tool. Functions as the LLM's long-term project memory and policy layer. |
+| **AI-DLC (AI-Driven Lifecycle)** | Maturity model for AI integration into software delivery — from No AI, through Unified LLMOps, to fully autonomous AI Pod operation. |
+| **AI Pod as Code** | YAML-based declarative spec for defining an AI Pod's composition — agents, tools, routing rules, escalation paths — as version-controlled config. |
+| **DRIFT Method** | 7-dimension LLM-native estimation framework fusing classical risk theory with token economics. Produces total token cost estimates for agentic workflows. |
+| **GEAI (Generative Enterprise AI)** | Disney's term for enterprise-grade generative AI adoption — the layer where business units consume AI capabilities above the shared JedAI infrastructure. |
+| **JedAI** | Disney's shared AI infrastructure platform — the foundational layer (LLM gateway + model registry) that business units consume via GEAI. |
