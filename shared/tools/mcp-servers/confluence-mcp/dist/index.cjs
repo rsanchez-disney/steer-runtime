@@ -6232,27 +6232,21 @@ async function handleUploadAttachment(args) {
 }
 
 // build/index.js
-var INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
-function prefixed(schema) {
-  if (!INSTANCE_PREFIX)
-    return schema;
-  return { ...schema, name: INSTANCE_PREFIX + schema.name };
-}
 var tools = [
-  { schema: prefixed(getConfluencePageSchema), handler: handleGetConfluencePage },
+  { schema: getConfluencePageSchema, handler: handleGetConfluencePage },
   {
-    schema: prefixed(searchConfluencePagesSchema),
+    schema: searchConfluencePagesSchema,
     handler: handleSearchConfluencePages
   },
-  { schema: prefixed(getConfluenceSpaceSchema), handler: handleGetConfluenceSpace },
-  { schema: prefixed(listConfluenceSpacesSchema), handler: handleListConfluenceSpaces },
-  { schema: prefixed(createConfluencePageSchema), handler: handleCreateConfluencePage },
-  { schema: prefixed(updateConfluencePageSchema), handler: handleUpdateConfluencePage },
+  { schema: getConfluenceSpaceSchema, handler: handleGetConfluenceSpace },
+  { schema: listConfluenceSpacesSchema, handler: handleListConfluenceSpaces },
+  { schema: createConfluencePageSchema, handler: handleCreateConfluencePage },
+  { schema: updateConfluencePageSchema, handler: handleUpdateConfluencePage },
   {
-    schema: prefixed(commentOnConfluencePageSchema),
+    schema: commentOnConfluencePageSchema,
     handler: handleCommentOnConfluencePage
   },
-  { schema: prefixed(uploadAttachmentSchema), handler: handleUploadAttachment }
+  { schema: uploadAttachmentSchema, handler: handleUploadAttachment }
 ];
 var ConfluenceMCPServer = class {
   server;
