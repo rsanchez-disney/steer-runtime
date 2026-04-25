@@ -164,6 +164,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | April 2, 2026 | Q&A Session with OpSheet Team | [Recording](https://drive.google.com/file/d/1dyEmmOJOiPxmi7GgzqWsNBUv7zlhT8t-/view?usp=sharing) |
 | April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
 | April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
+| April 21, 2026 | dse-intl-emtech-usparks - SteerRuntime Sync - AI | [Recording](https://drive.google.com/file/d/1pzJwuvj9exDuUMQ6qQl_K2ol-9BU-vbF/view) |
 
 ---
 
