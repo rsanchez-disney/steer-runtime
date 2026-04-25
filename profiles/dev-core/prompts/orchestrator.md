@@ -89,17 +89,21 @@ subagent(
 
 On EVERY user message, classify the intent and delegate accordingly. **Do NOT ask the user for clarification if the intent is clear enough to act on.**
 
-### Category 1: Jira Story / Ticket
+### Category 1: Jira Story / Ticket / Query
 
 **Triggers** (match ANY):
 - A Jira URL: `https://myjira.disney.com/browse/XXX-1234`
 - A ticket key: `CCS-1176`, `DPAY-14337`, `TIMON-7590`, `GCP-5678`, `SPR-1234`
 - Phrases: "implement ticket", "work on story", "analiza el ticket", "implementa esto", "ayúdame con el ticket"
 - Any mention of a Jira key pattern: `[A-Z]{2,10}-\d+`
+- General Jira queries: "my tickets", "my jira", "search jira", "jira tickets", "bring my tickets", "show my stories", "assigned to me", "sprint tickets", "backlog", "open issues"
+- Jira project references: "from DPAY project", "in project TEP3", "DPAY tickets"
 
 **Action**: Call `subagent` with `story_analyzer_agent` IMMEDIATELY. Do not respond with text first.
 
-Then continue with the full SDLC workflow (see below).
+For general queries (no specific ticket key), instruct story_analyzer_agent to use `@jira/*` search tools with the user's query.
+
+Then continue with the full SDLC workflow (see below) only if the user asked to implement a specific ticket.
 
 ### Category 2: Project-Specific Work
 
