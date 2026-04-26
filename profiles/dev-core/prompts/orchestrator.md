@@ -105,7 +105,7 @@ subagent(
   stages=[{
     "name": "fetch_page",
     "role": "story_analyzer_agent",
-    "prompt_template": "Fetch and review this MyWiki page using your @mywiki/* tools: <URL>. Summarize the content, extract key decisions, action items, and any links to related Jira stories."
+    "prompt_template": "Fetch and review this MyWiki page (mywiki.disney.com). Use your mywiki_* tools (e.g., mywiki_get_confluence_page, mywiki_search_confluence_pages) — NOT confluence_* tools. URL: <URL>. Summarize the content, extract key decisions, action items, and any links to related Jira stories."
   }]
 )
 ```
@@ -140,9 +140,9 @@ Then continue with the full SDLC workflow (see below) only if the user asked to 
 - A GitHub URL: `github.disney.com`
 - Phrases: "search confluence", "search mywiki", "check repo", "review this page", "fetch this page"
 
-**Action**: Call `subagent` with `story_analyzer_agent` IMMEDIATELY. Include the URL in the prompt and tell the agent which `@tools` to use based on the URL pattern:
-- `mywiki.disney.com` → tell agent to use `@mywiki/*` tools
-- `confluence.disney.com` → tell agent to use `@confluence/*` tools
+**Action**: Call `subagent` with `story_analyzer_agent` IMMEDIATELY. Include the URL in the prompt and tell the agent which tools to use based on the URL pattern:
+- `mywiki.disney.com` → tell agent: "Use your mywiki_* tools (mywiki_get_confluence_page, mywiki_search_confluence_pages). Do NOT use confluence_* tools."
+- `confluence.disney.com` → tell agent: "Use your confluence_* tools (confluence_get_confluence_page, confluence_search_confluence_pages). Do NOT use mywiki_* tools."
 - `github.disney.com` → tell agent to use `@github/*` tools
 
 ### Category 3: Project-Specific Work
