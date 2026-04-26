@@ -5,6 +5,7 @@ export interface JiraTicket {
         description?: string;
         status?: { name: string };
         assignee?: { displayName: string };
+        reporter?: { displayName: string };
         priority?: { name: string };
         created?: string;
         updated?: string;

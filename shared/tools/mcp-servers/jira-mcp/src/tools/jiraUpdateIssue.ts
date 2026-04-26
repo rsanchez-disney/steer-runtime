@@ -55,6 +55,14 @@ export const jiraUpdateIssueSchema = {
                 description:
                     'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")',
             },
+            reporter: {
+                type: "string",
+                description: "Username of the reporter",
+            },
+            storyPoints: {
+                type: "number",
+                description: "Story points estimate",
+            },
             customFields: {
                 type: "object",
                 description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`,
@@ -76,6 +84,8 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             components,
             labels,
             priority,
+            reporter,
+            storyPoints,
             customFields,
         } = args as {
             ticketId: string;
@@ -87,6 +97,8 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             components?: string[];
             labels?: string[];
             priority?: string;
+            reporter?: string;
+            storyPoints?: number;
             customFields?: Record<string, unknown>;
         };
 
@@ -110,9 +122,22 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             updates.priority = { name: priority };
         }
 
+        if (reporter) {
+            updates.reporter = apiClient.auth.isCloud() ? { accountId: reporter } : { name: reporter };
+        }
+
+        if (storyPoints !== undefined) {
+            const spResolved = resolveCustomFieldIds(["storyPoints"]);
+            if (spResolved.length > 0) {
+                updates[spResolved[0]] = storyPoints;
+            }
+        }
+
         // Resolve custom field aliases and merge into updates
         if (customFields) {
             for (const [key, value] of Object.entries(customFields)) {
+                // Skip storyPoints alias if dedicated param was provided
+                if (storyPoints !== undefined && key.toLowerCase() === "storypoints") continue;
                 const resolved = resolveCustomFieldIds([key]);
                 if (resolved.length > 0) {
                     updates[resolved[0]] = value;
@@ -163,7 +188,9 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
 
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Story Points:** ${(ticket.fields as any)[resolveCustomFieldIds(["storyPoints"])[0]] ?? "Not set"}
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;

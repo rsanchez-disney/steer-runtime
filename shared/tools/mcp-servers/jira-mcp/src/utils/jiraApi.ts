@@ -68,6 +68,7 @@ export class JiraApiClient {
             "description",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "updated",
@@ -217,6 +218,7 @@ export class JiraApiClient {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "issuetype",
             "project",
@@ -258,6 +260,7 @@ export class JiraApiClient {
         issueType: string,
         description?: string,
         assignee?: string,
+        reporter?: string,
         epicLink?: string,
         components?: string[],
         labels?: string[],
@@ -278,6 +281,10 @@ export class JiraApiClient {
 
         if (assignee) {
             fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
+        }
+
+        if (reporter) {
+            fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
         }
 
         if (epicLink) {
@@ -516,7 +523,7 @@ export class JiraApiClient {
         const params = new URLSearchParams({
             startAt: startAt.toString(),
             maxResults: maxResults.toString(),
-            fields: "summary,status,assignee,priority,issuetype,project,created,updated",
+            fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004",
         });
 
         const response = await fetch(
