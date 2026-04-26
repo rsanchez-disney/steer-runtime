@@ -16747,6 +16747,234 @@ URL: ${review.html_url}`
   };
 }
 
+// build/utils/graphqlClient.js
+async function graphql3(query, variables = {}) {
+  const octokit2 = getClient();
+  return octokit2.graphql(query, variables);
+}
+
+// build/tools/githubGetProject.js
+var githubGetProjectSchema = {
+  name: "github_get_project",
+  description: "Fetch a GitHub Project (v2) by owner and project number. Returns title, description, fields, status options, and item count.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      owner: { type: "string", description: "Project owner (user or org login)" },
+      projectNumber: { type: "number", description: "Project number (from the URL, e.g., 2 for /projects/2)" },
+      ownerType: { type: "string", enum: ["user", "organization"], description: "Owner type (default: user)", default: "user" }
+    },
+    required: ["owner", "projectNumber"]
+  }
+};
+var QUERY = `
+query($owner: String!, $number: Int!) {
+  user(login: $owner) {
+    projectV2(number: $number) {
+      id title shortDescription url closed
+      items { totalCount }
+      fields(first: 30) {
+        nodes {
+          ... on ProjectV2Field { id name dataType }
+          ... on ProjectV2IterationField { id name dataType configuration { iterations { id title startDate duration } } }
+          ... on ProjectV2SingleSelectField { id name dataType options { id name color description } }
+        }
+      }
+    }
+  }
+}`;
+var ORG_QUERY = QUERY.replace("user(login: $owner)", "organization(login: $owner)");
+async function handleGithubGetProject(args) {
+  const { owner, projectNumber, ownerType = "user" } = args;
+  const query = ownerType === "organization" ? ORG_QUERY : QUERY;
+  const data = await graphql3(query, { owner, number: projectNumber });
+  const project = (data.user || data.organization)?.projectV2;
+  if (!project) {
+    return { content: [{ type: "text", text: `Project #${projectNumber} not found for ${ownerType} ${owner}` }] };
+  }
+  const fields = project.fields.nodes.map((f) => {
+    let info = `${f.name} (${f.dataType})`;
+    if (f.options)
+      info += `: ${f.options.map((o) => o.name).join(", ")}`;
+    if (f.configuration?.iterations)
+      info += `: ${f.configuration.iterations.map((i) => i.title).join(", ")}`;
+    return { id: f.id, name: f.name, type: f.dataType, detail: info };
+  });
+  const text = [
+    `Project: ${project.title}`,
+    `ID: ${project.id}`,
+    `URL: ${project.url}`,
+    `Status: ${project.closed ? "Closed" : "Open"}`,
+    project.shortDescription ? `Description: ${project.shortDescription}` : null,
+    `Items: ${project.items.totalCount}`,
+    `
+Fields (${fields.length}):`,
+    ...fields.map((f) => `  - ${f.detail}`)
+  ].filter(Boolean).join("\n");
+  return { content: [{ type: "text", text }] };
+}
+
+// build/tools/githubListProjectItems.js
+var githubListProjectItemsSchema = {
+  name: "github_list_project_items",
+  description: "List items in a GitHub Project (v2) with field values. Supports pagination and optional status filter.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      owner: { type: "string", description: "Project owner (user or org login)" },
+      projectNumber: { type: "number", description: "Project number" },
+      ownerType: { type: "string", enum: ["user", "organization"], description: "Owner type (default: user)", default: "user" },
+      first: { type: "number", description: "Number of items to fetch (default: 50, max: 100)", default: 50 },
+      after: { type: "string", description: "Cursor for pagination (from previous response)" },
+      statusFilter: { type: "string", description: "Optional: filter items by status field value (e.g., 'In Progress', 'Done')" }
+    },
+    required: ["owner", "projectNumber"]
+  }
+};
+var QUERY2 = `
+query($owner: String!, $number: Int!, $first: Int!, $after: String) {
+  user(login: $owner) {
+    projectV2(number: $number) {
+      title
+      items(first: $first, after: $after) {
+        totalCount
+        pageInfo { hasNextPage endCursor }
+        nodes {
+          id
+          content {
+            ... on Issue { title number state url repository { nameWithOwner } labels(first:5) { nodes { name } } assignees(first:3) { nodes { login } } }
+            ... on PullRequest { title number state url repository { nameWithOwner } labels(first:5) { nodes { name } } assignees(first:3) { nodes { login } } }
+            ... on DraftIssue { title }
+          }
+          fieldValues(first: 15) {
+            nodes {
+              ... on ProjectV2ItemFieldTextValue { text field { ... on ProjectV2Field { name } } }
+              ... on ProjectV2ItemFieldNumberValue { number field { ... on ProjectV2Field { name } } }
+              ... on ProjectV2ItemFieldDateValue { date field { ... on ProjectV2Field { name } } }
+              ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2SingleSelectField { name } } }
+              ... on ProjectV2ItemFieldIterationValue { title startDate duration field { ... on ProjectV2IterationField { name } } }
+            }
+          }
+        }
+      }
+    }
+  }
+}`;
+var ORG_QUERY2 = QUERY2.replace("user(login: $owner)", "organization(login: $owner)");
+async function handleGithubListProjectItems(args) {
+  const { owner, projectNumber, ownerType = "user", first = 50, after, statusFilter } = args;
+  const query = ownerType === "organization" ? ORG_QUERY2 : QUERY2;
+  const data = await graphql3(query, { owner, number: projectNumber, first: Math.min(first, 100), after: after || null });
+  const project = (data.user || data.organization)?.projectV2;
+  if (!project) {
+    return { content: [{ type: "text", text: `Project #${projectNumber} not found for ${ownerType} ${owner}` }] };
+  }
+  const { items } = project;
+  let rows = items.nodes.map((item) => {
+    const c = item.content || {};
+    const fields = {};
+    for (const fv of item.fieldValues.nodes) {
+      const fieldName = fv.field?.name;
+      if (!fieldName)
+        continue;
+      fields[fieldName] = fv.name || fv.text || fv.title || fv.date || fv.number;
+    }
+    return {
+      id: item.id,
+      title: c.title || "(draft)",
+      type: c.number ? c.url?.includes("/pull/") ? "PR" : "Issue" : "Draft",
+      number: c.number,
+      state: c.state,
+      repo: c.repository?.nameWithOwner,
+      url: c.url,
+      assignees: c.assignees?.nodes?.map((a) => a.login) || [],
+      labels: c.labels?.nodes?.map((l) => l.name) || [],
+      fields
+    };
+  });
+  if (statusFilter) {
+    rows = rows.filter((r) => r.fields.Status === statusFilter);
+  }
+  const lines = [
+    `Project: ${project.title} \u2014 ${rows.length}${statusFilter ? ` (filtered: ${statusFilter})` : ""} of ${items.totalCount} items`,
+    ""
+  ];
+  for (const r of rows) {
+    const assignees = r.assignees.length ? ` [${r.assignees.join(", ")}]` : "";
+    const status = r.fields.Status ? ` | ${r.fields.Status}` : "";
+    const labels = r.labels.length ? ` {${r.labels.join(", ")}}` : "";
+    const ref = r.number ? `#${r.number}` : "";
+    lines.push(`${r.type} ${ref} ${r.title}${status}${assignees}${labels}`);
+    if (r.repo)
+      lines.push(`  repo: ${r.repo}  url: ${r.url}`);
+    const extra = Object.entries(r.fields).filter(([k]) => k !== "Status" && k !== "Title").map(([k, v]) => `${k}: ${v}`);
+    if (extra.length)
+      lines.push(`  ${extra.join(" | ")}`);
+    lines.push(`  itemId: ${r.id}`);
+  }
+  if (items.pageInfo.hasNextPage) {
+    lines.push(`
+--- More items available. Use after: "${items.pageInfo.endCursor}" to fetch next page ---`);
+  }
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+}
+
+// build/tools/githubCreateProjectItem.js
+var githubCreateProjectItemSchema = {
+  name: "github_create_project_item",
+  description: "Add an existing issue or PR to a GitHub Project (v2). Returns the new project item ID.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: { type: "string", description: "Project node ID (from github_get_project)" },
+      contentId: { type: "string", description: "Issue or PR node ID to add to the project" }
+    },
+    required: ["projectId", "contentId"]
+  }
+};
+var MUTATION = `
+mutation($projectId: ID!, $contentId: ID!) {
+  addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+    item { id }
+  }
+}`;
+async function handleGithubCreateProjectItem(args) {
+  const { projectId, contentId } = args;
+  const data = await graphql3(MUTATION, { projectId, contentId });
+  const itemId = data.addProjectV2ItemById.item.id;
+  return { content: [{ type: "text", text: `Item added to project. Item ID: ${itemId}` }] };
+}
+
+// build/tools/githubUpdateProjectItemField.js
+var githubUpdateProjectItemFieldSchema = {
+  name: "github_update_project_item_field",
+  description: "Update a field value on a GitHub Project (v2) item. Use github_get_project to get field IDs and option IDs first.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectId: { type: "string", description: "Project node ID" },
+      itemId: { type: "string", description: "Project item node ID" },
+      fieldId: { type: "string", description: "Field node ID (from github_get_project fields)" },
+      value: {
+        type: "object",
+        description: "Field value object. Use ONE of: { text: '...' }, { number: 5 }, { date: '2026-01-15' }, { singleSelectOptionId: '...' }, { iterationId: '...' }"
+      }
+    },
+    required: ["projectId", "itemId", "fieldId", "value"]
+  }
+};
+var MUTATION2 = `
+mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+  updateProjectV2ItemFieldValue(input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: $value }) {
+    projectV2Item { id }
+  }
+}`;
+async function handleGithubUpdateProjectItemField(args) {
+  const { projectId, itemId, fieldId, value } = args;
+  await graphql3(MUTATION2, { projectId, itemId, fieldId, value });
+  return { content: [{ type: "text", text: `Field updated successfully on item ${itemId}` }] };
+}
+
 // build/index.js
 var import_meta2 = {};
 var scriptDir2 = (() => {
@@ -16768,7 +16996,11 @@ var allSchemas = [
   githubListRemotesSchema,
   githubGetFileSchema,
   githubGetFilesSchema,
-  githubCreateReviewSchema
+  githubCreateReviewSchema,
+  githubGetProjectSchema,
+  githubListProjectItemsSchema,
+  githubCreateProjectItemSchema,
+  githubUpdateProjectItemFieldSchema
 ];
 var prefixedSchemas = allSchemas.map((schema) => ({
   ...schema,
@@ -16785,7 +17017,11 @@ var baseHandlers = {
   github_list_remotes: handleGithubListRemotes,
   github_get_file: handleGithubGetFile,
   github_get_files: handleGithubGetFiles,
-  github_create_review: handleGithubCreateReview
+  github_create_review: handleGithubCreateReview,
+  github_get_project: handleGithubGetProject,
+  github_list_project_items: handleGithubListProjectItems,
+  github_create_project_item: handleGithubCreateProjectItem,
+  github_update_project_item_field: handleGithubUpdateProjectItemField
 };
 var toolHandlers = {};
 for (const [name, handler2] of Object.entries(baseHandlers)) {
