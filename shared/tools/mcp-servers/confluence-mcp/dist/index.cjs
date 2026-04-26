@@ -5656,12 +5656,20 @@ var StdioServerTransport = class {
   }
 };
 
+// build/utils/toolPrefix.js
+var CONFLUENCE_INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
+function prefixToolName(name) {
+  return CONFLUENCE_INSTANCE_PREFIX ? `${CONFLUENCE_INSTANCE_PREFIX}${name}` : name;
+}
+function getServerName() {
+  return CONFLUENCE_INSTANCE_PREFIX ? `confluence-${CONFLUENCE_INSTANCE_PREFIX.replace(/_$/, "")}` : "confluence-mcp";
+}
+
 // build/utils/apiClient.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
 var DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
-var CONFLUENCE_INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
 var DEFAULT_TIMEOUT_MS = 3e4;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
@@ -6249,11 +6257,15 @@ var tools = [
   },
   { schema: uploadAttachmentSchema, handler: handleUploadAttachment }
 ];
+var prefixedTools = tools.map((t) => ({
+  schema: { ...t.schema, name: prefixToolName(t.schema.name) },
+  handler: t.handler
+}));
 var ConfluenceMCPServer = class {
   server;
   constructor() {
     this.server = new Server({
-      name: CONFLUENCE_INSTANCE_PREFIX ? "confluence-" + CONFLUENCE_INSTANCE_PREFIX.replace(/_$/,"") : "confluence-mcp",
+      name: getServerName(),
       version: "0.1.0"
     }, {
       capabilities: {
@@ -6264,12 +6276,12 @@ var ConfluenceMCPServer = class {
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: tools.map((t) => ({ ...t.schema, name: CONFLUENCE_INSTANCE_PREFIX + t.schema.name }))
+      tools: prefixedTools.map((t) => t.schema)
     }));
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
       try {
-        const tool = tools.find((t) => CONFLUENCE_INSTANCE_PREFIX + t.schema.name === name);
+        const tool = prefixedTools.find((t) => t.schema.name === name);
         if (!tool) {
           throw new Error(`Unknown tool: ${name}`);
         }
