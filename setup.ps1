@@ -860,10 +860,10 @@ switch ($Command) {
                     command = $nodePath
                     args = @("$mcpBundleDir\bruno-mcp\dist\index.cjs")
                 }
-                $mcpConfig.mcpServers["confluence"] = [ordered]@{
+                $mcpConfig.mcpServers["confluence-confluence"] = [ordered]@{
                     command = $nodePath
                     args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs")
-                    env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://confluence.disney.com" }
+                    env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "confluence_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://confluence.disney.com" }
                 }
                 $mcpConfig.mcpServers["github"] = [ordered]@{
                     command = $nodePath
@@ -879,10 +879,10 @@ switch ($Command) {
                     command = $nodePath
                     args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs")
                 }
-                $mcpConfig.mcpServers["mywiki"] = [ordered]@{
+                $mcpConfig.mcpServers["confluence-mywiki"] = [ordered]@{
                     command = $nodePath
                     args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs")
-                    env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" }
+                    env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "mywiki_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" }
                 }
 
                 $mcpJsonPath = "$env:USERPROFILE\.kiro\settings\mcp.json"

@@ -82,6 +82,14 @@ discover_github_remotes() {
     grep -o 'GITHUB_TOKEN_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/GITHUB_TOKEN_//' | sort -u
 }
 
+# Discover Confluence instances from tokens.env by scanning for CONFLUENCE_PAT_{instance} keys
+# Outputs one instance name per line, sorted and deduplicated
+discover_confluence_instances() {
+    local tokens_file="$1"
+    [ -f "$tokens_file" ] || return
+    grep -o 'CONFLUENCE_PAT_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/CONFLUENCE_PAT_//' | sort -u
+}
+
 show_usage() {
     cat << 'USAGE'
 ╔══════════════════════════════════════════════════════════════╗
@@ -1025,6 +1033,9 @@ TOKHEADER
         # Discover GitHub remotes from tokens.env
         _github_remotes=$(discover_github_remotes "$KIRO_ROOT/tokens.env")
         
+        # Discover Confluence instances from tokens.env
+        _confluence_instances=$(discover_confluence_instances "$KIRO_ROOT/tokens.env")
+        
         # Preserve existing powers section if present
         existing_powers="{}"
         if [ -f "$mcp_settings" ]; then
@@ -1042,6 +1053,7 @@ import json, sys, os
 
 tokens_file = '$KIRO_ROOT/tokens.env'
 remotes_raw = '''$_github_remotes'''.strip()
+confluence_instances_raw = '''$_confluence_instances'''.strip()
 
 p_jira = r'$_p_jira'
 p_confluence = r'$_p_confluence'
@@ -1070,13 +1082,33 @@ mcp = {
             'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
-        'confluence': {
-            'command': 'node',
-            'args': [p_confluence],
-            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
-        },
     }
 }
+
+# Confluence: per-instance with CONFLUENCE_INSTANCE_PREFIX, or legacy fallback
+conf_instances = [i for i in confluence_instances_raw.split('\\n') if i.strip()]
+if conf_instances:
+    for instance in conf_instances:
+        token = read_tok('CONFLUENCE_PAT_' + instance)
+        url = read_tok('CONFLUENCE_URL_' + instance)
+        if not token or not url:
+            continue
+        mcp['mcpServers']['confluence-' + instance] = {
+            'command': 'node',
+            'args': [p_confluence],
+            'env': {
+                'CONFLUENCE_INSTANCE_PREFIX': instance + '_',
+                'CONFLUENCE_URL': url,
+                'CONFLUENCE_PAT': token,
+            }
+        }
+else:
+    # Fallback: legacy single confluence entry
+    mcp['mcpServers']['confluence'] = {
+        'command': 'node',
+        'args': [p_confluence],
+        'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+    }
 
 # GitHub entries: per-remote with flat env vars, or legacy fallback
 remotes = [r for r in remotes_raw.split('\n') if r.strip()]
@@ -1986,6 +2018,7 @@ HOOKEOF
                     
                     # Discover GitHub remotes from tokens.env
                     _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
+                    _cursor_confluence_instances=$(discover_confluence_instances "$HOME/.kiro/tokens.env")
                     
                     # Pre-compute WSL-aware MCP paths
                     precompute_mcp_paths
@@ -1995,6 +2028,7 @@ import json, sys, os
 
 tokens_file = '$HOME/.kiro/tokens.env'
 remotes_raw = '''$_cursor_github_remotes'''.strip()
+confluence_instances_raw = '''$_cursor_confluence_instances'''.strip()
 mcp_json_path = '$mcp_json'
 
 p_jira = r'$_p_jira'
@@ -2024,13 +2058,33 @@ mcp = {
             'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
-        'confluence': {
-            'command': 'node',
-            'args': [p_confluence],
-            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
-        },
     }
 }
+
+# Confluence: per-instance with CONFLUENCE_INSTANCE_PREFIX, or legacy fallback
+conf_instances = [i for i in confluence_instances_raw.split('\\n') if i.strip()]
+if conf_instances:
+    for instance in conf_instances:
+        token = read_tok('CONFLUENCE_PAT_' + instance)
+        url = read_tok('CONFLUENCE_URL_' + instance)
+        if not token or not url:
+            continue
+        mcp['mcpServers']['confluence-' + instance] = {
+            'command': 'node',
+            'args': [p_confluence],
+            'env': {
+                'CONFLUENCE_INSTANCE_PREFIX': instance + '_',
+                'CONFLUENCE_URL': url,
+                'CONFLUENCE_PAT': token,
+            }
+        }
+else:
+    # Fallback: legacy single confluence entry
+    mcp['mcpServers']['confluence'] = {
+        'command': 'node',
+        'args': [p_confluence],
+        'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+    }
 
 # GitHub entries: per-remote with flat env vars, or fallback to single placeholder
 remotes = [r for r in remotes_raw.split('\n') if r.strip()]

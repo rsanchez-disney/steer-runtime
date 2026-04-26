@@ -5661,6 +5661,7 @@ var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
 var DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
+var CONFLUENCE_INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
 var DEFAULT_TIMEOUT_MS = 3e4;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
@@ -6252,7 +6253,7 @@ var ConfluenceMCPServer = class {
   server;
   constructor() {
     this.server = new Server({
-      name: "confluence-mcp",
+      name: CONFLUENCE_INSTANCE_PREFIX ? "confluence-" + CONFLUENCE_INSTANCE_PREFIX.replace(/_$/,"") : "confluence-mcp",
       version: "0.1.0"
     }, {
       capabilities: {
@@ -6263,12 +6264,12 @@ var ConfluenceMCPServer = class {
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: tools.map((t) => t.schema)
+      tools: tools.map((t) => ({ ...t.schema, name: CONFLUENCE_INSTANCE_PREFIX + t.schema.name }))
     }));
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
       try {
-        const tool = tools.find((t) => t.schema.name === name);
+        const tool = tools.find((t) => CONFLUENCE_INSTANCE_PREFIX + t.schema.name === name);
         if (!tool) {
           throw new Error(`Unknown tool: ${name}`);
         }
