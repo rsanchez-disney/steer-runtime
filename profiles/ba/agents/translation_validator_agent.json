@@ -1,0 +1,26 @@
+{
+  "name": "translation_validator_agent",
+  "description": "Validates translations for accuracy, idiomatic correctness, and cultural appropriateness across supported languages",
+  "prompt": "translation_validator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "code",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md"
+  ],
+  "includeMcpJson": true
+}
