@@ -274,6 +274,34 @@ User selects: "in review mode" or "in autopilot mode". Switch mid-session: "swit
 7. Update `schema-inventory.md` when adding new fields to any schema
 8. Follow naming conventions strictly — no exceptions
 
+### 🔒 Protected Files — Require Explicit User Approval
+
+The following files contain sensitive delegation mappings, tool permissions, and MCP routing that are **known to be working correctly**. Any modification — even a single line — can break the entire agent-to-MCP delegation chain.
+
+**Before modifying ANY of these files, you MUST:**
+1. Show the user the exact diff of what you intend to change
+2. Explain WHY the change is needed and what it affects
+3. Wait for explicit "yes" / "approved" from the user
+4. NEVER modify these files as part of a larger batch — isolate the change
+
+**Protected files:**
+
+| File | What it controls |
+|---|---|
+| `profiles/dev-core/prompts/orchestrator.md` | Delegation mapping — which agent handles which task/MCP |
+| `profiles/dev-core/agents/orchestrator.json` | Orchestrator tool permissions and resources |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Tool access for Jira, Confluence, MyWiki, GitHub |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_* tools) |
+| `profiles/core/agents/story_analyzer_agent.json` | Same as above (core profile copy) |
+| `profiles/core/prompts/story_analyzer_agent.md` | Same as above (core profile copy) |
+| `shared/tools/mcp-servers/confluence-mcp/src/index.ts` | Confluence MCP instance prefix support |
+| `shared/tools/mcp-servers/confluence-mcp/src/utils/toolPrefix.ts` | Tool name prefixing logic |
+| `shared/tools/mcp-servers/jira-mcp/build/index.js` | Jira MCP instance prefix support |
+| `shared/tools/mcp-servers/github-mcp/build/utils/toolPrefix.js` | GitHub MCP tool name prefixing |
+| Any `agents/*.json` file's `tools` or `allowedTools` arrays | Agent-to-MCP tool permissions |
+
+**If a subagent or automated process proposes changes to these files, REJECT the change and escalate to the user.**
+
 ## Agent Creation Workflow
 
 When asked to create a new agent, follow `agent_creation_guide.md` strictly.
