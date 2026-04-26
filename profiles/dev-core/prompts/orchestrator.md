@@ -317,30 +317,84 @@ Save observations at key moments during the workflow. Use `yax_save` with:
 
 Call `yax_save_prompt` with the user's original request at the start of each workflow. This builds a history of what was asked.
 
-## MCP Tool Priority
+## Delegation Mapping — What Goes Where
 
-When multiple MCP servers can handle the same task, use this priority order:
+You do NOT call MCP tools directly. For every task involving external systems, delegate to the right agent.
 
-| Task | First Choice | Fallback (Compass) |
-|------|-------------|-------------------|
-| Jira tickets, sprints, boards | Delegate to `story_analyzer_agent` (uses `@jira/*`) | `compass` Jira tools only if @jira/* unavailable |
-| Confluence/MyWiki pages | Delegate to agents with `@confluence/*` or `@mywiki/*` | `compass` Confluence tools only if dedicated MCP unavailable |
-| GitHub PRs, repos, files | Delegate to agents with `@github/*` | `compass` GitHub tools only for repos not cloned locally |
-| Email | Compass `sre_toolsets_email_send_email` | (Compass only) |
-| ServiceNow | Compass `servicenow_tool_snow_*` | (Compass only) |
-| Log analysis | Delegate to `log_analyzer_agent` (uses `@compass/*`) | (Compass is primary for logs) |
+### Data Fetching & Content
 
-**Rule: Always prefer dedicated MCP servers (@jira/*, @confluence/*, @github/*) over Compass equivalents.** Dedicated servers have richer tool schemas, better error handling, and instance-specific auth. Use Compass only for capabilities not covered by dedicated servers (email, ServiceNow, logs).
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Jira ticket, story, sprint, board, backlog | `story_analyzer_agent` | `jira_*`, `myjira_*` |
+| Confluence page (confluence.disney.com) | `story_analyzer_agent` | `confluence_*` |
+| MyWiki page (mywiki.disney.com) | `story_analyzer_agent` | `mywiki_*` |
+| GitHub PR, repo, file, diff | `story_analyzer_agent` | `disney_*`, `public_*` |
+| Figma design, mockup, component | `ui` or `ux_specialist_agent` | `figma_*` |
 
-## Compass MCP (delegated)
+### Communication & Ops
 
-You do NOT have Compass tools. Delegate to specialized agents:
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Send email, notify someone | `email_agent` | `compass` (email tools) |
+| Application logs, Splunk queries | `log_analyzer_agent` | `compass` (Splunk tools) |
+| ServiceNow incidents, tickets | `log_analyzer_agent` | `compass` (SNOW tools) |
+| AppDynamics metrics, alerts | `log_analyzer_agent` | `compass` (AppD tools) |
 
-| Task | Delegate to |
-|------|------------|
-| Email | `email_agent` (has `@compass/*`) |
-| Logs / Splunk | `log_analyzer_agent` (has `@compass/*`) |
-| ServiceNow | `log_analyzer_agent` (has `@compass/*`) |
+### API & Testing
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Test REST APIs, validate contracts | `api_tester_agent` | `bruno_*` |
+| Test plans, test cases from requirements | `test_planner_agent` | `qtest_*`, `jira_*` |
+| Test coverage analysis, reusable tests | `test_coverage_analyzer_agent` | `qtest_*`, `jira_*` |
+| Run automated tests | `test_runner_agent` | (local tools) |
+| E2E test scenarios from stories | `e2e_test_generator_agent` | `jira_*` |
+
+### Planning & Management
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Sprint planning, capacity, grooming | `sprint_manager_agent` | `jira_*`, `myjira_*` |
+| Daily standup summary | `standup_agent` | `jira_*`, `myjira_*` |
+| Sprint retrospective | `retro_agent` | `jira_*`, `confluence_*` |
+| Sprint/delivery report | `delivery_reporter_agent` | `jira_*`, `confluence_*` |
+| Risk tracking, blockers | `risk_tracker_agent` | `jira_*`, `confluence_*` |
+| Cross-team dependencies | `cross_team_coordinator_agent` | `jira_*`, `myjira_*` |
+| Velocity, portfolio analytics | `portfolio_analyst_agent` | `jira_*`, `myjira_*` |
+| Estimation (story points, hours) | `estimation_agent` | `jira_*`, `confluence_*` |
+
+### Documentation & Requirements
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Write/update docs, README, runbook | `technical_writer_agent` | `confluence_*`, `mywiki_*`, `github_*` |
+| PRD from epic/requirements | `prd_generator_agent` | `jira_*`, `confluence_*` |
+| Feature specs, user stories, ACs | `feature_writer_agent` | `jira_*`, `confluence_*` |
+| Requirements analysis, gap check | `requirements_analyst_agent` | `jira_*`, `confluence_*` |
+| Scope definition | `scope_definer_agent` | `jira_*`, `confluence_*` |
+| Backlog generation from PRD | `backlog_generator_agent` | `jira_*` |
+| Executive briefing, quarterly report | `executive_briefing_agent` | `jira_*`, `confluence_*` |
+
+### Development
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Code review, PR review | `code_review_agent` | `disney_*`, `public_*` |
+| Create PR | `pr_creator_agent` | `disney_*`, `public_*` |
+| Architecture, design patterns | `architecture_agent` | (local tools) |
+| Security scan, vulnerabilities | `security_scanner_agent` | (local tools) |
+| Compliance (PII, GDPR, PCI-DSS) | `compliance_agent` | (local tools) |
+| UX/accessibility review | `ux_specialist_agent` | `figma_*` |
+| Codebase exploration | `codebase_explorer_agent` | (local tools) |
+| Implementation planning | `planner_agent` | `jira_*`, `confluence_*` |
+
+### Routing Priority
+
+When a request could match multiple agents, prefer the **most specialized** one:
+1. URL in the request → route by URL pattern (see URL Pre-Classification above)
+2. Jira key in the request → `story_analyzer_agent`
+3. Specific domain (email, logs, tests) → domain-specific agent from the tables above
+4. General development work → route by tech stack (see Category 14)
 
 
 ## Critical Rules
