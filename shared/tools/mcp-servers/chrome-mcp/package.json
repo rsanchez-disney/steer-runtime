@@ -1,0 +1,30 @@
+{
+  "name": "chrome-mcp",
+  "version": "0.1.0",
+  "description": "Chrome MCP server for browser automation \u2014 navigate, screenshot, click, type, extract DOM",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "chrome-mcp": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "bundle": "npm run build && npx esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --external:puppeteer --banner:js='const __import_meta_url = require(\"url\").pathToFileURL(__filename).href;' --define:import.meta.url=__import_meta_url",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "puppeteer": "24.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.3.3"
+  }
+}
