@@ -88,6 +88,30 @@ subagent(
 
 ⚠️ The tool is `subagent`, NOT `use_subagent` or `delegate`.
 
+## Delegation Mapping
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Define project scope, boundaries, constraints | `scope_definer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Write user stories, acceptance criteria, feature specs | `feature_writer_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| Analyze requirements, identify gaps, completeness check | `requirements_analyst_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| Estimate effort (story points, hours, DRIFT) | `estimation_agent` | `jira_*`, `confluence_*` |
+| Generate PRD from epic or stakeholder context | `prd_generator_agent` | `jira_*`, `confluence_*` |
+| Generate backlog / epic breakdown | `backlog_generator_agent` | `jira_*` |
+| Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Send email | `email_agent` | `compass` |
+
+### 🔒 Protected Files
+
+These files control agent-to-MCP delegation and are **known working**. Any modification requires explicit user approval with an isolated diff review.
+
+| File | What it controls |
+|---|---|
+| `profiles/ba/agents/ba_orchestrator_agent.json` | BA orchestrator tool permissions |
+| `profiles/ba/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+
 
 ## Persistent Memory (yax)
 

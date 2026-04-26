@@ -97,6 +97,34 @@ The quality gate ensures artifacts meet standards before proceeding.
 - `test_framework_agent` — Generate test automation scaffolding per stack
 - `test_coverage_analyzer_agent` — Analyze epic test coverage and discover reusable tests
 
+## Delegation Mapping
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Test plan, test cases from requirements | `test_planner_agent` | `jira_*`, `confluence_*`, `mywiki_*`, `qtest_*` |
+| Write automated test scripts (UI, API, integration) | `test_automation_agent` | `bruno_*`, `qtest_*` |
+| Bug analysis, root cause, defect report | `defect_analyst_agent` | `jira_*`, `confluence_*`, `mywiki_*`, `qtest_*` |
+| REST API testing, contract validation | `api_tester_agent` | `bruno_*`, `qtest_*` |
+| Performance testing, load testing | `performance_tester_agent` | (local tools) |
+| Test coverage analysis, reusable test discovery | `test_coverage_analyzer_agent` | `jira_*`, `confluence_*`, `qtest_*` |
+| Test strategy document | `qe_strategy_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| E2E test scenarios (Gherkin) from stories | `e2e_test_generator_agent` | `jira_*` |
+| Discover testable elements, page objects | `web_discovery_agent` | (local tools) |
+| Test automation scaffolding per tech stack | `test_framework_agent` | (local tools) |
+| Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Send email | `email_agent` | `compass` |
+
+### 🔒 Protected Files
+
+These files control agent-to-MCP delegation and are **known working**. Any modification requires explicit user approval with an isolated diff review.
+
+| File | What it controls |
+|---|---|
+| `profiles/qa/agents/qa_orchestrator_agent.json` | QA orchestrator tool permissions |
+| `profiles/qa/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+
 ## Persistent Memory (yax)
 
 You have access to persistent memory via `@yax/*` tools. Use it to build context across sessions.

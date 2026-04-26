@@ -93,6 +93,17 @@ subagent(
 
 ⚠️ The tool is `subagent`, NOT `use_subagent` or `delegate`.
 
+### 🔒 Protected Files
+
+These files control agent-to-MCP delegation and are **known working**. Any modification requires explicit user approval with an isolated diff review.
+
+| File | What it controls |
+|---|---|
+| `profiles/sustainment/agents/sustainment_orchestrator_agent.json` | Sustainment orchestrator tool permissions |
+| `profiles/sustainment/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+
 ## Persistent Memory (yax)
 
 You have access to persistent memory via `@yax/*` tools. Use it to build context across sessions.
