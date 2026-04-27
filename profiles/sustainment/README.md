@@ -105,13 +105,13 @@ APPD_CLIENT_SECRET=your-client-secret
 
 # ServiceNow (basic auth)
 SNOW_INSTANCE=https://disney.service-now.com
-SNOW_USERNAME=your-service-account
-SNOW_PASSWORD=your-password
+SNOW_API_USERNAME=your-service-account
+SNOW_API_PASSWORD=your-password
 
 # Splunk (session auth)
 SPLUNK_BASE_URL=https://splunk.wdprapps.disney.com:8089
-SPLUNK_USERNAME=your-api-account
-SPLUNK_PASSWORD=your-password
+SPLUNK_API_USERNAME=your-api-account
+SPLUNK_API_PASSWORD=your-password
 ```
 
 Then run `koda mcp-install` to generate the mcp.json entries automatically. Servers without tokens are silently skipped.

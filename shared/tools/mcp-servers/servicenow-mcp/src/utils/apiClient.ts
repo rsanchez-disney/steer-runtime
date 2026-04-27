@@ -13,8 +13,8 @@ export class ServiceNowApiClient {
     async loadConfig() {
         if (!this.instanceUrl || !this.username || !this.password) {
             this.instanceUrl = process.env.SNOW_INSTANCE || null;
-            this.username = process.env.SNOW_USERNAME || null;
-            this.password = process.env.SNOW_PASSWORD || null;
+            this.username = process.env.SNOW_API_USERNAME || null;
+            this.password = process.env.SNOW_API_PASSWORD || null;
 
             if (!this.instanceUrl || !this.username || !this.password) {
                 try {
@@ -23,8 +23,8 @@ export class ServiceNowApiClient {
                     const envPath = resolve(__dirname, "../../.env");
                     config({ path: envPath });
                     this.instanceUrl = process.env.SNOW_INSTANCE || null;
-                    this.username = process.env.SNOW_USERNAME || null;
-                    this.password = process.env.SNOW_PASSWORD || null;
+                    this.username = process.env.SNOW_API_USERNAME || null;
+                    this.password = process.env.SNOW_API_PASSWORD || null;
                 } catch (e) {
                     console.error(`Failed to load .env file: ${(e as Error).message}`);
                 }
@@ -32,7 +32,7 @@ export class ServiceNowApiClient {
 
             if (!this.instanceUrl || !this.username || !this.password) {
                 throw new Error(
-                    "Missing required environment variables: SNOW_INSTANCE, SNOW_USERNAME, SNOW_PASSWORD",
+                    "Missing required environment variables: SNOW_INSTANCE, SNOW_API_USERNAME, SNOW_API_PASSWORD",
                 );
             }
 
@@ -172,8 +172,8 @@ export class ServiceNowApiClient {
         // 1. Check required env vars
         const missing: string[] = [];
         if (!process.env.SNOW_INSTANCE) missing.push("SNOW_INSTANCE");
-        if (!process.env.SNOW_USERNAME) missing.push("SNOW_USERNAME");
-        if (!process.env.SNOW_PASSWORD) missing.push("SNOW_PASSWORD");
+        if (!process.env.SNOW_API_USERNAME) missing.push("SNOW_API_USERNAME");
+        if (!process.env.SNOW_API_PASSWORD) missing.push("SNOW_API_PASSWORD");
 
         if (missing.length) {
             throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
