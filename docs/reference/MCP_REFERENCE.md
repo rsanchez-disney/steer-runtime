@@ -2,7 +2,7 @@
 
 Complete reference for all MCP servers: tools, capabilities, prompt examples, and agent access.
 
-**Total:** 14 MCP servers | 171+ tools | 58 agents connected
+**Total:** 14 MCP servers | 174+ tools | 58 agents connected
 
 ---
 
@@ -21,7 +21,7 @@ Complete reference for all MCP servers: tools, capabilities, prompt examples, an
 | [appdynamics-mcp](#appdynamics-mcp) | 17 | OAuth | stdio | 1 agent |
 | [figma-mcp](#figma-mcp) | 5 | Token | stdio | 3 agents |
 | [bruno-mcp](#bruno-mcp) | 10 | None | stdio | 6 agents |
-| [memory-mcp](#memory-mcp) | 12 | None | Docker SSE | All (via yax) |
+| [yax](#yax-persistent-memory) | 15 | None | stdio (Go) | All orchestrators |
 | [mermaid-diagram-mcp](#mermaid-diagram-mcp) | 1 | None | stdio | — |
 | [compass](#compass) | Dynamic | Token | Remote SSE | 10+ agents |
 
@@ -507,27 +507,36 @@ List all API collections in the project
 
 ---
 
-## memory-mcp
+## yax (persistent memory)
 
-**Purpose:** Persistent semantic memory for agents across sessions.
-**Auth:** None (local Docker — Redis Stack + FastAPI).
-**Runtime:** `docker compose up` via `koda memory start`.
+**Purpose:** Persistent memory for AI agents across sessions — save observations, search, graph traversal, session tracking.
+**Auth:** None (local SQLite + FTS5 database at `~/.yax/`).
+**Runtime:** Standalone Go binary (`yax mcp --tools=agent`), stdio transport.
+**Replaces:** The legacy `memory-mcp` (Docker/Python/Redis) is deprecated. Yax is the active replacement.
 
-### Tools (12)
+### Tools (15)
 
 | Tool | Description |
 |------|-------------|
-| `mem_save` | Save observation to persistent memory |
-| `mem_search` | Semantic search across memories |
-| `mem_context` | Get recent context by project |
-| `mem_get_observation` | Get observation by ID |
-| `mem_update` | Update existing observation |
-| `mem_delete` | Delete observation |
-| `mem_session_start` | Start a work session |
-| `mem_session_end` | Close session with summary |
-| `mem_session_summary` | Save session summary |
-| `mem_save_prompt` | Save user prompt |
-| `health` | Redis connectivity status |
+| `yax_save` | Save an observation to persistent memory (title, content, type, project) |
+| `yax_search` | Full-text search across memories |
+| `yax_context` | Get recent context from previous sessions |
+| `yax_get` | Get observation by ID |
+| `yax_update` | Update an existing observation |
+| `yax_delete` | Delete an observation (soft or hard) |
+| `yax_timeline` | Chronological context around an observation |
+| `yax_link` | Create edge between two observations (graph) |
+| `yax_unlink` | Remove edge between observations |
+| `yax_related` | Get connected observations via graph traversal |
+| `yax_session_start` | Register start of coding session |
+| `yax_session_end` | Mark session as completed |
+| `yax_session_summary` | Save end-of-session summary |
+| `yax_save_prompt` | Save user prompt to memory |
+| `yax_stats` | Memory system statistics |
+
+### Observation Types
+
+`manual`, `decision`, `architecture`, `bugfix`, `pattern`, `config`, `discovery`, `learning`
 
 ### Prompt Examples
 
@@ -537,11 +546,14 @@ Search my memories for anything about "database migration"
 What context do I have for the steer-runtime project?
 Start a new work session for DPAY-1234
 End the session with summary: "Completed retry logic implementation"
+Show me observations related to observation #42 (graph traversal)
+Link observation #10 to #15 with relationship "caused_by"
+Show me the timeline around observation #30
 ```
 
 ### Agents with Access
 
-All orchestrators have `@yax/*` for persistent memory. Memory-mcp is the backend.
+All orchestrators get `@yax/*` automatically via `GenerateMcpJson` (injected as a static server entry when the `yax` binary is found on PATH).
 
 ---
 
