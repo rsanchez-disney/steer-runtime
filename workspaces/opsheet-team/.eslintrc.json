@@ -1,0 +1,46 @@
+{
+    "root": true,
+    "env": {
+        "node": true,
+        "es2022": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "module"
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "build/",
+        "dist/",
+        "shared/tools/mcp-servers/"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "**/*.js"
+            ],
+            "rules": {
+                "no-unused-vars": [
+                    "warn",
+                    {
+                        "argsIgnorePattern": "^_"
+                    }
+                ],
+                "no-console": "off",
+                "prefer-const": "error",
+                "no-var": "error",
+                "eqeqeq": [
+                    "error",
+                    "always"
+                ],
+                "curly": [
+                    "error",
+                    "multi-line"
+                ],
+                "no-throw-literal": "error",
+                "no-param-reassign": "error",
+                "no-shadow": "warn"
+            }
+        }
+    ]
+}

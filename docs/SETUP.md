@@ -195,4 +195,10 @@ whatever is missing.
 
 ---
 
+## Additional Workspace Setup
+
+Check if your workspace has additional setup steps in its `README.md`.
+
+---
+
 Back to [README](../README.md)

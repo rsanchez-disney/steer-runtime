@@ -137,4 +137,10 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 ---
 
+## Additional Workspace Setup
+
+Check if your workspace has additional setup steps in its `README.md`.
+
+---
+
 Back to [README](../README.md)
