@@ -17,6 +17,9 @@ export function buildFormattedSummary(
 ): string {
     const summary = [`**${ticket.key}: ${ticket.fields.summary}**`, ""];
 
+    if (ticket.fields.issuetype) {
+        summary.push(`**Type:** ${ticket.fields.issuetype.name}`);
+    }
     if (requestedFields.includes("status") && ticket.fields.status) {
         summary.push(`**Status:** ${ticket.fields.status.name}`);
     }

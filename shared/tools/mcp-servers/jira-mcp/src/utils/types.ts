@@ -4,20 +4,38 @@ export interface JiraTicket {
     fields: {
         summary: string;
         description?: string;
-        status?: { name: string };
-        assignee?: { displayName: string };
-        priority?: { name: string };
+        issuetype?: {
+            name: string;
+            id?: string;
+        };
+        status?: {
+            name: string;
+        };
+        assignee?: {
+            displayName: string;
+        };
+        priority?: {
+            name: string;
+        };
         created?: string;
         updated?: string;
         labels?: string[];
         components?: Array<{ name: string }>;
-        issuetype?: { name: string };
         parent?: { key: string; fields?: { summary?: string } };
-        subtasks?: Array<{ key: string; fields?: { summary?: string; status?: { name: string } } }>;
+        subtasks?: Array<{
+            key: string;
+            fields?: { summary?: string; status?: { name: string } };
+        }>;
         issuelinks?: Array<{
             type?: { outward?: string; inward?: string };
-            outwardIssue?: { key: string; fields?: { summary?: string; status?: { name: string } } };
-            inwardIssue?: { key: string; fields?: { summary?: string; status?: { name: string } } };
+            outwardIssue?: {
+                key: string;
+                fields?: { summary?: string; status?: { name: string } };
+            };
+            inwardIssue?: {
+                key: string;
+                fields?: { summary?: string; status?: { name: string } };
+            };
         }>;
         fixVersions?: Array<{ name: string }>;
         comment?: {

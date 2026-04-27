@@ -31,8 +31,10 @@ export const CUSTOM_FIELD_ALIASES: Record<string, string> = {
     // ── Test / QA ────────────────────────────────────
     testDetails: "customfield_20104",
 
-    // Add more aliases below as needed:
-    // myAlias: "customfield_XXXXX",
+    // ── Bug / Defect fields ──────────────────────────
+    stepsToReproduce: "customfield_11005",
+    expectedResults: "customfield_11006",
+    actualResults: "customfield_11007",
 };
 
 /** Reverse lookup: customfield_XXXXX → alias (for display) */
@@ -42,6 +44,13 @@ const REVERSE_ALIASES: Record<string, string> = Object.fromEntries(
         alias,
     ]),
 );
+
+/** Custom field IDs that are auto-included for Bug / Defect issue types */
+export const BUG_DEFECT_FIELDS: string[] = [
+    CUSTOM_FIELD_ALIASES.stepsToReproduce,
+    CUSTOM_FIELD_ALIASES.expectedResults,
+    CUSTOM_FIELD_ALIASES.actualResults,
+];
 
 /**
  * Resolve an array of aliases / raw field IDs into actual Jira field IDs.
