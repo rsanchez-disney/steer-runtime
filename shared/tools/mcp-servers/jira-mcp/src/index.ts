@@ -110,6 +110,28 @@ import {
     handleXrayGetPreConditionTests,
 } from "./tools/xrayGetPreConditionTests.js";
 
+// New tools: issue links, user, dev status, XRay write
+import {
+    jiraGetDevStatusSchema,
+    handleJiraGetDevStatus,
+} from "./tools/jiraGetDevStatus.js";
+import {
+    jiraGetLinkTypesSchema,
+    handleJiraGetLinkTypes,
+} from "./tools/jiraGetLinkTypes.js";
+import {
+    jiraGetMyselfSchema,
+    handleJiraGetMyself,
+} from "./tools/jiraGetMyself.js";
+import {
+    jiraLinkIssuesSchema,
+    handleJiraLinkIssues,
+} from "./tools/jiraLinkIssues.js";
+import {
+    xrayAddTestsToTestExecSchema,
+    handleXrayAddTestsToTestExec,
+} from "./tools/xrayAddTestsToTestExec.js";
+
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 
@@ -146,6 +168,13 @@ const tools = [
     { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
     { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
     { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests },
+    // Issue links, user, dev status
+    { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
+    { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
+    { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
+    { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
+    // XRay write
+    { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec },
 ];
 
 class JiraMCPServer {
