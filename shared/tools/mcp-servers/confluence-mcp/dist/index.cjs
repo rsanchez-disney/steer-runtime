@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-const __import_meta_url = require('url').pathToFileURL(__filename).href;
+const __import_meta_url = require("url").pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -31,9 +30,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// confluence-mcp/node_modules/dotenv/package.json
+// node_modules/dotenv/package.json
 var require_package = __commonJS({
-  "confluence-mcp/node_modules/dotenv/package.json"(exports2, module2) {
+  "node_modules/dotenv/package.json"(exports2, module2) {
     module2.exports = {
       name: "dotenv",
       version: "16.6.1",
@@ -99,9 +98,9 @@ var require_package = __commonJS({
   }
 });
 
-// confluence-mcp/node_modules/dotenv/lib/main.js
+// node_modules/dotenv/lib/main.js
 var require_main = __commonJS({
-  "confluence-mcp/node_modules/dotenv/lib/main.js"(exports2, module2) {
+  "node_modules/dotenv/lib/main.js"(exports2, module2) {
     var fs = require("fs");
     var path = require("path");
     var os = require("os");
@@ -389,7 +388,7 @@ var require_main = __commonJS({
   }
 });
 
-// confluence-mcp/node_modules/zod/v3/external.js
+// node_modules/zod/v3/external.js
 var external_exports = {};
 __export(external_exports, {
   BRAND: () => BRAND,
@@ -501,7 +500,7 @@ __export(external_exports, {
   void: () => voidType
 });
 
-// confluence-mcp/node_modules/zod/v3/helpers/util.js
+// node_modules/zod/v3/helpers/util.js
 var util;
 (function(util2) {
   util2.assertEqual = (_) => {
@@ -635,7 +634,7 @@ var getParsedType = (data) => {
   }
 };
 
-// confluence-mcp/node_modules/zod/v3/ZodError.js
+// node_modules/zod/v3/ZodError.js
 var ZodIssueCode = util.arrayToEnum([
   "invalid_type",
   "invalid_literal",
@@ -753,7 +752,7 @@ ZodError.create = (issues) => {
   return error;
 };
 
-// confluence-mcp/node_modules/zod/v3/locales/en.js
+// node_modules/zod/v3/locales/en.js
 var errorMap = (issue, _ctx) => {
   let message;
   switch (issue.code) {
@@ -856,7 +855,7 @@ var errorMap = (issue, _ctx) => {
 };
 var en_default = errorMap;
 
-// confluence-mcp/node_modules/zod/v3/errors.js
+// node_modules/zod/v3/errors.js
 var overrideErrorMap = en_default;
 function setErrorMap(map) {
   overrideErrorMap = map;
@@ -865,7 +864,7 @@ function getErrorMap() {
   return overrideErrorMap;
 }
 
-// confluence-mcp/node_modules/zod/v3/helpers/parseUtil.js
+// node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
   const { data, path, errorMaps, issueData } = params;
   const fullPath = [...path, ...issueData.path || []];
@@ -975,14 +974,14 @@ var isDirty = (x) => x.status === "dirty";
 var isValid = (x) => x.status === "valid";
 var isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
 
-// confluence-mcp/node_modules/zod/v3/helpers/errorUtil.js
+// node_modules/zod/v3/helpers/errorUtil.js
 var errorUtil;
 (function(errorUtil2) {
   errorUtil2.errToObj = (message) => typeof message === "string" ? { message } : message || {};
   errorUtil2.toString = (message) => typeof message === "string" ? message : message?.message;
 })(errorUtil || (errorUtil = {}));
 
-// confluence-mcp/node_modules/zod/v3/types.js
+// node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
   constructor(parent, value, path, key) {
     this._cachedPath = [];
@@ -4430,7 +4429,7 @@ var coerce = {
 };
 var NEVER = INVALID;
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/types.js
 var LATEST_PROTOCOL_VERSION = "2024-11-05";
 var SUPPORTED_PROTOCOL_VERSIONS = [
   LATEST_PROTOCOL_VERSION,
@@ -5136,7 +5135,7 @@ var McpError = class extends Error {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -5413,7 +5412,7 @@ var Protocol = class {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -5566,10 +5565,10 @@ var Server = class extends Protocol {
   }
 };
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var import_node_process = __toESM(require("node:process"), 1);
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js
 var ReadBuffer = class {
   append(chunk) {
     this._buffer = this._buffer ? Buffer.concat([this._buffer, chunk]) : chunk;
@@ -5597,7 +5596,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// confluence-mcp/node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = import_node_process.default.stdin, _stdout = import_node_process.default.stdout) {
     this._stdin = _stdin;
@@ -5657,36 +5656,51 @@ var StdioServerTransport = class {
   }
 };
 
-// confluence-mcp/src/utils/apiClient.ts
+// build/utils/apiClient.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
 var DEFAULT_TIMEOUT_MS = 3e4;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
-  async loadConfig() {
-    if (!this.confluenceUrl || !this.confluencePat) {
-      const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-      const __dirname = (0, import_path.dirname)(__filename);
-      const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-      console.error(`Loading .env from: ${envPath}`);
-      (0, import_dotenv.config)({ path: envPath });
-      this.confluenceUrl = process.env.CONFLUENCE_URL || null;
-      this.confluencePat = process.env.CONFLUENCE_PAT || null;
-      if (!this.confluenceUrl || !this.confluencePat) {
-        throw new Error(
-          `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT. Tried loading from: ${envPath}`
-        );
-      }
-      if (this.confluenceUrl.includes("atlassian.net") && !this.confluenceUrl.includes("/wiki")) {
-        this.confluenceUrl = `${this.confluenceUrl}/wiki`;
+  loaded = false;
+  loadEnv() {
+    if (this.loaded)
+      return;
+    this.loaded = true;
+    this.confluenceUrl = process.env.CONFLUENCE_URL || null;
+    this.confluencePat = process.env.CONFLUENCE_PAT || null;
+    if (!this.confluencePat) {
+      try {
+        const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+        const __dirname = (0, import_path.dirname)(__filename);
+        const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+        (0, import_dotenv.config)({ path: envPath });
+        this.confluencePat = process.env.CONFLUENCE_PAT || null;
+        this.confluenceUrl = this.confluenceUrl || process.env.CONFLUENCE_URL || null;
+      } catch (e) {
       }
     }
   }
+  getBaseUrl() {
+    this.loadEnv();
+    let url = (this.confluenceUrl || DEFAULT_CONFLUENCE_URL).replace(/\/+$/, "");
+    if (url.includes("atlassian.net") && !url.includes("/wiki")) {
+      url = `${url}/wiki`;
+    }
+    return url;
+  }
+  getPat() {
+    this.loadEnv();
+    if (this.confluencePat)
+      return this.confluencePat;
+    throw new Error("CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file.");
+  }
   async makeRequest(endpoint, options = {}) {
-    await this.loadConfig();
-    const url = `${this.confluenceUrl}/rest/api/${endpoint}`;
+    const url = `${this.getBaseUrl()}/rest/api/${endpoint}`;
+    const pat = this.getPat();
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
     try {
@@ -5694,7 +5708,7 @@ var ConfluenceApiClient = class {
         ...options,
         signal: controller.signal,
         headers: {
-          Authorization: `Bearer ${this.confluencePat}`,
+          Authorization: `Bearer ${pat}`,
           Accept: "application/json",
           "Content-Type": "application/json",
           ...options.headers
@@ -5702,9 +5716,7 @@ var ConfluenceApiClient = class {
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
-        );
+        throw new Error(`Confluence API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
       return response.json();
     } finally {
@@ -5712,16 +5724,10 @@ var ConfluenceApiClient = class {
     }
   }
   getConfluenceUrl() {
-    if (!this.confluenceUrl) {
-      throw new Error("Configuration not loaded");
-    }
-    return this.confluenceUrl;
+    return this.getBaseUrl();
   }
   getConfluencePat() {
-    if (!this.confluencePat) {
-      throw new Error("Configuration not loaded");
-    }
-    return this.confluencePat;
+    return this.getPat();
   }
 };
 var apiClient = new ConfluenceApiClient();
@@ -5729,17 +5735,19 @@ function stripHtmlToText(html) {
   return html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/?(p|div|tr|li|h[1-6])[^>]*>/gi, "\n").replace(/<\/?[^>]+(>|$)/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\n{3,}/g, "\n\n").trim();
 }
 function truncateText(text, maxLength) {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength)
+    return text;
   return text.slice(0, maxLength) + `
 
 [... truncated at ${maxLength} chars \u2014 use outputDir to get full content]`;
 }
 
-// confluence-mcp/src/utils/fileUtils.ts
+// build/utils/fileUtils.js
 var import_promises = require("fs/promises");
 var import_path2 = require("path");
 async function saveToFile(data, outputDir, filename) {
-  if (outputDir === false || outputDir === null) return null;
+  if (outputDir === false || outputDir === null)
+    return null;
   const saveDir = typeof outputDir === "string" ? outputDir : "/tmp/confluence-mcp";
   await (0, import_promises.mkdir)(saveDir, { recursive: true });
   const filePath = (0, import_path2.join)(saveDir, filename);
@@ -5747,7 +5755,7 @@ async function saveToFile(data, outputDir, filename) {
   return filePath;
 }
 
-// confluence-mcp/src/tools/getConfluencePage.ts
+// build/tools/getConfluencePage.js
 var DEFAULT_MAX_LENGTH = 5e4;
 var getConfluencePageSchema = {
   name: "get_confluence_page",
@@ -5785,14 +5793,7 @@ var getConfluencePageSchema = {
   }
 };
 async function handleGetConfluencePage(args) {
-  const {
-    pageId,
-    spaceKey,
-    title,
-    expand = "body.storage,version,space",
-    maxLength = DEFAULT_MAX_LENGTH,
-    outputDir
-  } = args;
+  const { pageId, spaceKey, title, expand = "body.storage,version,space", maxLength = DEFAULT_MAX_LENGTH, outputDir } = args;
   let data;
   let filename;
   if (pageId) {
@@ -5805,9 +5806,7 @@ async function handleGetConfluencePage(args) {
     data = result.results?.[0] || {};
     filename = `page-${spaceKey}-${title.replace(/[^a-zA-Z0-9]/g, "_")}.json`;
   } else {
-    throw new Error(
-      "Either pageId or both spaceKey and title must be provided"
-    );
+    throw new Error("Either pageId or both spaceKey and title must be provided");
   }
   const filePath = await saveToFile(data, outputDir, filename);
   const savedInfo = filePath ? `
@@ -5832,7 +5831,7 @@ ${content}${savedInfo}`
   };
 }
 
-// confluence-mcp/src/tools/searchConfluencePages.ts
+// build/tools/searchConfluencePages.js
 var searchConfluencePagesSchema = {
   name: "search_confluence_pages",
   description: "Search Confluence pages using CQL (Confluence Query Language)",
@@ -5867,13 +5866,7 @@ var searchConfluencePagesSchema = {
   }
 };
 async function handleSearchConfluencePages(args) {
-  const {
-    cql,
-    start = 0,
-    limit = 25,
-    expand = "version,space",
-    outputDir
-  } = args;
+  const { cql, start = 0, limit = 25, expand = "version,space", outputDir } = args;
   const params = new URLSearchParams({
     cql,
     start: start.toString(),
@@ -5904,7 +5897,7 @@ ${lines.join("\n")}` : "\n  (no results)";
   };
 }
 
-// confluence-mcp/src/tools/getConfluenceSpace.ts
+// build/tools/getConfluenceSpace.js
 var getConfluenceSpaceSchema = {
   name: "get_confluence_space",
   description: "Get information about a Confluence space",
@@ -5945,7 +5938,7 @@ async function handleGetConfluenceSpace(args) {
   };
 }
 
-// confluence-mcp/src/tools/listConfluenceSpaces.ts
+// build/tools/listConfluenceSpaces.js
 var listConfluenceSpacesSchema = {
   name: "list_confluence_spaces",
   description: "List all Confluence spaces",
@@ -5976,12 +5969,7 @@ var listConfluenceSpacesSchema = {
   }
 };
 async function handleListConfluenceSpaces(args) {
-  const {
-    start = 0,
-    limit = 25,
-    expand = "description.plain",
-    outputDir
-  } = args;
+  const { start = 0, limit = 25, expand = "description.plain", outputDir } = args;
   const params = new URLSearchParams({
     start: start.toString(),
     limit: limit.toString(),
@@ -6001,7 +5989,7 @@ async function handleListConfluenceSpaces(args) {
   };
 }
 
-// confluence-mcp/src/tools/createConfluencePage.ts
+// build/tools/createConfluencePage.js
 var createConfluencePageSchema = {
   name: "create_confluence_page",
   description: "Create a new Confluence page",
@@ -6065,7 +6053,7 @@ async function handleCreateConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/updateConfluencePage.ts
+// build/tools/updateConfluencePage.js
 var updateConfluencePageSchema = {
   name: "update_confluence_page",
   description: "Update an existing Confluence page",
@@ -6126,7 +6114,7 @@ async function handleUpdateConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/commentOnConfluencePage.ts
+// build/tools/commentOnConfluencePage.js
 var commentOnConfluencePageSchema = {
   name: "comment_on_confluence_page",
   description: "Add a comment to a Confluence page",
@@ -6181,7 +6169,7 @@ async function handleCommentOnConfluencePage(args) {
   };
 }
 
-// confluence-mcp/src/tools/uploadAttachment.ts
+// build/tools/uploadAttachment.js
 var import_promises2 = require("fs/promises");
 var uploadAttachmentSchema = {
   name: "upload_attachment",
@@ -6208,29 +6196,23 @@ var uploadAttachmentSchema = {
 async function handleUploadAttachment(args) {
   const { pageId, filePath, outputDir } = args;
   try {
-    await apiClient.loadConfig();
     const fileBuffer = await (0, import_promises2.readFile)(filePath);
     const fileName = filePath.split("/").pop() || "attachment";
     const formData = new FormData();
     const blob = new Blob([new Uint8Array(fileBuffer)]);
     formData.append("file", blob, fileName);
     formData.append("comment", "Uploaded via Confluence MCP");
-    const response = await fetch(
-      `${apiClient.getConfluenceUrl()}/rest/api/content/${pageId}/child/attachment`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiClient.getConfluencePat()}`,
-          "X-Atlassian-Token": "no-check"
-        },
-        body: formData
-      }
-    );
+    const response = await fetch(`${apiClient.getConfluenceUrl()}/rest/api/content/${pageId}/child/attachment`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiClient.getConfluencePat()}`,
+        "X-Atlassian-Token": "no-check"
+      },
+      body: formData
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Confluence API error: ${response.status} - ${errorText}`
-      );
+      throw new Error(`Confluence API error: ${response.status} - ${errorText}`);
     }
     const data = await response.json();
     const filename = `attachment-${data.results[0].id}-on-page-${pageId}.json`;
@@ -6245,13 +6227,11 @@ async function handleUploadAttachment(args) {
       ]
     };
   } catch (error) {
-    throw new Error(
-      `Failed to upload attachment: ${error instanceof Error ? error.message : String(error)}`
-    );
+    throw new Error(`Failed to upload attachment: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
-// confluence-mcp/src/index.ts
+// build/index.js
 var tools = [
   { schema: getConfluencePageSchema, handler: handleGetConfluencePage },
   {
@@ -6271,45 +6251,39 @@ var tools = [
 var ConfluenceMCPServer = class {
   server;
   constructor() {
-    this.server = new Server(
-      {
-        name: "confluence-mcp",
-        version: "0.1.0"
-      },
-      {
-        capabilities: {
-          tools: {}
-        }
+    this.server = new Server({
+      name: "confluence-mcp",
+      version: "0.1.0"
+    }, {
+      capabilities: {
+        tools: {}
       }
-    );
+    });
     this.setupToolHandlers();
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: tools.map((t) => t.schema)
     }));
-    this.server.setRequestHandler(
-      CallToolRequestSchema,
-      async (request) => {
-        const { name, arguments: args } = request.params;
-        try {
-          const tool = tools.find((t) => t.schema.name === name);
-          if (!tool) {
-            throw new Error(`Unknown tool: ${name}`);
-          }
-          return await tool.handler(args);
-        } catch (error) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: ${error instanceof Error ? error.message : String(error)}`
-              }
-            ]
-          };
+    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+      try {
+        const tool = tools.find((t) => t.schema.name === name);
+        if (!tool) {
+          throw new Error(`Unknown tool: ${name}`);
         }
+        return await tool.handler(args);
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
       }
-    );
+    });
   }
   async run() {
     const transport = new StdioServerTransport();

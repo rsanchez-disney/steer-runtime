@@ -1,0 +1,36 @@
+{
+  "name": "txp-team",
+  "description": "TxP Team — Stencil web components for Disney vacation packages (quick quote, lodging, RA component library)",
+  "team": "TxP Web Components",
+  "profiles": ["dev-core", "dev-web"],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "wdpr-quick-quote",
+      "repo": "github.disney.com/wdprd-development/wdpr-quick-quote",
+      "path": "wdpr-quick-quote",
+      "memory_bank": "wdpr-quick-quote"
+    },
+    {
+      "name": "lodging-quick-quote",
+      "repo": "github.disney.com/wdprd-development/lodging-quick-quote",
+      "path": "lodging-quick-quote",
+      "memory_bank": "lodging-quick-quote"
+    },
+    {
+      "name": "wdpr-ra-web-components",
+      "repo": "github.disney.com/WDPR-RA-UI-Components/wdpr-ra-web-components",
+      "path": "wdpr-ra-web-components",
+      "memory_bank": "wdpr-ra-web-components"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-node-development",
+    "vista-design-system",
+    "wdpr-dependency-versioning"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "ROS-",
+  "workspace_path": "~/dev"
+}

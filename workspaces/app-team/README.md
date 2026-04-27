@@ -27,4 +27,4 @@ All child workspaces get:
 - **Rules**: conventional_commit, general-java-development, general-node-development, general-angular-development
 - **Context**: Architecture overview, team standards, deployment process
 
-See [Team Workspaces Guide](../../docs/TEAM_WORKSPACES.md) for details on hierarchy and inheritance.
+See [Team Workspaces Guide](../../docs/reference/TEAM_WORKSPACES.md) for details on hierarchy and inheritance.

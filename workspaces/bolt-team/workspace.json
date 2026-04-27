@@ -1,0 +1,51 @@
+{
+  "name": "bolt-team",
+  "description": "BOLT Admin Migration — AngularJS 1.4 → Angular 20 + WAM → WebTier BFF",
+  "team": "BOLT Migration Team",
+  "profiles": ["dev-core", "dev-web", "ba", "qa", "pm"],
+  "default_agent": "bolt_migration_agent",
+  "agents": [
+    {
+      "name": "bolt_migration_agent",
+      "path": "agents/bolt_migration_agent.json"
+    }
+  ],
+  "projects": [
+    {
+      "name": "wdprt-bolt-admin-spa",
+      "path": "../wdprt-bolt-admin-spa",
+      "memory_bank": "wdprt-bolt-admin-spa"
+    },
+    {
+      "name": "wdprt-bolt-admin-wam",
+      "path": "../wdprt-bolt-admin-wam",
+      "memory_bank": "wdprt-bolt-admin-wam"
+    },
+    {
+      "name": "wdprt-bolt-service",
+      "path": "../wdprt-bolt-service",
+      "memory_bank": "wdprt-bolt-service"
+    },
+    {
+      "name": "bolt-admin",
+      "path": "../bolt-admin",
+      "memory_bank": "bolt-admin-ng"
+    },
+    {
+      "name": "bolt-docs",
+      "path": "../docs",
+      "memory_bank": "bolt-docs"
+    }
+  ],
+  "rules": ["conventional_commit", "general-node-development", "general-angular-development"],
+  "enable_tools": true,
+  "jira_prefix": "GRPS-",
+  "jira_components": [
+    "wdprt-bolt-admin-spa",
+    "wdprt-bolt-admin-wam",
+    "wdprt-bolt-service",
+    "bolt-admin",
+    "bolt-docs"
+  ],
+  "workspace_path": "~/Workspace/Disney/wdprd-development"
+}

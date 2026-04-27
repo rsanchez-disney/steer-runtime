@@ -58,7 +58,6 @@ Astro SSR specialist with React components and TypeScript.
 ## Capabilities
 
 Agents have access to:
-- ✅ **Context7** — Up-to-date library documentation
 - ✅ **Figma** — Design files, components, styles, comments (ui, ux_specialist, astro)
 - ✅ **Code Tools** — Read/write source code
 - ✅ **Execution** — Run builds, tests, linters

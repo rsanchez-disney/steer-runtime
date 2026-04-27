@@ -1,0 +1,1 @@
+Using the appdynamics MCP, get tiers for prod_ecommerce_S0001477_cme-dlr_aws, then get nodes for the first tier with nodes > 0. Verify tiers have id, name, numberOfNodes fields and nodes have id, name, tierName, machineName fields.

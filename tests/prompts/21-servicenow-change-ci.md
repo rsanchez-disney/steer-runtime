@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the change_ci tool exists and accepts parameters incidentNumber and ciName. Do NOT actually change a CI. Instead, confirm the tool is callable by checking its schema/availability only.

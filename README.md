@@ -2,133 +2,177 @@
 
 AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
 
-55 agents, 9 profiles, one setup. Define your standards once, run them everywhere.
+55+ agents, 9 profiles, one setup. Define your standards once, run them everywhere.
+
+> Requires an Amazon Q Developer license for Kiro CLI access.
 
 ---
 
-## Get Started
+## New Users — Quick Start
 
-1. [Request access and sign in](docs/GETTING_STARTED.md) with Disney SSO
-2. Install tools and agents: [macOS / Linux](docs/SETUP.md) · [Windows](docs/WINDOWS_SETUP.md)
-3. Start chatting:
+### 1. Install Koda
 
+**macOS / Linux:**
 ```bash
-koda chat --agent orchestrator    # Dev orchestrator
-koda chat --agent qa_orchestrator_agent  # QA orchestrator
-koda chat --agent ba_orchestrator_agent  # BA orchestrator
+curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash
 ```
 
-> `koda chat` wraps `kiro-cli chat` — both work. Koda adds session history and shared settings with [Kite](https://github.disney.com/SANCR225/Kite).
-> 👥 Joining a team? Run `koda workspace apply <team>` — [details](docs/TEAM_WORKSPACES.md).
+**Windows (PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.ps1 | iex
+```
+
+### 2. Run Setup
+
+```bash
+koda setup
+```
+
+This installs all dependencies: kiro-cli, Node.js, Git, GitHub CLI, and yax (persistent memory).
+
+### 3. Verify
+
+```bash
+koda doctor
+```
+
+All checks should pass. If kiro-cli shows issues on Windows, see [Windows Troubleshooting](docs/getting-started/WINDOWS_SETUP.md#kiro-cli-silent-failure-on-windows).
+
+### 4. Install Profiles
+
+> **Install only the profiles that match your role.** You don't need all of them — pick what's relevant to your day-to-day work.
+
+| Your Role | Recommended Profiles | Command |
+|-----------|---------------------|---------|
+| Developer | dev | `koda install dev` |
+| Fullstack Developer | dev, qa | `koda install dev qa` |
+| .NET Developer | dev, dev-dotnet | `koda install dev dev-dotnet` |
+| PHP Developer | dev, dev-php | `koda install dev dev-php` |
+| Python Developer | dev, dev-python | `koda install dev dev-python` |
+| Infra / Terraform | dev-core, dev-infra | `koda install dev-core dev-infra` |
+| Business Analyst / PO | ba | `koda install ba` |
+| QA Engineer | qa, dev-core | `koda install qa dev-core` |
+| Ops / SRE | ops, dev-core | `koda install ops dev-core` |
+| Sustainment / L3 Support | sustainment, dev-core | `koda install sustainment dev-core` |
+| Project Manager / Scrum Master | pm | `koda install pm` |
+| Tech Director / Delivery Manager | leadership | `koda install leadership` |
+| All roles | dev, ba, qa, ops, pm | `koda install dev ba qa ops pm` |
+
+Open Koda TUI and press `[p]` to toggle profiles interactively, or install from CLI.
+
+| Profile | Agents | Description |
+|---------|:------:|-------------|
+| **dev** | 26 | Alias for dev-core + dev-web + dev-mobile |
+| **dev-core** | 18 | Code, review, test, security, PRs, architecture |
+| **dev-web** | 5 | Angular UI, Node gateway, Astro SSR, UX, backend |
+| **dev-mobile** | 3 | Mobile development agents |
+| **dev-dotnet** | 3 | .NET / C# development and review |
+| **dev-php** | 1 | PHP development and review |
+| **dev-python** | 1 | Python (FastAPI, Flask, Django) |
+| **dev-infra** | 1 | Terraform / IaC |
+| **ba** | 7 | Requirements, scope, stories, PRDs, estimation |
+| **qa** | 11 | Test planning, automation, defect analysis, coverage |
+| **ops** | 8 | Infra, deployments, log analysis, releases |
+| **sustainment** | 5 | Incident response, AppDynamics, ServiceNow, Splunk |
+| **pm** | 6 | Sprints, standups, retros, delivery reports |
+| **leadership** | 5 | Cross-studio analytics, quarterly reports, executive briefings |
+| **steer-master** | 5 | steer-runtime/Koda development and review |
+
+### 5. Select Workspace (optional)
+
+If your team has a workspace configured:
+
+```bash
+koda
+```
+
+Press `[w]` to select your team workspace. This applies team-specific profiles, rules, context, and project mappings.
+
+### 6. Configure Tokens
+
+Press `[t]` in Koda (or `[m]` for the full MCP screen) to configure:
+
+| Token | For |
+|-------|-----|
+| **Jira PAT** | myjira.disney.com or jira.disney.com |
+| **Confluence PAT** | mywiki.disney.com or confluence.disney.com |
+| **GitHub PAT** | github.disney.com |
+| **Compass Token** | compass.wdprapps.disney.com (optional) |
+
+Each instance needs its own PAT. Koda generates `mcp.json` automatically — only instances with tokens get MCP server entries.
+
+### 7. Adjust Env Vars (if needed)
+
+Press `[e]` in Koda to set environment variables:
+
+| Variable | When to set |
+|----------|-------------|
+| `COMPASS_URL` | If using Compass MCP — set your team's endpoint URL |
+| `QTEST_BASE_URL` | If using qTest integration |
+
+### 8. Start Chatting
+
+```bash
+koda chat                  # Default agent (kiro-cli TUI)
+koda chat --agent orchestrator  # Dev orchestrator
+```
+
+Or press `[enter]` on the Koda dashboard.
+
+---
+
+## Existing Users — Update
+
+```bash
+koda upgrade       # Update Koda + yax binaries
+koda sync          # Pull latest agents, prompts, MCP bundles
+koda doctor        # Verify everything
+```
 
 ---
 
 ## Profiles
 
-Pick what fits your role, or install everything:
+`dev` is five composable sub-profiles: `dev-core` (18), `dev-web` (5), `dev-python` (1), `dev-infra` (1), `dev-mobile` (3).
 
-```bash
-koda install dev ba qa ops pm
-```
-
-| Profile | Agents | What it does |
-|---------|:------:|-------------|
-| **dev** | 23 | Code, review, test, security, PRs — the full dev loop |
-| **ba** | 8 | Requirements, scope, stories, PRD generation, quality gates |
-| **qa** | 10 | Test planning, automation, E2E generation, defect analysis, API & perf testing |
-| **ops** | 7 | AI metrics, infra, deployments, code quality, release management |
-| **pm** | 6 | Sprints, standups, retros, risk tracking, delivery reports |
-
-`dev` is five composable sub-profiles: `dev-core` (16), `dev-web` (5), `dev-python` (1), `dev-infra` (1), `dev-mobile` (3).
-
----
-
-## Features
-
-| Feature | What it is |
-|---------|-----------|
-| **Agents** | 55 specialized AI assistants — each with a focused role (code review, test planning, sprint management, etc.) |
-| **Profiles** | Role-based bundles of agents — dev, BA, QA, ops, PM. Install only what your role needs |
-| **Orchestrators** | Multi-agent coordinators that break down tasks and delegate to specialists automatically |
-| **Skills** | Reusable multi-step workflows — implement-ticket, ship-it, generate-plan, fix-failing-test |
-| **Rules** | Coding standards per tech stack (Java, Node, Go, C#, Python, React, K8s, AWS, Docker, etc.) |
-| **Golden Rules** | Organization-wide standards enforced across all agents — security, quality, consistency |
-| **Hooks** | Guardrails that run before/after agent actions — write guards, secret scanning, branch protection |
-| **MCP Servers** | Pre-built integrations — Jira, Confluence, GitHub, Mermaid, Context7. No setup beyond tokens |
-| **Workspaces** | One-command team setup — profiles, rules, context, and Jira/board config per team |
-| **Memory Banks** | Project-specific knowledge that agents carry across sessions — tech stack, patterns, conventions |
-| **Project Manifest** | `project.yaml` — structured config so agents know your stack, commands, and integrations without forking |
-| **Spec Templates** | Architecture, API contracts, domain models, business rules, workflows, data dictionary templates |
-| **Artifact Templates** | PRD, backlog, test plan, ADR templates for structured document generation |
-| **Quality Gates** | Formal approve/reject/revise checkpoints between generation steps |
-| **IDE Portable** | Same agents run on Kiro CLI, Kiro IDE, Cursor, Amazon Q, and Kite — author once, deploy everywhere |
-| **Evals** | Agent quality scoring — structural checks + LLM-as-judge. Run via `koda eval` or CI. [Details](docs/EVAL_FRAMEWORK.md) |
-
----
-
-## What's New
-
-| Date | Change |
-|------|--------|
-| Apr 9 | Orchestrator execution modes — **review mode** (pause after each specialist, show diff, approve) and **autopilot mode** (run straight through) |
-| Apr 9 | Kiro IDE setup — `setup-kiro-ide.ps1` for Windows: steering, skills, hooks, MCP with absolute paths |
-| Apr 7 | [Amazon Q sync](docs/REFERENCE.md#amazon-q-developer) — `koda amazonq sync-all` syncs rules + context + MCP to Amazon Q plugin |
-| Apr 4 | [Compass MCP](docs/MCP_SETUP.md) — SSE-based Compass server for global search |
-| Apr 3 | [Multi-instance GitHub MCP](docs/MCP_SETUP.md) — support multiple GitHub remotes (Disney GHE + public) |
-| Apr 2 | [Nested workspaces](docs/TEAM_WORKSPACES.md) — child workspaces inside parent folders |
-| Apr 1 | [Figma MCP](docs/MCP_SETUP.md) + `dev-python` and `dev-infra` profiles |
-| Apr 1 | RA enrichment — agents gain context files, skills library, and spec awareness |
-| Mar 31 | [MCP bundles](docs/MCP_SETUP.md) — self-contained `dist/index.cjs` for all MCP servers |
-| Mar 30 | [Eval Framework](docs/EVAL_FRAMEWORK.md) — automated agent quality scoring with fixtures and rubrics |
-| Mar 28 | [project.yaml](common/templates/project.yaml) — structured project manifest (stack, commands, Jira, GitHub) |
-| Mar 27 | 7 new agents — architecture_spec, bounded_context, compliance, performance, steery, release_manager, release_documenter |
-| Mar 26 | [Koda v0.1.0](https://github.com/rsanchez-disney/Koda) — interactive terminal companion, replaces `setup.sh` |
-| Mar 24 | [Hierarchical workspaces](docs/TEAM_WORKSPACES.md) — `extends` support, 7 team workspaces |
-| Mar 22 | Agent hooks — git context injection, write guards, destructive command warnings |
-| Mar 20 | [Team Workspaces](docs/TEAM_WORKSPACES.md) — one-command team setup |
-| Mar 20 | Dev profile split → `dev-core` + `dev-web` + `dev-mobile` |
-
-> **Current:** 9 profiles · 55+ agents · 8 MCP servers · 7 team workspaces
+Each profile includes an orchestrator that coordinates its specialist agents automatically.
 
 ---
 
 ## Learn More
 
-| What                                                         | Where                                                                                                                                                                              |
-|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Full command reference, MCP servers, architecture, extending | [Reference](docs/REFERENCE.md)                                                                                                                                                     |
-| All 55 agents with tools, hooks, and MCP coverage            | [AGENTS.md](AGENTS.md)                                                                                                                                                             |
-| Eval framework — fixtures, rubrics, scoring                  | [Eval Framework](docs/EVAL_FRAMEWORK.md)                                                                                                                                           |
-| First-time Kiro setup (SSO, downloads)                       | [Getting Started](docs/GETTING_STARTED.md)                                                                                                                                         |
-| Detailed installation (macOS/Linux)                          | [Setup](docs/SETUP.md)                                                                                                                                                             |
-| How to prompt agents effectively                             | [Prompt Guide](docs/PROMPT_GUIDE.md)                                                                                                                                               |
-| Role-specific guides                                         | [BA](docs/BA_PROMPT_GUIDE.md) · [QA](docs/QA_PROMPT_GUIDE.md) · [Ops](docs/OPS_PROMPT_GUIDE.md) · [PM](docs/PM_PROMPT_GUIDE.md)                                                    |
-| Cursor / Amazon Q / Kite / Kiro IDE setup                    | [Cursor](docs/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) · [Kite](https://github.disney.com/SANCR225/Kite) |
-| Roadmap & feature requests                                   | [Roadmap](docs/ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)                                                                              |
-| IDE concepts comparison                                      | [IDE Concepts](docs/IDE_CONCEPTS_COMPARISON.md)                                                                                                                                    |
-| Troubleshooting                                              | [Troubleshooting](docs/TROUBLESHOOTING.md)                                                                                                                                         |
+| Topic | Link |
+|-------|------|
+| All agents with tools and MCP coverage | [AGENTS.md](AGENTS.md) |
+| Full command reference and architecture | [Reference](docs/reference/REFERENCE.md) |
+| MCP servers, tokens, env vars | [MCP Setup](docs/reference/MCP_SETUP.md) |
+| Team workspaces | [Workspaces](docs/reference/TEAM_WORKSPACES.md) |
+| Windows setup details | [Windows](docs/getting-started/WINDOWS_SETUP.md) |
+| macOS/Linux setup details | [Setup](docs/getting-started/SETUP.md) |
+| Prompt guides | [Dev](docs/profiles/dev/PROMPT_GUIDE.md) · [BA](docs/profiles/ba/BA_PROMPT_GUIDE.md) · [QA](docs/profiles/qa/QA_PROMPT_GUIDE.md) · [Ops](docs/profiles/ops/OPS_PROMPT_GUIDE.md) · [PM](docs/profiles/pm/PM_PROMPT_GUIDE.md) |
+| Kiro IDE / Cursor / Amazon Q | [Cursor](docs/getting-started/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) |
+| Eval framework | [Evals](docs/reference/EVAL_FRAMEWORK.md) |
+| Roadmap | [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 
 ---
 
-## Recordings & Sessions
+## Recordings
 
 | Date | Description | Link |
 |------|-------------|------|
 | March 10, 2026 | Working Session with CAP Team | [Recording](https://drive.google.com/file/d/19DzFCKPKcAAvNitrWYLDfNxntlvqpkH4/view?usp=sharing) |
 | April 2, 2026 | Q&A Session with OpSheet Team | [Recording](https://drive.google.com/file/d/1dyEmmOJOiPxmi7GgzqWsNBUv7zlhT8t-/view?usp=sharing) |
+| April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
+| April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
 
 ---
 
 ## Contribute
 
-Got an idea or found a bug? We'd love to hear from you.
-
 - 💡 [Propose a feature](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=feature_request.md)
 - 🐛 [Report a bug](https://github.disney.com/SANCR225/steer-runtime/issues/new?template=bug_report.md)
-- 📋 [Track progress on Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1)
+- 📋 [Waypoints board](https://github.disney.com/users/SANCR225/projects/2/views/1)
 
 ---
-
-**Version:** 3.7.0 · **Agents:** 55 · **Updated:** April 13, 2026
 
 Internal Disney tool — not for external distribution.

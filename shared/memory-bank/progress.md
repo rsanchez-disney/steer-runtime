@@ -22,7 +22,7 @@
 
 ## Known Issues
 - ⚠️ QA agents (api_tester, test_automation, performance_tester) missing Jira MCP configs
-- ⚠️ mywiki-mcp source may need inline-content fix applied independently (shares confluence-mcp bundle)
+- ✅ mywiki-mcp removed — mywiki now uses confluence-mcp binary with CONFLUENCE_URL env var
 - ⚠️ setup.ps1 may need updates for: enable-tools, cursor, amazonq subcommands, hooks copying
 - ⚠️ `chat.enableDelegate` not yet available in kiro-cli 1.26.2 (gracefully skipped)
 

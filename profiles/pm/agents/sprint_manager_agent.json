@@ -8,7 +8,7 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "todo"
+    "todo_list"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md"

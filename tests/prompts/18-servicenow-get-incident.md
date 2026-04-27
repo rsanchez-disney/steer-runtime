@@ -1,0 +1,1 @@
+Using the servicenow MCP, get details for incident INC28844834. Verify the response includes number, short_description, state, priority, assignment_group, assigned_to, cmdb_ci, parent_incident, and sys_created_on fields.

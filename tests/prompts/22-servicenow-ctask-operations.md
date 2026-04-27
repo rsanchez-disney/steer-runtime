@@ -1,0 +1,1 @@
+Using the servicenow MCP, get CTASK details for CTASK0010001 (or any valid CTASK). Verify the response includes number, short_description, state, assignment_group, assigned_to, change_request, and sys_created_on fields. Do NOT add work notes or modify the CTASK.

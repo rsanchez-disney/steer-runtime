@@ -1,0 +1,27 @@
+{
+  "name": "ge-team",
+  "description": "Guest Experience shared foundation for all GE sub-teams",
+  "team": "Guest Experience",
+  "profiles": [
+    "dev-core",
+    "dev-infra",
+    "dev-python",
+    "ops",
+    "dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-angular-development",
+    "general-api-design",
+    "general-aws",
+    "general-docker",
+    "general-kubernetes",
+    "general-node-development",
+    "general-python-development",
+    "general-terraform"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "",
+  "workspace_path": "~/workspace/guest-experience"
+}

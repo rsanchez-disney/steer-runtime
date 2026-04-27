@@ -331,7 +331,6 @@ switch ($Command) {
             Write-Host "X No pre-built MCP bundles found in dist/" -ForegroundColor Red; exit 1
         }
         Write-Host "`n$($mcpDirs.Count) MCP servers ready (pre-built, no npm install needed)" -ForegroundColor Green
-        Write-Host "  OK context7 (npx-based, no bundle needed)" -ForegroundColor Green
 
         # Configure tokens
         Write-Host ""
@@ -797,7 +796,7 @@ switch ($Command) {
 
                 # Copy bundles
                 $mcpBundleDir = "$env:USERPROFILE\.kiro\tools\mcp-servers"
-                $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp","mywiki-mcp")
+                $servers = @("bruno-mcp","confluence-mcp","github-mcp","jira-mcp","mermaid-diagram-mcp")
                 $bundleCount = 0
                 foreach ($s in $servers) {
                     $src = "$SteerRoot\shared\tools\mcp-servers\$s\dist\index.cjs"
@@ -882,7 +881,7 @@ switch ($Command) {
                 }
                 $mcpConfig.mcpServers["mywiki"] = [ordered]@{
                     command = $nodePath
-                    args = @("$mcpBundleDir\mywiki-mcp\dist\index.cjs")
+                    args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs")
                     env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" }
                 }
 

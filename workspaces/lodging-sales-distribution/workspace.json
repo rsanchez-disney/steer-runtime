@@ -1,0 +1,80 @@
+{
+  "name": "Lodging Sales Distribution",
+  "description": "Vertical workspace for Lodging Sales & Distribution studios",
+  "team": "LSWM | Lodging Sales & Tools",
+  "profiles": ["leadership"],
+  "default_agent": "portfolio_analyst_agent",
+  "projects": [],
+  "rules": ["conventional_commit"],
+  "enable_tools": true,
+  "jira_prefix": "ROS",
+  "teams": [
+    {
+      "name": "Gamora",
+      "jira_projects": ["ROS", "TRADE"],
+      "board_ids": [6349],
+      "studio": "ROS - Gamora | Ruth",
+      "studio_id": 49374
+    },
+    {
+      "name": "Nebula",
+      "jira_projects": ["ROS"],
+      "board_ids": [7787],
+      "studio": "ROS - Nebula | Ruth",
+      "studio_id": 49375,
+      "team_id": 1436
+    },
+    {
+      "name": "Cosmo",
+      "jira_projects": ["TEP3", "DLRDRP"],
+      "board_ids": [10729],
+      "team_id": 1988
+    },
+    {
+      "name": "Mantis",
+      "jira_projects": ["ROS", "PCSSE"],
+      "board_ids": [8568],
+      "studio": "ROS - Mantis | Ruth",
+      "studio_id": 49376
+    },
+    {
+      "name": "Terror",
+      "jira_projects": ["ROS", "TEP3", "DLRDRP"],
+      "board_ids": [12044, 12371],
+      "studio": "ROS - Terror Project | Ruth",
+      "studio_id": 38408,
+      "team_id": 2261
+    },
+    {
+      "name": "Bang",
+      "jira_projects": ["ROS"],
+      "board_ids": [10706],
+      "studio": "ROS - BANG | Ruth",
+      "studio_id": 38103
+    },
+    {
+      "name": "Yondu",
+      "jira_projects": ["TEP3"],
+      "board_ids": [12887],
+      "studio": "ROS - Yondu | Ruth"
+    },
+    {
+      "name": "Rocket",
+      "jira_projects": ["ROS"],
+      "board_ids": [10320],
+      "studio": "ROS - Rocket | Ruth"
+    },
+    {
+      "name": "Star-Lord",
+      "jira_projects": ["ROS"],
+      "board_ids": [10955],
+      "studio": "ROS - Star-Lord | Ruth"
+    },
+    {
+      "name": "Forky",
+      "jira_projects": ["CCS"],
+      "board_ids": [12334],
+      "studio": "Forky"
+    }
+  ]
+}

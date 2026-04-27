@@ -75,7 +75,7 @@ Team workspaces pre-configure profiles, rules, and memory banks:
 
 ## MCP Servers
 
-Jira, Confluence, GitHub (Disney Enterprise), Mermaid diagrams, Bruno API testing, Context7 (library docs). Tokens configured via `koda configure`.
+Jira, Confluence, GitHub (Disney Enterprise), Mermaid diagrams, Bruno API testing. Tokens configured via `koda configure`.
 
 ## Reporting Issues
 

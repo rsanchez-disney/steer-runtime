@@ -8,13 +8,15 @@
     "fs_read",
     "fs_write",
     "grep",
-    "@bruno/*"
+    "@bruno/*",
+    "@qtest/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
     "file://.kiro/context/automation_patterns.md",
     "file://.kiro/context/project_mappings.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/qtest_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [
@@ -38,7 +40,8 @@
     ]
   },
   "allowedTools": [
-    "@bruno/*"
+    "@bruno/*",
+    "@qtest/*"
   ],
   "includeMcpJson": true
 }

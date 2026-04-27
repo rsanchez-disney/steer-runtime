@@ -79,6 +79,10 @@ import {
     jiraGetMyselfSchema,
     handleJiraGetMyself,
 } from "./tools/jiraGetMyself.js";
+import {
+    jiraGetChildIssuesSchema,
+    handleJiraGetChildIssues,
+} from "./tools/jiraGetChildIssues.js";
 
 // XRay tools
 import {
@@ -126,38 +130,47 @@ import {
     handleXrayAddTestsToTestExec,
 } from "./tools/xrayAddTestsToTestExec.js";
 
+// Instance prefix for multi-instance support (avoids tool name collisions)
+const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
+
+function prefixed(schema: { name: string; description: string; inputSchema: unknown }) {
+    if (!INSTANCE_PREFIX) return schema;
+    return { ...schema, name: INSTANCE_PREFIX + schema.name };
+}
+
 // Tool registry
 const tools = [
-    { schema: jiraGetIssueSchema, handler: handleJiraGetIssue },
-    { schema: jiraUpdateIssueSchema, handler: handleJiraUpdateIssue },
-    { schema: jiraTransitionIssueSchema, handler: handleJiraTransitionIssue },
-    { schema: jiraAssignIssueSchema, handler: handleJiraAssignIssue },
-    { schema: jiraCommentOnIssueSchema, handler: handleJiraCommentOnIssue },
-    { schema: jiraSearchIssuesSchema, handler: handleJiraSearchIssues },
-    { schema: jiraCreateIssueSchema, handler: handleJiraCreateIssue },
-    { schema: jiraGetProjectsSchema, handler: handleJiraGetProjects },
-    { schema: jiraGetIssueTypesSchema, handler: handleJiraGetIssueTypes },
-    { schema: jiraGetTransitionsSchema, handler: handleJiraGetTransitions },
-    { schema: jiraGetBoardsSchema, handler: handleJiraGetBoards },
-    { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
-    { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
-    { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
-    { schema: jiraGetDevStatusSchema, handler: handleJiraGetDevStatus },
-    { schema: jiraLinkIssuesSchema, handler: handleJiraLinkIssues },
-    { schema: jiraGetLinkTypesSchema, handler: handleJiraGetLinkTypes },
-    { schema: jiraGetMyselfSchema, handler: handleJiraGetMyself },
+    { schema: prefixed(jiraGetIssueSchema), handler: handleJiraGetIssue },
+    { schema: prefixed(jiraUpdateIssueSchema), handler: handleJiraUpdateIssue },
+    { schema: prefixed(jiraTransitionIssueSchema), handler: handleJiraTransitionIssue },
+    { schema: prefixed(jiraAssignIssueSchema), handler: handleJiraAssignIssue },
+    { schema: prefixed(jiraCommentOnIssueSchema), handler: handleJiraCommentOnIssue },
+    { schema: prefixed(jiraSearchIssuesSchema), handler: handleJiraSearchIssues },
+    { schema: prefixed(jiraCreateIssueSchema), handler: handleJiraCreateIssue },
+    { schema: prefixed(jiraGetProjectsSchema), handler: handleJiraGetProjects },
+    { schema: prefixed(jiraGetIssueTypesSchema), handler: handleJiraGetIssueTypes },
+    { schema: prefixed(jiraGetTransitionsSchema), handler: handleJiraGetTransitions },
+    { schema: prefixed(jiraGetBoardsSchema), handler: handleJiraGetBoards },
+    { schema: prefixed(jiraGetSprintsSchema), handler: handleJiraGetSprints },
+    { schema: prefixed(jiraGetSprintIssuesSchema), handler: handleJiraGetSprintIssues },
+    { schema: prefixed(jiraGetAttachmentsSchema), handler: handleJiraGetAttachments },
+    { schema: prefixed(jiraGetChildIssuesSchema), handler: handleJiraGetChildIssues },
+    { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
+    { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
+    { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
+    { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
     // XRay tools
-    { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
-    { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
-    { schema: xrayGetTestExecTestsSchema, handler: handleXrayGetTestExecTests },
-    { schema: xrayGetTestPlanTestsSchema, handler: handleXrayGetTestPlanTests },
-    { schema: xrayGetTestSetTestsSchema, handler: handleXrayGetTestSetTests },
-    { schema: xrayGetTestRunsSchema, handler: handleXrayGetTestRuns },
-    { schema: xraySearchTestCasesSchema, handler: handleXraySearchTestCases },
-    { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
-    { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
-    { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests },
-    { schema: xrayAddTestsToTestExecSchema, handler: handleXrayAddTestsToTestExec },
+    { schema: prefixed(xrayGetTestCaseFullSchema), handler: handleXrayGetTestCaseFull },
+    { schema: prefixed(xrayGetTestStepsSchema), handler: handleXrayGetTestSteps },
+    { schema: prefixed(xrayGetTestExecTestsSchema), handler: handleXrayGetTestExecTests },
+    { schema: prefixed(xrayGetTestPlanTestsSchema), handler: handleXrayGetTestPlanTests },
+    { schema: prefixed(xrayGetTestSetTestsSchema), handler: handleXrayGetTestSetTests },
+    { schema: prefixed(xrayGetTestRunsSchema), handler: handleXrayGetTestRuns },
+    { schema: prefixed(xraySearchTestCasesSchema), handler: handleXraySearchTestCases },
+    { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
+    { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
+    { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests },
+    { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec },
 ];
 
 class JiraMCPServer {

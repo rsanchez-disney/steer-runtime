@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the create_change_request tool exists and accepts parameters shortDescription, description, changeType, ciName, assignmentGroup, startDate, endDate, and priority. Do NOT actually create a change request. Instead, confirm the tool is callable by checking its schema/availability only.

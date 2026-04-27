@@ -1,0 +1,27 @@
+{
+  "name": "portfolio_analyst_agent",
+  "description": "Cross-team Jira analytics \u2014 velocity trends, delivery health, capacity, and carry-over rates across multiple teams",
+  "prompt": "portfolio_analyst_agent.md",
+  "tools": [
+    "@jira/*",
+    "thinking",
+    "fs_read",
+    "fs_write"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/leadership_guidelines.md",
+    "file://.kiro/context/portfolio_projects.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject workspace context and agent registry"
+      }
+    ]
+  }
+}

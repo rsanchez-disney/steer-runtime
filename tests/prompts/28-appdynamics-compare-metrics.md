@@ -1,0 +1,1 @@
+Using the appdynamics MCP, compare metrics for prod_ecommerce_S0001477_cme-dlr_aws with metric path "Overall Application Performance|Errors per Minute", current window 60 minutes, baseline offset 1440 minutes (24h ago). Verify the response includes current and baseline values with a deviation ratio.

@@ -1,0 +1,1 @@
+Using the servicenow MCP, query incidents for assignment group web-global-salestickets in active states (1,2,11,12). Verify the response includes count and records array, and each record has number, priority, state, and short_description with both display_value and value fields.

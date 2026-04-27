@@ -1,0 +1,1 @@
+Using the appdynamics MCP, query metric data for prod_ecommerce_S0001477_cme-dlr_aws with metric path "Overall Application Performance|Errors per Minute", duration 60 minutes, rollup true. Verify the response contains metricValues with sum and count fields.

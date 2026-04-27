@@ -64,6 +64,7 @@ You have two Confluence instances. Route by URL:
 - If unclear, **ask the user** which instance.
 
 
+
 ## qTest Rules (MANDATORY)
 
 When creating requirements in qTest:
@@ -75,3 +76,23 @@ When creating requirements in qTest:
 When creating test cases in qTest:
 
 3. **Module is required** — NEVER guess or search for a module. If the user does not specify a module (e.g., `MD-####`) for test cases, you MUST ask them which module to use before calling `qtest_create_test_case`. Do NOT browse the test design tree to pick a module on their behalf.
+
+## Quality Gates
+
+After generating test plans or test cases, invoke `quality_gate_agent` for formal review:
+
+1. Generate test plan → `test_planner_agent`
+2. Review test plan → `quality_gate_agent` (approve/reject/revise)
+3. Generate test cases → `test_automation_agent`
+4. Review test cases → `quality_gate_agent`
+
+The quality gate ensures artifacts meet standards before proceeding.
+
+
+## Additional QA Agents
+
+- `qe_strategy_agent` — Create test strategy documents
+- `e2e_test_generator_agent` — Generate Gherkin E2E scenarios from stories
+- `web_discovery_agent` — Discover testable elements and page objects
+- `test_framework_agent` — Generate test automation scaffolding per stack
+- `test_coverage_analyzer_agent` — Analyze epic test coverage and discover reusable tests

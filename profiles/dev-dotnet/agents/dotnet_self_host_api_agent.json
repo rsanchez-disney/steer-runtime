@@ -1,6 +1,6 @@
 {
   "name": "dotnet_self_host_api_agent",
-  "description": "Specialist for .NET self-hosted APIs — thin controllers, explicit DI, Swagger/OpenAPI, health checks, Windows Service and Kubernetes compatibility",
+  "description": "Specialist for .NET self-hosted APIs \u2014 thin controllers, explicit DI, Swagger/OpenAPI, health checks, Windows Service and Kubernetes compatibility",
   "prompt": "prompts/dotnet_self_host_api_agent.md",
   "tools": [
     "code",
@@ -10,17 +10,17 @@
     "grep"
   ],
   "resources": [
-    "context/dotnet_engineering_principles.md",
-    "context/dotnet_company_common_integration.md",
-    "context/dotnet_aws_platform_guidance.md",
-    "context/dotnet_testing_strategy.md",
-    "context/dotnet_tech_standards.md",
-    "context/dotnet_aws_rules.md",
-    "context/dotnet_company_common_rules.md",
-    "context/dotnet_testing_rules.md",
-    "context/dotnet_self_host_api_context.md",
-    "context/dotnet_self_host_api_guidance.md",
-    "context/dotnet_self_host_api_structure.md"
+    "file://.kiro/context/dotnet_engineering_principles.md",
+    "file://.kiro/context/dotnet_company_common_integration.md",
+    "file://.kiro/context/dotnet_aws_platform_guidance.md",
+    "file://.kiro/context/dotnet_testing_strategy.md",
+    "file://.kiro/context/dotnet_tech_standards.md",
+    "file://.kiro/context/dotnet_aws_rules.md",
+    "file://.kiro/context/dotnet_company_common_rules.md",
+    "file://.kiro/context/dotnet_testing_rules.md",
+    "file://.kiro/context/dotnet_self_host_api_context.md",
+    "file://.kiro/context/dotnet_self_host_api_guidance.md",
+    "file://.kiro/context/dotnet_self_host_api_structure.md"
   ],
   "welcomeMessage": "Ready to build a .NET self-hosted API. Point me to your project."
 }

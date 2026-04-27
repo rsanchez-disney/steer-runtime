@@ -33,29 +33,29 @@ graph TD
 
     %% ─── dev-web ───────────────────────────────────
     subgraph DEV_WEB["dev-web · 5 agents"]
-        BACK["backend<br/><i>context7 · bruno</i>"]:::agent
-        WAPI["webapi<br/><i>context7 · bruno</i>"]:::agent
-        UI["ui<br/><i>context7 · figma</i>"]:::agent
+        BACK["backend<br/><i>bruno</i>"]:::agent
+        WAPI["webapi<br/><i>bruno</i>"]:::agent
+        UI["ui<br/><i>figma</i>"]:::agent
         UX["ux_specialist<br/><i>figma</i>"]:::agent
-        ASTRO["astro<br/><i>context7 · figma</i>"]:::agent
+        ASTRO["astro<br/><i>figma</i>"]:::agent
     end
 
     %% ─── dev-mobile ────────────────────────────────
     subgraph DEV_MOB["dev-mobile · 3 agents"]
-        FLUTTER["flutter<br/><i>context7</i>"]:::agent
-        ANDROID["android_native<br/><i>context7</i>"]:::agent
-        IOS["ios_native<br/><i>context7</i>"]:::agent
+        FLUTTER["flutter<br/>"]:::agent
+        ANDROID["android_native<br/>"]:::agent
+        IOS["ios_native<br/>"]:::agent
     end
 
 
     %% ─── dev-python ────────────────────────────────
     subgraph DEV_PY["dev-python · 1 agent"]
-        PYTHON["python<br/><i>context7</i>"]:::agent
+        PYTHON["python<br/>"]:::agent
     end
 
     %% ─── dev-infra ─────────────────────────────────
     subgraph DEV_INFRA["dev-infra · 1 agent"]
-        TERRAFORM["terraform<br/><i>context7</i>"]:::agent
+        TERRAFORM["terraform<br/>"]:::agent
     end
 
     %% ─── dev-dotnet ──────────────────────────────────
@@ -63,6 +63,11 @@ graph TD
         DOTNET_SENIOR["dotnet_senior_agent"]:::agent
         DOTNET_API["dotnet_self_host_api_agent"]:::agent
         DOTNET_SERVERLESS["dotnet_serverless_agent"]:::agent
+    end
+
+    %% ─── dev-php ───────────────────────────────────
+    subgraph DEV_PHP["dev-php · 1 agent"]
+        PHP["php_agent<br/>"]:::agent
     end
 
     %% ─── ba ────────────────────────────────────────
@@ -81,9 +86,9 @@ graph TD
     subgraph QA["qa · 11 agents"]
         QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
         QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
-        QA_ORCH --> TAUTO["test_automation<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> TAUTO["test_automation<br/><i>bruno</i>"]:::agent
         QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · mywiki · github</i>"]:::agent
-        QA_ORCH --> APITEST["api_tester<br/><i>context7 · bruno</i>"]:::agent
+        QA_ORCH --> APITEST["api_tester<br/><i>bruno</i>"]:::agent
         QA_ORCH --> PERFTEST["performance_tester"]:::agent
         QA_ORCH --> QESTRAT["qe_strategy<br/><i>jira · confluence</i>"]:::agent
         QA_ORCH --> E2EGEN["e2e_test_generator<br/><i>jira</i>"]:::agent
@@ -120,6 +125,8 @@ graph TD
     DEV -.-> DEV_MOB
     DEV -.-> DEV_PY
     DEV -.-> DEV_INFRA
+    DEV -.-> DEV_DOTNET
+    DEV -.-> DEV_PHP
 
     %% ─── cross-profile delegation ──────────────────
     ORCH -.->|delegates| BACK
@@ -135,16 +142,17 @@ graph TD
 
 ---
 
-## Dev Profiles (26 agents total)
+## Dev Profiles (30 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 26 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
+koda install dev                    # All 30 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-dotnet    # .NET developer (19 agents)
+koda install dev-core dev-php       # PHP/Zend developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
@@ -269,21 +277,19 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 **File:** `profiles/dev-web/agents/backend.json`  
 **Purpose:** Java services specialist for wdpr-config-services  
 **Use for:** Backend API development, database changes, Java services  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### webapi
 **File:** `profiles/dev-web/agents/webapi.json`  
 **Purpose:** Node.js/TypeScript specialist for wdpr-payment-controls-api  
 **Use for:** API layer, BFF logic, TypeScript interfaces  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### ui
 **File:** `profiles/dev-web/agents/ui.json`  
 **Purpose:** Angular specialist for wdpr-payment-controls-client  
 **Use for:** Frontend development, components, services, routing  
-**MCP Servers:** context7, figma  
+**MCP Servers:** figma  
 **Hooks:** preToolUse (guard writes)
 
 #### ux_specialist_agent
@@ -296,7 +302,7 @@ Fullstack web specialists for Config Studio (Java + Node.js + Angular + Astro).
 **File:** `profiles/dev-web/agents/astro.json`  
 **Purpose:** Astro SSR specialist with React components and TypeScript  
 **Use for:** Astro pages, React islands, server actions, Nanostores state  
-**MCP Servers:** context7, figma  
+**MCP Servers:** figma  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -310,7 +316,6 @@ Python specialist for FastAPI, Flask, Django, and general Python development.
 **File:** `profiles/dev-python/agents/python.json`  
 **Purpose:** Python development specialist for API services and general Python  
 **Use for:** FastAPI/Flask/Django development, pytest, async patterns  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -323,7 +328,6 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 **File:** `profiles/dev-infra/agents/terraform.json`  
 **Purpose:** Terraform/IaC specialist for modules, state management, and provisioning  
 **Use for:** Terraform modules, plan/apply workflows, security scanning  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes, secret scan)
 
 ---
@@ -352,6 +356,18 @@ Infrastructure as Code specialist for Terraform and cloud provisioning.
 
 ---
 
+### Profile: dev-php (1 agent)
+
+PHP specialist for Zend Framework 3 (Laminas) and legacy ZF1/ZF2.
+
+#### php_agent
+**File:** `profiles/dev-php/agents/php_agent.json`  
+**Purpose:** PHP/Zend specialist — MVC, service managers, factory pattern, PSR-12, PHPUnit  
+**Use for:** Zend/Laminas MVC apps, legacy ZF1/ZF2 migration, module development  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+---
+
 ### Profile: dev-mobile (3 agents)
 
 Mobile specialists for Flutter cross-platform and native platform channels.
@@ -360,20 +376,17 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 **File:** `profiles/dev-mobile/agents/flutter.json`  
 **Purpose:** Dart/Flutter cross-platform development  
 **Use for:** Flutter widgets, state management, platform channels  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### android_native
 **File:** `profiles/dev-mobile/agents/android_native.json`  
 **Purpose:** Kotlin/Java platform channels for Android  
 **Use for:** Android-specific implementations, native integrations  
-**MCP Servers:** context7
 
 #### ios_native
 **File:** `profiles/dev-mobile/agents/ios_native.json`  
 **Purpose:** Swift/Obj-C platform channels for iOS  
 **Use for:** iOS-specific implementations, native integrations  
-**MCP Servers:** context7
 
 ---
 
@@ -486,7 +499,6 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/api_tester_agent.json`  
 **Purpose:** Tests REST APIs and validates contracts  
 **Use for:** API test suites, contract testing, endpoint validation  
-**MCP Servers:** context7  
 **Hooks:** preToolUse (guard writes)
 
 #### performance_tester_agent
@@ -634,13 +646,58 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 
 ---
 
+## Profile: leadership (5 agents)
+
+Cross-team analytics, quarterly reporting, and executive briefings for Tech Directors and Delivery Managers.
+
+### Leadership Orchestrator (1)
+
+#### leadership_orchestrator_agent
+**File:** `profiles/leadership/agents/leadership_orchestrator_agent.json`  
+**Purpose:** Coordinates cross-team queries, quarterly reports, and executive briefings  
+**Use for:** Multi-team analysis, report coordination, delegation to specialists  
+**Tools:** thinking, todo, delegate, use_subagent  
+**MCP Servers:** jira, confluence, mywiki
+
+**Delegates to:** portfolio_analyst_agent, quarterly_reporter_agent, cross_team_coordinator_agent, executive_briefing_agent
+
+---
+
+### Leadership Specialists (4)
+
+#### portfolio_analyst_agent
+**File:** `profiles/leadership/agents/portfolio_analyst_agent.json`  
+**Purpose:** Cross-team Jira analytics — velocity, delivery accuracy, carry-over rates, cycle time  
+**Use for:** Multi-team velocity comparison, capacity analysis, trend identification  
+**MCP Servers:** jira
+
+#### quarterly_reporter_agent
+**File:** `profiles/leadership/agents/quarterly_reporter_agent.json`  
+**Purpose:** Generates 10-section quarterly business reports for Disney directors  
+**Use for:** Quarterly reviews, business impact reporting, achievement summaries  
+**MCP Servers:** jira, confluence, mywiki
+
+#### cross_team_coordinator_agent
+**File:** `profiles/leadership/agents/cross_team_coordinator_agent.json`  
+**Purpose:** Tracks cross-team dependencies, shared blockers, and integration risks  
+**Use for:** Dependency mapping, blocker escalation, coordination risk assessment  
+**MCP Servers:** jira
+
+#### executive_briefing_agent
+**File:** `profiles/leadership/agents/executive_briefing_agent.json`  
+**Purpose:** Produces audience-tailored executive summaries for directors, colleagues, and partners  
+**Use for:** Executive briefings, stakeholder updates, partner communications  
+**MCP Servers:** jira, confluence, mywiki
+
+---
+
 ## Other IDEs
 
 The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
 
 | IDE | Format | Setup |
 |-----|--------|-------|
-| **Cursor** | `.mdc` rule files + shared MCP | [Cursor Setup](docs/CURSOR_SETUP.md) |
+| **Cursor** | `.mdc` rule files + shared MCP | [Cursor Setup](docs/getting-started/CURSOR_SETUP.md) |
 | **Amazon Q** | Plain `.md` rule files | [Amazon Q README](.amazonq-templates/README.md) |
 | **Kite** | Desktop GUI over Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
 
@@ -678,7 +735,7 @@ Reusable hook scripts in `.kiro/hooks/` provide guardrails and context injection
 | `warn-destructive.sh` | postToolUse (execute_bash) | dev-core orchestrator | Warns on `rm -rf`, `DROP TABLE`, `--force` |
 | `lint-on-write.sh` | postToolUse (fs_write) | 6 write agents | Auto-runs linter/formatter after file writes |
 
-Full reference: [Hooks & Powers](docs/HOOKS_AND_POWERS.md)
+Full reference: [Hooks & Powers](docs/reference/HOOKS_AND_POWERS.md)
 
 ---
 
@@ -688,11 +745,25 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 
 | Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
 |---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
-| **dev** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **dev** | code_review_agent | ✅ | | | ✅ | | |
-| **dev** | planner_agent | ✅ | ✅ | ✅ | | | |
-| **dev** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
+| **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
+| **dev-core** | code_review_agent | ✅ | | | ✅ | | |
+| **dev-core** | planner_agent | ✅ | ✅ | ✅ | | | |
+| **dev-core** | technical_writer_agent | | ✅ | ✅ | ✅ | | |
+| **dev-web** | backend | | | | | | |
+| **dev-web** | webapi | | | | | | |
+| **dev-web** | ui | | | | | | Figma |
+| **dev-web** | ux_specialist_agent | | | | | | Figma |
+| **dev-web** | astro | | | | | | Figma |
+| **dev-python** | python | | | | | | |
+| **dev-infra** | terraform | | | | | | |
+| **dev-dotnet** | dotnet_senior_agent | | | | | | |
+| **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
+| **dev-dotnet** | dotnet_serverless_agent | | | | | | |
+| **dev-php** | php_agent | | | | | | |
+| **dev-mobile** | flutter | | | | | | |
+| **dev-mobile** | android_native | | | | | | |
+| **dev-mobile** | ios_native | | | | | | |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
@@ -700,7 +771,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **qa** | qa_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **qa** | test_planner_agent | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **qa** | defect_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
-| **qa** | test_automation_agent | | | | |  | |
+| **qa** | test_automation_agent | | | | | | |
 | **ops** | ops_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | ai_metrics_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ops** | code_quality_agent | | | | | | SonarQube |
@@ -711,6 +782,11 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **pm** | retro_agent | ✅ | ✅ | ✅ | | | |
 | **pm** | risk_tracker_agent | ✅ | ✅ | ✅ | | | |
 | **pm** | delivery_reporter_agent | ✅ | ✅ | ✅ | | | |
+| **sustainment** | sustainment_orchestrator_agent | ✅ | ✅ | ✅ | | | AppDynamics, ServiceNow, Splunk, Compass |
+| **sustainment** | incident_triage_agent | | | | | | |
+| **sustainment** | rca_agent | | | | | | |
+| **sustainment** | stability_validator_agent | | | | | | |
+| **sustainment** | gsm_analyst_agent | | | | | | |
 
 ---
 
@@ -747,6 +823,10 @@ Shared context loaded via agent `resources`:
 | `dotnet_aws_platform_guidance.md` | dotnet_senior, dotnet_self_host_api, dotnet_serverless |
 | `dotnet_self_host_api_guidance.md` | dotnet_senior, dotnet_self_host_api |
 | `dotnet_serverless_guidance.md` | dotnet_senior, dotnet_serverless |
+| `php_zend_conventions.md` | php_agent |
+| `php_testing_strategy.md` | php_agent |
+| `php_legacy_migration.md` | php_agent |
+| `php_review_checklist.md` | php_agent |
 
 ---
 
@@ -773,6 +853,9 @@ kiro-cli chat --agent terraform                 # Terraform/IaC
 kiro-cli chat --agent dotnet_senior_agent       # .NET senior persona
 kiro-cli chat --agent dotnet_self_host_api_agent  # ASP.NET Core APIs
 kiro-cli chat --agent dotnet_serverless_agent     # .NET serverless
+
+# Dev PHP
+kiro-cli chat --agent php_agent                   # PHP/Zend Framework
 
 # Dev Mobile
 kiro-cli chat --agent flutter                   # Flutter mobile
@@ -811,6 +894,13 @@ kiro-cli chat --agent standup_agent             # Standup summaries
 kiro-cli chat --agent retro_agent               # Retrospectives
 kiro-cli chat --agent risk_tracker_agent        # Risk tracking
 kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
+
+# Leadership
+kiro-cli chat --agent leadership_orchestrator_agent  # Cross-team orchestrator
+kiro-cli chat --agent portfolio_analyst_agent         # Multi-team Jira analytics
+kiro-cli chat --agent quarterly_reporter_agent        # Quarterly business reports
+kiro-cli chat --agent cross_team_coordinator_agent    # Dependency tracking
+kiro-cli chat --agent executive_briefing_agent        # Executive summaries
 ```
 
 ---
@@ -818,7 +908,7 @@ kiro-cli chat --agent delivery_reporter_agent   # Delivery reports
 ## Installation
 
 ```bash
-koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra)
+koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev ba qa ops pm       # Install all profiles
@@ -827,5 +917,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 58 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6)  
-**Last Updated:** April 3, 2026
+**Total Agents:** 64 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6, leadership: 5)  
+**Last Updated:** April 18, 2026

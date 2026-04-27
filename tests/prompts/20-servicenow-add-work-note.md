@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the add_work_note tool exists and accepts parameters incidentNumber and workNote. Do NOT actually add a work note. Instead, confirm the tool is callable by checking its schema/availability only.

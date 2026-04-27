@@ -1,0 +1,1 @@
+Using the servicenow MCP, verify the update_incident tool exists and accepts parameters incidentNumber and fieldsJson. Do NOT actually update any incident. Instead, confirm the tool is callable by checking its schema/availability only. Also verify that passing invalid JSON like "not valid json" as fieldsJson returns a clear error message.

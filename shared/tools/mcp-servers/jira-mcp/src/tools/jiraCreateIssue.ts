@@ -54,6 +54,10 @@ export const jiraCreateIssueSchema = {
                 description:
                     "Sprint ID to assign the issue to (optional)",
             },
+            storyPoints: {
+                type: "number",
+                description: "Story points estimate",
+            },
             customFields: {
                 type: "object",
                 description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`,
@@ -80,6 +84,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             components,
             labels,
             sprint,
+            storyPoints,
             customFields,
             outputDir,
         } = args as {
@@ -92,6 +97,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             components?: string[];
             labels?: string[];
             sprint?: string;
+            storyPoints?: number;
             customFields?: Record<string, unknown>;
             outputDir?: string;
         };
@@ -107,6 +113,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             components,
             labels,
             sprint,
+            storyPoints,
             customFields,
         );
 
@@ -171,7 +178,7 @@ ${ticket.fields.description || "No description provided"}`;
                     type: "text",
                     text: `${summaryText}
 
-**Issue URL:** https://myjira.disney.com/browse/${createResponse.key}${savedInfo}`,
+**Issue URL:** ${apiClient.auth.getBaseUrl()}/browse/${createResponse.key}${savedInfo}`,
                 },
             ],
         };

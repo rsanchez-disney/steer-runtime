@@ -7,16 +7,28 @@ export class QtestApiClient {
 
   constructor() {
     this.baseUrl = process.env.QTEST_BASE_URL || "https://qtest.disney.com";
-    this.token = process.env.QTEST_BEARER_TOKEN!;
+    const token = process.env.QTEST_BEARER_TOKEN ?? "";
+    if (!token || !token.trim() || token.trim() !== token) {
+      throw new Error(
+        "QTEST_BEARER_TOKEN is missing or contains leading/trailing whitespace. " +
+                "Set QTEST_BEARER_TOKEN (or QTEST_TOKEN) in ~/.kiro/env.vars or your .env file.",
+      );
+    }
+    this.token = token;
   }
 
   private static readonly MAX_RETRIES = 3;
+  private static readonly REQUEST_TIMEOUT_MS = 30_000;
 
   async request<T>(method: string, path: string, body?: any): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     let response: Response | undefined;
+    let lastError: Error | undefined;
 
     for (let attempt = 0; attempt <= QtestApiClient.MAX_RETRIES; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), QtestApiClient.REQUEST_TIMEOUT_MS);
+
       try {
         response = await fetch(url, {
           method,
@@ -25,26 +37,45 @@ export class QtestApiClient {
             "Content-Type": "application/json",
           },
           body: body ? JSON.stringify(body) : undefined,
+          signal: controller.signal,
         });
       } catch (error) {
+        clearTimeout(timer);
+        if (error instanceof DOMException && error.name === "AbortError") {
+          throw new QtestApiError(0, `Request timed out after ${QtestApiClient.REQUEST_TIMEOUT_MS}ms`, url);
+        }
         if (error instanceof TypeError) {
           throw new QtestApiError(0, error.message, url);
         }
         throw error;
+      } finally {
+        clearTimeout(timer);
       }
 
-      if (response.status !== 429 || attempt === QtestApiClient.MAX_RETRIES) break;
+      // Retry on 429 (rate limit) and 502/503/504 (transient server errors)
+      const retryable = response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504;
+      if (!retryable || attempt === QtestApiClient.MAX_RETRIES) break;
+
+      const label = response.status === 429 ? "Rate limited" : `Server error ${response.status}`;
       const delay = Math.pow(2, attempt) * 1000;
-      console.error(`[qtest-mcp] Rate limited (429), retrying in ${delay}ms (attempt ${attempt + 1}/${QtestApiClient.MAX_RETRIES})`);
+      console.error(`[qtest-mcp] ${label}, retrying in ${delay}ms (attempt ${attempt + 1}/${QtestApiClient.MAX_RETRIES})`);
+      lastError = new QtestApiError(response.status, await response.text(), url);
       await new Promise(r => setTimeout(r, delay));
     }
 
-    if (!response!.ok) {
-      const errorBody = await response!.text();
-      throw new QtestApiError(response!.status, errorBody, url);
+    if (!response) {
+      throw lastError ?? new QtestApiError(0, "No response received after retries", url);
     }
 
-    return response!.json() as Promise<T>;
+    if (!response.ok) {
+      const errorBody = await response.text();
+      const suffix = response.status === 429 ? ` (after ${QtestApiClient.MAX_RETRIES} retries)` : "";
+      throw new QtestApiError(response.status, errorBody + suffix, url);
+    }
+
+    const text = await response.text();
+    if (!text) return undefined as unknown as T;
+    return JSON.parse(text) as T;
   }
 
   async get<T>(path: string): Promise<T> {
@@ -75,7 +106,7 @@ export function resolveProjectId(argsProjectId?: number): number {
   }
   throw new Error(
     "No projectId provided and QTEST_PROJECT_ID is not configured. " +
-    "Pass projectId as a parameter or set QTEST_PROJECT_ID in your .env file.",
+        "Pass projectId as a parameter or set QTEST_PROJECT_ID in ~/.kiro/env.vars.",
   );
 }
 
@@ -126,6 +157,11 @@ interface ModuleCacheEntry {
 
 const moduleCache = new Map<number, ModuleCacheEntry>();
 
+/** Exported for testing — clears the module cache. */
+export function clearModuleCache(): void {
+  moduleCache.clear();
+}
+
 function buildModuleIndex(modules: any[], index: Map<string, number>): void {
   for (const mod of modules) {
     if (mod.pid) index.set(mod.pid.toUpperCase(), mod.id);
@@ -167,6 +203,9 @@ export async function resolveModulePid(
  * Resolve an RQ-#### PID to a numeric requirement ID.
  * Uses the comments endpoint which accepts PID format, then extracts the
  * numeric ID from the self/requirement link in the response.
+ *
+ * Re-throws auth/permission errors so callers get accurate diagnostics
+ * instead of a misleading "not found".
  */
 export async function resolveRequirementPid(
   client: QtestApiClient,
@@ -193,7 +232,11 @@ export async function resolveRequirementPid(
       if (match) return Number(match[1]);
     }
     return null;
-  } catch {
+  } catch (error) {
+    // Re-throw auth/permission/network errors — only swallow 404
+    if (error instanceof QtestApiError && error.statusCode !== 404) {
+      throw error;
+    }
     return null;
   }
 }
