@@ -7,7 +7,8 @@
     "@mywiki/*",
     "@jira/*",
     "fs_read",
-    "thinking"
+    "thinking",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
@@ -16,7 +17,8 @@
   "allowedTools": [
     "@confluence/*",
     "@mywiki/*",
-    "@jira/*"
+    "@jira/*",
+    "@mermaid/*"
   ],
   "includeMcpJson": true
 }

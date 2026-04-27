@@ -5836,6 +5836,7 @@ var JiraApiClient = class _JiraApiClient {
       "description",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "created",
       "updated",
@@ -5925,6 +5926,7 @@ var JiraApiClient = class _JiraApiClient {
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "issuetype",
       "project",
@@ -5951,7 +5953,7 @@ var JiraApiClient = class _JiraApiClient {
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields) {
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields) {
     const fields = {
       project: { key: projectKey },
       summary,
@@ -5962,6 +5964,9 @@ var JiraApiClient = class _JiraApiClient {
     }
     if (assignee) {
       fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
+    }
+    if (reporter) {
+      fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
     }
     if (epicLink) {
       const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
@@ -6112,7 +6117,7 @@ var JiraApiClient = class _JiraApiClient {
     const params = new URLSearchParams({
       startAt: startAt.toString(),
       maxResults: maxResults.toString(),
-      fields: "summary,status,assignee,priority,issuetype,project,created,updated"
+      fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004"
     });
     const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
       headers: {
@@ -6434,6 +6439,7 @@ var JiraApiClient = class _JiraApiClient {
 };
 
 // build/utils/formatting.js
+init_customFields();
 function formatDate(dateString) {
   if (!dateString)
     return "Unknown";
@@ -6451,6 +6457,9 @@ function buildFormattedSummary(ticket, requestedFields) {
   }
   if (requestedFields.includes("assignee")) {
     summary.push(`**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`);
+  }
+  if (requestedFields.includes("reporter")) {
+    summary.push(`**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}`);
   }
   if (requestedFields.includes("priority") && ticket.fields.priority) {
     summary.push(`**Priority:** ${ticket.fields.priority.name}`);
@@ -6479,6 +6488,12 @@ function buildFormattedSummary(ticket, requestedFields) {
   }
   if (requestedFields.includes("fixVersions") && ticket.fields.fixVersions?.length) {
     summary.push(`**Fix Versions:** ${ticket.fields.fixVersions.map((v) => v.name).join(", ")}`);
+  }
+  if (requestedFields.includes("storyPoints")) {
+    const sp = ticket.fields[CUSTOM_FIELD_ALIASES.storyPoints];
+    if (sp !== null && sp !== void 0) {
+      summary.push(`**Story Points:** ${sp}`);
+    }
   }
   if (requestedFields.includes("issuetype") && ticket.fields.issuetype) {
     summary.push(`**Issue Type:** ${ticket.fields.issuetype.name}`);
@@ -6564,6 +6579,7 @@ var jiraGetIssueSchema = {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "updated",
@@ -6571,6 +6587,7 @@ var jiraGetIssueSchema = {
             "comment",
             "labels",
             "components",
+            "storyPoints",
             "customfield_10003"
           ]
         },
@@ -6592,14 +6609,17 @@ async function handleJiraGetIssue(args) {
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "created",
       "description",
-      "comment"
+      "comment",
+      "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
+    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10004" : f);
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
-    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
+    const allFields = [.../* @__PURE__ */ new Set([...expandedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
     const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
     const summary = buildFormattedSummary(ticket, requestedFields);
@@ -6686,6 +6706,14 @@ var jiraUpdateIssueSchema = {
         type: "string",
         description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
       },
+      reporter: {
+        type: "string",
+        description: "Username of the reporter"
+      },
+      storyPoints: {
+        type: "number",
+        description: "Story points estimate"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
@@ -6696,7 +6724,7 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, reporter, storyPoints, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
     if (summary)
@@ -6716,8 +6744,19 @@ async function handleJiraUpdateIssue(args) {
     if (priority) {
       updates.priority = { name: priority };
     }
+    if (reporter) {
+      updates.reporter = apiClient.auth.isCloud() ? { accountId: reporter } : { name: reporter };
+    }
+    if (storyPoints !== void 0) {
+      const spResolved = resolveCustomFieldIds(["storyPoints"]);
+      if (spResolved.length > 0) {
+        updates[spResolved[0]] = storyPoints;
+      }
+    }
     if (customFields) {
       for (const [key, value] of Object.entries(customFields)) {
+        if (storyPoints !== void 0 && key.toLowerCase() === "storypoints")
+          continue;
         const resolved = resolveCustomFieldIds([key]);
         if (resolved.length > 0) {
           updates[resolved[0]] = value;
@@ -6757,7 +6796,9 @@ async function handleJiraUpdateIssue(args) {
 
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Story Points:** ${ticket.fields[resolveCustomFieldIds(["storyPoints"])[0]] ?? "Not set"}
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
@@ -7051,6 +7092,7 @@ async function handleJiraSearchIssues(args) {
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
 - Project: ${issue.fields.project?.key || "Unknown"}`;
@@ -7123,6 +7165,10 @@ var jiraCreateIssueSchema = {
         type: "string",
         description: "Username of assignee (optional)"
       },
+      reporter: {
+        type: "string",
+        description: "Username of reporter (optional)"
+      },
       epicLink: {
         type: "string",
         description: 'Epic ticket ID to link to (e.g., "SEWEB-46018") - NOTE: Epic Link field ID needs configuration per JIRA instance (optional)'
@@ -7159,9 +7205,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields, outputDir } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, reporter, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields);
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
@@ -7170,7 +7216,9 @@ async function handleJiraCreateIssue(args) {
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Type:** ${issueType}
+**Story Points:** ${storyPoints !== void 0 ? storyPoints : "Not set"}
 **Project:** ${projectKey}`;
     if (epicLink) {
       summaryText += `
@@ -7607,6 +7655,7 @@ async function handleJiraGetSprints(args) {
 }
 
 // build/tools/jiraGetSprintIssues.js
+init_customFields();
 var jiraGetSprintIssuesSchema = {
   name: "jira_get_sprint_issues",
   description: "Get issues in a specific JIRA sprint",
@@ -7645,11 +7694,14 @@ async function handleJiraGetSprintIssues(args) {
 
 `;
     sprintIssues.issues.forEach((issue, index) => {
+      const sp = issue.fields[CUSTOM_FIELD_ALIASES.storyPoints];
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
+- Story Points: ${sp !== null && sp !== void 0 ? sp : "Not set"}
 - Project: ${issue.fields.project?.key || "Unknown"}
 
 `;

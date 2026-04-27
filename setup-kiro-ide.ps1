@@ -198,11 +198,11 @@ function Install-McpServers {
     }
 
     $mcpConfig.mcpServers["bruno"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\bruno-mcp\dist\index.cjs") }
-    $mcpConfig.mcpServers["confluence"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://confluence.disney.com" } }
+    $mcpConfig.mcpServers["confluence-confluence"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "confluence_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://confluence.disney.com" } }
     $mcpConfig.mcpServers["github"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\github-mcp\dist\index.cjs"); env = [ordered]@{ GITHUB_HOST = "github.disney.com"; GITHUB_TOKEN = ""; GITHUB_API_PATH = "/api/v3" } }
     $mcpConfig.mcpServers["jira"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\jira-mcp\dist\index.cjs"); env = [ordered]@{ JIRA_PAT = "" } }
     $mcpConfig.mcpServers["mermaid"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs") }
-    $mcpConfig.mcpServers["mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
+    $mcpConfig.mcpServers["confluence-mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "mywiki_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
 
     $mcpJsonPath = Join-Path $KiroHome "settings\mcp.json"
     New-Item -ItemType Directory -Force -Path (Split-Path $mcpJsonPath) | Out-Null

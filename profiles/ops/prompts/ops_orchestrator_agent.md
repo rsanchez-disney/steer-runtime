@@ -111,6 +111,17 @@ You have access to Compass tools via MCP:
 2. Present consolidated results clearly
 3. Flag any errors from sub-agents
 
+### 🔒 Protected Files
+
+These files control agent-to-MCP delegation and are **known working**. Any modification requires explicit user approval with an isolated diff review.
+
+| File | What it controls |
+|---|---|
+| `profiles/ops/agents/ops_orchestrator_agent.json` | Ops orchestrator tool permissions |
+| `profiles/ops/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+
 
 ### Confluence vs MyWiki
 

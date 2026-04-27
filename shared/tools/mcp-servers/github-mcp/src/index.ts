@@ -61,6 +61,22 @@ import {
     githubCreateReviewSchema,
     handleGithubCreateReview,
 } from "./tools/githubCreateReview.js";
+import {
+    githubGetProjectSchema,
+    handleGithubGetProject,
+} from "./tools/githubGetProject.js";
+import {
+    githubListProjectItemsSchema,
+    handleGithubListProjectItems,
+} from "./tools/githubListProjectItems.js";
+import {
+    githubCreateProjectItemSchema,
+    handleGithubCreateProjectItem,
+} from "./tools/githubCreateProjectItem.js";
+import {
+    githubUpdateProjectItemFieldSchema,
+    handleGithubUpdateProjectItemField,
+} from "./tools/githubUpdateProjectItemField.js";
 
 // Load environment variables from .env file in the script's directory
 config({ path: path.join(scriptDir, "..", ".env") });
@@ -78,6 +94,10 @@ const allSchemas = [
     githubGetFileSchema,
     githubGetFilesSchema,
     githubCreateReviewSchema,
+    githubGetProjectSchema,
+    githubListProjectItemsSchema,
+    githubCreateProjectItemSchema,
+    githubUpdateProjectItemFieldSchema,
 ];
 
 // Build schemas with prefixed names
@@ -99,6 +119,10 @@ const baseHandlers: Record<string, (args: any) => Promise<any>> = {
     github_get_file: handleGithubGetFile,
     github_get_files: handleGithubGetFiles,
     github_create_review: handleGithubCreateReview,
+    github_get_project: handleGithubGetProject,
+    github_list_project_items: handleGithubListProjectItems,
+    github_create_project_item: handleGithubCreateProjectItem,
+    github_update_project_item_field: handleGithubUpdateProjectItemField,
 };
 
 // Build handler map with prefixed keys

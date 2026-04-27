@@ -2,6 +2,15 @@
   "name": "adr_writer_agent",
   "description": "Produces Architecture Decision Records with context, alternatives, and consequences",
   "prompt": "adr_writer_agent.md",
-  "tools": ["code", "grep", "fs_read", "fs_write"],
-  "resources": ["file://.kiro/context/golden_rules.md"]
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "fs_write",
+    "@mermaid/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "includeMcpJson": true
 }
