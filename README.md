@@ -146,6 +146,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | All agents with tools and MCP coverage | [AGENTS.md](AGENTS.md) |
 | Full command reference and architecture | [Reference](docs/reference/REFERENCE.md) |
 | MCP servers, tokens, env vars | [MCP Setup](docs/reference/MCP_SETUP.md) |
+| MCP tools, capabilities, prompt examples | [MCP Reference](docs/reference/MCP_REFERENCE.md) |
 | Team workspaces | [Workspaces](docs/reference/TEAM_WORKSPACES.md) |
 | Windows setup details | [Windows](docs/getting-started/WINDOWS_SETUP.md) |
 | macOS/Linux setup details | [Setup](docs/getting-started/SETUP.md) |
