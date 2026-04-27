@@ -8,11 +8,13 @@
     "fs_read",
     "execute_bash",
     "thinking",
-    "knowledge"
+    "knowledge",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/steering/**/*.md"
-  ]
+  ],
+  "includeMcpJson": true
 }

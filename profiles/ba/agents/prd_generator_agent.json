@@ -8,12 +8,16 @@
     "@github/*",
     "@jira/*",
     "fs_read",
-    "fs_write"
+    "fs_write",
+    "@sharepoint/*",
+    "@mermaid/*"
   ],
   "allowedTools": [
     "@confluence/*",
     "@github/*",
-    "@jira/*"
+    "@jira/*",
+    "@sharepoint/*",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

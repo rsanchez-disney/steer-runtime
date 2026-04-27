@@ -9,13 +9,15 @@
     "@jira/*",
     "fs_read",
     "grep",
-    "knowledge"
+    "knowledge",
+    "@sharepoint/*"
   ],
   "allowedTools": [
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
-    "@jira/*"
+    "@jira/*",
+    "@sharepoint/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

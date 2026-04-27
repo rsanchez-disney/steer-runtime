@@ -68,6 +68,7 @@ precompute_mcp_paths() {
     _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _p_qtest="$(to_win_path "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs")"
+    _p_sharepoint="$(to_win_path "$HOME/.kiro/tools/mcp-servers/sharepoint-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then
         _node_cmd="wsl.exe -d $_wsl_distro node"
@@ -1064,6 +1065,7 @@ p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
+p_sharepoint = r'$_p_sharepoint'
 
 def read_tok(key):
     try:
@@ -1153,6 +1155,21 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [p_bruno]
 }
+
+# SharePoint — conditional on Azure AD credentials
+sp_tenant = read_tok('SHAREPOINT_TENANT_ID')
+sp_client = read_tok('SHAREPOINT_CLIENT_ID')
+sp_secret = read_tok('SHAREPOINT_CLIENT_SECRET')
+sp_site   = read_tok('SHAREPOINT_SITE_URL')
+if sp_tenant and sp_client and sp_secret:
+    sp_env = {'SHAREPOINT_TENANT_ID': sp_tenant, 'SHAREPOINT_CLIENT_ID': sp_client, 'SHAREPOINT_CLIENT_SECRET': sp_secret}
+    if sp_site:
+        sp_env['SHAREPOINT_SITE_URL'] = sp_site
+    mcp['mcpServers']['sharepoint'] = {
+        'command': 'node',
+        'args': [p_sharepoint],
+        'env': sp_env
+    }
 
 # NOTE: Splunk, AppDynamics, and ServiceNow MCP registration below is handled
 # automatically by Koda (v0.4.66+) via GenerateMcpJson. These blocks remain
@@ -2040,6 +2057,7 @@ p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
+p_sharepoint = r'$_p_sharepoint'
 
 def read_tok(key):
     try:
@@ -2128,6 +2146,21 @@ mcp['mcpServers']['bruno'] = {
     'command': 'node',
     'args': [p_bruno]
 }
+
+# SharePoint — conditional on Azure AD credentials
+sp_tenant = read_tok('SHAREPOINT_TENANT_ID')
+sp_client = read_tok('SHAREPOINT_CLIENT_ID')
+sp_secret = read_tok('SHAREPOINT_CLIENT_SECRET')
+sp_site   = read_tok('SHAREPOINT_SITE_URL')
+if sp_tenant and sp_client and sp_secret:
+    sp_env = {'SHAREPOINT_TENANT_ID': sp_tenant, 'SHAREPOINT_CLIENT_ID': sp_client, 'SHAREPOINT_CLIENT_SECRET': sp_secret}
+    if sp_site:
+        sp_env['SHAREPOINT_SITE_URL'] = sp_site
+    mcp['mcpServers']['sharepoint'] = {
+        'command': 'node',
+        'args': [p_sharepoint],
+        'env': sp_env
+    }
 
 # NOTE: See comment at line ~1089 — these blocks are for non-Koda installs only.
 
