@@ -28,6 +28,9 @@ export const CUSTOM_FIELD_ALIASES: Record<string, string> = {
     // ── Studio / Programme ───────────────────────────
     studio: "customfield_20001",
 
+    // ── Test / QA ────────────────────────────────────
+    testDetails: "customfield_20104",
+
     // Add more aliases below as needed:
     // myAlias: "customfield_XXXXX",
 };
