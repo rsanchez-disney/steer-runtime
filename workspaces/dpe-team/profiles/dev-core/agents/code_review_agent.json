@@ -1,0 +1,25 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews DPE code for security, quality, performance, calculator correctness, and cache safety",
+  "prompt": "prompts/code_review_agent.md",
+  "tools": [
+    "@github/*",
+    "@jira/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/rules/dpe-conventions.md",
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/performance_engineering_guide.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true
+}
