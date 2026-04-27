@@ -2,6 +2,15 @@
   "name": "architecture_spec_agent",
   "description": "Designs target architecture with component diagrams, integration patterns, and deployment topology",
   "prompt": "architecture_spec_agent.md",
-  "tools": ["code", "grep", "fs_read", "fs_write"],
-  "resources": ["file://.kiro/context/golden_rules.md"]
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "fs_write",
+    "@mermaid/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "includeMcpJson": true
 }

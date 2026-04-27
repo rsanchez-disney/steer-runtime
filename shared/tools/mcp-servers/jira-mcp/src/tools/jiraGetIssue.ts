@@ -32,12 +32,15 @@ export const jiraGetIssueSchema = {
                         "summary",
                         "status",
                         "assignee",
+                        "reporter",
                         "priority",
                         "created",
                         "updated",
                         "description",
+                        "comment",
                         "labels",
                         "components",
+                        "storyPoints",
                         "customfield_10003",
                     ],
                 },
@@ -67,17 +70,25 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "description",
+            "comment",
+            "storyPoints",
         ];
         const requestedFields = fields || defaultFields;
+
+        // Resolve storyPoints alias in requested fields
+        const expandedFields = requestedFields.map(f =>
+            f === "storyPoints" ? "customfield_10004" : f
+        );
 
         // Resolve custom field aliases → real IDs and merge into the field list
         const resolvedCustomFields = customFields
             ? resolveCustomFieldIds(customFields)
             : [];
-        const allFields = [...new Set([...requestedFields, ...resolvedCustomFields])];
+        const allFields = [...new Set([...expandedFields, ...resolvedCustomFields])];
 
         const apiClient = new JiraApiClient();
         const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);

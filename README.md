@@ -146,12 +146,14 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | All agents with tools and MCP coverage | [AGENTS.md](AGENTS.md) |
 | Full command reference and architecture | [Reference](docs/reference/REFERENCE.md) |
 | MCP servers, tokens, env vars | [MCP Setup](docs/reference/MCP_SETUP.md) |
+| MCP tools, capabilities, prompt examples | [MCP Reference](docs/reference/MCP_REFERENCE.md) |
 | Team workspaces | [Workspaces](docs/reference/TEAM_WORKSPACES.md) |
 | Windows setup details | [Windows](docs/getting-started/WINDOWS_SETUP.md) |
 | macOS/Linux setup details | [Setup](docs/getting-started/SETUP.md) |
 | Prompt guides | [Dev](docs/profiles/dev/PROMPT_GUIDE.md) · [BA](docs/profiles/ba/BA_PROMPT_GUIDE.md) · [QA](docs/profiles/qa/QA_PROMPT_GUIDE.md) · [Ops](docs/profiles/ops/OPS_PROMPT_GUIDE.md) · [PM](docs/profiles/pm/PM_PROMPT_GUIDE.md) |
 | Kiro IDE / Cursor / Amazon Q | [Cursor](docs/getting-started/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) |
 | Eval framework | [Evals](docs/reference/EVAL_FRAMEWORK.md) |
+| Glossary | [Glossary](docs/reference/GLOSSARY.md) |
 | Roadmap | [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 
 ---
@@ -164,6 +166,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | April 2, 2026 | Q&A Session with OpSheet Team | [Recording](https://drive.google.com/file/d/1dyEmmOJOiPxmi7GgzqWsNBUv7zlhT8t-/view?usp=sharing) |
 | April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
 | April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
+| April 21, 2026 | dse-intl-emtech-usparks - SteerRuntime Sync - AI | [Recording](https://drive.google.com/file/d/1pzJwuvj9exDuUMQ6qQl_K2ol-9BU-vbF/view) |
 
 ---
 

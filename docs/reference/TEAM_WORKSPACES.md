@@ -33,13 +33,13 @@ opsheet-team (parent)              → profiles: [dev-core, qa, ba]
 
 ### Inheritance rules
 
-| Field | Strategy | Example |
-|-------|----------|---------|
-| `profiles` | Additive (union) | parent `[dev-core, qa]` + child `[dev-web]` → `[dev-core, qa, dev-web]` |
-| `rules` | Additive (union) | parent `[conventional_commit]` + child `[flutter-dev]` → both |
-| `context/` | All copied (root-first) | parent's `team_context.md` + child's `vas_context.md` |
-| `description`, `team`, `default_agent`, `jira_prefix` | Child overrides parent | Child value wins if set |
-| `projects` | Child only | Projects are team-specific |
+| Field                                                 | Strategy                | Example                                                                 |
+|-------------------------------------------------------|-------------------------|-------------------------------------------------------------------------|
+| `profiles`                                            | Additive (union)        | parent `[dev-core, qa]` + child `[dev-web]` → `[dev-core, qa, dev-web]` |
+| `rules`                                               | Additive (union)        | parent `[conventional_commit]` + child `[flutter-dev]` → both           |
+| `context/`                                            | All copied (root-first) | parent's `team_context.md` + child's `vas_context.md`                   |
+| `description`, `team`, `default_agent`, `jira_prefix` | Child overrides parent  | Child value wins if set                                                 |
+| `projects`                                            | Child only              | Projects are team-specific                                              |
 
 Chains can go multiple levels deep. Resolution walks bottom-up with cycle detection.
 
@@ -93,19 +93,19 @@ workspaces/
 }
 ```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Workspace identifier (matches directory name) |
-| `extends` | string | Parent workspace name (optional — enables inheritance) |
-| `description` | string | Human-readable description |
-| `team` | string | Team name |
-| `profiles` | string[] | Profiles to install (merged with parent if extends is set) |
-| `default_agent` | string | Suggested starting agent |
-| `projects` | object[] | Repos to initialize with memory banks |
-| `rules` | string[] | Common rules from `common/rules/` (merged with parent) |
-| `enable_tools` | boolean | Enable thinking, todo, knowledge |
-| `jira_prefix` | string | Team's Jira project prefix |
-| `workspace_path` | string | Base path for project repos |
+| Field            | Type     | Description                                                |
+|------------------|----------|------------------------------------------------------------|
+| `name`           | string   | Workspace identifier (matches directory name)              |
+| `extends`        | string   | Parent workspace name (optional — enables inheritance)     |
+| `description`    | string   | Human-readable description                                 |
+| `team`           | string   | Team name                                                  |
+| `profiles`       | string[] | Profiles to install (merged with parent if extends is set) |
+| `default_agent`  | string   | Suggested starting agent                                   |
+| `projects`       | object[] | Repos to initialize with memory banks                      |
+| `rules`          | string[] | Common rules from `common/rules/` (merged with parent)     |
+| `enable_tools`   | boolean  | Enable thinking, todo, knowledge                           |
+| `jira_prefix`    | string   | Team's Jira project prefix                                 |
+| `workspace_path` | string   | Base path for project repos                                |
 
 ---
 
@@ -115,13 +115,13 @@ workspaces/
 
 Launch `koda` and press `w` to open the Workspaces screen.
 
-| Key | Action |
-|-----|--------|
-| `enter` | Apply selected workspace |
-| `e` | Edit selected workspace |
-| `x` | Extend — create a child workspace from selected parent |
-| `n` | Create a new workspace from scratch |
-| `esc` | Back to dashboard |
+| Key     | Action                                                 |
+|---------|--------------------------------------------------------|
+| `enter` | Apply selected workspace                               |
+| `e`     | Edit selected workspace                                |
+| `x`     | Extend — create a child workspace from selected parent |
+| `n`     | Create a new workspace from scratch                    |
+| `esc`   | Back to dashboard                                      |
 
 The TUI shows workspaces in a tree:
 
@@ -243,12 +243,12 @@ koda workspace sync payments-core --push   # push all repos
 
 ## Workspaces vs. Forks
 
-| | Workspace | Fork |
-|---|-----------|------|
-| **Scope** | Team-level config within a repo | Full repo copy |
-| **What it customizes** | Profiles, rules, context, memory banks | Everything |
-| **Where it lives** | `workspaces/<name>/` in any fork | Separate GitHub repo |
-| **Hierarchy** | Supports `extends` for parent-child | N/A |
+|                        | Workspace                              | Fork                 |
+|------------------------|----------------------------------------|----------------------|
+| **Scope**              | Team-level config within a repo        | Full repo copy       |
+| **What it customizes** | Profiles, rules, context, memory banks | Everything           |
+| **Where it lives**     | `workspaces/<name>/` in any fork       | Separate GitHub repo |
+| **Hierarchy**          | Supports `extends` for parent-child    | N/A                  |
 
 A typical setup: each org has a fork of steer-runtime, and within that fork teams have workspaces (with hierarchy) that configure their specific setup.
 

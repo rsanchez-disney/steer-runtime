@@ -1,0 +1,35 @@
+{
+  "name": "time_machine_agent",
+  "description": "Simulates accessing a website at a given date/time by overriding the browser clock via Chrome MCP, enabling testing of date-dependent content",
+  "prompt": "time_machine_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "thinking",
+    "@chrome/*"
+  ],
+  "allowedTools": [
+    "@chrome/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ]
+  }
+}

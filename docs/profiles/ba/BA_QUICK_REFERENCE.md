@@ -6,12 +6,12 @@
 
 ## Agent Selection
 
-| I need to... | Use this agent |
-|--------------|----------------|
-| Define what's in/out of scope | `scope_definer_agent` |
-| Write user stories | `feature_writer_agent` |
-| Review existing requirements | `requirements_analyst_agent` |
-| Do multiple BA tasks | `ba_orchestrator_agent` |
+| I need to...                  | Use this agent               |
+|-------------------------------|------------------------------|
+| Define what's in/out of scope | `scope_definer_agent`        |
+| Write user stories            | `feature_writer_agent`       |
+| Review existing requirements  | `requirements_analyst_agent` |
+| Do multiple BA tasks          | `ba_orchestrator_agent`      |
 
 ---
 
@@ -150,14 +150,14 @@ Update "Feature Overview" page with new requirements
 
 ## Time Estimates
 
-| Task | Time | Agent |
-|------|------|-------|
-| Define scope | 15 min | scope_definer_agent |
-| Create 5-7 stories | 20 min | feature_writer_agent |
-| Review 10 stories | 15 min | requirements_analyst_agent |
-| Epic breakdown | 30 min | ba_orchestrator_agent |
-| Enhance 1 story | 5 min | feature_writer_agent |
-| Gap analysis | 20 min | requirements_analyst_agent |
+| Task               | Time   | Agent                      |
+|--------------------|--------|----------------------------|
+| Define scope       | 15 min | scope_definer_agent        |
+| Create 5-7 stories | 20 min | feature_writer_agent       |
+| Review 10 stories  | 15 min | requirements_analyst_agent |
+| Epic breakdown     | 30 min | ba_orchestrator_agent      |
+| Enhance 1 story    | 5 min  | feature_writer_agent       |
+| Gap analysis       | 20 min | requirements_analyst_agent |
 
 ---
 

@@ -1,3 +1,4 @@
+import { CUSTOM_FIELD_ALIASES } from "./customFields.js";
 import type { JiraTicket } from "./types.js";
 
 export function formatDate(dateString?: string): string {
@@ -23,6 +24,11 @@ export function buildFormattedSummary(
     if (requestedFields.includes("assignee")) {
         summary.push(
             `**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`,
+        );
+    }
+    if (requestedFields.includes("reporter")) {
+        summary.push(
+            `**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}`,
         );
     }
     if (requestedFields.includes("priority") && ticket.fields.priority) {
@@ -70,5 +76,37 @@ export function buildFormattedSummary(
         );
     }
 
-    return summary.join("\n");
+    if (requestedFields.includes("fixVersions") && ticket.fields.fixVersions?.length) {
+        summary.push(`**Fix Versions:** ${ticket.fields.fixVersions.map((v: any) => v.name).join(", ")}`);
+    }
+    if (requestedFields.includes("storyPoints")) {
+        const sp = (ticket.fields as any)[CUSTOM_FIELD_ALIASES.storyPoints];
+        if (sp !== null && sp !== undefined) {
+            summary.push(`**Story Points:** ${sp}`);
+        }
+    }
+    if (requestedFields.includes("issuetype") && ticket.fields.issuetype) {
+        summary.push(`**Issue Type:** ${ticket.fields.issuetype.name}`);
+    }
+    if (requestedFields.includes("parent") && ticket.fields.parent) {
+        summary.push(`**Parent:** ${ticket.fields.parent.key} - ${ticket.fields.parent.fields?.summary || "Unknown"}`);
+    }
+    if (requestedFields.includes("subtasks") && ticket.fields.subtasks?.length) {
+        summary.push("", `**Sub-tasks (${ticket.fields.subtasks.length}):**`);
+        ticket.fields.subtasks.forEach((st: any) => {
+            summary.push(`- ${st.key}: ${st.fields?.summary || "Unknown"} [${st.fields?.status?.name || "Unknown"}]`);
+        });
+    }
+    if (requestedFields.includes("issuelinks") && ticket.fields.issuelinks?.length) {
+        summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
+        ticket.fields.issuelinks.forEach((link: any) => {
+            if (link.outwardIssue) {
+                summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+            }
+            if (link.inwardIssue) {
+                summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+            }
+        });
+    }
+        return summary.join("\n");
 }

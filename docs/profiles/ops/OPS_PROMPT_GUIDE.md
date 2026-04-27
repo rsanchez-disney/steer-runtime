@@ -8,14 +8,14 @@ This guide shows how to use Ops agents in your daily workflow with real-world ex
 
 ## Quick Reference
 
-| Task | Agent | Example Prompt |
-|------|-------|----------------|
-| AI metrics report | `ai_metrics_agent` | "Generate AI metrics report for DPAY-14337" |
-| Update AI fields | `ai_metrics_agent` | "Update AI effort fields for DPAY-14337" |
-| Check ECS tasks | `infra_check_agent` | "How many tasks are running in cart-latest?" |
-| Pipeline status | `deployment_agent` | "Show recent deployments for payment-service" |
-| Code quality | `code_quality_agent` | "Show quality gate status for wdpr-payment-svc" |
-| Complex ops workflow | `ops_orchestrator_agent` | "Full status report for DPAY-14337" |
+| Task                 | Agent                    | Example Prompt                                  |
+|----------------------|--------------------------|-------------------------------------------------|
+| AI metrics report    | `ai_metrics_agent`       | "Generate AI metrics report for DPAY-14337"     |
+| Update AI fields     | `ai_metrics_agent`       | "Update AI effort fields for DPAY-14337"        |
+| Check ECS tasks      | `infra_check_agent`      | "How many tasks are running in cart-latest?"    |
+| Pipeline status      | `deployment_agent`       | "Show recent deployments for payment-service"   |
+| Code quality         | `code_quality_agent`     | "Show quality gate status for wdpr-payment-svc" |
+| Complex ops workflow | `ops_orchestrator_agent` | "Full status report for DPAY-14337"             |
 
 ---
 

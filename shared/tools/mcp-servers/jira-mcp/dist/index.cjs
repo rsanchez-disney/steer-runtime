@@ -5725,11 +5725,15 @@ var DEFAULT_JIRA_URL = "https://myjira.disney.com";
 var JiraAuth = class {
   jiraPat = null;
   jiraUrl = null;
+  jiraEmail = null;
+  loaded = false;
   loadEnv() {
-    if (this.jiraPat)
+    if (this.loaded)
       return;
+    this.loaded = true;
     this.jiraPat = process.env.JIRA_PAT || null;
     this.jiraUrl = process.env.JIRA_URL || null;
+    this.jiraEmail = process.env.JIRA_EMAIL || null;
     if (!this.jiraPat) {
       try {
         const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
@@ -5738,6 +5742,7 @@ var JiraAuth = class {
         (0, import_dotenv.config)({ path: envPath });
         this.jiraPat = process.env.JIRA_PAT || null;
         this.jiraUrl = this.jiraUrl || process.env.JIRA_URL || null;
+        this.jiraEmail = this.jiraEmail || process.env.JIRA_EMAIL || null;
       } catch (e) {
       }
     }
@@ -5752,28 +5757,102 @@ var JiraAuth = class {
     this.loadEnv();
     return (this.jiraUrl || DEFAULT_JIRA_URL).replace(/\/+$/, "");
   }
+  /** Returns true if configured for Jira Cloud (JIRA_EMAIL is set). */
+  isCloud() {
+    this.loadEnv();
+    return !!this.jiraEmail;
+  }
+  /** Returns the correct API version path: /rest/api/3 for Cloud, /rest/api/2 for Server. */
+  apiVersion() {
+    return this.isCloud() ? "3" : "2";
+  }
+  /** Returns raw custom field entries from JIRA_CUSTOM_FIELDS (names or IDs, comma-separated). */
+  getRawCustomFields() {
+    this.loadEnv();
+    const raw = process.env.JIRA_CUSTOM_FIELDS || "";
+    return raw.split(",").map((f) => f.trim()).filter((f) => f.length > 0);
+  }
+  /** Returns the correct Authorization header for Cloud (Basic) or Server (Bearer). */
+  async getAuthHeader() {
+    this.loadEnv();
+    const pat = await this.getJiraPat();
+    if (this.jiraEmail) {
+      return "Basic " + Buffer.from(this.jiraEmail + ":" + pat).toString("base64");
+    }
+    return "Bearer " + pat;
+  }
 };
 
 // build/utils/jiraApi.js
-var JiraApiClient = class {
+function toADF(text) {
+  return {
+    type: "doc",
+    version: 1,
+    content: [{ type: "paragraph", content: [{ type: "text", text }] }]
+  };
+}
+var JiraApiClient = class _JiraApiClient {
   auth = new JiraAuth();
+  static fieldCache = null;
+  /** Resolves custom field names to IDs. Caches the field list on first call. */
+  async resolveCustomFields() {
+    const raw = this.auth.getRawCustomFields();
+    if (raw.length === 0)
+      return [];
+    if (raw.every((f) => f.startsWith("customfield_")))
+      return raw;
+    if (!_JiraApiClient.fieldCache) {
+      try {
+        const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`, { headers: { Authorization: await this.auth.getAuthHeader() } });
+        if (response.ok) {
+          const fields = await response.json();
+          _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
+          for (const f of fields) {
+            _JiraApiClient.fieldCache.set(f.name.toLowerCase(), f.id);
+          }
+        } else {
+          _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
+        }
+      } catch {
+        _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
+      }
+    }
+    return raw.map((entry) => {
+      if (entry.startsWith("customfield_"))
+        return entry;
+      const id = _JiraApiClient.fieldCache.get(entry.toLowerCase());
+      if (id)
+        return id;
+      console.error(`Custom field "${entry}" not found \u2014 skipping`);
+      return "";
+    }).filter((f) => f.length > 0);
+  }
   get baseUrl() {
     return this.auth.getBaseUrl();
   }
   async fetchJiraTicket(ticketId, fields) {
-    const pat = await this.auth.getJiraPat();
     const defaultFields = [
       "summary",
       "description",
       "status",
       "assignee",
+      "reporter",
       "priority",
-      "created"
+      "created",
+      "updated",
+      "comment",
+      "issuetype",
+      "parent",
+      "components",
+      "subtasks",
+      "labels",
+      "issuelinks",
+      "fixVersions"
     ];
-    const requestedFields = fields || defaultFields;
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
+    const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -5785,12 +5864,11 @@ var JiraApiClient = class {
     return result;
   }
   async updateJiraTicket(ticketId, updates) {
-    const pat = await this.auth.getJiraPat();
     console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ fields: updates })
@@ -5803,11 +5881,10 @@ var JiraApiClient = class {
     console.error("JIRA update successful");
   }
   async transitionJiraTicket(ticketId, transitionId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ transition: { id: transitionId } })
@@ -5818,10 +5895,9 @@ var JiraApiClient = class {
     }
   }
   async getJiraTransitions(ticketId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/transitions`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -5831,14 +5907,13 @@ var JiraApiClient = class {
     return await response.json();
   }
   async addJiraComment(ticketId, comment) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}/comment`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/comment`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ body: comment })
+      body: JSON.stringify({ body: this.auth.isCloud() ? toADF(comment) : comment })
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -5847,11 +5922,11 @@ var JiraApiClient = class {
     return await response.json();
   }
   async searchJiraIssues(jql, maxResults = 50, startAt = 0, extraFields = []) {
-    const pat = await this.auth.getJiraPat();
     const baseFields = [
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "issuetype",
       "project",
@@ -5859,10 +5934,10 @@ var JiraApiClient = class {
       "updated"
     ];
     const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
-    const response = await fetch(`${this.baseUrl}/rest/api/2/search`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -5878,21 +5953,34 @@ var JiraApiClient = class {
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields) {
-    const pat = await this.auth.getJiraPat();
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields) {
     const fields = {
       project: { key: projectKey },
       summary,
       issuetype: { name: issueType }
     };
     if (description) {
-      fields.description = description;
+      fields.description = this.auth.isCloud() ? toADF(description) : description;
     }
     if (assignee) {
-      fields.assignee = { name: assignee };
+      fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
+    }
+    if (reporter) {
+      fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
     }
     if (epicLink) {
-      console.error(`Warning: Epic Link "${epicLink}" provided but field ID not configured for this JIRA instance`);
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["epicLink"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = epicLink;
+      }
+    }
+    if (storyPoints !== void 0) {
+      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
+      const resolved = resolveCustomFieldIds2(["storyPoints"]);
+      if (resolved.length > 0) {
+        fields[resolved[0]] = storyPoints;
+      }
     }
     if (components && components.length > 0) {
       fields.components = components.map((name) => ({ name }));
@@ -5917,10 +6005,10 @@ var JiraApiClient = class {
       }
     }
     console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ fields })
@@ -5933,10 +6021,9 @@ var JiraApiClient = class {
     return await response.json();
   }
   async getJiraProjects() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/project`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -5947,10 +6034,9 @@ var JiraApiClient = class {
     return await response.json();
   }
   async getJiraIssueTypes() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issuetype`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issuetype`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -5961,7 +6047,6 @@ var JiraApiClient = class {
     return await response.json();
   }
   async getJiraBoards(projectKey, boardType, name, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
     const params = new URLSearchParams({
       startAt: startAt.toString(),
       maxResults: maxResults.toString()
@@ -5974,7 +6059,7 @@ var JiraApiClient = class {
       params.append("name", name);
     const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board?${params}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -5985,7 +6070,6 @@ var JiraApiClient = class {
     return await response.json();
   }
   async getJiraSprints(boardId, state, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
     const params = new URLSearchParams({
       startAt: startAt.toString(),
       maxResults: maxResults.toString()
@@ -5994,7 +6078,7 @@ var JiraApiClient = class {
       params.append("state", state);
     const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6005,10 +6089,9 @@ var JiraApiClient = class {
     return await response.json();
   }
   async getJiraAttachments(ticketId) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`${this.baseUrl}/rest/api/2/issue/${ticketId}?fields=attachment`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=attachment`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6019,10 +6102,9 @@ var JiraApiClient = class {
     return result.fields?.attachment || [];
   }
   async downloadAttachment(url) {
-    const pat = await this.auth.getJiraPat();
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`
+        Authorization: await this.auth.getAuthHeader()
       }
     });
     if (!response.ok) {
@@ -6032,15 +6114,14 @@ var JiraApiClient = class {
     return Buffer.from(arrayBuffer);
   }
   async getJiraSprintIssues(sprintId, startAt = 0, maxResults = 50) {
-    const pat = await this.auth.getJiraPat();
     const params = new URLSearchParams({
       startAt: startAt.toString(),
       maxResults: maxResults.toString(),
-      fields: "summary,status,assignee,priority,issuetype,project,created,updated"
+      fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004"
     });
     const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6053,15 +6134,20 @@ var JiraApiClient = class {
   // ==========================================
   // XRay REST API Methods
   // ==========================================
+  assertXRayServer() {
+    if (this.auth.isCloud()) {
+      throw new Error("XRay tools are not supported on Jira Cloud. XRay Cloud uses a different API (xray.cloud.getxray.app).");
+    }
+  }
   /**
    * Get all test steps for a Test issue
    * GET /rest/raven/2.0/api/test/{testKey}/step
    */
   async getXrayTestSteps(testKey) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6076,10 +6162,10 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/step/{stepId}
    */
   async getXrayTestStep(testKey, stepId) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6094,7 +6180,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testexec/{testExecKey}/test
    */
   async getXrayTestExecTests(testExecKey, detailed = false, page, limit) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (detailed)
       params.append("detailed", "true");
@@ -6106,7 +6192,7 @@ var JiraApiClient = class {
     const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6121,10 +6207,10 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/precondition
    */
   async getXrayTestPreConditions(testKey) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6139,10 +6225,10 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testset
    */
   async getXrayTestSets(testKey) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6157,7 +6243,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testexecution
    */
   async getXrayTestExecutions(testKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6167,7 +6253,7 @@ var JiraApiClient = class {
     const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6182,10 +6268,10 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/test/{testKey}/testplan
    */
   async getXrayTestPlans(testKey) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6200,7 +6286,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testplan/{testPlanKey}/test
    */
   async getXrayTestPlanTests(testPlanKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6210,7 +6296,7 @@ var JiraApiClient = class {
     const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6225,7 +6311,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testset/{testSetKey}/test
    */
   async getXrayTestSetTests(testSetKey, page, limit) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (page !== void 0)
       params.append("page", page.toString());
@@ -6235,7 +6321,7 @@ var JiraApiClient = class {
     const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6250,7 +6336,7 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/testruns
    */
   async getXrayTestRuns(testExecKey, testKey, testPlanKey, testEnvironments, page, limit) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const params = new URLSearchParams();
     if (testExecKey)
       params.append("testExecKey", testExecKey);
@@ -6268,7 +6354,7 @@ var JiraApiClient = class {
     const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6283,10 +6369,10 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/settings/teststatuses
    */
   async getXrayTestStatuses() {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6301,10 +6387,11 @@ var JiraApiClient = class {
    * Combines multiple XRay API calls into one comprehensive response
    */
   async getXrayTestCaseFull(testKey) {
-    const pat = await this.auth.getJiraPat();
-    const issueResponse = await fetch(`${this.baseUrl}/rest/api/2/issue/${testKey}`, {
+    this.assertXRayServer();
+    this.assertXRayServer();
+    const issueResponse = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6335,10 +6422,11 @@ var JiraApiClient = class {
    * GET /rest/raven/2.0/api/precondition/{preConditionKey}/test
    */
   async getXrayPreConditionTests(preConditionKey) {
-    const pat = await this.auth.getJiraPat();
+    this.assertXRayServer();
+    this.assertXRayServer();
     const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6351,6 +6439,7 @@ var JiraApiClient = class {
 };
 
 // build/utils/formatting.js
+init_customFields();
 function formatDate(dateString) {
   if (!dateString)
     return "Unknown";
@@ -6368,6 +6457,9 @@ function buildFormattedSummary(ticket, requestedFields) {
   }
   if (requestedFields.includes("assignee")) {
     summary.push(`**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`);
+  }
+  if (requestedFields.includes("reporter")) {
+    summary.push(`**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}`);
   }
   if (requestedFields.includes("priority") && ticket.fields.priority) {
     summary.push(`**Priority:** ${ticket.fields.priority.name}`);
@@ -6392,6 +6484,38 @@ function buildFormattedSummary(ticket, requestedFields) {
     summary.push("", `**Comments (${ticket.fields.comment.comments.length}):**`);
     ticket.fields.comment.comments.forEach((comment, index) => {
       summary.push("", `**Comment ${index + 1}** by ${comment.author?.displayName || "Unknown"} on ${formatDate(comment.created)}:`, comment.body || "(no content)");
+    });
+  }
+  if (requestedFields.includes("fixVersions") && ticket.fields.fixVersions?.length) {
+    summary.push(`**Fix Versions:** ${ticket.fields.fixVersions.map((v) => v.name).join(", ")}`);
+  }
+  if (requestedFields.includes("storyPoints")) {
+    const sp = ticket.fields[CUSTOM_FIELD_ALIASES.storyPoints];
+    if (sp !== null && sp !== void 0) {
+      summary.push(`**Story Points:** ${sp}`);
+    }
+  }
+  if (requestedFields.includes("issuetype") && ticket.fields.issuetype) {
+    summary.push(`**Issue Type:** ${ticket.fields.issuetype.name}`);
+  }
+  if (requestedFields.includes("parent") && ticket.fields.parent) {
+    summary.push(`**Parent:** ${ticket.fields.parent.key} - ${ticket.fields.parent.fields?.summary || "Unknown"}`);
+  }
+  if (requestedFields.includes("subtasks") && ticket.fields.subtasks?.length) {
+    summary.push("", `**Sub-tasks (${ticket.fields.subtasks.length}):**`);
+    ticket.fields.subtasks.forEach((st) => {
+      summary.push(`- ${st.key}: ${st.fields?.summary || "Unknown"} [${st.fields?.status?.name || "Unknown"}]`);
+    });
+  }
+  if (requestedFields.includes("issuelinks") && ticket.fields.issuelinks?.length) {
+    summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
+    ticket.fields.issuelinks.forEach((link) => {
+      if (link.outwardIssue) {
+        summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+      }
+      if (link.inwardIssue) {
+        summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+      }
     });
   }
   return summary.join("\n");
@@ -6455,12 +6579,15 @@ var jiraGetIssueSchema = {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "updated",
             "description",
+            "comment",
             "labels",
             "components",
+            "storyPoints",
             "customfield_10003"
           ]
         },
@@ -6482,13 +6609,17 @@ async function handleJiraGetIssue(args) {
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "created",
-      "description"
+      "description",
+      "comment",
+      "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
+    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10004" : f);
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
-    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
+    const allFields = [.../* @__PURE__ */ new Set([...expandedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
     const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
     const summary = buildFormattedSummary(ticket, requestedFields);
@@ -6575,6 +6706,14 @@ var jiraUpdateIssueSchema = {
         type: "string",
         description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
       },
+      reporter: {
+        type: "string",
+        description: "Username of the reporter"
+      },
+      storyPoints: {
+        type: "number",
+        description: "Story points estimate"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
@@ -6585,7 +6724,7 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, reporter, storyPoints, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
     if (summary)
@@ -6605,8 +6744,19 @@ async function handleJiraUpdateIssue(args) {
     if (priority) {
       updates.priority = { name: priority };
     }
+    if (reporter) {
+      updates.reporter = apiClient.auth.isCloud() ? { accountId: reporter } : { name: reporter };
+    }
+    if (storyPoints !== void 0) {
+      const spResolved = resolveCustomFieldIds(["storyPoints"]);
+      if (spResolved.length > 0) {
+        updates[spResolved[0]] = storyPoints;
+      }
+    }
     if (customFields) {
       for (const [key, value] of Object.entries(customFields)) {
+        if (storyPoints !== void 0 && key.toLowerCase() === "storypoints")
+          continue;
         const resolved = resolveCustomFieldIds([key]);
         if (resolved.length > 0) {
           updates[resolved[0]] = value;
@@ -6646,7 +6796,9 @@ async function handleJiraUpdateIssue(args) {
 
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Story Points:** ${ticket.fields[resolveCustomFieldIds(["storyPoints"])[0]] ?? "Not set"}
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
@@ -6940,6 +7092,7 @@ async function handleJiraSearchIssues(args) {
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
 - Project: ${issue.fields.project?.key || "Unknown"}`;
@@ -7012,6 +7165,10 @@ var jiraCreateIssueSchema = {
         type: "string",
         description: "Username of assignee (optional)"
       },
+      reporter: {
+        type: "string",
+        description: "Username of reporter (optional)"
+      },
       epicLink: {
         type: "string",
         description: 'Epic ticket ID to link to (e.g., "SEWEB-46018") - NOTE: Epic Link field ID needs configuration per JIRA instance (optional)'
@@ -7030,6 +7187,10 @@ var jiraCreateIssueSchema = {
         type: "string",
         description: "Sprint ID to assign the issue to (optional)"
       },
+      storyPoints: {
+        type: "number",
+        description: "Story points estimate"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 5}`
@@ -7044,9 +7205,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields, outputDir } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, reporter, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, customFields);
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
@@ -7055,7 +7216,9 @@ async function handleJiraCreateIssue(args) {
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Type:** ${issueType}
+**Story Points:** ${storyPoints !== void 0 ? storyPoints : "Not set"}
 **Project:** ${projectKey}`;
     if (epicLink) {
       summaryText += `
@@ -7492,6 +7655,7 @@ async function handleJiraGetSprints(args) {
 }
 
 // build/tools/jiraGetSprintIssues.js
+init_customFields();
 var jiraGetSprintIssuesSchema = {
   name: "jira_get_sprint_issues",
   description: "Get issues in a specific JIRA sprint",
@@ -7530,11 +7694,14 @@ async function handleJiraGetSprintIssues(args) {
 
 `;
     sprintIssues.issues.forEach((issue, index) => {
+      const sp = issue.fields[CUSTOM_FIELD_ALIASES.storyPoints];
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
+- Story Points: ${sp !== null && sp !== void 0 ? sp : "Not set"}
 - Project: ${issue.fields.project?.key || "Unknown"}
 
 `;
@@ -7657,6 +7824,75 @@ ${downloaded.join("\n")}`;
         {
           type: "text",
           text: `Error getting attachments: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraGetChildIssues.js
+var jiraGetChildIssuesSchema = {
+  name: "jira_get_child_issues",
+  description: "Get all child issues (sub-tasks, stories, etc.) of a parent JIRA ticket.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      parentKey: {
+        type: "string",
+        description: "The parent JIRA ticket key (e.g., DPAY-1234)"
+      },
+      maxResults: {
+        type: "number",
+        description: "Maximum number of results (default: 100)"
+      }
+    },
+    required: ["parentKey"]
+  }
+};
+async function handleJiraGetChildIssues(args) {
+  try {
+    const { parentKey, maxResults = 100 } = args;
+    if (!/^[A-Z][A-Z0-9_]+-\d+$/.test(parentKey)) {
+      throw new Error(`Invalid JIRA key format: ${parentKey}`);
+    }
+    const apiClient = new JiraApiClient();
+    const jql = `parent = ${parentKey} ORDER BY created ASC`;
+    const result = await apiClient.searchJiraIssues(jql, maxResults, 0, [
+      "issuetype"
+    ]);
+    const issues = result.issues || [];
+    let text = `**Child Issues of ${parentKey}** (${result.total} total)
+
+`;
+    issues.forEach((issue, i) => {
+      const f = issue.fields || {};
+      text += `**${i + 1}. ${issue.key}: ${f.summary || "(no summary)"}**
+`;
+      text += `- Type: ${f.issuetype?.name || "Unknown"}
+`;
+      text += `- Status: ${f.status?.name || "Unknown"}
+`;
+      text += `- Assignee: ${f.assignee?.displayName || "Unassigned"}
+`;
+      text += `- Priority: ${f.priority?.name || "Unknown"}
+
+`;
+    });
+    if (issues.length === 0)
+      text += "No child issues found.\n";
+    if (result.total > issues.length) {
+      text += `
+_Showing ${issues.length} of ${result.total} children._
+`;
+    }
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error: ${error instanceof Error ? error.message : "Unknown error"}`
         }
       ],
       isError: true
@@ -8548,32 +8784,39 @@ async function handleXrayGetPreConditionTests(args) {
 }
 
 // build/index.js
+var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
+function prefixed(schema) {
+  if (!INSTANCE_PREFIX)
+    return schema;
+  return { ...schema, name: INSTANCE_PREFIX + schema.name };
+}
 var tools = [
-  { schema: jiraGetIssueSchema, handler: handleJiraGetIssue },
-  { schema: jiraUpdateIssueSchema, handler: handleJiraUpdateIssue },
-  { schema: jiraTransitionIssueSchema, handler: handleJiraTransitionIssue },
-  { schema: jiraAssignIssueSchema, handler: handleJiraAssignIssue },
-  { schema: jiraCommentOnIssueSchema, handler: handleJiraCommentOnIssue },
-  { schema: jiraSearchIssuesSchema, handler: handleJiraSearchIssues },
-  { schema: jiraCreateIssueSchema, handler: handleJiraCreateIssue },
-  { schema: jiraGetProjectsSchema, handler: handleJiraGetProjects },
-  { schema: jiraGetIssueTypesSchema, handler: handleJiraGetIssueTypes },
-  { schema: jiraGetTransitionsSchema, handler: handleJiraGetTransitions },
-  { schema: jiraGetBoardsSchema, handler: handleJiraGetBoards },
-  { schema: jiraGetSprintsSchema, handler: handleJiraGetSprints },
-  { schema: jiraGetSprintIssuesSchema, handler: handleJiraGetSprintIssues },
-  { schema: jiraGetAttachmentsSchema, handler: handleJiraGetAttachments },
+  { schema: prefixed(jiraGetIssueSchema), handler: handleJiraGetIssue },
+  { schema: prefixed(jiraUpdateIssueSchema), handler: handleJiraUpdateIssue },
+  { schema: prefixed(jiraTransitionIssueSchema), handler: handleJiraTransitionIssue },
+  { schema: prefixed(jiraAssignIssueSchema), handler: handleJiraAssignIssue },
+  { schema: prefixed(jiraCommentOnIssueSchema), handler: handleJiraCommentOnIssue },
+  { schema: prefixed(jiraSearchIssuesSchema), handler: handleJiraSearchIssues },
+  { schema: prefixed(jiraCreateIssueSchema), handler: handleJiraCreateIssue },
+  { schema: prefixed(jiraGetProjectsSchema), handler: handleJiraGetProjects },
+  { schema: prefixed(jiraGetIssueTypesSchema), handler: handleJiraGetIssueTypes },
+  { schema: prefixed(jiraGetTransitionsSchema), handler: handleJiraGetTransitions },
+  { schema: prefixed(jiraGetBoardsSchema), handler: handleJiraGetBoards },
+  { schema: prefixed(jiraGetSprintsSchema), handler: handleJiraGetSprints },
+  { schema: prefixed(jiraGetSprintIssuesSchema), handler: handleJiraGetSprintIssues },
+  { schema: prefixed(jiraGetAttachmentsSchema), handler: handleJiraGetAttachments },
+  { schema: prefixed(jiraGetChildIssuesSchema), handler: handleJiraGetChildIssues },
   // XRay tools
-  { schema: xrayGetTestCaseFullSchema, handler: handleXrayGetTestCaseFull },
-  { schema: xrayGetTestStepsSchema, handler: handleXrayGetTestSteps },
-  { schema: xrayGetTestExecTestsSchema, handler: handleXrayGetTestExecTests },
-  { schema: xrayGetTestPlanTestsSchema, handler: handleXrayGetTestPlanTests },
-  { schema: xrayGetTestSetTestsSchema, handler: handleXrayGetTestSetTests },
-  { schema: xrayGetTestRunsSchema, handler: handleXrayGetTestRuns },
-  { schema: xraySearchTestCasesSchema, handler: handleXraySearchTestCases },
-  { schema: xrayGetTestStatusesSchema, handler: handleXrayGetTestStatuses },
-  { schema: xrayGetTestPreConditionsSchema, handler: handleXrayGetTestPreConditions },
-  { schema: xrayGetPreConditionTestsSchema, handler: handleXrayGetPreConditionTests }
+  { schema: prefixed(xrayGetTestCaseFullSchema), handler: handleXrayGetTestCaseFull },
+  { schema: prefixed(xrayGetTestStepsSchema), handler: handleXrayGetTestSteps },
+  { schema: prefixed(xrayGetTestExecTestsSchema), handler: handleXrayGetTestExecTests },
+  { schema: prefixed(xrayGetTestPlanTestsSchema), handler: handleXrayGetTestPlanTests },
+  { schema: prefixed(xrayGetTestSetTestsSchema), handler: handleXrayGetTestSetTests },
+  { schema: prefixed(xrayGetTestRunsSchema), handler: handleXrayGetTestRuns },
+  { schema: prefixed(xraySearchTestCasesSchema), handler: handleXraySearchTestCases },
+  { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
+  { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
+  { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests }
 ];
 var JiraMCPServer = class {
   server;

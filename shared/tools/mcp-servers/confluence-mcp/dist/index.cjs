@@ -5656,42 +5656,60 @@ var StdioServerTransport = class {
   }
 };
 
+// build/utils/toolPrefix.js
+var CONFLUENCE_INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
+function prefixToolName(name) {
+  return CONFLUENCE_INSTANCE_PREFIX ? `${CONFLUENCE_INSTANCE_PREFIX}${name}` : name;
+}
+function getServerName() {
+  return CONFLUENCE_INSTANCE_PREFIX ? `confluence-${CONFLUENCE_INSTANCE_PREFIX.replace(/_$/, "")}` : "confluence-mcp";
+}
+
 // build/utils/apiClient.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
+var DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
 var DEFAULT_TIMEOUT_MS = 3e4;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
-  async loadConfig() {
-    if (!this.confluenceUrl || !this.confluencePat) {
-      this.confluenceUrl = process.env.CONFLUENCE_URL || null;
-      this.confluencePat = process.env.CONFLUENCE_PAT || null;
-      if (!this.confluenceUrl || !this.confluencePat) {
-        try {
-          const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
-          const __dirname = (0, import_path.dirname)(__filename);
-          const envPath = (0, import_path.resolve)(__dirname, "../../.env");
-          console.error(`Loading .env from: ${envPath}`);
-          (0, import_dotenv.config)({ path: envPath });
-          this.confluenceUrl = process.env.CONFLUENCE_URL || null;
-          this.confluencePat = process.env.CONFLUENCE_PAT || null;
-        } catch (e) {
-          console.error(`Failed to load .env file: ${e.message}`);
-        }
-      }
-      if (!this.confluenceUrl || !this.confluencePat) {
-        throw new Error(`Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT.`);
-      }
-      if (this.confluenceUrl.includes("atlassian.net") && !this.confluenceUrl.includes("/wiki")) {
-        this.confluenceUrl = `${this.confluenceUrl}/wiki`;
+  loaded = false;
+  loadEnv() {
+    if (this.loaded)
+      return;
+    this.loaded = true;
+    this.confluenceUrl = process.env.CONFLUENCE_URL || null;
+    this.confluencePat = process.env.CONFLUENCE_PAT || null;
+    if (!this.confluencePat) {
+      try {
+        const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
+        const __dirname = (0, import_path.dirname)(__filename);
+        const envPath = (0, import_path.resolve)(__dirname, "../../.env");
+        (0, import_dotenv.config)({ path: envPath });
+        this.confluencePat = process.env.CONFLUENCE_PAT || null;
+        this.confluenceUrl = this.confluenceUrl || process.env.CONFLUENCE_URL || null;
+      } catch (e) {
       }
     }
   }
+  getBaseUrl() {
+    this.loadEnv();
+    let url = (this.confluenceUrl || DEFAULT_CONFLUENCE_URL).replace(/\/+$/, "");
+    if (url.includes("atlassian.net") && !url.includes("/wiki")) {
+      url = `${url}/wiki`;
+    }
+    return url;
+  }
+  getPat() {
+    this.loadEnv();
+    if (this.confluencePat)
+      return this.confluencePat;
+    throw new Error("CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file.");
+  }
   async makeRequest(endpoint, options = {}) {
-    await this.loadConfig();
-    const url = `${this.confluenceUrl}/rest/api/${endpoint}`;
+    const url = `${this.getBaseUrl()}/rest/api/${endpoint}`;
+    const pat = this.getPat();
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
     try {
@@ -5699,7 +5717,7 @@ var ConfluenceApiClient = class {
         ...options,
         signal: controller.signal,
         headers: {
-          Authorization: `Bearer ${this.confluencePat}`,
+          Authorization: `Bearer ${pat}`,
           Accept: "application/json",
           "Content-Type": "application/json",
           ...options.headers
@@ -5715,16 +5733,10 @@ var ConfluenceApiClient = class {
     }
   }
   getConfluenceUrl() {
-    if (!this.confluenceUrl) {
-      throw new Error("Configuration not loaded");
-    }
-    return this.confluenceUrl;
+    return this.getBaseUrl();
   }
   getConfluencePat() {
-    if (!this.confluencePat) {
-      throw new Error("Configuration not loaded");
-    }
-    return this.confluencePat;
+    return this.getPat();
   }
 };
 var apiClient = new ConfluenceApiClient();
@@ -6193,7 +6205,6 @@ var uploadAttachmentSchema = {
 async function handleUploadAttachment(args) {
   const { pageId, filePath, outputDir } = args;
   try {
-    await apiClient.loadConfig();
     const fileBuffer = await (0, import_promises2.readFile)(filePath);
     const fileName = filePath.split("/").pop() || "attachment";
     const formData = new FormData();
@@ -6246,11 +6257,15 @@ var tools = [
   },
   { schema: uploadAttachmentSchema, handler: handleUploadAttachment }
 ];
+var prefixedTools = tools.map((t) => ({
+  schema: { ...t.schema, name: prefixToolName(t.schema.name) },
+  handler: t.handler
+}));
 var ConfluenceMCPServer = class {
   server;
   constructor() {
     this.server = new Server({
-      name: "confluence-mcp",
+      name: getServerName(),
       version: "0.1.0"
     }, {
       capabilities: {
@@ -6261,12 +6276,12 @@ var ConfluenceMCPServer = class {
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: tools.map((t) => t.schema)
+      tools: prefixedTools.map((t) => t.schema)
     }));
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { name, arguments: args } = request.params;
       try {
-        const tool = tools.find((t) => t.schema.name === name);
+        const tool = prefixedTools.find((t) => t.schema.name === name);
         if (!tool) {
           throw new Error(`Unknown tool: ${name}`);
         }

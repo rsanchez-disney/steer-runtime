@@ -32,6 +32,10 @@ export const jiraCreateIssueSchema = {
                 type: "string",
                 description: "Username of assignee (optional)",
             },
+            reporter: {
+                type: "string",
+                description: "Username of reporter (optional)",
+            },
             epicLink: {
                 type: "string",
                 description:
@@ -53,6 +57,10 @@ export const jiraCreateIssueSchema = {
                 type: "string",
                 description:
                     "Sprint ID to assign the issue to (optional)",
+            },
+            storyPoints: {
+                type: "number",
+                description: "Story points estimate",
             },
             customFields: {
                 type: "object",
@@ -80,6 +88,8 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             components,
             labels,
             sprint,
+            storyPoints,
+            reporter,
             customFields,
             outputDir,
         } = args as {
@@ -88,10 +98,12 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             issueType: string;
             description?: string;
             assignee?: string;
+            reporter?: string;
             epicLink?: string;
             components?: string[];
             labels?: string[];
             sprint?: string;
+            storyPoints?: number;
             customFields?: Record<string, unknown>;
             outputDir?: string;
         };
@@ -103,10 +115,12 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             issueType,
             description,
             assignee,
+            reporter,
             epicLink,
             components,
             labels,
             sprint,
+            storyPoints,
             customFields,
         );
 
@@ -120,7 +134,9 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Type:** ${issueType}
+**Story Points:** ${storyPoints !== undefined ? storyPoints : "Not set"}
 **Project:** ${projectKey}`;
 
         if (epicLink) {

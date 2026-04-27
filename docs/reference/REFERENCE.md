@@ -2,7 +2,7 @@
 
 Full reference for commands, MCP servers, architecture, project structure, and extensibility.
 
-For quick setup, see the [README](../README.md).
+For quick setup, see the [README][readme].
 
 ---
 
@@ -12,24 +12,24 @@ Drop a `project.yaml` in your project root to give agents structured config. No 
 
 ### Field Reference
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `name` | string | yes | Project name |
-| `stack` | string | yes | Primary tech stack (`java`, `node`, `angular`, `astro`, `go`, `flutter`, `csharp`, `python`, `terraform`) |
-| `baseBranch` | string | yes | Default branch for PRs and diffs (default: `main`) |
-| `commands.build` | string | no | Build command (e.g., `mvn clean package`) |
-| `commands.test` | string | no | Test command (e.g., `npm test`) |
-| `commands.lint` | string | no | Lint command (e.g., `npm run lint`) |
-| `commands.format` | string | no | Format command (e.g., `mvn spotless:apply`) |
-| `integrations.jira.projectKey` | string | no | Jira project prefix (e.g., `DPAY`) |
-| `integrations.jira.statuses.inProgress` | string | no | Jira status name for "in progress" |
-| `integrations.jira.statuses.review` | string | no | Jira status name for "in review" |
-| `integrations.jira.statuses.done` | string | no | Jira status name for "done" |
-| `integrations.github.org` | string | no | GitHub org (e.g., `SANCR225`) |
-| `integrations.github.repo` | string | no | GitHub repo name |
-| `workspace.specsDir` | string | no | Where spec documents live (default: `docs/specs/`) |
-| `workspace.useSpecs` | boolean | no | Whether agents should reference specs |
-| `workspace.memoryBank` | string | no | Memory bank name from workspaces |
+| Field                                   | Type    | Required | Description                                                                                               |
+|-----------------------------------------|---------|----------|-----------------------------------------------------------------------------------------------------------|
+| `name`                                  | string  | yes      | Project name                                                                                              |
+| `stack`                                 | string  | yes      | Primary tech stack (`java`, `node`, `angular`, `astro`, `go`, `flutter`, `csharp`, `python`, `terraform`) |
+| `baseBranch`                            | string  | yes      | Default branch for PRs and diffs (default: `main`)                                                        |
+| `commands.build`                        | string  | no       | Build command (e.g., `mvn clean package`)                                                                 |
+| `commands.test`                         | string  | no       | Test command (e.g., `npm test`)                                                                           |
+| `commands.lint`                         | string  | no       | Lint command (e.g., `npm run lint`)                                                                       |
+| `commands.format`                       | string  | no       | Format command (e.g., `mvn spotless:apply`)                                                               |
+| `integrations.jira.projectKey`          | string  | no       | Jira project prefix (e.g., `DPAY`)                                                                        |
+| `integrations.jira.statuses.inProgress` | string  | no       | Jira status name for "in progress"                                                                        |
+| `integrations.jira.statuses.review`     | string  | no       | Jira status name for "in review"                                                                          |
+| `integrations.jira.statuses.done`       | string  | no       | Jira status name for "done"                                                                               |
+| `integrations.github.org`               | string  | no       | GitHub org (e.g., `SANCR225`)                                                                             |
+| `integrations.github.repo`              | string  | no       | GitHub repo name                                                                                          |
+| `workspace.specsDir`                    | string  | no       | Where spec documents live (default: `docs/specs/`)                                                        |
+| `workspace.useSpecs`                    | boolean | no       | Whether agents should reference specs                                                                     |
+| `workspace.memoryBank`                  | string  | no       | Memory bank name from workspaces                                                                          |
 
 ### How Agents Use It
 
@@ -47,11 +47,11 @@ Agents check for `project.yaml` at the start of every workflow (Step 0):
 ### Examples
 
 See `common/templates/examples/` for complete examples:
-- [Java/Spring Boot](../common/templates/examples/project-java-spring.yaml)
-- [Node.js/Express](../common/templates/examples/project-node-express.yaml)
+- [Java/Spring Boot][example-java]
+- [Node.js/Express][example-node]
 
-Template: [`common/templates/project.yaml`](../common/templates/project.yaml)
-Schema: [`common/schemas/project.schema.json`](../common/schemas/project.schema.json)
+Template: [`common/templates/project.yaml`][template-project]
+Schema: [`common/schemas/project.schema.json`][schema-project]
 
 ---
 
@@ -82,7 +82,7 @@ koda upgrade                      # Update Koda binary
 
 ### setup.sh (⚠️ deprecated)
 
-> **Deprecated:** Use `koda` instead. See [Koda install instructions](https://github.disney.com/SANCR225/Koda).
+> **Deprecated:** Use `koda` instead. See [Koda install instructions][koda-repo].
 
 ```bash
 # Core
@@ -133,29 +133,29 @@ koda amazonq remove <dir>     # Remove .amazonq/ directory
 
 Pre-built and bundled — no `npm install` required. Shared across all IDEs.
 
-| Server | Purpose | Token |
-|--------|---------|-------|
-| jira-mcp | Jira issue management (multi-instance) | `JIRA_PAT_{name}` in tokens.env |
-| confluence-mcp | Confluence wiki (multi-instance) | `CONFLUENCE_PAT_{name}` in tokens.env |
-| github-mcp | GitHub Enterprise (multi-instance) | `GITHUB_TOKEN_{name}` in tokens.env |
-| bruno-mcp | API testing via Bruno collections | No token needed |
-| mermaid-diagram-mcp | Diagram generation | No token needed |
-| figma-mcp | Figma design files, components, styles, comments | [Generate](https://www.figma.com/developers/api#access-tokens) |
-| compass-mcp | Compass service catalog and API discovery (SSE) | Compass token (contact your team lead) |
+| Server              | Purpose                                          | Token                                                          |
+|---------------------|--------------------------------------------------|----------------------------------------------------------------|
+| jira-mcp            | Jira issue management (multi-instance)           | `JIRA_PAT_{name}` in tokens.env                                |
+| confluence-mcp      | Confluence wiki (multi-instance)                 | `CONFLUENCE_PAT_{name}` in tokens.env                          |
+| github-mcp          | GitHub Enterprise (multi-instance)               | `GITHUB_TOKEN_{name}` in tokens.env                            |
+| bruno-mcp           | API testing via Bruno collections                | No token needed                                                |
+| mermaid-diagram-mcp | Diagram generation                               | No token needed                                                |
+| figma-mcp           | Figma design files, components, styles, comments | [Generate][figma-tokens]                                       |
+| compass-mcp         | Compass service catalog and API discovery (SSE)  | Compass token (contact your team lead)                         |
 
-For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
+For per-agent MCP coverage, see [AGENTS.md][agents-mcp].
 
 ---
 
 ## Supported Tools
 
-| Tool | What it does | Setup |
-|------|-------------|-------|
-| **Koda** | Interactive terminal companion — install, sync, chat, TUI dashboard | `curl \| bash` from [github.com](https://github.com/rsanchez-disney/Koda) |
-| **Kiro CLI** | Native agent runtime | [Getting Started](GETTING_STARTED.md) |
-| **Cursor** | IDE with `.mdc` rules + MCP | `./setup.sh cursor install <dir>` |
-| **Amazon Q** | IDE with `.md` rules | `koda amazonq install <dir>` |
-| **Kite** | Desktop GUI wrapping Kiro CLI | [Kite repo](https://github.disney.com/SANCR225/Kite) |
+| Tool         | What it does                                                        | Setup                                                                     |
+|--------------|---------------------------------------------------------------------|---------------------------------------------------------------------------|
+| **Koda**     | Interactive terminal companion — install, sync, chat, TUI dashboard | `curl \| bash` from [github.com][koda-repo]                               |
+| **Kiro CLI** | Native agent runtime                                                | [Getting Started][getting-started]                                        |
+| **Cursor**   | IDE with `.mdc` rules + MCP                                         | `./setup.sh cursor install <dir>`                                         |
+| **Amazon Q** | IDE with `.md` rules                                                | `koda amazonq install <dir>`                                              |
+| **Kite**     | Desktop GUI wrapping Kiro CLI                                       | [Kite repo][kite-repo]                                                    |
 
 ---
 
@@ -167,7 +167,7 @@ For per-agent MCP coverage, see [AGENTS.md](../AGENTS.md#mcp-server-coverage).
 koda workspace apply payments-core     # or: koda workspace apply payments-core
 ```
 
-Each workspace is a `workspace.json` manifest with profiles, rules, context, and Jira/board config. See [Team Workspaces](TEAM_WORKSPACES.md).
+Each workspace is a `workspace.json` manifest with profiles, rules, context, and Jira/board config. See [Team Workspaces][team-workspaces].
 
 ### Memory Banks — project-specific context
 
@@ -187,7 +187,7 @@ Memory banks give agents project-specific knowledge — tech stack, repo structu
 
 ### Fork Strategy — cross-team governance
 
-For multi-team organizations. See [Fork Strategy](FORK_STRATEGY.md).
+For multi-team organizations. See [Fork Strategy][fork-strategy].
 
 ---
 
@@ -328,17 +328,57 @@ steer-runtime/
 
 ## All Documentation
 
-| Audience | Guides |
-|----------|--------|
-| **Everyone** | [Project Overview](PROJECT_OVERVIEW.md) · [Agent Reference](../AGENTS.md) · [Getting Started](GETTING_STARTED.md) · [Team Workspaces](TEAM_WORKSPACES.md) · [Fork Strategy](FORK_STRATEGY.md) · [Troubleshooting](TROUBLESHOOTING.md) |
-| **Developers** | [Hooks & Powers](HOOKS_AND_POWERS.md) · [Prompt Guide](PROMPT_GUIDE.md) · [Mobile Setup](MOBILE_AGENTS_SETUP.md) · [Architecture](DESIGN.md) · [MCP Config](MCP_SETUP.md) |
-| **BA / PO** | [BA Guide](BA_PROMPT_GUIDE.md) · [Workflows](BA_WORKFLOWS.md) · [Quick Ref](BA_QUICK_REFERENCE.md) |
-| **QA** | [QA Guide](QA_PROMPT_GUIDE.md) · [Workflows](QA_WORKFLOWS.md) · [Quick Ref](QA_QUICK_REFERENCE.md) · [Overview](QA_PROFILE_OVERVIEW.md) |
-| **Ops** | [Ops Guide](OPS_PROMPT_GUIDE.md) · [Workflows](OPS_WORKFLOWS.md) · [Quick Ref](OPS_QUICK_REFERENCE.md) |
-| **PM / Scrum** | [PM Guide](PM_PROMPT_GUIDE.md) · [PM Workspaces](PM_WORKSPACES_GUIDE.md) |
-| **Cross-IDE** | [IDE Concepts Comparison](IDE_CONCEPTS_COMPARISON.md) · [Cursor Setup](CURSOR_SETUP.md) · [Amazon Q](../.amazonq-templates/README.md) · [Windows](WINDOWS_SETUP.md) |
-| **Roadmap** | [Roadmap](ROADMAP.md) · [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
+| Audience       | Guides                                                                                                                                                                                                           |
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Everyone**   | [Project Overview][project-overview] · [Agent Reference][agents] · [Getting Started][getting-started] · [Team Workspaces][team-workspaces] · [Fork Strategy][fork-strategy] · [Troubleshooting][troubleshooting] |
+| **Developers** | [Hooks & Powers][hooks-and-powers] · [Prompt Guide][prompt-guide] · [Mobile Setup][mobile-setup] · [Architecture][design] · [MCP Config][mcp-setup]                                                              |
+| **BA / PO**    | [BA Guide][ba-guide] · [Workflows][ba-workflows] · [Quick Ref][ba-quick-ref]                                                                                                                                     |
+| **QA**         | [QA Guide][qa-guide] · [Workflows][qa-workflows] · [Quick Ref][qa-quick-ref] · [Overview][qa-overview]                                                                                                           |
+| **Ops**        | [Ops Guide][ops-guide] · [Workflows][ops-workflows] · [Quick Ref][ops-quick-ref]                                                                                                                                 |
+| **PM / Scrum** | [PM Guide][pm-guide] · [PM Workspaces][pm-workspaces]                                                                                                                                                            |
+| **Cross-IDE**  | [IDE Concepts Comparison][ide-comparison] · [Cursor Setup][cursor-setup] · [Amazon Q][amazonq-readme] · [Windows][windows-setup]                                                                                 |
+| **Roadmap**    | [Roadmap][roadmap] · [Waypoints][waypoints]                                                                                                                                                                      |
 
 ---
 
 **Version:** 3.7.0 · **Agents:** 50 · **Updated:** March 30, 2026
+
+<!-- Links -->
+[agents]: ../../AGENTS.md
+[agents-mcp]: ../../AGENTS.md#mcp-server-coverage
+[amazonq-readme]: ../../.amazonq-templates/README.md
+[ba-guide]: ../profiles/ba/BA_PROMPT_GUIDE.md
+[ba-quick-ref]: ../profiles/ba/BA_QUICK_REFERENCE.md
+[ba-workflows]: ../profiles/ba/BA_WORKFLOWS.md
+[cursor-setup]: ../getting-started/CURSOR_SETUP.md
+[design]: ../architecture/DESIGN.md
+[example-java]: ../../common/templates/examples/project-java-spring.yaml
+[example-node]: ../../common/templates/examples/project-node-express.yaml
+[figma-tokens]: https://www.figma.com/developers/api#access-tokens
+[fork-strategy]: FORK_STRATEGY.md
+[getting-started]: ../getting-started/GETTING_STARTED.md
+[hooks-and-powers]: HOOKS_AND_POWERS.md
+[ide-comparison]: ../getting-started/IDE_CONCEPTS_COMPARISON.md
+[kite-repo]: https://github.disney.com/SANCR225/Kite
+[koda-repo]: https://github.disney.com/SANCR225/Koda
+[mcp-setup]: MCP_SETUP.md
+[mobile-setup]: ../getting-started/MOBILE_AGENTS_SETUP.md
+[ops-guide]: ../profiles/ops/OPS_PROMPT_GUIDE.md
+[ops-quick-ref]: ../profiles/ops/OPS_QUICK_REFERENCE.md
+[ops-workflows]: ../profiles/ops/OPS_WORKFLOWS.md
+[pm-guide]: ../profiles/pm/PM_PROMPT_GUIDE.md
+[pm-workspaces]: ../profiles/pm/PM_WORKSPACES_GUIDE.md
+[project-overview]: ../architecture/PROJECT_OVERVIEW.md
+[prompt-guide]: ../profiles/dev/PROMPT_GUIDE.md
+[qa-guide]: ../profiles/qa/QA_PROMPT_GUIDE.md
+[qa-overview]: ../profiles/qa/QA_PROFILE_OVERVIEW.md
+[qa-quick-ref]: ../profiles/qa/QA_QUICK_REFERENCE.md
+[qa-workflows]: ../profiles/qa/QA_WORKFLOWS.md
+[readme]: ../README.md
+[roadmap]: ../ROADMAP.md
+[schema-project]: ../../common/schemas/project.schema.json
+[team-workspaces]: TEAM_WORKSPACES.md
+[template-project]: ../../common/templates/project.yaml
+[troubleshooting]: TROUBLESHOOTING.md
+[waypoints]: https://github.disney.com/users/SANCR225/projects/2/views/1
+[windows-setup]: ../getting-started/WINDOWS_SETUP.md

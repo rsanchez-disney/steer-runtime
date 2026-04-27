@@ -4,9 +4,11 @@
   "prompt": "planner_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@jira/*",
     "fs_read",
-    "thinking"
+    "thinking",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
@@ -14,7 +16,9 @@
   ],
   "allowedTools": [
     "@confluence/*",
-    "@jira/*"
+    "@mywiki/*",
+    "@jira/*",
+    "@mermaid/*"
   ],
   "includeMcpJson": true
 }

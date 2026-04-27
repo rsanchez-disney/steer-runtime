@@ -84,12 +84,12 @@ If delegated agents time out with MCP auth errors:
 
 Regenerate tokens and reconfigure:
 
-| Service | Token URL |
-|---------|-----------|
-| Jira | https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens |
-| Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action |
-| MyWiki | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action |
-| GitHub | https://github.disney.com/settings/tokens |
+| Service    | Token URL                                                                                                                     |
+|------------|-------------------------------------------------------------------------------------------------------------------------------|
+| Jira       | https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens |
+| Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action                                                  |
+| MyWiki     | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action                                                      |
+| GitHub     | https://github.disney.com/settings/tokens                                                                                     |
 
 Then run:
 ```bash
@@ -137,6 +137,6 @@ Reference: [Kiro CLI Website](https://kiro.dev/docs/cli/)
 
 ---
 
-> 🪟 **Windows users:** See [Windows Setup Guide](WINDOWS_SETUP.md) for PowerShell equivalents.
+> 🪟 **Windows users:** See [Windows Setup Guide](../getting-started/WINDOWS_SETUP.md) for PowerShell equivalents.
 
 Back to [README](../README.md)

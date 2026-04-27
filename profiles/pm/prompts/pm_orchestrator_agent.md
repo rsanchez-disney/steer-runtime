@@ -62,3 +62,68 @@ You have access to Compass tools via MCP:
 - **Email**: `sre_toolsets_email_send_email` — send sprint reports, standup summaries to team. Always confirm before sending. See email_guidelines.md.
 - **Confluence**: `confluence_tool_confluence_*` / `tool_confluence_create_or_update_page` — publish sprint reports, meeting notes to wiki.
 - **Jira**: `sre_toolsets_jira_tool_jira_*` — search tickets, get sprint data, update issues.
+
+## Delegation Mapping
+
+| User asks about | Delegate to | MCP tools the agent uses |
+|---|---|---|
+| Sprint planning, capacity, backlog grooming | `sprint_manager_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Daily standup summary, blockers, stale items | `standup_agent` | `jira_*`, `myjira_*` |
+| Sprint retrospective, action items | `retro_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| Blockers, dependencies, risk tracking | `risk_tracker_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| Sprint report, velocity, delivery metrics | `delivery_reporter_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
+| Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Send email (sprint report, standup summary) | `email_agent` | `compass` |
+
+### 🔒 Protected Files
+
+These files control agent-to-MCP delegation and are **known working**. Any modification requires explicit user approval with an isolated diff review.
+
+| File | What it controls |
+|---|---|
+| `profiles/pm/agents/pm_orchestrator_agent.json` | PM orchestrator tool permissions |
+| `profiles/pm/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+
+## Persistent Memory (yax)
+
+You have access to persistent memory via `@yax/*` tools. Use it to build context across sessions.
+
+### Session Lifecycle
+
+1. **Session start** — call `yax_session_start` with a brief description of what the user wants
+2. **During work** — call `yax_save` for important items (see below)
+3. **Session end** — call `yax_session_summary` with a summary of what was accomplished
+
+### What to Save
+
+Call `yax_save` for:
+- **Decisions made** — architecture choices, technology selections, scope agreements
+- **Artifacts created** — PRs, documents, configs (save title + path, not full content)
+- **Blockers found** — issues, dependencies, risks identified
+- **User preferences** — coding style, tool preferences, workflow choices
+- **Key context** — project names, repo paths, team conventions learned
+
+### How to Save
+
+```
+yax_save(title: "Chose PostgreSQL for state store", content: "Team decided on PG over MongoDB for ACID compliance. ADR written at docs/adr-003.md", project: "config-studio", type: "decision")
+```
+
+Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `summary`
+
+### How to Recall
+
+At the start of a session, check for relevant context:
+- `yax_context` — get recent memories from previous sessions
+- `yax_search(query)` — search for specific topics
+- `yax_related(id)` — follow knowledge graph connections
+
+### Rules
+
+- Save decisions and outcomes, not raw conversation
+- Keep observations concise (1-3 sentences)
+- Always include `project` when known
+- Do NOT save secrets, tokens, or PII
+- Call `yax_session_start` at the beginning, `yax_session_summary` at the end

@@ -60,19 +60,19 @@ curl http://localhost:9377/health
 
 ## Available Tools
 
-| Tool | Description |
-|------|-------------|
-| `mem_save` | Save an observation (decision, pattern, bugfix, etc.) |
-| `mem_search` | Semantic search across all observations |
-| `mem_context` | Get recent observations for a project (chronological, not semantic) |
-| `mem_get_observation` | Retrieve a specific observation by ID (`GET /mem_get/{id}`) |
-| `mem_update` | Update an existing observation |
-| `mem_delete` | Delete an observation (soft-delete by default) |
-| `mem_session_start` | Start a new memory session |
-| `mem_session_end` | End the current session |
-| `mem_session_summary` | Save a comprehensive end-of-session summary |
-| `mem_save_prompt` | Save a user prompt to persistent memory |
-| `health` | Check memory-mcp service health |
+| Tool                  | Description                                                         |
+|-----------------------|---------------------------------------------------------------------|
+| `mem_save`            | Save an observation (decision, pattern, bugfix, etc.)               |
+| `mem_search`          | Semantic search across all observations                             |
+| `mem_context`         | Get recent observations for a project (chronological, not semantic) |
+| `mem_get_observation` | Retrieve a specific observation by ID (`GET /mem_get/{id}`)         |
+| `mem_update`          | Update an existing observation                                      |
+| `mem_delete`          | Delete an observation (soft-delete by default)                      |
+| `mem_session_start`   | Start a new memory session                                          |
+| `mem_session_end`     | End the current session                                             |
+| `mem_session_summary` | Save a comprehensive end-of-session summary                         |
+| `mem_save_prompt`     | Save a user prompt to persistent memory                             |
+| `health`              | Check memory-mcp service health                                     |
 
 ## Data Model
 
@@ -80,18 +80,18 @@ curl http://localhost:9377/health
 
 The core unit of memory.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `title` | string | Short summary |
-| `content` | string | Full observation text (embedded for search) |
-| `type` | ObservationType | Category of observation |
-| `project` | string | Project identifier |
-| `scope` | `"project"` \| `"personal"` | Scope of the observation |
-| `topic_key` | string | Dedup key — same topic_key + project overwrites via exact Tag filter |
-| `session_id` | string | Links observation to a session |
-| `created_at` | string (ISO 8601) | Timestamp, auto-set |
-| `updated_at` | string (ISO 8601) | Timestamp, auto-set on save/update |
-| `deleted` | boolean | Soft-delete flag (default: false) |
+| Field        | Type                        | Description                                                          |
+|--------------|-----------------------------|----------------------------------------------------------------------|
+| `title`      | string                      | Short summary                                                        |
+| `content`    | string                      | Full observation text (embedded for search)                          |
+| `type`       | ObservationType             | Category of observation                                              |
+| `project`    | string                      | Project identifier                                                   |
+| `scope`      | `"project"` \| `"personal"` | Scope of the observation                                             |
+| `topic_key`  | string                      | Dedup key — same topic_key + project overwrites via exact Tag filter |
+| `session_id` | string                      | Links observation to a session                                       |
+| `created_at` | string (ISO 8601)           | Timestamp, auto-set                                                  |
+| `updated_at` | string (ISO 8601)           | Timestamp, auto-set on save/update                                   |
+| `deleted`    | boolean                     | Soft-delete flag (default: false)                                    |
 
 ### ObservationType
 
@@ -104,15 +104,15 @@ config | discovery | learning | session | prompt | summary
 
 Tracks a conversation/task lifecycle. Stored in Redis JSON (not in-memory). Observations created during a session are linked via `session_id`.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Session identifier |
-| `project` | string | Project identifier |
-| `directory` | string | Working directory |
-| `status` | `"active"` \| `"closed"` | Session state |
-| `summary` | string | End-of-session summary |
-| `started_at` | string (ISO 8601) | Start timestamp |
-| `ended_at` | string (ISO 8601) | End timestamp |
+| Field        | Type                     | Description            |
+|--------------|--------------------------|------------------------|
+| `id`         | string                   | Session identifier     |
+| `project`    | string                   | Project identifier     |
+| `directory`  | string                   | Working directory      |
+| `status`     | `"active"` \| `"closed"` | Session state          |
+| `summary`    | string                   | End-of-session summary |
+| `started_at` | string (ISO 8601)        | Start timestamp        |
+| `ended_at`   | string (ISO 8601)        | End timestamp          |
 
 ## How Agents Use It
 
@@ -170,11 +170,11 @@ mem_session_end(id="session-123", summary="Implemented auth flow")
 
 ## Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `CONTAINER_RUNTIME` | auto-detected | `docker`, `nerdctl`, or `podman` |
-| `REDIS_URL` | `redis://localhost:6379` | Redis connection string |
-| Port | `9377` | memory-mcp HTTP port |
+| Variable            | Default                  | Description                      |
+|---------------------|--------------------------|----------------------------------|
+| `CONTAINER_RUNTIME` | auto-detected            | `docker`, `nerdctl`, or `podman` |
+| `REDIS_URL`         | `redis://localhost:6379` | Redis connection string          |
+| Port                | `9377`                   | memory-mcp HTTP port             |
 
 The `CONTAINER_RUNTIME` env var is read by Koda/Kite to determine which CLI to use for `compose up/down`. If unset, it auto-detects in order: docker → nerdctl → podman.
 
@@ -189,16 +189,16 @@ The `CONTAINER_RUNTIME` env var is read by Koda/Kite to determine which CLI to u
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `connection refused` on port 9377 | Container not running — `koda memory start` or `docker compose up -d` |
-| Docker not found | Install Docker Desktop, Podman, or nerdctl. Set `CONTAINER_RUNTIME` if needed |
-| Port 9377 already in use | Another service on that port — stop it or change the port in `docker-compose.yml` |
-| Redis connection error in logs | Redis container may have crashed — `docker compose logs redis` to check |
-| Slow first query | Expected — fastembed downloads the model on first use (~80MB). Subsequent queries are fast |
-| `mem_search` returns no results | Observations may be in a different project/scope. Try broader search without filters |
-| Containers start but tools not available | Check `mcp.json` has the memory entry. Run `koda mcp-install` to regenerate |
+| Issue                                    | Fix                                                                                        |
+|------------------------------------------|--------------------------------------------------------------------------------------------|
+| `connection refused` on port 9377        | Container not running — `koda memory start` or `docker compose up -d`                      |
+| Docker not found                         | Install Docker Desktop, Podman, or nerdctl. Set `CONTAINER_RUNTIME` if needed              |
+| Port 9377 already in use                 | Another service on that port — stop it or change the port in `docker-compose.yml`          |
+| Redis connection error in logs           | Redis container may have crashed — `docker compose logs redis` to check                    |
+| Slow first query                         | Expected — fastembed downloads the model on first use (~80MB). Subsequent queries are fast |
+| `mem_search` returns no results          | Observations may be in a different project/scope. Try broader search without filters       |
+| Containers start but tools not available | Check `mcp.json` has the memory entry. Run `koda mcp-install` to regenerate                |
 
 ---
 
-Back to [MCP Setup](MCP_SETUP.md) · [README](../README.md)
+Back to [MCP Setup](../reference/MCP_SETUP.md) · [README](../README.md)

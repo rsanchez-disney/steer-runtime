@@ -54,38 +54,38 @@ Implements the Model Context Protocol over stdio using `mark3labs/mcp-go`.
 
 **Tool Profiles:**
 
-| Profile | Tools | Purpose |
-|---------|-------|---------|
+| Profile | Tools    | Purpose                                              |
+|---------|----------|------------------------------------------------------|
 | `agent` | 14 tools | Day-to-day agent use — save, search, sessions, graph |
-| `admin` | 4 tools | Maintenance — stats, export, import, merge projects |
-| `all` | 18 tools | Everything |
+| `admin` | 4 tools  | Maintenance — stats, export, import, merge projects  |
+| `all`   | 18 tools | Everything                                           |
 
 **Agent Profile Tools:**
 
-| Tool | Description |
-|------|-------------|
-| `yax_save` | Save observation with type, project, scope, topic_key for upserts |
-| `yax_search` | Full-text search across memories (FTS5 + BM25 ranking) |
-| `yax_context` | Get recent observations for a project |
-| `yax_get` | Get single observation by ID |
-| `yax_update` | Update existing observation fields |
-| `yax_delete` | Soft or hard delete |
-| `yax_timeline` | Chronological context around an observation |
-| `yax_link` | Create typed edge between observations |
-| `yax_unlink` | Remove edge |
-| `yax_related` | Graph traversal — find connected observations (recursive CTE) |
-| `yax_session_start` | Register start of coding session |
-| `yax_session_end` | Mark session completed with optional summary |
-| `yax_session_summary` | Save end-of-session summary as observation |
-| `yax_save_prompt` | Save user's original request to prompt history |
+| Tool                  | Description                                                       |
+|-----------------------|-------------------------------------------------------------------|
+| `yax_save`            | Save observation with type, project, scope, topic_key for upserts |
+| `yax_search`          | Full-text search across memories (FTS5 + BM25 ranking)            |
+| `yax_context`         | Get recent observations for a project                             |
+| `yax_get`             | Get single observation by ID                                      |
+| `yax_update`          | Update existing observation fields                                |
+| `yax_delete`          | Soft or hard delete                                               |
+| `yax_timeline`        | Chronological context around an observation                       |
+| `yax_link`            | Create typed edge between observations                            |
+| `yax_unlink`          | Remove edge                                                       |
+| `yax_related`         | Graph traversal — find connected observations (recursive CTE)     |
+| `yax_session_start`   | Register start of coding session                                  |
+| `yax_session_end`     | Mark session completed with optional summary                      |
+| `yax_session_summary` | Save end-of-session summary as observation                        |
+| `yax_save_prompt`     | Save user's original request to prompt history                    |
 
 **Admin Profile Tools:**
 
-| Tool | Description |
-|------|-------------|
-| `yax_stats` | Memory system statistics |
-| `yax_export` | Export sync chunks |
-| `yax_import` | Import sync chunks |
+| Tool                 | Description              |
+|----------------------|--------------------------|
+| `yax_stats`          | Memory system statistics |
+| `yax_export`         | Export sync chunks       |
+| `yax_import`         | Import sync chunks       |
 | `yax_merge_projects` | Merge project namespaces |
 
 ### 3. Store (`internal/store/`)
@@ -94,16 +94,16 @@ SQLite database with WAL mode, FTS5 full-text search, and knowledge graph.
 
 **Schema (7 tables):**
 
-| Table | Purpose |
-|-------|---------|
-| `sessions` | Coding sessions (id, project, directory, started_at, ended_at, summary) |
-| `observations` | Memories with dedup fields (topic_key, normalized_hash, revision_count, duplicate_count) |
-| `observations_fts` | FTS5 virtual table — indexes title, content, tool_name, type, project |
-| `edges` | Knowledge graph edges (source_id, target_id, relationship, metadata) |
-| `user_prompts` | Raw user prompts per session |
-| `prompts_fts` | FTS5 for prompt search |
-| `sync_mutations` | Mutation log for team sync (Phase 2) |
-| `sync_chunks` | Tracks imported sync chunks |
+| Table              | Purpose                                                                                  |
+|--------------------|------------------------------------------------------------------------------------------|
+| `sessions`         | Coding sessions (id, project, directory, started_at, ended_at, summary)                  |
+| `observations`     | Memories with dedup fields (topic_key, normalized_hash, revision_count, duplicate_count) |
+| `observations_fts` | FTS5 virtual table — indexes title, content, tool_name, type, project                    |
+| `edges`            | Knowledge graph edges (source_id, target_id, relationship, metadata)                     |
+| `user_prompts`     | Raw user prompts per session                                                             |
+| `prompts_fts`      | FTS5 for prompt search                                                                   |
+| `sync_mutations`   | Mutation log for team sync (Phase 2)                                                     |
+| `sync_chunks`      | Tracks imported sync chunks                                                              |
 
 **Observation Types:** `manual`, `decision`, `architecture`, `bugfix`, `pattern`, `config`, `discovery`, `learning`, `session`, `prompt`, `summary`
 
@@ -138,35 +138,35 @@ Git-based team sync (Phase 2):
 
 Direct terminal interface mirroring MCP tools:
 
-| Command | Description |
-|---------|-------------|
-| `yax search <query>` | Full-text search |
-| `yax save <title> <content>` | Save observation |
-| `yax context [project]` | Recent memories |
-| `yax timeline <id>` | Chronological context |
-| `yax related <id>` | Graph traversal |
-| `yax link <src> <tgt> <rel>` | Create edge |
-| `yax stats` | Statistics |
-| `yax sync` | Export mutations |
-| `yax setup` | Register in mcp.json |
-| `yax upgrade` | Self-update |
+| Command                      | Description           |
+|------------------------------|-----------------------|
+| `yax search <query>`         | Full-text search      |
+| `yax save <title> <content>` | Save observation      |
+| `yax context [project]`      | Recent memories       |
+| `yax timeline <id>`          | Chronological context |
+| `yax related <id>`           | Graph traversal       |
+| `yax link <src> <tgt> <rel>` | Create edge           |
+| `yax stats`                  | Statistics            |
+| `yax sync`                   | Export mutations      |
+| `yax setup`                  | Register in mcp.json  |
+| `yax upgrade`                | Self-update           |
 
 ## Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `modernc.org/sqlite` | Pure Go SQLite (no CGO) — enables easy cross-compilation |
-| `github.com/mark3labs/mcp-go` | MCP stdio protocol implementation |
-| Go stdlib | crypto/sha256, compress/gzip, database/sql, encoding/json |
+| Package                       | Purpose                                                   |
+|-------------------------------|-----------------------------------------------------------|
+| `modernc.org/sqlite`          | Pure Go SQLite (no CGO) — enables easy cross-compilation  |
+| `github.com/mark3labs/mcp-go` | MCP stdio protocol implementation                         |
+| Go stdlib                     | crypto/sha256, compress/gzip, database/sql, encoding/json |
 
 ## Integration with Koda
 
-| Component | How |
-|-----------|-----|
-| **Install** | `koda upgrade` downloads yax binary from Koda releases |
+| Component            | How                                                                      |
+|----------------------|--------------------------------------------------------------------------|
+| **Install**          | `koda upgrade` downloads yax binary from Koda releases                   |
 | **MCP registration** | `GenerateMcpJson()` registers yax as stdio server when binary is on PATH |
-| **Agent config** | `@yax` in agent tools array enables yax MCP tools |
-| **Orchestrator** | Prompt instructions for when/what to save (PR #213) |
+| **Agent config**     | `@yax` in agent tools array enables yax MCP tools                        |
+| **Orchestrator**     | Prompt instructions for when/what to save (PR #213)                      |
 
 **MCP entry in mcp.json:**
 ```json

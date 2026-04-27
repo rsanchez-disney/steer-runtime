@@ -4,16 +4,20 @@
   "prompt": "scope_definer_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "@sharepoint/*"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
-    "@jira/*"
+    "@jira/*",
+    "@sharepoint/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

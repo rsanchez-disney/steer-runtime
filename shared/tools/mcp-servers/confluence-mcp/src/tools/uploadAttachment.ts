@@ -30,7 +30,6 @@ export async function handleUploadAttachment(args: any) {
     const { pageId, filePath, outputDir } = args;
 
     try {
-        await apiClient.loadConfig();
         const fileBuffer = await readFile(filePath);
         const fileName = filePath.split("/").pop() || "attachment";
 

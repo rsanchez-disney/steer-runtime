@@ -2,12 +2,12 @@
 
 ## Differences: CLI vs UI
 
-| Aspect | kiro-cli | Kiro UI |
-|--------|----------|---------|
+| Aspect         | kiro-cli                   | Kiro UI                   |
+|----------------|----------------------------|---------------------------|
 | Agent location | `~/.kiro/agents/` (global) | `.kiro/agents/` (project) |
-| Resource paths | `file://~/.kiro/context/` | `file://.kiro/context/` |
-| Prompt paths | Absolute or relative | Relative to agent file |
-| Invocation | `--agent agent_name` | Select from UI dropdown |
+| Resource paths | `file://~/.kiro/context/`  | `file://.kiro/context/`   |
+| Prompt paths   | Absolute or relative       | Relative to agent file    |
+| Invocation     | `--agent agent_name`       | Select from UI dropdown   |
 
 ## Setup for Kiro UI
 

@@ -2,51 +2,57 @@ import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
+const DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
 const DEFAULT_TIMEOUT_MS = 30000;
 
 export class ConfluenceApiClient {
     private confluenceUrl: string | null = null;
     private confluencePat: string | null = null;
+    private loaded = false;
 
-    async loadConfig() {
-        if (!this.confluenceUrl || !this.confluencePat) {
-            // First, try reading directly from process.env (set by MCP config)
-            this.confluenceUrl = process.env.CONFLUENCE_URL || null;
-            this.confluencePat = process.env.CONFLUENCE_PAT || null;
+    private loadEnv() {
+        if (this.loaded) return;
+        this.loaded = true;
 
-            // Fallback: try loading from .env file if env vars not already set
-            if (!this.confluenceUrl || !this.confluencePat) {
-                try {
-                    const __filename = fileURLToPath(import.meta.url);
-                    const __dirname = dirname(__filename);
-                    const envPath = resolve(__dirname, "../../.env");
-                    console.error(`Loading .env from: ${envPath}`);
-                    config({ path: envPath });
-                    this.confluenceUrl = process.env.CONFLUENCE_URL || null;
-                    this.confluencePat = process.env.CONFLUENCE_PAT || null;
-                } catch (e) {
-                    console.error(`Failed to load .env file: ${(e as Error).message}`);
-                }
-            }
+        // First, try reading directly from process.env (set by MCP config)
+        this.confluenceUrl = process.env.CONFLUENCE_URL || null;
+        this.confluencePat = process.env.CONFLUENCE_PAT || null;
 
-            if (!this.confluenceUrl || !this.confluencePat) {
-                throw new Error(
-                    `Missing required environment variables: CONFLUENCE_URL, CONFLUENCE_PAT.`,
-                );
-            }
-
-            if (
-                this.confluenceUrl.includes("atlassian.net") &&
-                !this.confluenceUrl.includes("/wiki")
-            ) {
-                this.confluenceUrl = `${this.confluenceUrl}/wiki`;
+        // Fallback: try loading from .env file if env vars not already set
+        if (!this.confluencePat) {
+            try {
+                const __filename = fileURLToPath(import.meta.url);
+                const __dirname = dirname(__filename);
+                const envPath = resolve(__dirname, "../../.env");
+                config({ path: envPath });
+                this.confluencePat = process.env.CONFLUENCE_PAT || null;
+                this.confluenceUrl = this.confluenceUrl || process.env.CONFLUENCE_URL || null;
+            } catch (e) {
+                // ignore — .env is optional when env vars are set via MCP config
             }
         }
     }
 
+    getBaseUrl(): string {
+        this.loadEnv();
+        let url = (this.confluenceUrl || DEFAULT_CONFLUENCE_URL).replace(/\/+$/, "");
+        if (url.includes("atlassian.net") && !url.includes("/wiki")) {
+            url = `${url}/wiki`;
+        }
+        return url;
+    }
+
+    getPat(): string {
+        this.loadEnv();
+        if (this.confluencePat) return this.confluencePat;
+        throw new Error(
+            "CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file.",
+        );
+    }
+
     async makeRequest(endpoint: string, options: RequestInit = {}) {
-        await this.loadConfig();
-        const url = `${this.confluenceUrl}/rest/api/${endpoint}`;
+        const url = `${this.getBaseUrl()}/rest/api/${endpoint}`;
+        const pat = this.getPat();
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
@@ -56,7 +62,7 @@ export class ConfluenceApiClient {
                 ...options,
                 signal: controller.signal,
                 headers: {
-                    Authorization: `Bearer ${this.confluencePat}`,
+                    Authorization: `Bearer ${pat}`,
                     Accept: "application/json",
                     "Content-Type": "application/json",
                     ...options.headers,
@@ -77,17 +83,11 @@ export class ConfluenceApiClient {
     }
 
     getConfluenceUrl(): string {
-        if (!this.confluenceUrl) {
-            throw new Error("Configuration not loaded");
-        }
-        return this.confluenceUrl;
+        return this.getBaseUrl();
     }
 
     getConfluencePat(): string {
-        if (!this.confluencePat) {
-            throw new Error("Configuration not loaded");
-        }
-        return this.confluencePat;
+        return this.getPat();
     }
 }
 
