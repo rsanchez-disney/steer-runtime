@@ -31,8 +31,8 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json`):
       ],
       "env": {
         "SPLUNK_BASE_URL": "https://splunk.wdprapps.disney.com:8089",
-        "SPLUNK_USERNAME": "your-api-account",
-        "SPLUNK_PASSWORD": "your-password"
+        "SPLUNK_API_USERNAME": "your-api-account",
+        "SPLUNK_API_PASSWORD": "your-password"
       },
       "disabled": false,
       "autoApprove": []
@@ -105,7 +105,7 @@ npm run inspector   # Launch MCP Inspector for testing
 |-------|-------|-----|
 | `Cannot find module` | Not built | Run `npm run build` or `npm run bundle` |
 | `fetch is not defined` | Node < 16 or missing node-fetch | Run `npm install` |
-| `Splunk auth error: 401` | Bad credentials | Verify `SPLUNK_USERNAME` and `SPLUNK_PASSWORD` |
+| `Splunk auth error: 401` | Bad credentials | Verify `SPLUNK_API_USERNAME` and `SPLUNK_API_PASSWORD` |
 | `404 Not Found` on v2 endpoints | Splunk version < 9.5 | Server uses v1 REST API only — this is expected |
 | `Search timed out` | Query too broad | Add time bounds or reduce scope, increase `maxWaitSeconds` |
 | Empty results | Wrong index or time range | Check index name and `earliestTime`/`latestTime` |
