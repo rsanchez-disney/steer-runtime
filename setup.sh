@@ -1175,8 +1175,8 @@ if sp_tenant and sp_client and sp_secret:
 # automatically by Koda (v0.4.66+) via GenerateMcpJson. These blocks remain
 # for non-Koda installs. If using Koda, configure tokens in the TUI (press m).
 
-splunk_user = read_tok('SPLUNK_USERNAME')
-splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_user = read_tok('SPLUNK_API_USERNAME')
+splunk_pass = read_tok('SPLUNK_API_PASSWORD')
 splunk_url = read_tok('SPLUNK_BASE_URL')
 if splunk_user and splunk_pass:
     mcp['mcpServers']['splunk-mcp'] = {
@@ -1184,8 +1184,8 @@ if splunk_user and splunk_pass:
         'args': [p_splunk],
         'env': {
             'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
-            'SPLUNK_USERNAME': splunk_user,
-            'SPLUNK_PASSWORD': splunk_pass,
+            'SPLUNK_API_USERNAME': splunk_user,
+            'SPLUNK_API_PASSWORD': splunk_pass,
         }
     }
 
@@ -1203,8 +1203,8 @@ if appd_id and appd_secret:
         }
     }
 
-snow_user = read_tok('SNOW_USERNAME')
-snow_pass = read_tok('SNOW_PASSWORD')
+snow_user = read_tok('SNOW_API_USERNAME')
+snow_pass = read_tok('SNOW_API_PASSWORD')
 snow_url = read_tok('SNOW_INSTANCE')
 if snow_user and snow_pass:
     mcp['mcpServers']['servicenow-mcp'] = {
@@ -1212,8 +1212,8 @@ if snow_user and snow_pass:
         'args': [p_servicenow],
         'env': {
             'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
-            'SNOW_USERNAME': snow_user,
-            'SNOW_PASSWORD': snow_pass,
+            'SNOW_API_USERNAME': snow_user,
+            'SNOW_API_PASSWORD': snow_pass,
         }
     }
 
@@ -2164,8 +2164,8 @@ if sp_tenant and sp_client and sp_secret:
 
 # NOTE: See comment at line ~1089 — these blocks are for non-Koda installs only.
 
-splunk_user = read_tok('SPLUNK_USERNAME')
-splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_user = read_tok('SPLUNK_API_USERNAME')
+splunk_pass = read_tok('SPLUNK_API_PASSWORD')
 splunk_url = read_tok('SPLUNK_BASE_URL')
 if splunk_user and splunk_pass:
     mcp['mcpServers']['splunk-mcp'] = {
@@ -2173,8 +2173,8 @@ if splunk_user and splunk_pass:
         'args': [p_splunk],
         'env': {
             'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
-            'SPLUNK_USERNAME': splunk_user,
-            'SPLUNK_PASSWORD': splunk_pass,
+            'SPLUNK_API_USERNAME': splunk_user,
+            'SPLUNK_API_PASSWORD': splunk_pass,
         }
     }
 
@@ -2192,8 +2192,8 @@ if appd_id and appd_secret:
         }
     }
 
-snow_user = read_tok('SNOW_USERNAME')
-snow_pass = read_tok('SNOW_PASSWORD')
+snow_user = read_tok('SNOW_API_USERNAME')
+snow_pass = read_tok('SNOW_API_PASSWORD')
 snow_url = read_tok('SNOW_INSTANCE')
 if snow_user and snow_pass:
     mcp['mcpServers']['servicenow-mcp'] = {
@@ -2201,8 +2201,8 @@ if snow_user and snow_pass:
         'args': [p_servicenow],
         'env': {
             'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
-            'SNOW_USERNAME': snow_user,
-            'SNOW_PASSWORD': snow_pass,
+            'SNOW_API_USERNAME': snow_user,
+            'SNOW_API_PASSWORD': snow_pass,
         }
     }
 qtest_token = read_tok('QTEST_BEARER_TOKEN')

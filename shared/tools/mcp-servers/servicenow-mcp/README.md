@@ -31,8 +31,8 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json` or `.kiro/settings/mcp.
       ],
       "env": {
         "SNOW_INSTANCE": "https://your-instance.service-now.com",
-        "SNOW_USERNAME": "your-service-account",
-        "SNOW_PASSWORD": "your-password"
+        "SNOW_API_USERNAME": "your-service-account",
+        "SNOW_API_PASSWORD": "your-password"
       },
       "disabled": false,
       "autoApprove": []
@@ -110,5 +110,5 @@ npm run inspector   # Launch MCP Inspector for testing
 | `Cannot find module` | Not built | Run `npm run build` |
 | `fetch is not defined` | Node.js < 16 or missing `node-fetch` | Run `npm install` to ensure `node-fetch` is installed |
 | `Missing required environment variables` | Env vars not set | Check `env` block in mcp.json |
-| `401 Unauthorized` | Bad credentials | Verify `SNOW_USERNAME` and `SNOW_PASSWORD` |
+| `401 Unauthorized` | Bad credentials | Verify `SNOW_API_USERNAME` and `SNOW_API_PASSWORD` |
 | `No record found` | Wrong number format | Include the prefix (e.g. `INC`, `CTASK`, `CHG`) |

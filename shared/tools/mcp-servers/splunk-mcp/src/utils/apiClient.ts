@@ -13,8 +13,8 @@ export class SplunkApiClient {
     async loadConfig() {
         if (!this.baseUrl || !this.username || !this.password) {
             this.baseUrl = process.env.SPLUNK_BASE_URL || null;
-            this.username = process.env.SPLUNK_USERNAME || null;
-            this.password = process.env.SPLUNK_PASSWORD || null;
+            this.username = process.env.SPLUNK_API_USERNAME || null;
+            this.password = process.env.SPLUNK_API_PASSWORD || null;
 
             if (!this.baseUrl || !this.username || !this.password) {
                 try {
@@ -23,8 +23,8 @@ export class SplunkApiClient {
                     const envPath = resolve(__dirname, "../../.env");
                     config({ path: envPath });
                     this.baseUrl = process.env.SPLUNK_BASE_URL || null;
-                    this.username = process.env.SPLUNK_USERNAME || null;
-                    this.password = process.env.SPLUNK_PASSWORD || null;
+                    this.username = process.env.SPLUNK_API_USERNAME || null;
+                    this.password = process.env.SPLUNK_API_PASSWORD || null;
                 } catch (e) {
                     console.error(`Failed to load .env file: ${(e as Error).message}`);
                 }
@@ -32,7 +32,7 @@ export class SplunkApiClient {
 
             if (!this.baseUrl || !this.username || !this.password) {
                 throw new Error(
-                    "Missing required environment variables: SPLUNK_BASE_URL, SPLUNK_USERNAME, SPLUNK_PASSWORD",
+                    "Missing required environment variables: SPLUNK_BASE_URL, SPLUNK_API_USERNAME, SPLUNK_API_PASSWORD",
                 );
             }
 
@@ -137,8 +137,8 @@ export class SplunkApiClient {
     async validate(): Promise<void> {
         const missing: string[] = [];
         if (!process.env.SPLUNK_BASE_URL) missing.push("SPLUNK_BASE_URL");
-        if (!process.env.SPLUNK_USERNAME) missing.push("SPLUNK_USERNAME");
-        if (!process.env.SPLUNK_PASSWORD) missing.push("SPLUNK_PASSWORD");
+        if (!process.env.SPLUNK_API_USERNAME) missing.push("SPLUNK_API_USERNAME");
+        if (!process.env.SPLUNK_API_PASSWORD) missing.push("SPLUNK_API_PASSWORD");
 
         if (missing.length) {
             throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
