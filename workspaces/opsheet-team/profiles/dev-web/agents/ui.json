@@ -1,11 +1,14 @@
 {
   "name": "ui",
-  "description": "Config Studio UI specialist (Angular)",
-  "prompt": "ui.md",
+  "description": "Config Studio UI specialist (Angular) — OpSheet+ team",
+  "prompt": "webui-developer.md",
   "tools": [
     "fs_read",
     "fs_write",
-    "execute_bash"
+    "execute_bash",
+    "code",
+    "grep",
+    "@figma/*"
   ],
   "toolsSettings": {
     "fs_write": {
@@ -15,14 +18,24 @@
         "package.json",
         "angular.json",
         ".eslintrc*",
-        "tsconfig*.json"
+        "tsconfig*.json",
+        ".kiro/ticket-cache/**"
       ]
     }
   },
   "resources": [
     "file://AGENTS.md",
+    "file://README.md",
     "file://.kiro/steering/**/*.md",
-    "file://README.md"
+    "file://.kiro/context/angular_modern_patterns.md"
+  ],
+  "steering": [
+    "steering/ui-angular-opsheet.md",
+    "steering/opsheet-angular-reviewer.md"
+  ],
+  "skills": [
+    "skills/opsheet-ui-feature-implementation.md",
+    "skills/opsheet-ui-bugfix.md"
   ],
   "hooks": {
     "preToolUse": [
@@ -45,6 +58,8 @@
       }
     ]
   },
-  "allowedTools": [],
+  "allowedTools": [
+    "@figma/*"
+  ],
   "includeMcpJson": true
 }
