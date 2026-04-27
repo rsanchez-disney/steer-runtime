@@ -60,5 +60,5 @@
     "@confluence/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "Senior Java agent ready. I enforce Spring Boot 3 best practices, detect anti-patterns, and guide clean architecture. What are we building?"
+  "welcomeMessage": "Senior Java engineer ready — Java 8+, Spring Boot 1.5+, auto-detects stack, enforces best practices, mandatory unit tests. What are we building?"
 }
