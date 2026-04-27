@@ -2,7 +2,7 @@
 
 Whenever the user asks to implement, write, refactor, or add code, validate the work against the Performance Engineering Guide before producing output.
 
-Guide location: find the file named `PERFORMANCE_ENGINEERING_GUIDE_AGNOSTIC.md` in the current workspace or any parent/sibling directory. If not found, ask the user to provide the path before proceeding.
+Guide location: find the file named `performance_engineering_guide.md` in the current workspace or any parent/sibling directory. If not found, ask the user to provide the path before proceeding.
 
 ## When This Rule Activates
 

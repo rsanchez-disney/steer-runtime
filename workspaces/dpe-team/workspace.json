@@ -1,8 +1,14 @@
 {
   "name": "dpe-team",
-  "description": "Dynamic Pricing Engine — microservices platform for Disney pricing calculations",
+  "description": "Dynamic Pricing Engine \u2014 microservices platform for Disney pricing calculations",
   "team": "DPE / WDPR Strategic Pricing Systems",
-  "profiles": ["dev-core", "qa", "ba", "ops", "pm"],
+  "profiles": [
+    "dev-core",
+    "qa",
+    "ba",
+    "ops",
+    "pm"
+  ],
   "default_agent": "orchestrator",
   "rules": [
     "conventional_commit",
@@ -19,8 +25,12 @@
     "breaking-change-detection"
   ],
   "enable_tools": true,
-  "workspace_path": "",
-  "services": ["dpe-calculator", "dpe-dataservice", "dpe-impact-analysis"],
+  "workspace_path": "~/Workspace/Disney/WDPR-SPS",
+  "services": [
+    "dpe-calculator",
+    "dpe-dataservice",
+    "dpe-impact-analysis"
+  ],
   "projects": [
     {
       "name": "Dynamic-Pricing-Engine-Service",
@@ -106,5 +116,8 @@
       "repo": "WDPR-SPS/dpe-monorepo",
       "memory_bank": "dpe-monorepo"
     }
-  ]
+  ],
+  "jira_prefix": "PPODPE-",
+  "jira_url": "https://myjira.disney.com/projects/PPODPE",
+  "wiki_url": "https://mywiki.disney.com/spaces/DPE/pages/681902331/Dynamic+Pricing+Engine+Home"
 }
