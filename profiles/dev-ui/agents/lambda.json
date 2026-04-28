@@ -8,7 +8,6 @@
     "execute_bash"
   ],
   "resources": [
-    "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
     "file://.kiro/context/lambda_patterns.md"
   ],

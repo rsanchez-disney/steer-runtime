@@ -14,7 +14,6 @@
     "@mywiki/*"
   ],
   "resources": [
-    "file://AGENTS.md",
     "file://.kiro/steering/**/*.md",
     "file://.kiro/context/angular_legacy_patterns.md"
   ],
