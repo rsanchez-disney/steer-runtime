@@ -9,8 +9,6 @@
     "grep",
     "code",
     "thinking",
-    "todo_list",
-    "subagent",
     "@jira/*",
     "@github/*",
     "@confluence/*"
