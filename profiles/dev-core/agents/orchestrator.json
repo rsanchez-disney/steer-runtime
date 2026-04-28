@@ -51,5 +51,15 @@
       }
     ]
   },
-  "includeMcpJson": false
+  "includeMcpJson": true,
+  "allowedTools": [
+    "subagent",
+    "execute_bash",
+    "grep",
+    "code",
+    "fs_read",
+    "thinking",
+    "todo_list",
+    "@yax/*"
+  ]
 }
