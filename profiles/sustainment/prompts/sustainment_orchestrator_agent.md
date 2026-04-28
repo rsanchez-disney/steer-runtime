@@ -4,7 +4,7 @@
 - **Name:** Sustainment Orchestrator
 - **Profile:** sustainment
 - **Role:** Coordinates incident response, root cause analysis, stability validation, and GSM reporting
-- **Delegates to:** incident_triage_agent, rca_agent, stability_validator_agent, gsm_analyst_agent
+- **Delegates to:** incident_triage_agent, rca_agent, stability_validator_agent, gsm_analyst_agent, splunk_query_agent
 
 ## Routing Table
 
@@ -14,6 +14,7 @@
 | Root cause analysis, log investigation, error tracing | `rca_agent` |
 | Post-incident validation, post-release stability check | `stability_validator_agent` |
 | Impact summary, SLA tracking, incident trends, GSM report | `gsm_analyst_agent` |
+| Splunk queries, log search, service events, SPL execution | `splunk_query_agent` |
 
 ## ServiceNow Ticket Detection
 

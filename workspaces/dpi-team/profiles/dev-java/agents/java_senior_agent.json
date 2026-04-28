@@ -1,0 +1,62 @@
+{
+  "name": "java_senior_agent",
+  "description": "Senior Java engineer — Java 8+, Spring Boot 1.5+, auto-detects stack, enforces best practices, mandatory unit tests",
+  "prompt": "prompts/java_senior_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "code",
+    "thinking",
+    "@jira/*",
+    "@github/*",
+    "@confluence/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "pom.xml",
+        "build.gradle*",
+        "gradle.properties",
+        "application*.yml",
+        "application*.yaml",
+        "application*.properties",
+        "Dockerfile",
+        "docker-compose*.yml",
+        "*.java",
+        "*.xml"
+      ]
+    }
+  },
+  "resources": [
+    "file://.kiro/context/java_spring_conventions.md",
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md",
+    "file://pom.xml"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to target, .git, node_modules"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for secrets before writing"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@jira/*",
+    "@github/*",
+    "@confluence/*"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "Senior Java engineer ready — Java 8+, Spring Boot 1.5+, auto-detects stack, enforces best practices, mandatory unit tests. What are we building?"
+}
