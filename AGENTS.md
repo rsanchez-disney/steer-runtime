@@ -267,6 +267,17 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
 **MCP Servers:** confluence, mywiki, github
 
+#### devops_runner_agent
+**File:** `profiles/dev-core/agents/devops_runner_agent.json`  
+**Purpose:** Executes builds, tests, git operations, and local dev commands  
+**Use for:** Running builds, test suites, git branch/commit/push, linting, formatting
+
+#### splunk_query_agent
+**File:** `profiles/dev-core/agents/splunk_query_agent.json`  
+**Purpose:** Queries Splunk logs via Chrome MCP browser automation with SSO  
+**Use for:** Searching service logs, executing SPL queries, incident investigation  
+**MCP Servers:** Chrome MCP
+
 ---
 
 ### Profile: dev-web (5 agents)
@@ -787,7 +798,6 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **sustainment** | rca_agent | | | | | | |
 | **sustainment** | stability_validator_agent | | | | | | |
 | **sustainment** | gsm_analyst_agent | | | | | | |
-| **sustainment** | splunk_query_agent | | | | | | Chrome MCP |
 
 ---
 
