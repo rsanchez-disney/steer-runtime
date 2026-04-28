@@ -1,0 +1,43 @@
+{
+  "name": "ui_legacy",
+  "description": "Angular legacy & uplift specialist (v12–v18+) for Config Studio pre-sales applications",
+  "prompt": "ui_legacy.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/angular_legacy_patterns.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  }
+}

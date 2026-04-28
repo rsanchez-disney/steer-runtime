@@ -1,0 +1,20 @@
+{
+  "name": "L2-dev-ui",
+  "description": "L2 Studio team — legacy Angular (v12–v18+), Polymer 2/3, and Lambda development for Config Studio pre-sales",
+  "team": "L2 Studio",
+  "profiles": [
+    "dev-core",
+    "dev-ui"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-angular-development",
+    "general-aws",
+    "general-testing-strategies",
+    "general-node-development",
+    "general-performance-optimization",
+    "vista-design-system"
+  ],
+  "enable_tools": true
+}
