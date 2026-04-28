@@ -438,7 +438,9 @@ var init_customFields = __esm({
       storyPoints: "customfield_10004",
       epicLink: "customfield_10014",
       // ── Studio / Programme ───────────────────────────
-      studio: "customfield_20001"
+      studio: "customfield_20001",
+      // ── Test / QA ────────────────────────────────────
+      testDetails: "customfield_20104"
       // Add more aliases below as needed:
       // myAlias: "customfield_XXXXX",
     };
@@ -5784,6 +5786,10 @@ var JiraAuth = class {
 };
 
 // build/utils/jiraApi.js
+function dedup(existing, incoming, key) {
+  const seen = new Set(existing.map(key));
+  return [...existing, ...incoming.filter((i) => !seen.has(key(i)))];
+}
 function toADF(text) {
   return {
     type: "doc",
@@ -6435,6 +6441,133 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to get XRay pre-condition tests for ${preConditionKey}: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
+  }
+  // ==========================================
+  // Issue Link & User Methods
+  // ==========================================
+  /**
+   * Create a link between two Jira issues.
+   * POST /rest/api/{version}/issueLink
+   */
+  async linkJiraIssues(inwardTicketId, outwardTicketId, linkType) {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`, {
+      method: "POST",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        type: { name: linkType },
+        inwardIssue: { key: inwardTicketId },
+        outwardIssue: { key: outwardTicketId }
+      })
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to link JIRA issues: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+  }
+  /**
+   * Get all available issue link types.
+   * GET /rest/api/{version}/issueLinkType
+   */
+  async getJiraIssueLinkTypes() {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`, {
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get JIRA issue link types: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Get the currently authenticated user's profile.
+   * GET /rest/api/{version}/myself
+   */
+  async getMyself() {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`, {
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get current user: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  // ==========================================
+  // Development Status (Server-only)
+  // ==========================================
+  /**
+   * Get development status (PRs, branches, commits) for an issue.
+   * Server-only — the dev-status REST API is not available on Jira Cloud.
+   * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
+   */
+  async getDevStatus(issueId) {
+    this.assertXRayServer();
+    const dataTypes = ["pullrequest", "branch", "repository"];
+    const results = await Promise.allSettled(dataTypes.map(async (dataType) => {
+      const params = new URLSearchParams({
+        issueId,
+        applicationType: "githube",
+        dataType
+      });
+      const response = await fetch(`${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`, {
+        headers: {
+          Authorization: await this.auth.getAuthHeader(),
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      return await response.json();
+    }));
+    const mergedDetail = [];
+    for (const result of results) {
+      if (result.status === "fulfilled" && result.value?.detail) {
+        for (const provider of result.value.detail) {
+          const existing = mergedDetail.find((d) => d.instanceName === provider.instanceName);
+          if (existing) {
+            existing.pullRequests = dedup(existing.pullRequests || [], provider.pullRequests || [], (pr) => pr.url);
+            existing.branches = dedup(existing.branches || [], provider.branches || [], (b) => b.url);
+            existing.commits = dedup(existing.commits || [], provider.commits || [], (c) => c.id);
+          } else {
+            mergedDetail.push({ ...provider });
+          }
+        }
+      }
+    }
+    return { detail: mergedDetail };
+  }
+  // ==========================================
+  // XRay Write Methods (Server-only)
+  // ==========================================
+  /**
+   * Add tests to a Test Execution.
+   * POST /rest/raven/1.0/api/testexec/{testExecKey}/test
+   */
+  async addTestsToTestExec(testExecKey, testKeys) {
+    this.assertXRayServer();
+    const response = await fetch(`${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`, {
+      method: "POST",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ add: testKeys })
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
   }
 };
 
@@ -8783,6 +8916,250 @@ async function handleXrayGetPreConditionTests(args) {
   }
 }
 
+// build/tools/jiraGetDevStatus.js
+var jiraGetDevStatusSchema = {
+  name: "jira_get_dev_status",
+  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub. Server-only (not available on Jira Cloud).",
+  inputSchema: {
+    type: "object",
+    properties: {
+      ticketId: {
+        type: "string",
+        description: "The JIRA ticket ID (e.g., PROJ-123)"
+      }
+    },
+    required: ["ticketId"]
+  }
+};
+async function handleJiraGetDevStatus(args) {
+  try {
+    const { ticketId } = args;
+    const apiClient = new JiraApiClient();
+    const ticket = await apiClient.fetchJiraTicket(ticketId, ["summary"]);
+    const issueId = ticket.id;
+    if (!issueId) {
+      return {
+        content: [{ type: "text", text: `Could not resolve internal issue ID for ${ticketId}.` }],
+        isError: true
+      };
+    }
+    const devStatus = await apiClient.getDevStatus(issueId);
+    const lines = [`**Development Status for ${ticketId}** (issue ID: ${issueId})`, ""];
+    const detail = devStatus?.detail;
+    if (!detail || detail.length === 0) {
+      lines.push("No development data found for this ticket.");
+      return { content: [{ type: "text", text: lines.join("\n") }] };
+    }
+    for (const provider of detail) {
+      lines.push(`## ${provider.instanceName || provider.name || "Unknown"}`, "");
+      for (const pr of provider.pullRequests || []) {
+        const status = pr.status || "UNKNOWN";
+        const repo = pr.repositoryName || pr.destination?.repository?.name || "";
+        lines.push(`- [${status}] **${pr.name || pr.title || "(no title)"}** (${repo})`);
+        if (pr.source?.branch || pr.destination?.branch)
+          lines.push(`  Branch: ${pr.source?.branch || ""} \u2192 ${pr.destination?.branch || ""}`);
+        if (pr.author?.name || pr.author?.login)
+          lines.push(`  Author: ${pr.author?.name || pr.author?.login}`);
+        if (pr.url)
+          lines.push(`  URL: ${pr.url}`);
+        lines.push("");
+      }
+      for (const branch of provider.branches || []) {
+        lines.push(`- **${branch.name || "(unnamed)"}** (${branch.repository?.name || ""})`);
+        if (branch.url)
+          lines.push(`  URL: ${branch.url}`);
+      }
+      if (provider.branches?.length)
+        lines.push("");
+      for (const commit of provider.commits || []) {
+        lines.push(`- \`${(commit.id || "").substring(0, 8)}\` ${commit.message || "(no message)"}`);
+        if (commit.author?.name)
+          lines.push(`  Author: ${commit.author.name}`);
+        if (commit.url)
+          lines.push(`  URL: ${commit.url}`);
+      }
+      if (provider.commits?.length)
+        lines.push("");
+    }
+    return { content: [{ type: "text", text: lines.join("\n") }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching dev status: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraGetLinkTypes.js
+var jiraGetLinkTypesSchema = {
+  name: "jira_get_link_types",
+  description: "Get all available issue link types from the JIRA instance (e.g., Test, Blocks, Relates)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link types data (optional)"
+      }
+    },
+    required: []
+  }
+};
+async function handleJiraGetLinkTypes(args) {
+  try {
+    const { outputDir } = args;
+    const apiClient = new JiraApiClient();
+    const data = await apiClient.getJiraIssueLinkTypes();
+    const linkTypes = data.issueLinkTypes || [];
+    let summaryText = `**Available Issue Link Types**
+
+**Total Link Types:** ${linkTypes.length}
+
+`;
+    linkTypes.forEach((lt, index) => {
+      summaryText += `**${index + 1}. ${lt.name}**
+- Inward: ${lt.inward}
+- Outward: ${lt.outward}
+
+`;
+    });
+    const savedPath = await saveData(outputDir, `link_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, { fetchedAt: (/* @__PURE__ */ new Date()).toISOString(), rawData: data, formattedSummary: summaryText }, true);
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return { content: [{ type: "text", text: `${summaryText}${savedInfo}` }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching JIRA issue link types: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraGetMyself.js
+var jiraGetMyselfSchema = {
+  name: "jira_get_myself",
+  description: "Get the currently authenticated Jira user's profile (username, display name, email). Useful for resolving the internal username needed for assignee fields.",
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: []
+  }
+};
+async function handleJiraGetMyself(_args) {
+  try {
+    const apiClient = new JiraApiClient();
+    const user = await apiClient.getMyself();
+    const summaryText = `**Current Jira User**
+
+**Username:** ${user.name || user.accountId || "N/A"}
+**Display Name:** ${user.displayName}
+**Email:** ${user.emailAddress || "Not available"}
+**Active:** ${user.active}`;
+    return { content: [{ type: "text", text: summaryText }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching current user: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraLinkIssues.js
+var jiraLinkIssuesSchema = {
+  name: "jira_link_issues",
+  description: "Create a directional link between two JIRA issues (e.g., Test, Blocks, Relates)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      inwardTicketId: {
+        type: "string",
+        description: "The ticket key receiving the inward relationship (e.g., PROJ-100)"
+      },
+      outwardTicketId: {
+        type: "string",
+        description: "The ticket key receiving the outward relationship (e.g., PROJ-200)"
+      },
+      linkType: {
+        type: "string",
+        description: 'The link type name (e.g., "Test", "Blocks", "Relates")'
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link operation result (optional)"
+      }
+    },
+    required: ["inwardTicketId", "outwardTicketId", "linkType"]
+  }
+};
+async function handleJiraLinkIssues(args) {
+  try {
+    const { inwardTicketId, outwardTicketId, linkType, outputDir } = args;
+    const apiClient = new JiraApiClient();
+    await apiClient.linkJiraIssues(inwardTicketId, outwardTicketId, linkType);
+    const summaryText = `**Issue Link Created Successfully**
+
+**Link Type:** ${linkType}
+**Inward Issue:** ${inwardTicketId}
+**Outward Issue:** ${outwardTicketId}`;
+    const savedPath = await saveData(outputDir, `link_${inwardTicketId}_${outwardTicketId}_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, { inwardTicketId, outwardTicketId, linkType, createdAt: (/* @__PURE__ */ new Date()).toISOString() }, true);
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return { content: [{ type: "text", text: `${summaryText}${savedInfo}` }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error linking JIRA issues: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayAddTestsToTestExec.js
+var xrayAddTestsToTestExecSchema = {
+  name: "xray_add_tests_to_test_exec",
+  description: "Add one or more Test issues to an XRay Test Execution. Server-only (XRay REST API).",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testExecKey: {
+        type: "string",
+        description: "The Test Execution issue key (e.g., PROJ-100)"
+      },
+      testKeys: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Array of Test issue keys to add (e.g., ["PROJ-101", "PROJ-102"])'
+      }
+    },
+    required: ["testExecKey", "testKeys"]
+  }
+};
+async function handleXrayAddTestsToTestExec(args) {
+  try {
+    const { testExecKey, testKeys: rawTestKeys } = args;
+    const testKeys = typeof rawTestKeys === "string" ? JSON.parse(rawTestKeys) : rawTestKeys;
+    if (!testKeys || testKeys.length === 0) {
+      return { content: [{ type: "text", text: "No test keys provided." }] };
+    }
+    const apiClient = new JiraApiClient();
+    await apiClient.addTestsToTestExec(testExecKey, testKeys);
+    return {
+      content: [{
+        type: "text",
+        text: `**Tests Added to Test Execution ${testExecKey}**
+
+Added ${testKeys.length} test(s): ${testKeys.join(", ")}`
+      }]
+    };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error adding tests to test execution: ${error.message}` }],
+      isError: true
+    };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -8816,7 +9193,14 @@ var tools = [
   { schema: prefixed(xraySearchTestCasesSchema), handler: handleXraySearchTestCases },
   { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
   { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
-  { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests }
+  { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests },
+  // Issue links, user, dev status
+  { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
+  { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
+  { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
+  { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
+  // XRay write
+  { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec }
 ];
 var JiraMCPServer = class {
   server;
