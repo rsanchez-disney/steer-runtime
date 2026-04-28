@@ -70,6 +70,13 @@ graph TD
         PHP["php_agent<br/>"]:::agent
     end
 
+    %% ─── dev-ui ────────────────────────────────────
+    subgraph DEV_UI["dev-ui · 3 agents"]
+        UI_LEGACY["ui_legacy<br/><i>Angular v12–v18+ · confluence · mywiki</i>"]:::agent
+        POLYMER["polymer<br/><i>Polymer 2/3 · confluence · mywiki</i>"]:::agent
+        LAMBDA["lambda<br/><i>AWS Lambda Node.js</i>"]:::agent
+    end
+
     %% ─── ba ────────────────────────────────────────
     subgraph BA["ba · 8 agents"]
         BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
@@ -127,6 +134,7 @@ graph TD
     DEV -.-> DEV_INFRA
     DEV -.-> DEV_DOTNET
     DEV -.-> DEV_PHP
+    DEV -.-> DEV_UI
 
     %% ─── cross-profile delegation ──────────────────
     ORCH -.->|delegates| BACK
@@ -135,6 +143,9 @@ graph TD
     ORCH -.->|delegates| PYTHON
     ORCH -.->|delegates| TERRAFORM
     ORCH -.->|delegates| FLUTTER
+    ORCH -.->|delegates| UI_LEGACY
+    ORCH -.->|delegates| POLYMER
+    ORCH -.->|delegates| LAMBDA
 ```
 
 **Legend:** 🎯 = orchestrator (has `thinking`, `todo`, `delegate`) · *italic* = MCP servers and special tools
@@ -142,18 +153,19 @@ graph TD
 
 ---
 
-## Dev Profiles (30 agents total)
+## Dev Profiles (33 agents total)
 
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 30 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
+koda install dev                    # All 33 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-dotnet    # .NET developer (19 agents)
 koda install dev-core dev-php       # PHP/Zend developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
 koda install dev-core               # Core only — orchestrator + quality (16 agents)
 ```
 
@@ -398,6 +410,35 @@ Mobile specialists for Flutter cross-platform and native platform channels.
 **File:** `profiles/dev-mobile/agents/ios_native.json`  
 **Purpose:** Swift/Obj-C platform channels for iOS  
 **Use for:** iOS-specific implementations, native integrations  
+
+---
+
+### Profile: dev-ui (3 agents)
+
+Legacy UI specialists for Angular 15, Polymer 2/3, and lightweight Lambda development for Config Studio pre-sales.
+
+#### ui_legacy
+**File:** `profiles/dev-ui/agents/ui_legacy.json`  
+**Purpose:** Angular legacy & uplift specialist (v12–v18+) for Config Studio pre-sales applications  
+**Use for:** Angular v12–v15 maintenance, incremental uplift to v16/v17/v18+, Vista design system integration  
+**Tools:** `fs_read`, `fs_write`, `execute_bash`  
+**MCP Servers:** confluence, mywiki  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+#### polymer
+**File:** `profiles/dev-ui/agents/polymer.json`  
+**Purpose:** Polymer 2/3 web component specialist for legacy uplift  
+**Use for:** Polymer 2/3 web components, uplift from Polymer 2→3→Lit, Vista component integration  
+**Tools:** `fs_read`, `fs_write`, `execute_bash`  
+**MCP Servers:** confluence, mywiki  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+#### lambda
+**File:** `profiles/dev-ui/agents/lambda.json`  
+**Purpose:** Lightweight AWS Lambda specialist for Node.js handlers  
+**Use for:** Lambda function development, thin-handler pattern, cold start optimization, SAM CLI  
+**Tools:** `fs_read`, `fs_write`, `execute_bash`  
+**Hooks:** preToolUse (guard writes, secret scan)
 
 ---
 
@@ -775,6 +816,9 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-mobile** | flutter | | | | | | |
 | **dev-mobile** | android_native | | | | | | |
 | **dev-mobile** | ios_native | | | | | | |
+| **dev-ui** | ui_legacy | | ✅ | ✅ | | | |
+| **dev-ui** | polymer | | ✅ | ✅ | | | |
+| **dev-ui** | lambda | | | | | | |
 | **ba** | ba_orchestrator_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | feature_writer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **ba** | requirements_analyst_agent | ✅ | ✅ | ✅ | ✅ | | |
@@ -838,6 +882,9 @@ Shared context loaded via agent `resources`:
 | `php_testing_strategy.md` | php_agent |
 | `php_legacy_migration.md` | php_agent |
 | `php_review_checklist.md` | php_agent |
+| `angular_legacy_patterns.md` | ui_legacy |
+| `polymer_patterns.md` | polymer |
+| `lambda_patterns.md` | lambda |
 
 ---
 
@@ -872,6 +919,11 @@ kiro-cli chat --agent php_agent                   # PHP/Zend Framework
 kiro-cli chat --agent flutter                   # Flutter mobile
 kiro-cli chat --agent android_native            # Android native
 kiro-cli chat --agent ios_native                # iOS native
+
+# Dev UI
+kiro-cli chat --agent ui_legacy                 # Angular legacy & uplift (v12–v18+)
+kiro-cli chat --agent polymer                   # Polymer 2/3
+kiro-cli chat --agent lambda                    # AWS Lambda
 
 # BA/PO
 kiro-cli chat --agent ba_orchestrator_agent     # BA orchestrator
@@ -919,14 +971,15 @@ kiro-cli chat --agent executive_briefing_agent        # Executive summaries
 ## Installation
 
 ```bash
-koda install dev                    # All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php)
+koda install dev                    # All 33 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
 koda install dev ba qa ops pm       # Install all profiles
 koda enable-tools                   # Enable thinking, todo, knowledge
 ```
 
 ---
 
-**Total Agents:** 64 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, ba: 8, qa: 11, ops: 7, pm: 6, leadership: 5)  
-**Last Updated:** April 18, 2026
+**Total Agents:** 67 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, dev-ui: 3, ba: 8, qa: 11, ops: 7, pm: 6, leadership: 5)  
+**Last Updated:** April 24, 2026
