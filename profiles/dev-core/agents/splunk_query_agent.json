@@ -8,6 +8,10 @@
     "fs_read",
     "thinking"
   ],
+  "resources": [
+    "file://.kiro/context/splunk_indexes.md",
+    "file://.kiro/context/splunk_services.md"
+  ],
   "allowedTools": [
     "@chrome/*"
   ],
