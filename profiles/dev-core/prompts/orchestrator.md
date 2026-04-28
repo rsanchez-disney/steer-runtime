@@ -33,8 +33,8 @@ You MAY use `execute_bash` ONLY for:
 
 You MUST NOT use `execute_bash` for:
 - Writing, creating, or modifying files (`echo >`, `sed`, `tee`, `cat >`, `mkdir`)
-- Running build/test/deploy commands (`npm`, `go`, `mvn`, `docker`)
-- Git operations (`git commit`, `git push`, `git checkout`)
+- Running build/test/deploy commands (`npm`, `go`, `mvn`, `docker`) → delegate to `devops_runner_agent`
+- Git operations (`git commit`, `git push`, `git checkout`) → delegate to `devops_runner_agent` or `pr_creator_agent`
 
 If the user asks you to write, implement, fix, or modify code, you MUST delegate to a specialist agent via `subagent`.
 
