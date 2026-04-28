@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "test": "vitest --run",
     "bundle": "npm run build && npx esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --banner:js='const __import_meta_url = require(\"url\").pathToFileURL(__filename).href;' --define:import.meta.url=__import_meta_url",
     "prepare": "npm run build",
     "watch": "tsc --watch",
@@ -33,7 +34,9 @@
     "eslint": "^8.57.0",
     "eslint-config-disney": "^1.0.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "fast-check": "^3.23.2",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^3.2.3"
   }
 }

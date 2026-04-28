@@ -1,6 +1,11 @@
 import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
 
+function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
+    const seen = new Set(existing.map(key));
+    return [...existing, ...incoming.filter(i => !seen.has(key(i)))];
+}
+
 /** Wrap plain text in Atlassian Document Format (required by Jira Cloud API v3). */
 function toADF(text: string): object {
     return {
@@ -991,5 +996,186 @@ export class JiraApiClient {
         }
 
         return await response.json();
+    }
+
+    // ==========================================
+    // Issue Link & User Methods
+    // ==========================================
+
+    /**
+     * Create a link between two Jira issues.
+     * POST /rest/api/{version}/issueLink
+     */
+    async linkJiraIssues(
+        inwardTicketId: string,
+        outwardTicketId: string,
+        linkType: string,
+    ): Promise<void> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    type: { name: linkType },
+                    inwardIssue: { key: inwardTicketId },
+                    outwardIssue: { key: outwardTicketId },
+                }),
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to link JIRA issues: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+    }
+
+    /**
+     * Get all available issue link types.
+     * GET /rest/api/{version}/issueLinkType
+     */
+    async getJiraIssueLinkTypes(): Promise<any> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`,
+            {
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get JIRA issue link types: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Get the currently authenticated user's profile.
+     * GET /rest/api/{version}/myself
+     */
+    async getMyself(): Promise<any> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`,
+            {
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                `Failed to get current user: ${response.status} ${response.statusText} - ${errorText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    // ==========================================
+    // Development Status (Server-only)
+    // ==========================================
+
+    /**
+     * Get development status (PRs, branches, commits) for an issue.
+     * Server-only — the dev-status REST API is not available on Jira Cloud.
+     * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
+     */
+    async getDevStatus(issueId: string): Promise<any> {
+        this.assertXRayServer();
+
+        const dataTypes = ["pullrequest", "branch", "repository"];
+        const results = await Promise.allSettled(
+            dataTypes.map(async (dataType) => {
+                const params = new URLSearchParams({
+                    issueId,
+                    applicationType: "githube",
+                    dataType,
+                });
+                const response = await fetch(
+                    `${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`,
+                    {
+                        headers: {
+                            Authorization: await this.auth.getAuthHeader(),
+                            "Content-Type": "application/json",
+                        },
+                    },
+                );
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(
+                        `Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`,
+                    );
+                }
+                return await response.json();
+            }),
+        );
+
+        const mergedDetail: any[] = [];
+        for (const result of results) {
+            if (result.status === "fulfilled" && result.value?.detail) {
+                for (const provider of result.value.detail) {
+                    const existing = mergedDetail.find(
+                        (d) => d.instanceName === provider.instanceName,
+                    );
+                    if (existing) {
+                        existing.pullRequests = dedup(existing.pullRequests || [], provider.pullRequests || [], (pr: any) => pr.url);
+                        existing.branches = dedup(existing.branches || [], provider.branches || [], (b: any) => b.url);
+                        existing.commits = dedup(existing.commits || [], provider.commits || [], (c: any) => c.id);
+                    } else {
+                        mergedDetail.push({ ...provider });
+                    }
+                }
+            }
+        }
+
+        return { detail: mergedDetail };
+    }
+
+    // ==========================================
+    // XRay Write Methods (Server-only)
+    // ==========================================
+
+    /**
+     * Add tests to a Test Execution.
+     * POST /rest/raven/1.0/api/testexec/{testExecKey}/test
+     */
+    async addTestsToTestExec(
+        testExecKey: string,
+        testKeys: string[],
+    ): Promise<void> {
+        this.assertXRayServer();
+
+        const response = await fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ add: testKeys }),
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
     }
 }
