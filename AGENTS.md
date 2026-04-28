@@ -787,6 +787,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **sustainment** | rca_agent | | | | | | |
 | **sustainment** | stability_validator_agent | | | | | | |
 | **sustainment** | gsm_analyst_agent | | | | | | |
+| **sustainment** | splunk_query_agent | | | | | | Chrome MCP |
 
 ---
 
