@@ -4,7 +4,6 @@
   "prompt": "orchestrator.md",
   "tools": [
     "subagent",
-    "execute_bash",
     "grep",
     "code",
     "fs_read",
