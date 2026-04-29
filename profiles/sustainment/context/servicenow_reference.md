@@ -58,7 +58,7 @@ Disney uses non-standard state codes. Always use `sysparm_display_value=all` to 
 - `get_ctask` — fetch CTASK details
 - `add_ctask_work_note` — add work notes to CTASK
 - `update_ctask` — update CTASK fields
-- `close_ctask` — close with notes
+- `close_ctask` — close with notes, close code (`successful`/`unsuccessful`/`issues`/`supplier`/`disney`), and target state (`closed_complete`/`closed_cancelled`/`closed_skipped`/`successful`). Uses Disney custom field `u_close_code`. Service account must be member of assignment group.
 
 ### Assignment & CI
 - `change_assignment_group` — reassign incident

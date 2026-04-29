@@ -326,7 +326,7 @@ Submit a defect for the failed checkout test
 | `get_ctask` | Get change task |
 | `add_ctask_work_note` | Add work note to change task |
 | `update_ctask` | Update change task |
-| `close_ctask` | Close change task |
+| `close_ctask` | Close change task with close code and target state |
 | `get_ci_details` | Get CI details |
 | `search_knowledge_base` | Search knowledge base |
 | `get_on_call` | Get on-call schedule |

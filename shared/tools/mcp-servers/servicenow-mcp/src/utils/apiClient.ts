@@ -72,9 +72,10 @@ export class ServiceNowApiClient {
         }
     }
 
-    async patch(path: string, data: Record<string, any>): Promise<any> {
+    async patch(path: string, data: Record<string, any>, params: Record<string, string> = {}): Promise<any> {
         await this.loadConfig();
-        const url = `${this.instanceUrl}/api/now${path}`;
+        const qs = new URLSearchParams(params).toString();
+        const url = `${this.instanceUrl}/api/now${path}${qs ? `?${qs}` : ""}`;
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
