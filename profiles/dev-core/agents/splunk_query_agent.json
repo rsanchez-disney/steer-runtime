@@ -3,7 +3,7 @@
   "description": "Queries Splunk logs via Chrome MCP browser automation with SSO authentication. Supports legacy source-based and ECS-based query patterns with a pre-loaded service catalog.",
   "prompt": "splunk_query_agent.md",
   "tools": [
-    "@chrome/*",
+    "@chrome-devtools/*",
     "execute_bash",
     "fs_read",
     "thinking"
@@ -13,7 +13,15 @@
     "file://.kiro/context/splunk_services.md"
   ],
   "allowedTools": [
-    "@chrome/*"
+    "@chrome-devtools/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/chrome-launch.sh",
+        "description": "Ensure Chrome is running with remote debugging on port 9222"
+      }
+    ]
+  }
 }

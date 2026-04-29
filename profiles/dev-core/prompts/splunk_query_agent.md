@@ -43,7 +43,7 @@ Use `mcp_chrome_devtools_list_pages` first. If it fails or returns no pages, run
 
 - **macOS**: 
   ```bash
-  open -a "Google Chrome" --args --remote-debugging-port=9222
+  /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 &
   ```
 - **Windows** (detect via `uname` or check for `/c/` paths):
   ```bash
