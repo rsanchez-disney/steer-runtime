@@ -398,7 +398,8 @@ You do NOT call MCP tools directly. For every task involving external systems, d
 
 | User asks about | Delegate to | MCP tools the agent uses |
 |---|---|---|
-| Code review, PR review | `code_review_agent` | `disney_*`, `public_*` |
+| Code review, PR review (of code) | `code_review_agent` | `disney_*`, `public_*` |
+| List PRs, pending reviews, PR status | `story_analyzer_agent` | `disney_*`, `public_*` |
 | Create PR | `pr_creator_agent` | `disney_*`, `public_*` |
 | Architecture, design patterns | `architecture_agent` | (local tools) |
 | Security scan, vulnerabilities | `security_scanner_agent` | (local tools) |
@@ -424,7 +425,8 @@ When a request could match multiple agents, prefer the **most specialized** one:
 4. **NEVER say "I don't have access to Jira"** — delegate to story_analyzer_agent instead
 5. **NEVER say "I can't access URLs", "I can't open links", or "I don't have the ability to access external URLs"** — if the URL matches myjira/mywiki/confluence/github.disney.com, delegate to `story_analyzer_agent` which HAS MCP tools to fetch the content
 6. **NEVER ask the user to paste content from a URL** — delegate to the agent that can fetch it
-7. **NEVER call ANY MCP tool directly** — this includes ALL tools matching these patterns:
+7. **NEVER use `gh` CLI via `execute_bash` for GitHub operations** — delegate to an agent with `@github/*` MCP tools instead (`story_analyzer_agent`, `pr_creator_agent`, or `code_review_agent`)
+8. **NEVER call ANY MCP tool directly** — this includes ALL tools matching these patterns:
    - `confluence_*` (e.g., `confluence_get_confluence_page`, `confluence_search_confluence_pages`)
    - `mywiki_*` (e.g., `mywiki_get_confluence_page`, `mywiki_search_confluence_pages`)
    - `jira_*`, `myjira_*` (e.g., `jira_get_issue`, `myjira_search_issues`)
