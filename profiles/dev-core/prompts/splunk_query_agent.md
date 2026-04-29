@@ -43,15 +43,15 @@ Use `mcp_chrome_devtools_list_pages` first. If it fails or returns no pages, run
 
 - **macOS**: 
   ```bash
-  /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.chrome-debug-profile" &
+  /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 &
   ```
 - **Windows** (detect via `uname` or check for `/c/` paths):
   ```bash
-  start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="%USERPROFILE%\.chrome-debug-profile"
+  start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
   ```
   Or via Git Bash:
   ```bash
-  "/c/Program Files/Google/Chrome/Application/chrome.exe" --remote-debugging-port=9222 --user-data-dir="$HOME/.chrome-debug-profile" &
+  "/c/Program Files/Google/Chrome/Application/chrome.exe" --remote-debugging-port=9222 &
   ```
 
 After launching, wait 3 seconds, then open the Splunk URL:
