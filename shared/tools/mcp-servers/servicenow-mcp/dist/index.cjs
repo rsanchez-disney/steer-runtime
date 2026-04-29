@@ -12713,51 +12713,37 @@ async function getState(sysId) {
   };
 }
 async function tryClose(sysId, stateValue, closeCode, closeNotes) {
-  const payload = {
-    state: stateValue,
+  const closeFields = {
+    u_close_code: closeCode,
+    u_close_notes: closeNotes,
     close_code: closeCode,
     close_notes: closeNotes,
     work_notes: closeNotes
   };
-  await apiClient.patch(`/table/change_task/${sysId}`, {
-    u_close_code: closeCode,
-    u_close_notes: closeNotes,
-    close_code: closeCode,
-    close_notes: closeNotes,
-    work_notes: closeNotes,
-    state: stateValue
-  });
-  let after = await getState(sysId);
-  if (CLOSED_VALUES.has(after.value)) {
-    return true;
+  try {
+    await apiClient.patch(`/table/change_task/${sysId}`, { ...closeFields, state: stateValue });
+    const after = await getState(sysId);
+    if (CLOSED_VALUES.has(after.value))
+      return true;
+  } catch (e2) {
   }
-  await apiClient.patch(`/table/change_task/${sysId}`, {
-    u_close_code: closeCode,
-    u_close_notes: closeNotes,
-    close_code: closeCode,
-    close_notes: closeNotes,
-    work_notes: closeNotes
-  });
-  await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
-  after = await getState(sysId);
-  if (CLOSED_VALUES.has(after.value)) {
-    return true;
+  try {
+    await apiClient.patch(`/table/change_task/${sysId}`, closeFields);
+    await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
+    const after = await getState(sysId);
+    if (CLOSED_VALUES.has(after.value))
+      return true;
+  } catch (e2) {
   }
-  await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
-  after = await getState(sysId);
-  if (CLOSED_VALUES.has(after.value)) {
-    await apiClient.patch(`/table/change_task/${sysId}`, {
-      u_close_code: closeCode,
-      u_close_notes: closeNotes,
-      close_code: closeCode,
-      close_notes: closeNotes,
-      work_notes: closeNotes
-    });
-    return true;
+  try {
+    await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
+    const after = await getState(sysId);
+    if (CLOSED_VALUES.has(after.value)) {
+      await apiClient.patch(`/table/change_task/${sysId}`, closeFields);
+      return true;
+    }
+  } catch (e2) {
   }
-  after = await getState(sysId);
-  if (CLOSED_VALUES.has(after.value))
-    return true;
   return false;
 }
 async function handleCloseCtask(args) {
