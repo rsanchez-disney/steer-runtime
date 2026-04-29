@@ -19,6 +19,5 @@
     "jira-safety"
   ],
   "enable_tools": true,
-  "jira_prefix": "COMARC-",
-  "workspace_path": "~/Workspace/Disney/commerce-ticketing-checkout"
+  "jira_prefix": "COMARC-"
 }
