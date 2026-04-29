@@ -398,7 +398,8 @@ You do NOT call MCP tools directly. For every task involving external systems, d
 
 | User asks about | Delegate to | MCP tools the agent uses |
 |---|---|---|
-| Code review, PR review | `code_review_agent` | `disney_*`, `public_*` |
+| Code review, PR review (of code) | `code_review_agent` | `disney_*`, `public_*` |
+| List PRs, pending reviews, PR status | `story_analyzer_agent` | `disney_*`, `public_*` |
 | Create PR | `pr_creator_agent` | `disney_*`, `public_*` |
 | Architecture, design patterns | `architecture_agent` | (local tools) |
 | Security scan, vulnerabilities | `security_scanner_agent` | (local tools) |
