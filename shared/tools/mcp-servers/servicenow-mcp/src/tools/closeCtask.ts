@@ -52,56 +52,44 @@ async function getState(sysId: string): Promise<{ value: string; label: string }
 }
 
 async function tryClose(sysId: string, stateValue: string, closeCode: string, closeNotes: string): Promise<boolean> {
-    const payload = {
-        state: stateValue,
+    const closeFields = {
+        u_close_code: closeCode,
+        u_close_notes: closeNotes,
         close_code: closeCode,
         close_notes: closeNotes,
         work_notes: closeNotes,
     };
 
-    // Approach 1: All close fields + state in a single PATCH (close fields first in payload)
-    await apiClient.patch(`/table/change_task/${sysId}`, {
-        u_close_code: closeCode,
-        u_close_notes: closeNotes,
-        close_code: closeCode,
-        close_notes: closeNotes,
-        work_notes: closeNotes,
-        state: stateValue,
-    });
-    let after = await getState(sysId);
-    if (CLOSED_VALUES.has(after.value)) {
-        return true;
+    // Approach 1: All close fields + state in a single PATCH
+    try {
+        await apiClient.patch(`/table/change_task/${sysId}`, { ...closeFields, state: stateValue });
+        const after = await getState(sysId);
+        if (CLOSED_VALUES.has(after.value)) return true;
+    } catch (e: any) {
+        // Approach 1 failed, continue to next
     }
 
-    // Approach 2: Set close fields, then state in separate calls
-    await apiClient.patch(`/table/change_task/${sysId}`, {
-        u_close_code: closeCode,
-        u_close_notes: closeNotes,
-        close_code: closeCode,
-        close_notes: closeNotes,
-        work_notes: closeNotes,
-    });
-    await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
-    after = await getState(sysId);
-    if (CLOSED_VALUES.has(after.value)) {
-        return true;
+    // Approach 2: Set close fields first, then state separately
+    try {
+        await apiClient.patch(`/table/change_task/${sysId}`, closeFields);
+        await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
+        const after = await getState(sysId);
+        if (CLOSED_VALUES.has(after.value)) return true;
+    } catch (e: any) {
+        // Approach 2 failed, continue to next
     }
 
     // Approach 3: State first, then close fields
-    await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
-    after = await getState(sysId);
-    if (CLOSED_VALUES.has(after.value)) {
-        await apiClient.patch(`/table/change_task/${sysId}`, {
-            u_close_code: closeCode,
-            u_close_notes: closeNotes,
-            close_code: closeCode,
-            close_notes: closeNotes,
-            work_notes: closeNotes,
-        });
-        return true;
+    try {
+        await apiClient.patch(`/table/change_task/${sysId}`, { state: stateValue });
+        const after = await getState(sysId);
+        if (CLOSED_VALUES.has(after.value)) {
+            await apiClient.patch(`/table/change_task/${sysId}`, closeFields);
+            return true;
+        }
+    } catch (e: any) {
+        // Approach 3 failed
     }
-    after = await getState(sysId);
-    if (CLOSED_VALUES.has(after.value)) return true;
 
     return false;
 }
