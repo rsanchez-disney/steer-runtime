@@ -1,0 +1,23 @@
+{
+  "name": "commerce-ticketing-and-checkout-team",
+  "description": "Commerce Ticketing & Checkout L1 Support — incident response, CTASK validation, stability monitoring, and GSM reporting",
+  "team": "Commerce Ticketing & Checkout",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "projects": [
+    {
+      "name": "steer-ticketing-checkout-kb",
+      "path": "../steer-ticketing-checkout-kb",
+      "memory_bank": "steer-ticketing-checkout-kb"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-aws",
+    "jira-safety"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "COMARC-"
+}
