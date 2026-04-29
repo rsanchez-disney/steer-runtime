@@ -15,5 +15,13 @@
   "allowedTools": [
     "@chrome-devtools/*"
   ],
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/chrome-launch.sh",
+        "description": "Ensure Chrome is running with remote debugging on port 9222"
+      }
+    ]
+  }
 }
