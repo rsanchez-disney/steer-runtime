@@ -108,7 +108,7 @@ koda install dev
 koda mcp-install
 ```
 
-For detailed MCP server configuration, see [MCP Setup](MCP_SETUP.md).
+For detailed MCP server configuration, see [MCP Setup](../reference/MCP_SETUP.md).
 
 Or launch the interactive dashboard:
 
@@ -129,21 +129,16 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `kiro-cli: command not found` | Close and reopen PowerShell, or check that the install path is in your system PATH |
-| Browser doesn't open for login | Copy the URL from the terminal and paste it into your browser manually |
-| `koda: command not found` | Close and reopen PowerShell, or re-run the Koda install script |
-| SSH connection fails | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
-| `gh` not recognized | Restart PowerShell after installing GitHub CLI |
+| Issue                          | Fix                                                                                              |
+|--------------------------------|--------------------------------------------------------------------------------------------------|
+| `kiro-cli: command not found`  | Close and reopen PowerShell, or check that the install path is in your system PATH               |
+| Browser doesn't open for login | Copy the URL from the terminal and paste it into your browser manually                           |
+| `koda: command not found`      | Close and reopen PowerShell, or re-run the Koda install script                                   |
+| SSH connection fails           | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
+| `gh` not recognized            | Restart PowerShell after installing GitHub CLI                                                   |
 
 ---
 
-## Additional Workspace Setup
-
-Check if your workspace has additional setup steps in its `README.md`.
-
----
 
 ### Kiro CLI silent failure on Windows
 
@@ -203,10 +198,10 @@ You should see output like `kiro-cli-chat 2.0.1` (version may vary).
 
 #### Quick Reference: Exit Codes
 
-| Exit Code | Hex | Meaning | Fix |
-|-----------|-----|---------|-----|
+| Exit Code     | Hex          | Meaning       | Fix                                |
+|---------------|--------------|---------------|------------------------------------|
 | `-1073741515` | `0xC0000135` | DLL not found | Install Visual C++ Redistributable |
-| `0` | `0x0` | Success | No action needed |
+| `0`           | `0x0`        | Success       | No action needed                   |
 
 ---
 

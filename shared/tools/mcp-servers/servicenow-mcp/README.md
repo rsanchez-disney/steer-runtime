@@ -31,8 +31,8 @@ Add to your Kiro MCP config (`~/.kiro/settings/mcp.json` or `.kiro/settings/mcp.
       ],
       "env": {
         "SNOW_INSTANCE": "https://your-instance.service-now.com",
-        "SNOW_USERNAME": "your-service-account",
-        "SNOW_PASSWORD": "your-password"
+        "SNOW_API_USERNAME": "your-service-account",
+        "SNOW_API_PASSWORD": "your-password"
       },
       "disabled": false,
       "autoApprove": []
@@ -80,7 +80,48 @@ HTTP Basic Auth against the ServiceNow REST API (`/api/now/table/*` endpoints).
 | `get_ctask` | Get CTASK details by number |
 | `add_ctask_work_note` | Add a work note to a CTASK |
 | `update_ctask` | Update arbitrary fields on a CTASK (JSON input) |
-| `close_ctask` | Close a CTASK with close notes |
+| `close_ctask` | Close a CTASK with close notes, close code, and target state |
+
+#### close_ctask Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `ctaskNumber` | Yes | — | The CTASK number (e.g. `CTASK1234567`) |
+| `closeNotes` | No | `Validated and closed.` | Notes explaining the closure |
+| `closeCode` | No | `successful` | `successful`, `unsuccessful`, `issues`, `supplier`, or `disney` |
+| `targetState` | No | `closed_complete` | Target close state (see table below) |
+
+#### Target States
+
+| targetState | SNOW Value | Label |
+|-------------|-----------|-------|
+| `closed_complete` | 3 | Closed Complete |
+| `closed_cancelled` | 4 | Closed Cancelled |
+| `closed_skipped` | 7 | Closed Skipped |
+| `successful` | 8 | Successful |
+
+#### State Transition Logic
+
+- If the CTASK is already in a closed state (3, 4, 7, or 8), the tool skips with a message.
+- If the parent CHG is in a closed/complete/cancelled state, the tool returns a "blocked" status.
+- If the CTASK is in a pre-work state (Scheduled, Draft, Pending Approval, or Review), the tool auto-transitions through intermediate states before closing.
+- If the CTASK is already in "Work in Progress" or "In Progress", it closes directly to the target state.
+- The tool verifies the state actually changed after each attempt.
+
+#### Disney-Specific Notes
+
+- Close code is written to the custom field `u_close_code` (not the standard `close_code`).
+- Available `u_close_code` values: `successful`, `unsuccessful`, `issues`, `supplier`, `disney`.
+- The service account must be a **member of the CTASK's assignment group** to change the state (enforced by ACL).
+- If the close fails, check the assignment group — reassign to a group the service account belongs to.
+
+#### Examples
+
+```text
+close CTASK1234567 as successful with notes "Patching validated"
+close CTASK1234567 with state closed_cancelled, notes "Change window missed"
+close CTASK1234567 with state closed_skipped, close code unsuccessful, notes "Not applicable"
+```
 
 ### Investigation & Triage
 
@@ -110,5 +151,5 @@ npm run inspector   # Launch MCP Inspector for testing
 | `Cannot find module` | Not built | Run `npm run build` |
 | `fetch is not defined` | Node.js < 16 or missing `node-fetch` | Run `npm install` to ensure `node-fetch` is installed |
 | `Missing required environment variables` | Env vars not set | Check `env` block in mcp.json |
-| `401 Unauthorized` | Bad credentials | Verify `SNOW_USERNAME` and `SNOW_PASSWORD` |
+| `401 Unauthorized` | Bad credentials | Verify `SNOW_API_USERNAME` and `SNOW_API_PASSWORD` |
 | `No record found` | Wrong number format | Include the prefix (e.g. `INC`, `CTASK`, `CHG`) |

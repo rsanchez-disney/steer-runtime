@@ -2,6 +2,15 @@
   "name": "bounded_context_agent",
   "description": "Analyzes codebase and requirements to define domain boundaries, aggregates, and context maps",
   "prompt": "bounded_context_agent.md",
-  "tools": ["code", "grep", "fs_read", "execute_bash"],
-  "resources": ["file://.kiro/context/golden_rules.md"]
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "@mermaid/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "includeMcpJson": true
 }

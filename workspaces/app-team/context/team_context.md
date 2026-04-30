@@ -53,3 +53,12 @@
 - **PAP/TRP** — Batch processing & transaction research (payment-services, inquiry-service)
 - **Gift Card** — Gift card platform (gcp-dgc, gcp-admin, gcp-services)
 - **Infra** — Shared libraries, stream handlers, key management
+
+## Jira Custom Fields
+
+Field IDs differ per Jira instance. Configure `JIRA_CUSTOM_FIELDS_{instance}` in `tokens.env`:
+
+| Instance | Field | Field ID | tokens.env key |
+|----------|-------|----------|----------------|
+| myjira | Story Points | `customfield_10003` | `JIRA_CUSTOM_FIELDS_myjira=customfield_10003` |
+| jira | Story Points | `customfield_10106` | `JIRA_CUSTOM_FIELDS_jira=customfield_10106` |

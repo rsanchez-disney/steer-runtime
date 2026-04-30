@@ -1,0 +1,17 @@
+{
+  "name": "dpi-team",
+  "description": "DPI Team — Java + Spring Boot microservices development",
+  "team": "DPI Team",
+  "profiles": ["dev-core", "dev-java"],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-api-design",
+    "general-aws",
+    "general-docker"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "DPI-",
+  "workspace_path": "~/Workspace/Disney/dpi-development"
+}

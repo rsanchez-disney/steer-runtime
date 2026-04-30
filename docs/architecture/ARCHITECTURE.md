@@ -260,11 +260,12 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ## Profile × MCP Matrix
 
-|---------|--------|:----:|:----------:|:------:|:------:|:--------:|-------|
-| **dev** | 20 | 4 | 3 | 3 | 4 | 6 | — |
-| **ba** | 4 | 4 | 4 | 4 | 4 | — | — |
-| **qa** | 6 | 3 | 3 | 3 | 3 | 2 | — |
-| **ops** | 5 | 2 | 2 | 2 | 2 | — | SonarQube, Harness |
+| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Bruno | Other              |
+|---------|--------|:----:|:----------:|:------:|:------:|:-----:|--------------------|
+| **dev** | 20     |  4   |     3      |   3    |   4    |   6   | —                  |
+| **ba**  | 4      |  4   |     4      |   4    |   4    |   —   | —                  |
+| **qa**  | 6      |  3   |     3      |   3    |   3    |   2   | —                  |
+| **ops** | 5      |  2   |     2      |   2    |   2    |   —   | SonarQube, Harness |
 
 ---
 
@@ -272,19 +273,19 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 > `setup.sh` is deprecated. All commands below are available via `koda`.
 
-| Command | Purpose |
-|---------|---------|
-| `install <profiles>` | Copy profile agents/prompts/context to `~/.kiro` |
-| `sync` | Update already-installed profiles |
-| `remove <profiles>` | Remove specific profiles |
-| `clean` | Remove all installed agents |
-| `list` | Show available profiles |
-| `check` | Verify installation |
-| `mcp-install` | Install MCP deps, configure tokens, resolve paths |
-| `rules list\|install` | Manage common coding rules |
-| `prompts list\|install` | Manage standalone prompts |
-| `init-memory <dir>` | Initialize per-project memory bank |
-| `configure` | Interactive MCP token configuration |
+| Command                 | Purpose                                           |
+|-------------------------|---------------------------------------------------|
+| `install <profiles>`    | Copy profile agents/prompts/context to `~/.kiro`  |
+| `sync`                  | Update already-installed profiles                 |
+| `remove <profiles>`     | Remove specific profiles                          |
+| `clean`                 | Remove all installed agents                       |
+| `list`                  | Show available profiles                           |
+| `check`                 | Verify installation                               |
+| `mcp-install`           | Install MCP deps, configure tokens, resolve paths |
+| `rules list\|install`   | Manage common coding rules                        |
+| `prompts list\|install` | Manage standalone prompts                         |
+| `init-memory <dir>`     | Initialize per-project memory bank                |
+| `configure`             | Interactive MCP token configuration               |
 
 ---
 
@@ -307,3 +308,9 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 ## Version
 
 **v3.1.0** — 33 agents across 4 profiles, 5 MCP servers, 5 common rules, 9 known projects.
+
+---
+
+## See also
+
+- [System Layers & Responsibilities](SYSTEM_LAYERS.md) — layer-by-layer breakdown of the full ecosystem (LLM, IDE runtime, Koda, steer-runtime, workspaces, profiles, agents, MCP servers, hooks, powers)

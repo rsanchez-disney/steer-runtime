@@ -167,6 +167,7 @@ Assign based on components:
 3. **List all changes** - Files and summary
 4. **Show test results** - Pass/fail and coverage
 5. **Return JSON** - Structured response
+6. **Always use `@github/*` MCP tools** for GitHub operations — never use `gh` CLI via `execute_bash`
 
 ## Example
 

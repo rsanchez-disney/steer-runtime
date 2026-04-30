@@ -82,6 +82,7 @@ export async function handleJiraSearchIssues(args: any): Promise<any> {
             summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
 - Project: ${issue.fields.project?.key || "Unknown"}`;

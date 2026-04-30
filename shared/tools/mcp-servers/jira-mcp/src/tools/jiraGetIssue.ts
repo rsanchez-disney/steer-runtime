@@ -3,7 +3,6 @@ import { buildFormattedSummary } from "../utils/formatting.js";
 import { saveTicketData } from "../utils/fileUtils.js";
 import {
     CUSTOM_FIELD_ALIASES,
-    BUG_DEFECT_FIELDS,
     resolveCustomFieldIds,
     getCustomFieldLabel,
     formatCustomFieldValue,
@@ -33,14 +32,16 @@ export const jiraGetIssueSchema = {
                         "summary",
                         "status",
                         "assignee",
+                        "reporter",
                         "priority",
                         "created",
                         "updated",
                         "description",
+                        "comment",
                         "labels",
                         "components",
+                        "storyPoints",
                         "customfield_10003",
-                        "customfield_20104",
                     ],
                 },
                 description:
@@ -69,91 +70,37 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "description",
-            "issuetype",
+            "comment",
+            "storyPoints",
         ];
-        const requestedFields = fields
-            ? [...new Set([...fields, "issuetype"])]
-            : defaultFields;
+        const requestedFields = fields || defaultFields;
+
+        // Resolve storyPoints alias in requested fields
+        const expandedFields = requestedFields.map(f =>
+            f === "storyPoints" ? "customfield_10004" : f
+        );
 
         // Resolve custom field aliases → real IDs and merge into the field list
         const resolvedCustomFields = customFields
             ? resolveCustomFieldIds(customFields)
             : [];
-
-        // First fetch: always include issuetype so we can detect Bug/Defect
-        const initialFields = [...new Set([...requestedFields, ...resolvedCustomFields])];
+        const allFields = [...new Set([...expandedFields, ...resolvedCustomFields])];
 
         const apiClient = new JiraApiClient();
-        const ticket = await apiClient.fetchJiraTicket(ticketId, initialFields);
-
-        // Auto-inject bug/defect fields if the issue type is Bug or Defect
-        const issueTypeName = ticket.fields.issuetype?.name?.toLowerCase() ?? "";
-        const isBugOrDefect = issueTypeName === "bug" || issueTypeName === "defect";
-
-        let bugFieldValues: { stepsToReproduce: string; expectedResults: string; actualResults: string } | null = null;
-
-        if (isBugOrDefect) {
-            // Check if bug fields were already fetched (user may have requested them explicitly)
-            const missingBugFields = BUG_DEFECT_FIELDS.filter(
-                (f) => !initialFields.includes(f),
-            );
-
-            if (missingBugFields.length > 0) {
-                // Re-fetch with bug fields included
-                const allFieldsWithBug = [...new Set([...initialFields, ...BUG_DEFECT_FIELDS])];
-                const bugTicket = await apiClient.fetchJiraTicket(ticketId, allFieldsWithBug);
-                // Merge bug fields into the original ticket
-                for (const fieldId of BUG_DEFECT_FIELDS) {
-                    (ticket.fields as any)[fieldId] = (bugTicket.fields as any)[fieldId];
-                }
-            }
-
-            bugFieldValues = {
-                stepsToReproduce: formatCustomFieldValue((ticket.fields as any)["customfield_11005"]),
-                expectedResults: formatCustomFieldValue((ticket.fields as any)["customfield_11006"]),
-                actualResults: formatCustomFieldValue((ticket.fields as any)["customfield_11007"]),
-            };
-
-            // Add bug fields to resolvedCustomFields for display (avoid duplicates)
-            for (const f of BUG_DEFECT_FIELDS) {
-                if (!resolvedCustomFields.includes(f)) {
-                    resolvedCustomFields.push(f);
-                }
-            }
-        }
+        const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
 
         // Build the standard summary
         const summary = buildFormattedSummary(ticket, requestedFields);
 
-        // For Bug/Defect: insert the bug-specific section before custom fields
-        let bugSection = "";
-        if (isBugOrDefect && bugFieldValues) {
-            const lines: string[] = [
-                "",
-                "---",
-                "**🐛 Bug / Defect Details:**",
-                "",
-                `**Steps to Reproduce:**\n${bugFieldValues.stepsToReproduce}`,
-                "",
-                `**Expected Results:**\n${bugFieldValues.expectedResults}`,
-                "",
-                `**Actual Results:**\n${bugFieldValues.actualResults}`,
-                "---",
-            ];
-            bugSection = lines.join("\n");
-        }
-
-        // Append remaining custom field values (excluding bug fields already shown)
+        // Append custom field values
         let customFieldSection = "";
-        const nonBugCustomFields = resolvedCustomFields.filter(
-            (f) => !BUG_DEFECT_FIELDS.includes(f),
-        );
-        if (nonBugCustomFields.length > 0) {
+        if (resolvedCustomFields.length > 0) {
             const lines: string[] = ["", "**Custom Fields:**"];
-            for (const fieldId of nonBugCustomFields) {
+            for (const fieldId of resolvedCustomFields) {
                 const label = getCustomFieldLabel(fieldId);
                 const rawValue = (ticket.fields as any)[fieldId];
                 const display = formatCustomFieldValue(rawValue);
@@ -162,7 +109,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             customFieldSection = lines.join("\n");
         }
 
-        const fullSummary = `${summary}${bugSection}${customFieldSection}`;
+        const fullSummary = `${summary}${customFieldSection}`;
 
         const savedPath = await saveTicketData(
             outputDir,

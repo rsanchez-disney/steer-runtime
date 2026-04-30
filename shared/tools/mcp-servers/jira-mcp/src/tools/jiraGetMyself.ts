@@ -16,29 +16,12 @@ export async function handleJiraGetMyself(_args: any): Promise<any> {
         const apiClient = new JiraApiClient();
         const user = await apiClient.getMyself();
 
-        const summaryText = `**Current Jira User**
+        const summaryText = `**Current Jira User**\n\n**Username:** ${user.name || user.accountId || "N/A"}\n**Display Name:** ${user.displayName}\n**Email:** ${user.emailAddress || "Not available"}\n**Active:** ${user.active}`;
 
-**Username:** ${user.name}
-**Display Name:** ${user.displayName}
-**Email:** ${user.emailAddress || "Not available"}
-**Active:** ${user.active}`;
-
-        return {
-            content: [
-                {
-                    type: "text",
-                    text: summaryText,
-                },
-            ],
-        };
+        return { content: [{ type: "text", text: summaryText }] };
     } catch (error) {
         return {
-            content: [
-                {
-                    type: "text",
-                    text: `Error fetching current user: ${error instanceof Error ? error.message : "Unknown error"}`,
-                },
-            ],
+            content: [{ type: "text", text: `Error fetching current user: ${error instanceof Error ? error.message : "Unknown error"}` }],
             isError: true,
         };
     }

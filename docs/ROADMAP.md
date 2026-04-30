@@ -74,22 +74,22 @@ Structured document generation with formal review gates.
 
 ### v3.6.0
 
-| Feature | What shipped |
-|---------|-------------|
-| Koda CLI | Primary setup method with install scripts for macOS, Linux, Windows |
-| Skills library | 7 reusable workflows in `common/skills/` |
-| Spec templates | 6 templates in `common/templates/specs/` |
-| Project manifest | `common/templates/project.yaml` template |
-| Expanded rules | 7 new tech stack rules in `common/rules/` |
-| PM workspaces | DTA, UAD sustainment, UAD ongoing team workspaces |
-| Issue templates | Feature request and bug report templates → Waypoints |
+| Feature          | What shipped                                                        |
+|------------------|---------------------------------------------------------------------|
+| Koda CLI         | Primary setup method with install scripts for macOS, Linux, Windows |
+| Skills library   | 7 reusable workflows in `common/skills/`                            |
+| Spec templates   | 6 templates in `common/templates/specs/`                            |
+| Project manifest | `common/templates/project.yaml` template                            |
+| Expanded rules   | 7 new tech stack rules in `common/rules/`                           |
+| PM workspaces    | DTA, UAD sustainment, UAD ongoing team workspaces                   |
+| Issue templates  | Feature request and bug report templates → Waypoints                |
 
 ### Earlier
 
-| Version | Highlights |
-|---------|-----------|
-| v3.5.0 | Team workspaces, dev profile split, fork strategy |
-| v3.0.0 | 41 agents across 5 SDLC profiles, IDE-portable (Kiro CLI, Cursor, Amazon Q, Kite) |
+| Version | Highlights                                                                        |
+|---------|-----------------------------------------------------------------------------------|
+| v3.5.0  | Team workspaces, dev profile split, fork strategy                                 |
+| v3.0.0  | 41 agents across 5 SDLC profiles, IDE-portable (Kiro CLI, Cursor, Amazon Q, Kite) |
 
 ---
 

@@ -61,12 +61,13 @@ workspaces/
 ```
 
 **Fields:**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | Yes | Team display name |
-| `workspace` | No | Reference to the team's own workspace (for drill-down) |
-| `jira_projects` | Yes | Jira project keys the agents will query |
-| `board_ids` | No | Jira board IDs for sprint data |
+
+| Field           | Required | Description                                            |
+|-----------------|----------|--------------------------------------------------------|
+| `name`          | Yes      | Team display name                                      |
+| `workspace`     | No       | Reference to the team's own workspace (for drill-down) |
+| `jira_projects` | Yes      | Jira project keys the agents will query                |
+| `board_ids`     | No       | Jira board IDs for sprint data                         |
 
 ### Step 3: Apply the vertical workspace
 

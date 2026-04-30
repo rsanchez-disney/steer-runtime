@@ -9,7 +9,8 @@
     "code",
     "execute_bash",
     "fs_read",
-    "grep"
+    "grep",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -17,7 +18,8 @@
   ],
   "allowedTools": [
     "@confluence/*",
-    "@github/*"
+    "@github/*",
+    "@mermaid/*"
   ],
   "includeMcpJson": true
 }

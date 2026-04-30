@@ -1,0 +1,14 @@
+{
+  "name": "devops_runner_agent",
+  "description": "Executes builds, tests, git operations, and local dev commands. The orchestrator delegates all build/test/git tasks here.",
+  "prompt": "devops_runner_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "code",
+    "thinking"
+  ],
+  "includeMcpJson": false
+}

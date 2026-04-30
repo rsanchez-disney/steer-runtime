@@ -1,11 +1,9 @@
 import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
 
-const JIRA_BASE_URL = "https://myjira.disney.com";
-
 function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
     const seen = new Set(existing.map(key));
-    return [...existing, ...incoming.filter((i) => !seen.has(key(i)))];
+    return [...existing, ...incoming.filter(i => !seen.has(key(i)))];
 }
 
 /** Wrap plain text in Atlassian Document Format (required by Jira Cloud API v3). */
@@ -75,9 +73,11 @@ export class JiraApiClient {
             "description",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "updated",
+            "comment",
             "issuetype",
             "parent",
             "components",
@@ -223,6 +223,7 @@ export class JiraApiClient {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "issuetype",
             "project",
@@ -264,6 +265,7 @@ export class JiraApiClient {
         issueType: string,
         description?: string,
         assignee?: string,
+        reporter?: string,
         epicLink?: string,
         components?: string[],
         labels?: string[],
@@ -284,6 +286,10 @@ export class JiraApiClient {
 
         if (assignee) {
             fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
+        }
+
+        if (reporter) {
+            fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
         }
 
         if (epicLink) {
@@ -522,7 +528,7 @@ export class JiraApiClient {
         const params = new URLSearchParams({
             startAt: startAt.toString(),
             maxResults: maxResults.toString(),
-            fields: "summary,status,assignee,priority,issuetype,project,created,updated",
+            fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004",
         });
 
         const response = await fetch(
@@ -543,90 +549,6 @@ export class JiraApiClient {
         }
 
         return await response.json();
-    }
-
-    // ==========================================
-    // Development Status API
-    // ==========================================
-
-    /**
-     * Get development status (PRs, branches, commits) for an issue.
-     * Uses the JIRA dev-status REST API (same data as the Development Panel).
-     * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=GitHub&dataType=pullrequest
-     */
-    async getDevStatus(issueId: string): Promise<any> {
-        const pat = await this.auth.getJiraPat();
-
-        // Fetch all data types: pullrequest, branch, repository
-        // Note: applicationType is "githube" for GitHub Enterprise instances
-        const dataTypes = ["pullrequest", "branch", "repository"];
-        const results = await Promise.allSettled(
-            dataTypes.map(async (dataType) => {
-                const params = new URLSearchParams({
-                    issueId,
-                    applicationType: "githube",
-                    dataType,
-                });
-
-                const response = await fetch(
-                    `${JIRA_BASE_URL}/rest/dev-status/1.0/issue/detail?${params}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${pat}`,
-                            "Content-Type": "application/json",
-                        },
-                    },
-                );
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(
-                        `Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`,
-                    );
-                }
-
-                return await response.json();
-            }),
-        );
-
-        // Merge detail arrays from all responses and deduplicate
-        const mergedDetail: any[] = [];
-        for (const result of results) {
-            if (result.status === "fulfilled" && result.value?.detail) {
-                for (const provider of result.value.detail) {
-                    const existing = mergedDetail.find(
-                        (d) => d.instanceName === provider.instanceName,
-                    );
-                    if (existing) {
-                        if (provider.pullRequests) {
-                            existing.pullRequests = dedup(
-                                existing.pullRequests || [],
-                                provider.pullRequests,
-                                (pr: any) => pr.url,
-                            );
-                        }
-                        if (provider.branches) {
-                            existing.branches = dedup(
-                                existing.branches || [],
-                                provider.branches,
-                                (b: any) => b.url,
-                            );
-                        }
-                        if (provider.commits) {
-                            existing.commits = dedup(
-                                existing.commits || [],
-                                provider.commits,
-                                (c: any) => c.id,
-                            );
-                        }
-                    } else {
-                        mergedDetail.push({ ...provider });
-                    }
-                }
-            }
-        }
-
-        return { detail: mergedDetail };
     }
 
     // ==========================================
@@ -728,42 +650,6 @@ export class JiraApiClient {
         }
 
         return await response.json();
-    }
-
-    /**
-     * Add tests to a Test Execution
-     * POST /rest/raven/2.0/api/testexec/{testExecKey}/test
-     */
-    async addTestsToTestExec(
-        testExecKey: string,
-        testKeys: string[],
-    ): Promise<void> {
-        const pat = await this.auth.getJiraPat();
-
-        // Xray Server REST API — POST /rest/raven/1.0/api/testexec/{key}/test
-        // Body: {"add": ["KEY-1", "KEY-2"]} — CollectionBean format
-        const payload = JSON.stringify({ add: testKeys });
-        console.error(`[xray] POST /rest/raven/1.0/api/testexec/${testExecKey}/test body=${payload}`);
-
-        const response = await fetch(
-            `https://myjira.disney.com/rest/raven/1.0/api/testexec/${testExecKey}/test`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${pat}`,
-                    "Content-Type": "application/json",
-                },
-                body: payload,
-            },
-        );
-
-        if (!response.ok) {
-            const errText = await response.text();
-            console.error(`[xray] Response: ${response.status} ${errText}`);
-            throw new Error(
-                `Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`,
-            );
-        }
     }
 
     /**
@@ -1112,23 +998,25 @@ export class JiraApiClient {
         return await response.json();
     }
 
+    // ==========================================
+    // Issue Link & User Methods
+    // ==========================================
+
     /**
-     * Create a link between two Jira issues
-     * POST /rest/api/2/issueLink
+     * Create a link between two Jira issues.
+     * POST /rest/api/{version}/issueLink
      */
     async linkJiraIssues(
         inwardTicketId: string,
         outwardTicketId: string,
         linkType: string,
     ): Promise<void> {
-        const pat = await this.auth.getJiraPat();
-
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issueLink`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`,
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
@@ -1148,17 +1036,15 @@ export class JiraApiClient {
     }
 
     /**
-     * Get all available issue link types
-     * GET /rest/api/2/issueLinkType
+     * Get all available issue link types.
+     * GET /rest/api/{version}/issueLinkType
      */
     async getJiraIssueLinkTypes(): Promise<any> {
-        const pat = await this.auth.getJiraPat();
-
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/issueLinkType`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -1175,17 +1061,15 @@ export class JiraApiClient {
     }
 
     /**
-     * Get the currently authenticated user's profile
-     * GET /rest/api/2/myself
+     * Get the currently authenticated user's profile.
+     * GET /rest/api/{version}/myself
      */
     async getMyself(): Promise<any> {
-        const pat = await this.auth.getJiraPat();
-
         const response = await fetch(
-            `https://myjira.disney.com/rest/api/2/myself`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`,
             {
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
             },
@@ -1199,5 +1083,99 @@ export class JiraApiClient {
         }
 
         return await response.json();
+    }
+
+    // ==========================================
+    // Development Status (Server-only)
+    // ==========================================
+
+    /**
+     * Get development status (PRs, branches, commits) for an issue.
+     * Server-only — the dev-status REST API is not available on Jira Cloud.
+     * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
+     */
+    async getDevStatus(issueId: string): Promise<any> {
+        this.assertXRayServer();
+
+        const dataTypes = ["pullrequest", "branch", "repository"];
+        const results = await Promise.allSettled(
+            dataTypes.map(async (dataType) => {
+                const params = new URLSearchParams({
+                    issueId,
+                    applicationType: "githube",
+                    dataType,
+                });
+                const response = await fetch(
+                    `${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`,
+                    {
+                        headers: {
+                            Authorization: await this.auth.getAuthHeader(),
+                            "Content-Type": "application/json",
+                        },
+                    },
+                );
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(
+                        `Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`,
+                    );
+                }
+                return await response.json();
+            }),
+        );
+
+        const mergedDetail: any[] = [];
+        for (const result of results) {
+            if (result.status === "fulfilled" && result.value?.detail) {
+                for (const provider of result.value.detail) {
+                    const existing = mergedDetail.find(
+                        (d) => d.instanceName === provider.instanceName,
+                    );
+                    if (existing) {
+                        existing.pullRequests = dedup(existing.pullRequests || [], provider.pullRequests || [], (pr: any) => pr.url);
+                        existing.branches = dedup(existing.branches || [], provider.branches || [], (b: any) => b.url);
+                        existing.commits = dedup(existing.commits || [], provider.commits || [], (c: any) => c.id);
+                    } else {
+                        mergedDetail.push({ ...provider });
+                    }
+                }
+            }
+        }
+
+        return { detail: mergedDetail };
+    }
+
+    // ==========================================
+    // XRay Write Methods (Server-only)
+    // ==========================================
+
+    /**
+     * Add tests to a Test Execution.
+     * POST /rest/raven/1.0/api/testexec/{testExecKey}/test
+     */
+    async addTestsToTestExec(
+        testExecKey: string,
+        testKeys: string[],
+    ): Promise<void> {
+        this.assertXRayServer();
+
+        const response = await fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ add: testKeys }),
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
     }
 }

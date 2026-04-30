@@ -4,6 +4,7 @@
   "prompt": "qa_orchestrator_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "code",
@@ -19,6 +20,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "@bruno/*",

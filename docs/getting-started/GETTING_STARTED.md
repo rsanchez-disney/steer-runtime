@@ -6,13 +6,13 @@ First-time setup guide for Disney Payments team members.
 
 ## 1. Request Access
 
-- Visit: https://developer.disney.com/ai-tools
+- Visit: <https://developer.disney.com/ai-tools>
 - Request access to **AmazonQ (Kiro)**
 - Wait for approval (typically 1-2 business days)
 
 ## 2. Download Kiro
 
-- Visit: https://kiro.dev/downloads/
+- Visit: <https://kiro.dev/downloads/>
 - Download for your operating system
 
 ## 3. Sign in with Disney SSO
@@ -49,7 +49,7 @@ cp ~/steer-runtime/common/templates/project.yaml ~/my-project/project.yaml
 # Edit with your project's details
 ```
 
-See [project.yaml reference](REFERENCE.md#project-manifest-projectyaml) for all fields. Agents work without it (they fall back to memory banks), but it's the fastest way to get accurate results.
+See [project.yaml reference](../reference/REFERENCE.md#project-manifest-projectyaml) for all fields. Agents work without it (they fall back to memory banks), but it's the fastest way to get accurate results.
 
 ---
 

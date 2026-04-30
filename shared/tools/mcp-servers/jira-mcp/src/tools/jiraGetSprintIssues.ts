@@ -1,4 +1,5 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
+import { CUSTOM_FIELD_ALIASES } from "../utils/customFields.js";
 import { saveData } from "../utils/fileUtils.js";
 
 export const jiraGetSprintIssuesSchema = {
@@ -58,11 +59,14 @@ export async function handleJiraGetSprintIssues(args: any): Promise<any> {
 `;
 
         sprintIssues.issues.forEach((issue: any, index: number) => {
+            const sp = issue.fields[CUSTOM_FIELD_ALIASES.storyPoints];
             summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
+- Story Points: ${sp !== null && sp !== undefined ? sp : "Not set"}
 - Project: ${issue.fields.project?.key || "Unknown"}
 
 `;

@@ -5786,7 +5786,6 @@ var JiraAuth = class {
 };
 
 // build/utils/jiraApi.js
-var JIRA_BASE_URL = "https://myjira.disney.com";
 function dedup(existing, incoming, key) {
   const seen = new Set(existing.map(key));
   return [...existing, ...incoming.filter((i) => !seen.has(key(i)))];
@@ -5843,9 +5842,11 @@ var JiraApiClient = class _JiraApiClient {
       "description",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "created",
       "updated",
+      "comment",
       "issuetype",
       "parent",
       "components",
@@ -5931,6 +5932,7 @@ var JiraApiClient = class _JiraApiClient {
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "issuetype",
       "project",
@@ -5957,7 +5959,7 @@ var JiraApiClient = class _JiraApiClient {
     }
     return await response.json();
   }
-  async createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields) {
+  async createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields) {
     const fields = {
       project: { key: projectKey },
       summary,
@@ -5968,6 +5970,9 @@ var JiraApiClient = class _JiraApiClient {
     }
     if (assignee) {
       fields.assignee = this.auth.isCloud() ? { accountId: assignee } : { name: assignee };
+    }
+    if (reporter) {
+      fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
     }
     if (epicLink) {
       const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
@@ -6118,7 +6123,7 @@ var JiraApiClient = class _JiraApiClient {
     const params = new URLSearchParams({
       startAt: startAt.toString(),
       maxResults: maxResults.toString(),
-      fields: "summary,status,assignee,priority,issuetype,project,created,updated"
+      fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004"
     });
     const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
       headers: {
@@ -6131,58 +6136,6 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to get JIRA sprint issues: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
-  }
-  // ==========================================
-  // Development Status API
-  // ==========================================
-  /**
-   * Get development status (PRs, branches, commits) for an issue.
-   * Uses the JIRA dev-status REST API (same data as the Development Panel).
-   * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=GitHub&dataType=pullrequest
-   */
-  async getDevStatus(issueId) {
-    const pat = await this.auth.getJiraPat();
-    const dataTypes = ["pullrequest", "branch", "repository"];
-    const results = await Promise.allSettled(dataTypes.map(async (dataType) => {
-      const params = new URLSearchParams({
-        issueId,
-        applicationType: "githube",
-        dataType
-      });
-      const response = await fetch(`${JIRA_BASE_URL}/rest/dev-status/1.0/issue/detail?${params}`, {
-        headers: {
-          Authorization: `Bearer ${pat}`,
-          "Content-Type": "application/json"
-        }
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`);
-      }
-      return await response.json();
-    }));
-    const mergedDetail = [];
-    for (const result of results) {
-      if (result.status === "fulfilled" && result.value?.detail) {
-        for (const provider of result.value.detail) {
-          const existing = mergedDetail.find((d) => d.instanceName === provider.instanceName);
-          if (existing) {
-            if (provider.pullRequests) {
-              existing.pullRequests = dedup(existing.pullRequests || [], provider.pullRequests, (pr) => pr.url);
-            }
-            if (provider.branches) {
-              existing.branches = dedup(existing.branches || [], provider.branches, (b) => b.url);
-            }
-            if (provider.commits) {
-              existing.commits = dedup(existing.commits || [], provider.commits, (c) => c.id);
-            }
-          } else {
-            mergedDetail.push({ ...provider });
-          }
-        }
-      }
-    }
-    return { detail: mergedDetail };
   }
   // ==========================================
   // XRay REST API Methods
@@ -6254,28 +6207,6 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to get XRay test execution tests for ${testExecKey}: ${response.status} ${response.statusText} - ${errorText}`);
     }
     return await response.json();
-  }
-  /**
-   * Add tests to a Test Execution
-   * POST /rest/raven/2.0/api/testexec/{testExecKey}/test
-   */
-  async addTestsToTestExec(testExecKey, testKeys) {
-    const pat = await this.auth.getJiraPat();
-    const payload = JSON.stringify({ add: testKeys });
-    console.error(`[xray] POST /rest/raven/1.0/api/testexec/${testExecKey}/test body=${payload}`);
-    const response = await fetch(`https://myjira.disney.com/rest/raven/1.0/api/testexec/${testExecKey}/test`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${pat}`,
-        "Content-Type": "application/json"
-      },
-      body: payload
-    });
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error(`[xray] Response: ${response.status} ${errText}`);
-      throw new Error(`Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`);
-    }
   }
   /**
    * Get pre-conditions for a Test
@@ -6511,16 +6442,18 @@ var JiraApiClient = class _JiraApiClient {
     }
     return await response.json();
   }
+  // ==========================================
+  // Issue Link & User Methods
+  // ==========================================
   /**
-   * Create a link between two Jira issues
-   * POST /rest/api/2/issueLink
+   * Create a link between two Jira issues.
+   * POST /rest/api/{version}/issueLink
    */
   async linkJiraIssues(inwardTicketId, outwardTicketId, linkType) {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issueLink`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -6535,14 +6468,13 @@ var JiraApiClient = class _JiraApiClient {
     }
   }
   /**
-   * Get all available issue link types
-   * GET /rest/api/2/issueLinkType
+   * Get all available issue link types.
+   * GET /rest/api/{version}/issueLinkType
    */
   async getJiraIssueLinkTypes() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/issueLinkType`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6553,14 +6485,13 @@ var JiraApiClient = class _JiraApiClient {
     return await response.json();
   }
   /**
-   * Get the currently authenticated user's profile
-   * GET /rest/api/2/myself
+   * Get the currently authenticated user's profile.
+   * GET /rest/api/{version}/myself
    */
   async getMyself() {
-    const pat = await this.auth.getJiraPat();
-    const response = await fetch(`https://myjira.disney.com/rest/api/2/myself`, {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`, {
       headers: {
-        Authorization: `Bearer ${pat}`,
+        Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       }
     });
@@ -6570,9 +6501,78 @@ var JiraApiClient = class _JiraApiClient {
     }
     return await response.json();
   }
+  // ==========================================
+  // Development Status (Server-only)
+  // ==========================================
+  /**
+   * Get development status (PRs, branches, commits) for an issue.
+   * Server-only — the dev-status REST API is not available on Jira Cloud.
+   * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
+   */
+  async getDevStatus(issueId) {
+    this.assertXRayServer();
+    const dataTypes = ["pullrequest", "branch", "repository"];
+    const results = await Promise.allSettled(dataTypes.map(async (dataType) => {
+      const params = new URLSearchParams({
+        issueId,
+        applicationType: "githube",
+        dataType
+      });
+      const response = await fetch(`${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`, {
+        headers: {
+          Authorization: await this.auth.getAuthHeader(),
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to get dev status (${dataType}): ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      return await response.json();
+    }));
+    const mergedDetail = [];
+    for (const result of results) {
+      if (result.status === "fulfilled" && result.value?.detail) {
+        for (const provider of result.value.detail) {
+          const existing = mergedDetail.find((d) => d.instanceName === provider.instanceName);
+          if (existing) {
+            existing.pullRequests = dedup(existing.pullRequests || [], provider.pullRequests || [], (pr) => pr.url);
+            existing.branches = dedup(existing.branches || [], provider.branches || [], (b) => b.url);
+            existing.commits = dedup(existing.commits || [], provider.commits || [], (c) => c.id);
+          } else {
+            mergedDetail.push({ ...provider });
+          }
+        }
+      }
+    }
+    return { detail: mergedDetail };
+  }
+  // ==========================================
+  // XRay Write Methods (Server-only)
+  // ==========================================
+  /**
+   * Add tests to a Test Execution.
+   * POST /rest/raven/1.0/api/testexec/{testExecKey}/test
+   */
+  async addTestsToTestExec(testExecKey, testKeys) {
+    this.assertXRayServer();
+    const response = await fetch(`${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`, {
+      method: "POST",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ add: testKeys })
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+  }
 };
 
 // build/utils/formatting.js
+init_customFields();
 function formatDate(dateString) {
   if (!dateString)
     return "Unknown";
@@ -6590,6 +6590,9 @@ function buildFormattedSummary(ticket, requestedFields) {
   }
   if (requestedFields.includes("assignee")) {
     summary.push(`**Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}`);
+  }
+  if (requestedFields.includes("reporter")) {
+    summary.push(`**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}`);
   }
   if (requestedFields.includes("priority") && ticket.fields.priority) {
     summary.push(`**Priority:** ${ticket.fields.priority.name}`);
@@ -6618,6 +6621,12 @@ function buildFormattedSummary(ticket, requestedFields) {
   }
   if (requestedFields.includes("fixVersions") && ticket.fields.fixVersions?.length) {
     summary.push(`**Fix Versions:** ${ticket.fields.fixVersions.map((v) => v.name).join(", ")}`);
+  }
+  if (requestedFields.includes("storyPoints")) {
+    const sp = ticket.fields[CUSTOM_FIELD_ALIASES.storyPoints];
+    if (sp !== null && sp !== void 0) {
+      summary.push(`**Story Points:** ${sp}`);
+    }
   }
   if (requestedFields.includes("issuetype") && ticket.fields.issuetype) {
     summary.push(`**Issue Type:** ${ticket.fields.issuetype.name}`);
@@ -6703,14 +6712,16 @@ var jiraGetIssueSchema = {
             "summary",
             "status",
             "assignee",
+            "reporter",
             "priority",
             "created",
             "updated",
             "description",
+            "comment",
             "labels",
             "components",
-            "customfield_10003",
-            "customfield_20104"
+            "storyPoints",
+            "customfield_10003"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
@@ -6731,13 +6742,17 @@ async function handleJiraGetIssue(args) {
       "summary",
       "status",
       "assignee",
+      "reporter",
       "priority",
       "created",
-      "description"
+      "description",
+      "comment",
+      "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
+    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10004" : f);
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
-    const allFields = [.../* @__PURE__ */ new Set([...requestedFields, ...resolvedCustomFields])];
+    const allFields = [.../* @__PURE__ */ new Set([...expandedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
     const ticket = await apiClient.fetchJiraTicket(ticketId, allFields);
     const summary = buildFormattedSummary(ticket, requestedFields);
@@ -6824,6 +6839,14 @@ var jiraUpdateIssueSchema = {
         type: "string",
         description: 'Priority name (e.g., "1 - Critical", "2 - High", "3 - Medium", "4 - Low")'
       },
+      reporter: {
+        type: "string",
+        description: "Username of the reporter"
+      },
+      storyPoints: {
+        type: "number",
+        description: "Story points estimate"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
@@ -6834,7 +6857,7 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, customFields } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, reporter, storyPoints, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
     if (summary)
@@ -6854,8 +6877,19 @@ async function handleJiraUpdateIssue(args) {
     if (priority) {
       updates.priority = { name: priority };
     }
+    if (reporter) {
+      updates.reporter = apiClient.auth.isCloud() ? { accountId: reporter } : { name: reporter };
+    }
+    if (storyPoints !== void 0) {
+      const spResolved = resolveCustomFieldIds(["storyPoints"]);
+      if (spResolved.length > 0) {
+        updates[spResolved[0]] = storyPoints;
+      }
+    }
     if (customFields) {
       for (const [key, value] of Object.entries(customFields)) {
+        if (storyPoints !== void 0 && key.toLowerCase() === "storypoints")
+          continue;
         const resolved = resolveCustomFieldIds([key]);
         if (resolved.length > 0) {
           updates[resolved[0]] = value;
@@ -6895,7 +6929,9 @@ async function handleJiraUpdateIssue(args) {
 
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Story Points:** ${ticket.fields[resolveCustomFieldIds(["storyPoints"])[0]] ?? "Not set"}
 
 **Description:**
 ${ticket.fields.description || "No description available"}`;
@@ -7189,6 +7225,7 @@ async function handleJiraSearchIssues(args) {
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
 - Project: ${issue.fields.project?.key || "Unknown"}`;
@@ -7261,6 +7298,10 @@ var jiraCreateIssueSchema = {
         type: "string",
         description: "Username of assignee (optional)"
       },
+      reporter: {
+        type: "string",
+        description: "Username of reporter (optional)"
+      },
       epicLink: {
         type: "string",
         description: 'Epic ticket ID to link to (e.g., "SEWEB-46018") - NOTE: Epic Link field ID needs configuration per JIRA instance (optional)'
@@ -7297,9 +7338,9 @@ var jiraCreateIssueSchema = {
 };
 async function handleJiraCreateIssue(args) {
   try {
-    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields, outputDir } = args;
+    const { projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, reporter, customFields, outputDir } = args;
     const apiClient = new JiraApiClient();
-    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, epicLink, components, labels, sprint, storyPoints, customFields);
+    const createResponse = await apiClient.createJiraIssue(projectKey, summary, issueType, description, assignee, reporter, epicLink, components, labels, sprint, storyPoints, customFields);
     const ticket = await apiClient.fetchJiraTicket(createResponse.key);
     let summaryText = `**Issue Created Successfully: ${ticket.key}**
 
@@ -7308,7 +7349,9 @@ async function handleJiraCreateIssue(args) {
 **Status:** ${ticket.fields.status?.name || "Unknown"}
 **Assignee:** ${ticket.fields.assignee?.displayName || "Unassigned"}
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
+**Reporter:** ${ticket.fields.reporter?.displayName || "Unknown"}
 **Type:** ${issueType}
+**Story Points:** ${storyPoints !== void 0 ? storyPoints : "Not set"}
 **Project:** ${projectKey}`;
     if (epicLink) {
       summaryText += `
@@ -7745,6 +7788,7 @@ async function handleJiraGetSprints(args) {
 }
 
 // build/tools/jiraGetSprintIssues.js
+init_customFields();
 var jiraGetSprintIssuesSchema = {
   name: "jira_get_sprint_issues",
   description: "Get issues in a specific JIRA sprint",
@@ -7783,11 +7827,14 @@ async function handleJiraGetSprintIssues(args) {
 
 `;
     sprintIssues.issues.forEach((issue, index) => {
+      const sp = issue.fields[CUSTOM_FIELD_ALIASES.storyPoints];
       summaryText += `**${startAt + index + 1}. ${issue.key}: ${issue.fields.summary}**
 - Status: ${issue.fields.status?.name || "Unknown"}
 - Assignee: ${issue.fields.assignee?.displayName || "Unassigned"}
+- Reporter: ${issue.fields.reporter?.displayName || "Unknown"}
 - Priority: ${issue.fields.priority?.name || "Unknown"}
 - Type: ${issue.fields.issuetype?.name || "Unknown"}
+- Story Points: ${sp !== null && sp !== void 0 ? sp : "Not set"}
 - Project: ${issue.fields.project?.key || "Unknown"}
 
 `;
@@ -7910,292 +7957,6 @@ ${downloaded.join("\n")}`;
         {
           type: "text",
           text: `Error getting attachments: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraGetDevStatus.js
-var jiraGetDevStatusSchema = {
-  name: "jira_get_dev_status",
-  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub. This is the same data shown in the JIRA Development Panel sidebar.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      ticketId: {
-        type: "string",
-        description: "The JIRA ticket ID (e.g., OPS-26420)"
-      }
-    },
-    required: ["ticketId"]
-  }
-};
-async function handleJiraGetDevStatus(args) {
-  try {
-    const { ticketId } = args;
-    const apiClient = new JiraApiClient();
-    const ticket = await apiClient.fetchJiraTicket(ticketId, ["summary"]);
-    const issueId = ticket.id;
-    if (!issueId) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Could not resolve internal issue ID for ${ticketId}.`
-          }
-        ],
-        isError: true
-      };
-    }
-    const devStatus = await apiClient.getDevStatus(issueId);
-    const lines = [
-      `**Development Status for ${ticketId}** (issue ID: ${issueId})`,
-      ""
-    ];
-    const detail = devStatus?.detail;
-    if (!detail || detail.length === 0) {
-      lines.push("No development data found for this ticket.");
-      return {
-        content: [{ type: "text", text: lines.join("\n") }]
-      };
-    }
-    for (const provider of detail) {
-      const instanceName = provider.instanceName || provider.name || "Unknown";
-      lines.push(`## ${instanceName}`);
-      lines.push("");
-      const prs = provider.pullRequests || [];
-      if (prs.length > 0) {
-        lines.push(`**Pull Requests (${prs.length}):**`);
-        for (const pr of prs) {
-          const status = pr.status || "UNKNOWN";
-          const repo = pr.repositoryName || pr.destination?.repository?.name || "";
-          const url = pr.url || "";
-          const title = pr.name || pr.title || "(no title)";
-          const author = pr.author?.name || pr.author?.login || "";
-          const sourceBranch = pr.source?.branch || "";
-          const targetBranch = pr.destination?.branch || "";
-          lines.push(`- [${status}] **${title}** (${repo})`);
-          if (sourceBranch || targetBranch) {
-            lines.push(`  Branch: ${sourceBranch} \u2192 ${targetBranch}`);
-          }
-          if (author)
-            lines.push(`  Author: ${author}`);
-          if (url)
-            lines.push(`  URL: ${url}`);
-          lines.push("");
-        }
-      }
-      const branches = provider.branches || [];
-      if (branches.length > 0) {
-        lines.push(`**Branches (${branches.length}):**`);
-        for (const branch of branches) {
-          const repo = branch.repository?.name || "";
-          const name = branch.name || "(unnamed)";
-          const url = branch.url || "";
-          lines.push(`- **${name}** (${repo})`);
-          if (url)
-            lines.push(`  URL: ${url}`);
-        }
-        lines.push("");
-      }
-      const commits = provider.commits || [];
-      if (commits.length > 0) {
-        lines.push(`**Commits (${commits.length}):**`);
-        for (const commit of commits) {
-          const msg = commit.message || "(no message)";
-          const author = commit.author?.name || "";
-          const hash = commit.id?.substring(0, 8) || "";
-          const url = commit.url || "";
-          lines.push(`- \`${hash}\` ${msg}`);
-          if (author)
-            lines.push(`  Author: ${author}`);
-          if (url)
-            lines.push(`  URL: ${url}`);
-        }
-        lines.push("");
-      }
-    }
-    return {
-      content: [{ type: "text", text: lines.join("\n") }]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching dev status: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraLinkIssues.js
-var jiraLinkIssuesSchema = {
-  name: "jira_link_issues",
-  description: "Create a directional link between two JIRA issues (e.g., Test, Blocks, Relates)",
-  inputSchema: {
-    type: "object",
-    properties: {
-      inwardTicketId: {
-        type: "string",
-        description: "The ticket key receiving the inward relationship (e.g., PROJ-100)"
-      },
-      outwardTicketId: {
-        type: "string",
-        description: "The ticket key receiving the outward relationship (e.g., PROJ-200)"
-      },
-      linkType: {
-        type: "string",
-        description: 'The link type name configured in the Jira instance (e.g., "Test", "Blocks", "Relates")'
-      },
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the link operation result (optional)"
-      }
-    },
-    required: ["inwardTicketId", "outwardTicketId", "linkType"]
-  }
-};
-async function handleJiraLinkIssues(args) {
-  try {
-    const { inwardTicketId, outwardTicketId, linkType, outputDir } = args;
-    const apiClient = new JiraApiClient();
-    await apiClient.linkJiraIssues(inwardTicketId, outwardTicketId, linkType);
-    const summaryText = `**Issue Link Created Successfully**
-
-**Link Type:** ${linkType}
-**Inward Issue:** ${inwardTicketId}
-**Outward Issue:** ${outwardTicketId}`;
-    const savedPath = await saveData(outputDir, `link_${inwardTicketId}_${outwardTicketId}_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      inwardTicketId,
-      outwardTicketId,
-      linkType,
-      createdAt: (/* @__PURE__ */ new Date()).toISOString()
-    }, true);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error linking JIRA issues: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraGetLinkTypes.js
-var jiraGetLinkTypesSchema = {
-  name: "jira_get_link_types",
-  description: "Get all available issue link types from the JIRA instance (e.g., Test, Blocks, Relates)",
-  inputSchema: {
-    type: "object",
-    properties: {
-      outputDir: {
-        type: ["string", "boolean", "null"],
-        description: "Directory to save the link types data (optional, defaults to .amazonq/external-data)"
-      }
-    },
-    required: []
-  }
-};
-async function handleJiraGetLinkTypes(args) {
-  try {
-    const { outputDir } = args;
-    const apiClient = new JiraApiClient();
-    const data = await apiClient.getJiraIssueLinkTypes();
-    const linkTypes = data.issueLinkTypes || [];
-    let summaryText = `**Available Issue Link Types**
-
-**Total Link Types:** ${linkTypes.length}
-
-`;
-    linkTypes.forEach((lt, index) => {
-      summaryText += `**${index + 1}. ${lt.name}**
-- Inward: ${lt.inward}
-- Outward: ${lt.outward}
-
-`;
-    });
-    const savedPath = await saveData(outputDir, `link_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, {
-      fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      rawData: data,
-      formattedSummary: summaryText
-    }, true);
-    const savedInfo = savedPath ? `
-
-**Saved to:** ${savedPath}` : "";
-    return {
-      content: [
-        {
-          type: "text",
-          text: `${summaryText}${savedInfo}`
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching JIRA issue link types: ${error instanceof Error ? error.message : "Unknown error"}`
-        }
-      ],
-      isError: true
-    };
-  }
-}
-
-// build/tools/jiraGetMyself.js
-var jiraGetMyselfSchema = {
-  name: "jira_get_myself",
-  description: "Get the currently authenticated Jira user's profile (username, display name, email). Useful for resolving the internal username needed for assignee fields.",
-  inputSchema: {
-    type: "object",
-    properties: {},
-    required: []
-  }
-};
-async function handleJiraGetMyself(_args) {
-  try {
-    const apiClient = new JiraApiClient();
-    const user = await apiClient.getMyself();
-    const summaryText = `**Current Jira User**
-
-**Username:** ${user.name}
-**Display Name:** ${user.displayName}
-**Email:** ${user.emailAddress || "Not available"}
-**Active:** ${user.active}`;
-    return {
-      content: [
-        {
-          type: "text",
-          text: summaryText
-        }
-      ]
-    };
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Error fetching current user: ${error instanceof Error ? error.message : "Unknown error"}`
         }
       ],
       isError: true
@@ -9155,21 +8916,220 @@ async function handleXrayGetPreConditionTests(args) {
   }
 }
 
+// build/tools/jiraGetDevStatus.js
+var jiraGetDevStatusSchema = {
+  name: "jira_get_dev_status",
+  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub. Server-only (not available on Jira Cloud).",
+  inputSchema: {
+    type: "object",
+    properties: {
+      ticketId: {
+        type: "string",
+        description: "The JIRA ticket ID (e.g., PROJ-123)"
+      }
+    },
+    required: ["ticketId"]
+  }
+};
+async function handleJiraGetDevStatus(args) {
+  try {
+    const { ticketId } = args;
+    const apiClient = new JiraApiClient();
+    const ticket = await apiClient.fetchJiraTicket(ticketId, ["summary"]);
+    const issueId = ticket.id;
+    if (!issueId) {
+      return {
+        content: [{ type: "text", text: `Could not resolve internal issue ID for ${ticketId}.` }],
+        isError: true
+      };
+    }
+    const devStatus = await apiClient.getDevStatus(issueId);
+    const lines = [`**Development Status for ${ticketId}** (issue ID: ${issueId})`, ""];
+    const detail = devStatus?.detail;
+    if (!detail || detail.length === 0) {
+      lines.push("No development data found for this ticket.");
+      return { content: [{ type: "text", text: lines.join("\n") }] };
+    }
+    for (const provider of detail) {
+      lines.push(`## ${provider.instanceName || provider.name || "Unknown"}`, "");
+      for (const pr of provider.pullRequests || []) {
+        const status = pr.status || "UNKNOWN";
+        const repo = pr.repositoryName || pr.destination?.repository?.name || "";
+        lines.push(`- [${status}] **${pr.name || pr.title || "(no title)"}** (${repo})`);
+        if (pr.source?.branch || pr.destination?.branch)
+          lines.push(`  Branch: ${pr.source?.branch || ""} \u2192 ${pr.destination?.branch || ""}`);
+        if (pr.author?.name || pr.author?.login)
+          lines.push(`  Author: ${pr.author?.name || pr.author?.login}`);
+        if (pr.url)
+          lines.push(`  URL: ${pr.url}`);
+        lines.push("");
+      }
+      for (const branch of provider.branches || []) {
+        lines.push(`- **${branch.name || "(unnamed)"}** (${branch.repository?.name || ""})`);
+        if (branch.url)
+          lines.push(`  URL: ${branch.url}`);
+      }
+      if (provider.branches?.length)
+        lines.push("");
+      for (const commit of provider.commits || []) {
+        lines.push(`- \`${(commit.id || "").substring(0, 8)}\` ${commit.message || "(no message)"}`);
+        if (commit.author?.name)
+          lines.push(`  Author: ${commit.author.name}`);
+        if (commit.url)
+          lines.push(`  URL: ${commit.url}`);
+      }
+      if (provider.commits?.length)
+        lines.push("");
+    }
+    return { content: [{ type: "text", text: lines.join("\n") }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching dev status: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraGetLinkTypes.js
+var jiraGetLinkTypesSchema = {
+  name: "jira_get_link_types",
+  description: "Get all available issue link types from the JIRA instance (e.g., Test, Blocks, Relates)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link types data (optional)"
+      }
+    },
+    required: []
+  }
+};
+async function handleJiraGetLinkTypes(args) {
+  try {
+    const { outputDir } = args;
+    const apiClient = new JiraApiClient();
+    const data = await apiClient.getJiraIssueLinkTypes();
+    const linkTypes = data.issueLinkTypes || [];
+    let summaryText = `**Available Issue Link Types**
+
+**Total Link Types:** ${linkTypes.length}
+
+`;
+    linkTypes.forEach((lt, index) => {
+      summaryText += `**${index + 1}. ${lt.name}**
+- Inward: ${lt.inward}
+- Outward: ${lt.outward}
+
+`;
+    });
+    const savedPath = await saveData(outputDir, `link_types_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, { fetchedAt: (/* @__PURE__ */ new Date()).toISOString(), rawData: data, formattedSummary: summaryText }, true);
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return { content: [{ type: "text", text: `${summaryText}${savedInfo}` }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching JIRA issue link types: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraGetMyself.js
+var jiraGetMyselfSchema = {
+  name: "jira_get_myself",
+  description: "Get the currently authenticated Jira user's profile (username, display name, email). Useful for resolving the internal username needed for assignee fields.",
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: []
+  }
+};
+async function handleJiraGetMyself(_args) {
+  try {
+    const apiClient = new JiraApiClient();
+    const user = await apiClient.getMyself();
+    const summaryText = `**Current Jira User**
+
+**Username:** ${user.name || user.accountId || "N/A"}
+**Display Name:** ${user.displayName}
+**Email:** ${user.emailAddress || "Not available"}
+**Active:** ${user.active}`;
+    return { content: [{ type: "text", text: summaryText }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error fetching current user: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/jiraLinkIssues.js
+var jiraLinkIssuesSchema = {
+  name: "jira_link_issues",
+  description: "Create a directional link between two JIRA issues (e.g., Test, Blocks, Relates)",
+  inputSchema: {
+    type: "object",
+    properties: {
+      inwardTicketId: {
+        type: "string",
+        description: "The ticket key receiving the inward relationship (e.g., PROJ-100)"
+      },
+      outwardTicketId: {
+        type: "string",
+        description: "The ticket key receiving the outward relationship (e.g., PROJ-200)"
+      },
+      linkType: {
+        type: "string",
+        description: 'The link type name (e.g., "Test", "Blocks", "Relates")'
+      },
+      outputDir: {
+        type: ["string", "boolean", "null"],
+        description: "Directory to save the link operation result (optional)"
+      }
+    },
+    required: ["inwardTicketId", "outwardTicketId", "linkType"]
+  }
+};
+async function handleJiraLinkIssues(args) {
+  try {
+    const { inwardTicketId, outwardTicketId, linkType, outputDir } = args;
+    const apiClient = new JiraApiClient();
+    await apiClient.linkJiraIssues(inwardTicketId, outwardTicketId, linkType);
+    const summaryText = `**Issue Link Created Successfully**
+
+**Link Type:** ${linkType}
+**Inward Issue:** ${inwardTicketId}
+**Outward Issue:** ${outwardTicketId}`;
+    const savedPath = await saveData(outputDir, `link_${inwardTicketId}_${outwardTicketId}_${(/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-")}.json`, { inwardTicketId, outwardTicketId, linkType, createdAt: (/* @__PURE__ */ new Date()).toISOString() }, true);
+    const savedInfo = savedPath ? `
+
+**Saved to:** ${savedPath}` : "";
+    return { content: [{ type: "text", text: `${summaryText}${savedInfo}` }] };
+  } catch (error) {
+    return {
+      content: [{ type: "text", text: `Error linking JIRA issues: ${error instanceof Error ? error.message : "Unknown error"}` }],
+      isError: true
+    };
+  }
+}
+
 // build/tools/xrayAddTestsToTestExec.js
 var xrayAddTestsToTestExecSchema = {
   name: "xray_add_tests_to_test_exec",
-  description: "Add one or more Test issues to an XRay Test Execution. Uses the Xray REST API to associate tests with a test execution.",
+  description: "Add one or more Test issues to an XRay Test Execution. Server-only (XRay REST API).",
   inputSchema: {
     type: "object",
     properties: {
       testExecKey: {
         type: "string",
-        description: "The Test Execution issue key (e.g., OPS-36055)"
+        description: "The Test Execution issue key (e.g., PROJ-100)"
       },
       testKeys: {
         type: "array",
         items: { type: "string" },
-        description: 'Array of Test issue keys to add (e.g., ["OPS-38566", "OPS-38617"])'
+        description: 'Array of Test issue keys to add (e.g., ["PROJ-101", "PROJ-102"])'
       }
     },
     required: ["testExecKey", "testKeys"]
@@ -9180,31 +9140,21 @@ async function handleXrayAddTestsToTestExec(args) {
     const { testExecKey, testKeys: rawTestKeys } = args;
     const testKeys = typeof rawTestKeys === "string" ? JSON.parse(rawTestKeys) : rawTestKeys;
     if (!testKeys || testKeys.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "No test keys provided. Please provide at least one test key."
-          }
-        ]
-      };
+      return { content: [{ type: "text", text: "No test keys provided." }] };
     }
     const apiClient = new JiraApiClient();
     await apiClient.addTestsToTestExec(testExecKey, testKeys);
-    const text = `**Tests Added to Test Execution ${testExecKey}**
-
-Added ${testKeys.length} test(s): ${testKeys.join(", ")}`;
     return {
-      content: [{ type: "text", text }]
+      content: [{
+        type: "text",
+        text: `**Tests Added to Test Execution ${testExecKey}**
+
+Added ${testKeys.length} test(s): ${testKeys.join(", ")}`
+      }]
     };
   } catch (error) {
     return {
-      content: [
-        {
-          type: "text",
-          text: `Error adding tests to test execution: ${error.message}`
-        }
-      ],
+      content: [{ type: "text", text: `Error adding tests to test execution: ${error.message}` }],
       isError: true
     };
   }
@@ -9233,10 +9183,6 @@ var tools = [
   { schema: prefixed(jiraGetSprintIssuesSchema), handler: handleJiraGetSprintIssues },
   { schema: prefixed(jiraGetAttachmentsSchema), handler: handleJiraGetAttachments },
   { schema: prefixed(jiraGetChildIssuesSchema), handler: handleJiraGetChildIssues },
-  { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
-  { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
-  { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
-  { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
   // XRay tools
   { schema: prefixed(xrayGetTestCaseFullSchema), handler: handleXrayGetTestCaseFull },
   { schema: prefixed(xrayGetTestStepsSchema), handler: handleXrayGetTestSteps },
@@ -9248,6 +9194,12 @@ var tools = [
   { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
   { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
   { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests },
+  // Issue links, user, dev status
+  { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
+  { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
+  { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
+  { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
+  // XRay write
   { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec }
 ];
 var JiraMCPServer = class {

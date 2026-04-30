@@ -5,6 +5,7 @@ import {
     CallToolRequestSchema,
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import { prefixToolName, getServerName } from "./utils/toolPrefix.js";
 
 // Import all tools
 import {
@@ -58,13 +59,19 @@ const tools = [
     { schema: uploadAttachmentSchema, handler: handleUploadAttachment },
 ];
 
+// Build prefixed schemas and handler map
+const prefixedTools = tools.map((t) => ({
+    schema: { ...t.schema, name: prefixToolName(t.schema.name) },
+    handler: t.handler,
+}));
+
 class ConfluenceMCPServer {
     private server: Server;
 
     constructor() {
         this.server = new Server(
             {
-                name: "confluence-mcp",
+                name: getServerName(),
                 version: "0.1.0",
             },
             {
@@ -79,7 +86,7 @@ class ConfluenceMCPServer {
 
     private setupToolHandlers() {
         this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-            tools: tools.map((t) => t.schema),
+            tools: prefixedTools.map((t) => t.schema),
         }));
 
         this.server.setRequestHandler(
@@ -88,7 +95,7 @@ class ConfluenceMCPServer {
                 const { name, arguments: args } = request.params;
 
                 try {
-                    const tool = tools.find((t) => t.schema.name === name);
+                    const tool = prefixedTools.find((t) => t.schema.name === name);
                     if (!tool) {
                         throw new Error(`Unknown tool: ${name}`);
                     }

@@ -64,22 +64,6 @@ import {
     handleJiraGetAttachments,
 } from "./tools/jiraGetAttachments.js";
 import {
-    jiraGetDevStatusSchema,
-    handleJiraGetDevStatus,
-} from "./tools/jiraGetDevStatus.js";
-import {
-    jiraLinkIssuesSchema,
-    handleJiraLinkIssues,
-} from "./tools/jiraLinkIssues.js";
-import {
-    jiraGetLinkTypesSchema,
-    handleJiraGetLinkTypes,
-} from "./tools/jiraGetLinkTypes.js";
-import {
-    jiraGetMyselfSchema,
-    handleJiraGetMyself,
-} from "./tools/jiraGetMyself.js";
-import {
     jiraGetChildIssuesSchema,
     handleJiraGetChildIssues,
 } from "./tools/jiraGetChildIssues.js";
@@ -125,6 +109,24 @@ import {
     xrayGetPreConditionTestsSchema,
     handleXrayGetPreConditionTests,
 } from "./tools/xrayGetPreConditionTests.js";
+
+// New tools: issue links, user, dev status, XRay write
+import {
+    jiraGetDevStatusSchema,
+    handleJiraGetDevStatus,
+} from "./tools/jiraGetDevStatus.js";
+import {
+    jiraGetLinkTypesSchema,
+    handleJiraGetLinkTypes,
+} from "./tools/jiraGetLinkTypes.js";
+import {
+    jiraGetMyselfSchema,
+    handleJiraGetMyself,
+} from "./tools/jiraGetMyself.js";
+import {
+    jiraLinkIssuesSchema,
+    handleJiraLinkIssues,
+} from "./tools/jiraLinkIssues.js";
 import {
     xrayAddTestsToTestExecSchema,
     handleXrayAddTestsToTestExec,
@@ -155,10 +157,6 @@ const tools = [
     { schema: prefixed(jiraGetSprintIssuesSchema), handler: handleJiraGetSprintIssues },
     { schema: prefixed(jiraGetAttachmentsSchema), handler: handleJiraGetAttachments },
     { schema: prefixed(jiraGetChildIssuesSchema), handler: handleJiraGetChildIssues },
-    { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
-    { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
-    { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
-    { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
     // XRay tools
     { schema: prefixed(xrayGetTestCaseFullSchema), handler: handleXrayGetTestCaseFull },
     { schema: prefixed(xrayGetTestStepsSchema), handler: handleXrayGetTestSteps },
@@ -170,6 +168,12 @@ const tools = [
     { schema: prefixed(xrayGetTestStatusesSchema), handler: handleXrayGetTestStatuses },
     { schema: prefixed(xrayGetTestPreConditionsSchema), handler: handleXrayGetTestPreConditions },
     { schema: prefixed(xrayGetPreConditionTestsSchema), handler: handleXrayGetPreConditionTests },
+    // Issue links, user, dev status
+    { schema: prefixed(jiraGetDevStatusSchema), handler: handleJiraGetDevStatus },
+    { schema: prefixed(jiraGetLinkTypesSchema), handler: handleJiraGetLinkTypes },
+    { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
+    { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
+    // XRay write
     { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec },
 ];
 

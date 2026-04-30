@@ -43,21 +43,23 @@ clean: ## Remove build artifacts
 MCP_DIR := shared/tools/mcp-servers
 MCP_SERVERS := $(wildcard $(MCP_DIR)/*/package.json)
 
-mcp-build: ## Build all MCP server dist bundles (npm install + build/bundle)
-	@echo "🔨 Building MCP server bundles..."
-	@for pkg in $(MCP_SERVERS); do \
+mcp-build: ## Build all MCP server dist bundles (parallel)
+	@echo "🔨 Building MCP server bundles (parallel)..."
+	@pids=""; fails=0; \
+	for pkg in $(MCP_SERVERS); do \
 		dir=$$(dirname $$pkg); \
 		name=$$(basename $$dir); \
-		echo "  ⏳ $$name"; \
-		(cd $$dir && npm install --silent 2>/dev/null && \
+		( cd $$dir && npm install --silent 2>/dev/null && \
 			if npm run --silent bundle 2>/dev/null; then true; \
 			elif npm run --silent build 2>/dev/null; then true; \
-			else echo "    ⚠ no build/bundle script"; fi \
-		) && \
-		if [ -f "$$dir/dist/index.cjs" ]; then echo "  ✅ $$name"; \
-		else echo "  ⚠ $$name (no dist/index.cjs)"; fi; \
-	done
-	@echo "✅ MCP build complete"
+			else true; fi && \
+			if [ -f dist/index.cjs ]; then echo "  ✅ $$name"; \
+			else echo "  ⚠ $$name (no dist/index.cjs)"; exit 1; fi \
+		) & \
+		pids="$$pids $$!"; \
+	done; \
+	for pid in $$pids; do wait $$pid || fails=$$((fails+1)); done; \
+	if [ $$fails -gt 0 ]; then echo "⚠ $$fails server(s) failed"; else echo "✅ MCP build complete"; fi
 
 mcp-build-%: ## Build a single MCP server (e.g., make mcp-build-jira-mcp)
 	@dir=$(MCP_DIR)/$*; \

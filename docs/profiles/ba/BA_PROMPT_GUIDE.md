@@ -8,12 +8,12 @@ This guide shows how to use BA/PO agents in your daily workflow with real-world 
 
 ## Quick Reference
 
-| Task | Agent | Example Prompt |
-|------|-------|----------------|
-| Define project scope | `scope_definer_agent` | "Define scope for payment integration epic DPAY-500" |
-| Write user stories | `feature_writer_agent` | "Create stories for checkout flow based on requirements doc" |
-| Analyze requirements | `requirements_analyst_agent` | "Review sprint 23 stories and identify gaps" |
-| Complex workflow | `ba_orchestrator_agent` | "Analyze epic DPAY-500 and create complete story breakdown" |
+| Task                 | Agent                        | Example Prompt                                               |
+|----------------------|------------------------------|--------------------------------------------------------------|
+| Define project scope | `scope_definer_agent`        | "Define scope for payment integration epic DPAY-500"         |
+| Write user stories   | `feature_writer_agent`       | "Create stories for checkout flow based on requirements doc" |
+| Analyze requirements | `requirements_analyst_agent` | "Review sprint 23 stories and identify gaps"                 |
+| Complex workflow     | `ba_orchestrator_agent`      | "Analyze epic DPAY-500 and create complete story breakdown"  |
 
 ---
 

@@ -68,6 +68,7 @@ precompute_mcp_paths() {
     _p_mywiki="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_figma="$(to_win_path "$HOME/.kiro/tools/mcp-servers/figma-mcp/dist/index.cjs")"
     _p_qtest="$(to_win_path "$HOME/.kiro/tools/mcp-servers/qtest-mcp/dist/index.cjs")"
+    _p_sharepoint="$(to_win_path "$HOME/.kiro/tools/mcp-servers/sharepoint-mcp/dist/index.cjs")"
     _node_cmd="node"
     if [ "$_is_wsl" = true ]; then
         _node_cmd="wsl.exe -d $_wsl_distro node"
@@ -80,6 +81,14 @@ discover_github_remotes() {
     local tokens_file="$1"
     [ -f "$tokens_file" ] || return
     grep -o 'GITHUB_TOKEN_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/GITHUB_TOKEN_//' | sort -u
+}
+
+# Discover Confluence instances from tokens.env by scanning for CONFLUENCE_PAT_{instance} keys
+# Outputs one instance name per line, sorted and deduplicated
+discover_confluence_instances() {
+    local tokens_file="$1"
+    [ -f "$tokens_file" ] || return
+    grep -o 'CONFLUENCE_PAT_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/CONFLUENCE_PAT_//' | sort -u
 }
 
 show_usage() {
@@ -1025,6 +1034,9 @@ TOKHEADER
         # Discover GitHub remotes from tokens.env
         _github_remotes=$(discover_github_remotes "$KIRO_ROOT/tokens.env")
         
+        # Discover Confluence instances from tokens.env
+        _confluence_instances=$(discover_confluence_instances "$KIRO_ROOT/tokens.env")
+        
         # Preserve existing powers section if present
         existing_powers="{}"
         if [ -f "$mcp_settings" ]; then
@@ -1042,6 +1054,7 @@ import json, sys, os
 
 tokens_file = '$KIRO_ROOT/tokens.env'
 remotes_raw = '''$_github_remotes'''.strip()
+confluence_instances_raw = '''$_confluence_instances'''.strip()
 
 p_jira = r'$_p_jira'
 p_confluence = r'$_p_confluence'
@@ -1052,6 +1065,7 @@ p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
+p_sharepoint = r'$_p_sharepoint'
 
 def read_tok(key):
     try:
@@ -1070,13 +1084,33 @@ mcp = {
             'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
-        'confluence': {
-            'command': 'node',
-            'args': [p_confluence],
-            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
-        },
     }
 }
+
+# Confluence: per-instance with CONFLUENCE_INSTANCE_PREFIX, or legacy fallback
+conf_instances = [i for i in confluence_instances_raw.split('\\n') if i.strip()]
+if conf_instances:
+    for instance in conf_instances:
+        token = read_tok('CONFLUENCE_PAT_' + instance)
+        url = read_tok('CONFLUENCE_URL_' + instance)
+        if not token or not url:
+            continue
+        mcp['mcpServers']['confluence-' + instance] = {
+            'command': 'node',
+            'args': [p_confluence],
+            'env': {
+                'CONFLUENCE_INSTANCE_PREFIX': instance + '_',
+                'CONFLUENCE_URL': url,
+                'CONFLUENCE_PAT': token,
+            }
+        }
+else:
+    # Fallback: legacy single confluence entry
+    mcp['mcpServers']['confluence'] = {
+        'command': 'node',
+        'args': [p_confluence],
+        'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+    }
 
 # GitHub entries: per-remote with flat env vars, or legacy fallback
 remotes = [r for r in remotes_raw.split('\n') if r.strip()]
@@ -1122,12 +1156,27 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+# SharePoint — conditional on Azure AD credentials
+sp_tenant = read_tok('SHAREPOINT_TENANT_ID')
+sp_client = read_tok('SHAREPOINT_CLIENT_ID')
+sp_secret = read_tok('SHAREPOINT_CLIENT_SECRET')
+sp_site   = read_tok('SHAREPOINT_SITE_URL')
+if sp_tenant and sp_client and sp_secret:
+    sp_env = {'SHAREPOINT_TENANT_ID': sp_tenant, 'SHAREPOINT_CLIENT_ID': sp_client, 'SHAREPOINT_CLIENT_SECRET': sp_secret}
+    if sp_site:
+        sp_env['SHAREPOINT_SITE_URL'] = sp_site
+    mcp['mcpServers']['sharepoint'] = {
+        'command': 'node',
+        'args': [p_sharepoint],
+        'env': sp_env
+    }
+
 # NOTE: Splunk, AppDynamics, and ServiceNow MCP registration below is handled
 # automatically by Koda (v0.4.66+) via GenerateMcpJson. These blocks remain
 # for non-Koda installs. If using Koda, configure tokens in the TUI (press m).
 
-splunk_user = read_tok('SPLUNK_USERNAME')
-splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_user = read_tok('SPLUNK_API_USERNAME')
+splunk_pass = read_tok('SPLUNK_API_PASSWORD')
 splunk_url = read_tok('SPLUNK_BASE_URL')
 if splunk_user and splunk_pass:
     mcp['mcpServers']['splunk-mcp'] = {
@@ -1135,8 +1184,8 @@ if splunk_user and splunk_pass:
         'args': [p_splunk],
         'env': {
             'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
-            'SPLUNK_USERNAME': splunk_user,
-            'SPLUNK_PASSWORD': splunk_pass,
+            'SPLUNK_API_USERNAME': splunk_user,
+            'SPLUNK_API_PASSWORD': splunk_pass,
         }
     }
 
@@ -1154,8 +1203,8 @@ if appd_id and appd_secret:
         }
     }
 
-snow_user = read_tok('SNOW_USERNAME')
-snow_pass = read_tok('SNOW_PASSWORD')
+snow_user = read_tok('SNOW_API_USERNAME')
+snow_pass = read_tok('SNOW_API_PASSWORD')
 snow_url = read_tok('SNOW_INSTANCE')
 if snow_user and snow_pass:
     mcp['mcpServers']['servicenow-mcp'] = {
@@ -1163,8 +1212,8 @@ if snow_user and snow_pass:
         'args': [p_servicenow],
         'env': {
             'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
-            'SNOW_USERNAME': snow_user,
-            'SNOW_PASSWORD': snow_pass,
+            'SNOW_API_USERNAME': snow_user,
+            'SNOW_API_PASSWORD': snow_pass,
         }
     }
 
@@ -1986,6 +2035,7 @@ HOOKEOF
                     
                     # Discover GitHub remotes from tokens.env
                     _cursor_github_remotes=$(discover_github_remotes "$HOME/.kiro/tokens.env")
+                    _cursor_confluence_instances=$(discover_confluence_instances "$HOME/.kiro/tokens.env")
                     
                     # Pre-compute WSL-aware MCP paths
                     precompute_mcp_paths
@@ -1995,6 +2045,7 @@ import json, sys, os
 
 tokens_file = '$HOME/.kiro/tokens.env'
 remotes_raw = '''$_cursor_github_remotes'''.strip()
+confluence_instances_raw = '''$_cursor_confluence_instances'''.strip()
 mcp_json_path = '$mcp_json'
 
 p_jira = r'$_p_jira'
@@ -2006,6 +2057,7 @@ p_splunk = r'$_p_splunk'
 p_appdynamics = r'$_p_appdynamics'
 p_servicenow = r'$_p_servicenow'
 p_qtest = r'$_p_qtest'
+p_sharepoint = r'$_p_sharepoint'
 
 def read_tok(key):
     try:
@@ -2024,13 +2076,33 @@ mcp = {
             'args': [p_jira],
             'env': {'JIRA_PAT': '${jira_pat}'}
         },
-        'confluence': {
-            'command': 'node',
-            'args': [p_confluence],
-            'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
-        },
     }
 }
+
+# Confluence: per-instance with CONFLUENCE_INSTANCE_PREFIX, or legacy fallback
+conf_instances = [i for i in confluence_instances_raw.split('\\n') if i.strip()]
+if conf_instances:
+    for instance in conf_instances:
+        token = read_tok('CONFLUENCE_PAT_' + instance)
+        url = read_tok('CONFLUENCE_URL_' + instance)
+        if not token or not url:
+            continue
+        mcp['mcpServers']['confluence-' + instance] = {
+            'command': 'node',
+            'args': [p_confluence],
+            'env': {
+                'CONFLUENCE_INSTANCE_PREFIX': instance + '_',
+                'CONFLUENCE_URL': url,
+                'CONFLUENCE_PAT': token,
+            }
+        }
+else:
+    # Fallback: legacy single confluence entry
+    mcp['mcpServers']['confluence'] = {
+        'command': 'node',
+        'args': [p_confluence],
+        'env': {'CONFLUENCE_URL': 'https://confluence.disney.com', 'CONFLUENCE_PAT': '${confluence_pat}'}
+    }
 
 # GitHub entries: per-remote with flat env vars, or fallback to single placeholder
 remotes = [r for r in remotes_raw.split('\n') if r.strip()]
@@ -2075,10 +2147,25 @@ mcp['mcpServers']['bruno'] = {
     'args': [p_bruno]
 }
 
+# SharePoint — conditional on Azure AD credentials
+sp_tenant = read_tok('SHAREPOINT_TENANT_ID')
+sp_client = read_tok('SHAREPOINT_CLIENT_ID')
+sp_secret = read_tok('SHAREPOINT_CLIENT_SECRET')
+sp_site   = read_tok('SHAREPOINT_SITE_URL')
+if sp_tenant and sp_client and sp_secret:
+    sp_env = {'SHAREPOINT_TENANT_ID': sp_tenant, 'SHAREPOINT_CLIENT_ID': sp_client, 'SHAREPOINT_CLIENT_SECRET': sp_secret}
+    if sp_site:
+        sp_env['SHAREPOINT_SITE_URL'] = sp_site
+    mcp['mcpServers']['sharepoint'] = {
+        'command': 'node',
+        'args': [p_sharepoint],
+        'env': sp_env
+    }
+
 # NOTE: See comment at line ~1089 — these blocks are for non-Koda installs only.
 
-splunk_user = read_tok('SPLUNK_USERNAME')
-splunk_pass = read_tok('SPLUNK_PASSWORD')
+splunk_user = read_tok('SPLUNK_API_USERNAME')
+splunk_pass = read_tok('SPLUNK_API_PASSWORD')
 splunk_url = read_tok('SPLUNK_BASE_URL')
 if splunk_user and splunk_pass:
     mcp['mcpServers']['splunk-mcp'] = {
@@ -2086,8 +2173,8 @@ if splunk_user and splunk_pass:
         'args': [p_splunk],
         'env': {
             'SPLUNK_BASE_URL': splunk_url or 'https://splunk.wdprapps.disney.com:8089',
-            'SPLUNK_USERNAME': splunk_user,
-            'SPLUNK_PASSWORD': splunk_pass,
+            'SPLUNK_API_USERNAME': splunk_user,
+            'SPLUNK_API_PASSWORD': splunk_pass,
         }
     }
 
@@ -2105,8 +2192,8 @@ if appd_id and appd_secret:
         }
     }
 
-snow_user = read_tok('SNOW_USERNAME')
-snow_pass = read_tok('SNOW_PASSWORD')
+snow_user = read_tok('SNOW_API_USERNAME')
+snow_pass = read_tok('SNOW_API_PASSWORD')
 snow_url = read_tok('SNOW_INSTANCE')
 if snow_user and snow_pass:
     mcp['mcpServers']['servicenow-mcp'] = {
@@ -2114,8 +2201,8 @@ if snow_user and snow_pass:
         'args': [p_servicenow],
         'env': {
             'SNOW_INSTANCE': snow_url or 'https://disney.service-now.com',
-            'SNOW_USERNAME': snow_user,
-            'SNOW_PASSWORD': snow_pass,
+            'SNOW_API_USERNAME': snow_user,
+            'SNOW_API_PASSWORD': snow_pass,
         }
     }
 qtest_token = read_tok('QTEST_BEARER_TOKEN')

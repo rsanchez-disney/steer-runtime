@@ -48,17 +48,17 @@ steer-runtime solves this by encoding organizational knowledge into agent config
 
 ### Key Advantages
 
-| Advantage | How |
-|-----------|-----|
-| **Zero-setup onboarding** | `koda install dev` — one command, 19 agents ready |
-| **Role-appropriate tooling** | A BA agent can't accidentally run `rm -rf`; a dev agent can't skip code review |
-| **Consistent quality** | Golden rules, compliance checks, and write guards are enforced by hooks, not hope |
-| **Institutional memory** | Context files, steering rules, and knowledge tool persist what the team has learned |
-| **Multi-repo coordination** | Orchestrator agents understand which repos map to which Jira prefixes and coordinate across them |
-| **No vendor lock-in on context** | All config is plain JSON + Markdown — portable, version-controlled, reviewable |
-| **Pre-built integrations** | MCP servers are bundled as single-file Node.js bundles — no npm install, no Nexus credentials needed |
-| **Cross-platform** | Koda (Go binary, all platforms) + `setup.sh` / `setup.ps1` fallback |
-| **Multi-IDE** | Kiro CLI (agents) + Cursor IDE (rules) + Kite (desktop GUI) — same source, different runtimes |
+| Advantage                        | How                                                                                                  |
+|----------------------------------|------------------------------------------------------------------------------------------------------|
+| **Zero-setup onboarding**        | `koda install dev` — one command, 19 agents ready                                                    |
+| **Role-appropriate tooling**     | A BA agent can't accidentally run `rm -rf`; a dev agent can't skip code review                       |
+| **Consistent quality**           | Golden rules, compliance checks, and write guards are enforced by hooks, not hope                    |
+| **Institutional memory**         | Context files, steering rules, and knowledge tool persist what the team has learned                  |
+| **Multi-repo coordination**      | Orchestrator agents understand which repos map to which Jira prefixes and coordinate across them     |
+| **No vendor lock-in on context** | All config is plain JSON + Markdown — portable, version-controlled, reviewable                       |
+| **Pre-built integrations**       | MCP servers are bundled as single-file Node.js bundles — no npm install, no Nexus credentials needed |
+| **Cross-platform**               | Koda (Go binary, all platforms) + `setup.sh` / `setup.ps1` fallback                                  |
+| **Multi-IDE**                    | Kiro CLI (agents) + Cursor IDE (rules) + Kite (desktop GUI) — same source, different runtimes        |
 
 ---
 
@@ -106,11 +106,11 @@ The prompt stays simple; the context does the heavy lifting.
 
 Safety isn't a suggestion in the prompt — it's enforced by hooks:
 
-| Hook | What it prevents |
-|------|-----------------|
-| `guard-writes.sh` | Writing to `node_modules/`, `dist/`, `.git/` |
-| `warn-destructive.sh` | Silent `rm -rf`, `DROP TABLE`, `--force` |
-| `git-context.sh` | Agent starting without knowing the current branch |
+| Hook                  | What it prevents                                  |
+|-----------------------|---------------------------------------------------|
+| `guard-writes.sh`     | Writing to `node_modules/`, `dist/`, `.git/`      |
+| `warn-destructive.sh` | Silent `rm -rf`, `DROP TABLE`, `--force`          |
+| `git-context.sh`      | Agent starting without knowing the current branch |
 
 Hooks run as shell scripts with exit codes — `exit 2` blocks the action, `exit 0` allows it. The LLM can't override them.
 
@@ -196,21 +196,21 @@ Shared resources live in `.kiro/`:
 
 ## By the Numbers
 
-| Metric | Value |
-|--------|-------|
-| Total agents | 41 |
-| Profiles | 5 (dev, ba, qa, ops, pm) |
-| MCP servers | 5 (jira, confluence, mywiki, github, mermaid) |
-| Agents with MCP integration | 22 |
-| Agents with hooks | 11 |
-| Agents with advanced tools | 11 |
-| Context files | 12 |
-| Cursor rule templates | 19 |
-| Steering rules | 10 |
-| Skills | 16 |
-| Hook scripts | 3 |
-| Supported projects | 9 (with pre-built memory banks) |
-| Setup commands | 14 (+ 7 IDE subcommands) |
+| Metric                      | Value                                         |
+|-----------------------------|-----------------------------------------------|
+| Total agents                | 41                                            |
+| Profiles                    | 5 (dev, ba, qa, ops, pm)                      |
+| MCP servers                 | 5 (jira, confluence, mywiki, github, mermaid) |
+| Agents with MCP integration | 22                                            |
+| Agents with hooks           | 11                                            |
+| Agents with advanced tools  | 11                                            |
+| Context files               | 12                                            |
+| Cursor rule templates       | 19                                            |
+| Steering rules              | 10                                            |
+| Skills                      | 16                                            |
+| Hook scripts                | 3                                             |
+| Supported projects          | 9 (with pre-built memory banks)               |
+| Setup commands              | 14 (+ 7 IDE subcommands)                      |
 
 ---
 
@@ -226,9 +226,9 @@ koda enable-tools               # Enable advanced tools
 kiro-cli chat --agent orchestrator    # Start working
 ```
 
-For detailed setup: [Getting Started](GETTING_STARTED.md)  
-For agent reference: [AGENTS.md](../AGENTS.md)  
-For troubleshooting: [Troubleshooting](TROUBLESHOOTING.md)
+For detailed setup: [Getting Started](../getting-started/GETTING_STARTED.md)  
+For agent reference: [AGENTS.md](../../AGENTS.md)
+For troubleshooting: [Troubleshooting](../reference/TROUBLESHOOTING.md)
 
 ---
 
@@ -253,14 +253,14 @@ steer-runtime (source of truth)
 
 The `.cursor-templates/` directory contains 19 `.mdc` rule files derived from the same source material as Kiro agents — golden rules, coding standards, project mappings, role guidelines, and guardrails. Each rule uses Cursor's native activation model:
 
-| Range | Category | Activation |
-|-------|----------|------------|
-| 00-09 | Foundation (golden rules, mappings, commits) | Always on |
+| Range | Category                                                | Activation         |
+|-------|---------------------------------------------------------|--------------------|
+| 00-09 | Foundation (golden rules, mappings, commits)            | Always on          |
 | 10-19 | Language specialists (Java, Node, Angular, Go, Flutter) | File glob patterns |
-| 20-29 | Quality (testing, security, architecture) | Glob or always on |
-| 30-39 | Role guides (BA, QA, Ops, PM) | Manual `@` mention |
-| 40-49 | Guardrails (write protection, destructive warnings) | Always on |
-| 50-59 | Workflow (SDLC steps, PR templates, story analysis) | Manual `@` mention |
+| 20-29 | Quality (testing, security, architecture)               | Glob or always on  |
+| 30-39 | Role guides (BA, QA, Ops, PM)                           | Manual `@` mention |
+| 40-49 | Guardrails (write protection, destructive warnings)     | Always on          |
+| 50-59 | Workflow (SDLC steps, PR templates, story analysis)     | Manual `@` mention |
 
 MCP servers are shared — both Kiro and Cursor point to the same pre-built bundles in `~/.kiro/tools/mcp-servers/`.
 
@@ -271,21 +271,21 @@ MCP servers are shared — both Kiro and Cursor point to the same pre-built bund
 
 ### Kiro vs Cursor — Complementary Strengths
 
-| Capability | Kiro CLI | Cursor |
-|-----------|----------|--------|
-| Multi-agent orchestration | ✅ 40 agents, 5 profiles | — |
-| Automated SDLC pipeline | ✅ story → plan → code → review → PR | — |
-| Programmatic hooks | ✅ guard-writes, git-context | — |
-| Persistent memory (knowledge) | ✅ | — |
-| Inline code suggestions | — | ✅ Tab completion |
-| Multi-file Composer | — | ✅ |
-| Codebase indexing | — | ✅ @codebase |
-| Coding standards | ✅ via agent prompts | ✅ via .mdc rules |
-| MCP tools (Jira, Confluence, GitHub) | ✅ | ✅ |
+| Capability                           | Kiro CLI                            | Cursor           |
+|--------------------------------------|-------------------------------------|------------------|
+| Multi-agent orchestration            | ✅ 40 agents, 5 profiles             | —                |
+| Automated SDLC pipeline              | ✅ story → plan → code → review → PR | —                |
+| Programmatic hooks                   | ✅ guard-writes, git-context         | —                |
+| Persistent memory (knowledge)        | ✅                                   | —                |
+| Inline code suggestions              | —                                   | ✅ Tab completion |
+| Multi-file Composer                  | —                                   | ✅                |
+| Codebase indexing                    | —                                   | ✅ @codebase      |
+| Coding standards                     | ✅ via agent prompts                 | ✅ via .mdc rules |
+| MCP tools (Jira, Confluence, GitHub) | ✅                                   | ✅                |
 
 The recommendation: use Kiro for complex orchestrated workflows (implement a Jira story end-to-end), Cursor for day-to-day coding with the same standards and MCP access.
 
-See [Cursor Setup](CURSOR_SETUP.md) for detailed installation and usage.
+See [Cursor Setup](../getting-started/CURSOR_SETUP.md) for detailed installation and usage.
 
 ```mermaid
 graph TD

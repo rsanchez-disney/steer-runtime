@@ -1,6 +1,6 @@
 {
   "name": "app-team",
-  "description": "Adaptive Payment Platform \u2014 shared foundation for all APP sub-teams",
+  "description": "Adaptive Payment Platform — shared foundation for all APP sub-teams",
   "team": "Disney Payments & Commerce",
   "profiles": [
     "dev-core",
@@ -15,5 +15,9 @@
   ],
   "enable_tools": true,
   "jira_prefix": "DPAY-",
+  "jira_custom_fields": {
+    "myjira": "customfield_10003",
+    "jira": "customfield_10106"
+  },
   "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg"
 }

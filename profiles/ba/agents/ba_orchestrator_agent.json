@@ -4,6 +4,7 @@
   "prompt": "ba_orchestrator_agent.md",
   "tools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
     "fs_read",
@@ -11,13 +12,18 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list"
+    "todo_list",
+    "@sharepoint/*",
+    "@mermaid/*"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@mywiki/*",
     "@github/*",
     "@jira/*",
-    "@compass/*"
+    "@compass/*",
+    "@sharepoint/*",
+    "@mermaid/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",
