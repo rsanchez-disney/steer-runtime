@@ -3,20 +3,27 @@
 Workspace-specific QA agents and context for the OpSheet team. These extend the shared
 `profiles/qa/` profile with OpSheet-specific tooling and conventions.
 
-## Workspace-Only Files
+## Workspace Files
 
-| Type    | File                             | Purpose                                                    |
-|---------|----------------------------------|------------------------------------------------------------|
-| Agent   | `test_case_generator_agent.json` | Generates Gherkin test cases from OPS testable tickets     |
-| Prompt  | `test_case_generator_agent.md`   | Pipeline instructions for the test case generator          |
-| Context | `jira_xray_conventions.md`       | Jira/Xray field mappings, link conventions, username resolution |
-| Context | `test_case_format.md`            | Markdown template for local test case files                |
+| Type    | File                             | Purpose                                                           |
+|---------|----------------------------------|-------------------------------------------------------------------|
+| Agent   | `qa_orchestrator_agent.json`     | Overrides global orchestrator — adds workspace agent routing      |
+| Prompt  | `qa_orchestrator_agent.md`       | Extends global prompt with `test_case_generator_agent` delegation |
+| Agent   | `test_case_generator_agent.json` | Generates Gherkin test cases from OPS testable tickets            |
+| Prompt  | `test_case_generator_agent.md`   | Pipeline instructions for the test case generator                 |
+| Context | `jira_xray_conventions.md`       | Jira/Xray field mappings, link conventions, username resolution   |
+| Context | `test_case_format.md`            | Markdown template for local test case files                       |
 
 ## Inherited from `profiles/qa/`
 
-All other QA agents (orchestrator, test planner, test automation, defect analyst, API tester,
-performance tester, coverage analyzer, etc.) and their context files are inherited from the shared
-profile. Do not duplicate them here.
+All other QA agents (test planner, test automation, defect analyst, API tester, performance tester,
+coverage analyzer, etc.) and their context files are inherited from the shared profile. Do not
+duplicate them here.
+
+The `qa_orchestrator_agent` override preserves all global orchestration logic (coordination
+strategy, quality gates, qTest rules, Confluence routing) and adds workspace-specific agent
+selection rules — primarily routing OPS test case generation to `test_case_generator_agent` instead
+of the generic `test_planner_agent`.
 
 ## Key Conventions
 
