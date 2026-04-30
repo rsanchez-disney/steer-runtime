@@ -32,6 +32,11 @@ export const githubCreatePrSchema = {
                 type: "boolean",
                 description: "Create as draft PR (default: false)",
             },
+            labels: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of label names to add to the PR (e.g., [\"upstream-candidate\", \"feature\"])",
+            },
             outputDir: {
                 type: "string",
                 description: "Optional: Directory to save PR data",
@@ -49,6 +54,7 @@ export async function handleGithubCreatePr(args: any) {
         base = "main",
         body,
         draft = false,
+        labels,
         outputDir,
     } = args as {
         repo: string;
@@ -57,6 +63,7 @@ export async function handleGithubCreatePr(args: any) {
         base?: string;
         body?: string;
         draft?: boolean;
+        labels?: string[];
         outputDir?: string | false | null;
     };
 
@@ -75,6 +82,15 @@ export async function handleGithubCreatePr(args: any) {
         draft,
     });
 
+    if (labels && labels.length > 0) {
+        await octokit.issues.addLabels({
+            owner,
+            repo: repoName,
+            issue_number: pr.number,
+            labels,
+        });
+    }
+
     let savedInfo = "";
     if (outputDir !== false && outputDir !== null) {
         const filename = `github-pr-created-${formatRepoId(`${owner}/${repoName}`)}-${pr.number}_${formatTimestamp()}.json`;
@@ -86,7 +102,7 @@ export async function handleGithubCreatePr(args: any) {
         content: [
             {
                 type: "text",
-                text: `GitHub PR #${pr.number} created successfully${savedInfo}\n\nTitle: ${pr.title}\nURL: ${pr.html_url}\nBranch: ${pr.head.ref} → ${pr.base.ref}`,
+                text: `GitHub PR #${pr.number} created successfully${savedInfo}\n\nTitle: ${pr.title}\nURL: ${pr.html_url}\nBranch: ${pr.head.ref} → ${pr.base.ref}${labels && labels.length > 0 ? `\nLabels: ${labels.join(", ")}` : ""}`,
             },
         ],
     };

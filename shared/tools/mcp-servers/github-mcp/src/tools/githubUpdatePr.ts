@@ -5,7 +5,7 @@ import { formatTimestamp, formatRepoId } from "../utils/formatting.js";
 export const githubUpdatePrSchema = {
     name: "github_update_pr",
     description:
-        "Update a GitHub pull request (title, description, assignees, reviewers)",
+        "Update a GitHub pull request (title, description, assignees, reviewers, labels)",
     inputSchema: {
         type: "object",
         properties: {
@@ -39,6 +39,11 @@ export const githubUpdatePrSchema = {
                 items: { type: "string" },
                 description: "Array of usernames to request review from",
             },
+            labels: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of label names to add to the PR",
+            },
             outputDir: {
                 type: "string",
                 description: "Optional: Directory to save updated PR data",
@@ -57,6 +62,7 @@ export async function handleGithubUpdatePr(args: any) {
         state,
         assignees,
         reviewers,
+        labels,
         outputDir,
     } = args as {
         repo: string;
@@ -66,6 +72,7 @@ export async function handleGithubUpdatePr(args: any) {
         state?: string;
         assignees?: string[];
         reviewers?: string[];
+        labels?: string[];
         outputDir?: string | false | null;
     };
 
@@ -105,6 +112,15 @@ export async function handleGithubUpdatePr(args: any) {
         });
     }
 
+    if (labels && labels.length > 0) {
+        await octokit.issues.addLabels({
+            owner,
+            repo: repoName,
+            issue_number: prNum,
+            labels,
+        });
+    }
+
     let savedInfo = "";
     if (outputDir !== false && outputDir !== null) {
         const filename = `github-pr-updated-${formatRepoId(`${owner}/${repoName}`)}-${prNumber}_${formatTimestamp()}.json`;
@@ -116,7 +132,7 @@ export async function handleGithubUpdatePr(args: any) {
         content: [
             {
                 type: "text",
-                text: `GitHub PR #${prNumber} updated successfully${savedInfo}\n\nTitle: ${pr.title}\nState: ${pr.state}`,
+                text: `GitHub PR #${prNumber} updated successfully${savedInfo}\n\nTitle: ${pr.title}\nState: ${pr.state}${labels && labels.length > 0 ? `\nLabels added: ${labels.join(", ")}` : ""}`,
             },
         ],
     };

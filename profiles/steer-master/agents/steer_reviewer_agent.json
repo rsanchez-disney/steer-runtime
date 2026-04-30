@@ -2,13 +2,14 @@
   "name": "steer_reviewer_agent",
   "description": "Reviews steer-runtime PRs for breaking changes, schema violations, and consistency issues",
   "prompt": "prompts/steer_reviewer_agent.md",
-  "tools": [],
+  "tools": ["@github/*"],
   "resources": [
     "file://profiles/steer-master/context/agent_schema.md",
     "file://profiles/steer-master/context/prompt_structure.md",
     "file://profiles/steer-master/context/breaking_change_rules.md",
     "file://profiles/steer-master/context/naming_conventions.md",
     "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://profiles/steer-master/context/fork_governance.md",
     "file://shared/memory-bank/steer-master/schema-inventory.md",
     "file://shared/memory-bank/steer-master/breaking-change-log.md",
     "file://docs/reference/FORK_STRATEGY.md"

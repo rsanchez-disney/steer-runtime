@@ -16114,6 +16114,11 @@ var githubCreatePrSchema = {
         type: "boolean",
         description: "Create as draft PR (default: false)"
       },
+      labels: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Array of label names to add to the PR (e.g., ["upstream-candidate", "feature"])'
+      },
       outputDir: {
         type: "string",
         description: "Optional: Directory to save PR data"
@@ -16123,7 +16128,7 @@ var githubCreatePrSchema = {
   }
 };
 async function handleGithubCreatePr(args) {
-  const { repo, title, head, base = "main", body, draft = false, outputDir } = args;
+  const { repo, title, head, base = "main", body, draft = false, labels, outputDir } = args;
   const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const { data: pr } = await octokit2.pulls.create({
@@ -16135,6 +16140,14 @@ async function handleGithubCreatePr(args) {
     body,
     draft
   });
+  if (labels && labels.length > 0) {
+    await octokit2.issues.addLabels({
+      owner,
+      repo: repoName,
+      issue_number: pr.number,
+      labels
+    });
+  }
   let savedInfo = "";
   if (outputDir !== false && outputDir !== null) {
     const filename = `github-pr-created-${formatRepoId(`${owner}/${repoName}`)}-${pr.number}_${formatTimestamp()}.json`;
@@ -16149,7 +16162,8 @@ async function handleGithubCreatePr(args) {
 
 Title: ${pr.title}
 URL: ${pr.html_url}
-Branch: ${pr.head.ref} \u2192 ${pr.base.ref}`
+Branch: ${pr.head.ref} \u2192 ${pr.base.ref}${labels && labels.length > 0 ? `
+Labels: ${labels.join(", ")}` : ""}`
       }
     ]
   };
@@ -16266,7 +16280,7 @@ Total comments: ${comments.length}`
 // build/tools/githubUpdatePr.js
 var githubUpdatePrSchema = {
   name: "github_update_pr",
-  description: "Update a GitHub pull request (title, description, assignees, reviewers)",
+  description: "Update a GitHub pull request (title, description, assignees, reviewers, labels)",
   inputSchema: {
     type: "object",
     properties: {
@@ -16300,6 +16314,11 @@ var githubUpdatePrSchema = {
         items: { type: "string" },
         description: "Array of usernames to request review from"
       },
+      labels: {
+        type: "array",
+        items: { type: "string" },
+        description: "Array of label names to add to the PR"
+      },
       outputDir: {
         type: "string",
         description: "Optional: Directory to save updated PR data"
@@ -16309,7 +16328,7 @@ var githubUpdatePrSchema = {
   }
 };
 async function handleGithubUpdatePr(args) {
-  const { repo, prNumber, title, body, state, assignees, reviewers, outputDir } = args;
+  const { repo, prNumber, title, body, state, assignees, reviewers, labels, outputDir } = args;
   const { owner, repo: repoName } = parseRepo(repo);
   const octokit2 = getClient();
   const prNum = parseInt(prNumber);
@@ -16341,6 +16360,14 @@ async function handleGithubUpdatePr(args) {
       reviewers
     });
   }
+  if (labels && labels.length > 0) {
+    await octokit2.issues.addLabels({
+      owner,
+      repo: repoName,
+      issue_number: prNum,
+      labels
+    });
+  }
   let savedInfo = "";
   if (outputDir !== false && outputDir !== null) {
     const filename = `github-pr-updated-${formatRepoId(`${owner}/${repoName}`)}-${prNumber}_${formatTimestamp()}.json`;
@@ -16354,7 +16381,8 @@ async function handleGithubUpdatePr(args) {
         text: `GitHub PR #${prNumber} updated successfully${savedInfo}
 
 Title: ${pr.title}
-State: ${pr.state}`
+State: ${pr.state}${labels && labels.length > 0 ? `
+Labels added: ${labels.join(", ")}` : ""}`
       }
     ]
   };

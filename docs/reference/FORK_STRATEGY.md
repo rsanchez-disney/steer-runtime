@@ -225,6 +225,27 @@ graph LR
 - ❌ Custom project code-styles or formatting preferences
 - ❌ One-off customizations
 
+### Identifying Upstream Candidates
+
+PRs on forks that contain generic improvements should be labeled `upstream-candidate` so the
+fork owner knows to submit them upstream after merging.
+
+**When to add the label:**
+- The PR improves agent prompts, fixes bugs, adds docs, or introduces reusable agents/rules
+- The changes are not team-specific (no workspace configs, memory banks, or project paths)
+
+**Who adds it:**
+- The `steer_reviewer_agent` recommends the label during PR review (fork classification step)
+- Any developer can add it manually when creating or reviewing a PR
+- The `pr_creator_agent` can add it proactively if it detects the fork context and generic changes
+
+**After merge:**
+1. Fork owner creates a branch from the merged changes
+2. Opens a PR against `SANCR225/steer-runtime` main
+3. References the original fork PR in the description
+4. Upstream maintainer reviews and merges
+5. All forks get the improvement on next sync
+
 ### How to Submit
 
 ```bash

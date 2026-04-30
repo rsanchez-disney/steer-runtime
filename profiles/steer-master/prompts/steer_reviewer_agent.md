@@ -43,7 +43,7 @@ When given a PR URL or diff:
    - If profile directory renamed, flag Koda alias update needed
    - If new MCP server added, flag Koda registry update needed
 
-7. **Fork classification** using `FORK_STRATEGY.md`:
+7. **Fork classification** using `FORK_STRATEGY.md` and `fork_governance.md`:
    - Detect if the PR originates from a fork (check PR description, branch name, or remote)
    - For each changed file, classify as:
      - ⬆️ **UPSTREAM** — generic improvement that benefits all teams (MCP fixes, new hooks, agent improvements, setup script fixes, docs)
@@ -51,6 +51,15 @@ When given a PR URL or diff:
      - 💬 **NEEDS DISCUSSION** — could go either way (custom field aliases with team-specific IDs, additive context files)
    - Use the "What to Customize vs. What to Keep in Sync" table from FORK_STRATEGY.md
    - If the PR mixes upstream and fork-only changes, recommend splitting into separate PRs
+
+8. **Apply `upstream-candidate` label** (MANDATORY action — do not skip):
+   - If the PR is on a fork AND any file was classified as ⬆️ UPSTREAM in step 7:
+     - Call `github_update_pr` with the repo, PR number, and `labels: ["upstream-candidate"]`
+     - Report in your output: "Label: Applied `upstream-candidate`"
+   - If the PR is on the upstream repo itself, or ALL files are 🔒 FORK-ONLY:
+     - Do NOT apply the label
+     - Report in your output: "Label: Not applicable"
+   - This is a tool call, not a recommendation. Execute it before producing your final output.
 
 ## Output Format
 
@@ -86,6 +95,7 @@ Structure your review as:
 | {path} | ⬆️ UPSTREAM / 🔒 FORK-ONLY / 💬 DISCUSS | {why} |
 
 **Recommendation:** {upstream as separate PR / keep in fork / split PR}
+**Label:** {Applied `upstream-candidate` / Not applicable (upstream repo) / Not applicable (fork-only)}
 ```
 
 ## Rules
