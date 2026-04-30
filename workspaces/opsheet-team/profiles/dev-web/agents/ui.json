@@ -31,11 +31,13 @@
   ],
   "steering": [
     "steering/ui-angular-opsheet.md",
-    "steering/opsheet-angular-reviewer.md"
+    "steering/opsheet-angular-reviewer.md",
+    "steering/30-pr-slack-notification.md"
   ],
   "skills": [
     "skills/opsheet-ui-feature-implementation.md",
-    "skills/opsheet-ui-bugfix.md"
+    "skills/opsheet-ui-bugfix.md",
+    "skills/opsheet-create-pr.md"
   ],
   "hooks": {
     "preToolUse": [
