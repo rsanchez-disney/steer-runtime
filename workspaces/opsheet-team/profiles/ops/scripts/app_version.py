@@ -29,6 +29,7 @@ JIRA_URL = 'https://myjira.disney.com'
 EXCLUDE_REPOS = {
     'opsheet-api-designs', 'opsheet-bruno-collections',
     'opsheet-types-go', 'opsheet-migration-tools',
+    'http-clients-go',
 }
 
 REPO_SERVICE_MAP = {
@@ -184,6 +185,23 @@ async def get_subtasks(client: Client, ticket_id: str) -> list[str]:
     return [i['key'] for i in data.get('issues', [])]
 
 
+async def get_linked_issues(client: Client, ticket_id: str) -> list[str]:
+    """Get issues linked via JIRA issue links (blocks, relates to, etc.)."""
+    data = await client.jira(f'/rest/api/2/issue/{ticket_id}?fields=issuelinks')
+    if not data:
+        return []
+    links = data.get('fields', {}).get('issuelinks', [])
+    keys = []
+    for link in links:
+        inward = link.get('inwardIssue', {})
+        outward = link.get('outwardIssue', {})
+        if inward.get('key'):
+            keys.append(inward['key'])
+        if outward.get('key'):
+            keys.append(outward['key'])
+    return keys
+
+
 async def get_merged_pr_urls(client: Client, ticket_id: str) -> list[str]:
     issue = await client.jira(f'/rest/api/2/issue/{ticket_id}?fields=summary')
     if not issue:
@@ -247,11 +265,16 @@ async def process_ticket(client: Client, ticket_id: str) -> str:
     lines = []
     log = lambda msg: print(f'  [{ticket_id}] {msg}', file=sys.stderr)
 
-    log('Checking subtasks...')
-    subtasks = await get_subtasks(client, ticket_id)
-    all_tickets = [ticket_id] + subtasks
+    log('Checking subtasks and linked issues...')
+    subtasks, linked = await asyncio.gather(
+        get_subtasks(client, ticket_id),
+        get_linked_issues(client, ticket_id),
+    )
+    all_tickets = sorted(set([ticket_id] + subtasks + linked))
     if subtasks:
         log(f'Subtasks: {" ".join(subtasks)}')
+    if linked:
+        log(f'Linked: {" ".join(linked)}')
 
     # Get all merged PR URLs concurrently across all tickets
     pr_url_lists = await asyncio.gather(*[get_merged_pr_urls(client, t) for t in all_tickets])

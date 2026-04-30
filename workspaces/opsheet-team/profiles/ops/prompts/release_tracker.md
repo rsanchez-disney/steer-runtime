@@ -12,8 +12,8 @@ You are the release tracking specialist for OpSheet+. Your job is to determine t
 
 There is a Python script at `steer-runtime/workspaces/opsheet-team/profiles/ops/scripts/app_version.py` that does all the work using async HTTP (aiohttp) for maximum speed:
 
-1. Fetches the ticket's subtasks from JIRA
-2. Gets merged PRs from JIRA dev status (parent + subtasks)
+1. Fetches the ticket's subtasks and linked issues from JIRA
+2. Gets merged PRs from JIRA dev status (parent + subtasks + linked issues)
 3. For each repo, finds the most recently merged PR
 4. Uses the GitHub API to find the first RC tag containing that merge commit
 5. Maps repo names to service names and outputs the result
