@@ -9,13 +9,15 @@
     "thinking",
     "todo",
     "delegate",
-    "use_subagent"
+    "use_subagent",
+    "@yax/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@confluence/*",
     "@mywiki/*",
-    "@compass/*"
+    "@compass/*",
+    "@yax/*"
   ],
   "includeMcpJson": true,
   "resources": [

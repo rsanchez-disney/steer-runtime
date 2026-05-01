@@ -10,7 +10,8 @@
     "fs_read",
     "fs_write",
     "thinking",
-    "todo_list"
+    "todo_list",
+    "@yax/*"
   ],
   "resources": [
     "file://profiles/steer-master/context/agent_schema.md",
@@ -72,7 +73,8 @@
   "allowedTools": [
     "@github/*",
     "@jira/*",
-    "@compass/*"
+    "@compass/*",
+    "@yax/*"
   ],
   "includeMcpJson": true
 }

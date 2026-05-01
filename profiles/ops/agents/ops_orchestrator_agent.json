@@ -12,7 +12,8 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list"
+    "todo_list",
+    "@yax/*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -26,7 +27,8 @@
     "@mywiki/*",
     "@github/*",
     "@jira/*",
-    "@compass/*"
+    "@compass/*",
+    "@yax/*"
   ],
   "includeMcpJson": true,
   "hooks": {
