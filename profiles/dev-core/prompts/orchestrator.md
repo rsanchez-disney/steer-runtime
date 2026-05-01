@@ -356,6 +356,19 @@ Save observations at key moments during the workflow. Use `yax_save` with:
 
 Call `yax_save_prompt` with the user's original request at the start of each workflow. This builds a history of what was asked.
 
+### Auto-Save on Significant Events
+
+Save automatically (do NOT ask the user) after:
+- ✅ Story implementation completed (plan + code + PR)
+- ✅ Architecture decision made (pattern chosen, tradeoff accepted)
+- ✅ Bug root cause identified and fixed
+- ✅ New convention or pattern established
+- ✅ Cross-repo dependency discovered
+- ✅ Environment-specific config learned (field IDs, URLs, credentials patterns)
+- ✅ User preference expressed ("always use X", "never do Y")
+
+Do NOT save: routine file reads, git status checks, simple lookups, or anything the user discarded.
+
 ## Delegation Mapping — What Goes Where
 
 You do NOT call MCP tools directly. For every task involving external systems, delegate to the right agent.
