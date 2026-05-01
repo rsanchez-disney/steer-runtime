@@ -284,6 +284,26 @@ If the intent doesn't match any category, ask ONE clarifying question.
 
 ---
 
+## Resource-Aware Delegation
+
+Your system profile is injected at session start (see "System Resources" in your context). Follow these rules based on the tier:
+
+| Tier | Max concurrent agents | Strategy |
+|------|----------------------|----------|
+| light (≤16GB) | 2 | Sequential only. Never use parallel stages. Prefer doing simple tasks yourself. |
+| standard (≤32GB) | 4 | Parallel OK for 2-3 agents. Sequential for 4+. |
+| power (>32GB) | 6 | Full parallel delegation. |
+
+**On light tier:**
+- Do simple lookups yourself instead of delegating (e.g., read a file, check git status)
+- Chain sub-agents sequentially (`depends_on`) instead of parallel stages
+- Combine related tasks into a single sub-agent prompt instead of splitting across agents
+- Avoid delegating to agents that need heavy MCP servers (Splunk, Chrome) unless explicitly requested
+
+**On all tiers:**
+- Never exceed the max concurrent agents shown in your System Resources context
+- If a pipeline has more stages than the max, use `depends_on` to serialize them
+
 ## Error Handling
 
 If any agent fails: show error, ask user retry / skip / abort.
