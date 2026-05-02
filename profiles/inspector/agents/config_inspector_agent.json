@@ -1,0 +1,15 @@
+{
+  "name": "config_inspector_agent",
+  "description": "Inspects configuration files for plaintext secrets, missing keys, insecure defaults, and exposed debug endpoints",
+  "prompt": "config_inspector_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

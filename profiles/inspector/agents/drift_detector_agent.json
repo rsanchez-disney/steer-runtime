@@ -1,0 +1,16 @@
+{
+  "name": "drift_detector_agent",
+  "description": "Compares Terraform IaC definitions against plan output, surfaces destructive changes and shadow resources",
+  "prompt": "drift_detector_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

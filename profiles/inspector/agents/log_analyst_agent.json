@@ -1,0 +1,15 @@
+{
+  "name": "log_analyst_agent",
+  "description": "Audits log emission sites for unstructured output, swallowed exceptions, PII leakage, and missing trace context",
+  "prompt": "log_analyst_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

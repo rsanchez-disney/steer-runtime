@@ -1,0 +1,15 @@
+{
+  "name": "compliance_checker_agent",
+  "description": "Evaluates service against GDPR, SOC 2, and internal policy sets for data handling violations",
+  "prompt": "compliance_checker_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}
