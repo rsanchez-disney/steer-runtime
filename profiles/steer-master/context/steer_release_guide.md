@@ -1,8 +1,10 @@
-# Release Manager — Usage Guide
+# Steer Release Manager — Usage Guide
 
 ## Overview
 
-The `release_manager_agent` handles version bumps, release notes, changelog updates, and publishing for steer-runtime and Koda. It wraps `make publish-all` with an intelligence layer that determines correct version bumps and writes meaningful release notes.
+The `steer_release_manager_agent` handles version bumps, release notes, changelog updates, and publishing for steer-runtime and Koda. It wraps `make publish-all` with an intelligence layer that determines correct version bumps and writes meaningful release notes.
+
+> **Note:** This is distinct from the `release_manager_agent` in the `ops` profile, which handles generic project releases (tag comparison, Jira-linked notes, GitHub releases). This agent is specific to the steer-runtime/Koda toolchain.
 
 Access it via the steer_orchestrator — it delegates automatically when it detects a release-related request.
 

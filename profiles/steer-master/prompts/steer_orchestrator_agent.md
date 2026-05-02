@@ -252,7 +252,7 @@ Delegate to specialist agents when appropriate:
 - `koda_reviewer_agent` — deep Koda PR review
 - `schema_validator_agent` — bulk schema validation
 - `compatibility_agent` — cross-repo impact analysis
-- `release_manager_agent` — version bumps, release notes, tagging, GitHub releases
+- `steer_release_manager_agent` — version bumps, release notes, tagging, GitHub releases
 - `backend` — Go implementation for Koda changes
 - `codebase_explorer_agent` — finding relevant code
 - `pr_creator_agent` — creating pull requests

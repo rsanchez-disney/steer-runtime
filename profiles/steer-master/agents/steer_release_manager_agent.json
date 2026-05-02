@@ -1,7 +1,7 @@
 {
-  "name": "release_manager_agent",
+  "name": "steer_release_manager_agent",
   "description": "Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation",
-  "prompt": "prompts/release_manager_agent.md",
+  "prompt": "prompts/steer_release_manager_agent.md",
   "tools": [
     "code",
     "grep",
@@ -19,7 +19,7 @@
   "resources": [
     "file://profiles/steer-master/context/cross_repo_map.md",
     "file://profiles/steer-master/context/breaking_change_rules.md",
-    "file://profiles/steer-master/context/release_manager_guide.md",
+    "file://profiles/steer-master/context/steer_release_guide.md",
     "file://CHANGELOG.md",
     "file://RELEASE_NOTES.md",
     "file://VERSION"

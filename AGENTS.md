@@ -827,6 +827,32 @@ koda install inspector
 
 ---
 
+## Profile: steer-master (5 agents)
+
+Internal profile for steer-runtime and Koda development. Not installed by default — used by maintainers.
+
+#### steer_orchestrator_agent
+**File:** `profiles/steer-master/agents/steer_orchestrator_agent.json`
+Orchestrates development and review workflows for steer-runtime and Koda. Delegates to specialist agents for implementation, review, compatibility checks, and releases.
+
+#### steer_reviewer_agent
+**File:** `profiles/steer-master/agents/steer_reviewer_agent.json`
+Reviews steer-runtime PRs for breaking changes, schema violations, and consistency issues.
+
+#### koda_reviewer_agent
+**File:** `profiles/steer-master/agents/koda_reviewer_agent.json`
+Reviews Koda Go PRs for backward compatibility, model safety, and CLI consistency.
+
+#### compatibility_agent
+**File:** `profiles/steer-master/agents/compatibility_agent.json`
+Detects cross-repo impacts between steer-runtime and Koda changes.
+
+#### steer_release_manager_agent
+**File:** `profiles/steer-master/agents/steer_release_manager_agent.json`
+Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation. Wraps `make publish-all` with version bump intelligence. Distinct from the ops profile's `release_manager_agent` which handles generic project releases.
+
+---
+
 ## Other IDEs
 
 The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
