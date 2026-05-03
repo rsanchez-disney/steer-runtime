@@ -107,6 +107,11 @@ Wait for explicit approval.
 
 ### 5. Execute Release
 
+**Always use Make targets — NEVER create tags manually.**
+
+The `make release` and `make publish-all` targets handle tagging internally.
+Creating a tag before running make will cause publish-all to see "0 commits since tag" and skip the build entirely, producing an empty release with no binaries.
+
 For PATCH releases (most common):
 ```bash
 # Commit release notes, then let make handle the rest
@@ -117,24 +122,45 @@ make publish-all
 
 For MINOR/MAJOR releases (override auto-PATCH):
 ```bash
-# steer-runtime first
-cd ~/Workspace/Disney/SANCR225/steer-runtime
-git add VERSION RELEASE_NOTES.md CHANGELOG.md
-git commit -m "release: v{new_version}"
+# steer-runtime first (if changed)
 cd ~/Workspace/Disney/SANCR225/Koda
-make publish-steer TAG=v{new_version} STEER_ROOT=../steer-runtime
+make publish-steer TAG=v{new_steer_version} STEER_ROOT=../steer-runtime
 
 # Then Koda
 cd ~/Workspace/Disney/SANCR225/Koda
-git add -A && git commit -m "release: v{new_version}"
+git add -A && git commit -m "release: prepare v{new_version}"
 make release TAG=v{new_version}
 ```
 
-### 6. Post-Release
+### 6. Post-Release Verification (MANDATORY — do NOT skip)
 
-- Verify GitHub releases exist for both repos
-- Verify `koda upgrade` displays the new notes (test locally)
-- Save to yax
+After publishing, verify binaries were actually uploaded:
+
+```bash
+# Check Koda release has assets (expect >= 15: 5 koda + 5 yax + 5 prompt-scorer)
+KODA_ASSETS=$(GH_HOST=github.com gh release view v{version} --repo rsanchez-disney/Koda --json assets --jq '.assets | length')
+echo "Koda assets: $KODA_ASSETS"
+
+# Check steer-runtime release has tarball (expect >= 1)
+STEER_ASSETS=$(GH_HOST=github.com gh release view v{version} --repo rsanchez-disney/steer-runtime --json assets --jq '.assets | length')
+echo "steer-runtime assets: $STEER_ASSETS"
+```
+
+**If asset count is 0, the release is BROKEN.** Users running `koda upgrade` will get:
+`Error: no binary found for darwin/arm64 in release v{version}`
+
+Immediately clean up the broken release:
+```bash
+# Delete from public repo (github.com)
+GH_HOST=github.com gh release delete v{version} --repo rsanchez-disney/Koda --yes --cleanup-tag
+
+# Delete local tag
+git tag -d v{version}
+
+# Delete from source remote (github.disney.com)
+git push origin :refs/tags/v{version}
+```
+Then diagnose why the build failed before retrying.
 
 ### 7. Save to Yax
 
@@ -153,6 +179,14 @@ For urgent patches:
 3. Bump PATCH version
 4. Use `make release TAG=v{x.y.z+1}` (Koda) or `make publish-steer TAG=v{x.y.z+1}` (steer-runtime)
 5. Merge back to main
+
+## Anti-Patterns — NEVER Do These
+
+1. **NEVER run `git tag` before `make publish-all` or `make release`** — the Make targets create tags internally. A pre-existing tag at HEAD means 0 commits detected → build skipped → empty release.
+2. **NEVER create a GitHub release via `gh release create` directly** — use Make targets which handle cross-compilation, yax, prompt-scorer, and asset upload in one step.
+3. **NEVER assume a release succeeded** — always verify asset count > 0 (step 6). A release with 0 assets is worse than no release.
+4. **NEVER leave a broken release live** — delete the release AND the tag from all three locations: local, github.disney.com (source), and github.com (public).
+5. **Remember Koda has TWO remotes** — source on `github.disney.com` (SANCR225/Koda, origin) and public on `github.com` (rsanchez-disney/Koda). Tags and releases exist on both. `git pull` fetches tags from the source remote, so deleting only the public tag is not enough.
 
 ## Output Format
 
