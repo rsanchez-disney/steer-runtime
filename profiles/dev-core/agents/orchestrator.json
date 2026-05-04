@@ -51,5 +51,8 @@
       }
     ]
   },
-  "includeMcpJson": true
+  "includeMcpJson": true,
+  "allowedTools": [
+    "@yax/*"
+  ]
 }

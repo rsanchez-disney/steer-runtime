@@ -1,0 +1,16 @@
+{
+  "name": "access_analyst_agent",
+  "description": "Reviews IAM roles, service account bindings, and permission scopes against least-privilege principle",
+  "prompt": "access_analyst_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

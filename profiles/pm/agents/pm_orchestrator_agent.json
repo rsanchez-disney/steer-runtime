@@ -13,7 +13,8 @@
     "grep",
     "subagent",
     "thinking",
-    "todo_list"
+    "todo_list",
+    "@yax/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -24,7 +25,8 @@
     "@jira/*",
     "@confluence/*",
     "@github/*",
-    "@compass/*"
+    "@compass/*",
+    "@yax/*"
   ],
   "includeMcpJson": true,
   "welcomeMessage": "\ud83d\udc4b PM/Scrum Master orchestrator ready!\n\nI can help you:\n  \u2022 Manage sprint planning and capacity\n  \u2022 Generate standup summaries from Jira\n  \u2022 Facilitate retrospectives with metrics\n  \u2022 Track blockers, risks, and dependencies\n  \u2022 Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",

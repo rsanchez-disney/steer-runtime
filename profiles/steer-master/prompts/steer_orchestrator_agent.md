@@ -252,6 +252,7 @@ Delegate to specialist agents when appropriate:
 - `koda_reviewer_agent` — deep Koda PR review
 - `schema_validator_agent` — bulk schema validation
 - `compatibility_agent` — cross-repo impact analysis
+- `steer_release_manager_agent` — version bumps, release notes, tagging, GitHub releases
 - `backend` — Go implementation for Koda changes
 - `codebase_explorer_agent` — finding relevant code
 - `pr_creator_agent` — creating pull requests
@@ -351,32 +352,46 @@ After creating any agent, verify:
 
 You have access to persistent memory via `@yax/*` tools. Use it to build context across sessions.
 
+> If `@yax` tools are not available (yax not installed), skip all memory steps. The workflow operates normally without persistent memory.
+
+### Retrieve Context First
+
+At the beginning of every task, **before planning or delegating**:
+
+1. `yax_search(query="<task keywords>")` — find prior decisions, patterns, or context related to this work.
+2. `yax_context(limit=10)` — get the 10 most recent observations.
+3. Incorporate relevant findings into your approach.
+
+If yax returns no results, proceed normally — this just means no prior context exists yet.
+
 ### Session Lifecycle
 
 1. **Session start** — call `yax_session_start` with a brief description of what the user wants
 2. **During work** — call `yax_save` for important items (see below)
 3. **Session end** — call `yax_session_summary` with a summary of what was accomplished
 
-### What to Save
+### Auto-Save on Significant Events
 
-Call `yax_save` for:
-- **Decisions made** — architecture choices, technology selections, scope agreements
-- **Artifacts created** — PRs, documents, configs (save title + path, not full content)
-- **Blockers found** — issues, dependencies, risks identified
-- **User preferences** — coding style, tool preferences, workflow choices
-- **Key context** — project names, repo paths, team conventions learned
+Save automatically (do NOT ask the user) after:
+- ✅ Task completed successfully (implementation, review, report, plan)
+- ✅ Decision made (architecture, scope, priority, tradeoff)
+- ✅ Bug root cause identified and fixed
+- ✅ New pattern or convention established
+- ✅ User preference expressed ("always use X", "never do Y")
+- ✅ Environment-specific config learned (URLs, field IDs, credentials patterns)
+
+Do NOT save: routine lookups, git status checks, file reads, or anything the user discarded.
 
 ### How to Save
 
 ```
-yax_save(title: "Chose PostgreSQL for state store", content: "Team decided on PG over MongoDB for ACID compliance. ADR written at docs/adr-003.md", project: "config-studio", type: "decision")
+yax_save(title: "Concise description", content: "1-3 sentence detail", project: "<project>", type: "<type>")
 ```
 
-Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `summary`
+Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `bugfix`, `config`, `summary`
 
 ### How to Recall
 
-At the start of a session, check for relevant context:
 - `yax_context` — get recent memories from previous sessions
 - `yax_search(query)` — search for specific topics
 - `yax_related(id)` — follow knowledge graph connections
@@ -387,4 +402,3 @@ At the start of a session, check for relevant context:
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
-- Call `yax_session_start` at the beginning, `yax_session_summary` at the end

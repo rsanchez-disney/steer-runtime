@@ -1,0 +1,16 @@
+{
+  "name": "security_reviewer_agent",
+  "description": "Scans code and configuration for OWASP Top 10 vulnerabilities, hardcoded secrets, injection vectors, and auth flaws",
+  "prompt": "security_reviewer_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

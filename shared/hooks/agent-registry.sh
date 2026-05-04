@@ -53,6 +53,29 @@ if d.get('teams'):
   echo ""
 fi
 
+# --- System Resources ---
+SYSTEM_JSON="$KIRO_DIR/settings/system.json"
+if [ -f "$SYSTEM_JSON" ]; then
+  python3 -c "
+import json
+d=json.load(open('$SYSTEM_JSON'))
+ram=d.get('total_ram_gb',0)
+tier=d.get('tier','unknown')
+agents=d.get('max_concurrent_agents',2)
+print('## System Resources')
+print('')
+print(f'- **RAM:** {ram} GB ({tier} tier)')
+print(f'- **Max concurrent sub-agents:** {agents}')
+if tier == 'light':
+    print('- **Delegation strategy:** sequential — avoid parallel stages in subagent pipelines')
+elif tier == 'standard':
+    print('- **Delegation strategy:** parallel OK for 2-3 agents, sequential for 4+')
+else:
+    print('- **Delegation strategy:** full parallel delegation')
+print('')
+" 2>/dev/null
+fi
+
 # --- Installed Profiles (with agent counts) ---
 PROFILES_FILE="$KIRO_DIR/settings/profiles.json"
 if [ -f "$PROFILES_FILE" ]; then

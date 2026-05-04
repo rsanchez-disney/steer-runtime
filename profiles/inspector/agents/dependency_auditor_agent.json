@@ -1,0 +1,16 @@
+{
+  "name": "dependency_auditor_agent",
+  "description": "Resolves dependency trees and cross-references against CVE databases, flags stale packages and license incompatibilities",
+  "prompt": "dependency_auditor_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

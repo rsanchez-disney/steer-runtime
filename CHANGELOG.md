@@ -5,6 +5,7 @@ All notable changes to steer-runtime.
 ## [Unreleased]
 
 ### Added
+- **inspector profile** — multi-dimensional audit with fan-out/fan-in topology: 10 agents (inspector_orchestrator, security_reviewer, dependency_auditor, config_inspector, access_analyst, drift_detector, compliance_checker, architecture_critic, performance_auditor, log_analyst). Produces ranked reports with severity scoring (🟢/🟡/🔴), yax trend tracking, and CRITICAL blocking (#313)
 - **SharePoint MCP server** — 6 tools for document management via Microsoft Graph API (list sites, drives, items, search, get, upload) (#280)
 - **translation_validator_agent** (BA) — validates translations for accuracy, idioms, cultural fit across 10+ languages (#281)
 - **web_scraping_validator_agent** (QA) — validates live web pages by scraping DOM: structure, content, accessibility (WCAG 2.1 AA), links (#282)

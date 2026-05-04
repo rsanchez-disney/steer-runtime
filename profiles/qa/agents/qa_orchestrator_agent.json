@@ -16,7 +16,8 @@
     "thinking",
     "todo_list",
     "@bruno/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@yax/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -25,7 +26,8 @@
     "@jira/*",
     "@bruno/*",
     "@compass/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@yax/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
