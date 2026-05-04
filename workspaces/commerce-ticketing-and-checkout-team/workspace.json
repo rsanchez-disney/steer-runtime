@@ -3,7 +3,9 @@
   "description": "Commerce Ticketing & Checkout L1 Support — incident response, CTASK validation, stability monitoring, and GSM reporting",
   "team": "Commerce Ticketing & Checkout",
   "profiles": [
-    "sustainment"
+    "sustainment",
+    "dev-core",
+    "dev-java"
   ],
   "default_agent": "sustainment_orchestrator_agent",
   "projects": [
@@ -16,7 +18,10 @@
   ],
   "rules": [
     "conventional_commit",
+    "general-java-development",
+    "general-api-design",
     "general-aws",
+    "general-docker",
     "jira-safety"
   ],
   "enable_tools": true,
