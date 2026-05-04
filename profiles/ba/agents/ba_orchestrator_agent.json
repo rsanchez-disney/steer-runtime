@@ -14,7 +14,8 @@
     "thinking",
     "todo_list",
     "@sharepoint/*",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@yax/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -23,7 +24,8 @@
     "@jira/*",
     "@compass/*",
     "@sharepoint/*",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@yax/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",

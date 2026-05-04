@@ -125,6 +125,20 @@ graph TD
         PM_ORCH --> DELIVER["delivery_reporter<br/><i>jira · confluence · mywiki</i>"]:::agent
     end
 
+    %% ─── inspector ─────────────────────────────────
+    subgraph INSPECTOR["inspector · 10 agents"]
+        INSP_ORCH["🎯 inspector_orchestrator<br/><i>yax · thinking · todo · subagent</i>"]:::orch
+        INSP_ORCH --> SECREV["security_reviewer"]:::agent
+        INSP_ORCH --> DEPAUD["dependency_auditor"]:::agent
+        INSP_ORCH --> CONFINSP["config_inspector"]:::agent
+        INSP_ORCH --> ACCANA["access_analyst"]:::agent
+        INSP_ORCH --> DRIFTDET["drift_detector"]:::agent
+        INSP_ORCH --> COMPCHK["compliance_checker"]:::agent
+        INSP_ORCH --> ARCHCRIT["architecture_critic"]:::agent
+        INSP_ORCH --> PERFAUD["performance_auditor"]:::agent
+        INSP_ORCH --> LOGANA["log_analyst"]:::agent
+    end
+
     %% ─── dev alias ─────────────────────────────────
     DEV{{"dev (alias)"}}:::orch
     DEV -.-> DEV_CORE
@@ -743,6 +757,102 @@ Cross-team analytics, quarterly reporting, and executive briefings for Tech Dire
 
 ---
 
+## Profile: inspector (10 agents)
+
+Multi-dimensional audit profile. Fan-out to 9 specialist agents, synthesize findings into a deduplicated ranked report with severity scoring and yax-based trend tracking.
+
+```bash
+koda install inspector
+```
+
+### Inspector Orchestrator (1)
+
+#### inspector_orchestrator
+**File:** `profiles/inspector/agents/inspector_orchestrator.json`  
+**Purpose:** Coordinates 9 audit specialists, deduplicates findings, writes ranked report, tracks trends  
+**Use for:** Full service audits, targeted dimension checks, remediation planning  
+**Tools:** thinking, todo, subagent, fs_write, @yax/*  
+**Scoring:** 🟢 PASS (0 critical, 0 high) · 🟡 CONDITIONAL (0 critical, any high) · 🔴 BLOCKED (any critical)
+
+**Delegates to:** security_reviewer, dependency_auditor, config_inspector, access_analyst, drift_detector, compliance_checker, architecture_critic, performance_auditor, log_analyst
+
+---
+
+### Inspector Specialists (9)
+
+#### security_reviewer_agent
+**File:** `profiles/inspector/agents/security_reviewer_agent.json`  
+**Purpose:** OWASP Top 10, hardcoded secrets, injection vectors, auth/authz flaws  
+**Use for:** Security vulnerability scanning
+
+#### dependency_auditor_agent
+**File:** `profiles/inspector/agents/dependency_auditor_agent.json`  
+**Purpose:** CVE cross-referencing, stale dependency detection, license incompatibility  
+**Use for:** Dependency tree audit (Node, Python, Go, Java, Rust, .NET)
+
+#### config_inspector_agent
+**File:** `profiles/inspector/agents/config_inspector_agent.json`  
+**Purpose:** Plaintext secrets in config, insecure defaults, exposed debug endpoints  
+**Use for:** Configuration file audit
+
+#### access_analyst_agent
+**File:** `profiles/inspector/agents/access_analyst_agent.json`  
+**Purpose:** IAM least-privilege analysis, privilege escalation chains, stale credentials  
+**Use for:** Permission and access control audit
+
+#### drift_detector_agent
+**File:** `profiles/inspector/agents/drift_detector_agent.json`  
+**Purpose:** Terraform drift, destructive pending changes, shadow resources, state issues  
+**Use for:** Infrastructure-as-code drift detection
+
+#### compliance_checker_agent
+**File:** `profiles/inspector/agents/compliance_checker_agent.json`  
+**Purpose:** GDPR, SOC 2, PCI-DSS policy evaluation, PII handling, data retention  
+**Use for:** Regulatory and policy compliance checks
+
+#### architecture_critic_agent
+**File:** `profiles/inspector/agents/architecture_critic_agent.json`  
+**Purpose:** Circular dependencies, coupling metrics, layer violations, missing resilience patterns  
+**Use for:** Structural architecture audit
+
+#### performance_auditor_agent
+**File:** `profiles/inspector/agents/performance_auditor_agent.json`  
+**Purpose:** N+1 query patterns, missing indexes, unbounded memory allocation, caching opportunities  
+**Use for:** Performance anti-pattern detection
+
+#### log_analyst_agent
+**File:** `profiles/inspector/agents/log_analyst_agent.json`  
+**Purpose:** PII in logs, swallowed exceptions, unstructured output, missing trace context  
+**Use for:** Logging quality and observability audit
+
+---
+
+## Profile: steer-master (5 agents)
+
+Internal profile for steer-runtime and Koda development. Not installed by default — used by maintainers.
+
+#### steer_orchestrator_agent
+**File:** `profiles/steer-master/agents/steer_orchestrator_agent.json`
+Orchestrates development and review workflows for steer-runtime and Koda. Delegates to specialist agents for implementation, review, compatibility checks, and releases.
+
+#### steer_reviewer_agent
+**File:** `profiles/steer-master/agents/steer_reviewer_agent.json`
+Reviews steer-runtime PRs for breaking changes, schema violations, and consistency issues.
+
+#### koda_reviewer_agent
+**File:** `profiles/steer-master/agents/koda_reviewer_agent.json`
+Reviews Koda Go PRs for backward compatibility, model safety, and CLI consistency.
+
+#### compatibility_agent
+**File:** `profiles/steer-master/agents/compatibility_agent.json`
+Detects cross-repo impacts between steer-runtime and Koda changes.
+
+#### steer_release_manager_agent
+**File:** `profiles/steer-master/agents/steer_release_manager_agent.json`
+Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation. Wraps `make publish-all` with version bump intelligence. Distinct from the ops profile's `release_manager_agent` which handles generic project releases.
+
+---
+
 ## Other IDEs
 
 The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
@@ -964,6 +1074,12 @@ kiro-cli chat --agent portfolio_analyst_agent         # Multi-team Jira analytic
 kiro-cli chat --agent quarterly_reporter_agent        # Quarterly business reports
 kiro-cli chat --agent cross_team_coordinator_agent    # Dependency tracking
 kiro-cli chat --agent executive_briefing_agent        # Executive summaries
+
+# Inspector (audit)
+kiro-cli chat --agent inspector_orchestrator          # Full multi-dimensional audit
+kiro-cli chat --agent security_reviewer_agent         # Security scan
+kiro-cli chat --agent dependency_auditor_agent        # CVE & dependency audit
+kiro-cli chat --agent architecture_critic_agent       # Architecture analysis
 ```
 
 ---
@@ -976,6 +1092,7 @@ koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
 koda install dev ba qa ops pm       # Install all profiles
+koda install inspector              # Multi-dimensional audit (10 agents)
 koda enable-tools                   # Enable thinking, todo, knowledge
 ```
 

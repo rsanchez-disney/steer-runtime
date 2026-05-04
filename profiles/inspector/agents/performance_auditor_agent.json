@@ -1,0 +1,16 @@
+{
+  "name": "performance_auditor_agent",
+  "description": "Identifies N+1 query patterns, missing indexes, unbounded memory allocation, and caching opportunities",
+  "prompt": "performance_auditor_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}

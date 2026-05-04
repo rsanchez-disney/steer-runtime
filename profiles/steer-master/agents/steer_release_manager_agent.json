@@ -1,0 +1,28 @@
+{
+  "name": "steer_release_manager_agent",
+  "description": "Manages steer-runtime, Koda, and KiteStream releases \u2014 version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation",
+  "prompt": "prompts/steer_release_manager_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "thinking",
+    "@github/*",
+    "@yax/*"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@yax/*"
+  ],
+  "resources": [
+    "file://profiles/steer-master/context/cross_repo_map.md",
+    "file://profiles/steer-master/context/breaking_change_rules.md",
+    "file://profiles/steer-master/context/steer_release_guide.md",
+    "file://CHANGELOG.md",
+    "file://RELEASE_NOTES.md",
+    "file://VERSION"
+  ],
+  "includeMcpJson": true
+}

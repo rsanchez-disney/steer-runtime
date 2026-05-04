@@ -1,0 +1,38 @@
+{
+  "name": "inspector_orchestrator",
+  "description": "Multi-dimensional audit orchestrator — fan-out to 9 specialists, synthesize findings into ranked report",
+  "prompt": "inspector_orchestrator.md",
+  "tools": [
+    "subagent",
+    "execute_bash",
+    "grep",
+    "code",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo_list",
+    "@yax/*"
+  ],
+  "allowedTools": [
+    "@yax/*"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md",
+    "file://.kiro/context/report_template.md"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "🔍 Inspector ready.\n\nI can:\n  • Full audit: \"inspect this service\"\n  • Targeted: \"check security only\" or \"run dependency audit\"\n  • History: \"compare with last audit\"\n  • Fix plan: \"generate remediation plan for criticals\"\n\nFindings are saved to yax for trend tracking across runs.",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ]
+  }
+}

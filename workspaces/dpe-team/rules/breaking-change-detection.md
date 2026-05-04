@@ -239,6 +239,57 @@ For every breaking change, the developer should answer:
 
 **How to check:** Any change to `Dockerfile`, `.harness/`, `docker-compose*.yml`, or actuator endpoint paths.
 
+### 7. Environment Variables & Configuration Requirements
+
+New environment variables or config properties that must exist before deployment.
+
+#### Detection Patterns
+
+Scan the diff for patterns that introduce **new** external dependencies:
+
+**Java / Spring Boot:**
+
+| Pattern | Breaking? | Rule |
+|---------|-----------|------|
+| New `@Value("${...}")` without default | ⚠️ Coordinated | App fails to start if property is missing |
+| New `@Value("${...:default}")` with default | ✅ No | Falls back to default safely |
+| New `System.getenv("...")` | ⚠️ Coordinated | Needs ECS task definition update in all environments |
+| New `@ConfigurationProperties` prefix | ⚠️ Coordinated | Needs `application.yml` entries in all environments |
+| New required key in `application*.yml` (no default) | ⚠️ Coordinated | Service won't start without it |
+| New `@ConditionalOnProperty` | ⚠️ Coordinated | Feature silently disabled if property missing |
+| New SSM Parameter Store / Secrets Manager reference | ⚠️ Coordinated | Parameter must exist in all AWS accounts before deploy |
+
+**Node.js / TypeScript:**
+
+| Pattern | Breaking? | Rule |
+|---------|-----------|------|
+| New `process.env.VAR` without fallback | ⚠️ Coordinated | Undefined at runtime if not set |
+| New `process.env.VAR \|\| default` with fallback | ✅ No | Falls back safely |
+| New required key in config module | ⚠️ Coordinated | App fails or misbehaves without it |
+
+**Infrastructure / Deployment:**
+
+| Pattern | Breaking? | Rule |
+|---------|-----------|------|
+| New `ENV` or `ARG` in `Dockerfile` | ⚠️ Coordinated | Build or runtime fails if not provided |
+| New `environment:` entry in `docker-compose*.yml` | ⚠️ Coordinated | Local dev breaks without it |
+| New variable in `.harness/` pipeline YAML | ⚠️ Coordinated | Deployment fails if variable not configured in Harness |
+| New Lambda environment variable | ⚠️ Coordinated | Lambda config must be updated in all accounts (dev/test/prod) |
+
+**How to check:** Diff all `@Value` annotations, `System.getenv()` calls, `process.env` references, `application*.yml` keys, `Dockerfile` ENV/ARG, `.harness/` variables, and Lambda configuration. Cross-reference against existing environment configs to confirm the variable already exists or is new.
+
+#### Environment Scope
+
+New variables must be set across **all** deployment targets:
+
+| Scope | Environments |
+|-------|-------------|
+| ECS services | latest, latest2, stage, stage2, load, prod × WDW, DLR, DLP |
+| Lambda functions | latest, stage, prod × WDW, DLR, DLP |
+| Local dev | `docker-compose.yml`, `.env.example` |
+| CI/CD | Harness pipeline variables, GitHub Actions secrets |
+
+
 ## Output Format
 
 For every breaking change found, report as **⚠️ WARNING** (not blocker):
@@ -247,7 +298,7 @@ For every breaking change found, report as **⚠️ WARNING** (not blocker):
 ### ⚠️ Breaking Change Warning
 
 **File:** `path/to/file` line N
-**Dimension:** GraphQL Schema / Database / Calculator / Inter-Service / Configuration / Deployment
+**Dimension:** GraphQL Schema / Database / Calculator / Inter-Service / Configuration / Deployment / Environment Variables
 **What changed:** <description>
 **Affected services:** <list from the Service Impact Matrix>
 **Currently deployed versions:** <what's live in latest/stage/prod per site, if known>
@@ -276,6 +327,10 @@ If breaking changes are found, the PR description should include:
 - [ ] Schema migration tested in latest/latest2 before stage
 - [ ] Feature toggle available to disable the change if needed
 - [ ] Downstream consumers notified (if external)
+- [ ] New environment variables added to all environment configs (ECS task defs / Lambda config / Harness)
+- [ ] New variables have safe defaults OR deploy is coordinated with config update
+- [ ] Secret values stored in SSM/Secrets Manager, not in code or plain-text config
+- [ ] `.env.example` and service README updated with new variable documentation
 
 ## Language
 

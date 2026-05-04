@@ -62,6 +62,7 @@ In addition to the standard security, quality, testing, and performance checks, 
 | Fire-and-forget futures | CRITICAL | `CompletableFuture.runAsync()` without `.join()` or `allOf().join()` — Lambda may terminate early |
 | Duplicate DB queries | WARNING | Same query called in both full and partial impact processes |
 | Thread pool creation | WARNING | New `ExecutorService` per invocation instead of reusing across warm Lambda starts |
+| Unnecessary intermediate collections | WARNING | Collecting into a `List` only to iterate and publish/process individually — publish or process each item inline to avoid unnecessary memory allocation and GC pressure in Lambda hot paths |
 
 ### Configuration
 
@@ -70,6 +71,19 @@ In addition to the standard security, quality, testing, and performance checks, 
 | Property naming | WARNING | New properties not following kind-first convention (`flag.`, `config.`, `external.`, `auth.`, `integration.`, `context.`) |
 | Missing `is-`/`are-` prefix | WARNING | Boolean flags without predicate prefix |
 | Hardcoded URLs | WARNING | Service URLs that should come from config |
+
+### Logging Quality
+
+| Check | Severity | What to look for |
+|-------|----------|-----------------|
+| Redundant adjacent logging | WARNING | `log.info` immediately followed by `log.debug` (or `log.error` followed by `log.debug`) for the same event — merge into one statement or remove the redundant level |
+
+### Code Quality
+
+| Check | Severity | What to look for |
+|-------|----------|-----------------|
+| Side effects via mutable parameters | WARNING | Methods that accept a collection parameter and mutate it (`out.add(...)`) instead of returning a new collection — prefer return values for predictability, reusability, and thread safety |
+
 
 ## Performance Engineering Guide Integration
 
@@ -125,8 +139,24 @@ Never describe a fix in prose without showing the code. If you cannot show a con
 
 ### Output Format
 
+**Structure:** Every review must have three parts:
+1. **Change Summary** (top) — what changed, why, and impact surface so the reader has context before findings
+2. **Detailed Findings** (middle) — BEFORE/AFTER blocks per issue
+3. **GitHub Comment Summary** (end) — compact version ready to paste as a PR comment
+
 ```
 ## Code Review: <branch or description>
+
+### Change Summary
+
+**Ticket:** PPODPE-XXXXX
+**What:** <1–2 sentence description of what the PR does>
+**Why:** <business or technical motivation>
+**Impact surface:** <which services, modules, or flows are affected>
+**Files changed:** N files, +X / -Y lines
+**Risk:** Low / Medium / High — <brief justification>
+
+---
 
 ### 🔴 CRITICAL
 

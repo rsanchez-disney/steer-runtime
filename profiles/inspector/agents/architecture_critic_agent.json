@@ -1,0 +1,16 @@
+{
+  "name": "architecture_critic_agent",
+  "description": "Analyzes module dependency graphs for circular imports, excessive coupling, layer violations, and missing resilience patterns",
+  "prompt": "architecture_critic_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/finding_schema.md",
+    "file://.kiro/context/severity_definitions.md"
+  ]
+}
