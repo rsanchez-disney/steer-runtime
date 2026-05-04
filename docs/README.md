@@ -6,7 +6,8 @@
 - [Windows Setup](getting-started/WINDOWS_SETUP.md) — Windows-specific instructions
 - [Dev Quick Start](getting-started/DEV_QUICK_START.md) — Developer quick start
 - [Mobile Agents Setup](getting-started/MOBILE_AGENTS_SETUP.md) — Flutter/native setup
-- [Kiro UI Setup](getting-started/KIRO_UI_SETUP.md) — Kiro IDE configuration
+- [Kiro IDE Agent Setup](getting-started/KIRO_IDE_AGENT_SETUP.md) — Making agents visible in Kiro IDE
+- [Kiro UI Setup](getting-started/KIRO_UI_SETUP.md) — Kiro UI (browser-based) configuration
 - [Cursor Setup](getting-started/CURSOR_SETUP.md) — Cursor IDE configuration
 - [IDE Comparison](getting-started/IDE_CONCEPTS_COMPARISON.md) — Kiro vs Cursor vs Amazon Q vs Copilot
 - [Kiro CLI vs UI](getting-started/KIRO_CLI_VS_UI.md) — CLI and UI comparison

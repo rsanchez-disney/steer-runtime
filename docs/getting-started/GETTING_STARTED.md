@@ -55,6 +55,8 @@ See [project.yaml reference](../reference/REFERENCE.md#project-manifest-projecty
 
 ## 7. Start Chatting
 
+### From the terminal (Kiro CLI)
+
 ```bash
 koda chat                         # Chat with last-used agent
 koda chat --agent orchestrator    # Dev orchestrator
@@ -63,9 +65,19 @@ koda chat --agent ba_orchestrator_agent  # BA orchestrator
 ```
 
 Or use Kiro CLI directly:
+
 ```bash
 kiro-cli chat --agent orchestrator
 ```
+
+### From Kiro IDE
+
+```bash
+koda kiro-ide install             # One-time: generate steering files and hooks
+```
+
+Open your project in Kiro IDE — agents are automatically available via the routing table.
+See [Kiro IDE Agent Setup](KIRO_IDE_AGENT_SETUP.md) for the full walkthrough.
 
 ---
 

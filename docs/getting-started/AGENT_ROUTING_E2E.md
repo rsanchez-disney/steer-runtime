@@ -7,40 +7,17 @@ setup and then walks through real delegation scenarios across different profiles
 
 ## Prerequisites
 
-Agents are installed globally via Koda:
+Complete the one-time setup described in [Kiro IDE Agent Setup][ide-setup]:
 
 ```bash
-koda install dev-core dev-web qa   # or whatever profiles you need
+koda install dev-core dev-web qa   # Install profiles
+koda kiro-ide install              # Generate steering files, skills, and hooks
 ```
 
-This places agent JSONs in `~/.kiro/agents/` and prompts in `~/.kiro/prompts/`.
-
----
-
-## One-Time Setup: Sync Agents to Steering
-
-Open Kiro IDE in any project and run the sync skill:
-
-**You say:**
-> sync my agents
-
-**Kiro does:**
-1. Reads every `~/.kiro/agents/*.json`
-2. Reads `~/.kiro/settings/profiles.json` to group agents by profile
-3. Generates `~/.kiro/steering/70-agent-routing.md` (always-included routing table)
-4. Generates `~/.kiro/steering/agent-{name}.md` for each agent (manual-inclusion, full prompt)
-
-**Kiro responds:**
-> Synced 42 agents:
-> - 42 per-agent steering files created
-> - 3 skipped (unchanged)
-> - Routing file generated with 42 agents across 7 profiles
->
-> The routing table is now always loaded. I can delegate to any specialist agent when your
-> request matches their domain.
-
 After this, every new Kiro IDE conversation automatically loads the routing table. No further
-setup needed unless you install new profiles.
+setup needed unless you install new profiles (then run `koda kiro-ide sync`).
+
+[ide-setup]: KIRO_IDE_AGENT_SETUP.md
 
 ---
 
@@ -321,21 +298,17 @@ When you install or remove profiles:
 ```bash
 koda install pm          # add PM profile
 koda remove dev-web      # remove web profile
+koda kiro-ide sync       # regenerate steering files
 ```
 
-Open Kiro IDE and say:
-
-> sync my agents
-
-The routing table regenerates with the updated agent set. New agents appear, removed agents
-disappear.
+Or from inside Kiro IDE, say "sync my agents" to regenerate the routing table.
 
 ---
 
 ## Troubleshooting
 
 **"I said 'create a PR' but Kiro didn't delegate"**
-- Check that `~/.kiro/steering/70-agent-routing.md` exists. If not, run "sync my agents".
+- Check that `~/.kiro/steering/70-agent-routing.md` exists. If not, run `koda kiro-ide install`.
 - Check that `~/.kiro/prompts/pr_creator_agent.md` exists. If not, run `koda install dev-core`.
 
 **"The sub-agent can't access Jira/GitHub"**

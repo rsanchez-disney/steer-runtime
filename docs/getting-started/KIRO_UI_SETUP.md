@@ -103,47 +103,16 @@ echo "Open this project in Kiro UI and select orchestrator_agent"
 4. **Approve at gates** when prompted
 5. **PR created** automatically
 
-## Agent Routing (Recommended for Kiro IDE)
+## Using Kiro IDE instead?
 
-Kiro IDE does not read `~/.kiro/agents/*.json` directly. The **agent routing** mechanism
-bridges this gap using steering files so that all kiro-cli agents are visible and delegatable
-from Kiro IDE.
-
-### Setup
-
-1. Install profiles via Koda: `koda install dev-core dev-mobile qa`
-2. Open Kiro IDE and say: **"sync my agents"**
-3. This generates `~/.kiro/steering/70-agent-routing.md` (always-included routing table)
-   plus per-agent manual steering files
-
-From that point on, Kiro IDE knows about every installed agent and can delegate tasks
-(e.g., "create a PR", "analyze this defect") to the correct specialist via `invokeSubAgent`.
-
-See [Agent Routing E2E Examples](AGENT_ROUTING_E2E.md) for detailed walkthroughs.
-
-### How it works
-
-- The routing table maps trigger keywords to agent prompt files
-- When a request matches, Kiro reads `~/.kiro/prompts/{agent}.md` and delegates via
-  `invokeSubAgent` with `name: "general-task-execution"`
-- For simple tasks, Kiro handles them directly using steering context — no delegation overhead
-- For deep context, reference `#agent-{name}` in chat to load the full agent prompt inline
-
-## Limitations
-
-- **Subagent delegation**: Sub-agents run in isolated context; they inherit MCP access but not
-  the parent conversation history
-- **Tool availability**: Ensure MCP servers are configured in `~/.kiro/settings/mcp.json`
-- **Routing table freshness**: Re-run "sync my agents" after installing or removing profiles
-
-## Recommended Approach
-
-**Primary**: Use Kiro IDE with agent routing — install profiles via Koda, sync once, then
-delegate naturally through conversation.
-
-**Fallback**: For agents that require specific tool bindings not available in Kiro IDE,
-use `kiro-cli chat --agent {name}` directly.
+Kiro IDE has a different agent architecture — it does not read `~/.kiro/agents/*.json`
+directly. See the dedicated [Kiro IDE Agent Setup][kiro-ide-setup] guide for the recommended
+3-step workflow using `koda kiro-ide install`.
 
 ---
 
-**Note**: Kiro UI agent support may vary by version. Check Kiro documentation for latest compatibility.
+**Note**: Kiro UI agent support may vary by version. Check Kiro documentation for latest
+compatibility.
+
+<!-- Links -->
+[kiro-ide-setup]: KIRO_IDE_AGENT_SETUP.md

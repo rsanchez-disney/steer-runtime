@@ -175,7 +175,17 @@ Remove `.amazonq/` directory from a project.
 ## Kiro IDE
 
 ### `koda kiro-ide`
-Manage Kiro IDE steering files, skills, agents, and workspace configuration. Subcommands available via `koda kiro-ide --help`.
+Manage Kiro IDE steering files, skills, agents, and workspace configuration.
+
+| Subcommand              | Description                                               |
+|-------------------------|-----------------------------------------------------------|
+| `koda kiro-ide install` | First-time setup — generates steering, skills, and hooks  |
+| `koda kiro-ide sync`    | Update steering and skills from latest installed profiles |
+| `koda kiro-ide remove`  | Remove generated steering, skills, and hooks              |
+
+Use `install` once, then `sync` after adding or removing profiles. See [Kiro IDE Agent Setup][kiro-ide-setup] for the full walkthrough.
+
+[kiro-ide-setup]: ../getting-started/KIRO_IDE_AGENT_SETUP.md
 
 ---
 

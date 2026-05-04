@@ -6,16 +6,18 @@ Definitions of key concepts, terms, and components used across steer-runtime.
 
 ## Core Concepts
 
-| Term | Definition |
-|------|-----------|
-| **steer-runtime** | The source-of-truth repo for all AI agent definitions, prompts, context, hooks, MCP servers, and workspaces. An LLMOps platform for the entire SDLC. |
-| **LLMOps** | Treating AI agent configurations as first-class engineering artifacts — versioned, reviewed, and deployed like application code. |
-| **Agents as Code** | Every agent is a versioned JSON config + Markdown prompt stored in Git, making behavior auditable, diffable, and rollback-able. |
-| **Context Engineering** | Investing in structured context (resources, steering, skills, context files) that shapes agent behavior, rather than crafting elaborate prompts. |
-| **Guardrails as Infrastructure** | Safety enforced by hooks (shell scripts with exit codes), not by prompt suggestions the LLM could ignore. |
-| **Koda** | Go binary that installs profiles, manages tokens, workspaces, MCP servers, and auto-updates. The bridge between steer-runtime (source) and the IDE (consumer). |
-| **Kiro CLI** | The native agent runtime that loads agent configs, injects context, manages MCP lifecycles, enforces hooks, and routes tool calls. |
-| **LLM** | The large language model (e.g., Claude Sonnet) that performs inference. Stateless — all specialization comes from injected context. |
+| Term                             | Definition                                                                                                                                                                    |
+|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **steer-runtime**                | The source-of-truth repo for all AI agent definitions, prompts, context, hooks, MCP servers, and workspaces. An LLMOps platform for the entire SDLC.                          |
+| **LLMOps**                       | Treating AI agent configurations as first-class engineering artifacts — versioned, reviewed, and deployed like application code.                                              |
+| **Agents as Code**               | Every agent is a versioned JSON config + Markdown prompt stored in Git, making behavior auditable, diffable, and rollback-able.                                               |
+| **Context Engineering**          | Investing in structured context (resources, steering, skills, context files) that shapes agent behavior, rather than crafting elaborate prompts.                              |
+| **Guardrails as Infrastructure** | Safety enforced by hooks (shell scripts with exit codes), not by prompt suggestions the LLM could ignore.                                                                     |
+| **Koda**                         | Go binary that installs profiles, manages tokens, workspaces, MCP servers, and auto-updates. The bridge between steer-runtime (source) and the IDE (consumer).                |
+| **Kiro CLI**                     | The native agent runtime that loads agent configs, injects context, manages MCP lifecycles, enforces hooks, and routes tool calls.                                            |
+| **Kiro IDE**                     | Standalone AI-powered IDE. Does not read `~/.kiro/agents/*.json` directly — uses steering files and `invokeSubAgent` for agent delegation. Setup via `koda kiro-ide install`. |
+| **Kiro UI**                      | Browser-based graphical interface layered over Kiro CLI. Reads project-local `.kiro/agents/` and provides visual agent selection, persistent history, and file browsing.      |
+| **LLM**                          | The large language model (e.g., Claude Sonnet) that performs inference. Stateless — all specialization comes from injected context.                                           |
 
 ---
 

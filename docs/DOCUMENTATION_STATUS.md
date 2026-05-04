@@ -60,15 +60,16 @@ Current status of all documentation after the installation guides consolidation.
 
 ## Configuration & Infrastructure
 
-| Document                     | Purpose                           | Status    |
-|------------------------------|-----------------------------------|-----------|
-| **[MCP_SETUP.md]**           | MCP server configuration          | ✅ Current |
-| **[MEMORY_MCP.md]**          | Memory MCP setup                  | ✅ Current |
-| **[KIRO_UI_SETUP.md]**       | Kiro UI specific setup            | ✅ Current |
-| **[CURSOR_SETUP.md]**        | Cursor IDE setup                  | ✅ Current |
-| **[MOBILE_AGENTS_SETUP.md]** | Mobile agent setup                | ✅ Current |
-| **[TEAM_WORKSPACES.md]**     | Team workspace configuration      | ✅ Current |
-| **[REFERENCE.md]**           | Full command and config reference | ✅ Current |
+| Document                      | Purpose                           | Status    |
+|-------------------------------|-----------------------------------|-----------|
+| **[MCP_SETUP.md]**            | MCP server configuration          | ✅ Current |
+| **[MEMORY_MCP.md]**           | Memory MCP setup                  | ✅ Current |
+| **[KIRO_UI_SETUP.md]**        | Kiro UI (browser-based) setup     | ✅ Current |
+| **[KIRO_IDE_AGENT_SETUP.md]** | Kiro IDE agent routing setup      | ✅ Current |
+| **[CURSOR_SETUP.md]**         | Cursor IDE setup                  | ✅ Current |
+| **[MOBILE_AGENTS_SETUP.md]**  | Mobile agent setup                | ✅ Current |
+| **[TEAM_WORKSPACES.md]**      | Team workspace configuration      | ✅ Current |
+| **[REFERENCE.md]**            | Full command and config reference | ✅ Current |
 
 ## Strategy & Planning
 
@@ -135,6 +136,7 @@ Current status of all documentation after the installation guides consolidation.
 [IDE_CONCEPTS_COMPARISON.md]: getting-started/IDE_CONCEPTS_COMPARISON.md
 [INSTALL_GUIDE.md]: getting-started/SETUP.md
 [KIRO_CLI_VS_UI.md]: getting-started/KIRO_CLI_VS_UI.md
+[KIRO_IDE_AGENT_SETUP.md]: getting-started/KIRO_IDE_AGENT_SETUP.md
 [KIRO_UI_SETUP.md]: getting-started/KIRO_UI_SETUP.md
 [MCP_SETUP.md]: reference/MCP_SETUP.md
 [MEMORY_MCP.md]: memory/MEMORY_MCP.md
