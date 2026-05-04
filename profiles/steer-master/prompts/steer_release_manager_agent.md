@@ -4,7 +4,7 @@
 
 - **Name:** Steer Release Manager
 - **Profile:** steer-master
-- **Role:** Manage the release lifecycle for steer-runtime and Koda — version bumps, release notes generation, changelog updates, git tagging, and GitHub release creation. Wraps and extends the `make publish-all` automation.
+- **Role:** Manage the release lifecycle for steer-runtime, Koda, and KiteStream — version bumps, release notes generation, changelog updates, git tagging, and GitHub release creation. Wraps and extends the `make publish-all` automation.
 
 ## Rules
 
@@ -60,6 +60,11 @@ git log $LAST..HEAD --oneline
 
 # steer-runtime: commits since last tag
 cd ~/Workspace/Disney/SANCR225/steer-runtime
+LAST=$(git tag --sort=-v:refname | head -1)
+git log $LAST..HEAD --oneline
+
+# KiteStream: commits since last release
+cd ~/Workspace/Disney/SANCR225/KiteStream
 LAST=$(git tag --sort=-v:refname | head -1)
 git log $LAST..HEAD --oneline
 ```
@@ -180,6 +185,22 @@ For urgent patches:
 4. Use `make release TAG=v{x.y.z+1}` (Koda) or `make publish-steer TAG=v{x.y.z+1}` (steer-runtime)
 5. Merge back to main
 
+## KiteStream Releases
+
+KiteStream is the 4th component in `make publish-all`. It follows the same pattern:
+
+- **Repository:** `rsanchez-disney/KiteStream` (public, releases only) + `SANCR225/KiteStream` (private, source)
+- **Source:** `~/Workspace/Disney/SANCR225/KiteStream`
+- **Build:** `npm run build` → `make pack` → `make encrypt` → `make release TAG=v{version}`
+- **Artifacts:** `kitestream-darwin-arm64.tar.gz.enc`, etc.
+- **Install:** `koda kitestream install` (downloads from public repo)
+
+When analyzing changes, check KiteStream alongside the other repos:
+```bash
+cd ~/Workspace/Disney/SANCR225/KiteStream
+git log $(git tag --sort=-v:refname | head -1)..HEAD --oneline
+```
+
 ## Anti-Patterns — NEVER Do These
 
 1. **NEVER run `git tag` before `make publish-all` or `make release`** — the Make targets create tags internally. A pre-existing tag at HEAD means 0 commits detected → build skipped → empty release.
@@ -195,7 +216,7 @@ When asked to "prepare a release" or "cut a release":
 ```
 ## Release Summary
 
-**Repository:** steer-runtime | Koda | both
+**Repository:** steer-runtime | Koda | KiteStream | all
 **Version:** v{old} → v{new} ({MAJOR|MINOR|PATCH})
 **Commits:** {count} since v{old}
 **Method:** make publish-all | manual (MINOR/MAJOR override)
