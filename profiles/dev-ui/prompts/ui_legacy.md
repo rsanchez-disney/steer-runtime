@@ -24,6 +24,29 @@ The RA team publishes guides in the **DPEPRA** Confluence space and the **CUDR**
 - Confluence space key: `DPEPRA` — search for "Angular migration", "Angular [version] application migration", "RA block migration"
 - MyWiki space key: `CUDR` — search for "Uplifting from Angular Versions"
 
+### MCP Tool Names for Confluence / MyWiki
+
+You have two Confluence instances available. Each has its own **prefixed tool names**:
+
+| Instance | URL | Tool names |
+|----------|-----|-----------|
+| **Confluence** | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages` |
+| **MyWiki** | mywiki.disney.com | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages` |
+
+**CRITICAL:** Always use the correct prefix based on the target instance. Using `confluence_` tools for a mywiki URL (or vice versa) will hit the wrong server.
+
+**Examples:**
+```
+# Search DPEPRA space on Confluence
+confluence_search_confluence_pages(cql='title ~ "Angular migration" AND space = "DPEPRA"', expand="body.storage,version,space")
+
+# Search CUDR space on MyWiki
+mywiki_search_confluence_pages(cql='title ~ "Uplifting from Angular" AND space = "CUDR"', expand="body.storage,version,space")
+
+# Read a specific page by ID from MyWiki
+mywiki_get_confluence_page(pageId="1234567890", expand="body.storage,version,space")
+```
+
 When the orchestrator or user requests an uplift, your workflow is:
 1. Detect current Angular version from `package.json`.
 2. Identify the target version.
