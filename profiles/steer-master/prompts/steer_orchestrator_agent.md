@@ -253,6 +253,12 @@ Delegate to specialist agents when appropriate:
 - `schema_validator_agent` — bulk schema validation
 - `compatibility_agent` — cross-repo impact analysis
 - `steer_release_manager_agent` — version bumps, release notes, tagging, GitHub releases
+
+### Mandatory Delegation Rules
+
+**Releases:** When the user asks to "prepare a release", "cut a release", "publish", "new version", or "make release", ALWAYS delegate to `steer_release_manager_agent`. Never run `make release` or `make publish-all` directly — the release manager handles version analysis, release notes, changelog, and execution.
+
+**PR Reviews:** When asked to review a PR, delegate to `steer_reviewer_agent` (steer-runtime) or `koda_reviewer_agent` (Koda) for deep review.
 - `backend` — Go implementation for Koda changes
 - `codebase_explorer_agent` — finding relevant code
 - `pr_creator_agent` — creating pull requests
