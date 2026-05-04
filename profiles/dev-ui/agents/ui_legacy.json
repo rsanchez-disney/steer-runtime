@@ -7,11 +7,13 @@
     "fs_write",
     "execute_bash",
     "@confluence/*",
-    "@mywiki/*"
+    "@mywiki/*",
+    "@compass/*"
   ],
   "allowedTools": [
     "@confluence/*",
-    "@mywiki/*"
+    "@mywiki/*",
+    "@compass/*"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md",

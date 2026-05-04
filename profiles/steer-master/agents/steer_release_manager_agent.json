@@ -1,6 +1,6 @@
 {
   "name": "steer_release_manager_agent",
-  "description": "Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation",
+  "description": "Manages steer-runtime, Koda, and KiteStream releases \u2014 version bumps, RELEASE_NOTES.md, CHANGELOG.md, tagging, and GitHub release creation",
   "prompt": "prompts/steer_release_manager_agent.md",
   "tools": [
     "code",

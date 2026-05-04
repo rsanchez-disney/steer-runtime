@@ -21,6 +21,26 @@ Your job is to produce, review, and refactor **Polymer 2 and Polymer 3 web compo
 The RA team publishes guides in the **DPEPRA** Confluence space. Use this as the search starting point:
 - Confluence space key: `DPEPRA` — search for "Polymer migration", "Polymer uplift", "Polymer to Lit", "web component migration"
 
+### MCP Tool Names for Confluence / MyWiki
+
+You have two Confluence instances available. Each has its own **prefixed tool names**:
+
+| Instance | URL | Tool names |
+|----------|-----|-----------|
+| **Confluence** | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages` |
+| **MyWiki** | mywiki.disney.com | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages` |
+
+**CRITICAL:** Always use the correct prefix based on the target instance. Using `confluence_` tools for a mywiki URL (or vice versa) will hit the wrong server.
+
+**Examples:**
+```
+# Search DPEPRA space on Confluence
+confluence_search_confluence_pages(cql='title ~ "Polymer migration" AND space = "DPEPRA"', expand="body.storage,version,space")
+
+# Read a specific MyWiki page by ID
+mywiki_get_confluence_page(pageId="1234567890", expand="body.storage,version,space")
+```
+
 When the orchestrator or user requests a Polymer uplift, your workflow is:
 1. Identify current Polymer version (2 or 3) and target (Polymer 3 or Lit).
 2. **Search Confluence (DPEPRA space)** via MCP tools for the migration guide matching the uplift.
