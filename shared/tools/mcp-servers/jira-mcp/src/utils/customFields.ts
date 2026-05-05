@@ -23,7 +23,7 @@ export const CUSTOM_FIELD_ALIASES: Record<string, string> = {
     // ── Agile ────────────────────────────────────────
     sprint: "customfield_10003",
     storyPoints: "customfield_10004",
-    epicLink: "customfield_10014",
+    epicLink: "customfield_13912",
 
     // ── Studio / Programme ───────────────────────────
     studio: "customfield_20001",
