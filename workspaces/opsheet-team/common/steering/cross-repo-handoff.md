@@ -1,3 +1,9 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ["**/*.dart", "**/*.kt", "**/*.swift", "**/*.go", "**/*.ts", "**/*.java"]
+description: Protocol for handing off work between repos via spec files
+---
+
 # Cross-Repo Handoff Protocol
 
 When an agent determines that work is needed in a different repository (e.g., web agent finds VAS changes are required):

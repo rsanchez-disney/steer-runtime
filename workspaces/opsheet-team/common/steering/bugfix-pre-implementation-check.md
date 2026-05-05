@@ -1,3 +1,9 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ["**/*.dart", "**/*.kt", "**/*.swift", "**/*.go", "**/*.ts", "**/*.java"]
+description: Pre-implementation checklist for bugfix specs — verify fix state before coding
+---
+
 # Bugfix Workflow — Pre-Implementation Check
 
 Before executing any bugfix spec tasks:

@@ -1,5 +1,7 @@
 ---
-inclusion: always
+inclusion: fileMatch
+fileMatchPattern: ["**/*.dart", "**/*.kt", "**/*.swift", "**/*.java", "**/*.m", "**/*.h"]
+description: Agent coordination patterns for cross-platform native features (Flutter + Android + iOS)
 ---
 
 # Mobile Development Coordination

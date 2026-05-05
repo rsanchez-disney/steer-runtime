@@ -1,3 +1,9 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ["**/*.dart", "**/*.kt", "**/*.swift", "**/*.go", "**/*.ts", "**/*.java"]
+description: Git branch naming and workflow conventions for the opsheet team
+---
+
 # Git Branch Workflow
 
 Before making any changes to the codebase (fixes, features, refactors):
