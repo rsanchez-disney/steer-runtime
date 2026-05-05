@@ -2,7 +2,7 @@
 # agentSpawn hook: inject orchestrator awareness context
 # Emits: workspace context, installed profiles, MCP status, agent registry
 
-KIRO_DIR="$HOME/.kiro"
+KIRO_DIR="${KIRO_HOME:-$HOME/.kiro}"
 STEER_ROOT="$KIRO_DIR/steer-runtime"
 
 # --- Workspace Context ---
