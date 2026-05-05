@@ -25,20 +25,20 @@ koda kiro-ide install
 
 This generates:
 
-| Output                                   | Purpose                                                   |
-|------------------------------------------|-----------------------------------------------------------|
-| `~/.kiro/steering/70-agent-routing.md`   | Always-included routing table (agent registry for Kiro)   |
-| `~/.kiro/steering/agent-{name}.md`       | Per-agent manual steering (load via `#agent-{name}`)      |
-| `~/.kiro/skills/sync-agents-to-steering` | Skill to re-sync from inside Kiro IDE                     |
-| `~/.kiro/hooks/*.kiro.hook`              | Guardrail hooks (write guards, secret scan, branch guard) |
+| Output                                   | Purpose                                                                 |
+|------------------------------------------|-------------------------------------------------------------------------|
+| `~/.kiro/steering/70-agent-routing.md`   | Manual-inclusion routing table (loaded on demand by delegation trigger) |
+| `~/.kiro/steering/agent-{name}.md`       | Per-agent manual steering (load via `#agent-{name}`)                    |
+| `~/.kiro/skills/sync-agents-to-steering` | Skill to re-sync from inside Kiro IDE                                   |
+| `~/.kiro/hooks/*.kiro.hook`              | Guardrail hooks (write guards, secret scan, branch guard)               |
 
 ### Step 3: Verify in Kiro IDE
 
 Open any project in Kiro IDE and say:
 
-> list my installed agents
+> use sub agent for listing my installed agents
 
-Kiro reads the routing table and lists every available specialist.
+Kiro reads the routing table on demand and lists every available specialist.
 
 ---
 
@@ -72,7 +72,7 @@ regenerates the routing table and per-agent steering files.
 ```text
 ~/.kiro/
 ├── steering/
-│   ├── 70-agent-routing.md          # Always loaded — routing table with all agents
+│   ├── 70-agent-routing.md          # Manual — routing table loaded on demand by delegation trigger
 │   ├── agent-orchestrator.md        # Manual — full orchestrator prompt (#agent-orchestrator)
 │   ├── agent-code_review_agent.md   # Manual — full code review prompt (#agent-code_review_agent)
 │   └── ...                          # One per installed agent
@@ -85,19 +85,24 @@ regenerates the routing table and per-agent steering files.
     └── warn-destructive.kiro.hook   # Warns on rm -rf, DROP TABLE, --force
 ```
 
-The routing file (`70-agent-routing.md`) is always included so Kiro IDE automatically knows
-about every specialist. Per-agent files use `inclusion: manual` — load them explicitly with
-`#agent-{name}` when you want the full agent prompt in your conversation context.
+The routing file (`70-agent-routing.md`) uses `inclusion: manual` to avoid consuming ~6 KB on
+every prompt. The always-on `agent-delegation-trigger.md` rule (~500 bytes) detects phrases
+like "use sub agent for", "delegate to", or "route to" and reads the routing table on demand.
+You can also load it explicitly with `#70-agent-routing`. Per-agent files use
+`inclusion: manual` — load them with `#agent-{name}` when you want the full agent prompt in
+your conversation context.
 
 ---
 
 ## How delegation works
 
-When your request matches a specialist agent's domain, Kiro IDE:
+When you use a delegation phrase (e.g., "use sub agent for code review", "delegate to the
+flutter agent"), the `agent-delegation-trigger.md` rule kicks in:
 
-1. Looks up the agent in the routing table (`70-agent-routing.md`)
-2. Reads the agent's prompt from `~/.kiro/prompts/{agent}.md`
-3. Delegates via `invokeSubAgent` with `name: "general-task-execution"`
+1. Reads `~/.kiro/steering/70-agent-routing.md` on demand
+2. Looks up the matching specialist in the agent registry
+3. Reads the agent's prompt from `~/.kiro/prompts/{agent}.md`
+4. Delegates via `invokeSubAgent` with `name: "general-task-execution"`
 
 For simple tasks, Kiro handles them directly — delegation adds overhead and is reserved for
 tasks that benefit from the specialist's focused prompt and constraints.
@@ -121,11 +126,11 @@ separate execution.
 
 ## Troubleshooting
 
-| Problem                                      | Fix                                                                                       |
-|----------------------------------------------|-------------------------------------------------------------------------------------------|
-| "I said 'create a PR' but Kiro didn't route" | Check `~/.kiro/steering/70-agent-routing.md` exists. If not, run `koda kiro-ide install`. |
-| Sub-agent can't access Jira or GitHub        | MCP servers are user-level. Run `koda mcp-install` to configure them.                     |
-| Agent missing from routing table             | Run `koda kiro-ide sync` after installing new profiles.                                   |
+| Problem                                              | Fix                                                                                                                                                   |
+|------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| "I said 'delegate to PR agent' but nothing happened" | Check `~/.kiro/steering/70-agent-routing.md` exists. If not, run `koda kiro-ide install`. Also verify `agent-delegation-trigger.md` is in your rules. |
+| Sub-agent can't access Jira or GitHub                | MCP servers are user-level. Run `koda mcp-install` to configure them.                                                                                 |
+| Agent missing from routing table                     | Run `koda kiro-ide sync` after installing new profiles.                                                                                               |
 
 ---
 

@@ -14,8 +14,15 @@ koda install dev-core dev-web qa   # Install profiles
 koda kiro-ide install              # Generate steering files, skills, and hooks
 ```
 
-After this, every new Kiro IDE conversation automatically loads the routing table. No further
-setup needed unless you install new profiles (then run `koda kiro-ide sync`).
+After this, Kiro IDE can delegate to specialist agents on demand using natural phrases like
+"use sub agent for" or "delegate to". No further setup needed unless you install new profiles
+(then run `koda kiro-ide sync`).
+
+> **Note:** The examples below show delegation with the default Kiro IDE agent, which requires
+> trigger phrases to load the routing table on demand. If you are using the **orchestrator
+> agent** (via `kiro-cli` or the orchestrator steering file), it has its own intent
+> classification and delegates based on task semantics — no trigger phrases needed. See
+> [Example 8](#example-8-implicit-delegation-with-the-orchestrator) for that flow.
 
 [ide-setup]: KIRO_IDE_AGENT_SETUP.md
 
@@ -23,19 +30,21 @@ setup needed unless you install new profiles (then run `koda kiro-ide sync`).
 
 ## Example 1: Create a Pull Request (dev-core → pr_creator_agent)
 
-A developer finishes a feature and wants a PR. Without routing, Kiro IDE has no idea
-`pr_creator_agent` exists. With routing, it delegates automatically.
+A developer finishes a feature and wants a PR. The phrase "delegate to" triggers the agent to
+load the routing table and find the right specialist.
 
 **You say:**
-> Create a PR for PROJ-4521. The branch is feature/PROJ-4521-add-export-progress targeting
-> main. Include the Jira link and list the changed files.
+> Delegate to the PR agent for PROJ-4521. The branch is
+> feature/PROJ-4521-add-export-progress targeting main. Include the Jira link and list the
+> changed files.
 
 **Kiro thinks:**
-> The user wants to create a PR. The routing table maps this to `pr_creator_agent` (trigger
-> keywords: PR, pull request, create PR). I'll read its prompt and delegate.
+> The user said "delegate to" — loading the routing table. The PR agent maps to
+> `pr_creator_agent`. I'll read its prompt and delegate.
 
 **Kiro does:**
 ```
+readFile("~/.kiro/steering/70-agent-routing.md")   # Load routing table
 readFile("~/.kiro/prompts/pr_creator_agent.md")
 
 invokeSubAgent(
@@ -73,15 +82,16 @@ invokeSubAgent(
 ## Example 2: Analyze a Defect (qa → defect_analyst_agent)
 
 **You say:**
-> Analyze the bug in PROJ-7823. Users report a 500 error when exporting reports with more
-> than 1000 rows.
+> Use sub agent for analyzing the bug in PROJ-7823. Users report a 500 error when exporting
+> reports with more than 1000 rows.
 
 **Kiro thinks:**
-> Keywords "analyze", "bug" match `defect_analyst_agent` (trigger: defect, bug analysis, root
-> cause). Delegating.
+> The user said "use sub agent for" — loading the routing table. "Analyze" + "bug" maps to
+> `defect_analyst_agent`. Delegating.
 
 **Kiro does:**
 ```
+readFile("~/.kiro/steering/70-agent-routing.md")   # Load routing table
 readFile("~/.kiro/prompts/defect_analyst_agent.md")
 
 invokeSubAgent(
@@ -122,13 +132,15 @@ invokeSubAgent(
 ## Example 3: Review Code (dev-core → code_review_agent)
 
 **You say:**
-> Review the changes in my current branch before I create a PR
+> Ask the code review agent to review the changes in my current branch before I create a PR
 
 **Kiro thinks:**
-> "Review" + "changes" matches `code_review_agent` (trigger: review, code review). Delegating.
+> The user said "ask the … agent" — loading the routing table. `code_review_agent` matches.
+> Delegating.
 
 **Kiro does:**
 ```
+readFile("~/.kiro/steering/70-agent-routing.md")   # Load routing table
 readFile("~/.kiro/prompts/code_review_agent.md")
 
 invokeSubAgent(
@@ -171,13 +183,15 @@ invokeSubAgent(
 ## Example 4: Generate Test Cases (qa → test_planner_agent)
 
 **You say:**
-> Generate test cases for the user authentication feature in PROJ-3310
+> Delegate to the test planner agent to generate test cases for the user authentication
+> feature in PROJ-3310
 
 **Kiro thinks:**
-> "Generate test cases" matches `test_planner_agent` (trigger: test plan, test cases).
+> The user said "delegate to" — loading the routing table. `test_planner_agent` matches.
 
 **Kiro does:**
 ```
+readFile("~/.kiro/steering/70-agent-routing.md")   # Load routing table
 readFile("~/.kiro/prompts/test_planner_agent.md")
 
 invokeSubAgent(
@@ -208,13 +222,15 @@ invokeSubAgent(
 ## Example 5: Plan Implementation (dev-core → planner_agent)
 
 **You say:**
-> Plan the implementation for adding push notification deep links to specific pages
+> Use sub agent for planning the implementation for adding push notification deep links to
+> specific pages
 
 **Kiro thinks:**
-> "Plan" + "implementation" matches `planner_agent` (trigger: plan, implementation plan).
+> The user said "use sub agent for" — loading the routing table. `planner_agent` matches.
 
 **Kiro does:**
 ```
+readFile("~/.kiro/steering/70-agent-routing.md")   # Load routing table
 readFile("~/.kiro/prompts/planner_agent.md")
 
 invokeSubAgent(
@@ -257,20 +273,20 @@ invokeSubAgent(
 
 ## Example 6: Simple Task — No Delegation Needed
 
-Not every request needs delegation. When the routing table shows a match but the task is
-straightforward code work that Kiro IDE can handle directly, it skips delegation.
+Not every request needs delegation. When the user doesn't use a delegation phrase, Kiro handles
+the task directly without loading the routing table.
 
 **You say:**
 > Add a loading spinner to the export button while the request is in progress
 
 **Kiro thinks:**
-> This is a simple UI change. The routing table shows matching agents, but this is a focused
-> single-file change — I can handle it directly. No delegation needed.
+> No delegation phrase detected. This is a simple UI change — I can handle it directly.
 
-**Kiro does:** Implements the spinner directly, no sub-agent call.
+**Kiro does:** Implements the spinner directly, no sub-agent call. The routing table is never
+loaded, keeping the context lean.
 
-This is the "when to delegate" judgment from the routing file: delegate when the task benefits
-from the specialist's focused prompt and constraints. Simple changes don't need it.
+Reserve delegation for tasks that benefit from the specialist's focused prompt and constraints.
+Simple changes don't need it.
 
 ---
 
@@ -291,6 +307,46 @@ rather than in an isolated sub-agent execution.
 
 ---
 
+## Example 8: Implicit Delegation with the Orchestrator
+
+When the orchestrator agent is active, it has its own intent classification and the routing
+table is part of its resources. No trigger phrases are needed — the orchestrator delegates
+based on task semantics.
+
+**You say:**
+> Create a PR for PROJ-4521. The branch is feature/PROJ-4521-add-export-progress targeting
+> main. Include the Jira link and list the changed files.
+
+**Orchestrator thinks:**
+> The user wants to create a PR. This matches `pr_creator_agent` in my agent registry.
+> Delegating.
+
+**Orchestrator does:**
+```
+readFile("~/.kiro/prompts/pr_creator_agent.md")
+
+invokeSubAgent(
+  name: "general-task-execution",
+  prompt: """
+  <content of pr_creator_agent.md>
+
+  Task: Create a PR for PROJ-4521.
+  Branch: feature/PROJ-4521-add-export-progress → main
+  Include the Jira link and list the changed files.
+  """
+)
+```
+
+This is the same delegation flow as Example 1, but without the trigger phrase. The
+orchestrator's intent classification handles the routing automatically because it always has
+the agent registry in context.
+
+> **When to use which:** If you have the orchestrator active, just describe what you need
+> naturally. If you're using the default Kiro IDE agent, use a trigger phrase like "delegate
+> to" or "use sub agent for" to activate on-demand routing.
+
+---
+
 ## Re-syncing After Profile Changes
 
 When you install or remove profiles:
@@ -307,8 +363,10 @@ Or from inside Kiro IDE, say "sync my agents" to regenerate the routing table.
 
 ## Troubleshooting
 
-**"I said 'create a PR' but Kiro didn't delegate"**
+**"I said 'delegate to the PR agent' but Kiro didn't delegate"**
 - Check that `~/.kiro/steering/70-agent-routing.md` exists. If not, run `koda kiro-ide install`.
+- Verify the `agent-delegation-trigger.md` rule is present in your rules.
+- Try using a trigger phrase: "use sub agent for creating a PR" or "delegate to the PR agent".
 - Check that `~/.kiro/prompts/pr_creator_agent.md` exists. If not, run `koda install dev-core`.
 
 **"The sub-agent can't access Jira/GitHub"**
@@ -317,7 +375,8 @@ Or from inside Kiro IDE, say "sync my agents" to regenerate the routing table.
 - Verify with: `ls ~/.kiro/settings/mcp.json`
 
 **"I want to see what agents are available"**
-- Say: "list my installed agents" — Kiro reads the routing table and lists them.
+- Say: "use sub agent for listing my installed agents" — Kiro reads the routing table on demand.
+- Or load it manually: type `#70-agent-routing` in chat.
 - Or check directly: `ls ~/.kiro/agents/`
 
 **"Delegation is slow for simple tasks"**

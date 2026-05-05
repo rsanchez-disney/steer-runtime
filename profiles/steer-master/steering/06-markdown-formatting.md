@@ -1,3 +1,9 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ["**/*.md"]
+description: Markdown formatting rules for tables, headings, lists, code blocks, and links
+---
+
 # Markdown Formatting Rules
 
 Rules for all `.md` files written or edited by agents.
