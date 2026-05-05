@@ -1,0 +1,15 @@
+{
+  "name": "docs_curator_agent",
+  "description": "Maintains documentation inventory, detects stale/duplicate docs, ensures accuracy and audience alignment across the steer ecosystem",
+  "prompt": "docs_curator_agent.md",
+  "tools": [
+    "fs_read",
+    "grep",
+    "code",
+    "thinking",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://shared/memory-bank/steer-master/breaking-change-log.md"
+  ]
+}
