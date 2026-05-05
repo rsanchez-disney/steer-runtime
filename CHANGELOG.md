@@ -4,13 +4,42 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+---
+
+## [3.9.0] — 2026-05-05
+
 ### Added
+- **KIRO_HOME-aware hooks** — all hooks (agent-registry, mcp-json, workspace-snapshot) respect `KIRO_HOME` env var for multi-workspace session isolation (#319)
+- **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent, ai_research_agent, steer-plugins in release manager (#318)
+- **dev-java profile** — Java specialist agents (#315)
 - **inspector profile** — multi-dimensional audit with fan-out/fan-in topology: 10 agents (inspector_orchestrator, security_reviewer, dependency_auditor, config_inspector, access_analyst, drift_detector, compliance_checker, architecture_critic, performance_auditor, log_analyst). Produces ranked reports with severity scoring (🟢/🟡/🔴), yax trend tracking, and CRITICAL blocking (#313)
-- **SharePoint MCP server** — 6 tools for document management via Microsoft Graph API (list sites, drives, items, search, get, upload) (#280)
-- **translation_validator_agent** (BA) — validates translations for accuracy, idioms, cultural fit across 10+ languages (#281)
-- **web_scraping_validator_agent** (QA) — validates live web pages by scraping DOM: structure, content, accessibility (WCAG 2.1 AA), links (#282)
-- **time_machine_agent** (QA) — simulates accessing a website at any date/time by overriding browser JS Date via Chrome MCP (#283)
-- **jira-mcp: Reporter and StoryPoints fields** — first-class display and input across all tools (get, search, sprint, create, update) (#279)
+- **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
+- **yax recall-first + auto-save** — all 8 orchestrators auto-recall context on session start (#312)
+- **chrome-devtools-mcp wrapper** — launches Chrome before MCP for SSO-gated tools (#307)
+- **commerce-ticketing-and-checkout-team workspace** (#305)
+- **DPE workspace** — env var breaking change detection, code review checks (#309)
+- **SharePoint MCP server** — 6 tools for document management via Microsoft Graph API (#280)
+- **Chrome MCP server** — browser automation for QA and Splunk (#284)
+- **translation_validator_agent** (BA) — validates translations for accuracy, idioms, cultural fit (#281)
+- **web_scraping_validator_agent** (QA) — validates live web pages by scraping DOM (#282)
+- **time_machine_agent** (QA) — simulates accessing a website at any date/time (#283)
+- **jira-mcp: issue linking, dev status, user profile, XRay write tools** (#288)
+- **jira-mcp: Reporter and StoryPoints fields** (#279)
+- **GitHub Projects v2** — 4 tools for project board management (#278)
+- **Confluence multi-instance** — `CONFLUENCE_INSTANCE_PREFIX` for tool disambiguation (#272, #273)
+
+### Changed
+- **steer_release_manager_agent** — renamed from release_manager_agent, added KiteStream and steer-plugins scope (#314)
+- **devops_runner_agent** — new agent in dev-core for builds, tests, and git ops
+- **splunk_query_agent** — moved from sustainment to dev-core, uses chrome-devtools MCP for SSO (#293)
+
+### Fixed
+- Orchestrator delegation — enforce by removing write tools, restrict to read-only execute_bash
+- @yax/* wildcard missing in orchestrator tools (#311)
+- dev-ui: add @compass/* tools and MCP tool name docs (#316)
+- splunk_query_agent: chrome-launch hook kills existing Chrome before relaunching (#296)
+- Route pending PR reviews to story_analyzer_agent (#300)
+- Add guardrail to always use @github/* MCP over gh CLI (#301)
 
 ---
 
