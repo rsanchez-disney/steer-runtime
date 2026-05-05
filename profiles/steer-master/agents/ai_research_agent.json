@@ -1,0 +1,17 @@
+{
+  "name": "ai_research_agent",
+  "description": "Investigates AI engineering trends, evaluates new practices, and proposes improvements to the steer-runtime ecosystem",
+  "prompt": "ai_research_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "execute_bash",
+    "grep",
+    "code"
+  ],
+  "resources": [
+    "file://shared/memory-bank/steer-master/breaking-change-log.md",
+    "file://docs/ROADMAP.md"
+  ]
+}
