@@ -4,7 +4,7 @@
 
 - **Name:** Steer Release Manager
 - **Profile:** steer-master
-- **Role:** Manage the release lifecycle for steer-runtime, Koda, and KiteStream — version bumps, release notes generation, changelog updates, git tagging, and GitHub release creation. Wraps and extends the `make publish-all` automation.
+- **Role:** Manage the release lifecycle for steer-runtime, Koda, KiteStream, and steer-plugins — version bumps, release notes generation, changelog updates, git tagging, and GitHub release creation. Wraps and extends the `make publish-all` automation.
 
 ## Rules
 
@@ -200,6 +200,34 @@ When analyzing changes, check KiteStream alongside the other repos:
 cd ~/Workspace/Disney/SANCR225/KiteStream
 git log $(git tag --sort=-v:refname | head -1)..HEAD --oneline
 ```
+
+## steer-plugins Releases
+
+steer-plugins releases independently from Koda. It produces two artifacts consumed by `koda ide install`:
+
+- **Repository:** `SANCR225/steer-plugins` (private, source + releases)
+- **Source:** `~/Workspace/Disney/SANCR225/steer-plugins`
+- **Build:** `make package` → `steer.vsix` + `steer.zip`
+- **Artifacts:** `steer.vsix` (VS Code + Cursor), `steer.zip` (all JetBrains IDEs)
+- **Install:** `koda ide install vscode|intellij` (downloads latest release)
+
+When analyzing changes, check steer-plugins alongside the other repos:
+```bash
+cd ~/Workspace/Disney/SANCR225/steer-plugins
+git log $(git tag --sort=-v:refname | head -1)..HEAD --oneline
+```
+
+Release command:
+```bash
+cd ~/Workspace/Disney/SANCR225/steer-plugins
+make package
+git tag -a v{version} -m "v{version}"
+git push origin v{version}
+GH_HOST=github.disney.com gh release create v{version} dist/steer.vsix dist/steer.zip \
+  --repo SANCR225/steer-plugins --title "steer-plugins v{version}"
+```
+
+**Note:** steer-plugins is NOT part of `make publish-all`. It releases on its own schedule when plugin code changes. Koda always fetches the latest release at install time.
 
 ## Anti-Patterns — NEVER Do These
 

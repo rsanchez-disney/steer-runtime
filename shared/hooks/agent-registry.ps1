@@ -1,7 +1,7 @@
 # agentSpawn hook: inject orchestrator awareness context
 # Emits: workspace context, installed profiles, MCP status, agent registry
 
-$kiroDir = Join-Path $env:USERPROFILE ".kiro"
+$kiroDir = if ($env:KIRO_HOME) { $env:KIRO_HOME } else { Join-Path $env:USERPROFILE ".kiro" }
 $steerRoot = Join-Path $kiroDir "steer-runtime"
 
 # --- Workspace Context ---
