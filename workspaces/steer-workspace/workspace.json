@@ -1,0 +1,23 @@
+{
+  "name": "steer-workspace",
+  "description": "Development workspace for the steer ecosystem — runtime, Koda, autopilot, plugins, Kite, KiteStream",
+  "team": "Steer Platform",
+  "profiles": ["dev-core", "dev-web", "qa", "ops", "steer-master"],
+  "default_agent": "steer_orchestrator_agent",
+  "projects": [
+    { "name": "steer-runtime", "repo": "SANCR225/steer-runtime", "path": "steer-runtime" },
+    { "name": "Koda", "repo": "SANCR225/Koda", "path": "Koda" },
+    { "name": "steer-autopilot", "repo": "SANCR225/steer-autopilot", "path": "steer-autopilot" },
+    { "name": "steer-plugins", "repo": "SANCR225/steer-plugins", "path": "steer-plugins" },
+    { "name": "Kite", "repo": "SANCR225/Kite", "path": "Kite" },
+    { "name": "KiteStream", "repo": "SANCR225/KiteStream", "path": "KiteStream" }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-go-development",
+    "general-node-development",
+    "general-react-development"
+  ],
+  "enable_tools": true,
+  "workspace_path": "~/Workspace/Disney/SANCR225"
+}
