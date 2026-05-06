@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v3.9.0
+## v0.2.73
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
