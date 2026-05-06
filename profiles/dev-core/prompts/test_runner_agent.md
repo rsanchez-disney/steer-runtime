@@ -153,3 +153,12 @@ mvn jacoco:report
   "duration_seconds": 8
 }
 ```
+
+## Failure Classification Mode
+
+When analyzing test failures:
+- Categorize each failure as: infrastructure issue, flaky test, application bug, or environment problem
+- For infrastructure: identify resource exhaustion, timeout, network issues
+- For flaky: detect timing dependencies, race conditions, non-deterministic selectors
+- For application bugs: isolate the root cause with minimal reproduction steps
+- Output a classified failure report with recommended action per category

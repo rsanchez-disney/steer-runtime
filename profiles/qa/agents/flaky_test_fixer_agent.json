@@ -1,0 +1,16 @@
+{
+  "name": "flaky_test_fixer_agent",
+  "description": "Diagnoses intermittently failing tests, experiments with fixes (retry logic, wait strategies, selector stability), verifies 0/N failure rate",
+  "prompt": "flaky_test_fixer_agent.md",
+  "tools": ["code", "execute_bash", "fs_read", "fs_write", "grep", "thinking"],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/automation_patterns.md",
+    "file://.kiro/context/project_mappings.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {"matcher": "fs_write", "command": "$HOME/.kiro/hooks/guard-writes.sh", "description": "Block writes to node_modules, dist, .git"}
+    ]
+  }
+}

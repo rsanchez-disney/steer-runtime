@@ -1,0 +1,15 @@
+{
+  "name": "bruno_collection_agent",
+  "description": "Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections with environment configs, assertions, and JS test blocks",
+  "prompt": "bruno_collection_agent.md",
+  "tools": ["code", "execute_bash", "fs_read", "fs_write", "grep", "thinking", "@bruno/*"],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md",
+    "file://.kiro/context/project_mappings.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {"matcher": "fs_write", "command": "$HOME/.kiro/hooks/guard-writes.sh", "description": "Block writes to node_modules, dist, .git"}
+    ]
+  }
+}

@@ -235,6 +235,48 @@ Then continue with the full SDLC workflow (see below) only if the user asked to 
 
 **Action**: Delegate to `compliance_agent` or `ux_specialist_agent`.
 
+
+### Category 13b: Design & UX Research
+
+**Triggers**: "competitive analysis", "heuristic audit", "design discovery", "vision framework", "user research", "interview guide", "persona", "journey map", "JTBD", "usability test", "concept validation", "survey design", "prototype prompt", "design prompt", "use case catalog"
+
+**Action**: Delegate to the appropriate design agent:
+| Task | Agent |
+|------|-------|
+| Competitive analysis, heuristic audits, vision frameworks | `design_discovery_agent` |
+| Interview guides, personas, journey maps, JTBD | `user_research_agent` |
+| Usability test scripts, concept validation, surveys | `usability_testing_agent` |
+| Research plans, research reports, executive summaries | `design_research_reporter_agent` |
+| Design prompts for Figma/v0/Stitch, use case catalogs | `prototype_prompt_agent` |
+
+### Category 13c: Infrastructure & CloudOps
+
+**Triggers**: "infrastructure plan", "environment sizing", "resource matrix", "IaC", "capacity planning", "configuration management", "secret rotation", "drift detection", "RCA", "post-mortem", "root cause analysis", "incident report"
+
+**Action**: Delegate to the appropriate cloudops agent:
+| Task | Agent |
+|------|-------|
+| Environment planning, sizing, IaC recommendations | `infra_planner_agent` |
+| Configuration strategy, secrets, drift detection, DR | `config_management_agent` |
+| RCA documents, post-mortems, incident analysis | `rca_writer_agent` |
+
+### Category 13d: Pre-Sales
+
+**Triggers**: "client intake", "project brief", "feasibility assessment", "discovery questions", "RFP", "SOW", "pre-sales"
+
+**Action**: Delegate to `presales_agent`.
+
+### Category 13e: Flaky Tests & Test Recording
+
+**Triggers**: "flaky test", "intermittent failure", "test stability", "record test", "playwright codegen", "capture flow", "Bruno collection", "OpenAPI to Bruno"
+
+**Action**: Delegate to the appropriate QA agent:
+| Task | Agent |
+|------|-------|
+| Diagnose/fix flaky tests | `flaky_test_fixer_agent` |
+| Record browser flows → Playwright specs | `test_recorder_agent` |
+| Generate Bruno collections from OpenAPI/Gherkin | `bruno_collection_agent` |
+
 ### Category 14: Implementation (Direct, no ticket)
 
 **Triggers**: "implement", "build", "create component", "add endpoint", "fix bug" — WITHOUT a Jira ticket

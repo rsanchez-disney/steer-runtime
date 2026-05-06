@@ -1,0 +1,7 @@
+{
+  "name": "rca_writer_agent",
+  "description": "Produces publishable RCA documents from incident data, logs, and timelines. Follows SRE post-mortem best practices.",
+  "prompt": "rca_writer_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*", "@jira/*"],
+  "resources": ["file://.kiro/context/project_mappings.md"]
+}

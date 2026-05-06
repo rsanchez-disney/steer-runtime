@@ -159,3 +159,13 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Incident post-mortems and RCAs | `rca_writer_agent` | "RCA", "post-mortem", "root cause", "incident report" |
+| Diagnose and fix flaky tests | `flaky_test_fixer_agent` | "flaky test", "intermittent failure", "test stability" |
+| Infrastructure impact assessment | `infra_planner_agent` | "infrastructure impact", "capacity", "scaling risk" |
+| Configuration drift and secrets audit | `config_management_agent` | "config drift", "secret rotation", "configuration audit" |
+| Technical debt audit | `code_review_agent` (Tech Debt Audit mode) | "technical debt", "debt register", "tech debt" |

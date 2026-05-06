@@ -174,3 +174,11 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Client intake, project briefs, feasibility | `presales_agent` | "client intake", "project brief", "feasibility", "RFP", "SOW", "discovery questions" |
+| Preventive quality scoring of requirements | `requirements_analyst_agent` (Preventive Scoring mode) | "score requirements", "coherence check", "testability score", "completeness audit" |
+| User research planning and synthesis | `user_research_agent` | "interview guide", "persona", "journey map", "JTBD", "user research" |

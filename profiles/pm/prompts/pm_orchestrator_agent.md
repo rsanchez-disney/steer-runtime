@@ -140,3 +140,10 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Test execution reports with GO/NO-GO | `delivery_reporter_agent` (Test Report mode) | "test report", "GO/NO-GO", "release readiness", "quality gate report" |
+| Technical debt audit for sprint planning | `code_review_agent` (Tech Debt Audit mode) | "technical debt", "debt audit", "tech debt register" |

@@ -200,3 +200,12 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Environment planning, sizing, IaC recommendations | `infra_planner_agent` | "infrastructure plan", "environment sizing", "resource matrix", "capacity" |
+| Configuration strategy, secrets, drift detection | `config_management_agent` | "config management", "secret rotation", "drift detection", "DR plan" |
+| RCA documents, post-mortems, incident analysis | `rca_writer_agent` | "RCA", "post-mortem", "root cause", "incident report" |
+| DevOps strategy (not execution) | `devops_runner_agent` (Strategy mode) | "branching strategy", "CI/CD design", "pipeline architecture", "release process" |
