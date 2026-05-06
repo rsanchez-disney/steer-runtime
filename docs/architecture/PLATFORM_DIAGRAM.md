@@ -1,8 +1,9 @@
 # Steer Platform — High-Level Architecture Diagram
 
-## Mermaid Diagram (paste into any Mermaid renderer)
+## Full Architecture
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1a1a2e', 'primaryTextColor': '#eee', 'lineColor': '#74b9ff', 'fontSize': '14px'}}}%%
 graph TB
     %% === User Layer ===
     subgraph users["👤 Users"]
@@ -23,7 +24,7 @@ graph TB
     end
 
     %% === Management Layer ===
-    subgraph mgmt["⚙️ Koda (Go CLI + TUI)"]
+    subgraph mgmt["⚙️ Koda — Go CLI + TUI"]
         install["install / sync"]
         upgrade["upgrade / auto-update"]
         workspaces["workspace apply"]
@@ -34,16 +35,16 @@ graph TB
 
     %% === steer-runtime Core ===
     subgraph steer["📦 steer-runtime"]
-        subgraph profiles["Profiles (20)"]
+        subgraph profiles["Profiles — 20"]
             devcore["dev-core (20)"]
             qaprof["qa (16)"]
             baprof["ba (8)"]
             pmprof["pm (6)"]
             opsprof["ops (9)"]
-            more["+ 15 more..."]
+            more["+ 15 more"]
         end
 
-        subgraph agents["Agents (115 unique)"]
+        subgraph agents["Agents — 115 unique"]
             orch["orchestrator"]
             planner["planner"]
             backend["backend"]
@@ -53,19 +54,19 @@ graph TB
         end
 
         subgraph shared["Shared Resources"]
-            rules["22 Coding Rules<br/>(Java, Node, Go, Angular...)"]
-            context["Context Files<br/>(golden_rules, mappings)"]
-            hooks["Hooks<br/>(guard-writes, warn-destructive)"]
-            steering["Steering Rules<br/>(numbered behavioral rules)"]
+            rules["22 Coding Rules"]
+            context["Context Files"]
+            hooks["Hooks"]
+            steering["Steering Rules"]
         end
 
-        subgraph ws["Workspaces (22 teams)"]
-            wsjson["workspace.json<br/>(profiles, rules, repos)"]
+        subgraph ws["Workspaces — 22 teams"]
+            wsjson["workspace.json"]
         end
     end
 
     %% === MCP Integration Layer ===
-    subgraph mcp["🔌 MCP Servers (13)"]
+    subgraph mcp["🔌 MCP Servers — 13"]
         jira["jira-mcp"]
         confluence["confluence-mcp"]
         github["github-mcp"]
@@ -83,9 +84,9 @@ graph TB
 
     %% === External Systems ===
     subgraph external["🌐 External Systems"]
-        jiraext["Jira<br/>(jira.disney.com)"]
-        confext["Confluence<br/>(confluence.disney.com)"]
-        ghext["GitHub<br/>(github.disney.com)"]
+        jiraext["Jira"]
+        confext["Confluence"]
+        ghext["GitHub"]
         splunkext["Splunk"]
         snowext["ServiceNow"]
         appdext["AppDynamics"]
@@ -101,9 +102,9 @@ graph TB
 
     %% === Distribution ===
     subgraph dist["📤 Distribution"]
-        ghpub["GitHub Releases<br/>(github.com/rsanchez-disney)"]
-        autoupd["Auto-update<br/>(daily at 9 AM)"]
-        tarball["Encrypted Tarballs<br/>(steer-runtime)"]
+        ghpub["GitHub Releases"]
+        autoupd["Auto-update (daily 9 AM)"]
+        tarball["Encrypted Tarballs"]
     end
 
     %% === Connections ===
@@ -121,111 +122,57 @@ graph TB
     mgmt --> dist
     dist --> mgmt
 
-    %% Styling
-    style users fill:#2d3436,stroke:#00b894,color:#fff
-    style ides fill:#0984e3,stroke:#74b9ff,color:#fff
-    style mgmt fill:#6c5ce7,stroke:#a29bfe,color:#fff
-    style steer fill:#00b894,stroke:#55efc4,color:#fff
-    style profiles fill:#00b894,stroke:#55efc4,color:#fff
-    style agents fill:#00b894,stroke:#55efc4,color:#fff
-    style shared fill:#00b894,stroke:#55efc4,color:#fff
-    style ws fill:#00b894,stroke:#55efc4,color:#fff
-    style mcp fill:#e17055,stroke:#fab1a0,color:#fff
-    style external fill:#636e72,stroke:#b2bec3,color:#fff
-    style mem fill:#fdcb6e,stroke:#ffeaa7,color:#333
-    style dist fill:#d63031,stroke:#ff7675,color:#fff
+    %% === Styling ===
+    style users fill:#2d3436,stroke:#00b894,color:#fff,stroke-width:2px
+    style ides fill:#0984e3,stroke:#74b9ff,color:#fff,stroke-width:2px
+    style mgmt fill:#6c5ce7,stroke:#a29bfe,color:#fff,stroke-width:2px
+    style steer fill:#1e3a5f,stroke:#00b894,color:#fff,stroke-width:2px
+    style profiles fill:#1a472a,stroke:#00b894,color:#fff
+    style agents fill:#1a472a,stroke:#00b894,color:#fff
+    style shared fill:#1a472a,stroke:#00b894,color:#fff
+    style ws fill:#1a472a,stroke:#00b894,color:#fff
+    style mcp fill:#4a1a1a,stroke:#e17055,color:#fff,stroke-width:2px
+    style external fill:#2d3436,stroke:#636e72,color:#dfe6e9,stroke-width:2px
+    style mem fill:#3d3100,stroke:#fdcb6e,color:#ffeaa7,stroke-width:2px
+    style dist fill:#3d1010,stroke:#d63031,color:#ff7675,stroke-width:2px
 ```
 
-## Simplified Version (for slides — less detail, more impact)
+## Simplified Version (for slides)
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1a1a2e', 'primaryTextColor': '#eee', 'lineColor': '#e94560'}}}%%
 graph LR
-    subgraph Users
+    subgraph Users[" "]
         U["👤 Dev · BA · QA · PM · Ops · Leadership"]
     end
 
-    subgraph Runtime["IDE Runtimes"]
-        R["Kiro CLI · Cursor · Amazon Q · Kite"]
+    subgraph Runtime[" "]
+        R["🖥️ Kiro CLI · Cursor · Amazon Q · Kite"]
     end
 
-    subgraph Koda["Koda CLI"]
-        K["install · sync · upgrade · chat · teams"]
+    subgraph Koda[" "]
+        K["⚙️ Koda — install · sync · upgrade · chat · teams"]
     end
 
-    subgraph Platform["steer-runtime"]
-        P["20 Profiles · 115 Agents · 22 Rules · 22 Workspaces"]
+    subgraph Platform[" "]
+        P["📦 steer-runtime — 20 Profiles · 115 Agents · 22 Rules · 22 Workspaces"]
     end
 
-    subgraph MCP["MCP Integrations"]
-        M["Jira · Confluence · GitHub · Splunk<br/>ServiceNow · AppDynamics · Figma<br/>SharePoint · qTest · Chrome · Bruno"]
+    subgraph MCP[" "]
+        M["🔌 Jira · Confluence · GitHub · Splunk · ServiceNow · AppDynamics · Figma · SharePoint"]
     end
 
-    subgraph Memory["Persistent Memory"]
-        Y["Yax · Memory Banks"]
+    subgraph Memory[" "]
+        Y["🧠 Yax (persistent memory) · Memory Banks"]
     end
 
-    U --> R --> K --> Platform --> MCP
-    Platform --> Memory
-```
+    U --> R --> K --> P --> MCP
+    P --> Y
 
-## ASCII Version (for terminals / plain text)
-
-```
-╔══════════════════════════════════════════════════════════════════════════╗
-║                           STEER PLATFORM                                ║
-╠══════════════════════════════════════════════════════════════════════════╣
-║                                                                          ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │  USERS: Developer · BA · QA · PM · Ops · Leadership             │    ║
-║  └────────────────────────────┬────────────────────────────────────┘    ║
-║                               │                                          ║
-║                               ▼                                          ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │  IDE RUNTIMES: Kiro CLI · Cursor · Amazon Q · Kite (Desktop)    │    ║
-║  └────────────────────────────┬────────────────────────────────────┘    ║
-║                               │                                          ║
-║                               ▼                                          ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │  KODA (Go CLI + TUI)                                            │    ║
-║  │  install · sync · upgrade · workspaces · doctor · chat · teams  │    ║
-║  └────────────────────────────┬────────────────────────────────────┘    ║
-║                               │                                          ║
-║                               ▼                                          ║
-║  ┌─────────────────────────────────────────────────────────────────┐    ║
-║  │  STEER-RUNTIME                                                   │    ║
-║  │                                                                   │    ║
-║  │  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌─────────────┐  │    ║
-║  │  │ 20 Profiles│ │115 Agents  │ │ 22 Rules   │ │22 Workspaces│  │    ║
-║  │  │            │ │            │ │            │ │             │  │    ║
-║  │  │ dev-core   │ │orchestrator│ │ Java       │ │ app-team    │  │    ║
-║  │  │ qa         │ │planner     │ │ Node       │ │ bolt-team   │  │    ║
-║  │  │ ba         │ │backend     │ │ Angular    │ │ dpe-team    │  │    ║
-║  │  │ pm         │ │code_review │ │ Go         │ │ ge-team     │  │    ║
-║  │  │ ops        │ │security    │ │ Python     │ │ payments    │  │    ║
-║  │  │ leadership │ │...         │ │ ...        │ │ ...         │  │    ║
-║  │  └────────────┘ └────────────┘ └────────────┘ └─────────────┘  │    ║
-║  └────────────────────────────┬────────────────────────────────────┘    ║
-║                               │                                          ║
-║              ┌────────────────┼────────────────┐                        ║
-║              ▼                ▼                 ▼                        ║
-║  ┌───────────────┐  ┌──────────────┐  ┌──────────────────┐             ║
-║  │ MCP SERVERS   │  │   MEMORY     │  │  DISTRIBUTION    │             ║
-║  │ (13 servers)  │  │              │  │                  │             ║
-║  │               │  │ Yax (graph)  │  │ GitHub Releases  │             ║
-║  │ Jira          │  │ Memory Banks │  │ Auto-update      │             ║
-║  │ Confluence    │  │              │  │ Encrypted tarball│             ║
-║  │ GitHub        │  └──────────────┘  └──────────────────┘             ║
-║  │ Splunk        │                                                      ║
-║  │ ServiceNow    │         ┌──────────────────────────────┐             ║
-║  │ AppDynamics   │────────▶│  EXTERNAL SYSTEMS            │             ║
-║  │ Figma         │         │  Jira · Confluence · GitHub  │             ║
-║  │ SharePoint    │         │  Splunk · ServiceNow · AppD  │             ║
-║  │ qTest         │         │  Figma · SharePoint · qTest  │             ║
-║  │ Chrome        │         └──────────────────────────────┘             ║
-║  │ Bruno         │                                                      ║
-║  │ Memory        │                                                      ║
-║  │ Mermaid       │                                                      ║
-║  └───────────────┘                                                      ║
-║                                                                          ║
-╚══════════════════════════════════════════════════════════════════════════╝
+    style Users fill:#2d3436,stroke:#00b894,color:#fff,stroke-width:2px
+    style Runtime fill:#0984e3,stroke:#74b9ff,color:#fff,stroke-width:2px
+    style Koda fill:#6c5ce7,stroke:#a29bfe,color:#fff,stroke-width:2px
+    style Platform fill:#1e3a5f,stroke:#00b894,color:#fff,stroke-width:2px
+    style MCP fill:#4a1a1a,stroke:#e17055,color:#fff,stroke-width:2px
+    style Memory fill:#3d3100,stroke:#fdcb6e,color:#ffeaa7,stroke-width:2px
 ```
