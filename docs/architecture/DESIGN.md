@@ -80,44 +80,48 @@ Workflow Layer
 
 ### Pattern 1: Config Studio Feature
 
-```
-User: "Implement DPAY-14561"
-    ↓
-orchestrator
-    ├─→ story_analyzer_agent (fetch Jira)
-    ├─→ codebase_explorer_agent (explore code)
-    ├─→ planner_agent (create plan)
-    ├─→ [Approval Gate]
-    ├─→ backend (Java changes)
-    ├─→ webapi (API changes)
-    ├─→ ui (Angular changes)
-    ├─→ test_runner_agent (run tests)
-    ├─→ code_review_agent (review)
-    └─→ pr_creator_agent (create PR)
+```mermaid
+graph TD
+    user["User: Implement DPAY-14561"] --> orch["orchestrator"]
+    orch --> sa["story_analyzer_agent<br/>(fetch Jira)"]
+    orch --> ce["codebase_explorer_agent<br/>(explore code)"]
+    orch --> pl["planner_agent<br/>(create plan)"]
+    pl --> gate{"Approval Gate"}
+    gate -->|approved| be["backend (Java)"]
+    gate -->|approved| wa["webapi (API)"]
+    gate -->|approved| ui["ui (Angular)"]
+    be --> tr["test_runner_agent"]
+    wa --> tr
+    ui --> tr
+    tr --> cr["code_review_agent"]
+    cr --> pr["pr_creator_agent"]
 ```
 
 ### Pattern 2: Mobile Feature
 
-```
-User: "Add biometric auth to Flutter app"
-    ↓
-orchestrator
-    ├─→ planner_agent (plan implementation)
-    ├─→ flutter (interface + MethodChannel)
-    ├─→ android_native (BiometricPrompt)
-    ├─→ ios_native (LocalAuthentication)
-    ├─→ [Contract Validation]
-    └─→ test_runner_agent (test all platforms)
+```mermaid
+graph TD
+    user["User: Add biometric auth to Flutter app"] --> orch["orchestrator"]
+    orch --> pl["planner_agent"]
+    pl --> flutter["flutter<br/>(interface + MethodChannel)"]
+    pl --> android["android_native<br/>(BiometricPrompt)"]
+    pl --> ios["ios_native<br/>(LocalAuthentication)"]
+    flutter --> cv{"Contract Validation"}
+    android --> cv
+    ios --> cv
+    cv --> tr["test_runner_agent<br/>(test all platforms)"]
 ```
 
 ### Pattern 3: Cross-Platform Validation
 
-```
-orchestrator
-    ├─→ backend (add field to API)
-    ├─→ webapi (add field to interface)
-    ├─→ ui (display field in UI)
-    └─→ [Contract Compatibility Check]
+```mermaid
+graph LR
+    orch["orchestrator"] --> be["backend<br/>(add field to API)"]
+    orch --> wa["webapi<br/>(add field to interface)"]
+    orch --> ui["ui<br/>(display field in UI)"]
+    be --> check{"Contract Compatibility Check"}
+    wa --> check
+    ui --> check
 ```
 
 ---

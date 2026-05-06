@@ -6,88 +6,47 @@ How the pieces of the steer-runtime ecosystem fit together — from the LLM at t
 
 ## Layer Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              LLM                                        │
-│  The model (Claude Sonnet, Claude Opus, GPT-4, etc.). Receives          │
-│  context, returns completions. Has no memory, no tools, no opinions     │
-│  — just inference. Model selection is an IDE/provider concern.          │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ API calls
-┌────────────────────────────────▼────────────────────────────────────────┐
-│                        IDE Runtime Layer                                │
-│  Kiro CLI · Kiro IDE · Cursor · Amazon Q Developer · Kite               │
-│                                                                         │
-│  Loads agent configs, injects context into prompts, manages MCP server  │
-│  lifecycles, enforces hooks, routes tool calls. The "engine" that       │
-│  connects the LLM to the developer's environment.                       │
-│                                                                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                   │
-│  │  MCP Servers │  │    Hooks     │  │    Powers    │                   │
-│  │              │  │              │  │              │                   │
-│  │ Child procs  │  │ Shell scripts│  │ JS modules   │                   │
-│  │ bridging to  │  │ enforcing    │  │ extending    │                   │
-│  │ Jira, GitHub,│  │ guardrails   │  │ agent tool   │                   │
-│  │ Confluence…  │  │ on tool use  │  │ capabilities │                   │
-│  └──────────────┘  └──────────────┘  └──────────────┘                   │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ reads from ~/.kiro/ or .kiro/
-┌────────────────────────────────▼────────────────────────────────────────┐
-│                     Installed Steering Files                            │
-│  ~/.kiro/agents/ · ~/.kiro/prompts/ · ~/.kiro/context/                  │
-│  ~/.kiro/tools/mcp-servers/ · .kiro/steering/ · .kiro/settings/         │
-│  ~/.kiro/hooks/ · ~/.kiro/powers/                                       │
-│                                                                         │
-│  The compiled, IDE-ready output. What the runtime actually reads.       │
-│  Produced by Koda from steer-runtime source material.                   │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ installed by
-┌────────────────────────────────▼────────────────────────────────────────┐
-│                             Koda                                        │
-│  Go binary. Downloads encrypted releases, decrypts, installs profiles   │
-│  to ~/.kiro/. Manages tokens, workspaces, MCP servers, auto-updates.    │
-│  The bridge between steer-runtime (source) and the IDE (consumer).      │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ packages from
-┌────────────────────────────────▼────────────────────────────────────────┐
-│                        steer-runtime Repo                               │
-│  Source of truth. All agent definitions, prompts, context, hooks,       │
-│  MCP server source, steering rules, skills, workspaces, and templates.  │
-│                                                                         │
-│  Contains:                                                              │
-│    profiles/    → Agent configs + prompts per role                      │
-│    shared/      → Cross-profile resources (context, hooks, MCP, tools)  │
-│    common/      → Reusable rules, skills, templates, schemas            │
-│    workspaces/  → Team-specific configuration bundles                   │
-└────────────────────────────────┬────────────────────────────────────────┘
-                                 │ organized into
-                                 ▼
-                  ┌───────────────────────────────┐
-                  │          Workspace            │
-                  │                               │
-                  │  Team-level config bundle.    │
-                  │  Selects profiles + rules +   │
-                  │  context for a specific team. │
-                  └───────────────┬───────────────┘
-                                  │ selects one or more
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │           Profile             │
-                  │                               │
-                  │  Role-level agent group.      │
-                  │  dev-core, ba, qa, ops, pm,   │
-                  │  leadership, etc.             │
-                  └───────────────┬───────────────┘
-                                  │ contains one or more
-                                  ▼
-                  ┌───────────────────────────────┐
-                  │            Agent              │
-                  │                               │
-                  │  Task-level specialist.       │
-                  │  JSON config + Markdown prompt│
-                  │  + tools + MCP + hooks +      │
-                  │  powers.                      │
-                  └───────────────────────────────┘
+```mermaid
+graph TB
+    subgraph LLM["LLM (Claude, GPT-4, etc.)"]
+        llm_desc["Receives context, returns completions<br/>No memory, no tools — just inference"]
+    end
+
+    subgraph IDE["IDE Runtime Layer"]
+        ide_desc["Kiro CLI · Kiro IDE · Cursor · Amazon Q · Kite"]
+        mcps["MCP Servers<br/>(child procs → Jira, GitHub, Confluence...)"]
+        hks["Hooks<br/>(shell scripts enforcing guardrails)"]
+        pwr["Powers<br/>(JS modules extending tool capabilities)"]
+    end
+
+    subgraph installed["Installed Steering Files (~/.kiro/)"]
+        inst_desc["agents/ · prompts/ · context/ · tools/mcp-servers/<br/>steering/ · settings/ · hooks/ · powers/"]
+    end
+
+    subgraph koda["Koda (Go binary)"]
+        koda_desc["Downloads releases, decrypts, installs profiles<br/>Manages tokens, workspaces, MCP, auto-updates"]
+    end
+
+    subgraph repo["steer-runtime Repo (source of truth)"]
+        profiles_dir["profiles/ → Agent configs per role"]
+        shared_dir["shared/ → Cross-profile resources"]
+        common_dir["common/ → Rules, skills, templates"]
+        ws_dir["workspaces/ → Team config bundles"]
+    end
+
+    subgraph hierarchy["Organization Hierarchy"]
+        workspace["Workspace<br/>(team-level config bundle)"]
+        profile["Profile<br/>(role-level agent group)"]
+        agent["Agent<br/>(task-level specialist:<br/>JSON + prompt + tools + MCP + hooks)"]
+    end
+
+    LLM -->|"API calls"| IDE
+    IDE -->|"reads from ~/.kiro/"| installed
+    installed -->|"installed by"| koda
+    koda -->|"packages from"| repo
+    repo --> hierarchy
+    workspace -->|"selects"| profile
+    profile -->|"contains"| agent
 ```
 
 ---
@@ -398,13 +357,10 @@ Key design decisions:
 - Multi-instance support — the same server type can run multiple times with different tokens (e.g., myjira.disney.com and jira.disney.com)
 - Token priority: agent JSON `env` block > MCP server `.env` file (dotenv doesn't override existing env vars)
 
-```
-Agent JSON                    IDE Runtime                    External System
-┌──────────────┐             ┌──────────────┐              ┌──────────────┐
-│ mcpServers:  │  declares   │ Starts child │  stdio/SSE   │              │
-│   jira: ...  │ ──────────→ │ process with │ ───────────→ │  Jira API    │
-│   github: .. │             │ token in env │              │  GitHub API  │
-└──────────────┘             └──────────────┘              └──────────────┘
+```mermaid
+graph LR
+    A["Agent JSON<br/>(mcpServers: jira, github...)"] -->|"declares"| B["IDE Runtime<br/>(starts child process with token in env)"]
+    B -->|"stdio/SSE"| C["External System<br/>(Jira API, GitHub API)"]
 ```
 
 ---

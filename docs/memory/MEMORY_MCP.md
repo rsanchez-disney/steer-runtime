@@ -10,13 +10,15 @@ Key difference from other MCP servers: memory-mcp runs as a **Docker service** (
 
 ## Architecture
 
-```
-┌─────────────┐     HTTP/SSE      ┌──────────────────┐     Redis Protocol    ┌─────────────┐
-│  Kiro Agent  │ ──────────────── │  memory-mcp      │ ──────────────────── │ Redis Stack  │
-│  (any IDE)   │    port 9377     │  FastAPI + MCP    │                      │  + RediSearch │
-└─────────────┘                   │  fastembed        │                      │  + RedisJSON  │
-                                  └──────────────────┘                      └─────────────┘
-                                        Docker Compose (2 containers)
+```mermaid
+graph LR
+    agent["Kiro Agent<br/>(any IDE)"] -->|"HTTP/SSE<br/>port 9377"| mcp["memory-mcp<br/>FastAPI + MCP + fastembed"]
+    mcp -->|"Redis Protocol"| redis["Redis Stack<br/>RediSearch + RedisJSON"]
+
+    subgraph docker["Docker Compose (2 containers)"]
+        mcp
+        redis
+    end
 ```
 
 - **FastAPI** — serves MCP tools over HTTP/SSE

@@ -4,31 +4,33 @@
 
 Steer-runtime is a unified multi-profile agent system for Disney Payments that provides AI-assisted development, business analysis, quality assurance, and operations workflows through Kiro CLI.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         User Terminal                           │
-│                                                                 │
-│  $ kiro-cli chat --agent story_analyzer_agent                   │
-│  $ koda install dev ba                                    │
-│  $ koda mcp-install                                       │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Kiro CLI Runtime                         │
-│                                                                 │
-│  ~/.local/bin/kiro-cli                                          │
-│  Reads agents, prompts, and MCP configs from ~/.kiro/           │
-│  Launches MCP servers as child processes                        │
-│  Sends prompts to LLM with agent context                       │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-        ┌──────────┐ ┌──────────┐ ┌──────────┐
-        │ Jira MCP │ │Confluence│ │GitHub MCP│  ... MCP Servers
-        │  Server  │ │MCP Server│ │  Server  │
-        └──────────┘ └──────────┘ └──────────┘
+```mermaid
+graph TB
+    subgraph terminal["User Terminal"]
+        cmd1["kiro-cli chat --agent story_analyzer_agent"]
+        cmd2["koda install dev ba"]
+        cmd3["koda mcp-install"]
+    end
+
+    subgraph runtime["Kiro CLI Runtime"]
+        bin["~/.local/bin/kiro-cli"]
+        reads["Reads agents, prompts, MCP configs from ~/.kiro/"]
+        launches["Launches MCP servers as child processes"]
+        sends["Sends prompts to LLM with agent context"]
+    end
+
+    subgraph mcps["MCP Servers"]
+        jiramcp["Jira MCP"]
+        confmcp["Confluence MCP"]
+        ghmcp["GitHub MCP"]
+        moremcp["...more"]
+    end
+
+    terminal --> runtime
+    runtime --> jiramcp
+    runtime --> confmcp
+    runtime --> ghmcp
+    runtime --> moremcp
 ```
 
 ---
@@ -147,50 +149,41 @@ steer-runtime/
 
 ### 1. Installation Flow
 
-```
-koda install <profiles>
-         │
-         ├─→ Copy agents/*.json to ~/.kiro/agents/     (with $HOME expansion)
-         ├─→ Copy prompts/*.md to ~/.kiro/prompts/
-         ├─→ Copy context/*.md to ~/.kiro/context/
-         ├─→ Copy tools/mcp-servers/ to ~/.kiro/tools/  (rsync, excludes node_modules)
-         └─→ inject_agent_tokens()                      (reads .env → updates agent JSON env blocks)
+```mermaid
+graph LR
+    A["koda install &lt;profiles&gt;"] --> B["Copy agents/*.json → ~/.kiro/agents/"]
+    A --> C["Copy prompts/*.md → ~/.kiro/prompts/"]
+    A --> D["Copy context/*.md → ~/.kiro/context/"]
+    A --> E["Copy tools/mcp-servers/ → ~/.kiro/tools/"]
+    A --> F["inject_agent_tokens()<br/>(reads .env → updates agent JSON env blocks)"]
 ```
 
 ### 2. MCP Install Flow
 
-```
-koda mcp-install
-         │
-         ├─→ Check ~/.npmrc exists (Disney Nexus auth)
-         ├─→ Copy ~/.npmrc to each MCP server directory
-         ├─→ Interactive selection: [1] confluence [2] github [3] jira [4] mermaid [5] mywiki [A] All
-         ├─→ npm install for selected servers (skip failures, continue)
-         ├─→ Prompt for PATs: Jira, Confluence, MyWiki, GitHub
-         ├─→ Save tokens to .env files
-         ├─→ Resolve $HOME in agent JSON configs
-         └─→ inject_agent_tokens() into all installed agents
+```mermaid
+graph TD
+    A["koda mcp-install"] --> B["Check ~/.npmrc exists"]
+    B --> C["Copy ~/.npmrc to each MCP server dir"]
+    C --> D["Interactive selection:<br/>confluence, github, jira, mermaid, mywiki, All"]
+    D --> E["npm install for selected servers"]
+    E --> F["Prompt for PATs:<br/>Jira, Confluence, MyWiki, GitHub"]
+    F --> G["Save tokens to .env files"]
+    G --> H["Resolve $HOME in agent JSON configs"]
+    H --> I["inject_agent_tokens()"]
 ```
 
 ### 3. Agent Execution Flow
 
-```
-kiro-cli chat --agent story_analyzer_agent
-         │
-         ├─→ Load ~/.kiro/agents/story_analyzer_agent.json
-         │     ├── mcpServers: { jira, confluence, mywiki, github }
-         │     ├── tools: [ @jira/*, @confluence/*, @mywiki/*, @github/* ]
-         │     └── resources: [ project_mappings.md, steering/*.md ]
-         │
-         ├─→ Load ~/.kiro/prompts/story_analyzer_agent.md
-         │
-         ├─→ Launch MCP servers (child processes)
-         │     ├── node ~/.kiro/tools/mcp-servers/jira-mcp/build/index.js
-         │     ├── node ~/.kiro/tools/mcp-servers/confluence-mcp/build/index.js  (×2: confluence + mywiki)
-         │     └── node ~/.kiro/tools/mcp-servers/github-mcp/build/index.js
-         │
-         └─→ LLM receives: prompt + context + available MCP tools
-               └── Agent uses MCP tools to fetch Jira stories, Confluence pages, GitHub PRs
+```mermaid
+graph TD
+    A["kiro-cli chat --agent story_analyzer_agent"] --> B["Load agent JSON config<br/>mcpServers, tools, resources"]
+    A --> C["Load system prompt (.md)"]
+    B --> D["Launch MCP servers (child processes)"]
+    D --> E["node jira-mcp/build/index.js"]
+    D --> F["node confluence-mcp/build/index.js (×2)"]
+    D --> G["node github-mcp/build/index.js"]
+    B --> H["LLM receives:<br/>prompt + context + MCP tools"]
+    H --> I["Agent uses MCP tools to fetch<br/>Jira stories, Confluence pages, GitHub PRs"]
 ```
 
 ---
