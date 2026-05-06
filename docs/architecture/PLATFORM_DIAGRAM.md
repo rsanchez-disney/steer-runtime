@@ -4,9 +4,10 @@
 
 ```mermaid
 %%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#1a1a2e', 'primaryTextColor': '#eee', 'lineColor': '#74b9ff', 'fontSize': '14px'}}}%%
-graph TB
+graph LR
     %% === User Layer ===
     subgraph users["👤 Users"]
+        direction TB
         dev["Developer"]
         ba["BA / PO"]
         qa["QA Engineer"]
@@ -17,25 +18,29 @@ graph TB
 
     %% === IDE Runtime Layer ===
     subgraph ides["🖥️ IDE Runtimes"]
-        kiro["Kiro CLI<br/>(primary runtime)"]
-        cursor["Cursor IDE<br/>(.mdc rules)"]
-        amazonq["Amazon Q<br/>(.md rules)"]
-        kite["Kite Desktop<br/>(Tauri + React)"]
+        direction TB
+        kiro["Kiro CLI"]
+        cursor["Cursor IDE"]
+        amazonq["Amazon Q"]
+        kite["Kite Desktop"]
     end
 
     %% === Management Layer ===
-    subgraph mgmt["⚙️ Koda — Go CLI + TUI"]
+    subgraph mgmt["⚙️ Koda"]
+        direction TB
         install["install / sync"]
-        upgrade["upgrade / auto-update"]
-        workspaces["workspace apply"]
-        doctor["doctor / check"]
-        chat["chat / delegate"]
-        teams["agent teams"]
+        upgrade["upgrade"]
+        workspaces["workspaces"]
+        doctor["doctor"]
+        chat["chat"]
+        teams["teams"]
     end
 
     %% === steer-runtime Core ===
     subgraph steer["📦 steer-runtime"]
-        subgraph profiles["Profiles — 20"]
+        direction TB
+        subgraph profiles["20 Profiles"]
+            direction TB
             devcore["dev-core (20)"]
             qaprof["qa (16)"]
             baprof["ba (8)"]
@@ -44,66 +49,66 @@ graph TB
             more["+ 15 more"]
         end
 
-        subgraph agents["Agents — 115 unique"]
+        subgraph agents["115 Agents"]
+            direction TB
             orch["orchestrator"]
             planner["planner"]
             backend["backend"]
             reviewer["code_review"]
-            security["security_scanner"]
-            moreag["...110 more"]
+            moreag["...111 more"]
         end
 
-        subgraph shared["Shared Resources"]
-            rules["22 Coding Rules"]
-            context["Context Files"]
+        subgraph shared["Shared"]
+            direction TB
+            rules["22 Rules"]
             hooks["Hooks"]
-            steering["Steering Rules"]
+            context["Context"]
         end
 
-        subgraph ws["Workspaces — 22 teams"]
+        subgraph ws["22 Workspaces"]
             wsjson["workspace.json"]
         end
     end
 
-    %% === MCP Integration Layer ===
-    subgraph mcp["🔌 MCP Servers — 13"]
-        jira["jira-mcp"]
-        confluence["confluence-mcp"]
-        github["github-mcp"]
-        splunk["splunk-mcp"]
-        snow["servicenow-mcp"]
-        appd["appdynamics-mcp"]
-        figma["figma-mcp"]
-        sharepoint["sharepoint-mcp"]
-        qtest["qtest-mcp"]
-        chrome["chrome-mcp"]
-        bruno["bruno-mcp"]
-        memorymcp["memory-mcp"]
-        mermaidmcp["mermaid-mcp"]
+    %% === MCP + External ===
+    subgraph mcp["🔌 13 MCP Servers"]
+        direction TB
+        jira["jira"]
+        confluence["confluence"]
+        github["github"]
+        splunk["splunk"]
+        snow["servicenow"]
+        appd["appdynamics"]
+        figma["figma"]
+        sharepoint["sharepoint"]
+        qtest["qtest"]
+        chrome["chrome"]
+        bruno["bruno"]
+        memorymcp["memory"]
+        mermaidmcp["mermaid"]
     end
 
-    %% === External Systems ===
-    subgraph external["🌐 External Systems"]
+    subgraph external["🌐 External"]
+        direction TB
         jiraext["Jira"]
         confext["Confluence"]
         ghext["GitHub"]
         splunkext["Splunk"]
         snowext["ServiceNow"]
         appdext["AppDynamics"]
-        figmaext["Figma"]
-        spext["SharePoint"]
     end
 
-    %% === Memory Layer ===
-    subgraph mem["🧠 Persistent Memory"]
-        yax["Yax<br/>(observations, sessions, graph)"]
-        membank["Memory Banks<br/>(per-project knowledge)"]
+    %% === Memory + Distribution (below) ===
+    subgraph mem["🧠 Memory"]
+        direction TB
+        yax["Yax (graph)"]
+        membank["Memory Banks"]
     end
 
-    %% === Distribution ===
     subgraph dist["📤 Distribution"]
+        direction TB
         ghpub["GitHub Releases"]
-        autoupd["Auto-update (daily 9 AM)"]
+        autoupd["Auto-update"]
         tarball["Encrypted Tarballs"]
     end
 
@@ -111,16 +116,10 @@ graph TB
     users --> ides
     ides --> mgmt
     mgmt --> steer
-    steer --> agents
-    profiles --> agents
-    ws --> profiles
-
     agents --> mcp
     mcp --> external
-
     agents --> mem
     mgmt --> dist
-    dist --> mgmt
 
     %% === Styling ===
     style users fill:#2d3436,stroke:#00b894,color:#fff,stroke-width:2px
