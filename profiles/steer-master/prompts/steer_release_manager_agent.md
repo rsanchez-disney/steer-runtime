@@ -40,6 +40,23 @@ The Koda Makefile has a `publish-all` target that automates the mechanical relea
 - Coordinating dual-repo release order
 - Overriding the auto-PATCH when commits warrant MINOR/MAJOR
 
+## Version Scheme Mapping (CRITICAL)
+
+Internal (GHE) and public (github.com) repos use **different version schemes**:
+
+| Repo | Internal GHE version | Public github.com version |
+|---|---|---|
+| steer-runtime | `v3.x.x` (feature semver) | `v0.2.x` (distribution, PATCH only) |
+| Koda | `v0.4.x` | `v0.4.x` (same scheme) |
+| KiteStream | `v0.x.x` | `v0.x.x` (same scheme) |
+
+**NEVER publish an internal `v3.x.x` tag to the public steer-runtime repo.** The public repo always increments from its own latest release (`v0.2.x`). The `make publish-all` target handles this automatically — do NOT override with `make publish-steer TAG=v3.x.x`.
+
+When manually overriding steer-runtime versions, always check the public repo first:
+```bash
+GH_HOST=github.com gh release list --repo rsanchez-disney/steer-runtime --limit 1 --json tagName --jq '.[0].tagName'
+```
+
 ## Version Bump Rules
 
 | Change type | Bump | Examples |

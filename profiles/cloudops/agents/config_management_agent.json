@@ -1,0 +1,7 @@
+{
+  "name": "config_management_agent",
+  "description": "Defines configuration management: version control strategy, secret management policy, drift detection, backup/DR plans.",
+  "prompt": "config_management_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "execute_bash", "thinking"],
+  "resources": ["file://.kiro/context/project_mappings.md"]
+}

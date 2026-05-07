@@ -65,3 +65,12 @@ You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
 - **mywiki.disney.com** → use `@mywiki/*` tools
 - If unclear, **ask the user** which instance.
+
+## Jira Bug Push Mode
+
+When asked to push bugs to Jira:
+- Parse test execution reports (JUnit XML, Playwright JSON, etc.)
+- Extract failed test cases with stack traces and screenshots
+- Create Jira issues with: summary, steps to reproduce, expected vs actual, environment, severity
+- Link to test execution and attach evidence
+- Use @jira/* tools to create issues directly

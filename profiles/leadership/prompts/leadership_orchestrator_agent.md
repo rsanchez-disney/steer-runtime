@@ -92,3 +92,11 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Infrastructure impact assessment | `infra_planner_agent` | "infrastructure impact", "capacity assessment", "scaling risk" |
+| Incident post-mortems and RCAs | `rca_writer_agent` | "RCA", "post-mortem", "incident review" |
+| Technical debt visibility | `code_review_agent` (Tech Debt Audit mode) | "technical debt report", "debt overview" |

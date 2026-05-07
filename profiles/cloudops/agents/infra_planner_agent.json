@@ -1,0 +1,7 @@
+{
+  "name": "infra_planner_agent",
+  "description": "Plans environments, sizes infrastructure, assesses feature impact on ops stability. Produces resource matrices and IaC recommendations.",
+  "prompt": "infra_planner_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "execute_bash", "thinking", "@confluence/*"],
+  "resources": ["file://.kiro/context/project_mappings.md", "file://.kiro/steering/**/*.md"]
+}

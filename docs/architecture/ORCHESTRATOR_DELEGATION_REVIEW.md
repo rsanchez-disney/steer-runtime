@@ -4,121 +4,64 @@
 
 ### Complete Workflow (11 Steps + 5 Gates)
 
-```
-User Input: "Implement https://myjira.disney.com/browse/DPAY-14337"
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 1: Story Analysis                                  │
-│ Delegate to: story_analyzer_agent                       │
-│ Input: Jira URL                                         │
-│ Output: JSON (title, description, ACs, type, priority) │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 2: Codebase Exploration                            │
-│ Delegate to: codebase_explorer_agent                    │
-│ Input: Components from story                            │
-│ Output: JSON (files, patterns, dependencies, tests)    │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 3: Discussion (Optional)                           │
-│ Delegate to: discussion_agent                           │
-│ Input: Story details                                    │
-│ Output: CONTEXT.md with user preferences                │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 3.5: Architecture Review (Optional)                │
-│ Delegate to: architecture_agent                         │
-│ Input: Story + codebase exploration                     │
-│ Output: Pattern recommendations, trade-offs             │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 4: Implementation Planning                         │
-│ Delegate to: planner_agent                              │
-│ Input: Story + exploration + preferences + architecture │
-│ Output: JSON with XML tasks, dependencies, estimates    │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ GATE 1: Plan Approval                                   │
-│ User Action: yes / no / modify                          │
-│ Orchestrator: Wait for approval before proceeding       │
-└─────────────────────────────────────────────────────────┘
-    ↓ (if approved)
-┌─────────────────────────────────────────────────────────┐
-│ Step 6: Implementation (Per Task)                       │
-│ Delegate to: backend_agent / ui_agent / webapi_agent    │
-│ Input: Task XML, files, patterns                        │
-│ Output: List of files changed                           │
-│ Loop: For each task in plan                             │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 6: Testing                                         │
-│ Delegate to: test_runner_agent                          │
-│ Input: Changed files                                    │
-│ Output: Test results, coverage %                        │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ GATE 2: Test Results (if failed)                        │
-│ User Action: fix / skip / abort                         │
-│ Orchestrator: Handle test failures                      │
-└─────────────────────────────────────────────────────────┘
-    ↓ (if passed)
-┌─────────────────────────────────────────────────────────┐
-│ Step 7: Code Review                                     │
-│ Delegate to: code_review_agent                          │
-│ Input: Changed files                                    │
-│ Output: Status, issues, auto-fix availability           │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ GATE 3: Code Review (if issues)                         │
-│ User Action: apply fixes / fix manually / abort         │
-│ Orchestrator: Handle review issues                      │
-└─────────────────────────────────────────────────────────┘
-    ↓ (if passed)
-┌─────────────────────────────────────────────────────────┐
-│ Step 8: Security Scan                                   │
-│ Delegate to: security_scanner_agent                     │
-│ Input: Changed files, dependencies                      │
-│ Output: Vulnerabilities, auto-fix commands              │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ GATE 4: Security Scan (if vulnerabilities)              │
-│ User Action: apply fixes / fix manually / abort         │
-│ Orchestrator: Handle vulnerabilities                    │
-└─────────────────────────────────────────────────────────┘
-    ↓ (if passed)
-┌─────────────────────────────────────────────────────────┐
-│ Step 9: Quality Report                                  │
-│ Orchestrator: Consolidate all quality checks            │
-│ Output: Summary of tests, review, security              │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ GATE 5: Quality Report Approval                         │
-│ User Action: yes / no                                   │
-│ Orchestrator: Final approval before PR                  │
-└─────────────────────────────────────────────────────────┘
-    ↓ (if approved)
-┌─────────────────────────────────────────────────────────┐
-│ Step 10: PR Creation                                    │
-│ Delegate to: pr_creator_agent                           │
-│ Input: Story, tasks, files, quality report              │
-│ Output: PR URL, PR number                               │
-└─────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────┐
-│ Step 11: Completion                                     │
-│ Orchestrator: Show final summary                        │
-│ Output: PR link, duration, stats, quality checks        │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    input["User Input:<br/>Implement DPAY-14337"] --> step1
+
+    step1["Step 1: Story Analysis<br/><i>→ story_analyzer_agent</i><br/>Output: JSON (title, ACs, type, priority)"]
+    step1 --> step2
+
+    step2["Step 2: Codebase Exploration<br/><i>→ codebase_explorer_agent</i><br/>Output: files, patterns, dependencies"]
+    step2 --> step3
+
+    step3["Step 3: Discussion (optional)<br/><i>→ discussion_agent</i><br/>Output: CONTEXT.md with preferences"]
+    step3 --> step3b
+
+    step3b["Step 3.5: Architecture Review (optional)<br/><i>→ architecture_agent</i><br/>Output: pattern recommendations"]
+    step3b --> step4
+
+    step4["Step 4: Implementation Planning<br/><i>→ planner_agent</i><br/>Output: tasks, dependencies, estimates"]
+    step4 --> gate1
+
+    gate1{"GATE 1: Plan Approval<br/>yes / no / modify"}
+    gate1 -->|"approved"| step6
+    gate1 -->|"rejected"| step4
+
+    step6["Step 5: Implementation (per task)<br/><i>→ backend / ui / webapi agent</i><br/>Output: files changed"]
+    step6 --> step6b
+
+    step6b["Step 6: Testing<br/><i>→ test_runner_agent</i><br/>Output: test results, coverage %"]
+    step6b --> gate2
+
+    gate2{"GATE 2: Test Results<br/>fix / skip / abort"}
+    gate2 -->|"passed"| step7
+    gate2 -->|"failed"| step6
+
+    step7["Step 7: Code Review<br/><i>→ code_review_agent</i><br/>Output: status, issues, auto-fix"]
+    step7 --> gate3
+
+    gate3{"GATE 3: Code Review<br/>apply fixes / manual / abort"}
+    gate3 -->|"passed"| step8
+    gate3 -->|"issues"| step6
+
+    step8["Step 8: Security Scan<br/><i>→ security_scanner_agent</i><br/>Output: vulnerabilities, fixes"]
+    step8 --> gate4
+
+    gate4{"GATE 4: Security<br/>apply fixes / manual / abort"}
+    gate4 -->|"passed"| step9
+    gate4 -->|"vulnerabilities"| step6
+
+    step9["Step 9: Quality Report<br/><i>Orchestrator consolidates all checks</i>"]
+    step9 --> gate5
+
+    gate5{"GATE 5: Final Approval<br/>yes / no"}
+    gate5 -->|"approved"| step10
+    gate5 -->|"rejected"| step6
+
+    step10["Step 10: PR Creation<br/><i>→ pr_creator_agent</i><br/>Output: PR URL, PR number"]
+    step10 --> step11
+
+    step11["Step 11: Completion<br/>PR link, duration, stats, quality checks"]
 ```
 
 ## Agent Delegation Matrix

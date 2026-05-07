@@ -23,3 +23,12 @@ You design target architecture specifications with component diagrams, integrati
 Save to `docs/specs/YYYYMMDD_architecture_{{feature}}.md`. Include mermaid diagrams for all visual elements.
 
 Reference existing `_01_architecture.md` specs to maintain consistency.
+
+## Integration Contracts Mode
+
+When asked to produce integration contracts:
+- Define API contracts (OpenAPI snippets) for each integration point
+- Generate sequence diagrams (Mermaid) for key flows
+- Map dependencies between services with version constraints
+- Document failure modes and fallback behavior per integration
+- Produce a dependency matrix showing upstream/downstream impacts

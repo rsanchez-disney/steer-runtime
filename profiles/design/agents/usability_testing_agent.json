@@ -1,0 +1,7 @@
+{
+  "name": "usability_testing_agent",
+  "description": "Designs usability test scripts, concept validation sessions, surveys. Synthesizes results into actionable findings",
+  "prompt": "usability_testing_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking"],
+  "resources": ["file://.kiro/context/project_mappings.md"]
+}

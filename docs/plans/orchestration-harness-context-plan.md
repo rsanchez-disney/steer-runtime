@@ -25,23 +25,41 @@ This plan addresses three research areas mapped to concrete improvements across 
 
 ### Dependency order
 
-```text
-Epic 1 (context rules)  ──┐
-Epic 2 (compression)    ──┤
-Epic 3 (trust)          ──┼── can run in parallel (no cross-deps)
-Epic 4 (hooks)          ──┤
-Epic 5 (registry)       ──┘
-                          │
-Epic 6 (parallel DAG)  ──┤── depends on Epic 5
-Epic 7 (prompt decomp) ──┤── depends on Epic 1
-Epic 8 (token budget)  ──┤── depends on Epic 1
-Epic 9 (worker retry)  ──┤── depends on Epic 3
-Epic 10 (observability) ─┤── depends on Epic 4
-Epic 11 (blackboard)   ──┘── depends on Epic 9
-                          │
-Epic 12 (hier. memory) ──┤── depends on Epic 10
-Epic 13 (RAG context)  ──┤── depends on Epic 8
-Epic 14 (dynamic tools) ─┘── depends on Epic 4
+```mermaid
+graph TD
+    subgraph tier1["Tier 1 (parallel — no cross-deps)"]
+        e1["Epic 1: Context Rules"]
+        e2["Epic 2: Compression"]
+        e3["Epic 3: Trust"]
+        e4["Epic 4: Hooks"]
+        e5["Epic 5: Registry"]
+    end
+
+    subgraph tier2["Tier 2"]
+        e6["Epic 6: Parallel DAG"]
+        e7["Epic 7: Prompt Decomp"]
+        e8["Epic 8: Token Budget"]
+        e9["Epic 9: Worker Retry"]
+        e10["Epic 10: Observability"]
+        e11["Epic 11: Blackboard"]
+    end
+
+    subgraph tier3["Tier 3"]
+        e12["Epic 12: Hierarchical Memory"]
+        e13["Epic 13: RAG Context"]
+        e14["Epic 14: Dynamic Tools"]
+    end
+
+    e5 --> e6
+    e1 --> e7
+    e1 --> e8
+    e3 --> e9
+    e4 --> e10
+    e9 --> e11
+
+    e10 --> e12
+    e8 --> e13
+    e4 --> e14
 ```
 
 ---

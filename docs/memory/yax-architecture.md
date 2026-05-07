@@ -10,34 +10,29 @@ Named after Yax the yak from Zootopia — remembers everything in detail.
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     AI Agent (kiro-cli)                  │
-│                                                         │
-│  @yax tools: yax_save, yax_search, yax_context, ...    │
-└──────────────────────┬──────────────────────────────────┘
-                       │ stdio (MCP protocol)
-┌──────────────────────▼──────────────────────────────────┐
-│                    yax MCP Server                        │
-│                                                         │
-│  cmd/yax/main.go → mcp.Serve() → stdio transport       │
-│  Tool profiles: agent (14 tools), admin (4 tools)       │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│                    Store Layer                           │
-│                                                         │
-│  store.Open() → SQLite + WAL + FTS5                    │
-│  observations.go  sessions.go  graph.go  prompts.go    │
-│  sync.go (mutation log + chunk export/import)           │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│              ~/.yax/yax.db (SQLite)                     │
-│                                                         │
-│  sessions │ observations │ edges │ user_prompts         │
-│  observations_fts │ prompts_fts │ sync_mutations        │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph agent["AI Agent (kiro-cli)"]
+        tools["@yax tools: yax_save, yax_search, yax_context, ..."]
+    end
+
+    subgraph server["yax MCP Server"]
+        serve["cmd/yax/main.go → mcp.Serve() → stdio transport"]
+        profiles["Tool profiles: agent (14 tools), admin (4 tools)"]
+    end
+
+    subgraph store["Store Layer"]
+        sqlite["store.Open() → SQLite + WAL + FTS5"]
+        modules["observations.go · sessions.go · graph.go · prompts.go · sync.go"]
+    end
+
+    subgraph db["~/.yax/yax.db (SQLite)"]
+        tables["sessions │ observations │ edges │ user_prompts<br/>observations_fts │ prompts_fts │ sync_mutations"]
+    end
+
+    agent -->|"stdio (MCP protocol)"| server
+    server --> store
+    store --> db
 ```
 
 ## Components

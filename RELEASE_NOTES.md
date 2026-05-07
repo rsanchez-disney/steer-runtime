@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v3.9.0
+## v0.2.74
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -14,7 +14,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 <!-- END LATEST -->
 
-## v0.2.66
+## v0.2.74
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API

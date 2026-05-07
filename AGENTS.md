@@ -12,7 +12,7 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 16 agents"]
+    subgraph DEV_CORE["dev-core · 20 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
         ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
         ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
@@ -90,7 +90,7 @@ graph TD
     end
 
     %% ─── qa ────────────────────────────────────────
-    subgraph QA["qa · 11 agents"]
+    subgraph QA["qa · 16 agents"]
         QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
         QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
         QA_ORCH --> TAUTO["test_automation<br/><i>bruno</i>"]:::agent
@@ -102,10 +102,13 @@ graph TD
         QA_ORCH --> WEBDISC["web_discovery"]:::agent
         QA_ORCH --> TESTFW["test_framework"]:::agent
         QA_ORCH --> TCOV["test_coverage_analyzer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        QA_ORCH --> FLAKY["flaky_test_fixer"]:::agent
+        QA_ORCH --> TREC["test_recorder<br/><i>chrome</i>"]:::agent
+        QA_ORCH --> BRUNO["bruno_collection<br/><i>bruno</i>"]:::agent
     end
 
     %% ─── ops ───────────────────────────────────────
-    subgraph OPS["ops · 7 agents"]
+    subgraph OPS["ops · 9 agents"]
         OPS_ORCH["🎯 ops_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
         OPS_ORCH --> METRICS["ai_metrics<br/><i>jira · confluence · mywiki · github</i>"]:::agent
         OPS_ORCH --> INFRA["infra_check"]:::agent
@@ -137,6 +140,30 @@ graph TD
         INSP_ORCH --> ARCHCRIT["architecture_critic"]:::agent
         INSP_ORCH --> PERFAUD["performance_auditor"]:::agent
         INSP_ORCH --> LOGANA["log_analyst"]:::agent
+    end
+
+
+    %% ─── design ────────────────────────────────────
+    subgraph DESIGN["design · 6 agents"]
+        DES_ORCH["🎯 design_orchestrator<br/><i>confluence · jira<br/>thinking · todo · delegate</i>"]:::orch
+        DES_ORCH --> DDISC["design_discovery<br/><i>confluence · jira</i>"]:::agent
+        DES_ORCH --> URES["user_research<br/><i>confluence</i>"]:::agent
+        DES_ORCH --> UTEST["usability_testing"]:::agent
+        DES_ORCH --> DREP["design_research_reporter<br/><i>confluence</i>"]:::agent
+        DES_ORCH --> PROTO["prototype_prompt"]:::agent
+    end
+
+    %% ─── cloudops ──────────────────────────────────
+    subgraph CLOUDOPS["cloudops · 4 agents"]
+        COP_ORCH["🎯 cloudops_orchestrator<br/><i>confluence · jira<br/>thinking · todo · delegate</i>"]:::orch
+        COP_ORCH --> INFRA["infra_planner<br/><i>confluence</i>"]:::agent
+        COP_ORCH --> CFGMGMT["config_management"]:::agent
+        COP_ORCH --> RCA["rca_writer<br/><i>confluence · jira</i>"]:::agent
+    end
+
+    %% ─── presales ──────────────────────────────────
+    subgraph PRESALES["presales · 1 agent"]
+        PRESALE["presales_agent<br/><i>confluence · jira</i>"]:::agent
     end
 
     %% ─── dev alias ─────────────────────────────────
@@ -172,7 +199,7 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 33 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 37 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
@@ -521,7 +548,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-## Profile: qa (11 agents)
+## Profile: qa (14 agents)
 
 Quality Assurance and Test Automation agents for comprehensive testing.
 
@@ -599,6 +626,24 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Analyzes test coverage for epics against Jira/Xray and discovers reusable tests  
 **Use for:** Coverage gap analysis, reuse discovery across projects, coverage matrix reports  
 **MCP Servers:** jira, confluence, mywiki, github
+
+
+#### flaky_test_fixer_agent
+**File:** `profiles/qa/agents/flaky_test_fixer_agent.json`  
+**Purpose:** Diagnoses intermittently failing tests, experiments with fixes, verifies stability  
+**Use for:** Flaky test diagnosis, retry/wait strategy fixes, test stability verification
+
+#### test_recorder_agent
+**File:** `profiles/qa/agents/test_recorder_agent.json`  
+**Purpose:** Records browser interactions via Playwright codegen, produces TypeScript specs with page objects  
+**Use for:** Test recording, selector capture, page object generation  
+**MCP Servers:** chrome
+
+#### bruno_collection_agent
+**File:** `profiles/qa/agents/bruno_collection_agent.json`  
+**Purpose:** Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections  
+**Use for:** API collection generation, environment configs, assertion scripts  
+**MCP Servers:** bruno
 
 ---
 
@@ -853,6 +898,128 @@ Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHA
 
 ---
 
+
+
+## Profile: core (3 agents)
+
+Shared utility agents available across all profiles.
+
+#### email_agent
+**File:** `profiles/core/agents/email_agent.json`  
+**Purpose:** Sends emails via Compass MCP. Confirms with user before sending  
+**Use for:** Sending notifications, status updates, and reports via email
+
+#### log_analyzer_agent
+**File:** `profiles/core/agents/log_analyzer_agent.json`  
+**Purpose:** Analyzes application logs across Splunk, ServiceNow, and other systems to trace errors, patterns, and incidents  
+**Use for:** Log analysis, error tracing, incident investigation  
+**MCP Servers:** compass (Splunk, ServiceNow)
+
+#### story_analyzer_agent
+**File:** `profiles/core/agents/story_analyzer_agent.json`  
+**Purpose:** Fetches and analyzes Jira stories, Confluence pages, and GitHub repos  
+**Use for:** Story analysis, requirements extraction, cross-system context gathering  
+**MCP Servers:** jira, confluence, mywiki, github
+
+---
+
+## Profile: design (6 agents)
+
+Design discovery, user research, and UX pipeline.
+
+### Design Orchestrator (1)
+
+#### design_orchestrator_agent
+**File:** `profiles/design/agents/design_orchestrator_agent.json`  
+**Purpose:** Orchestrates design workflows and delegates to specialized design agents  
+**Use for:** Complex design workflows spanning discovery, research, testing, and prototyping  
+**Tools:** `thinking`, `todo`, `delegate`  
+**Delegates to:** design_discovery_agent, user_research_agent, usability_testing_agent, design_research_reporter_agent, prototype_prompt_agent, ux_specialist_agent  
+**Cross-profile:** `ux_specialist_agent` (from dev-web) — install dev-web alongside design for full coverage
+
+---
+
+### Design Specialists (5)
+
+#### design_discovery_agent
+**File:** `profiles/design/agents/design_discovery_agent.json`  
+**Purpose:** Orchestrates design discovery: competitive analysis, heuristic audits, vision frameworks, elevator pitches  
+**Use for:** Competitive landscape analysis, heuristic evaluations, product vision alignment  
+**MCP Servers:** jira, confluence
+
+#### user_research_agent
+**File:** `profiles/design/agents/user_research_agent.json`  
+**Purpose:** Plans and synthesizes user research: interview guides, personas, journey maps, JTBD analysis  
+**Use for:** Research planning, persona creation, journey mapping, stakeholder RACI  
+**MCP Servers:** confluence
+
+#### usability_testing_agent
+**File:** `profiles/design/agents/usability_testing_agent.json`  
+**Purpose:** Designs usability test scripts, concept validation sessions, surveys  
+**Use for:** Test protocol design, survey instruments, findings synthesis
+
+#### design_research_reporter_agent
+**File:** `profiles/design/agents/design_research_reporter_agent.json`  
+**Purpose:** Produces research plans, desktop research reports, and executive summaries  
+**Use for:** Research documentation, executive readouts, knowledge base entries  
+**MCP Servers:** confluence
+
+#### prototype_prompt_agent
+**File:** `profiles/design/agents/prototype_prompt_agent.json`  
+**Purpose:** Transforms requirements into high-fidelity design prompts for Figma Make, Google Stitch, or v0  
+**Use for:** AI-powered prototyping, use case catalogs, prompt template libraries
+
+---
+
+## Profile: cloudops (4 agents)
+
+Infrastructure strategy, environment planning, and SRE.
+
+### CloudOps Orchestrator (1)
+
+#### cloudops_orchestrator_agent
+**File:** `profiles/cloudops/agents/cloudops_orchestrator_agent.json`  
+**Purpose:** Orchestrates infrastructure and operations workflows  
+**Use for:** Complex infra tasks spanning planning, configuration, incidents, and execution  
+**Tools:** `thinking`, `todo`, `delegate`  
+**Delegates to:** infra_planner_agent, config_management_agent, rca_writer_agent, devops_runner_agent, log_analyzer_agent  
+**Cross-profile:** `devops_runner_agent` (from dev-core), `log_analyzer_agent` (from core) — install dev-core alongside cloudops for full coverage
+
+---
+
+### CloudOps Specialists (3)
+
+#### infra_planner_agent
+**File:** `profiles/cloudops/agents/infra_planner_agent.json`  
+**Purpose:** Plans environments, sizes infrastructure, assesses feature impact on ops stability  
+**Use for:** Resource matrices, IaC recommendations, capacity planning, impact assessments  
+**MCP Servers:** confluence
+
+#### config_management_agent
+**File:** `profiles/cloudops/agents/config_management_agent.json`  
+**Purpose:** Defines configuration management: version control strategy, secret management, drift detection, DR  
+**Use for:** Config policies, secret rotation plans, drift reports, backup/DR documentation
+
+#### rca_writer_agent
+**File:** `profiles/cloudops/agents/rca_writer_agent.json`  
+**Purpose:** Produces publishable RCA documents from incident data, logs, and timelines  
+**Use for:** Post-mortems, incident timelines, remediation tracking, blameless RCAs  
+**MCP Servers:** jira, confluence
+
+---
+
+## Profile: presales (1 agent)
+
+Pre-sales discovery, client intake, and project scoping.
+
+#### presales_agent
+**File:** `profiles/presales/agents/presales_agent.json`  
+**Purpose:** Processes client materials into organized markdown. Generates discovery questions, project briefs, and feasibility assessments  
+**Use for:** RFP processing, client intake summaries, project briefs, GO/NO-GO feasibility  
+**MCP Servers:** jira, confluence
+
+---
+
 ## Other IDEs
 
 The coding standards, MCP integrations, and workflow guidance from these agents are also available in other IDEs:
@@ -1050,6 +1217,9 @@ kiro-cli chat --agent defect_analyst_agent      # Defect analysis
 kiro-cli chat --agent api_tester_agent          # API testing
 kiro-cli chat --agent performance_tester_agent  # Performance testing
 kiro-cli chat --agent test_coverage_analyzer_agent # Coverage analysis
+kiro-cli chat --agent flaky_test_fixer_agent    # Flaky test diagnosis & fix
+kiro-cli chat --agent test_recorder_agent       # Playwright recording → specs
+kiro-cli chat --agent bruno_collection_agent    # OpenAPI/Gherkin → Bruno collections
 
 # Ops
 kiro-cli chat --agent ops_orchestrator_agent    # Ops orchestrator
@@ -1080,6 +1250,35 @@ kiro-cli chat --agent inspector_orchestrator          # Full multi-dimensional a
 kiro-cli chat --agent security_reviewer_agent         # Security scan
 kiro-cli chat --agent dependency_auditor_agent        # CVE & dependency audit
 kiro-cli chat --agent architecture_critic_agent       # Architecture analysis
+
+# Design
+kiro-cli chat --agent design_orchestrator_agent       # Design orchestrator
+kiro-cli chat --agent design_discovery_agent          # Competitive analysis, heuristic audits
+kiro-cli chat --agent user_research_agent             # Personas, journey maps, JTBD
+kiro-cli chat --agent usability_testing_agent         # Test scripts, concept validation
+kiro-cli chat --agent design_research_reporter_agent  # Research reports, executive summaries
+kiro-cli chat --agent prototype_prompt_agent          # Design prompts for Figma/v0
+
+# CloudOps
+kiro-cli chat --agent cloudops_orchestrator_agent     # CloudOps orchestrator
+kiro-cli chat --agent infra_planner_agent             # Environment sizing, IaC
+kiro-cli chat --agent config_management_agent         # Secrets, drift detection, DR
+kiro-cli chat --agent rca_writer_agent                # Post-mortems, RCA documents
+
+# Pre-Sales
+kiro-cli chat --agent presales_agent                  # Client intake, project briefs, feasibility
+
+# Core (shared utilities)
+kiro-cli chat --agent email_agent                     # Send emails via Compass
+kiro-cli chat --agent log_analyzer_agent              # Log analysis (Splunk, ServiceNow)
+kiro-cli chat --agent story_analyzer_agent            # Jira/Confluence/GitHub analysis
+
+# Sustainment
+kiro-cli chat --agent sustainment_orchestrator_agent  # Sustainment orchestrator
+kiro-cli chat --agent incident_triage_agent           # Incident triage
+kiro-cli chat --agent rca_agent                       # Root cause analysis
+kiro-cli chat --agent stability_validator_agent       # Stability validation
+kiro-cli chat --agent gsm_analyst_agent               # GSM analysis
 ```
 
 ---
@@ -1087,16 +1286,19 @@ kiro-cli chat --agent architecture_critic_agent       # Architecture analysis
 ## Installation
 
 ```bash
-koda install dev                    # All 33 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 37 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
 koda install dev ba qa ops pm       # Install all profiles
+koda install design                 # Design discovery & UX research (6 agents)
+koda install cloudops               # Infrastructure strategy & SRE (4 agents)
+koda install presales               # Pre-sales & client intake (1 agent)
 koda install inspector              # Multi-dimensional audit (10 agents)
 koda enable-tools                   # Enable thinking, todo, knowledge
 ```
 
 ---
 
-**Total Agents:** 67 (dev-core: 16, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, dev-ui: 3, ba: 8, qa: 11, ops: 7, pm: 6, leadership: 5)  
-**Last Updated:** April 24, 2026
+**Total Agents:** 100 (dev-core: 20, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Last Updated:** May 6, 2026

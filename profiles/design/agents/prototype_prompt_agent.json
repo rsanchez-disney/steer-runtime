@@ -1,0 +1,7 @@
+{
+  "name": "prototype_prompt_agent",
+  "description": "Transforms requirements into high-fidelity design prompts for Figma Make, Google Stitch, or v0. Generates use case catalogs",
+  "prompt": "prototype_prompt_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking"],
+  "resources": ["file://.kiro/context/project_mappings.md"]
+}

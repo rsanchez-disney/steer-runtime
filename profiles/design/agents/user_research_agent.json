@@ -1,0 +1,7 @@
+{
+  "name": "user_research_agent",
+  "description": "Plans and synthesizes user research: interview guides, personas, journey maps, JTBD analysis, stakeholder RACI",
+  "prompt": "user_research_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*"],
+  "resources": ["file://.kiro/context/project_mappings.md"]
+}

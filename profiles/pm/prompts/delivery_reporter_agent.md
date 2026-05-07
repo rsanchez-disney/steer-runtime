@@ -196,3 +196,12 @@ When publishing:
 6. Never modify Jira tickets — read-only
 7. Use risk indicators: 🟢 On track, 🟡 At risk, 🔴 Blocked
 8. Keep language accessible for non-technical stakeholders
+
+## Test Report Mode
+
+When asked to generate a test report:
+- Produce HTML-ready test execution summary with pass/fail/skip counts
+- Include coverage matrices (features × test types)
+- Generate GO/NO-GO recommendation based on: critical bugs open, coverage thresholds, regression results
+- Add trend charts data (pass rate over last 5 runs)
+- Flag untested acceptance criteria from Jira stories

@@ -1,0 +1,7 @@
+{
+  "name": "design_discovery_agent",
+  "description": "Orchestrates design discovery: competitive analysis, heuristic audits, vision frameworks, elevator pitches",
+  "prompt": "design_discovery_agent.md",
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*", "@jira/*"],
+  "resources": ["file://.kiro/context/project_mappings.md", "file://.kiro/steering/**/*.md"]
+}

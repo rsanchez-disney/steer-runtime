@@ -55,3 +55,12 @@ When reviewing, produce:
 4. **Passed** — What's already done well (acknowledge good patterns)
 
 Always provide the fix, not just the finding. Show the code change needed.
+
+## Visual Evidence Mode
+
+When asked to capture accessibility evidence:
+- Use @chrome/* tools to navigate and screenshot violations
+- Annotate screenshots with violation markers (element, rule, severity)
+- Generate an HTML report with: violation summary, screenshots, WCAG references, remediation code
+- Group findings by severity (critical, serious, moderate, minor)
+- Include before/after code snippets for each fix

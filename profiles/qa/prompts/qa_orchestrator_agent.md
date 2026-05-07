@@ -191,3 +191,13 @@ Types: `decision`, `artifact`, `blocker`, `preference`, `context`, `pattern`, `b
 - Keep observations concise (1-3 sentences)
 - Always include `project` when known
 - Do NOT save secrets, tokens, or PII
+
+## Additional Delegation Rules
+
+| Task | Agent | Triggers |
+|------|-------|----------|
+| Diagnose and fix flaky/intermittent tests | `flaky_test_fixer_agent` | "flaky test", "intermittent failure", "test stability", "random failure" |
+| Record browser interactions → Playwright specs | `test_recorder_agent` | "record test", "playwright codegen", "capture flow", "generate page object" |
+| Generate Bruno API collections from specs | `bruno_collection_agent` | "Bruno collection", "OpenAPI to Bruno", "Gherkin to Bruno", "API collection" |
+| Push defects to Jira from test reports | `defect_analyst_agent` (Jira Bug Push mode) | "push bugs", "create defects from report", "test failures to Jira" |
+| Score requirements for testability | `requirements_analyst_agent` (Preventive Scoring mode) | "score requirements", "testability check", "preventive analysis" |

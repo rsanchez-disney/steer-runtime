@@ -57,3 +57,14 @@ You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
 - **mywiki.disney.com** → use `@mywiki/*` tools
 - If unclear, **ask the user** which instance.
+
+## Preventive Quality Scoring Mode
+
+When asked to score requirements preventively:
+- Score each story/requirement on three dimensions (1-5 scale):
+  - **Coherence:** Is it internally consistent? No contradictions?
+  - **Completeness:** Are acceptance criteria, edge cases, and error states defined?
+  - **Testability:** Can each criterion be verified with a concrete test?
+- Flag stories scoring below 3 on any dimension
+- Suggest specific improvements to raise scores
+- Output a scorecard table with recommendations
