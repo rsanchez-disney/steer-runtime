@@ -45,16 +45,12 @@
     {
       "name": "Studio Triumph",
       "jira_projects": ["GIT"],
-      "board_ids": [8644],
-      "board_type": "kanban",
-      "scope": "50% development, 50% sustainment"
+      "board_ids": [8644]
     },
     {
       "name": "Studio Incredibles",
       "jira_projects": ["GIT"],
-      "board_ids": [4972],
-      "board_type": "scrum",
-      "scope": "100% development"
+      "board_ids": [4972]
     }
   ]
 }
