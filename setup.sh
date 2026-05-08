@@ -122,7 +122,7 @@ COMMANDS:
   help                                   Show this help message
 
 PROFILES:
-  dev                 All dev agents (alias → dev-core + dev-web + dev-mobile)
+  dev                 All dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
   dev-core            Orchestrator + planning + quality + workflow (13 agents)
   dev-web             Backend + WebAPI + UI + UX specialist (4 agents)
   dev-mobile          Flutter + Android + iOS (3 agents)
@@ -197,7 +197,7 @@ USAGE
 list_profiles() {
     echo "📋 Available profiles:"
     echo ""
-    echo "  • dev (alias → dev-core + dev-web + dev-mobile, 20 agents total)"
+    echo "  • dev (alias → all dev-* profiles)"
     for dir in "$STEER_ROOT"/profiles/*; do
         if [ -d "$dir" ]; then
             profile=$(basename "$dir")
@@ -222,12 +222,12 @@ list_profiles() {
     done
 }
 
-# Expand profile aliases (e.g., dev → dev-core dev-web dev-mobile)
+# Expand profile aliases (e.g., dev → all dev-* profiles)
 expand_profile_aliases() {
     local expanded=()
     for p in "${profiles[@]}"; do
         case "$p" in
-            dev) expanded+=(dev-core dev-web dev-mobile) ;;
+            dev) expanded+=(dev-core dev-web dev-mobile dev-python dev-ai dev-infra dev-dotnet dev-php dev-ui) ;;
             *)   expanded+=("$p") ;;
         esac
     done
@@ -633,7 +633,7 @@ case "${1:-help}" in
             esac
         done
         
-        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        # Expand aliases (dev → all dev-* profiles)
         expand_profile_aliases
         
         target_root=$(get_target_dir "$project_dir")
@@ -724,7 +724,7 @@ case "${1:-help}" in
             esac
         done
         
-        # Expand aliases (dev → dev-core + dev-web + dev-mobile)
+        # Expand aliases (dev → all dev-* profiles)
         expand_profile_aliases
         
         target_root=$(get_target_dir "$project_dir")
