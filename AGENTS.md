@@ -207,12 +207,12 @@ koda install dev-core dev-dotnet    # .NET developer (19 agents)
 koda install dev-core dev-php       # PHP/Zend developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
-koda install dev-core               # Core only — orchestrator + quality (16 agents)
+koda install dev-core               # Core only — orchestrator + quality (17 agents)
 ```
 
 ---
 
-### Profile: dev-core (16 agents)
+### Profile: dev-core (17 agents)
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
@@ -319,6 +319,11 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Creates and maintains technical documentation  
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
 **MCP Servers:** confluence, mywiki, github
+
+#### ai_metrics_tracker_agent
+**File:** `profiles/dev-core/agents/ai_metrics_tracker_agent.json`  
+**Purpose:** Tracks AI-assisted development sessions and generates productivity metrics  
+**Use for:** Branch-based AI productivity tracking, Google Form submission, Jira field updates
 
 #### devops_runner_agent
 **File:** `profiles/dev-core/agents/devops_runner_agent.json`  

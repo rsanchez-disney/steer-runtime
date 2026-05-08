@@ -1,0 +1,14 @@
+{
+  "name": "ai_metrics_tracker_agent",
+  "description": "Tracks AI-assisted development sessions and generates productivity metrics for Google Form submission, with optional Jira field delegation",
+  "prompt": "ai_metrics_tracker_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "includeMcpJson": false
+}

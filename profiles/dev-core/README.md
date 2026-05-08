@@ -2,7 +2,7 @@
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
-## Agents (16)
+## Agents (17)
 
 | Agent | Purpose |
 |-------|---------|
@@ -22,13 +22,14 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 | pr_creator_agent | Pull request creation and management |
 | discussion_agent | Technical discussions and decision support |
 | technical_writer_agent | Technical documentation |
+| ai_metrics_tracker_agent | Branch-based AI productivity tracking |
 
 ## Structure
 
 ```
 .kiro-dev-core/
-├── agents/       # 16 agent JSON configs
-├── prompts/      # 16 agent prompt files
+├── agents/       # 17 agent JSON configs
+├── prompts/      # 17 agent prompt files
 ├── context/      # Shared context (golden_rules, project_mappings)
 ├── steering/     # Foundation, product, quality, security, powers
 ├── skills/       # (none — skills live in dev-web and dev-mobile)
