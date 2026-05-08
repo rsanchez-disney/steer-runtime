@@ -1,0 +1,19 @@
+{
+  "name": "ai_orchestrator",
+  "description": "Routes and coordinates AI/ML tasks across specialist agents (ml_engineer, data_scientist, llm_engineer, mlops_engineer)",
+  "prompt": "ai_orchestrator.md",
+  "tools": [
+    "fs_read",
+    "execute_bash",
+    "code",
+    "grep",
+    "thinking"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {}
+}
