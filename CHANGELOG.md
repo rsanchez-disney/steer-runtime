@@ -6,6 +6,21 @@ All notable changes to steer-runtime.
 
 ---
 
+## [3.10.0] — 2026-05-08
+
+### Added
+- **jira_prefix string | string[]** — workspace schema now accepts single string or array of prefixes (ADR-001) (#325)
+- **Finder Services workspace** — Triumph + Incredibles teams with repo URLs and teams table (#304, #326)
+- **dev-ai profile** — renamed from dev-ml, adds 4 specialist agents: ai_orchestrator, data_scientist, llm_engineer, mlops_engineer (#328)
+- **kiro-ide profile selection** — `setup-kiro-ide.ps1` supports profile args, `dev` alias, interactive menu + deprecation warning (#250)
+- **Shield workspace** — initial workspace setup (#317)
+
+### Fixed
+- Normalize jira_prefix to always include trailing dash (#329)
+- `dev` alias now expands to all 9 dev-* profiles (#250)
+
+---
+
 ## [3.9.0] — 2026-05-05
 
 ### Added
