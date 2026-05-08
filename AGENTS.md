@@ -60,6 +60,10 @@ graph TD
         DATASCI["data_scientist<br/>"]:::agent
         LLMENG["llm_engineer<br/>"]:::agent
         MLOPS["mlops_engineer<br/>"]:::agent
+        AI_ORCH --> MLENGINEER
+        AI_ORCH --> DATASCI
+        AI_ORCH --> LLMENG
+        AI_ORCH --> MLOPS
     end
 
     %% ─── dev-infra ─────────────────────────────────
@@ -192,10 +196,7 @@ graph TD
     ORCH -.->|delegates| WAPI
     ORCH -.->|delegates| UI
     ORCH -.->|delegates| PYTHON
-    ORCH -.->|delegates| MLENGINEER
-    ORCH -.->|delegates| DATASCI
-    ORCH -.->|delegates| LLMENG
-    ORCH -.->|delegates| MLOPS
+    ORCH -.->|delegates| AI_ORCH
     ORCH -.->|delegates| TERRAFORM
     ORCH -.->|delegates| FLUTTER
     ORCH -.->|delegates| UI_LEGACY
