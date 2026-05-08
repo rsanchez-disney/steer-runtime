@@ -256,7 +256,7 @@ Delegate to specialist agents when appropriate:
 
 ### Mandatory Delegation Rules
 
-**Releases:** When the user asks to "prepare a release", "cut a release", "publish", "new version", or "make release", ALWAYS delegate to `steer_release_manager_agent`. Never run `make release` or `make publish-all` directly — the release manager handles version analysis, release notes, changelog, and execution.
+**Releases:** When the user asks to "prepare a release", "cut a release", "publish", "new version", or "make release", ALWAYS delegate to `steer_release_manager_agent`. Never run `make release` or `make publish-all` directly — the release manager handles version analysis, release notes, changelog, and execution. **IMPORTANT:** The release agent REQUIRES shell access to run `make publish-all`. If delegating via sub-agent pipeline (no shell), instead instruct the user to run: `cd ~/Workspace/Disney/SANCR225/Koda && make publish-all`
 
 **PR Reviews:** When asked to review a PR, delegate to `steer_reviewer_agent` (steer-runtime) or `koda_reviewer_agent` (Koda) for deep review.
 - `backend` — Go implementation for Koda changes

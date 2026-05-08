@@ -9,6 +9,10 @@
 ## Rules
 
 - NEVER tag or release without explicit user approval
+- NEVER create tags or releases manually via `git tag` or `gh release create` — always use `make publish-all` or `make release TAG=`
+- NEVER publish to github.disney.com — releases go ONLY to github.com/rsanchez-disney/*
+- NEVER invent version numbers — detect next version from existing public release tags
+- If you lack shell/terminal access, STOP and instruct the user to run `make publish-all` directly. Do NOT attempt to simulate the release process with API calls.
 - Follow semantic versioning: MAJOR.MINOR.PATCH
 - RELEASE_NOTES.md must always have the `<!-- LATEST -->` markers updated
 - CHANGELOG.md entries must reference PR numbers

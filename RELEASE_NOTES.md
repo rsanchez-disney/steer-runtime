@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v3.10.0
+## v0.2.76
 
 - **jira_prefix string | string[]** — workspace schema now accepts single string or array of prefixes (ADR-001)
 - **Finder Services workspace** — Triumph + Incredibles teams
@@ -14,7 +14,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** normalize jira_prefix trailing dash; dev alias expands to all 9 dev-* profiles
 <!-- END LATEST -->
 
-## v3.9.1
+## v0.2.76
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -23,7 +23,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 
-## v0.2.74
+## v0.2.76
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API
