@@ -21,6 +21,7 @@ this team is also responsible for feature integrations, 3rd party version contro
 | Repo | Tech | Purpose |
 |------|------|---------|
 | https://github.disney.com/dx-park-apps/park-apps-monorepo-android | Android | Application level monorepo for Android applications  |
+| https://github.disney.com/dx-park-apps/park-apps-monorepo-ios | iOS | Application level monorepo for iOS applications  |
 
 ## Tech Stack
 
