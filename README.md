@@ -49,6 +49,7 @@ All checks should pass. If kiro-cli shows issues on Windows, see [Windows Troubl
 | .NET Developer | dev, dev-dotnet | `koda install dev dev-dotnet` |
 | PHP Developer | dev, dev-php | `koda install dev dev-php` |
 | Python Developer | dev, dev-python | `koda install dev dev-python` |
+| ML Engineer | dev-core, dev-ml | `koda install dev-core dev-ml` |
 | Infra / Terraform | dev-core, dev-infra | `koda install dev-core dev-infra` |
 | Business Analyst / PO | ba | `koda install ba` |
 | QA Engineer | qa, dev-core | `koda install qa dev-core` |
@@ -69,6 +70,7 @@ Open Koda TUI and press `[p]` to toggle profiles interactively, or install from 
 | **dev-dotnet** | 3 | .NET / C# development and review |
 | **dev-php** | 1 | PHP development and review |
 | **dev-python** | 1 | Python (FastAPI, Flask, Django) |
+| **dev-ml** | 1 | ML engineering (training, fine-tuning, HF ecosystem) |
 | **dev-infra** | 1 | Terraform / IaC |
 | **ba** | 7 | Requirements, scope, stories, PRDs, estimation |
 | **qa** | 11 | Test planning, automation, defect analysis, coverage |
