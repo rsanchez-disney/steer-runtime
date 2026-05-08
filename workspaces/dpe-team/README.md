@@ -16,7 +16,7 @@ Koda resolves workspaces from `~/.kiro/steer-runtime/`, not your source checkout
    ```bash
    koda sync
    ```
-2. If the workspace is still missing, copy it manually:
+2. If the workspace is still missing, copy it manually from the path were you have cloned this repo:
    ```bash
    cp -r ~/src/steer-runtime/workspaces/dpe-team ~/.kiro/steer-runtime/workspaces/dpe-team
    ```

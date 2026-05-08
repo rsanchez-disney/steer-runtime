@@ -23,7 +23,9 @@
     "performance-guide-pr-review",
     "performance-guide-pre-commit",
     "pr-description",
-    "breaking-change-detection"
+    "breaking-change-detection",
+    "integration-test-cross-impact",
+    "acceptance-criteria-validation"
   ],
   "enable_tools": true,
   "workspace_path": "~/Workspace/Disney/WDPR-SPS",

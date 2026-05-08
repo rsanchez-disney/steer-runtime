@@ -25,6 +25,8 @@ Generate pull request descriptions following the DPE PULL_REQUEST_TEMPLATE.md fo
    - **Related Issues**: Jira ticket links (`https://myjira.disney.com/browse/PPODPE-XXXX`)
    - **Execution**: Confirm `mvn clean verify` status
    - **Checklist**: Mark relevant items based on changes
+   - **Cross-Impact Integration Tests**: Identify indirect consumers of the changed behavior using the `integration-test-cross-impact` rule. Fill the impact table if the change touches shared components (calculators, data loaders, cache, DTOs, schema). Mark N/A if the change is isolated.
+   - **Acceptance Criteria Coverage**: If a Jira ticket is linked, retrieve ACs (via MCP or PR description) and map each to its implementation file and test. Mark status per AC (✅/⚠️/❌). Mark N/A if no ticket or ACs are defined.
    - **Design Repo Changes**: Flag if DB schema, Swagger, or API contracts changed
    - **PR Dependencies**: List dependent PRs if any
    - **Files Changed**: List added/modified/deleted files with brief descriptions
@@ -82,6 +84,33 @@ Generate pull request descriptions following the DPE PULL_REQUEST_TEMPLATE.md fo
 - [ ] I updated/added relevant documentation.
 - [ ] There are no exposed secrets or keys in this change.
 - [ ] I started a thread in the Bluey Command Center channel with a link to this PR.
+
+---
+
+## 🧪 Cross-Impact Integration Tests
+
+- [ ] Identified indirect consumers of the changed behavior (see `integration-test-cross-impact` rule)
+- [ ] Integration tests cover non-obvious downstream impacts
+- [ ] Multi-product/multi-calculator scenarios tested where applicable
+- [ ] N/A — change is isolated with no cross-service or cross-component impact
+
+**Impacted areas (if any):**
+
+| Changed Area | Indirect Consumer | Test Added/Existing |
+|---|---|---|
+| <e.g., rate resolution> | <e.g., bundle calculators> | <test name or "existing"> |
+
+---
+
+## ✅ Acceptance Criteria Coverage
+
+- [ ] All ACs from the Jira ticket are implemented and tested
+- [ ] Partial coverage — gaps documented below
+- [ ] N/A — no Jira ticket or ACs defined
+
+| AC | Status | Implementation | Test |
+|---|---|---|---|
+| AC1: <short description> | ✅ / ⚠️ / ❌ | `File.java` L## | `TestFile.java#method` |
 
 ---
 
