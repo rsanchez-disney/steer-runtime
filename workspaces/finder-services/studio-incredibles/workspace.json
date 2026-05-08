@@ -1,0 +1,6 @@
+{
+  "name": "studio-incredibles",
+  "extends": "finder-services",
+  "description": "Studio Incredibles — Advanced Finder, Astro Homepage, Discovery Services, Search UI (Scrum)",
+  "profiles": ["pm"]
+}

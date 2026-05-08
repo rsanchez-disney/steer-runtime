@@ -1,0 +1,6 @@
+{
+  "name": "studio-triumph",
+  "extends": "finder-services",
+  "description": "Studio Triumph — Dash platform sustainment and development (Kanban)",
+  "profiles": ["sustainment", "ops"]
+}
