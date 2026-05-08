@@ -33,7 +33,9 @@ if d.get('team'): print(f'- **Team:** {d[\"team\"]}')
 if d.get('extends'): print(f'- **Extends:** {d[\"extends\"]}')
 if d.get('profiles'): print(f'- **Profiles:** {\", \".join(d[\"profiles\"])}')
 if d.get('default_agent'): print(f'- **Default agent:** {d[\"default_agent\"]}')
-if d.get('jira_prefix'): print(f'- **Jira prefix:** {d[\"jira_prefix\"]}')
+if d.get('jira_prefix'):
+    jp = d['jira_prefix']
+    print(f'- **Jira prefix:** {\", \".join(jp) if isinstance(jp, list) else jp}')
 if d.get('projects'): print(f'- **Projects:** {len(d[\"projects\"])}')
 if d.get('services'): print(f'- **Services:** {\", \".join(d[\"services\"])}')
 if d.get('channels'): print(f'- **Channels:** {\", \".join(d[\"channels\"])}')

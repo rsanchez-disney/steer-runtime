@@ -552,7 +552,7 @@ switch ($Command) {
                 Write-Host "  $('=' * 40)"
                 if ($ws.description) { Write-Host "  Description:  $($ws.description)" }
                 if ($ws.team)        { Write-Host "  Team:         $($ws.team)" }
-                if ($ws.jira_prefix) { Write-Host "  Jira Prefix:  $($ws.jira_prefix)" }
+                if ($ws.jira_prefix) { $jp = if ($ws.jira_prefix -is [array]) { $ws.jira_prefix -join ', ' } else { $ws.jira_prefix }; Write-Host "  Jira Prefix:  $jp" }
                 Write-Host "`n  Profiles:"
                 $ws.profiles | ForEach-Object { Write-Host "    * $_" }
                 if ($ws.default_agent) { Write-Host "`n  Default Agent: $($ws.default_agent)" }

@@ -2702,7 +2702,9 @@ print()
 if ws.get('extends'):     print(f\"  Extends:      {ws['extends']}\")
 if ws.get('description'): print(f\"  Description:  {ws['description']}\")
 if ws.get('team'):        print(f\"  Team:         {ws['team']}\")
-if ws.get('jira_prefix'): print(f\"  Jira Prefix:  {ws['jira_prefix']}\")
+if ws.get('jira_prefix'):
+    jp = ws['jira_prefix']
+    print(f\"  Jira Prefix:  {', '.join(jp) if isinstance(jp, list) else jp}\")
 print()
 print('  Profiles:')
 for p in ws.get('profiles', []): print(f\"    • {p}\")

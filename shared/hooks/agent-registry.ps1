@@ -37,7 +37,7 @@ if ($ws) {
         if ($d.extends) { Write-Output "- **Extends:** $($d.extends)" }
         if ($d.profiles) { Write-Output "- **Profiles:** $($d.profiles -join ', ')" }
         if ($d.default_agent) { Write-Output "- **Default agent:** $($d.default_agent)" }
-        if ($d.jira_prefix) { Write-Output "- **Jira prefix:** $($d.jira_prefix)" }
+        if ($d.jira_prefix) { $jp = if ($d.jira_prefix -is [array]) { $d.jira_prefix -join ', ' } else { $d.jira_prefix }; Write-Output "- **Jira prefix:** $jp" }
         if ($d.projects) { Write-Output "- **Projects:** $($d.projects.Count)" }
         if ($d.services) { Write-Output "- **Services:** $($d.services -join ', ')" }
         if ($d.channels) { Write-Output "- **Channels:** $($d.channels -join ', ')" }
