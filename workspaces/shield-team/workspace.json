@@ -14,6 +14,6 @@
     "conventional_commit"
   ],
   "enable_tools": true,
-  "jira_prefix": ["AEXP-","IEXP-","COREEXP"],
+  "jira_prefix": ["AEXP-","IEXP-","COREEXP-"],
   "workspace_path": "~/development/Repos"
 }
