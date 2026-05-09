@@ -63,8 +63,8 @@ Open Koda TUI and press `[p]` to toggle profiles interactively, or install from 
 
 | Profile | Agents | Description |
 |---------|:------:|-------------|
-| **dev** | 26 | Alias for dev-core + dev-web + dev-mobile |
-| **dev-core** | 18 | Code, review, test, security, PRs, architecture |
+| **dev** | 42 | Alias for all dev-* profiles |
+| **dev-core** | 21 | Code, review, test, security, PRs, architecture |
 | **dev-web** | 5 | Angular UI, Node gateway, Astro SSR, UX, backend |
 | **dev-mobile** | 3 | Mobile development agents |
 | **dev-dotnet** | 3 | .NET / C# development and review |
@@ -72,13 +72,19 @@ Open Koda TUI and press `[p]` to toggle profiles interactively, or install from 
 | **dev-python** | 1 | Python (FastAPI, Flask, Django) |
 | **dev-ai** | 5 | AI/ML engineering (training, LLM apps, data science, MLOps) |
 | **dev-infra** | 1 | Terraform / IaC |
-| **ba** | 7 | Requirements, scope, stories, PRDs, estimation |
-| **qa** | 11 | Test planning, automation, defect analysis, coverage |
-| **ops** | 8 | Infra, deployments, log analysis, releases |
+| **dev-ui** | 3 | Legacy Angular, Polymer, Lambda |
+| **ba** | 8 | Requirements, scope, stories, PRDs, estimation |
+| **qa** | 16 | Test planning, automation, defect analysis, coverage |
+| **ops** | 9 | Infra, deployments, log analysis, releases |
 | **sustainment** | 5 | Incident response, AppDynamics, ServiceNow, Splunk |
 | **pm** | 6 | Sprints, standups, retros, delivery reports |
 | **leadership** | 5 | Cross-studio analytics, quarterly reports, executive briefings |
-| **steer-master** | 5 | steer-runtime/Koda development and review |
+| **core** | 3 | Email, log analysis, story analysis |
+| **inspector** | 10 | Multi-dimensional audit and compliance |
+| **design** | 6 | Design discovery and UX research |
+| **cloudops** | 4 | Infrastructure strategy and SRE |
+| **presales** | 1 | Pre-sales and client intake |
+| **steer-master** | 8 | steer-runtime/Koda development and review |
 
 ### 5. Select Workspace (optional)
 

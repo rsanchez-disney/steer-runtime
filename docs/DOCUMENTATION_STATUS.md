@@ -19,7 +19,7 @@ Current status of all documentation after the installation guides consolidation.
 
 | Document                  | Purpose                              | Status    |
 |---------------------------|--------------------------------------|-----------|
-| **[AGENTS.md]**           | Complete reference for all 55 agents | ✅ Current |
+| **[AGENTS.md]**           | Complete reference for all 124 agents | ✅ Current |
 | **[PROJECT_OVERVIEW.md]** | High-level project overview          | ✅ Current |
 
 ## Usage Guides
@@ -107,7 +107,7 @@ Current status of all documentation after the installation guides consolidation.
 
 - ✅ `koda` (primary) or `./setup.sh` (fallback)
 - ✅ `.kiro/` directory structure
-- ✅ 55 agents across 9 profiles
+- ✅ 124 agents across 21 profiles
 - ✅ Setup docs: GETTING_STARTED → SETUP (macOS/Linux) / WINDOWS_SETUP (Windows)
 - ✅ No remaining references to deleted files (SETUP_GUIDE.md, INSTALL_GUIDE.md)
 

@@ -42,14 +42,13 @@ Generates epic/story breakdowns from PRDs.
 - Backlog creation
 - Sprint planning prep
 
-### quality_gate_agent
-Formal review gate — approve/reject/revise artifacts.
+### translation_validator_agent
+Validates translations for accuracy, idiomatic correctness, and cultural appropriateness.
 
 **Use when:**
-- PRD review
-- Backlog review
-- Test plan review
-- Any artifact approval
+- Validating translated content
+- Checking localization quality
+- Reviewing multi-language deliverables
 
 ### estimation_agent
 Dual-mode project estimation — CCV (hours/story points/FTEs) and DRIFT (tokens/cost).
@@ -159,7 +158,7 @@ kiro-cli chat --agent ba_orchestrator_agent
 │   ├── requirements_analyst_agent.json
 │   ├── prd_generator_agent.json
 │   ├── backlog_generator_agent.json
-│   ├── quality_gate_agent.json
+│   ├── translation_validator_agent.json
 │   └── estimation_agent.json
 ├── prompts/             # Agent prompts
 ├── context/             # Guidelines and templates

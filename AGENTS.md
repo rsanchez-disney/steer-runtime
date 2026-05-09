@@ -12,7 +12,7 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 20 agents"]
+    subgraph DEV_CORE["dev-core · 21 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
         ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
         ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
@@ -1370,5 +1370,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 105 (dev-core: 20, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Total Agents:** 124 (dev-core: 21, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
 **Last Updated:** May 8, 2026
