@@ -175,6 +175,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
 | April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
 | April 21, 2026 | dse-intl-emtech-usparks - SteerRuntime Sync - AI | [Recording](https://drive.google.com/file/d/1pzJwuvj9exDuUMQ6qQl_K2ol-9BU-vbF/view) |
+| May 8, 2026 | Demo with Disney Commerce Managers | [Recording](https://teams.microsoft.com/l/meetingrecap?driveId=b%211hxEKgCi3UayKQWVaHc3nL9h87Q0-A5KkuQ74FMi-_RCyJBIYLMvTb345rwrBV10&driveItemId=01CN4RCKAJYFGCXMEA3FHKLIWGMJN6ECXI&sitePath=https%3A%2F%2Ftwdc-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fkelly_a_taylornoble_disney_com%2FIQAJwUwrsIDZTqWixmJb4groAZKI0rE_hvByGTFvVOjUIFA&fileUrl=https%3A%2F%2Ftwdc-my.sharepoint.com%2Fpersonal%2Fkelly_a_taylornoble_disney_com%2FDocuments%2FRecordings%2FSteer+Runtime+Demo+%28Globant%29-20260508_140013UTC-Meeting+Recording.mp4%3Fweb%3D1&iCalUid=040000008200E00074C5B7101A82E008000000002584EBF4CFD8DC01000000000000000010000000DBE975FE1D4BFC49AD03E8FC4D94CC47&threadId=19%3Ameeting_YWU3ZmI5MWYtOGViOC00NmEwLTk4MDItZjBkYTI3YTg4M2Vj%40thread.v2&organizerId=67320d62-a584-4335-9438-c45b4eafbeb0&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&callId=5216b580-dd82-44b0-b0fb-a5d0d39dcc95&threadType=meeting&meetingType=Scheduled&subType=RecapSharingLink_RecapCore) |
 
 ---
 
