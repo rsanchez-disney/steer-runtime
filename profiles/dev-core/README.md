@@ -2,7 +2,7 @@
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
-## Agents (17)
+## Agents (21)
 
 | Agent | Purpose |
 |-------|---------|
@@ -23,13 +23,17 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 | discussion_agent | Technical discussions and decision support |
 | technical_writer_agent | Technical documentation |
 | ai_metrics_tracker_agent | Branch-based AI productivity tracking |
+| devops_runner_agent | Executes builds, tests, git operations, and local dev commands |
+| splunk_query_agent | Queries Splunk logs via Chrome MCP browser automation |
+| steery_agent | steer-runtime support assistant (read-only, no tools) |
+| amazonq_sync_agent | Syncs Kiro rules and MCP configs to Amazon Q format |
 
 ## Structure
 
 ```
 .kiro-dev-core/
-├── agents/       # 17 agent JSON configs
-├── prompts/      # 17 agent prompt files
+├── agents/       # 21 agent JSON configs
+├── prompts/      # 21 agent prompt files
 ├── context/      # Shared context (golden_rules, project_mappings)
 ├── steering/     # Foundation, product, quality, security, powers
 ├── skills/       # (none — skills live in dev-web and dev-mobile)
@@ -40,8 +44,8 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 ## Install
 
 ```bash
-./setup.sh install dev-core               # Core only
-./setup.sh install dev-core dev-web       # Fullstack web
-./setup.sh install dev-core dev-mobile    # Mobile
-./setup.sh install dev                    # All (alias → core + web + mobile)
+koda install dev-core               # Core only
+koda install dev-core dev-web       # Fullstack web
+koda install dev-core dev-mobile    # Mobile
+koda install dev                    # All dev-* profiles
 ```
