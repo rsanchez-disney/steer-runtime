@@ -75,7 +75,7 @@ All agents have access to:
 
 ```bash
 # Install BA profile
-./setup.sh install ba
+koda install ba
 
 # Use an agent
 kiro-cli chat --agent scope_definer_agent
@@ -172,7 +172,7 @@ kiro-cli chat --agent ba_orchestrator_agent
 ## See Also
 
 - Main README: `../README.md`
-- Setup guide: `../setup.sh`
+- Setup guide: `koda install`
 - Full documentation: `../docs/`
 
 ---

@@ -47,4 +47,3 @@
 - [Documentation Status](DOCUMENTATION_STATUS.md)
 
 ## Projects
-- [steer-autopilot](steer-autopilot/README.md) — Distributed multi-agent AI-SDLC orchestration

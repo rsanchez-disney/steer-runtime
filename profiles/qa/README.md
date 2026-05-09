@@ -129,7 +129,7 @@ All agents have access to:
 
 ```bash
 # Install QA profile
-./setup.sh install qa
+koda install qa
 
 # Use an agent
 kiro-cli chat --agent test_planner_agent
@@ -235,7 +235,7 @@ kiro-cli chat --agent test_coverage_analyzer_agent
 ## See Also
 
 - Main README: `../README.md`
-- Setup guide: `../setup.sh`
+- Setup guide: `koda install`
 - Full documentation: `../docs/`
 
 ---

@@ -25,6 +25,6 @@ Requires `dev-core` as a base.
 ## Install
 
 ```bash
-./setup.sh install dev-core dev-mobile    # Mobile developer
-./setup.sh install dev                    # All dev (includes mobile)
+koda install dev-core dev-mobile    # Mobile developer
+koda install dev                    # All dev-* profiles
 ```
