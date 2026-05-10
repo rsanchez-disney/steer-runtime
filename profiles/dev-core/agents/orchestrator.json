@@ -21,13 +21,6 @@
     "file://.kiro/steering/**/*.md",
     "file://.kiro/context/mcp_priority.md"
   ],
-  "contextBudget": {
-    "system_prompt": 0.2,
-    "resources": 0.2,
-    "hooks": 0.1,
-    "conversation": 0.4,
-    "tools": 0.1
-  },
   "welcomeMessage": "👋 Ready to orchestrate your development workflow!\n\nI can help you:\n  • Implement Jira stories: \"Help me implement <JIRA_URL>\"\n  • Coordinate multi-repo features across backend, webapi, ui\n  • Run full SDLC: story → plan → implement → review → PR",
   "hooks": {
     "agentSpawn": [
@@ -63,7 +56,7 @@
         "description": "Warn on destructive commands"
       }
     ],
-    "agentComplete": [
+    "stop": [
       {
         "command": "$HOME/.kiro/hooks/session-summary.sh",
         "description": "Log session telemetry to JSONL"

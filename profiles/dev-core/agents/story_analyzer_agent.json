@@ -22,12 +22,5 @@
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/steering/**/*.md"
   ],
-  "includeMcpJson": true,
-  "contextBudget": {
-    "system_prompt": 0.1,
-    "resources": 0.1,
-    "hooks": 0.05,
-    "conversation": 0.65,
-    "tools": 0.1
-  }
+  "includeMcpJson": true
 }

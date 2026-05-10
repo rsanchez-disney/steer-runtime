@@ -64,12 +64,5 @@
   "allowedTools": [
     "@bruno/*"
   ],
-  "includeMcpJson": true,
-  "contextBudget": {
-    "system_prompt": 0.1,
-    "resources": 0.15,
-    "hooks": 0.05,
-    "conversation": 0.6,
-    "tools": 0.1
-  }
+  "includeMcpJson": true
 }
