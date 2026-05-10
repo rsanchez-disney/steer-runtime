@@ -1,9 +1,32 @@
 # Implementation plan: orchestration, harnesses, and context compression
 
-**Date**: 2026-05-02
+**Date**: 2026-05-02 (validated 2026-05-09)
 **Scope**: steer-runtime, Koda, steer-autopilot
 **Estimated effort**: 14 epics, 57 stories, ~171 story points
 **Timeline**: 8 sprints (16 weeks)
+
+---
+
+## Validation status (2026-05-09)
+
+All 14 epics remain unstarted. Key drift since plan creation:
+
+| Item                     | Plan assumed | Current    | Impact                                                |
+|--------------------------|:------------:|:----------:|-------------------------------------------------------|
+| Total agents             |      59      |    124     | E5 dynamic registry even more justified               |
+| Orchestrators            |       9      |     12     | E7 adds cloudops, design, dev-ai (all <35 lines)     |
+| Orchestrator total lines |    1,997     |   1,613    | E7 targets easier — already ~25% smaller organically  |
+| Shared context files     |      22      |     20     | `qa_guidelines.md` and `ba_guidelines.md` don't exist |
+| Koda version             |    0.4.x     |   0.5.0    | Resource-aware delegation, tool trust prompt shipped   |
+| steer-runtime version    |    3.8.x     |   3.10.0   | New profiles: inspector, dev-ai, cloudops, design     |
+| steer-autopilot          |    v1.0.2    |   v1.0.2   | No changes — all gaps remain                          |
+
+Koda features shipped this week that overlap:
+
+- `DetectSystemProfile()` — RAM tier, max agents (useful for E7 resource-aware strategy)
+- `--trust` flag at session launch — user-facing trust UX exists, but ACP still auto-approves internally (E3 adds per-permission enforcement)
+- `koda ps` — process listing + kill orphans (partial lifecycle management for E4)
+- Doctor checks: yax, prompt-scorer, system resources (observability foundation for E10)
 
 ---
 
@@ -106,7 +129,7 @@ Acceptance criteria:
 - Object entry schema: `{ "path": string, "when": string, "priority": string }`
 - `when` operators: `always` (default), `task_contains:<pattern>`, `agent_is:<glob>`, `profile_is:<name>`
 - `priority` values: `critical`, `high`, `normal` (default), `low`
-- Schema documented in `shared/memory-bank/steer-master/schema-inventory.md`
+- Schema documented in `shared/memory-bank/steer-master/schema-inventory.md` (also update stale field frequency: currently says 59 agents, actual is 124)
 - `profiles/steer-master/context/agent_schema.md` updated
 
 Files to change:
@@ -124,19 +147,19 @@ Files to change:
 
 Acceptance criteria:
 
-- All 22 files in `shared/context/` are classified with appropriate `when` conditions
+- All 20 files in `shared/context/` are classified with appropriate `when` conditions
 - `golden_rules.md`, `project_mappings.md`, `mcp_priority.md` remain `always`
 - `ccv-estimation.md` (34KB) → `task_contains:estimate|estimation|story points|sizing|ccv`
 - `drift-estimation.md` (33KB) → `task_contains:drift|token cost|token budget`
 - `splunk_indexes.md` → `agent_is:splunk_*|log_*`
 - `servicenow_reference.md` → `agent_is:log_*|ops_*`
-- `qa_guidelines.md`, `test_templates.md`, `api_test_patterns.md`, `defect_templates.md` → `profile_is:qa`
-- `ba_guidelines.md`, `story_templates.md` → `profile_is:ba`
+- `test_templates.md`, `api_test_patterns.md`, `defect_templates.md` → `profile_is:qa`
+- `story_templates.md` → `profile_is:ba`
 - `pm_guidelines.md` → `profile_is:pm`
 - `ops_guidelines.md` → `profile_is:ops`
 - Remaining files (`api_standards.md`, `performance_patterns.md`, `automation_patterns.md`, `vista_web_components.md`, `domain_glossary.md`, `enterprise_architecture.md`, `email_guidelines.md`) → `always`
 - Every agent JSON that references shared context is updated to use the new format
-- Net context reduction: ~67KB for non-estimation tasks, ~35KB for non-QA tasks
+- Net context reduction: ~67KB for non-estimation tasks, ~30KB for non-QA tasks
 
 Files to change:
 
@@ -283,6 +306,8 @@ Files to change:
 ### Current state
 
 `Worker` struct has `Trust TrustLevel` and `PermissionCh chan PermissionRequest` fields. Three trust levels are defined: `autonomous`, `supervised`, `strict`. But `handleServerRequest` in `acp/client.go` unconditionally calls `respondPermission(id, "allow_always")` for all `session/request_permission` requests.
+
+**Update (v0.5.0)**: Koda now has a `--trust` flag and prompts users about tool trust at session launch. This is a session-level UX concern (which tools to allow). E3 addresses a different layer: per-permission enforcement *during* execution based on the worker's trust level. Both coexist — `--trust` controls what kiro-cli asks about, while E3 controls how Koda's ACP client responds when kiro-cli does ask.
 
 ### Target state
 
@@ -488,7 +513,9 @@ Files to change:
 
 ### Current state
 
-`LoadDefaults()` in `internal/broker/registry.go` registers 21 agents with hardcoded names, profiles, and one-line descriptions. Adding a new agent requires a code change and recompile. The comment says `"Phase 2+: scan installed profiles"`.
+`LoadDefaults()` in `internal/broker/registry.go` registers 21 agents with hardcoded names, profiles, and one-line descriptions. Adding a new agent requires a code change and recompile. The comment says `"Phase 1: hardcoded. Phase 2+: scan installed profiles"`.
+
+**Update (2026-05-09)**: steer-runtime now has 124 agents across 21 profiles. The hardcoded 21 covers only 17% of available agents. Dynamic scanning is critical.
 
 ### Target state
 
@@ -660,7 +687,7 @@ Files to change:
 
 ---
 
-## Epic 7: Orchestrator prompt decomposition (all 9 orchestrators)
+## Epic 7: Orchestrator prompt decomposition (all 12 orchestrators)
 
 **Repo**: steer-runtime
 **Priority**: P1
@@ -671,21 +698,24 @@ Files to change:
 
 ### Current state
 
-9 orchestrators across profiles, all with inline routing tables that go stale when agents change:
+12 orchestrators across profiles (validated 2026-05-09). The original 9 have shrunk ~25% organically since plan creation:
 
 | Orchestrator                  | Profile      | Lines | Has SDLC workflow |
 |-------------------------------|--------------|:-----:|:-----------------:|
-| `orchestrator`                | dev-core     |  513  |        ✅         |
-| `steer_orchestrator_agent`    | steer-master |  404  |        ✅         |
-| `ops_orchestrator_agent`      | ops          |  202  |        ❌         |
-| `qa_orchestrator_agent`       | qa           |  193  |        ✅         |
-| `ba_orchestrator_agent`       | ba           |  176  |        ❌         |
-| `sustainment_orchestrator`    | sustainment  |  161  |        ❌         |
-| `pm_orchestrator_agent`       | pm           |  142  |        ❌         |
-| `inspector_orchestrator`      | inspector    |  112  |        ❌         |
-| `leadership_orchestrator`     | leadership   |   94  |        ❌         |
+| `orchestrator`                | dev-core     |  398  |        ✅         |
+| `steer_orchestrator_agent`    | steer-master |  302  |        ✅         |
+| `ops_orchestrator_agent`      | ops          |  150  |        ❌         |
+| `qa_orchestrator_agent`       | qa           |  142  |        ✅         |
+| `ba_orchestrator_agent`       | ba           |  130  |        ❌         |
+| `sustainment_orchestrator`    | sustainment  |  126  |        ❌         |
+| `pm_orchestrator_agent`       | pm           |  107  |        ❌         |
+| `inspector_orchestrator`      | inspector    |   84  |        ❌         |
+| `leadership_orchestrator`     | leadership   |   74  |        ❌         |
+| `cloudops_orchestrator`       | cloudops     |   35  |        ❌         |
+| `design_orchestrator`         | design       |   34  |        ❌         |
+| `ai_orchestrator`             | dev-ai       |   31  |        ❌         |
 
-All 9 have inline delegation/routing tables. 3 have inline SDLC workflows.
+Original 9 total: 1,513 lines. All 12 total: 1,613 lines. 3 have SDLC workflows.
 
 ### Target state
 
@@ -766,7 +796,7 @@ Files to change:
 
 Acceptance criteria:
 
-- `profiles/dev-core/prompts/orchestrator.md` reduced from 513 to ≤150 lines
+- `profiles/dev-core/prompts/orchestrator.md` reduced from 398 to ≤150 lines
 - Retains: identity, intent classification logic, delegation behavior, yax memory instructions
 - Removed: inline routing tables, inline rules, inline SDLC workflow
 - References: `orchestrator_rules.md`, `sdlc-workflow.md`, auto-generated delegation map
@@ -788,8 +818,8 @@ These two orchestrators share the SDLC workflow with dev-core and have the most 
 
 Acceptance criteria:
 
-- steer-master: 404 → ≤200 lines. Remove: inline yax block (~45 lines), delegation boilerplate (~15 lines), protected files (~10 lines), instance routing (~10 lines). Keep: breaking change rules, fork classification, agent creation workflow, commit conventions.
-- qa: 193 → ≤120 lines. Remove: same shared blocks. Keep: qTest module rules, qTest naming format, quality gate review, web scraping/time machine workflows.
+- steer-master: 302 → ≤180 lines. Remove: inline yax block (~45 lines), delegation boilerplate (~15 lines), protected files (~10 lines), instance routing (~10 lines). Keep: breaking change rules, fork classification, agent creation workflow, commit conventions.
+- qa: 142 → ≤100 lines. Remove: same shared blocks. Keep: qTest module rules, qTest naming format, quality gate review, web scraping/time machine workflows.
 - Both reference `sdlc-workflow.md` instead of inline SDLC definitions
 - Both register delegation-map hook and shared rules resource
 - Validated: 3 representative tasks each before proceeding to wave 3
@@ -803,7 +833,7 @@ Files to change:
 | `profiles/qa/prompts/qa_orchestrator_agent.md`                | Decompose               |
 | `profiles/qa/agents/qa_orchestrator_agent.json`               | Add hooks + resources   |
 
-### Story 7.6: Decompose non-SDLC orchestrators (wave 3: ops, sust, pm, ba, lead, inspector)
+### Story 7.6: Decompose non-SDLC orchestrators (wave 3: ops, sust, pm, ba, lead, inspector, cloudops, design, dev-ai)
 
 **Points**: 3
 **Repo**: steer-runtime
@@ -812,13 +842,16 @@ These 6 orchestrators are simpler — no SDLC workflow, mostly delegation + doma
 
 Acceptance criteria:
 
-- ops: 202 → ≤120 lines. Keep: ServiceNow prefix routing (9 prefixes), Compass MCP direct access, release workflow.
-- sustainment: 161 → ≤100 lines. Keep: severity classification, P1/P2 escalation, incident response workflow, CTASK workflow.
-- pm: 142 → ≤90 lines. Keep: sprint/standup/retro delegation specifics.
-- ba: 176 → ≤100 lines. Keep: estimation modes (CCV vs DRIFT), translation validation.
-- leadership: 94 → ≤70 lines. Keep: workspace teams first, cross-team side-by-side, actionable recommendations.
-- inspector: 112 → ≤80 lines. Keep: FindingSet schema, deduplication, scoring system, report writing, max 3 concurrent. Note: inspector references shared rules sections 1/3/4 but keeps its own yax variant.
-- All 6 register delegation-map hook and shared rules resource
+- ops: 150 → ≤100 lines. Keep: ServiceNow prefix routing (9 prefixes), Compass MCP direct access, release workflow.
+- sustainment: 126 → ≤85 lines. Keep: severity classification, P1/P2 escalation, incident response workflow, CTASK workflow.
+- pm: 107 → ≤75 lines. Keep: sprint/standup/retro delegation specifics.
+- ba: 130 → ≤85 lines. Keep: estimation modes (CCV vs DRIFT), translation validation.
+- leadership: 74 → ≤55 lines. Keep: workspace teams first, cross-team side-by-side, actionable recommendations.
+- inspector: 84 → ≤60 lines. Keep: FindingSet schema, deduplication, scoring system, report writing, max 3 concurrent. Note: inspector references shared rules sections 1/3/4 but keeps its own yax variant.
+- cloudops: 35 → ≤30 lines. Already small — just add hook + shared rules reference.
+- design: 34 → ≤30 lines. Same.
+- dev-ai: 31 → ≤28 lines. Same.
+- All 9 register delegation-map hook and shared rules resource
 
 Files to change:
 
@@ -834,6 +867,12 @@ Files to change:
 | `profiles/ba/agents/ba_orchestrator_agent.json`                       | Add hooks + resources   |
 | `profiles/leadership/prompts/leadership_orchestrator_agent.md`        | Decompose               |
 | `profiles/leadership/agents/leadership_orchestrator_agent.json`       | Add hooks + resources   |
+| `profiles/cloudops/prompts/cloudops_orchestrator_agent.md`            | Add hooks + resources   |
+| `profiles/cloudops/agents/cloudops_orchestrator_agent.json`           | Add hooks + resources   |
+| `profiles/design/prompts/design_orchestrator_agent.md`                | Add hooks + resources   |
+| `profiles/design/agents/design_orchestrator_agent.json`               | Add hooks + resources   |
+| `profiles/dev-ai/prompts/ai_orchestrator.md`                          | Add hooks + resources   |
+| `profiles/dev-ai/agents/ai_orchestrator.json`                         | Add hooks + resources   |
 | `profiles/inspector/prompts/inspector_orchestrator.md`                | Decompose               |
 | `profiles/inspector/agents/inspector_orchestrator.json`               | Add hooks + resources   |
 
@@ -844,12 +883,12 @@ Files to change:
 
 Acceptance criteria:
 
-- Manual test: each of the 9 orchestrators correctly routes 3 representative tasks
+- Manual test: each of the 12 orchestrators correctly routes 3 representative tasks
 - Manual test: dev-core orchestrator follows SDLC workflow for a Jira story
 - Manual test: qa orchestrator delegates to QA specialists correctly
 - Manual test: inspector orchestrator fans out to specialists correctly
 - No regression in delegation accuracy for any orchestrator
-- Total prompt line count across all 9: ≤950 (down from ~1,997)
+- Total prompt line count across all 12: ≤850 (down from 1,613)
 
 
 

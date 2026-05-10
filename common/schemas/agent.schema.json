@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "steer-runtime agent configuration",
+  "description": "Schema for agent JSON files in ~/.kiro/agents/ and profiles/*/agents/",
+  "type": "object",
+  "required": ["name", "description", "prompt", "tools", "resources"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique agent identifier. Must match filename."
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line purpose used for registry matching."
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Relative path to system prompt markdown file."
+    },
+    "tools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Built-in tool identifiers (read, write, shell, thinking, todo_list, subagent, etc.)"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "file:// URI with optional glob. Loaded unconditionally."
+          },
+          {
+            "$ref": "#/definitions/resourceEntry"
+          }
+        ]
+      },
+      "description": "Context files loaded into the agent session. Supports strings (always loaded) and objects (conditional)."
+    },
+    "hooks": {
+      "$ref": "#/definitions/agentHooks"
+    },
+    "allowedTools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "MCP tool patterns (e.g., @jira/*, @confluence/*)."
+    },
+    "includeMcpJson": {
+      "type": "boolean",
+      "description": "Load global MCP server configuration."
+    },
+    "toolsSettings": {
+      "type": "object",
+      "description": "Per-tool configuration (e.g., write.allowedPaths)."
+    },
+    "welcomeMessage": {
+      "type": "string",
+      "description": "Message displayed at session start."
+    },
+    "mcpServers": {
+      "type": "object",
+      "description": "Inline MCP server definitions for this agent.",
+      "additionalProperties": {
+        "$ref": "#/definitions/mcpEntry"
+      }
+    },
+    "contextBudget": {
+      "type": "object",
+      "description": "Token budget allocation per context category. Values are fractions summing to ≤1.0.",
+      "properties": {
+        "system_prompt": { "type": "number", "minimum": 0, "maximum": 1 },
+        "resources": { "type": "number", "minimum": 0, "maximum": 1 },
+        "hooks": { "type": "number", "minimum": 0, "maximum": 1 },
+        "conversation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "tools": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "phases": {
+      "type": "object",
+      "description": "Tool restrictions per execution phase. If absent, all tools available.",
+      "additionalProperties": {
+        "$ref": "#/definitions/phaseConfig"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "resourceEntry": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "file:// URI with optional glob."
+        },
+        "when": {
+          "type": "string",
+          "description": "Condition for loading. Operators: always, task_contains:<pattern>, agent_is:<glob>, profile_is:<name>.",
+          "default": "always"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "normal", "low"],
+          "default": "normal",
+          "description": "Compaction priority. critical=never dropped, low=dropped first."
+        }
+      },
+      "additionalProperties": false
+    },
+    "agentHooks": {
+      "type": "object",
+      "properties": {
+        "agentSpawn": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } },
+        "preToolUse": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } },
+        "postToolUse": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } },
+        "agentComplete": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } },
+        "agentFailed": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } },
+        "agentTimeout": { "type": "array", "items": { "$ref": "#/definitions/hookDef" } }
+      },
+      "additionalProperties": false
+    },
+    "hookDef": {
+      "type": "object",
+      "required": ["command"],
+      "properties": {
+        "command": { "type": "string" },
+        "matcher": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "mcpEntry": {
+      "type": "object",
+      "required": ["command", "args"],
+      "properties": {
+        "command": { "type": "string" },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "env": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "phaseConfig": {
+      "type": "object",
+      "properties": {
+        "tools": { "type": "array", "items": { "type": "string" } },
+        "allowedTools": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

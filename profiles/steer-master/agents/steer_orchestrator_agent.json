@@ -26,9 +26,12 @@
     "file://.kiro/context/mcp_priority.md",
     "file://profiles/steer-master/context/agent_creation_guide.md",
     "file://docs/WORKSPACE_AGENT_MERGE.md",
-    "file://profiles/steer-master/context/features_guide.md"
+    "file://profiles/steer-master/context/features_guide.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/sdlc-workflow.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
   ],
-  "welcomeMessage": "\ud83d\udee0\ufe0f Steer-master orchestrator ready!\n\nI can help you:\n  \u2022 Implement features for steer-runtime and Koda\n  \u2022 Review PRs for breaking changes and consistency\n  \u2022 Validate schemas and cross-repo compatibility\n  \u2022 Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
+  "welcomeMessage": "🛠️ Steer-master orchestrator ready!\n\nI can help you:\n  • Implement features for steer-runtime and Koda\n  • Review PRs for breaking changes and consistency\n  • Validate schemas and cross-repo compatibility\n  • Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
   "hooks": {
     "agentSpawn": [
       {
@@ -38,6 +41,10 @@
       {
         "command": "$HOME/.kiro/hooks/agent-registry.sh",
         "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
       }
     ],
     "preToolUse": [

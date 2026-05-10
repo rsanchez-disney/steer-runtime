@@ -1,0 +1,30 @@
+{
+  "description": "Validation matrix for orchestrator delegation accuracy",
+  "pass_threshold": 0.8,
+  "tests": [
+    {"orchestrator": "orchestrator", "prompt": "implement DPAY-14337", "expected_agent": "story_analyzer_agent"},
+    {"orchestrator": "orchestrator", "prompt": "review this code for security issues", "expected_agent": "code_review_agent"},
+    {"orchestrator": "orchestrator", "prompt": "create a PR for my changes", "expected_agent": "pr_creator_agent"},
+    {"orchestrator": "qa_orchestrator_agent", "prompt": "create a test plan for the login flow", "expected_agent": "test_planner_agent"},
+    {"orchestrator": "qa_orchestrator_agent", "prompt": "run API tests against the cart service", "expected_agent": "api_tester_agent"},
+    {"orchestrator": "qa_orchestrator_agent", "prompt": "analyze this bug report", "expected_agent": "defect_analyst_agent"},
+    {"orchestrator": "ops_orchestrator_agent", "prompt": "check INC0012345 status", "expected_agent": "log_analyzer_agent"},
+    {"orchestrator": "ops_orchestrator_agent", "prompt": "show deployment pipeline status", "expected_agent": "deployment_agent"},
+    {"orchestrator": "ops_orchestrator_agent", "prompt": "generate release notes for v2.1.0", "expected_agent": "release_manager_agent"},
+    {"orchestrator": "ba_orchestrator_agent", "prompt": "estimate this feature in story points", "expected_agent": "estimation_agent"},
+    {"orchestrator": "ba_orchestrator_agent", "prompt": "write a PRD for the new checkout flow", "expected_agent": "prd_generator_agent"},
+    {"orchestrator": "ba_orchestrator_agent", "prompt": "define the scope for this epic", "expected_agent": "scope_definer_agent"},
+    {"orchestrator": "pm_orchestrator_agent", "prompt": "generate the daily standup summary", "expected_agent": "standup_agent"},
+    {"orchestrator": "pm_orchestrator_agent", "prompt": "show sprint velocity and burndown", "expected_agent": "delivery_reporter_agent"},
+    {"orchestrator": "pm_orchestrator_agent", "prompt": "what are the current blockers and risks", "expected_agent": "risk_tracker_agent"},
+    {"orchestrator": "leadership_orchestrator_agent", "prompt": "quarterly report for the vertical", "expected_agent": "quarterly_reporter_agent"},
+    {"orchestrator": "leadership_orchestrator_agent", "prompt": "cross-team dependency analysis", "expected_agent": "cross_team_coordinator_agent"},
+    {"orchestrator": "leadership_orchestrator_agent", "prompt": "executive briefing for the director", "expected_agent": "executive_briefing_agent"},
+    {"orchestrator": "sustainment_orchestrator_agent", "prompt": "investigate INC0098765 root cause", "expected_agent": "rca_agent"},
+    {"orchestrator": "sustainment_orchestrator_agent", "prompt": "validate stability after the patch", "expected_agent": "stability_validator_agent"},
+    {"orchestrator": "sustainment_orchestrator_agent", "prompt": "triage this new incident alert", "expected_agent": "incident_triage_agent"},
+    {"orchestrator": "steer_orchestrator_agent", "prompt": "create a new agent for the dev-java profile", "expected_agent": "codebase_explorer_agent"},
+    {"orchestrator": "steer_orchestrator_agent", "prompt": "review PR #320 for breaking changes", "expected_agent": "steer_reviewer_agent"},
+    {"orchestrator": "steer_orchestrator_agent", "prompt": "check cross-repo impact of this schema change", "expected_agent": "compatibility_agent"}
+  ]
+}

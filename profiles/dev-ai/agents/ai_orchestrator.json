@@ -12,8 +12,17 @@
   "allowedTools": [],
   "resources": [
     "file://AGENTS.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "includeMcpJson": true,
-  "hooks": {}
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
+      }
+    ]
+  }
 }

@@ -43,3 +43,7 @@ For complex requests that span multiple agents, break them into sequential steps
 - If the task is clear, delegate immediately without preamble
 - If ambiguous, ask one clarifying question then delegate
 - Summarize results from delegated tasks
+
+## Shared rules
+
+Refer to `orchestrator_rules.md` in your context for: delegation mandate, yax persistent memory rules, protected files, instance routing.

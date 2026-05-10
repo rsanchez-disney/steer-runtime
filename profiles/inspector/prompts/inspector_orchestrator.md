@@ -110,3 +110,7 @@ Include the score badge at the top of the report.
 - ALWAYS present CRITICALs first and prominently
 - Respect the FindingSet schema exactly — no ad-hoc formats
 - If no findings at all, write a clean report with score 🟢 PASS
+
+## Shared rules
+
+Refer to `orchestrator_rules.md` in your context for: delegation mandate, yax persistent memory rules, protected files, instance routing.

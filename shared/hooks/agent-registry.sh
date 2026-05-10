@@ -1,127 +1,148 @@
 #!/bin/bash
 # agentSpawn hook: inject orchestrator awareness context
-# Emits: workspace context, installed profiles, MCP status, agent registry
+# Two-tier output:
+#   stdout → compact summary injected into context (~500 bytes)
+#   file   → full detail written to _dynamic/ for on-demand loading
 
 KIRO_DIR="${KIRO_HOME:-$HOME/.kiro}"
 STEER_ROOT="$KIRO_DIR/steer-runtime"
+DYNAMIC_DIR="$KIRO_DIR/context/_dynamic"
+mkdir -p "$DYNAMIC_DIR"
 
-# --- Workspace Context ---
-ws=""
-for f in "$KIRO_DIR/settings/kite.json" "$KIRO_DIR/settings/koda/steer_settings.json" "$KIRO_DIR/settings/koda/shared_settings.json"; do
-  [ -f "$f" ] && [ -z "$ws" ] && \
-    ws=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('steerRuntime',{}).get('activeWorkspace',''))" 2>/dev/null)
-done
+FULL_FILE="$DYNAMIC_DIR/agent-registry-full.md"
 
-if [ -n "$ws" ]; then
-  echo "## Workspace Context"
-  echo ""
-  echo "- **Active workspace:** $ws"
+# Collect data via python for both tiers
+python3 -c "
+import json, os, glob
 
-  # Fast path: read resolved snapshot from settings
-  WS_SNAPSHOT="$KIRO_DIR/settings/workspace.json"
-  if [ -f "$WS_SNAPSHOT" ]; then
-    WS_FILE="$WS_SNAPSHOT"
-  else
-    # Fallback: search steer-runtime recursively
-    WS_FILE=$(find "$STEER_ROOT/workspaces" -name "workspace.json" -exec grep -l "\"name\".*\"$ws\"" {} \; 2>/dev/null | head -1)
-  fi
-  if [ -n "$WS_FILE" ]; then
-    python3 -c "
-import json
-d=json.load(open('$WS_FILE'))
-if d.get('team'): print(f'- **Team:** {d[\"team\"]}')
-if d.get('extends'): print(f'- **Extends:** {d[\"extends\"]}')
-if d.get('profiles'): print(f'- **Profiles:** {\", \".join(d[\"profiles\"])}')
-if d.get('default_agent'): print(f'- **Default agent:** {d[\"default_agent\"]}')
-if d.get('jira_prefix'):
-    jp = d['jira_prefix']
-    print(f'- **Jira prefix:** {\", \".join(jp) if isinstance(jp, list) else jp}')
-if d.get('projects'): print(f'- **Projects:** {len(d[\"projects\"])}')
-if d.get('services'): print(f'- **Services:** {\", \".join(d[\"services\"])}')
-if d.get('channels'): print(f'- **Channels:** {\", \".join(d[\"channels\"])}')
-if d.get('teams'):
-    print(f'- **Teams:** {len(d[\"teams\"])}')
-    for t in d['teams']:
-        info = t['name']
-        projs = ', '.join(t.get('jira_projects', []))
-        if projs: info += f' ({projs})'
-        if t.get('studio'): info += f' — Studio: {t[\"studio\"]}'
-        elif t.get('team_id'): info += f' — Team ID: {t[\"team_id\"]}'
-        boards = ', '.join(str(b) for b in t.get('board_ids', []))
-        if boards: info += f' [boards: {boards}]'
-        print(f'  - {info}')
-" 2>/dev/null
-  fi
-  echo ""
-fi
+kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
+steer = os.path.join(kiro, 'steer-runtime')
 
-# --- System Resources ---
-SYSTEM_JSON="$KIRO_DIR/settings/system.json"
-if [ -f "$SYSTEM_JSON" ]; then
-  python3 -c "
-import json
-d=json.load(open('$SYSTEM_JSON'))
-ram=d.get('total_ram_gb',0)
-tier=d.get('tier','unknown')
-agents=d.get('max_concurrent_agents',2)
-print('## System Resources')
+# --- Workspace ---
+ws = ''
+ws_data = {}
+for f in [os.path.join(kiro,'settings/kite.json'), os.path.join(kiro,'settings/koda/steer_settings.json'), os.path.join(kiro,'settings/koda/shared_settings.json')]:
+    if os.path.isfile(f) and not ws:
+        try:
+            d = json.load(open(f))
+            ws = d.get('steerRuntime',{}).get('activeWorkspace','')
+        except: pass
+
+ws_file = os.path.join(kiro, 'settings/workspace.json')
+if os.path.isfile(ws_file):
+    try: ws_data = json.load(open(ws_file))
+    except: pass
+
+# --- System ---
+sys_data = {}
+sys_file = os.path.join(kiro, 'settings/system.json')
+if os.path.isfile(sys_file):
+    try: sys_data = json.load(open(sys_file))
+    except: pass
+
+# --- Profiles ---
+profiles = []
+pf = os.path.join(kiro, 'settings/profiles.json')
+if os.path.isfile(pf):
+    try:
+        d = json.load(open(pf))
+        profiles = [p for p in d.get('profiles',[]) if p.get('installed')]
+    except: pass
+
+# --- Agents ---
+agents = []
+for f in sorted(glob.glob(os.path.join(kiro, 'agents/*.json'))):
+    if os.path.basename(f).startswith('._'): continue
+    try:
+        d = json.load(open(f))
+        agents.append({'name': d.get('name',''), 'description': d.get('description','')})
+    except: pass
+
+# === COMPACT OUTPUT (stdout) ===
+print('## System')
 print('')
-print(f'- **RAM:** {ram} GB ({tier} tier)')
-print(f'- **Max concurrent sub-agents:** {agents}')
-if tier == 'light':
-    print('- **Delegation strategy:** sequential — avoid parallel stages in subagent pipelines')
-elif tier == 'standard':
-    print('- **Delegation strategy:** parallel OK for 2-3 agents, sequential for 4+')
-else:
-    print('- **Delegation strategy:** full parallel delegation')
-print('')
-" 2>/dev/null
-fi
 
-# --- Installed Profiles (with agent counts) ---
-PROFILES_FILE="$KIRO_DIR/settings/profiles.json"
-if [ -f "$PROFILES_FILE" ]; then
-  python3 -c "
-import json
-d=json.load(open('$PROFILES_FILE'))
-installed = [p for p in d.get('profiles',[]) if p.get('installed')]
-if installed:
-    print('## Installed Profiles')
-    print('')
-    for p in installed:
+# Workspace line
+if ws:
+    team = ws_data.get('team', '')
+    jp = ws_data.get('jira_prefix', '')
+    if isinstance(jp, list): jp = ', '.join(jp)
+    parts = [f'Workspace: {ws}']
+    if team: parts.append(f'Team: {team}')
+    if jp: parts.append(f'Jira: {jp}')
+    da = ws_data.get('default_agent', '')
+    if da: parts.append(f'Default: {da}')
+    print(' | '.join(parts))
+
+# Profiles compact
+if profiles:
+    plist = ', '.join(f\"{p['id']}({p.get('agent_count', len(p.get('agents',[])))})\" for p in profiles)
+    print(f'Profiles: {plist}')
+
+# System compact
+ram = sys_data.get('total_ram_gb', 0)
+tier = sys_data.get('tier', 'unknown')
+max_a = sys_data.get('max_concurrent_agents', 2)
+if ram:
+    print(f'System: {ram}GB RAM ({tier}), max {max_a} concurrent agents')
+
+# Agent count
+print(f'Agents: {len(agents)} installed')
+print('')
+
+# === FULL OUTPUT (file) ===
+full = []
+full.append('# Agent Registry (full)')
+full.append('')
+
+# Workspace detail
+if ws:
+    full.append('## Workspace Context')
+    full.append('')
+    full.append(f'- **Active workspace:** {ws}')
+    if ws_data.get('team'): full.append(f'- **Team:** {ws_data[\"team\"]}')
+    if ws_data.get('extends'): full.append(f'- **Extends:** {ws_data[\"extends\"]}')
+    if ws_data.get('profiles'): full.append(f'- **Profiles:** {\", \".join(ws_data[\"profiles\"])}')
+    if ws_data.get('default_agent'): full.append(f'- **Default agent:** {ws_data[\"default_agent\"]}')
+    jp = ws_data.get('jira_prefix', '')
+    if jp: full.append(f'- **Jira prefix:** {\", \".join(jp) if isinstance(jp, list) else jp}')
+    if ws_data.get('services'): full.append(f'- **Services:** {\", \".join(ws_data[\"services\"])}')
+    if ws_data.get('channels'): full.append(f'- **Channels:** {\", \".join(ws_data[\"channels\"])}')
+    if ws_data.get('teams'):
+        full.append(f'- **Teams:** {len(ws_data[\"teams\"])}')
+        for t in ws_data['teams']:
+            info = t['name']
+            projs = ', '.join(t.get('jira_projects', []))
+            if projs: info += f' ({projs})'
+            full.append(f'  - {info}')
+    full.append('')
+
+# System detail
+if ram:
+    full.append('## System Resources')
+    full.append('')
+    full.append(f'- **RAM:** {ram} GB ({tier} tier)')
+    full.append(f'- **Max concurrent sub-agents:** {max_a}')
+    strat = {'light': 'sequential only', 'standard': 'parallel OK for 2-3', 'power': 'full parallel'}
+    full.append(f'- **Delegation strategy:** {strat.get(tier, \"standard\")}')
+    full.append('')
+
+# Profiles detail
+if profiles:
+    full.append('## Installed Profiles')
+    full.append('')
+    for p in profiles:
         count = p.get('agent_count', len(p.get('agents',[])))
-        agents = ', '.join(p.get('agents',[]))
-        print(f'- **{p[\"id\"]}** ({count} agents): {agents}')
-    print('')
-" 2>/dev/null
-fi
+        agents_list = ', '.join(p.get('agents',[]))
+        full.append(f'- **{p[\"id\"]}** ({count} agents): {agents_list}')
+    full.append('')
 
-# --- MCP Server Status ---
-MCP_JSON="$KIRO_DIR/mcp.json"
-if [ -f "$MCP_JSON" ]; then
-  echo "## MCP Servers"
-  echo ""
-  python3 -c "
-import json
-d=json.load(open('$MCP_JSON'))
-servers = d.get('mcpServers',{})
-for name, cfg in sorted(servers.items()):
-    cmd = cfg.get('command','')
-    args = ' '.join(cfg.get('args',[])[:1])
-    print(f'- **{name}**: {cmd} {args}')
-if not servers:
-    print('- (none configured)')
-" 2>/dev/null
-  echo ""
-fi
+# Agent registry detail
+full.append('## Agent Registry')
+full.append('')
+for a in agents:
+    full.append(f'- **{a[\"name\"]}**: {a[\"description\"]}')
 
-# --- Agent Registry ---
-echo "## Agent Registry (auto-discovered)"
-echo ""
-for f in "$KIRO_DIR"/agents/*.json; do
-  [ -f "$f" ] || continue
-  [[ "$(basename "$f")" == ._* ]] && continue
-  name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$f" | head -1 | sed 's/.*: *"//;s/"//')
-  desc=$(grep -o '"description"[[:space:]]*:[[:space:]]*"[^"]*"' "$f" | head -1 | sed 's/.*: *"//;s/"//')
-  echo "- **$name**: $desc"
-done
+with open('$FULL_FILE', 'w') as f:
+    f.write('\n'.join(full) + '\n')
+" 2>/dev/null

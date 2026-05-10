@@ -19,9 +19,11 @@
     "file://AGENTS.md",
     "file://.kiro/rules/**/*.md",
     "file://.kiro/context/servicenow_reference.md",
-    "file://.kiro/context/mcp_priority.md"
+    "file://.kiro/context/mcp_priority.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
   ],
-  "welcomeMessage": "\ud83d\udc4b Ops orchestrator ready!\n\nI can help you:\n  \u2022 Track AI productivity metrics for Jira tickets\n  \u2022 Check ECS/AWS infrastructure status\n  \u2022 Review code quality via SonarQube\n  \u2022 Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
+  "welcomeMessage": "👋 Ops orchestrator ready!\n\nI can help you:\n  • Track AI productivity metrics for Jira tickets\n  • Check ECS/AWS infrastructure status\n  • Review code quality via SonarQube\n  • Manage CI/CD pipelines via Harness\n\nWhat would you like to do?",
   "allowedTools": [
     "@confluence/*",
     "@mywiki/*",
@@ -40,6 +42,10 @@
       {
         "command": "$HOME/.kiro/hooks/agent-registry.sh",
         "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
       }
     ],
     "preToolUse": [
