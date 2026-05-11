@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "example-server": {
+      "command": "node",
+      "args": ["${WORKSPACE_MCP_DIR}/servers/example-server/index.js"],
+      "env": {
+        "API_URL": "${EXAMPLE_API_URL}",
+        "API_TOKEN": "${EXAMPLE_API_TOKEN}"
+      }
+    }
+  },
+  "variables": {
+    "EXAMPLE_API_URL": {
+      "description": "Base URL for the example API",
+      "required": true,
+      "default": "http://localhost:3000"
+    },
+    "EXAMPLE_API_TOKEN": {
+      "description": "API authentication token",
+      "required": true,
+      "secret": true
+    }
+  }
+}

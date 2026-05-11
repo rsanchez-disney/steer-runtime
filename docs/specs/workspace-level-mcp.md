@@ -318,3 +318,30 @@ CONFIG_DB_HOST=latest-db.adpmtconfig.wdprapps.disney.com:3306
 1. Users with custom MCPs in `mcp.json` → automatically preserved (Phase 1)
 2. Teams wanting shared MCPs → create `workspaces/<team>/mcp/mcp.json` (Phase 2)
 3. No breaking changes — workspaces without `mcp/` folder behave exactly as today
+
+---
+
+## Backward Compatibility
+
+This feature is fully backward compatible:
+
+| Scenario | Behavior |
+|----------|----------|
+| Workspace has no `mcp/` folder | Works exactly as today — no change |
+| User has no custom MCPs | No difference — global servers regenerated as before |
+| Old Koda version + workspace with `mcp/` | Ignores the folder — no crash, no error |
+| New Koda version + old workspace (no `mcp/`) | Skips workspace MCP logic entirely |
+| Existing `mcp.json` without `_source` tags | All servers treated as global on first run; user-added detected by prefix matching |
+
+No breaking changes. Workspaces without `mcp/` behave identically to today.
+
+---
+
+## Orchestrator Awareness
+
+The steer-orchestrator agent is aware of workspace-level MCPs via `shared/context/mcp_priority.md`. When users ask about creating custom MCPs or configuring workspace tools, the orchestrator can:
+
+1. Point to the template: `shared/templates/workspace-mcp/`
+2. Explain the variable resolution order
+3. Guide `_overrides` usage for team-configured global servers
+4. Remind about `defaults.env` for non-secret team values vs `tokens.env` for secrets
