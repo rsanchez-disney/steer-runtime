@@ -956,7 +956,7 @@ Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHA
 
 
 
-## Profile: core (3 agents)
+## Profile: core (4 agents)
 
 Shared utility agents available across all profiles.
 
@@ -976,6 +976,13 @@ Shared utility agents available across all profiles.
 **Purpose:** Fetches and analyzes Jira stories, Confluence pages, and GitHub repos  
 **Use for:** Story analysis, requirements extraction, cross-system context gathering  
 **MCP Servers:** jira, confluence, mywiki, github
+
+
+#### document_analyzer_agent
+**File:** `profiles/core/agents/document_analyzer_agent.json`  
+**Purpose:** Parses and analyzes PDFs, DOCX, XLSX, and other document formats. Supports OCR for scanned documents, extracts text, summarizes content, and outputs markdown  
+**Use for:** Document parsing, text extraction, OCR, content summarization, document comparison  
+**MCP Servers:** confluence, mywiki
 
 ---
 
