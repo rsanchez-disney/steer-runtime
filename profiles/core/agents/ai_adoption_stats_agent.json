@@ -8,20 +8,24 @@
     "fs_write",
     "grep",
     "thinking",
-    "@github/*",
-    "@jira/*",
-    "@confluence/*",
-    "@mywiki/*"
+    "@github-disney/*",
+    "@github-public/*",
+    "@jira-jira/*",
+    "@jira-myjira/*",
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/steering/**/*.md"
   ],
   "allowedTools": [
-    "@github/*",
-    "@jira/*",
-    "@confluence/*",
-    "@mywiki/*"
+    "@github-disney/*",
+    "@github-public/*",
+    "@jira-jira/*",
+    "@jira-myjira/*",
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "includeMcpJson": true,
   "hooks": {

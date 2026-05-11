@@ -9,16 +9,16 @@
     "grep",
     "code",
     "thinking",
-    "@confluence/*",
-    "@mywiki/*"
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/steering/**/*.md"
   ],
   "allowedTools": [
-    "@confluence/*",
-    "@mywiki/*"
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "includeMcpJson": true,
   "hooks": {

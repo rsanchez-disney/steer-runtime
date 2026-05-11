@@ -9,8 +9,8 @@
     "grep",
     "thinking",
     "@mermaid/*",
-    "@confluence/*",
-    "@mywiki/*"
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -18,8 +18,8 @@
   ],
   "allowedTools": [
     "@mermaid/*",
-    "@confluence/*",
-    "@mywiki/*"
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
   ],
   "includeMcpJson": true,
   "hooks": {
