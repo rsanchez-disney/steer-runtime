@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (11)
+## Agents (16)
 
 ### qa_orchestrator_agent
 Coordinates QA tasks and delegates to specialized testing agents.
@@ -87,6 +87,33 @@ Analyzes test coverage for epics against Jira/Xray and discovers reusable tests.
 
 ---
 
+### flaky_test_fixer_agent
+Diagnoses intermittently failing tests, experiments with fixes, verifies 0/N failure rate.
+
+**Use when:** Tests pass sometimes and fail others (timing, selectors, race conditions)
+
+### bruno_collection_agent
+Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections.
+
+**Use when:** Creating API test collections with environment configs and assertions
+
+### test_recorder_agent
+Records browser interactions via Playwright codegen, captures selectors, produces TypeScript specs.
+
+**Use when:** Generating page objects and test specs from manual browser interactions
+
+### web_scraping_validator_agent
+Validates web pages by scraping DOM content, checking structure, accessibility, and correctness.
+
+**Use when:** Validating rendered page content against expected structure
+
+### time_machine_agent
+Simulates accessing a website at a given date/time by overriding the browser clock.
+
+**Use when:** Testing date-dependent content (promotions, schedules, countdowns)
+
+---
+
 ## Capabilities
 
 All agents have access to:
@@ -102,7 +129,7 @@ All agents have access to:
 
 ```bash
 # Install QA profile
-./setup.sh install qa
+koda install qa
 
 # Use an agent
 kiro-cli chat --agent test_planner_agent
@@ -208,7 +235,7 @@ kiro-cli chat --agent test_coverage_analyzer_agent
 ## See Also
 
 - Main README: `../README.md`
-- Setup guide: `../setup.sh`
+- Setup guide: `koda install`
 - Full documentation: `../docs/`
 
 ---

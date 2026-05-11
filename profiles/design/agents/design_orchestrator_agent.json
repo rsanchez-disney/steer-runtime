@@ -2,15 +2,42 @@
   "name": "design_orchestrator_agent",
   "description": "Orchestrates design workflows and delegates to specialized design agents for discovery, research, testing, and prototyping",
   "prompt": "design_orchestrator_agent.md",
-  "tools": ["subagent", "thinking", "todo_list", "code", "fs_read", "grep", "@confluence/*", "@jira/*"],
-  "allowedTools": ["@confluence/*", "@jira/*"],
-  "resources": ["file://.kiro/context/project_mappings.md", "file://.kiro/steering/**/*.md"],
+  "tools": [
+    "subagent",
+    "thinking",
+    "todo_list",
+    "code",
+    "fs_read",
+    "grep",
+    "@confluence/*",
+    "@jira/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
+  ],
   "includeMcpJson": true,
   "welcomeMessage": "👋 Design orchestrator ready!\n\nI can help you:\n  • Run competitive analysis and design discovery\n  • Plan user research and create personas/journey maps\n  • Design usability test protocols\n  • Generate design prompts for Figma/v0\n\nTry: \"Run competitive analysis for our checkout flow\"",
   "hooks": {
     "agentSpawn": [
-      {"command": "$HOME/.kiro/hooks/git-context.sh", "description": "Inject git branch and status"},
-      {"command": "$HOME/.kiro/hooks/agent-registry.sh", "description": "Inject available agents registry for dynamic delegation"}
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
+      }
     ]
   }
 }

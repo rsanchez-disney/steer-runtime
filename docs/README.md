@@ -34,6 +34,7 @@
 - [Team Workspaces](reference/TEAM_WORKSPACES.md) — Workspace hierarchy and inheritance
 - [Fork Strategy](reference/FORK_STRATEGY.md) — How to fork steer-runtime
 - [Eval Framework](reference/EVAL_FRAMEWORK.md) — Agent evaluation framework
+- [AI Metrics Tracking](reference/AI_METRICS_TRACKING.md) — Branch-based AI productivity tracking for Google Form reports
 
 ## Memory
 - [Memory MCP](memory/MEMORY_MCP.md) — Persistent memory for agents
@@ -46,4 +47,3 @@
 - [Documentation Status](DOCUMENTATION_STATUS.md)
 
 ## Projects
-- [steer-autopilot](steer-autopilot/README.md) — Distributed multi-agent AI-SDLC orchestration

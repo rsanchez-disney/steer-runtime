@@ -49,6 +49,7 @@ All checks should pass. If kiro-cli shows issues on Windows, see [Windows Troubl
 | .NET Developer | dev, dev-dotnet | `koda install dev dev-dotnet` |
 | PHP Developer | dev, dev-php | `koda install dev dev-php` |
 | Python Developer | dev, dev-python | `koda install dev dev-python` |
+| AI/ML Engineer | dev-core, dev-ai | `koda install dev-core dev-ai` |
 | Infra / Terraform | dev-core, dev-infra | `koda install dev-core dev-infra` |
 | Business Analyst / PO | ba | `koda install ba` |
 | QA Engineer | qa, dev-core | `koda install qa dev-core` |
@@ -62,21 +63,28 @@ Open Koda TUI and press `[p]` to toggle profiles interactively, or install from 
 
 | Profile | Agents | Description |
 |---------|:------:|-------------|
-| **dev** | 26 | Alias for dev-core + dev-web + dev-mobile |
-| **dev-core** | 18 | Code, review, test, security, PRs, architecture |
+| **dev** | 42 | Alias for all dev-* profiles |
+| **dev-core** | 21 | Code, review, test, security, PRs, architecture |
 | **dev-web** | 5 | Angular UI, Node gateway, Astro SSR, UX, backend |
 | **dev-mobile** | 3 | Mobile development agents |
 | **dev-dotnet** | 3 | .NET / C# development and review |
 | **dev-php** | 1 | PHP development and review |
 | **dev-python** | 1 | Python (FastAPI, Flask, Django) |
+| **dev-ai** | 5 | AI/ML engineering (training, LLM apps, data science, MLOps) |
 | **dev-infra** | 1 | Terraform / IaC |
-| **ba** | 7 | Requirements, scope, stories, PRDs, estimation |
-| **qa** | 11 | Test planning, automation, defect analysis, coverage |
-| **ops** | 8 | Infra, deployments, log analysis, releases |
+| **dev-ui** | 3 | Legacy Angular, Polymer, Lambda |
+| **ba** | 8 | Requirements, scope, stories, PRDs, estimation |
+| **qa** | 16 | Test planning, automation, defect analysis, coverage |
+| **ops** | 9 | Infra, deployments, log analysis, releases |
 | **sustainment** | 5 | Incident response, AppDynamics, ServiceNow, Splunk |
 | **pm** | 6 | Sprints, standups, retros, delivery reports |
 | **leadership** | 5 | Cross-studio analytics, quarterly reports, executive briefings |
-| **steer-master** | 5 | steer-runtime/Koda development and review |
+| **core** | 3 | Email, log analysis, story analysis |
+| **inspector** | 10 | Multi-dimensional audit and compliance |
+| **design** | 6 | Design discovery and UX research |
+| **cloudops** | 4 | Infrastructure strategy and SRE |
+| **presales** | 1 | Pre-sales and client intake |
+| **steer-master** | 8 | steer-runtime/Koda development and review |
 
 ### 5. Select Workspace (optional)
 
@@ -167,6 +175,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | April 17, 2026 | Product Profile Session | [Recording](https://drive.google.com/file/d/1TiWw0mgX-QOS5zO1lQrZzODjIUGBpw7_/view?usp=sharing) |
 | April 17, 2026 | Trips/RA Team Session | [Recording](https://drive.google.com/file/d/1PNBL_WDgTlVvn03ih8uah-DAakmhXR9h/view?usp=drive_link) |
 | April 21, 2026 | dse-intl-emtech-usparks - SteerRuntime Sync - AI | [Recording](https://drive.google.com/file/d/1pzJwuvj9exDuUMQ6qQl_K2ol-9BU-vbF/view) |
+| May 8, 2026 | Demo with Disney Commerce Managers | [Recording](https://teams.microsoft.com/l/meetingrecap?driveId=b%211hxEKgCi3UayKQWVaHc3nL9h87Q0-A5KkuQ74FMi-_RCyJBIYLMvTb345rwrBV10&driveItemId=01CN4RCKAJYFGCXMEA3FHKLIWGMJN6ECXI&sitePath=https%3A%2F%2Ftwdc-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fkelly_a_taylornoble_disney_com%2FIQAJwUwrsIDZTqWixmJb4groAZKI0rE_hvByGTFvVOjUIFA&fileUrl=https%3A%2F%2Ftwdc-my.sharepoint.com%2Fpersonal%2Fkelly_a_taylornoble_disney_com%2FDocuments%2FRecordings%2FSteer+Runtime+Demo+%28Globant%29-20260508_140013UTC-Meeting+Recording.mp4%3Fweb%3D1&iCalUid=040000008200E00074C5B7101A82E008000000002584EBF4CFD8DC01000000000000000010000000DBE975FE1D4BFC49AD03E8FC4D94CC47&threadId=19%3Ameeting_YWU3ZmI5MWYtOGViOC00NmEwLTk4MDItZjBkYTI3YTg4M2Vj%40thread.v2&organizerId=67320d62-a584-4335-9438-c45b4eafbeb0&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&callId=5216b580-dd82-44b0-b0fb-a5d0d39dcc95&threadType=meeting&meetingType=Scheduled&subType=RecapSharingLink_RecapCore) |
 
 ---
 

@@ -5,6 +5,7 @@
   "tools": [
     "@github/*",
     "@jira/*",
+    "@mywiki/*",
     "code",
     "execute_bash",
     "fs_read",
@@ -13,13 +14,19 @@
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/rules/dpe-conventions.md",
+    "file://.kiro/rules/breaking-change-detection.md",
+    "file://.kiro/rules/performance-guide-pr-review.md",
+    "file://.kiro/rules/pr-description.md",
+    "file://.kiro/rules/integration-test-cross-impact.md",
+    "file://.kiro/rules/acceptance-criteria-validation.md",
     "file://.kiro/context/team_context.md",
     "file://.kiro/context/performance_engineering_guide.md",
     "file://.kiro/steering/**/*.md"
   ],
   "allowedTools": [
     "@github/*",
-    "@jira/*"
+    "@jira/*",
+    "@mywiki/*"
   ],
   "includeMcpJson": true
 }

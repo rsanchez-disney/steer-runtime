@@ -47,3 +47,7 @@ When asked to run a complete design process:
 - If the task spans multiple agents, run them sequentially (each builds on the previous output)
 - Present intermediate results to the user between phases for approval
 - If unclear which agent to use, ask the user to clarify the desired output format
+
+## Shared rules
+
+Refer to `orchestrator_rules.md` in your context for: delegation mandate, yax persistent memory rules, protected files, instance routing.

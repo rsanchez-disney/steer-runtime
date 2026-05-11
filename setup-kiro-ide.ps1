@@ -24,12 +24,26 @@ param(
     [Parameter(Position=0)]
     [string]$Command = "help",
     [Parameter(Position=1)]
-    [string]$TargetDir
+    [string]$TargetDir,
+    [Parameter(Position=2, ValueFromRemainingArguments)]
+    [string[]]$Profiles
 )
 
 $ErrorActionPreference = "Stop"
 $SteerRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KiroHome = Join-Path $env:USERPROFILE ".kiro"
+
+# --- Deprecation Warning ---
+Write-Host ""
+Write-Host "╔══════════════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
+Write-Host "║  ⚠️  DEPRECATED — This script is deprecated. Use Koda instead.  ║" -ForegroundColor Yellow
+Write-Host "║                                                                  ║" -ForegroundColor Yellow
+Write-Host "║  Install: irm https://koda.wdprapps.disney.com/install.ps1 | iex ║" -ForegroundColor Yellow
+Write-Host "║  Then:    koda install dev                                        ║" -ForegroundColor Yellow
+Write-Host "║                                                                  ║" -ForegroundColor Yellow
+Write-Host "║  This script will be removed in a future release.                ║" -ForegroundColor Yellow
+Write-Host "╚══════════════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
+Write-Host ""
 
 function Show-Help {
     Write-Host @'
@@ -37,9 +51,24 @@ function Show-Help {
   steer-runtime Kiro IDE Setup (Windows)
 
   USAGE:
-    .\setup-kiro-ide.ps1 install <project-dir>   Full setup: steering, skills, hooks, MCP
-    .\setup-kiro-ide.ps1 sync                     Update user-level steering and skills
-    .\setup-kiro-ide.ps1 remove <project-dir>     Remove workspace hooks
+    .\setup-kiro-ide.ps1 install <project-dir> [profiles...]
+    .\setup-kiro-ide.ps1 sync [profiles...]
+    .\setup-kiro-ide.ps1 list
+    .\setup-kiro-ide.ps1 remove <project-dir>
+
+  PROFILES:
+    dev             All dev agents (alias -> dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
+    dev-core        Orchestrator + planning + quality + workflow
+    dev-web         Backend + WebAPI + UI + UX specialist
+    dev-mobile      Flutter + Android + iOS
+    dev-python      Python specialist
+    dev-infra       Terraform/IaC specialist
+    ba              Business Analyst / Product Owner
+    qa              QA / Testing
+    ops             Operations
+    pm              PM / Scrum Master
+
+    If no profiles are specified, an interactive menu is shown.
 
   WHERE THINGS GO:
     Steering + Skills  -> ~/.kiro/          (user-level, all workspaces)
@@ -47,9 +76,13 @@ function Show-Help {
     Hooks              -> <project>/.kiro/  (workspace, auto-gitignored)
 
   EXAMPLES:
-    .\setup-kiro-ide.ps1 install .
-    .\setup-kiro-ide.ps1 install C:\Projects\my-app
+    .\setup-kiro-ide.ps1 install . dev-core dev-web
+    .\setup-kiro-ide.ps1 install . dev
+    .\setup-kiro-ide.ps1 install C:\Projects\my-app ba qa
+    .\setup-kiro-ide.ps1 install .                          # interactive menu
     .\setup-kiro-ide.ps1 sync
+    .\setup-kiro-ide.ps1 sync dev-core
+    .\setup-kiro-ide.ps1 list
 
   TROUBLESHOOTING:
     "running scripts is disabled" error:
@@ -89,41 +122,136 @@ function Find-UvxExe {
     return $null
 }
 
-function Install-Steering {
+# --- Profile helpers ---
+
+# All known profile names (auto-discovered from profiles/ directory)
+function Get-AvailableProfiles {
+    $profilesDir = Join-Path $SteerRoot "profiles"
+    if (Test-Path $profilesDir) {
+        Get-ChildItem $profilesDir -Directory | Where-Object { $_.Name -ne "steer-master" } | ForEach-Object { $_.Name }
+    }
+}
+
+# Expand the "dev" alias into its sub-profiles, deduplicate
+function Expand-ProfileAliases([string[]]$InputProfiles) {
+    $expanded = @()
+    foreach ($p in $InputProfiles) {
+        if ($p -eq "dev") {
+            $expanded += @("dev-core","dev-web","dev-mobile","dev-python","dev-ai","dev-infra","dev-dotnet","dev-php","dev-ui")
+        } else {
+            $expanded += $p
+        }
+    }
+    # Deduplicate preserving order
+    $seen = @{}
+    $result = @()
+    foreach ($p in $expanded) {
+        if (-not $seen.ContainsKey($p)) {
+            $seen[$p] = $true
+            $result += $p
+        }
+    }
+    return $result
+}
+
+# Display formatted profile list with steering/skills tags
+function Format-ProfileList([switch]$Numbered) {
+    $available = @(Get-AvailableProfiles)
+    if ($Numbered) {
+        Write-Host "  0) dev  (alias -> all dev-* profiles)" -ForegroundColor White
+    } else {
+        Write-Host "  dev  (alias -> all dev-* profiles)" -ForegroundColor White
+    }
+    for ($i = 0; $i -lt $available.Count; $i++) {
+        $profile = $available[$i]
+        $steeringExists = Test-Path (Join-Path $SteerRoot "profiles\$profile\steering")
+        $skillsExists   = Test-Path (Join-Path $SteerRoot "profiles\$profile\skills")
+        $tags = @()
+        if ($steeringExists) { $tags += "steering" }
+        if ($skillsExists)   { $tags += "skills" }
+        $tagStr = if ($tags.Count -gt 0) { " [$($tags -join ', ')]" } else { "" }
+        if ($Numbered) {
+            Write-Host "  $($i+1)) $profile$tagStr" -ForegroundColor White
+        } else {
+            Write-Host "  $profile$tagStr" -ForegroundColor White
+        }
+    }
+}
+
+# Interactive profile picker when none specified
+function Select-ProfilesInteractive {
+    if (-not [Environment]::UserInteractive) {
+        Write-Host "X No profiles specified and running non-interactively. Pass profiles as arguments." -ForegroundColor Red
+        exit 1
+    }
+    $available = @(Get-AvailableProfiles)
+    Write-Host "`nAvailable profiles:" -ForegroundColor Cyan
+    Format-ProfileList -Numbered
+    Write-Host ""
+    $selection = Read-Host "Enter profile numbers separated by commas (e.g. 0,1,3) or profile names"
+    if ([string]::IsNullOrWhiteSpace($selection)) {
+        Write-Host "No profiles selected. Aborting." -ForegroundColor Yellow
+        return @()
+    }
+    $selected = @()
+    foreach ($token in ($selection -split ',')) {
+        $token = $token.Trim()
+        if ($token -match '^\d+$') {
+            $idx = [int]$token
+            if ($idx -eq 0) { $selected += "dev" }
+            elseif ($idx -ge 1 -and $idx -le $available.Count) { $selected += $available[$idx - 1] }
+            else { Write-Host "  Skipping invalid index: $idx" -ForegroundColor Yellow }
+        } else {
+            $selected += $token
+        }
+    }
+    return $selected
+}
+
+function Install-Steering([string[]]$SelectedProfiles) {
     $steeringDir = Join-Path $KiroHome "steering"
     New-Item -ItemType Directory -Force -Path $steeringDir | Out-Null
     $count = 0
-    foreach ($profileDir in @("$SteerRoot\profiles\dev-core\steering", "$SteerRoot\profiles\dev-web\steering")) {
-        if (Test-Path $profileDir) {
-            Get-ChildItem "$profileDir\*.md" | ForEach-Object {
+    foreach ($profile in $SelectedProfiles) {
+        $profileSteeringDir = Join-Path $SteerRoot "profiles\$profile\steering"
+        if (Test-Path $profileSteeringDir) {
+            Get-ChildItem "$profileSteeringDir\*.md" | ForEach-Object {
                 Copy-Item $_.FullName "$steeringDir\" -Force
-                Write-Host "  OK steering\$($_.Name)" -ForegroundColor Green
+                Write-Host "  OK steering\$($_.Name)  [$profile]" -ForegroundColor Green
                 $count++
             }
         }
     }
-    Write-Host "$count steering files -> $steeringDir" -ForegroundColor Green
+    if ($count -eq 0) {
+        Write-Host "  (no steering files found for selected profiles)" -ForegroundColor Yellow
+    } else {
+        Write-Host "$count steering files -> $steeringDir" -ForegroundColor Green
+    }
     return $count
 }
 
-function Install-Skills {
+function Install-Skills([string[]]$SelectedProfiles) {
     $skillsDir = Join-Path $KiroHome "skills"
     New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
     $count = 0
+    # Always install common skills
     $commonSkills = "$SteerRoot\common\skills"
     if (Test-Path $commonSkills) {
         Get-ChildItem "$commonSkills\*.md" | Where-Object { $_.Name -ne "README.md" } | ForEach-Object {
             Copy-Item $_.FullName "$skillsDir\" -Force
-            Write-Host "  OK skills\$($_.Name)" -ForegroundColor Green
+            Write-Host "  OK skills\$($_.Name)  [common]" -ForegroundColor Green
             $count++
         }
     }
-    $webSkills = "$SteerRoot\profiles\dev-web\skills"
-    if (Test-Path $webSkills) {
-        Get-ChildItem "$webSkills\*.md" | ForEach-Object {
-            Copy-Item $_.FullName "$skillsDir\" -Force
-            Write-Host "  OK skills\$($_.Name)" -ForegroundColor Green
-            $count++
+    # Install profile-specific skills
+    foreach ($profile in $SelectedProfiles) {
+        $profileSkillsDir = Join-Path $SteerRoot "profiles\$profile\skills"
+        if (Test-Path $profileSkillsDir) {
+            Get-ChildItem "$profileSkillsDir\*.md" | ForEach-Object {
+                Copy-Item $_.FullName "$skillsDir\" -Force
+                Write-Host "  OK skills\$($_.Name)  [$profile]" -ForegroundColor Green
+                $count++
+            }
         }
     }
     Write-Host "$count skills -> $skillsDir" -ForegroundColor Green
@@ -220,14 +348,33 @@ function Install-McpServers {
 # --- Main ---
 switch ($Command) {
     "install" {
-        if (-not $TargetDir) { Write-Host "X Usage: .\setup-kiro-ide.ps1 install <project-dir>" -ForegroundColor Red; exit 1 }
+        if (-not $TargetDir) { Write-Host "X Usage: .\setup-kiro-ide.ps1 install <project-dir> [profiles...]" -ForegroundColor Red; exit 1 }
         $TargetDir = [System.IO.Path]::GetFullPath($TargetDir)
         if (-not (Test-Path $TargetDir -PathType Container)) { Write-Host "X Directory not found: $TargetDir" -ForegroundColor Red; exit 1 }
 
-        Write-Host "Installing Kiro IDE config`n"
+        # Resolve profiles: from args, or interactive picker
+        if ($Profiles -and $Profiles.Count -gt 0) {
+            $selectedProfiles = Expand-ProfileAliases $Profiles
+        } else {
+            $picked = Select-ProfilesInteractive
+            if ($picked.Count -eq 0) { exit 0 }
+            $selectedProfiles = Expand-ProfileAliases $picked
+        }
+
+        # Validate profiles exist
+        $available = @(Get-AvailableProfiles)
+        foreach ($p in $selectedProfiles) {
+            if ($p -notin $available) {
+                Write-Host "X Unknown profile: $p" -ForegroundColor Red
+                Write-Host "  Available: $($available -join ', ')" -ForegroundColor Yellow
+                exit 1
+            }
+        }
+
+        Write-Host "Installing Kiro IDE config for profiles: $($selectedProfiles -join ', ')`n"
         Write-Host "User-level (all workspaces):" -ForegroundColor Cyan
-        Install-Steering | Out-Null
-        Install-Skills | Out-Null
+        Install-Steering $selectedProfiles | Out-Null
+        Install-Skills $selectedProfiles | Out-Null
 
         Write-Host "`nWorkspace-level ($TargetDir):" -ForegroundColor Cyan
         Install-Hooks $TargetDir | Out-Null
@@ -237,10 +384,38 @@ switch ($Command) {
     }
 
     "sync" {
-        Write-Host "Syncing user-level steering and skills`n"
-        Install-Steering | Out-Null
-        Install-Skills | Out-Null
+        # Profiles can be passed as TargetDir + remaining args, or just remaining args
+        $syncProfiles = @()
+        if ($TargetDir) { $syncProfiles += $TargetDir }
+        if ($Profiles) { $syncProfiles += $Profiles }
+
+        if ($syncProfiles.Count -eq 0) {
+            $picked = Select-ProfilesInteractive
+            if ($picked.Count -eq 0) { exit 0 }
+            $syncProfiles = $picked
+        }
+        $syncProfiles = Expand-ProfileAliases $syncProfiles
+
+        # Validate profiles exist
+        $available = @(Get-AvailableProfiles)
+        foreach ($p in $syncProfiles) {
+            if ($p -notin $available) {
+                Write-Host "X Unknown profile: $p" -ForegroundColor Red
+                Write-Host "  Available: $($available -join ', ')" -ForegroundColor Yellow
+                exit 1
+            }
+        }
+
+        Write-Host "Syncing user-level steering and skills for: $($syncProfiles -join ', ')`n"
+        Install-Steering $syncProfiles | Out-Null
+        Install-Skills $syncProfiles | Out-Null
         Write-Host "`nDone." -ForegroundColor Green
+    }
+
+    "list" {
+        Write-Host "`nAvailable profiles:" -ForegroundColor Cyan
+        Format-ProfileList
+        Write-Host ""
     }
 
     "remove" {

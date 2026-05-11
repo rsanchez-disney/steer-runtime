@@ -1,0 +1,38 @@
+{
+  "name": "mlops_engineer",
+  "description": "MLOps specialist for model serving, deployment pipelines, experiment tracking, monitoring, and ML infrastructure",
+  "prompt": "mlops_engineer.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  }
+}

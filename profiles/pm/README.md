@@ -69,7 +69,7 @@ Agents have access to:
 
 ```bash
 # Install PM profile
-./setup.sh install pm
+koda install pm
 
 # Use an agent
 kiro-cli chat --agent pm_orchestrator_agent
@@ -148,7 +148,7 @@ kiro-cli chat --agent pm_orchestrator_agent
 ## See Also
 
 - Main README: `../README.md`
-- Setup guide: `../setup.sh`
+- Setup guide: `koda install`
 - Full documentation: `../docs/`
 
 ---

@@ -4,22 +4,36 @@ Condensed reference for the steer-runtime support assistant.
 
 ## Platform Overview
 
-steer-runtime is an AI agent platform for software teams. 41 agents across 7 profiles.
+steer-runtime is an AI agent platform for software teams. 124 agents across 21 profiles.
 
-Tools: **Kiro** (CLI engine) · **Kite** (desktop GUI) · **Koda** (terminal companion) · **Steery** (Slack bot)
+Tools: **Koda** (terminal companion + TUI) · **Kiro** (CLI engine) · **KiteStream** (web UI)
 
 ## Profiles
 
 | Profile | Agents | Orchestrator | Focus |
 |---------|--------|-------------|-------|
-| dev-core | 13 | orchestrator | SDLC orchestration, planning, code review, security, testing, PRs |
-| dev-web | 4 | — | Java backend, Node.js API, Angular UI, UX/accessibility |
+| dev-core | 21 | orchestrator | SDLC orchestration, planning, code review, security, testing, PRs |
+| dev-web | 5 | — | Java backend, Node.js API, Angular UI, UX/accessibility, Astro |
 | dev-mobile | 3 | — | Flutter, Android native, iOS native |
-| dev (alias) | 20 | orchestrator | All of dev-core + dev-web + dev-mobile |
-| ba | 4 | ba_orchestrator_agent | Requirements, scope, user stories, acceptance criteria |
-| qa | 6 | qa_orchestrator_agent | Test planning, automation, defect analysis, API & perf testing |
-| ops | 5 | ops_orchestrator_agent | AI metrics, infra checks, deployments (Harness), code quality (SonarQube) |
+| dev-ai | 5 | ai_orchestrator | ML training, data science, LLM apps, MLOps |
+| dev-python | 1 | — | Python (FastAPI, Flask, Django) |
+| dev-infra | 1 | — | Terraform / IaC |
+| dev-dotnet | 3 | — | .NET / C# development |
+| dev-php | 1 | — | PHP / Zend |
+| dev-ui | 3 | — | Legacy Angular, Polymer, Lambda |
+| dev (alias) | 42 | orchestrator | All dev-* profiles combined |
+| ba | 8 | ba_orchestrator_agent | Requirements, scope, user stories, PRDs, estimation |
+| qa | 16 | qa_orchestrator_agent | Test planning, automation, defect analysis, API & perf testing |
+| ops | 9 | ops_orchestrator_agent | AI metrics, infra, deployments, log analysis, email |
 | pm | 6 | pm_orchestrator_agent | Sprints, standups, retros, risk tracking, delivery reports |
+| leadership | 5 | leadership_orchestrator_agent | Cross-team analytics, quarterly reports, executive briefings |
+| sustainment | 5 | sustainment_orchestrator_agent | Incident response, AppDynamics, ServiceNow, Splunk |
+| core | 3 | — | Email, log analysis, story analysis |
+| inspector | 10 | — | Multi-dimensional audit and compliance |
+| design | 6 | — | Design discovery and UX research |
+| cloudops | 4 | — | Infrastructure strategy and SRE |
+| presales | 1 | — | Pre-sales and client intake |
+| steer-master | 8 | steer_orchestrator_agent | steer-runtime/Koda development and review |
 
 ## Install with Koda
 

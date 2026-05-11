@@ -19,7 +19,9 @@
   "resources": [
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/steering/**/*.md",
-    "file://.kiro/context/mcp_priority.md"
+    "file://.kiro/context/mcp_priority.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "allowedTools": [
     "@jira/*",
@@ -29,7 +31,7 @@
     "@yax/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "\ud83d\udc4b PM/Scrum Master orchestrator ready!\n\nI can help you:\n  \u2022 Manage sprint planning and capacity\n  \u2022 Generate standup summaries from Jira\n  \u2022 Facilitate retrospectives with metrics\n  \u2022 Track blockers, risks, and dependencies\n  \u2022 Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",
+  "welcomeMessage": "👋 PM/Scrum Master orchestrator ready!\n\nI can help you:\n  • Manage sprint planning and capacity\n  • Generate standup summaries from Jira\n  • Facilitate retrospectives with metrics\n  • Track blockers, risks, and dependencies\n  • Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",
   "hooks": {
     "agentSpawn": [
       {
@@ -39,6 +41,10 @@
       {
         "command": "$HOME/.kiro/hooks/agent-registry.sh",
         "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
       }
     ],
     "preToolUse": [

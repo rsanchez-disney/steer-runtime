@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (8)
+## Agents (9)
 
 | Agent | Description |
 |-------|-------------|
@@ -16,6 +16,7 @@
 | `log_analyzer_agent` | Analyzes logs across Splunk, ServiceNow, and other systems via Compass |
 | `release_manager_agent` | Compares tags, generates release notes, creates GitHub releases |
 | `release_documenter_agent` | Documents releases in Confluence with changes and rollback plan |
+| `email_agent` | Sends emails via Compass MCP |
 
 ---
 
@@ -173,7 +174,7 @@ kiro-cli chat --agent ops_orchestrator_agent
 
 ```
 profiles/ops/
-├── agents/                          # 8 agent configurations
+├── agents/                          # 9 agent configurations
 │   ├── ops_orchestrator_agent.json
 │   ├── ai_metrics_agent.json
 │   ├── infra_check_agent.json
@@ -191,5 +192,5 @@ profiles/ops/
 ---
 
 **Profile Version:** 1.1
-**Agents:** 8
-**Last Updated:** April 15, 2026
+**Agents:** 9
+**Last Updated:** May 2026

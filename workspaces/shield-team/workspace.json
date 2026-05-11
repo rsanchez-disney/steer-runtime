@@ -1,0 +1,19 @@
+{
+  "name": "shield-team",
+  "description": "General configuration for Shield team",
+  "team": "Shield",
+  "profiles": [
+    "dev-core",
+    "dev-mobile",
+    "sustainment",
+    "pm",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": ["AEXP-", "IEXP-", "COREEXP-"],
+  "workspace_path": "~/development/Repos"
+}

@@ -16,7 +16,7 @@
 | `projects` | object[] | Repository entries (`name`, `path`, `repo`, `memory_bank`) |
 | `rules` | string[] | Rule file names from `common/rules/` |
 | `enable_tools` | boolean | Enable thinking, todo, knowledge tools |
-| `jira_prefix` | string | Jira project prefix (e.g., `"DPAY-"`) |
+| `jira_prefix` | string \| string[] | Jira project prefix(es). Single string (e.g., `"DPAY-"`) or array for multi-prefix teams (e.g., `["AEXP-", "IEXP-", "COREEXP-"]`) |
 | `services` | string[] | Service bank names from `shared/services/` |
 | `channels` | string[] | Channel bank names from `channels/` |
 | `workspace_path` | string | Base path for project resolution |

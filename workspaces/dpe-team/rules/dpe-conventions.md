@@ -8,6 +8,7 @@
 - Max 10 products per pricing request
 - Query timeout: 60 seconds
 - Always validate schema backward compatibility — additive changes only
+- Use parameterized GraphQL variables — never concatenate values into query strings, even for trusted input
 
 ## Calculator Rules
 
@@ -44,6 +45,13 @@
 - Use `@Auth` GraphQL directive for operation-level security
 - Validate all GraphQL inputs in resolvers
 
+## Method Design
+
+- Prefer returning values over mutating passed-in collections (no side effects)
+- Don't iterate a collection multiple times when once suffices — use an incrementing counter instead of pre-counting
+- Don't collect into an intermediate list just to iterate it — pass items directly to the consumer
+- Variable names must reflect the actual type — don't call something `Map` when it's a DTO
+
 ## Testing
 
 - `mvn clean test` for unit tests (required before every PR)
@@ -52,6 +60,11 @@
 - Test resources: `schema.sql` and `data.sql` in test resources
 - Integration tests with Docker test containers (MySQL, Redis, DynamoDB)
 - Always test error cases and edge cases for calculator logic
+- Use resource files (`src/test/resources/test-data/`) for test data — not embedded multi-line strings
+- Cover multi-item scenarios — don't only test single-item lists when a method processes collections
+- Remove methods only called by tests — update tests to use the production API instead
+- Include integration tests for scenarios where code changes may impact functionalities that have no obvious relation to the changed functionality (see `integration-test-cross-impact` rule)
+- Validate that all Acceptance Criteria from the Jira ticket are reflected in the implementation and covered by tests (see `acceptance-criteria-validation` rule)
 
 ## Docker
 
@@ -67,6 +80,9 @@
 - Log errors with full stack traces
 - Use appropriate levels: DEBUG for dev, INFO for operations, WARN/ERROR for issues
 - Never log sensitive data (tokens, credentials, PII)
+- Don't log the same event at info level before AND after the action — one post-action info log is enough
+- Guard `log.debug()` with `isDebugEnabled()` when building expensive payloads
+- Include payload in error logs directly — don't rely on a separate debug log that won't be visible in prod
 
 ## Branch Naming
 

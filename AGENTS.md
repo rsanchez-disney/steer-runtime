@@ -12,7 +12,7 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 20 agents"]
+    subgraph DEV_CORE["dev-core · 21 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
         ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
         ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
@@ -51,6 +51,19 @@ graph TD
     %% ─── dev-python ────────────────────────────────
     subgraph DEV_PY["dev-python · 1 agent"]
         PYTHON["python<br/>"]:::agent
+    end
+
+    %% ─── dev-ai ────────────────────────────────────
+    subgraph DEV_AI["dev-ai · 5 agents"]
+        AI_ORCH["ai_orchestrator<br/>"]:::agent
+        MLENGINEER["ml_engineer<br/>"]:::agent
+        DATASCI["data_scientist<br/>"]:::agent
+        LLMENG["llm_engineer<br/>"]:::agent
+        MLOPS["mlops_engineer<br/>"]:::agent
+        AI_ORCH --> MLENGINEER
+        AI_ORCH --> DATASCI
+        AI_ORCH --> LLMENG
+        AI_ORCH --> MLOPS
     end
 
     %% ─── dev-infra ─────────────────────────────────
@@ -172,6 +185,7 @@ graph TD
     DEV -.-> DEV_WEB
     DEV -.-> DEV_MOB
     DEV -.-> DEV_PY
+    DEV -.-> DEV_AI
     DEV -.-> DEV_INFRA
     DEV -.-> DEV_DOTNET
     DEV -.-> DEV_PHP
@@ -182,6 +196,7 @@ graph TD
     ORCH -.->|delegates| WAPI
     ORCH -.->|delegates| UI
     ORCH -.->|delegates| PYTHON
+    ORCH -.->|delegates| AI_ORCH
     ORCH -.->|delegates| TERRAFORM
     ORCH -.->|delegates| FLUTTER
     ORCH -.->|delegates| UI_LEGACY
@@ -199,20 +214,21 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 37 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer (21 agents)
 koda install dev-core dev-python    # Python developer (17 agents)
+koda install dev-core dev-ai        # AI/ML engineer (21 agents)
 koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
 koda install dev-core dev-dotnet    # .NET developer (19 agents)
 koda install dev-core dev-php       # PHP/Zend developer (17 agents)
 koda install dev-core dev-mobile    # Mobile developer (19 agents)
 koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
-koda install dev-core               # Core only — orchestrator + quality (16 agents)
+koda install dev-core               # Core only — orchestrator + quality (17 agents)
 ```
 
 ---
 
-### Profile: dev-core (16 agents)
+### Profile: dev-core (17 agents)
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
@@ -320,6 +336,11 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
 **MCP Servers:** confluence, mywiki, github
 
+#### ai_metrics_tracker_agent
+**File:** `profiles/dev-core/agents/ai_metrics_tracker_agent.json`  
+**Purpose:** Tracks AI-assisted development sessions and generates productivity metrics  
+**Use for:** Branch-based AI productivity tracking, Google Form submission, Jira field updates
+
 #### devops_runner_agent
 **File:** `profiles/dev-core/agents/devops_runner_agent.json`  
 **Purpose:** Executes builds, tests, git operations, and local dev commands  
@@ -380,6 +401,41 @@ Python specialist for FastAPI, Flask, Django, and general Python development.
 **File:** `profiles/dev-python/agents/python.json`  
 **Purpose:** Python development specialist for API services and general Python  
 **Use for:** FastAPI/Flask/Django development, pytest, async patterns  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+---
+
+### Profile: dev-ai (5 agents)
+
+AI/ML engineering specialists covering the full lifecycle: data science, model training, LLM applications, and production MLOps.
+
+#### ai_orchestrator
+**File:** `profiles/dev-ai/agents/ai_orchestrator.json`  
+**Purpose:** Routes and coordinates AI/ML tasks across specialist agents  
+**Use for:** Multi-step AI workflows, architecture decisions, task routing
+
+#### ml_engineer
+**File:** `profiles/dev-ai/agents/ml_engineer.json`  
+**Purpose:** Research-driven ML implementation — training, fine-tuning, evaluation, HF Hub operations  
+**Use for:** SFT/DPO/GRPO training, dataset inspection, model evaluation, inference pipelines  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+#### data_scientist
+**File:** `profiles/dev-ai/agents/data_scientist.json`  
+**Purpose:** Data exploration, statistical modeling, feature engineering, classical ML  
+**Use for:** EDA, statistical testing, visualization, scikit-learn/XGBoost, time series  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+#### llm_engineer
+**File:** `profiles/dev-ai/agents/llm_engineer.json`  
+**Purpose:** LLM application development — RAG, prompt engineering, agent frameworks  
+**Use for:** RAG pipelines, vector DBs, LangChain/LlamaIndex, structured output, evaluations  
+**Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
+
+#### mlops_engineer
+**File:** `profiles/dev-ai/agents/mlops_engineer.json`  
+**Purpose:** ML production infrastructure — serving, deployment, monitoring  
+**Use for:** vLLM/TGI serving, MLflow, drift detection, CI/CD for models, A/B testing  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 ---
@@ -1085,6 +1141,11 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **dev-web** | ux_specialist_agent | | | | | | Figma |
 | **dev-web** | astro | | | | | | Figma |
 | **dev-python** | python | | | | | | |
+| **dev-ai** | ai_orchestrator | | | | | | |
+| **dev-ai** | ml_engineer | | | | | | |
+| **dev-ai** | data_scientist | | | | | | |
+| **dev-ai** | llm_engineer | | | | | | |
+| **dev-ai** | mlops_engineer | | | | | | |
 | **dev-infra** | terraform | | | | | | |
 | **dev-dotnet** | dotnet_senior_agent | | | | | | |
 | **dev-dotnet** | dotnet_self_host_api_agent | | | | | | |
@@ -1143,6 +1204,7 @@ Shared context loaded via agent `resources`:
 | `performance_patterns.md` | performance_tester |
 | `coverage_matrix_template.md` | test_coverage_analyzer |
 | `python_guidelines.md` | python |
+| `ml_engineering_guidelines.md` | ml_engineer, ai_orchestrator |
 | `angular_modern_patterns.md` | ui |
 | `java_conventions.md` | backend |
 | `node_conventions.md` | webapi |
@@ -1182,6 +1244,13 @@ kiro-cli chat --agent astro                     # Astro SSR + React
 
 # Dev Python
 kiro-cli chat --agent python                    # Python development
+
+# Dev AI
+kiro-cli chat --agent ai_orchestrator              # AI/ML task routing
+kiro-cli chat --agent ml_engineer               # ML training
+kiro-cli chat --agent data_scientist            # Data science
+kiro-cli chat --agent llm_engineer              # LLM applications
+kiro-cli chat --agent mlops_engineer            # ML deployment
 
 # Dev Infra
 kiro-cli chat --agent terraform                 # Terraform/IaC
@@ -1286,9 +1355,10 @@ kiro-cli chat --agent gsm_analyst_agent               # GSM analysis
 ## Installation
 
 ```bash
-koda install dev                    # All 37 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
+koda install dev-core dev-ai        # AI/ML engineer (5 agents)
 koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
 koda install dev ba qa ops pm       # Install all profiles
 koda install design                 # Design discovery & UX research (6 agents)
@@ -1300,5 +1370,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 100 (dev-core: 20, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
-**Last Updated:** May 6, 2026
+**Total Agents:** 124 (dev-core: 21, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Last Updated:** May 8, 2026

@@ -1,106 +1,75 @@
-# agentSpawn hook: inject orchestrator awareness context
-# Emits: workspace context, installed profiles, MCP status, agent registry
+# agentSpawn hook: inject orchestrator awareness context (two-tier)
+# stdout: compact summary. File: full detail at _dynamic/agent-registry-full.md
 
-$kiroDir = if ($env:KIRO_HOME) { $env:KIRO_HOME } else { Join-Path $env:USERPROFILE ".kiro" }
-$steerRoot = Join-Path $kiroDir "steer-runtime"
+$KiroDir = if ($env:KIRO_HOME) { $env:KIRO_HOME } else { "$env:USERPROFILE\.kiro" }
+$DynamicDir = "$KiroDir\context\_dynamic"
+if (-not (Test-Path $DynamicDir)) { New-Item -ItemType Directory -Path $DynamicDir -Force | Out-Null }
+$FullFile = "$DynamicDir\agent-registry-full.md"
 
-# --- Workspace Context ---
+# Workspace
 $ws = ""
-foreach ($f in @(
-    (Join-Path $kiroDir "settings\kite.json"),
-    (Join-Path $kiroDir "settings\koda\steer_settings.json"),
-    (Join-Path $kiroDir "settings\koda\shared_settings.json")
-)) {
+foreach ($f in @("$KiroDir\settings\kite.json", "$KiroDir\settings\koda\steer_settings.json")) {
     if ((Test-Path $f) -and -not $ws) {
-        try { $ws = (Get-Content $f -Raw | ConvertFrom-Json).steerRuntime.activeWorkspace } catch {}
+        try { $d = Get-Content $f | ConvertFrom-Json; $ws = $d.steerRuntime.activeWorkspace } catch {}
     }
 }
 
+$wsData = @{}
+$wsFile = "$KiroDir\settings\workspace.json"
+if (Test-Path $wsFile) { try { $wsData = Get-Content $wsFile | ConvertFrom-Json } catch {} }
+
+# System
+$sysData = @{}
+$sysFile = "$KiroDir\settings\system.json"
+if (Test-Path $sysFile) { try { $sysData = Get-Content $sysFile | ConvertFrom-Json } catch {} }
+
+# Profiles
+$profiles = @()
+$pf = "$KiroDir\settings\profiles.json"
+if (Test-Path $pf) { try { $profiles = (Get-Content $pf | ConvertFrom-Json).profiles | Where-Object { $_.installed } } catch {} }
+
+# Agents
+$agentCount = (Get-ChildItem "$KiroDir\agents\*.json" -ErrorAction SilentlyContinue | Where-Object { -not $_.Name.StartsWith("._") }).Count
+
+# === COMPACT (stdout) ===
+Write-Output "## System`n"
+$parts = @()
+if ($ws) { $parts += "Workspace: $ws" }
+if ($wsData.team) { $parts += "Team: $($wsData.team)" }
+$jp = $wsData.jira_prefix; if ($jp) { if ($jp -is [array]) { $jp = $jp -join ", " }; $parts += "Jira: $jp" }
+if ($wsData.default_agent) { $parts += "Default: $($wsData.default_agent)" }
+if ($parts.Count) { Write-Output ($parts -join " | ") }
+
+if ($profiles.Count) {
+    $plist = ($profiles | ForEach-Object { "$($_.id)($($_.agent_count))" }) -join ", "
+    Write-Output "Profiles: $plist"
+}
+
+$ram = $sysData.total_ram_gb; $tier = $sysData.tier; $maxA = $sysData.max_concurrent_agents
+if ($ram) { Write-Output "System: ${ram}GB RAM ($tier), max $maxA concurrent agents" }
+Write-Output "Agents: $agentCount installed`n"
+
+# === FULL (file) ===
+$Full = @("# Agent Registry (full)", "")
 if ($ws) {
-    Write-Output "## Workspace Context"
-    Write-Output ""
-    Write-Output "- **Active workspace:** $ws"
-
-    # Fast path: read resolved snapshot from settings
-    $wsSnapshot = Join-Path $kiroDir "settings\workspace.json"
-    $wsFile = $null
-    if (Test-Path $wsSnapshot) {
-        $wsFile = Get-Item $wsSnapshot
-    } else {
-        # Fallback: search steer-runtime recursively
-        $wsFile = Get-ChildItem -Path (Join-Path $steerRoot "workspaces") -Filter "workspace.json" -Recurse -ErrorAction SilentlyContinue |
-            Where-Object { (Get-Content $_.FullName -Raw | ConvertFrom-Json).name -eq $ws } | Select-Object -First 1
-    }
-    if ($wsFile) {
-        $d = Get-Content $wsFile.FullName -Raw | ConvertFrom-Json
-        if ($d.team) { Write-Output "- **Team:** $($d.team)" }
-        if ($d.extends) { Write-Output "- **Extends:** $($d.extends)" }
-        if ($d.profiles) { Write-Output "- **Profiles:** $($d.profiles -join ', ')" }
-        if ($d.default_agent) { Write-Output "- **Default agent:** $($d.default_agent)" }
-        if ($d.jira_prefix) { Write-Output "- **Jira prefix:** $($d.jira_prefix)" }
-        if ($d.projects) { Write-Output "- **Projects:** $($d.projects.Count)" }
-        if ($d.services) { Write-Output "- **Services:** $($d.services -join ', ')" }
-        if ($d.channels) { Write-Output "- **Channels:** $($d.channels -join ', ')" }
-        if ($d.teams) {
-            Write-Output "- **Teams:** $($d.teams.Count)"
-            foreach ($t in $d.teams) {
-                $info = $t.name
-                if ($t.jira_projects) { $info += " ($($t.jira_projects -join ', '))" }
-                if ($t.studio) { $info += " — Studio: $($t.studio)" }
-                elseif ($t.team_id) { $info += " — Team ID: $($t.team_id)" }
-                if ($t.board_ids) { $info += " [boards: $($t.board_ids -join ', ')]" }
-                Write-Output "  - $info"
-            }
-        }
-    }
-    Write-Output ""
+    $Full += "## Workspace Context", ""
+    $Full += "- **Active workspace:** $ws"
+    if ($wsData.team) { $Full += "- **Team:** $($wsData.team)" }
+    if ($wsData.profiles) { $Full += "- **Profiles:** $($wsData.profiles -join ', ')" }
+    if ($wsData.default_agent) { $Full += "- **Default agent:** $($wsData.default_agent)" }
+    $Full += ""
 }
-
-# --- Installed Profiles (with agent counts) ---
-$profilesFile = Join-Path $kiroDir "settings\profiles.json"
-if (Test-Path $profilesFile) {
-    $pd = Get-Content $profilesFile -Raw | ConvertFrom-Json
-    $installed = $pd.profiles | Where-Object { $_.installed }
-    if ($installed) {
-        Write-Output "## Installed Profiles"
-        Write-Output ""
-        foreach ($p in $installed) {
-            $count = if ($p.agent_count) { $p.agent_count } else { $p.agents.Count }
-            $agents = $p.agents -join ", "
-            Write-Output "- **$($p.id)** ($count agents): $agents"
-        }
-        Write-Output ""
-    }
+if ($ram) {
+    $Full += "## System Resources", "", "- **RAM:** $ram GB ($tier tier)", "- **Max concurrent:** $maxA", ""
 }
-
-# --- MCP Server Status ---
-$mcpJson = Join-Path $kiroDir "mcp.json"
-if (Test-Path $mcpJson) {
-    Write-Output "## MCP Servers"
-    Write-Output ""
-    try {
-        $d = Get-Content $mcpJson -Raw | ConvertFrom-Json
-        $servers = $d.mcpServers.PSObject.Properties
-        foreach ($s in ($servers | Sort-Object Name)) {
-            $cmd = $s.Value.command
-            $arg = if ($s.Value.args) { $s.Value.args[0] } else { "" }
-            Write-Output "- **$($s.Name)**: $cmd $arg"
-        }
-        if (-not $servers) { Write-Output "- (none configured)" }
-    } catch { Write-Output "- (error reading mcp.json)" }
-    Write-Output ""
+if ($profiles.Count) {
+    $Full += "## Installed Profiles", ""
+    foreach ($p in $profiles) { $Full += "- **$($p.id)** ($($p.agent_count) agents): $($p.agents -join ', ')" }
+    $Full += ""
 }
-
-# --- Agent Registry ---
-Write-Output "## Agent Registry (auto-discovered)"
-Write-Output ""
-$agentsDir = Join-Path $kiroDir "agents"
-if (Test-Path $agentsDir) {
-    foreach ($f in (Get-ChildItem "$agentsDir\*.json" -ErrorAction SilentlyContinue)) {
-        if ($f.Name.StartsWith("._")) { continue }
-        $content = Get-Content $f.FullName -Raw
-        if ($content -match '"name"\s*:\s*"([^"]*)"') { $name = $Matches[1] } else { continue }
-        if ($content -match '"description"\s*:\s*"([^"]*)"') { $desc = $Matches[1] } else { $desc = "" }
-        Write-Output "- **${name}**: $desc"
-    }
+$Full += "## Agent Registry", ""
+Get-ChildItem "$KiroDir\agents\*.json" -ErrorAction SilentlyContinue | Where-Object { -not $_.Name.StartsWith("._") } | ForEach-Object {
+    $d = Get-Content $_.FullName | ConvertFrom-Json
+    $Full += "- **$($d.name)**: $($d.description)"
 }
+Set-Content -Path $FullFile -Value ($Full -join "`n")

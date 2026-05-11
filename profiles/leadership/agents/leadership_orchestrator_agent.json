@@ -3,13 +3,12 @@
   "description": "Coordinates cross-team queries, quarterly reports, and executive briefings across a vertical",
   "prompt": "leadership_orchestrator_agent.md",
   "tools": [
+    "subagent",
     "@jira/*",
     "@confluence/*",
     "@mywiki/*",
     "thinking",
-    "todo",
-    "delegate",
-    "use_subagent",
+    "todo_list",
     "@yax/*"
   ],
   "allowedTools": [
@@ -24,14 +23,20 @@
     "file://.kiro/context/leadership_guidelines.md",
     "file://.kiro/context/portfolio_projects.md",
     "file://.kiro/context/fiscal_calendar.md",
-    "file://.kiro/context/mcp_priority.md"
+    "file://.kiro/context/mcp_priority.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
   ],
-  "welcomeMessage": "\ud83d\udc4b Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n \u2022 Cross-team velocity and delivery health\n \u2022 Quarterly reports for Disney directors\n \u2022 Dependency tracking and risk assessment\n \u2022 Executive briefings tailored by audience\n\nWhat would you like to review?",
+  "welcomeMessage": "👋 Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n • Cross-team velocity and delivery health\n • Quarterly reports for Disney directors\n • Dependency tracking and risk assessment\n • Executive briefings tailored by audience\n\nWhat would you like to review?",
   "hooks": {
     "agentSpawn": [
       {
         "command": "$HOME/.kiro/hooks/agent-registry.sh",
         "description": "Inject workspace context and agent registry"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
       }
     ]
   }

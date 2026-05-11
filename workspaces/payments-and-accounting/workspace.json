@@ -11,7 +11,7 @@
     "conventional_commit"
   ],
   "enable_tools": true,
-  "jira_prefix": "DPAY",
+  "jira_prefix": "DPAY-",
   "teams": [
     {
       "name": "TEP3 - Cart & Checkout",

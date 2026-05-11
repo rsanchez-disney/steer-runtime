@@ -2,18 +2,50 @@
   "name": "cloudops_orchestrator_agent",
   "description": "Orchestrates infrastructure and operations workflows, delegates to cloudops and devops agents",
   "prompt": "cloudops_orchestrator_agent.md",
-  "tools": ["subagent", "thinking", "todo_list", "code", "fs_read", "grep", "execute_bash", "@confluence/*", "@jira/*"],
-  "allowedTools": ["@confluence/*", "@jira/*"],
-  "resources": ["file://.kiro/context/project_mappings.md", "file://.kiro/steering/**/*.md"],
+  "tools": [
+    "subagent",
+    "thinking",
+    "todo_list",
+    "code",
+    "fs_read",
+    "grep",
+    "execute_bash",
+    "@confluence/*",
+    "@jira/*"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/_dynamic/delegation-map.md"
+  ],
   "includeMcpJson": true,
   "welcomeMessage": "👋 CloudOps orchestrator ready!\n\nI can help you:\n  • Plan infrastructure and size environments\n  • Define configuration management strategies\n  • Write RCA/post-mortem documents\n  • Design CI/CD pipelines and DevOps strategy\n\nTry: \"Assess infrastructure impact of adding Redis caching\"",
   "hooks": {
     "agentSpawn": [
-      {"command": "$HOME/.kiro/hooks/git-context.sh", "description": "Inject git branch and status"},
-      {"command": "$HOME/.kiro/hooks/agent-registry.sh", "description": "Inject available agents registry for dynamic delegation"}
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
+      }
     ],
     "preToolUse": [
-      {"matcher": "execute_bash", "command": "$HOME/.kiro/hooks/branch-guard.sh", "description": "Block direct commits to main/master"}
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
     ]
   }
 }

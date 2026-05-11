@@ -1,38 +1,23 @@
-# Ops Profile Guidelines
+# Ops guidelines
 
-## Jira Custom Fields Reference
+## Jira custom fields
 
-| Field | Custom Field ID | Type | Values |
-|---|---|---|---|
-| Story Points | customfield_10003 | Number | — |
-| AI Assisted Effort | customfield_27200 | Number | — |
-| AI Usage Level | customfield_27201 | Select | Low, Medium, High |
-| AI Tools Used | customfield_27202 | Text | — |
-| Pull Request | customfield_21707 | Text | URL |
-| Evidence of Completion | customfield_20800 | Text | — |
+| Field                  | ID                 | Type   |
+|------------------------|--------------------|--------|
+| Story Points           | customfield_10003  | Number |
+| AI Assisted Effort     | customfield_27200  | Number |
+| AI Usage Level         | customfield_27201  | Select |
+| AI Tools Used          | customfield_27202  | Text   |
+| Pull Request           | customfield_21707  | Text   |
+| Evidence of Completion | customfield_20800  | Text   |
 
-## Jira Transitions
+## Jira transitions
 
-| From | To | When |
-|---|---|---|
-| In Progress | Ready for Review | PR created |
-| In Progress | In Review | If "Ready for Review" unavailable |
-| In Progress | Peer Review | If "In Review" unavailable |
+In Progress → Ready for Review (PR created). Fallbacks: In Review, Peer Review.
+AI label: `AI-Peer-Reviewed` on AI-reviewed PRs.
 
-## AI Labels
+## Infra defaults
 
-- `AI-Peer-Reviewed` — Added when AI reviews the PR
-
-## AWS Defaults
-
-- **Region:** us-west-2
-- **Credentials:** ~/.aws/credentials
-
-## Harness Defaults
-
-- **Org:** Commerce
-- **Base URL:** https://disney.harness.io/
-
-## SonarQube Defaults
-
-- **URL:** https://sonar.cicd.wdprapps.disney.com
+- AWS: us-west-2, ~/.aws/credentials
+- Harness: Org=Commerce, https://disney.harness.io/
+- SonarQube: https://sonar.cicd.wdprapps.disney.com

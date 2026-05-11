@@ -11,7 +11,7 @@
     "conventional_commit"
   ],
   "enable_tools": true,
-  "jira_prefix": "ROS",
+  "jira_prefix": "ROS-",
   "teams": [
     {
       "name": "Gamora",
