@@ -956,7 +956,7 @@ Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHA
 
 
 
-## Profile: core (5 agents)
+## Profile: core (6 agents)
 
 Shared utility agents available across all profiles.
 
@@ -990,6 +990,13 @@ Shared utility agents available across all profiles.
 **Purpose:** Generates PPTX presentations from markdown or context. Supports audience-level adaptation, custom styling, diagrams, charts, and images  
 **Use for:** Presentation generation, slide decks, executive summaries, technical talks, workshop materials  
 **MCP Servers:** mermaid, confluence, mywiki
+
+
+#### ai_adoption_stats_agent
+**File:** `profiles/core/agents/ai_adoption_stats_agent.json`  
+**Purpose:** Measures AI adoption across teams using GitHub commit patterns and Jira historical data. Identifies trends, compares teams, and produces statistical summaries  
+**Use for:** AI adoption measurement, team comparison, trend analysis, adoption scoring, velocity correlation  
+**MCP Servers:** github, jira, confluence, mywiki
 
 ---
 

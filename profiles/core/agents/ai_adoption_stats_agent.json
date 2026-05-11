@@ -1,0 +1,36 @@
+{
+  "name": "ai_adoption_stats_agent",
+  "description": "Measures AI adoption across teams using GitHub commit patterns and Jira historical data. Identifies trends, compares teams, and produces statistical summaries.",
+  "prompt": "ai_adoption_stats_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking",
+    "@github/*",
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*",
+    "@confluence/*",
+    "@mywiki/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to protected dirs"
+      }
+    ]
+  }
+}

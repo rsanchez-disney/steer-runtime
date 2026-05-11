@@ -2,7 +2,7 @@
 
 Shared utility agents available to all profiles. These agents provide cross-cutting capabilities that any role (developer, QA, BA, PM, leadership) can use.
 
-## Agents (5)
+## Agents (6)
 
 | Agent                    | Purpose                                                          |
 |--------------------------|------------------------------------------------------------------|
@@ -11,13 +11,14 @@ Shared utility agents available to all profiles. These agents provide cross-cutt
 | story_analyzer_agent     | Fetches and analyzes Jira stories, Confluence pages, GitHub repos |
 | document_analyzer_agent  | Parses PDFs, DOCX, XLSX, images with OCR support                 |
 | deck_builder_agent       | Generates PPTX presentations from markdown or context            |
+| ai_adoption_stats_agent  | Measures AI adoption across teams via GitHub and Jira data       |
 
 ## Structure
 
 ```text
 profiles/core/
-├── agents/       # 5 agent JSON configs
-└── prompts/      # 5 agent prompt files
+├── agents/       # 6 agent JSON configs
+└── prompts/      # 6 agent prompt files
 ```
 
 ## Prerequisites
