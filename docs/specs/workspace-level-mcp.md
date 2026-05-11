@@ -505,6 +505,34 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 
 ## Detailed Implementation Plan
 
+### Koda Codebase Analysis (as of v0.4.x)
+
+**Repo:** `github.disney.com/SANCR225/koda`
+
+| What Exists | File | Notes |
+|-------------|------|-------|
+| `knownServers` list (global MCPs) | `internal/ops/mcp.go:32` | Hardcoded `[]MCPServer` with 14 entries |
+| `GenerateMcpJson()` — builds mcp.json | `internal/ops/mcp.go:90` | 984-line file, main generation logic |
+| `WorkspaceMCPMeta` struct | `internal/ops/container.go:52` | `{Name, Command, Env}` — minimal |
+| `walkWorkspaceMCPMetas()` — fork discovery | `internal/ops/mcp.go:443` | Scans `workspaces/` for `mcp-meta.json` |
+| `CopyMcpBundles()` — installs fork MCPs | `internal/ops/mcp.go` | Copies `shared/tools/mcp-servers/*/dist/` |
+| `readExistingMCPUserState()` | `internal/ops/mcp.go:803` | Preserves `disabled`/`autoApprove` only |
+| `mergeUserStateIntoJSON()` | `internal/ops/mcp.go:834` | Re-applies flags after regeneration |
+| `applyOverridesToMCPJson()` | `internal/ops/mcp.go:925` | Applies `mcp-overrides.json` |
+| `ReadTokens()` / `ReadEnvVars()` | `internal/ops/tokens.go` | Reads `tokens.env` |
+| TUI token management | `internal/tui/app.go` | TUI `m` key for token config |
+| Workspace activation | `internal/ops/ws_materialize.go` | Loads profiles, agents, rules |
+
+**Key gaps vs our spec:**
+1. `readExistingMCPUserState` only preserves flags, NOT entire user-added servers
+2. No `_source` field written to mcp.json
+3. `walkWorkspaceMCPMetas` scans for `mcp-meta.json` only — doesn't read `mcp/mcp.json`
+4. `WorkspaceMCPMeta.Env` is `map[string]string` (description) — no `required`/`secret`/`default`
+5. No `defaults.env` reading
+6. No `${VAR}` placeholder resolution (env values read directly from tokens)
+7. No `_overrides` support
+8. Workspace activation doesn't trigger MCP regeneration
+
 ### Affected Repositories
 
 | Repo | Changes | Owner |
@@ -527,15 +555,17 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 
 ### Phase 2: `_source` Tracking (Koda)
 
-| Task | Koda File (estimated) | Effort |
-|------|----------------------|--------|
-| Add `_source` field to MCP server struct | `internal/mcp/types.go` | S |
-| Tag servers with source on write | `internal/mcp/generate.go` | S |
-| Identify user servers by absence of `_source`/`_managed` | `internal/mcp/generate.go` | S |
-| Preserve `_source: "user"` servers during regeneration | `internal/mcp/generate.go` | S |
+| Task | Koda File | Effort |
+|------|-----------|--------|
+| Add `_source` field to `mcpServer` struct (line 107) | `internal/ops/mcp.go` | S |
+| Tag servers on write: global, fork, workspace, user | `internal/ops/mcp.go` (in `GenerateMcpJson`) | S |
+| Before writing mcp.json, read existing and preserve servers not in `knownServers` + not from `walkWorkspaceMCPMetas` | `internal/ops/mcp.go:295` (before `mcpConfig := ...`) | M |
+| Preserve entire user-added server entries (not just `disabled`/`autoApprove`) | `internal/ops/mcp.go` (extend `readExistingMCPUserState`) | M |
+
+**Note:** Current `readExistingMCPUserState()` only preserves `disabled` and `autoApprove` fields. It does NOT preserve entire user-added servers. This is the key gap.
 
 **AC:**
-- `koda upgrade` preserves user-added servers
+- `koda upgrade` preserves user-added servers (entire entry, not just flags)
 - Final mcp.json has `_source` on every entry
 - No behavioral change for users without custom MCPs
 
@@ -543,40 +573,43 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 
 ### Phase 3: Fork-Level MCP Discovery (Koda)
 
-| Task | Koda File (estimated) | Effort |
-|------|----------------------|--------|
-| Scan `shared/tools/mcp-servers/*/mcp-meta.json` | `internal/mcp/discover.go` (new) | M |
-| Parse `mcp-meta.json` schema | `internal/mcp/types.go` | S |
-| Differentiate global vs fork servers | `internal/mcp/discover.go` | S |
-| Resolve env vars: `tokens.env` → `env_defaults` | `internal/mcp/resolve.go` (new) | M |
-| Register fork servers with `_source: "fork"` | `internal/mcp/generate.go` | S |
-| Run `npm install` for fork MCPs with `package.json` | `internal/mcp/install.go` | S |
+**Existing code:** `walkWorkspaceMCPMetas()` already scans for `mcp-meta.json` and `GenerateMcpJson()` (line 268) registers fork MCPs. `CopyMcpBundles()` copies fork server bundles to `~/.kiro/tools/`.
+
+| Task | Koda File | Effort |
+|------|-----------|--------|
+| Extend `WorkspaceMCPMeta` struct with `EnvRequired`, `EnvSecret`, `EnvDefaults` | `internal/ops/container.go:52` | S |
+| In `GenerateMcpJson` fork loop (line 278), apply `env_defaults` as fallback when token missing | `internal/ops/mcp.go:278` | S |
+| Skip prompt-less servers only when `env_required` vars are missing (currently skips if ANY env has no token) | `internal/ops/mcp.go:285` | S |
+| Surface missing required vars to TUI for prompting | `internal/ops/mcp.go` + `internal/tui/` | M |
+
+**Note:** Current behavior (line 285): `if !hasValue { continue }` — skips the entire server if no tokens are configured. With `env_defaults`, servers with defaults should still register.
 
 **AC:**
 - `koda mcp-install` discovers fork MCPs via `mcp-meta.json`
-- Fork MCPs appear in final mcp.json with resolved env vars
-- Missing required vars → prompt in TUI
+- Fork MCPs with `env_defaults` register even without tokens.env entries
+- Missing `env_required` vars → prompt in TUI
 - `koda upgrade` re-discovers fork MCPs
 
 ---
 
 ### Phase 4: Workspace-Level MCPs (Koda)
 
-| Task | Koda File (estimated) | Effort |
-|------|----------------------|--------|
-| Read `workspaces/<name>/mcp/mcp.json` on activation | `internal/workspace/activate.go` | M |
-| Parse workspace MCP schema (mcpServers + variables) | `internal/mcp/types.go` | S |
-| Read `defaults.env` from workspace | `internal/mcp/resolve.go` | S |
-| 3-tier variable resolution | `internal/mcp/resolve.go` | M |
-| Resolve `${VAR}` placeholders in server env/args | `internal/mcp/resolve.go` | M |
-| Handle `_overrides` (remove + replace global server) | `internal/mcp/generate.go` | S |
-| Tag workspace servers with `_source: "workspace:<name>"` | `internal/mcp/generate.go` | S |
-| On workspace switch: remove old, add new | `internal/workspace/activate.go` | M |
-| Resolve built-in path variables | `internal/mcp/resolve.go` | S |
+**Key insight:** `walkWorkspaceMCPMetas()` currently scans `workspaces/` for `mcp-meta.json` — this finds fork MCPs in workspace subdirs. It does NOT read `workspaces/<team>/mcp/mcp.json` (our proposed workspace-level format). A new function is needed.
+
+| Task | Koda File | Effort |
+|------|-----------|--------|
+| New function: `readWorkspaceMcpConfig(steerRoot, wsName)` — reads `workspaces/<name>/mcp/mcp.json` | `internal/ops/mcp.go` (new) | M |
+| New function: `readWorkspaceDefaultsEnv(steerRoot, wsName)` — reads `workspaces/<name>/mcp/defaults.env` | `internal/ops/mcp.go` (new) | S |
+| New function: `resolveVariables(server, tokensEnv, defaultsEnv, declarations)` — 3-tier resolution with `${VAR}` substitution | `internal/ops/mcp.go` (new) | M |
+| Resolve built-in path vars: `${KIRO_MCP_DIR}`, `${WORKSPACE_MCP_DIR}`, `${KIRO_ROOT}`, `${WORKSPACE_NAME}` | `internal/ops/mcp.go` (in resolveVariables) | S |
+| In `GenerateMcpJson`, after fork MCPs (line 290), load workspace MCPs with resolved vars | `internal/ops/mcp.go` | M |
+| Handle `_overrides` — `delete(servers, overrideName)` before adding workspace version | `internal/ops/mcp.go` | S |
+| Tag workspace servers with `_source: "workspace:<name>"` | `internal/ops/mcp.go` | S |
+| On workspace switch in `ws_materialize.go`: re-run `GenerateMcpJson` to swap workspace MCPs | `internal/ops/ws_materialize.go` | M |
 
 **AC:**
-- `koda workspace use app-team` loads workspace MCPs
-- Variables resolved from 3 tiers
+- `koda workspace use app-team` loads workspace MCPs from `mcp/mcp.json`
+- Variables resolved: tokens.env → defaults.env → variable.default
 - `_overrides` replaces global server
 - Switching workspaces swaps workspace MCPs cleanly
 - Missing required vars → TUI prompt + save to `tokens.env`
@@ -585,13 +618,15 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 
 ### Phase 5: TUI Integration (Koda)
 
-| Task | Koda File (estimated) | Effort |
-|------|----------------------|--------|
-| Prompt for missing required variables | `internal/tui/mcp_configure.go` (new) | M |
-| Mask `secret: true` variables in prompt | `internal/tui/mcp_configure.go` | S |
-| Save prompted values to `tokens.env` | `internal/config/tokens.go` | S |
-| Show workspace/fork variables in `koda configure` (TUI `m`) | `internal/tui/configure.go` | M |
-| Skip prompt if all variables resolved | `internal/mcp/resolve.go` | S |
+**Existing:** TUI `m` key opens token configuration (`internal/tui/app.go`). `internal/cli/configure.go` handles `koda configure`.
+
+| Task | Koda File | Effort |
+|------|-----------|--------|
+| On workspace activation, detect missing required vars and trigger prompt | `internal/ops/ws_materialize.go` + `internal/tui/` | M |
+| Mask `secret: true` / `env_secret` variables in prompt | `internal/tui/` | S |
+| Save prompted values to `tokens.env` via existing `WriteTokens()` | `internal/ops/tokens.go` | S |
+| In TUI `m` screen, add section showing workspace + fork variables | `internal/tui/app.go` | M |
+| Skip prompt if all variables already resolved from tokens.env | `internal/ops/mcp.go` (in resolveVariables) | S |
 
 **AC:**
 - First workspace activation prompts for missing vars
@@ -602,11 +637,13 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 
 ### Phase 6: `koda mcp status` Command (Koda)
 
-| Task | Koda File (estimated) | Effort |
-|------|----------------------|--------|
-| New `koda mcp status` subcommand | `cmd/mcp_status.go` (new) | M |
-| Read mcp.json, group by `_source` | `internal/mcp/status.go` (new) | S |
-| Display table with source + config status | `internal/mcp/status.go` | S |
+**Existing:** `internal/cli/mcp.go` has MCP-related CLI commands.
+
+| Task | Koda File | Effort |
+|------|-----------|--------|
+| New `status` subcommand under `koda mcp` | `internal/cli/mcp.go` | M |
+| Read mcp.json, group by `_source` field | `internal/ops/mcp.go` (new function) | S |
+| Display table with source + config status (configured/missing vars) | `internal/cli/mcp.go` | S |
 
 **Output example:**
 ```
