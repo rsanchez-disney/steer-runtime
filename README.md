@@ -6,12 +6,6 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 > Requires an Amazon Q Developer license for Kiro CLI access.
 
-## Demo
-
-<p align="center">
-  <img src="docs/assets/Steer-Runtime-Demo.gif" alt="Steer Runtime Demo" width="800" />
-</p>
-
 ---
 
 ## New Users — Quick Start
