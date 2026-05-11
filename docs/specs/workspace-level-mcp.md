@@ -500,3 +500,178 @@ The steer-orchestrator agent is aware of workspace-level MCPs via `shared/contex
 2. Explain the variable resolution order
 3. Guide `_overrides` usage for team-configured global servers
 4. Remind about `defaults.env` for non-secret team values vs `tokens.env` for secrets
+
+---
+
+## Detailed Implementation Plan
+
+### Affected Repositories
+
+| Repo | Changes | Owner |
+|------|---------|-------|
+| **steer-runtime** | Config, templates, context, spec | Ricardo / steer team |
+| **Koda** (Go binary) | Core implementation: discovery, resolution, merge, TUI | Koda team |
+
+---
+
+### Phase 1: User Server Preservation — ✅ Done (steer-runtime)
+
+| Task | File | Status |
+|------|------|--------|
+| Detect user-added servers by prefix matching | `setup.sh` | ✅ |
+| Merge user servers back after regeneration | `setup.sh` | ✅ |
+
+**Koda equivalent:** Update `GenerateMcpJson` to do the same detection + preservation.
+
+---
+
+### Phase 2: `_source` Tracking (Koda)
+
+| Task | Koda File (estimated) | Effort |
+|------|----------------------|--------|
+| Add `_source` field to MCP server struct | `internal/mcp/types.go` | S |
+| Tag servers with source on write | `internal/mcp/generate.go` | S |
+| Identify user servers by absence of `_source`/`_managed` | `internal/mcp/generate.go` | S |
+| Preserve `_source: "user"` servers during regeneration | `internal/mcp/generate.go` | S |
+
+**AC:**
+- `koda upgrade` preserves user-added servers
+- Final mcp.json has `_source` on every entry
+- No behavioral change for users without custom MCPs
+
+---
+
+### Phase 3: Fork-Level MCP Discovery (Koda)
+
+| Task | Koda File (estimated) | Effort |
+|------|----------------------|--------|
+| Scan `shared/tools/mcp-servers/*/mcp-meta.json` | `internal/mcp/discover.go` (new) | M |
+| Parse `mcp-meta.json` schema | `internal/mcp/types.go` | S |
+| Differentiate global vs fork servers | `internal/mcp/discover.go` | S |
+| Resolve env vars: `tokens.env` → `env_defaults` | `internal/mcp/resolve.go` (new) | M |
+| Register fork servers with `_source: "fork"` | `internal/mcp/generate.go` | S |
+| Run `npm install` for fork MCPs with `package.json` | `internal/mcp/install.go` | S |
+
+**AC:**
+- `koda mcp-install` discovers fork MCPs via `mcp-meta.json`
+- Fork MCPs appear in final mcp.json with resolved env vars
+- Missing required vars → prompt in TUI
+- `koda upgrade` re-discovers fork MCPs
+
+---
+
+### Phase 4: Workspace-Level MCPs (Koda)
+
+| Task | Koda File (estimated) | Effort |
+|------|----------------------|--------|
+| Read `workspaces/<name>/mcp/mcp.json` on activation | `internal/workspace/activate.go` | M |
+| Parse workspace MCP schema (mcpServers + variables) | `internal/mcp/types.go` | S |
+| Read `defaults.env` from workspace | `internal/mcp/resolve.go` | S |
+| 3-tier variable resolution | `internal/mcp/resolve.go` | M |
+| Resolve `${VAR}` placeholders in server env/args | `internal/mcp/resolve.go` | M |
+| Handle `_overrides` (remove + replace global server) | `internal/mcp/generate.go` | S |
+| Tag workspace servers with `_source: "workspace:<name>"` | `internal/mcp/generate.go` | S |
+| On workspace switch: remove old, add new | `internal/workspace/activate.go` | M |
+| Resolve built-in path variables | `internal/mcp/resolve.go` | S |
+
+**AC:**
+- `koda workspace use app-team` loads workspace MCPs
+- Variables resolved from 3 tiers
+- `_overrides` replaces global server
+- Switching workspaces swaps workspace MCPs cleanly
+- Missing required vars → TUI prompt + save to `tokens.env`
+
+---
+
+### Phase 5: TUI Integration (Koda)
+
+| Task | Koda File (estimated) | Effort |
+|------|----------------------|--------|
+| Prompt for missing required variables | `internal/tui/mcp_configure.go` (new) | M |
+| Mask `secret: true` variables in prompt | `internal/tui/mcp_configure.go` | S |
+| Save prompted values to `tokens.env` | `internal/config/tokens.go` | S |
+| Show workspace/fork variables in `koda configure` (TUI `m`) | `internal/tui/configure.go` | M |
+| Skip prompt if all variables resolved | `internal/mcp/resolve.go` | S |
+
+**AC:**
+- First workspace activation prompts for missing vars
+- Subsequent activations skip prompt (vars in tokens.env)
+- `koda configure` shows all variable sources
+
+---
+
+### Phase 6: `koda mcp status` Command (Koda)
+
+| Task | Koda File (estimated) | Effort |
+|------|----------------------|--------|
+| New `koda mcp status` subcommand | `cmd/mcp_status.go` (new) | M |
+| Read mcp.json, group by `_source` | `internal/mcp/status.go` (new) | S |
+| Display table with source + config status | `internal/mcp/status.go` | S |
+
+**Output example:**
+```
+📋 MCP Servers:
+
+  Global (5):
+    ✅ jira          configured
+    ✅ confluence    configured
+    ✅ github-disney configured
+    ✅ mermaid       configured
+    ✅ bruno         configured
+
+  Fork (1):
+    ✅ splunkweb     configured
+
+  Workspace: app-team (2):
+    ✅ payments-confluence  configured
+    ⚠️  config-db            missing: CONFIG_DB_PASS
+
+  User (1):
+    ✅ my-custom-tool
+```
+
+---
+
+### Phase 7: Scaffold Command (Koda, optional)
+
+| Task | Effort |
+|------|--------|
+| `koda mcp add <name>` — scaffold into active workspace `mcp/` | S |
+| `koda mcp add <name> --fork` — scaffold into `shared/tools/mcp-servers/` | S |
+| Generate `mcp-meta.json` or `mcp.json` entry from prompts | S |
+
+---
+
+### Implementation Timeline
+
+| Sprint | Phases | Deliverable |
+|--------|--------|-------------|
+| Sprint 1 | Phase 1 ✅ + Phase 2 | User preservation in Koda + `_source` tracking |
+| Sprint 2 | Phase 3 | Fork-level discovery via `mcp-meta.json` |
+| Sprint 3 | Phase 4 + Phase 5 | Workspace MCPs + TUI prompts |
+| Sprint 4 | Phase 6 + Phase 7 | `koda mcp status` + scaffold |
+
+---
+
+### steer-runtime Deliverables
+
+| Item | Status | PR |
+|------|--------|-----|
+| `setup.sh` fix (Phase 1) | ✅ | #342 |
+| Spec document | ✅ | #342 |
+| Template skeleton | ✅ | #342 |
+| Orchestrator context | ✅ | #342 |
+| `mcp-meta.json` on existing global MCPs | Follow-up | — |
+| Example workspace MCP (app-team) | Follow-up | — |
+
+### Koda Deliverables
+
+| Phase | Depends On | Estimated Effort |
+|-------|-----------|-----------------|
+| Phase 2: `_source` tracking | steer-runtime PR #342 | 3–5 SP |
+| Phase 3: Fork discovery | Phase 2 | 5–8 SP |
+| Phase 4: Workspace MCPs | Phase 2 + 3 | 8–13 SP |
+| Phase 5: TUI prompts | Phase 4 | 5–8 SP |
+| Phase 6: `koda mcp status` | Phase 2 | 3–5 SP |
+| Phase 7: Scaffold | Phase 4 | 2–3 SP |
+| **Total** | | **26–42 SP** |
