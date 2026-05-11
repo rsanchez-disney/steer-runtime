@@ -42,11 +42,32 @@ The MCP config uses multi-instance naming. Here's how server names map to tool p
 
 **Always prefer dedicated MCP servers over Compass for Jira and Confluence.** Dedicated servers have instance-specific auth, richer schemas, and multi-instance support. Use Compass for email, logs, and ServiceNow.
 
-## Workspace-Level MCPs
+## Workspace-Level and Fork-Level MCPs
 
-Teams can define custom MCP servers in their workspace under `workspaces/<team>/mcp/`. These are automatically merged into the user's MCP config when the workspace is activated.
+Teams can define custom MCP servers at two levels:
 
-### Structure
+### Fork-level MCPs (`shared/tools/mcp-servers/<name>/`)
+
+Custom MCPs added to a team's steer-runtime fork. Koda auto-discovers them via `mcp-meta.json`:
+
+```json
+{
+  "name": "server-name",
+  "env": { "VAR": "description" },
+  "env_required": ["VAR"],
+  "env_secret": ["VAR"],
+  "env_defaults": { "VAR": "default" }
+}
+```
+
+- Koda scans `shared/tools/mcp-servers/*/mcp-meta.json` during `mcp-install`
+- Unknown servers (not in the global list) are registered as fork MCPs
+- Variables resolved from `tokens.env` → `env_defaults`
+- Tagged `_source: "fork"` in final mcp.json
+
+### Workspace-level MCPs (`workspaces/<team>/mcp/`)
+
+Team-specific MCPs that activate with the workspace:
 
 ```
 workspaces/<team>/mcp/
@@ -69,8 +90,8 @@ Key rules:
 
 ### Variable resolution order
 
-1. `~/.kiro/tokens.env` (user) → 2. `defaults.env` (team) → 3. `variable.default` (fallback)
+1. `~/.kiro/tokens.env` (user) → 2. `defaults.env` / `env_defaults` (team) → 3. `variable.default` (fallback)
 
 ### Server source priority (on name collision)
 
-User-added > Workspace > Global
+User-added > Workspace > Fork > Global

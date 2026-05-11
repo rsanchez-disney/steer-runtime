@@ -321,6 +321,161 @@ CONFIG_DB_HOST=latest-db.adpmtconfig.wdprapps.disney.com:3306
 
 ---
 
+## Fork-Level MCPs
+
+Teams running steer-runtime forks can add custom MCP servers directly to `shared/tools/mcp-servers/`. Koda must discover and register these automatically.
+
+### Discovery mechanism
+
+Each MCP server in `shared/tools/mcp-servers/<name>/` declares itself via `mcp-meta.json`:
+
+```json
+{
+  "name": "splunkweb",
+  "description": "Splunk Web browser automation via session cookie",
+  "env": {
+    "SPLUNKWEB_URL": "Splunk Web base URL",
+    "SPLUNKWEB_COOKIE": "Splunk session cookie (from browser DevTools)"
+  }
+}
+```
+
+### How Koda handles fork-level MCPs
+
+```
+koda upgrade / koda mcp-install
+  │
+  ├── Scan shared/tools/mcp-servers/*/mcp-meta.json
+  ├── For each discovered server:
+  │     ├── Check if it's a known global server → skip (already handled)
+  │     ├── If new (fork-added):
+  │     │     ├── Read env vars from mcp-meta.json
+  │     │     ├── Resolve from tokens.env (or prompt if missing)
+  │     │     ├── Register in mcp.json with _source: "fork"
+  │     │     └── npm install if package.json exists
+  │     └── Tag with _managed: true, _source: "fork"
+  └── Write final mcp.json
+```
+
+### `mcp-meta.json` schema (unified)
+
+```json
+{
+  "name": "server-name",
+  "description": "Human-readable description",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "VAR_NAME": "Description of this variable"
+  },
+  "env_required": ["VAR_NAME"],
+  "env_secret": ["VAR_NAME"],
+  "env_defaults": {
+    "VAR_NAME": "default-value"
+  }
+}
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Server name used in mcp.json |
+| `description` | No | Shown in `koda mcp status` |
+| `type` | No | `node` (default), `docker`, `python` |
+| `entry` | No | Entry point relative to server dir (default: `dist/index.cjs`) |
+| `env` | No | Map of env var name → description |
+| `env_required` | No | List of required env vars |
+| `env_secret` | No | List of secret env vars (masked in TUI) |
+| `env_defaults` | No | Default values for env vars |
+
+### Example: fork-added `splunkweb-mcp`
+
+```
+shared/tools/mcp-servers/splunkweb-mcp/
+├── mcp-meta.json       ← Koda reads this to auto-register
+├── .env.example        ← Developer reference
+├── package.json
+├── src/
+│   └── index.ts
+└── dist/
+    └── index.cjs       ← Built entry point
+```
+
+`mcp-meta.json`:
+```json
+{
+  "name": "splunkweb",
+  "description": "Splunk Web browser automation via session cookie",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "SPLUNKWEB_URL": "Splunk Web base URL",
+    "SPLUNKWEB_COOKIE": "Splunk session cookie"
+  },
+  "env_required": ["SPLUNKWEB_URL", "SPLUNKWEB_COOKIE"],
+  "env_secret": ["SPLUNKWEB_COOKIE"],
+  "env_defaults": {
+    "SPLUNKWEB_URL": "https://splunk.wdprapps.disney.com"
+  }
+}
+```
+
+Koda generates in `mcp.json`:
+```json
+{
+  "splunkweb": {
+    "command": "node",
+    "args": ["~/.kiro/tools/mcp-servers/splunkweb-mcp/dist/index.cjs"],
+    "env": {
+      "SPLUNKWEB_URL": "https://splunk.wdprapps.disney.com",
+      "SPLUNKWEB_COOKIE": "<from tokens.env>"
+    },
+    "_managed": true,
+    "_source": "fork"
+  }
+}
+```
+
+---
+
+## Three-Level MCP Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Final ~/.kiro/settings/mcp.json                    │
+├─────────────────────────────────────────────────────┤
+│  User-added servers          _source: "user"        │  ← personal, never touched
+├─────────────────────────────────────────────────────┤
+│  Workspace MCPs              _source: "workspace:X" │  ← team, from workspaces/<X>/mcp/
+│    Variables: tokens.env > defaults.env > default    │
+├─────────────────────────────────────────────────────┤
+│  Fork MCPs                   _source: "fork"        │  ← fork, from shared/tools/mcp-servers/
+│    Variables: tokens.env > mcp-meta.json defaults    │
+├─────────────────────────────────────────────────────┤
+│  Global MCPs                 _source: "global"      │  ← platform (jira, confluence, github...)
+│    Variables: tokens.env                             │
+└─────────────────────────────────────────────────────┘
+```
+
+### Priority on name collision
+
+**user > workspace > fork > global**
+
+### Koda resolution flow
+
+```
+koda upgrade / koda workspace use <name>
+  │
+  ├── 1. Generate global servers (from known list + tokens.env)
+  ├── 2. Discover fork servers (scan mcp-meta.json in shared/tools/mcp-servers/)
+  ├── 3. Load workspace servers (from workspaces/<active>/mcp/mcp.json)
+  ├── 4. Preserve user-added servers (no _managed flag or _source: "user")
+  ├── 5. Resolve all ${VAR} references
+  ├── 6. Prompt for missing required variables
+  └── 7. Write merged mcp.json with _source tags
+```
+
+---
+
 ## Backward Compatibility
 
 This feature is fully backward compatible:
