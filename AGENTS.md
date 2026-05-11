@@ -956,7 +956,7 @@ Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHA
 
 
 
-## Profile: core (4 agents)
+## Profile: core (5 agents)
 
 Shared utility agents available across all profiles.
 
@@ -983,6 +983,13 @@ Shared utility agents available across all profiles.
 **Purpose:** Parses and analyzes PDFs, DOCX, XLSX, and other document formats. Supports OCR for scanned documents, extracts text, summarizes content, and outputs markdown  
 **Use for:** Document parsing, text extraction, OCR, content summarization, document comparison  
 **MCP Servers:** confluence, mywiki
+
+
+#### deck_builder_agent
+**File:** `profiles/core/agents/deck_builder_agent.json`  
+**Purpose:** Generates PPTX presentations from markdown or context. Supports audience-level adaptation, custom styling, diagrams, charts, and images  
+**Use for:** Presentation generation, slide decks, executive summaries, technical talks, workshop materials  
+**MCP Servers:** mermaid, confluence, mywiki
 
 ---
 
