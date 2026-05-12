@@ -1,0 +1,16 @@
+{
+  "title": "Requirements Hub",
+  "sections": [
+    { "id": "epics", "title": "Active Epics", "source": "jira", "query": "project = {prefix} AND type = Epic AND status != Done", "display": "cards", "maxItems": 6, "powers": [
+      { "id": "prd", "label": "Generate PRD", "prompt": "Generate a Product Requirements Document for epic {key} \"{summary}\". Include objectives, user stories, acceptance criteria, and success metrics." },
+      { "id": "breakdown", "label": "Break Down", "prompt": "Break down epic {key} \"{summary}\" into user stories with acceptance criteria." }
+    ]},
+    { "id": "unrefined", "title": "Unrefined Stories", "source": "jira", "query": "project = {prefix} AND type = Story AND status = Open", "display": "table", "maxItems": 10, "powers": [
+      { "id": "refine", "label": "Refine", "prompt": "Refine story {key} \"{summary}\". Add detailed acceptance criteria, edge cases, and technical notes." },
+      { "id": "estimate", "label": "Estimate", "prompt": "Estimate {key} \"{summary}\" using story points. Consider complexity, uncertainty, and effort." }
+    ]},
+    { "id": "scope", "title": "Sprint Scope", "source": "jira", "query": "project = {prefix} AND sprint in openSprints()", "display": "metric", "powers": [
+      { "id": "gaps", "label": "Gap Analysis", "prompt": "Analyze requirements gaps in the current sprint for {prefix}. Identify missing acceptance criteria, unclear scope, or untested scenarios." }
+    ]}
+  ]
+}

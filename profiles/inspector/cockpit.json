@@ -1,0 +1,13 @@
+{
+  "title": "Code Inspector",
+  "sections": [
+    { "id": "reviews", "title": "Pending Reviews", "source": "jira", "query": "project = {prefix} AND status = 'In Review'", "display": "cards", "maxItems": 8, "powers": [
+      { "id": "review", "label": "Code Review", "prompt": "Perform a code review for {key} \"{summary}\". Check security, quality, performance, and testing." },
+      { "id": "security", "label": "Security Scan", "prompt": "Run a security scan on changes for {key} \"{summary}\". Check for vulnerabilities, secrets, and compliance." },
+      { "id": "compliance", "label": "Compliance", "prompt": "Check compliance for {key} \"{summary}\" against PII, PCI-DSS, GDPR, and accessibility standards." }
+    ]},
+    { "id": "tech-debt", "title": "Technical Debt", "source": "jira", "query": "project = {prefix} AND type = Task AND labels = tech-debt", "display": "table", "maxItems": 10, "powers": [
+      { "id": "assess", "label": "Assess Impact", "prompt": "Assess the impact of technical debt item {key} \"{summary}\". Include risk, effort to fix, and priority recommendation." }
+    ]}
+  ]
+}
