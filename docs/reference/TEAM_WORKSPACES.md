@@ -216,6 +216,47 @@ When `workspace_path` is set on a workspace (or inherited from a parent), projec
 
 Koda resolves this to `~/Workspace/Disney/DisneyPaymentsOrg/wdpr-config-services`. The `repo` field enables auto-cloning when the directory doesn't exist.
 
+### Environment Variables in `workspace_path`
+
+`workspace_path` supports environment variable expansion for cross-platform compatibility. This allows the same `workspace.json` to work across macOS, Linux, and Windows without modification.
+
+**Supported formats:**
+
+| Format | Example | Platform |
+|--------|---------|----------|
+| `~` | `~/Workspace/Disney` | All (expands to home dir) |
+| `${VAR}` | `${WORKSPACE_ROOT}/Disney` | All (recommended) |
+| `$VAR` | `$HOME/Workspace/Disney` | All |
+| `%VAR%` | `%USERPROFILE%\Workspace\Disney` | Windows |
+
+**Recommended approach** — use `${VAR}` syntax:
+
+```json
+{
+  "workspace_path": "${WORKSPACE_ROOT}/Disney/DisneyPaymentsOrg"
+}
+```
+
+Each team member sets the env var on their machine:
+
+```bash
+# macOS/Linux (~/.zshrc or ~/.bashrc)
+export WORKSPACE_ROOT=/Users/ricardo/Workspace
+
+# Windows (System Environment Variables)
+set WORKSPACE_ROOT=C:\Users\ricardo\Workspace
+```
+
+**Common variables:**
+
+| Variable | macOS/Linux | Windows |
+|----------|-------------|---------|
+| `HOME` | `/Users/ricardo` | `C:\Users\ricardo` |
+| `USERPROFILE` | (not set) | `C:\Users\ricardo` |
+| Custom: `WORKSPACE_ROOT` | Set by user | Set by user |
+
+**Path separators** are normalized automatically — use `/` in `workspace.json` and Koda converts to `\` on Windows.
+
 ---
 
 ## Syncing Repos

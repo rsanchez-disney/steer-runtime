@@ -95,3 +95,22 @@ Key rules:
 ### Server source priority (on name collision)
 
 User-added > Workspace > Fork > Global
+
+
+## Workspace Path Configuration
+
+`workspace_path` in `workspace.json` supports environment variable expansion for cross-platform compatibility.
+
+**Recommended:** Use `${VAR}` syntax so the same config works on macOS, Linux, and Windows:
+
+```json
+"workspace_path": "${WORKSPACE_ROOT}/Disney/DisneyPaymentsOrg"
+```
+
+**Supported formats:** `~`, `${VAR}`, `$VAR`, `%VAR%` (Windows)
+
+When helping users create or configure workspaces:
+- Suggest `${WORKSPACE_ROOT}` or `~/` for portability
+- Never hardcode absolute paths like `/Users/username/...`
+- Path separators are normalized automatically — always use `/` in JSON
+- Guide users to set the env var in their shell profile (`~/.zshrc`, `~/.bashrc`, or Windows System Environment Variables)
