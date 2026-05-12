@@ -42,6 +42,9 @@
 - [Enterprise Memory Bank](memory/ENTERPRISE_MEMORY_BANK_ASSESSMENT.md) — Assessment
 - [Memory Bank Diagrams](memory/ENTERPRISE_MEMORY_BANK_DIAGRAMS.md) — Diagrams
 
+## Specs
+- [Artifact emit, Koda flavors & steer-master maintenance](specs/artifact-emit-and-steer-master-maintenance.md) — canonical abstraction, IDE emission, agent-maintained workflow (pair review)
+
 ## Meta
 - [Roadmap](ROADMAP.md)
 - [Documentation Status](DOCUMENTATION_STATUS.md)
