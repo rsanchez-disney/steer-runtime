@@ -956,7 +956,7 @@ Manages steer-runtime and Koda releases — version bumps, RELEASE_NOTES.md, CHA
 
 
 
-## Profile: core (3 agents)
+## Profile: core (6 agents)
 
 Shared utility agents available across all profiles.
 
@@ -976,6 +976,27 @@ Shared utility agents available across all profiles.
 **Purpose:** Fetches and analyzes Jira stories, Confluence pages, and GitHub repos  
 **Use for:** Story analysis, requirements extraction, cross-system context gathering  
 **MCP Servers:** jira, confluence, mywiki, github
+
+
+#### document_analyzer_agent
+**File:** `profiles/core/agents/document_analyzer_agent.json`  
+**Purpose:** Parses and analyzes PDFs, DOCX, XLSX, and other document formats. Supports OCR for scanned documents, extracts text, summarizes content, and outputs markdown  
+**Use for:** Document parsing, text extraction, OCR, content summarization, document comparison  
+**MCP Servers:** confluence, mywiki
+
+
+#### deck_builder_agent
+**File:** `profiles/core/agents/deck_builder_agent.json`  
+**Purpose:** Generates PPTX presentations from markdown or context. Supports audience-level adaptation, custom styling, diagrams, charts, and images  
+**Use for:** Presentation generation, slide decks, executive summaries, technical talks, workshop materials  
+**MCP Servers:** mermaid, confluence, mywiki
+
+
+#### ai_adoption_stats_agent
+**File:** `profiles/core/agents/ai_adoption_stats_agent.json`  
+**Purpose:** Measures AI adoption across teams using GitHub commit patterns and Jira historical data. Identifies trends, compares teams, and produces statistical summaries  
+**Use for:** AI adoption measurement, team comparison, trend analysis, adoption scoring, velocity correlation  
+**MCP Servers:** github, jira, confluence, mywiki
 
 ---
 

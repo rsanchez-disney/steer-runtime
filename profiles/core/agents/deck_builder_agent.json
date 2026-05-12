@@ -1,0 +1,39 @@
+{
+  "name": "deck_builder_agent",
+  "description": "Generates PPTX presentations from markdown or context. Supports audience-level adaptation, custom styling, diagrams, charts, and images.",
+  "prompt": "deck_builder_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking",
+    "@mermaid/*",
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@mermaid/*",
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to protected dirs"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for secrets before writing"
+      }
+    ]
+  }
+}
