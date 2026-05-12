@@ -155,6 +155,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
                 "customfield_10002",
             ];
 
+            let epicSet = false;
             for (const fieldId of epicFieldIds) {
                 try {
                     const testUpdates = {
@@ -164,19 +165,33 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
                     console.error(`Trying Epic Link field ID: ${fieldId}`);
                     await apiClient.updateJiraTicket(ticketId, testUpdates);
                     console.error(`Success! Epic Link field ID is: ${fieldId}`);
+                    epicSet = true;
                     break;
                 } catch (error) {
                     console.error(
                         `Failed with ${fieldId}: ${error instanceof Error ? error.message : "Unknown error"}`,
                     );
-                    if (fieldId === epicFieldIds[epicFieldIds.length - 1]) {
-                        // Last attempt failed, proceed without Epic Link
-                        console.error(
-                            "All Epic Link field IDs failed, proceeding without Epic Link",
-                        );
-                        await apiClient.updateJiraTicket(ticketId, updates);
-                    }
                 }
+            }
+
+            // Fallback: use Agile API to assign to epic (bypasses screen schemes)
+            if (!epicSet) {
+                try {
+                    console.error(`Trying Agile API fallback for epic link...`);
+                    await apiClient.assignIssuesToEpic(epicLink, [ticketId]);
+                    console.error(`Success! Epic link set via Agile API: ${ticketId} → ${epicLink}`);
+                    epicSet = true;
+                } catch (agileErr) {
+                    console.error(`Agile API fallback also failed: ${agileErr instanceof Error ? agileErr.message : "Unknown error"}`);
+                }
+            }
+
+            // Apply remaining updates without epic link field
+            if (!epicSet) {
+                console.error("All Epic Link methods failed, proceeding without Epic Link");
+            }
+            if (Object.keys(updates).length > 0) {
+                await apiClient.updateJiraTicket(ticketId, updates);
             }
         } else {
             await apiClient.updateJiraTicket(ticketId, updates);
