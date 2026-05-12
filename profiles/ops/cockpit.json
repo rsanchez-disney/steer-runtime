@@ -1,0 +1,16 @@
+{
+  "title": "Operations Center",
+  "sections": [
+    { "id": "incidents", "title": "Open Incidents", "source": "jira", "query": "project = {prefix} AND type = Bug AND priority in (Highest, High) AND status != Done", "display": "cards", "maxItems": 5, "powers": [
+      { "id": "rca", "label": "RCA", "prompt": "Perform root cause analysis for incident {key} \"{summary}\". Include timeline, impact, and prevention measures." },
+      { "id": "runbook", "label": "Runbook", "prompt": "Create a runbook for handling {key} \"{summary}\". Include diagnosis steps, resolution, and rollback procedures." }
+    ]},
+    { "id": "releases", "title": "Recent Releases", "source": "jira", "query": "project = {prefix} AND type = Story AND status = Done AND updated >= -7d", "display": "table", "maxItems": 10, "powers": [
+      { "id": "notes", "label": "Release Notes", "prompt": "Generate release notes for recent {prefix} deployments. Include changes, fixes, and known issues." },
+      { "id": "rollback", "label": "Rollback Plan", "prompt": "Create a rollback plan for the latest {prefix} release. Include steps, verification, and communication." }
+    ]},
+    { "id": "health", "title": "System Health", "source": "jira", "query": "project = {prefix} AND sprint in openSprints() AND type = Task", "display": "metric", "powers": [
+      { "id": "status", "label": "Health Check", "prompt": "Generate a system health report for {prefix}. Check deployments, error rates, and infrastructure status." }
+    ]}
+  ]
+}

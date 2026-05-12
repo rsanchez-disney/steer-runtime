@@ -1,0 +1,12 @@
+{
+  "title": "Cloud Operations",
+  "sections": [
+    { "id": "infra-tasks", "title": "Infrastructure Tasks", "source": "jira", "query": "project = {prefix} AND type = Task AND sprint in openSprints()", "display": "cards", "maxItems": 8, "powers": [
+      { "id": "plan", "label": "Infra Plan", "prompt": "Create an infrastructure plan for {key} \"{summary}\". Include resources, configuration, and deployment steps." },
+      { "id": "rca", "label": "RCA", "prompt": "Perform root cause analysis for {key} \"{summary}\"." }
+    ]},
+    { "id": "incidents", "title": "Open Issues", "source": "jira", "query": "project = {prefix} AND type = Bug AND status != Done", "display": "table", "maxItems": 6, "powers": [
+      { "id": "runbook", "label": "Runbook", "prompt": "Create a runbook for {key} \"{summary}\". Include diagnosis, resolution, and prevention." }
+    ]}
+  ]
+}

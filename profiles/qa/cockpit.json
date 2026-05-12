@@ -1,0 +1,39 @@
+{
+  "title": "Quality Dashboard",
+  "sections": [
+    {
+      "id": "defects",
+      "title": "Active Defects",
+      "source": "jira",
+      "query": "project = {prefix} AND type = Bug AND status != Done",
+      "display": "cards",
+      "maxItems": 8,
+      "powers": [
+        { "id": "rca", "label": "Root Cause", "prompt": "Perform root cause analysis on {key} \"{summary}\". Identify the likely cause and suggest a fix." },
+        { "id": "test", "label": "Write Test", "prompt": "Write a test case that would catch the bug described in {key} \"{summary}\"." }
+      ]
+    },
+    {
+      "id": "sprint-bugs",
+      "title": "Sprint Bug Count",
+      "source": "jira",
+      "query": "project = {prefix} AND type = Bug AND sprint in openSprints()",
+      "display": "metric",
+      "powers": [
+        { "id": "report", "label": "QA Report", "prompt": "Generate a QA quality report for the current sprint in {prefix}. Include bug density, severity distribution, and recommendations." }
+      ]
+    },
+    {
+      "id": "untested",
+      "title": "Stories Without Tests",
+      "source": "jira",
+      "query": "project = {prefix} AND type = Story AND sprint in openSprints()",
+      "display": "table",
+      "maxItems": 10,
+      "powers": [
+        { "id": "plan", "label": "Test Plan", "prompt": "Create a test plan for {key} \"{summary}\". Include functional, edge case, and integration test scenarios." },
+        { "id": "e2e", "label": "Generate E2E", "prompt": "Generate end-to-end test scenarios in Gherkin for {key} \"{summary}\"." }
+      ]
+    }
+  ]
+}

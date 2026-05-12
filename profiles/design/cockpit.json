@@ -1,0 +1,12 @@
+{
+  "title": "Design Ops",
+  "sections": [
+    { "id": "design-tasks", "title": "Design Tasks", "source": "jira", "query": "project = {prefix} AND type = Task AND sprint in openSprints()", "display": "cards", "maxItems": 8, "powers": [
+      { "id": "ux-review", "label": "UX Review", "prompt": "Perform a UX review for {key} \"{summary}\". Check accessibility (WCAG 2.1 AA), usability patterns, and consistency." },
+      { "id": "specs", "label": "Extract Specs", "prompt": "Extract design specifications for {key} \"{summary}\". Include spacing, colors, typography, and component states." }
+    ]},
+    { "id": "handoff", "title": "Pending Handoff", "source": "jira", "query": "project = {prefix} AND status = 'In Review'", "display": "table", "maxItems": 6, "powers": [
+      { "id": "handoff-doc", "label": "Handoff Doc", "prompt": "Generate a design-to-dev handoff document for {key} \"{summary}\". Include component specs, interactions, and edge cases." }
+    ]}
+  ]
+}
