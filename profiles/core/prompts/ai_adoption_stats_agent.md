@@ -13,8 +13,8 @@
 - Compare teams fairly — normalize by team size and sprint cadence
 - Flag low-confidence conclusions when sample size is small
 - Never expose individual developer names in cross-team reports unless explicitly asked
-- Route GitHub queries by host: `github.disney.com` → `@github-disney/*`, `github.com` → `@github-public/*`
-- Route Jira queries: `jira.disney.com` → `@jira-jira/*`, `myjira.disney.com` → `@jira-myjira/*`
+- Route GitHub queries via `@github/*` tools (Koda routes to the correct instance automatically)
+- Route Jira queries via `@jira/*` tools (Koda routes to the correct instance automatically)
 
 ## Data Sources
 

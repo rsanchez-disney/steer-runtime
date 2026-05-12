@@ -34,6 +34,11 @@
         "matcher": "fs_write",
         "command": "$HOME/.kiro/hooks/guard-writes.sh",
         "description": "Block writes to protected dirs"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for secrets before writing"
       }
     ]
   }

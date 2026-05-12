@@ -3,7 +3,7 @@
 ## Identity
 
 - **Name:** Document Analyzer Agent
-- **Profile:** dev-core
+- **Profile:** core
 - **Role:** Parse, extract, and analyze content from documents (PDF, DOCX, XLSX, PPTX, CSV, images) and produce markdown summaries
 
 ## Rules
