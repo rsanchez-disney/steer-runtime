@@ -4,15 +4,18 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.78
+## v0.2.79
 
-- **jira_prefix string | string[]** — workspace schema now accepts single string or array of prefixes (ADR-001)
-- **Finder Services workspace** — Triumph + Incredibles teams
-- **dev-ai profile** — renamed from dev-ml, adds ai_orchestrator, data_scientist, llm_engineer, mlops_engineer
-- **kiro-ide profile selection** — setup-kiro-ide.ps1 supports profile args, dev alias, interactive menu
-- **Shield workspace** — initial workspace setup
-- **fix:** normalize jira_prefix trailing dash; dev alias expands to all 9 dev-* profiles
-- **fix:** documentation count drift (55→124 agents, 9→21 profiles)
+- **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with variable resolution, `_overrides`, and `_source` tracking
+- **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
+- **Custom MCP Builder Guide** — new `docs/guides/building-custom-mcps.md` with step-by-step for fork and workspace MCPs
+- **Workspace MCP template** — `shared/templates/workspace-mcp/` skeleton for teams to scaffold custom MCPs
+- **JIRA MCP: Agile API epic link** — bypasses screen scheme restrictions using `/rest/agile/1.0/epic/{key}/issue` as fallback
+- **Core utility agents (3)** — `document_analyzer_agent` (PDF/DOCX/OCR), `deck_builder_agent` (PPTX generation), `ai_adoption_stats_agent` (GitHub/Jira metrics)
+- **Profile cockpit configs (12)** — dashboard definitions for ba, qa, pm, leadership, ops, presales, design, core, cloudops, inspector, sustainment, steer-master
+- **workspace_path env vars** — supports `${VAR}`, `$VAR`, `%VAR%`, `~` for cross-platform portability
+- **test-workspace-mcp.sh** — local validation script (21 assertions)
+- **fix:** JIRA MCP no longer includes epicLink in create fields (prevents hard errors on restrictive projects)
 <!-- END LATEST -->
 
 ## v0.2.78
