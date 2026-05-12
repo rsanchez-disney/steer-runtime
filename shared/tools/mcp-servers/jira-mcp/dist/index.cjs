@@ -5974,13 +5974,6 @@ var JiraApiClient = class _JiraApiClient {
     if (reporter) {
       fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
     }
-    if (epicLink) {
-      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
-      const resolved = resolveCustomFieldIds2(["epicLink"]);
-      if (resolved.length > 0) {
-        fields[resolved[0]] = epicLink;
-      }
-    }
     if (storyPoints !== void 0) {
       const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
       const resolved = resolveCustomFieldIds2(["storyPoints"]);

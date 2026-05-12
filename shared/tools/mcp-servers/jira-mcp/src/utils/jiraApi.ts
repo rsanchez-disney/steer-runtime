@@ -292,13 +292,8 @@ export class JiraApiClient {
             fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
         }
 
-        if (epicLink) {
-            const { resolveCustomFieldIds } = await import("./customFields.js");
-            const resolved = resolveCustomFieldIds(["epicLink"]);
-            if (resolved.length > 0) {
-                fields[resolved[0]] = epicLink;
-            }
-        }
+        // Epic Link is NOT included in create fields — many projects block it via screen schemes.
+        // Instead, we assign to epic via Agile API after creation (see below).
 
         if (storyPoints !== undefined) {
             const { resolveCustomFieldIds } = await import("./customFields.js");
