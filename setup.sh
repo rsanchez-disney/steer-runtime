@@ -1037,10 +1037,23 @@ TOKHEADER
         # Discover Confluence instances from tokens.env
         _confluence_instances=$(discover_confluence_instances "$KIRO_ROOT/tokens.env")
         
-        # Preserve existing powers section if present
+        # Preserve existing powers section and user-added MCP servers
         existing_powers="{}"
+        existing_user_servers="{}"
         if [ -f "$mcp_settings" ]; then
             existing_powers=$(python3 -c "import json; d=json.load(open('$mcp_settings')); print(json.dumps(d.get('powers',{})))" 2>/dev/null || echo "{}")
+            existing_user_servers=$(python3 -c "
+import json
+MANAGED_PREFIXES = ('jira', 'confluence', 'github', 'mermaid', 'bruno', 'splunk-mcp', 'appdynamics-mcp', 'servicenow-mcp', 'qtest', 'compass', 'sharepoint', 'chrome', 'memory', 'yax')
+d = json.load(open('$mcp_settings'))
+servers = d.get('mcpServers', {})
+user_servers = {k: v for k, v in servers.items() if not any(k == p or k.startswith(p + '-') for p in MANAGED_PREFIXES) and not v.get('_managed')}
+print(json.dumps(user_servers))
+" 2>/dev/null || echo "{}")
+            if [ "$existing_user_servers" != "{}" ]; then
+                _user_count=$(python3 -c "import json; print(len(json.loads('$existing_user_servers')))" 2>/dev/null || echo "0")
+                echo "  ℹ️  Preserving $_user_count user-added MCP server(s)"
+            fi
         fi
         
         # Pre-compute WSL-aware MCP paths
@@ -1240,6 +1253,12 @@ if compass_token:
 powers = json.loads('$existing_powers')
 if powers:
     mcp['powers'] = powers
+
+# Merge back user-added MCP servers (preserved from previous config)
+user_servers = json.loads('''$existing_user_servers''')
+if user_servers:
+    mcp['mcpServers'].update(user_servers)
+
 with open('$mcp_settings', 'w') as f:
     json.dump(mcp, f, indent=2)
     f.write('\n')
