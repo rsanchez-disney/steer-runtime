@@ -1,0 +1,90 @@
+site_name: steer-runtime
+site_description: AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in any IDE.
+site_url: https://github.disney.com/pages/SANCR225/steer-runtime/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/GETTING_STARTED.md
+      - Setup (macOS/Linux): getting-started/SETUP.md
+      - Windows Setup: getting-started/WINDOWS_SETUP.md
+      - Dev Quick Start: getting-started/DEV_QUICK_START.md
+      - Daily Commands: getting-started/DAILY_COMMANDS.md
+      - Mobile Agents: getting-started/MOBILE_AGENTS_SETUP.md
+      - Kiro UI Setup: getting-started/KIRO_UI_SETUP.md
+      - Cursor Setup: getting-started/CURSOR_SETUP.md
+      - IDE Comparison: getting-started/IDE_CONCEPTS_COMPARISON.md
+      - Kiro CLI vs UI: getting-started/KIRO_CLI_VS_UI.md
+  - Architecture:
+      - Overview: architecture/ARCHITECTURE.md
+      - How it works: architecture/CONTEXT_FLOW.md
+      - Design: architecture/DESIGN.md
+      - Project Overview: architecture/PROJECT_OVERVIEW.md
+      - System Layers: architecture/SYSTEM_LAYERS.md
+      - Platform Diagram: architecture/PLATFORM_DIAGRAM.md
+      - Orchestrator Delegation: architecture/ORCHESTRATOR_DELEGATION_REVIEW.md
+      - ADR-001 Multi Jira Prefix: architecture/ADR-001-multi-jira-prefix.md
+  - Profiles:
+      - Dev Prompt Guide: profiles/dev/PROMPT_GUIDE.md
+      - BA Prompt Guide: profiles/ba/BA_PROMPT_GUIDE.md
+      - QA Prompt Guide: profiles/qa/QA_PROMPT_GUIDE.md
+      - Ops Prompt Guide: profiles/ops/OPS_PROMPT_GUIDE.md
+      - PM Prompt Guide: profiles/pm/PM_PROMPT_GUIDE.md
+      - Leadership Prompt Guide: profiles/leadership/LEADERSHIP_PROMPT_GUIDE.md
+  - Reference:
+      - Full Reference: reference/REFERENCE.md
+      - MCP Setup: reference/MCP_SETUP.md
+      - MCP Reference: reference/MCP_REFERENCE.md
+      - Hooks & Powers: reference/HOOKS_AND_POWERS.md
+      - Team Workspaces: reference/TEAM_WORKSPACES.md
+      - Koda CLI: reference/KODA_CLI_REFERENCE.md
+      - Eval Framework: reference/EVAL_FRAMEWORK.md
+      - Fork Strategy: reference/FORK_STRATEGY.md
+      - AI Metrics Tracking: reference/AI_METRICS_TRACKING.md
+      - Troubleshooting: reference/TROUBLESHOOTING.md
+      - Glossary: reference/GLOSSARY.md
+  - Guides:
+      - Building Custom MCPs: guides/building-custom-mcps.md
+      - MCP Levels: guides/mcp-levels.md
+  - Memory:
+      - Memory MCP: memory/MEMORY_MCP.md
+      - yax Architecture: memory/yax-architecture.md
+      - Enterprise Assessment: memory/ENTERPRISE_MEMORY_BANK_ASSESSMENT.md
+      - Memory Diagrams: memory/ENTERPRISE_MEMORY_BANK_DIAGRAMS.md
+  - Changelog: CHANGELOG.md
