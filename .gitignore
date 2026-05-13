@@ -43,3 +43,4 @@ VERSION
 
 # Kiro IDE hooks (workspace-level, not committed)
 .kiro/hooks/
+site/
