@@ -1,0 +1,40 @@
+{
+  "description": "Creates golden (snapshot) tests for Flutter widgets with proper Riverpod mocking and async chain handling",
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ]
+  },
+  "includeMcpJson": true,
+  "name": "golden_test_agent",
+  "profile": "dev-mobile",
+  "prompt": "golden_test_agent.md",
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md",
+    "file://profiles/dev-mobile/context/golden_test_patterns.md",
+    "file://profiles/dev-mobile/context/golden_test_layout_patterns.md"
+  ],
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        "test/**"
+      ]
+    }
+  }
+}
