@@ -92,15 +92,21 @@ The standard `/testReport/api/json` endpoint will return "Not found" — do NOT 
 **Job:** <job-name>
 **Builds analyzed:** #101, #100, #99, #98, #97
 
-| # | Scenario | Failures | Builds Failed | Last Error |
-|---|----------|:--------:|---------------|------------|
-| 1 | DLR Parking - Single Product - Default View - Verify the Important Details Module | 3/3 | #101,#100,#99 | AssertionError: The restriction module title is missing |
-| 2 | DLR Special Events - UC Checkout - Payments - GC | 3/3 | #101,#100,#99 | JavascriptException: Cannot read properties of null... |
+| # | Feature | Scenario | Failures | Builds Failed | Last Error |
+|---|---------|----------|:--------:|---------------|------------|
+| 1 | DLR Parking | Single Product - Default View - Verify the Important Details Module | 3/3 | #101,#100,#99 | AssertionError: The restriction module title is missing |
+| 2 | DLR Special Events | UC Checkout - Payments - GC | 3/3 | #101,#100,#99 | JavascriptException: Cannot read properties of null... |
 
 ### Summary
 - **Total scenarios failing ≥2 times:** N
 - **Most critical:** <scenario> (failing every build)
-- **Root cause patterns:** Group failures by error type (UI element missing, JS null reference, backend 500, data issue)
+- **Root cause patterns:**
+  - 🖱️ **UI element missing/changed** — elements not found, assertions on missing content
+  - 💥 **JS null reference / runtime error** — click targets not rendering
+  - 🔌 **Backend 500 / service error** — downstream service failures
+  - 📅 **Data/config/state issue** — empty sequences, missing test data
+  - 🏷️ **Content/copy change** — text changed or removed
+  - ⏱️ **Timeout / timing issue** — waits exceeded, race conditions
 - **Recommendation:** Prioritize investigation of top failures; single-occurrence failures omitted (likely flaky)
 ```
 
@@ -136,8 +142,10 @@ Focus on step #1 first — a single fix will unblock 5 scenarios.
 ## Guidelines
 
 - Only report scenarios that failed in **2 or more** of the last 5 builds
-- Sort by failure count descending, then alphabetically
+- Extract the **Feature** from the scenario name prefix (text before the first ` - ` separator). E.g., `DLR Special Events - UC Checkout - Payments - GC` → Feature: `DLR Special Events`, Scenario: `UC Checkout - Payments - GC`
+- Sort by failure count descending, then by feature, then alphabetically
 - Include the last error message (truncated to 120 chars) for quick diagnosis
+- Prefix the failure count with a severity emoji: 🚨 = failing every build, ⚠️ = 3-4 builds, ⚡ = 2 builds
 - If a job has fewer than 5 completed builds, use all available builds and note it
 - If test reports are unavailable for a build (aborted early), skip it and note which builds lacked reports
 - Group root cause patterns in the summary (UI changes, backend errors, data issues, timing)
@@ -180,10 +188,11 @@ This agent requires the Jenkins MCP server. If not already configured, guide the
      --command npx \
      --args "mcp-remote,http://stage.jenkins-main-digitalqe.wdprapps.disney.com/mcp-server/sse,--header,Authorization:Basic <BASE64_TOKEN>,--allow-http"
    ```
-5. **Save credentials to `~/.kiro/tokens.env`:**
+5. **Save credentials to `~/.kiro/tokens.env`** (ensure newline before appending):
    ```bash
-   echo 'JENKINS_USER=<username>' >> ~/.kiro/tokens.env
-   echo 'JENKINS_TOKEN=<token>' >> ~/.kiro/tokens.env
+   sed -i '' -e '$a\' ~/.kiro/tokens.env 2>/dev/null
+   grep -q "^JENKINS_USER=" ~/.kiro/tokens.env && sed -i '' 's/^JENKINS_USER=.*/JENKINS_USER=<username>/' ~/.kiro/tokens.env || echo 'JENKINS_USER=<username>' >> ~/.kiro/tokens.env
+   grep -q "^JENKINS_TOKEN=" ~/.kiro/tokens.env && sed -i '' 's/^JENKINS_TOKEN=.*/JENKINS_TOKEN=<token>/' ~/.kiro/tokens.env || echo 'JENKINS_TOKEN=<token>' >> ~/.kiro/tokens.env
    ```
 
 Once configured, the `@jenkins/*` tools become available for querying builds and test results.
