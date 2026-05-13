@@ -15,5 +15,5 @@
   ],
   "enable_tools": true,
   "jira_prefix": ["AEXP-", "IEXP-", "COREEXP-"],
-  "workspace_path": "~/development/Repos"
+  "workspace_path": "${SHIELD_WORKSPACE_PATH}"
 }
