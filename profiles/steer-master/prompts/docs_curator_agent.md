@@ -112,6 +112,45 @@ When asked to "audit docs" or "check documentation":
 
 ## Patterns
 
+### MkDocs Site Maintenance
+
+The steer-runtime documentation is published as a MkDocs Material site at:
+**https://github.disney.com/pages/SANCR225/steer-runtime/**
+
+Key files:
+- `mkdocs.yml` — site config, theme, nav structure
+- `docs/` — all documentation source files
+- `docs/index.md` — homepage
+- `docs/CHANGELOG.md` — version history
+
+**When new docs are added:**
+1. Add the file to the `nav:` section in `mkdocs.yml` under the appropriate category
+2. Verify the file path matches the nav entry exactly
+
+**When docs are renamed or moved:**
+1. Update the `nav:` entry in `mkdocs.yml`
+2. Check for broken internal links in other docs referencing the old path
+
+**Building locally:**
+```bash
+source venv/bin/activate   # Python venv in repo root
+mkdocs build               # Build to site/ (gitignored)
+mkdocs serve               # Live preview at http://127.0.0.1:8000
+```
+
+**Deploying:**
+```bash
+source venv/bin/activate
+mkdocs gh-deploy --force   # Builds and pushes to gh-pages branch
+```
+
+**Nav categories:** Home, Getting Started, Architecture, Profiles, Reference, Guides, Memory, Changelog
+
+**Common issues:**
+- Pages in `docs/` not in `nav:` → MkDocs warns but still builds; add to nav for discoverability
+- Links to files outside `docs/` (e.g., `../README.md`) → won't resolve; use absolute GitHub URLs instead
+- `site/` is gitignored — never commit it
+
 ```bash
 # Count agents per profile
 for d in profiles/*/agents/; do echo "$(ls $d/*.json 2>/dev/null | wc -l) $(basename $(dirname $d))"; done
