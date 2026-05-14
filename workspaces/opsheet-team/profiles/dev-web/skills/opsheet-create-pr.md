@@ -17,6 +17,14 @@ Use this skill when the user says "make a PR", "create a PR", or similar. It gat
 
 ## Workflow
 
+### Initial Message
+
+When this skill is activated, immediately tell the user:
+
+> "📋 Using **opsheet-create-pr** skill. Let me gather context and prepare your PR..."
+
+---
+
 ### Step 0: Gather Context
 
 1. **Get the current branch name:**
@@ -152,135 +160,22 @@ Capture and display the PR URL to the user.
 
 ### Step 6: Slack CR Notification
 
-After the PR is created successfully, send a Code Review request to the team's Slack channel.
+After the PR is created successfully, follow the **Slack CR Notification workflow** defined in `steering/ui-pr-slack-notification.md`.
 
-#### 6a. Ask the user for:
+That steering file is the single source of truth for:
+- Team Slack ID lookup table
+- Required user inputs (urgency, pod, reviewers, code champs)
+- Webhook URL, payload structure, and field mapping
+- Platform-specific send commands (bash, PowerShell, CMD)
+- All notification rules
 
-1. **Urgency** — _"What is the CR urgency?"_
-   - Options: `Not Urgent`, `Timely, but Not Urgent`, `Urgent`, `Blocker`
-   - Default: `Not Urgent`
-   - If Jira priority is available, suggest: P0/Blocker → `Blocker`, P1/Critical → `Urgent`, P2/High → `Timely, but Not Urgent`, P3+ → `Not Urgent`
-
-2. **Pod** — _"Which Pod does this belong to?"_
-   - Options: `Pod 1`, `Pod 2`, `Pod 3`, `Pod 4`, `Pod 5`
-
-3. **Pod Reviewers** — _"Who are the Pod reviewers? (provide names, I'll resolve the Slack IDs)"_
-   - **Required** — at least one reviewer. Maximum 2.
-   - Resolve names to Slack IDs using the lookup table below.
-
-4. **Code Champs** (optional) — _"Is a Code Champs review required? If yes, defaults are Victor Rodriguez, Joseth Guerrero, and Patty Horna"_
-   - If yes without names, use defaults: `U76RE3DEG`, `U02P1N7KAQH`, `U02J4T55YTF`
-   - If no, send `U123456789` for all three champ fields.
-
-#### 6b. Team Slack ID Lookup
-
-Resolve reviewer/champ names to Slack IDs. Match is **case-insensitive** against any alias.
-
-| Full Name | Aliases | Slack ID |
-|-----------|---------|----------|
-| Andres Herrera | a.herrera | UJYJCBAHF |
-| Alan Valdez | | U023HDUSW8J |
-| Alvaro Joel Paz Monsalve | alvaro.pazmonsalve | UTM7GK9R8 |
-| Brenda Sabrina Schenkel | brenda.schenkel | U01A00B2JJJ |
-| Cintia Tahirih Jaliri Pancca | Cintia Tahirih | U02490VGT3Q |
-| Cristian Tangarife | | U03N17J2MDM |
-| Daniel Alejandro Esquivel Correa | Daniel Esquivel | U037BKA9WBT |
-| Fabio Catriel Cruz Gonella | Fabio Cruz | U03J8DUPXUG |
-| Jonathan Villaverde | | U03JCQVENBX |
-| Joseth Guerrero Escobar | Joseth David, Joseth Guerrero | U02P1N7KAQH |
-| Juan David Porras Palencia | Juan David Porras | U02653L79GE |
-| Juan Pablo Ortiz Palacio | Juan Pablo Ortiz | UDNDQSBQU |
-| Juan David Uribe Cardenas | Juanda Uribe | UCJNXGE6T |
-| Julian Murillo | | U06PBCEU45S |
-| Luis Gutierrez | Luis | UU02LDF88 |
-| Mario Andres Ojeda | Mario Ojeda | UDNAR0Z7E |
-| Cristian Martin Chavez Gutoff | Martín Chavez, Martin Chavez | U09102DCHV5 |
-| Martin Perez | | U03CSE5TU48 |
-| Miguel Angel Sanchez Gonzalez | Miguel Sanchez | U03KEGFQEH3 |
-| Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE |
-| Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB |
-| Nilda De Marco | | U05RF4FHBE2 |
-| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEA |
-| Patricia Horna | Patty Horna | U02J4T55YTF |
-| Ricardo Martinez | | UKF19US83 |
-| Rodrigo Veloso | | U023AJ90KM4 |
-| Victor Rodriguez Muñoz | Victor Rodriguez | U76RE3DEG |
-
-If a name can't be matched, warn the user and ask for the Slack ID manually.
-
-#### 6c. Build and send the payload
-
-**Auto-derived fields:**
-- `greeting`: a short, friendly greeting in Spanish (e.g., `"Hola equipo, por favor revisen cuando puedan. ¡Gracias!"`)
-- `url`: the PR URL from Step 5
-- `jira_ticket`: `https://myjira.disney.com/browse/OPS-{number}` (from the branch). If no ticket, use `"N/A"`.
-- `type`: derived from branch prefix using this mapping:
-
-| Branch prefix | Type |
-|---------------|------|
-| `feat/` | `Feature` |
-| `fix/` | `Fix` |
-| `bugfix/` | `BugFix` |
-| `refactor/` | `Refactor` |
-| `docs/` | `Docs` |
-| `style/` | `Style` |
-| `perf/` | `Performance` |
-| `test/` | `Test` |
-| `build/`, `chore/` | `Build` |
-
-- `goal`: brief summary of the PR objective (1-2 sentences, from the PR description)
-
-**Payload:**
-
-```json
-{
-  "urgency": "<string>",
-  "pod": "<string>",
-  "greeting": "<string>",
-  "url": "<pr_url>",
-  "jira_ticket": "<jira_url>",
-  "type": "<type>",
-  "goal": "<goal>",
-  "reviewer_1": "<slack_user_id or empty>",
-  "reviewer_2": "<slack_user_id or empty>",
-  "champ_1": "<slack_user_id or U123456789>",
-  "champ_2": "<slack_user_id or U123456789>",
-  "champ_3": "<slack_user_id or U123456789>"
-}
-```
-
-Each `reviewer_*` and `champ_*` field takes a **single** Slack user ID (not `<@ID>` format). Unused reviewer slots → `""`. Unused champ slots → `"U123456789"`.
-
-#### 6d. Confirm before sending
-
-Show the user a summary of the payload. Let them correct any data before firing.
-
-**⏸ CHECKPOINT — User approves the Slack notification payload**
-
-#### 6e. Send the webhook
-
-Detect the OS and use the appropriate method:
-
-**macOS / Linux:**
-```bash
-curl -s -X POST \
-  -H "Content-Type: application/json" \
-  -d '<json_payload>' \
-  "https://hooks.slack.com/triggers/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"
-```
-
-**Windows (PowerShell — preferred):**
-```powershell
-$body = '<json_payload>'
-Invoke-RestMethod -Uri "https://hooks.slack.com/triggers/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" -Method Post -ContentType "application/json" -Body $body
-```
-
-**Windows (CMD / Git Bash with curl):**
-```cmd
-curl -s -X POST -H "Content-Type: application/json" -d "<escaped_json>" "https://hooks.slack.com/triggers/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"
-```
-
-**If the webhook fails**, report the error but do NOT fail the PR workflow. The PR is already created.
+**Summary of what to do here:**
+1. Ask the user for: urgency, pod, pod reviewers, and (optionally) code champs.
+2. Auto-derive: greeting (Spanish), PR URL, Jira ticket URL, type (from branch prefix), goal (from PR description).
+3. Resolve reviewer/champ names to Slack IDs using the lookup table in the steering file.
+4. Show the user a summary of the payload for confirmation.
+5. Send the webhook using the appropriate OS method.
+6. If the webhook fails, report the error but do NOT fail the PR workflow — the PR is already created.
 
 ---
 
@@ -298,10 +193,7 @@ Only ask for information you cannot derive automatically:
 | PR Title | ✅ | Branch prefix + ticket summary |
 | Additional related tickets | ❌ | Ask user if there are linked tickets not in Jira |
 | Checklist confirmations | ❌ | Ask user to verify if unsure |
-| Urgency | ❌ | Ask user (suggest from Jira priority if available) |
-| Pod | ❌ | Ask user |
-| Pod Reviewers | ❌ | Ask user (resolve names to Slack IDs) |
-| Code Champs | ❌ | Ask user (optional, has defaults) |
+| Slack notification fields | ❌ | See `steering/ui-pr-slack-notification.md` for details |
 
 ---
 
@@ -309,12 +201,10 @@ Only ask for information you cannot derive automatically:
 
 - **Never create a PR on `main`** — verify you're on a feature/fix branch.
 - **Always pause for user approval** before creating the PR (Step 3 checkpoint).
-- **Do not skip the Slack notification** — always send after PR creation.
+- **Do not skip the Slack notification** — always execute Step 6 after PR creation.
 - **Title must follow conventional format**: `{type}: OPS-{number} - {description}`.
 - **Description must be meaningful** — not just the ticket title repeated.
 - **Test results are required** — run `npm run pre-push` and paste the full output into the PR body. If pre-push can't run, note it explicitly.
 - **One PR per ticket** — if the branch covers multiple tickets, list all in Related Tickets.
 - **Check all boxes honestly** — don't auto-check "All tests passing" if tests failed.
-- **Slack notification is non-blocking** — if the webhook fails, the PR is still valid.
-- **Resolve names to Slack IDs** — never send raw names in the webhook payload.
-- **Confirm Slack payload with user** — always show the summary before sending.
+- **Slack notification rules** — see `steering/ui-pr-slack-notification.md` for all webhook rules (non-blocking, resolve names, confirm payload, etc.).

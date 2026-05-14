@@ -47,7 +47,7 @@ Match by any of the aliases (full name, short name, username). Matching is **cas
 | Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE |
 | Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB |
 | Nilda De Marco | | U05RF4FHBE2 |
-| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEA |
+| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEAJ |
 | Patricia Horna | Patty Horna | U02J4T55YTF |
 | Ricardo Martinez | | UKF19US83 |
 | Rodrigo Veloso | | U023AJ90KM4 |
