@@ -138,3 +138,13 @@ Then run this skill by reading `~/.kiro/agents/` and generating the steering fil
   documented as reference for the user to recreate manually if needed.
 - If a prompt `.md` file is not found in `~/.kiro/prompts/`, log a warning and skip that agent
   in the per-agent files, but still include it in the routing table.
+
+  ## Configuration Paths
+
+- Agent definition: `~/.kiro/agents/ui.json`
+- Prompt: `~/.kiro/prompts/webui-developer.md`
+- Skills: `~/.kiro/skills/opsheet-ui-feature-implementation.md`, `~/.kiro/skills/opsheet-ui-bugfix.md`, `~/.kiro/skills/opsheet-create-pr.md`
+- Steering: `~/.kiro/steering/agent-ui.md`
+- Config root: `~/.kiro/` (resolves to `$USERPROFILE/.kiro/` or `$HOME/.kiro/`)
+
+
