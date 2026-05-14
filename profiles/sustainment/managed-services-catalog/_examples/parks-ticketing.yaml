@@ -1,0 +1,179 @@
+# ============================================================================
+# ADM Managed Services Catalog — REFERENCE EXAMPLE
+# ============================================================================
+# This is a fully populated example showing how a team would fill out their
+# application entry. Not all observability sections are required — only fill
+# in what applies to your app.
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP-4521"
+app_name: "parks-ticketing"
+full_name: "Parks & Experiences Ticketing Platform"
+description: "Handles ticket purchases, reservations, and entitlements for theme parks"
+
+# --- Ownership ---
+support_studio: "ROS - Parks Commerce"
+escalation_channel: "#parks-commerce-escalations"
+escalation_contacts:
+  - name: "Jane Smith"
+    role: "primary"
+    contact: "@jane.smith"
+  - name: "Bob Chen"
+    role: "SME"
+    contact: "@bob.chen"
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: "Parks Ticketing Platform"
+  assignment_group: "Parks Commerce Sustainment"
+  business_service: "Parks Digital Commerce"
+
+# --- Documentation ---
+documentation:
+  runbook: "https://mywiki.example.com/display/PARKS/Ticketing+Runbook"
+  wiki: "https://mywiki.example.com/display/PARKS/Ticketing"
+  architecture_diagram: "https://mywiki.example.com/display/PARKS/Ticketing+Architecture"
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "parks-ticketing/troubleshooting.md"
+  business_rules: "parks-ticketing/business-rules.md"
+  runbook: "parks-ticketing/runbook.md"
+
+# --- Components ---
+components:
+
+  # ---- API Gateway ----
+  - component_name: "ticketing-api"
+    component_type: "api"
+    description: "REST API for ticket purchase, lookup, and entitlement validation"
+
+    # Component-specific docs (this component is complex enough to warrant its own)
+    docs:
+      troubleshooting: "parks-ticketing/ticketing-api-troubleshooting.md"
+      runbook: "parks-ticketing/ticketing-api-runbook.md"
+
+    documentation:
+      wiki: "https://mywiki.example.com/display/PARKS/Ticketing+API"
+      architecture_diagram: "https://mywiki.example.com/display/PARKS/Ticketing+API+Architecture"
+
+    repository:
+      url: "https://github.disney.com/parks-commerce/ticketing-api"
+      branch: "main"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://harness.example.com/pipelines/ticketing-api-prod"
+      deploy_target: "ECS parks-commerce-prod/ticketing-api-prod"
+
+    health_check:
+      url: "https://ticketing-api.parks.example.com/health"
+      expected_status: 200
+
+    splunk:
+      index: "parks_commerce_prod"
+      source: "ticketing-api"
+      base_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-api
+      error_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-api level=ERROR
+        | stats count by error_code, message
+        | sort -count
+      latency_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-api
+        | stats avg(duration_ms) as avg_ms, p95(duration_ms) as p95_ms by endpoint
+        | where p95_ms > 2000
+
+    appdynamics:
+      app_name: "Parks-Ticketing"
+      app_id: "78432"
+      tier: "ticketing-api"
+      dashboard_url: "https://appd.example.com/controller/#/application/78432"
+
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "123456789012"
+      infra_type: "ECS"
+      cluster_id: "parks-commerce-prod"
+      service_name: "ticketing-api-prod"
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://ticketing-api.stage.parks.example.com/health"
+        splunk:
+          index: "parks_commerce_stage"
+          base_spl: >-
+            index=parks_commerce_stage sourcetype=ticketing-api
+        cloud:
+          region: "us-east-1"
+          service_name: "ticketing-api-stage"
+
+      load:
+        health_check:
+          url: "https://ticketing-api.load.parks.example.com/health"
+        splunk:
+          index: "parks_commerce_load"
+          base_spl: >-
+            index=parks_commerce_load sourcetype=ticketing-api
+        cloud:
+          region: "us-west-2"
+          service_name: "ticketing-api-load"
+
+  # ---- Order Processor ----
+  # (No component-level docs — falls back to app-level troubleshooting.md)
+  - component_name: "ticketing-order-processor"
+    component_type: "worker"
+    description: "Async order processing — consumes from SQS, writes to DynamoDB"
+
+    splunk:
+      index: "parks_commerce_prod"
+      source: "ticketing-order-processor"
+      base_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-order-processor
+      error_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-order-processor level=ERROR
+        | stats count by error_type, queue_name
+        | sort -count
+
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "123456789012"
+      infra_type: "ECS"
+      cluster_id: "parks-commerce-prod"
+      service_name: "ticketing-order-processor-prod"
+
+      cloudwatch:
+        log_group: "/ecs/ticketing-order-processor-prod"
+        namespace: "Parks/Ticketing"
+        alarm_prefix: "ticketing-order-"
+
+      services:
+        - type: "sqs"
+          name: "ticketing-orders-queue-prod"
+        - type: "dynamodb"
+          name: "ticketing-orders-table"
+
+  # ---- Nightly Reconciliation Batch ----
+  - component_name: "ticketing-recon-batch"
+    component_type: "batch"
+    description: "Nightly job reconciling ticket inventory with park systems"
+
+    splunk:
+      index: "parks_commerce_prod"
+      source: "ticketing-recon"
+      base_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-recon
+      error_spl: >-
+        index=parks_commerce_prod sourcetype=ticketing-recon status=FAILED
+
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "123456789012"
+      infra_type: "Lambda"

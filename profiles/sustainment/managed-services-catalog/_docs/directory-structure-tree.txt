@@ -1,0 +1,80 @@
+managed-services-catalog/
+│
+├── _schema/
+│   └── app-catalog.schema.json                  # JSON Schema for YAML validation
+│
+├── _templates/
+│   ├── app-template.yaml                        # Blank YAML template — teams copy this
+│   └── docs/
+│       ├── troubleshooting.md                   # Starter markdown for troubleshooting
+│       ├── business-rules.md                    # Starter markdown for business rules
+│       └── runbook.md                           # Starter markdown for runbook
+│
+├── _examples/
+│   └── parks-ticketing.yaml                     # Fully populated reference example
+│
+├── _docs/
+│   ├── agent-consumption-patterns.md            # How agents use the catalog
+│   ├── catalog-structure-tree.txt               # Field reference with types and examples
+│   └── directory-structure-tree.txt             # This file
+│
+├── _survey/
+│   ├── catalog-field-survey.csv                 # Field alignment survey for teams
+│   ├── catalog-new-fields-suggestions.csv       # New field proposals
+│   └── slack-message.md                         # Survey distribution message
+│
+│
+│   ┌─────────────────────────────────────────────────────────────────────┐
+│   │  studios/ — One self-contained folder per app                       │
+│   └─────────────────────────────────────────────────────────────────────┘
+│
+└── studios/
+    │
+    ├── studio-mars/                             # Studio: Mars (Checkout)
+    │   │
+    │   ├── BAPP0012680-Booking_Service/
+    │   │   ├── app.yaml                         # Structured catalog
+    │   │   ├── troubleshooting.md               # App-level troubleshooting
+    │   │   ├── business-rules.md                # App-level business rules
+    │   │   └── runbook.md                       # App-level runbook
+    │   │
+    │   ├── BAPP0012683-Cart_Service/
+    │   │   ├── app.yaml
+    │   │   ├── troubleshooting.md
+    │   │   ├── business-rules.md
+    │   │   └── runbook.md
+    │   │
+    │   └── BAPP0012692-Payment_Service/
+    │       ├── app.yaml
+    │       ├── troubleshooting.md
+    │       ├── business-rules.md
+    │       ├── runbook.md
+    │       └── payment-gateway-runbook.md       # Component-specific (optional)
+    │
+    ├── studio-rex/                              # Studio: Rex
+    │   │
+    │   ├── BAPPXXXX-App_Name/
+    │   │   ├── app.yaml
+    │   │   ├── troubleshooting.md
+    │   │   ├── business-rules.md
+    │   │   ├── runbook.md
+    │   │   └── component-a-troubleshooting.md   # Component-specific
+    │   └── ...
+    │
+    ├── studio-streaming-platform/               # Studio: Streaming Platform
+    │   │
+    │   ├── BAPPXXXX-Streaming_Playback/
+    │   │   ├── app.yaml
+    │   │   ├── troubleshooting.md
+    │   │   ├── business-rules.md
+    │   │   ├── runbook.md
+    │   │   └── playback-cdn-troubleshooting.md  # Component-specific
+    │   └── ...
+    │
+    └── studio-mobile-apps/                      # Studio: Mobile Apps
+        │
+        ├── BAPPXXXX-Parks_Mobile_iOS/
+        │   ├── app.yaml
+        │   ├── troubleshooting.md
+        │   └── business-rules.md                # No runbook needed for mobile
+        └── ...
