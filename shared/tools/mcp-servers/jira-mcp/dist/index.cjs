@@ -5974,13 +5974,6 @@ var JiraApiClient = class _JiraApiClient {
     if (reporter) {
       fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
     }
-    if (epicLink) {
-      const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
-      const resolved = resolveCustomFieldIds2(["epicLink"]);
-      if (resolved.length > 0) {
-        fields[resolved[0]] = epicLink;
-      }
-    }
     if (storyPoints !== void 0) {
       const { resolveCustomFieldIds: resolveCustomFieldIds2 } = await Promise.resolve().then(() => (init_customFields(), customFields_exports));
       const resolved = resolveCustomFieldIds2(["storyPoints"]);
@@ -6024,7 +6017,16 @@ var JiraApiClient = class _JiraApiClient {
       console.error("JIRA API Error Response:", errorText);
       throw new Error(`Failed to create JIRA issue: ${response.status} ${response.statusText} - ${errorText}`);
     }
-    return await response.json();
+    const result = await response.json();
+    if (epicLink && result.key) {
+      try {
+        await this.assignIssuesToEpic(epicLink, [result.key]);
+        console.error(`Epic link set via Agile API: ${result.key} \u2192 ${epicLink}`);
+      } catch (agileErr) {
+        console.error(`Warning: Could not set epic link via Agile API: ${agileErr}`);
+      }
+    }
+    return result;
   }
   async getJiraProjects() {
     const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`, {
@@ -6569,6 +6571,25 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`);
     }
   }
+  /**
+   * Assign issues to an Epic using the Agile API.
+   * This bypasses screen scheme restrictions that block customfield_10014 via REST API.
+   * POST /rest/agile/1.0/epic/{epicKey}/issue
+   */
+  async assignIssuesToEpic(epicKey, issueKeys) {
+    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/epic/${epicKey}/issue`, {
+      method: "POST",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ issues: issueKeys })
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to assign issues to epic ${epicKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+  }
 };
 
 // build/utils/formatting.js
@@ -6903,6 +6924,7 @@ async function handleJiraUpdateIssue(args) {
         "customfield_10006",
         "customfield_10002"
       ];
+      let epicSet = false;
       for (const fieldId of epicFieldIds) {
         try {
           const testUpdates = {
@@ -6912,14 +6934,27 @@ async function handleJiraUpdateIssue(args) {
           console.error(`Trying Epic Link field ID: ${fieldId}`);
           await apiClient.updateJiraTicket(ticketId, testUpdates);
           console.error(`Success! Epic Link field ID is: ${fieldId}`);
+          epicSet = true;
           break;
         } catch (error) {
           console.error(`Failed with ${fieldId}: ${error instanceof Error ? error.message : "Unknown error"}`);
-          if (fieldId === epicFieldIds[epicFieldIds.length - 1]) {
-            console.error("All Epic Link field IDs failed, proceeding without Epic Link");
-            await apiClient.updateJiraTicket(ticketId, updates);
-          }
         }
+      }
+      if (!epicSet) {
+        try {
+          console.error(`Trying Agile API fallback for epic link...`);
+          await apiClient.assignIssuesToEpic(epicLink, [ticketId]);
+          console.error(`Success! Epic link set via Agile API: ${ticketId} \u2192 ${epicLink}`);
+          epicSet = true;
+        } catch (agileErr) {
+          console.error(`Agile API fallback also failed: ${agileErr instanceof Error ? agileErr.message : "Unknown error"}`);
+        }
+      }
+      if (!epicSet) {
+        console.error("All Epic Link methods failed, proceeding without Epic Link");
+      }
+      if (Object.keys(updates).length > 0) {
+        await apiClient.updateJiraTicket(ticketId, updates);
       }
     } else {
       await apiClient.updateJiraTicket(ticketId, updates);

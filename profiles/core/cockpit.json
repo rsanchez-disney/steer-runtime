@@ -1,0 +1,12 @@
+{
+  "title": "Core Tools",
+  "sections": [
+    { "id": "my-tasks", "title": "My Tasks", "source": "jira", "query": "project = {prefix} AND assignee = currentUser() AND status != Done", "display": "cards", "maxItems": 8, "powers": [
+      { "id": "explain", "label": "Explain", "prompt": "Explain {key} \"{summary}\" — what's the scope and context?" },
+      { "id": "analyze", "label": "Analyze", "prompt": "Analyze {key} \"{summary}\". Identify key information and action items." }
+    ]},
+    { "id": "recent", "title": "Recently Updated", "source": "jira", "query": "project = {prefix} AND updated >= -2d", "display": "table", "maxItems": 10, "powers": [
+      { "id": "summary", "label": "Summarize", "prompt": "Summarize recent activity in {prefix} project over the last 2 days." }
+    ]}
+  ]
+}

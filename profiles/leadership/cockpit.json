@@ -1,0 +1,15 @@
+{
+  "title": "Executive View",
+  "sections": [
+    { "id": "portfolio", "title": "Portfolio Status", "source": "jira", "query": "project = {prefix} AND sprint in openSprints()", "display": "metric", "powers": [
+      { "id": "briefing", "label": "Executive Briefing", "prompt": "Generate an executive briefing for {prefix} project. Include sprint progress, risks, achievements, and next steps." },
+      { "id": "quarterly", "label": "Quarterly Report", "prompt": "Generate a quarterly business report for {prefix}. Include achievements, metrics, risks, roadmap, and AI adoption." }
+    ]},
+    { "id": "risks", "title": "Risks & Blockers", "source": "jira", "query": "project = {prefix} AND status = Blocked", "display": "cards", "maxItems": 5, "powers": [
+      { "id": "mitigate", "label": "Mitigation Plan", "prompt": "Create a risk mitigation plan for blocked item {key} \"{summary}\". Include impact, probability, and action items." }
+    ]},
+    { "id": "velocity", "title": "Team Delivery", "source": "jira", "query": "project = {prefix} AND sprint in openSprints() AND status = Done", "display": "table", "maxItems": 15, "powers": [
+      { "id": "report", "label": "Delivery Report", "prompt": "Generate a delivery report for {prefix} current sprint. Include completed items, velocity, and team performance." }
+    ]}
+  ]
+}

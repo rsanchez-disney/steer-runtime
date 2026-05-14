@@ -259,26 +259,36 @@ export class JiraApiClient {
         return await response.json();
     }
 
-    async createJiraIssue(
-        projectKey: string,
-        summary: string,
-        issueType: string,
-        description?: string,
-        assignee?: string,
-        reporter?: string,
-        epicLink?: string,
-        components?: string[],
-        labels?: string[],
-        sprint?: string,
-        storyPoints?: number,
-        customFields?: Record<string, unknown>,
-    ): Promise<any> {
+    async createJiraIssue(opts: {
+        projectKey: string;
+        summary: string;
+        issueType: string;
+        description?: string;
+        assignee?: string;
+        reporter?: string;
+        epicLink?: string;
+        components?: string[];
+        labels?: string[];
+        sprint?: string;
+        storyPoints?: number;
+        customFields?: Record<string, unknown>;
+        parent?: string;
+    }): Promise<any> {
+        const {
+            projectKey, summary, issueType, description, assignee,
+            reporter, epicLink, components, labels, sprint,
+            storyPoints, customFields, parent,
+        } = opts;
 
         const fields: any = {
             project: { key: projectKey },
             summary,
             issuetype: { name: issueType },
         };
+
+        if (parent) {
+            fields.parent = { key: parent };
+        }
 
         if (description) {
             fields.description = this.auth.isCloud() ? toADF(description) : description;
@@ -292,13 +302,8 @@ export class JiraApiClient {
             fields.reporter = this.auth.isCloud() ? { accountId: reporter } : { name: reporter };
         }
 
-        if (epicLink) {
-            const { resolveCustomFieldIds } = await import("./customFields.js");
-            const resolved = resolveCustomFieldIds(["epicLink"]);
-            if (resolved.length > 0) {
-                fields[resolved[0]] = epicLink;
-            }
-        }
+        // Epic Link is NOT included in create fields — many projects block it via screen schemes.
+        // Instead, we assign to epic via Agile API after creation (see below).
 
         if (storyPoints !== undefined) {
             const { resolveCustomFieldIds } = await import("./customFields.js");
@@ -361,7 +366,20 @@ export class JiraApiClient {
             );
         }
 
-        return await response.json();
+        const result = await response.json();
+
+        // If epicLink was requested, try Agile API as fallback
+        // (screen schemes may block customfield_10014 via REST API)
+        if (epicLink && result.key) {
+            try {
+                await this.assignIssuesToEpic(epicLink, [result.key]);
+                console.error(`Epic link set via Agile API: ${result.key} → ${epicLink}`);
+            } catch (agileErr) {
+                console.error(`Warning: Could not set epic link via Agile API: ${agileErr}`);
+            }
+        }
+
+        return result;
     }
 
     async getJiraProjects(): Promise<any> {
@@ -1175,6 +1193,35 @@ export class JiraApiClient {
             const errText = await response.text();
             throw new Error(
                 `Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+    }
+
+    /**
+     * Assign issues to an Epic using the Agile API.
+     * This bypasses screen scheme restrictions that block customfield_10014 via REST API.
+     * POST /rest/agile/1.0/epic/{epicKey}/issue
+     */
+    async assignIssuesToEpic(
+        epicKey: string,
+        issueKeys: string[],
+    ): Promise<void> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/agile/1.0/epic/${epicKey}/issue`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ issues: issueKeys }),
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to assign issues to epic ${epicKey}: ${response.status} ${response.statusText} - ${errText}`,
             );
         }
     }

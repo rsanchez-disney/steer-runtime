@@ -1,0 +1,40 @@
+{
+  "title": "Delivery Control",
+  "sections": [
+    {
+      "id": "blockers",
+      "title": "Blockers & Risks",
+      "source": "jira",
+      "query": "project = {prefix} AND status = Blocked AND sprint in openSprints()",
+      "display": "cards",
+      "maxItems": 5,
+      "powers": [
+        { "id": "unblock", "label": "Unblock Plan", "prompt": "Create an unblock plan for {key} \"{summary}\". Identify dependencies and suggest resolution steps." },
+        { "id": "escalate", "label": "Escalation", "prompt": "Draft an escalation email for blocked ticket {key} \"{summary}\". Include impact, urgency, and ask." }
+      ]
+    },
+    {
+      "id": "sprint-progress",
+      "title": "Sprint Items",
+      "source": "jira",
+      "query": "project = {prefix} AND sprint in openSprints()",
+      "display": "table",
+      "maxItems": 20,
+      "powers": [
+        { "id": "report", "label": "Sprint Report", "prompt": "Generate a sprint health report for {prefix} current sprint. Include progress, risks, blockers, and velocity." },
+        { "id": "standup", "label": "Standup", "prompt": "Generate today's standup summary based on {prefix} sprint activity. Include done, in progress, and blockers." }
+      ]
+    },
+    {
+      "id": "aging",
+      "title": "Stale Items (>5 days)",
+      "source": "jira",
+      "query": "project = {prefix} AND sprint in openSprints() AND status != Done AND updated <= -5d",
+      "display": "cards",
+      "maxItems": 5,
+      "powers": [
+        { "id": "followup", "label": "Follow Up", "prompt": "Draft a follow-up message for stale ticket {key} \"{summary}\" that hasn't been updated in over 5 days." }
+      ]
+    }
+  ]
+}

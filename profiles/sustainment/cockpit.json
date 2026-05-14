@@ -1,0 +1,13 @@
+{
+  "title": "Sustainment Dashboard",
+  "sections": [
+    { "id": "bugs", "title": "Active Bugs", "source": "jira", "query": "project = {prefix} AND type = Bug AND status != Done", "display": "cards", "maxItems": 8, "powers": [
+      { "id": "fix", "label": "Fix Plan", "prompt": "Create a fix plan for {key} \"{summary}\". Include root cause, solution approach, and testing strategy." },
+      { "id": "rca", "label": "Root Cause", "prompt": "Perform root cause analysis for {key} \"{summary}\"." }
+    ]},
+    { "id": "maintenance", "title": "Maintenance Tasks", "source": "jira", "query": "project = {prefix} AND type = Task AND sprint in openSprints()", "display": "table", "maxItems": 10, "powers": [
+      { "id": "plan", "label": "Plan", "prompt": "Create an implementation plan for {key} \"{summary}\"." },
+      { "id": "deps", "label": "Check Deps", "prompt": "Check dependencies for {key} \"{summary}\". Identify outdated packages and vulnerabilities." }
+    ]}
+  ]
+}

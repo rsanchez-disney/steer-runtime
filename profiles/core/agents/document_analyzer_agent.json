@@ -1,0 +1,38 @@
+{
+  "name": "document_analyzer_agent",
+  "description": "Parses and analyzes PDFs, DOCX, XLSX, and other document formats. Supports OCR for scanned documents, extracts text, summarizes content, and outputs markdown.",
+  "prompt": "document_analyzer_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "code",
+    "thinking",
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@confluence-confluence/*",
+    "@confluence-mywiki/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to protected dirs"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for secrets before writing"
+      }
+    ]
+  }
+}

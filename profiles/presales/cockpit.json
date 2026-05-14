@@ -1,0 +1,13 @@
+{
+  "title": "Client Hub",
+  "sections": [
+    { "id": "proposals", "title": "Active Proposals", "source": "jira", "query": "project = {prefix} AND type = Task AND status != Done", "display": "cards", "maxItems": 6, "powers": [
+      { "id": "brief", "label": "Project Brief", "prompt": "Generate a project brief for {key} \"{summary}\". Include scope, timeline, team, and budget estimate." },
+      { "id": "discovery", "label": "Discovery Questions", "prompt": "Generate discovery questions for {key} \"{summary}\". Focus on requirements, constraints, and success criteria." },
+      { "id": "feasibility", "label": "Feasibility", "prompt": "Assess technical feasibility for {key} \"{summary}\". Include risks, dependencies, and effort estimate." }
+    ]},
+    { "id": "pipeline", "title": "Pipeline", "source": "jira", "query": "project = {prefix} AND sprint in openSprints()", "display": "metric", "powers": [
+      { "id": "deck", "label": "Build Deck", "prompt": "Create a presentation deck outline for {prefix} presales pipeline. Include value proposition, approach, and timeline." }
+    ]}
+  ]
+}
