@@ -272,6 +272,7 @@ export class JiraApiClient {
         sprint?: string,
         storyPoints?: number,
         customFields?: Record<string, unknown>,
+        parent?: string,
     ): Promise<any> {
 
         const fields: any = {
@@ -279,6 +280,10 @@ export class JiraApiClient {
             summary,
             issuetype: { name: issueType },
         };
+
+        if (parent) {
+            fields.parent = { key: parent };
+        }
 
         if (description) {
             fields.description = this.auth.isCloud() ? toADF(description) : description;
