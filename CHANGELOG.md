@@ -23,9 +23,12 @@ All notable changes to steer-runtime.
 - **workspace_path env vars** — supports `${VAR}`, `$VAR`, `%VAR%`, `~` for cross-platform portability
 - **test-workspace-mcp.sh** — local validation script (21 assertions)
 - **Artifact emit model spec** — documentation for artifact emit model and steer-master maintenance (#347)
+- **Jira MCP: 270+ custom field aliases** — complete myjira field registry for all teams; friendly names resolve to correct field IDs (#355)
+- **Jira MCP: native sub-task creation** — `parent` parameter on `jira_create_issue` enables real Sub-tasks (#355)
 
 ### Changed
 - **kiro-cli 2.2.1 compat** — removed `contextBudget`, renamed `agentComplete` hook (#339)
+- **Jira MCP: refactored `createJiraIssue`** — replaced 13 positional params with typed options object (#355)
 
 ### Fixed
 - JIRA MCP no longer includes epicLink in create fields — prevents hard errors on restrictive projects
@@ -38,6 +41,7 @@ All notable changes to steer-runtime.
 - Duplicated context files removed from shared/context/ (#337)
 - Preserve user-added MCP servers during mcp-install regeneration
 - Correct MCP server prefixes in core agent configs
+- Jira MCP: sprint, storyPoints, epicLink field IDs corrected to match myjira instance (#355)
 
 ---
 

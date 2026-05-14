@@ -23,6 +23,9 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** Shield workspace config and README updates (#331, #353)
 - **fix:** release guardrails to prevent wrong-repo publishing (#332)
 - **fix:** docs cleanup — stale agent counts updated (55→124 agents, 9→21 profiles), mermaid diagrams, broken links (#333-#337)
+- **Jira MCP: 270+ custom field aliases** — complete myjira field registry so all teams can use friendly names (storyPoints, aiAssistedEffort, etc.) instead of raw IDs
+- **Jira MCP: native sub-task creation** — added `parent` parameter; agents can now create real Sub-tasks instead of Task+link workaround (#355)
+- **fix:** Jira MCP field ID corrections — sprint, storyPoints, epicLink now point to correct myjira fields
 <!-- END LATEST -->
 
 ## v0.2.79
