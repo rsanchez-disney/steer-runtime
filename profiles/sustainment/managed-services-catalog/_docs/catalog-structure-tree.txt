@@ -1,0 +1,141 @@
+APP LEVEL
+├── bapp_id                          string       "BAPP-4521"
+├── app_name                         string       "parks-ticketing"              (kebab-case)
+├── full_name                        string       "Parks & Experiences Ticketing Platform"
+├── description                      string       "Handles ticket purchases and entitlements"
+│
+├── support_studio                   string       "ROS - Parks Commerce"
+├── escalation_channel               string       "#parks-commerce-escalations"
+├── escalation_contacts[]
+│   ├── name                         string       "Jane Smith"
+│   ├── role                         enum         "primary"                      (primary|secondary|SME|manager)
+│   └── contact                      string       "@jane.smith"
+│
+├── servicenow
+│   ├── configuration_item           string       "Parks Ticketing Platform"
+│   ├── assignment_group             string       "Parks Commerce Sustainment"
+│   └── business_service             string       "Parks Digital Commerce"
+│
+├── documentation
+│   ├── runbook                      URI          "https://mywiki.example.com/display/PARKS/Ticketing+Runbook"
+│   ├── wiki                         URI          "https://mywiki.example.com/display/PARKS/Ticketing"
+│   └── architecture_diagram         URI          "https://mywiki.example.com/display/PARKS/Ticketing+Architecture"
+│
+├── docs
+│   ├── troubleshooting              path         "parks-ticketing/troubleshooting.md"
+│   ├── business_rules               path         "parks-ticketing/business-rules.md"
+│   └── runbook                      path         "parks-ticketing/runbook.md"
+│
+└── components[]
+
+    COMPONENT LEVEL (repeated per component)
+    ├── component_name               string       "ticketing-api"
+    ├── component_type               enum         "api"                          (api|worker|batch|frontend|database|queue|gateway|cache|mobile|sdk)
+    ├── description                  string       "REST API for ticket purchase and validation"
+    │
+    ├── docs
+    │   ├── troubleshooting          path         "parks-ticketing/ticketing-api-troubleshooting.md"
+    │   └── runbook                  path         "parks-ticketing/ticketing-api-runbook.md"
+    │
+    ├── documentation
+    │   ├── wiki                     URI          "https://mywiki.example.com/display/PARKS/Ticketing+API"
+    │   └── architecture_diagram     URI          "https://mywiki.example.com/display/PARKS/Ticketing+API+Architecture"
+    │
+    ├── repository
+    │   ├── url                      string       "https://github.disney.com/parks-commerce/ticketing-api"
+    │   ├── branch                   string       "main"
+    │   └── path                     string       "services/ticketing-api"       (monorepo path, optional)
+    │
+    ├── cicd
+    │   ├── platform                 string       "harness"                      (harness|github-actions|jenkins|spinnaker)
+    │   ├── pipeline_url             URI          "https://harness.example.com/pipelines/ticketing-api-prod"
+    │   └── deploy_target            string       "ECS parks-commerce-prod/ticketing-api-prod"
+    │
+    ├── health_check
+    │   ├── url                      URI          "https://ticketing-api.parks.example.com/health"
+    │   └── expected_status          integer      200
+    │
+    ├── splunk
+    │   ├── index                    string       "parks_commerce_prod"
+    │   ├── source                   string       "ticketing-api"
+    │   ├── base_spl                 SPL string   "index=parks_commerce_prod sourcetype=ticketing-api"
+    │   ├── error_spl                SPL string   "index=parks_commerce_prod sourcetype=ticketing-api level=ERROR | stats count by error_code"
+    │   └── latency_spl              SPL string   "index=parks_commerce_prod sourcetype=ticketing-api | stats avg(duration_ms) as avg_ms"
+    │
+    ├── appdynamics
+    │   ├── app_name                 string       "Parks-Ticketing"
+    │   ├── app_id                   string       "78432"
+    │   ├── tier                     string       "ticketing-api"
+    │   └── dashboard_url            URI          "https://appd.example.com/controller/#/application/78432"
+    │
+    ├── newrelic
+    │   ├── app_id                   string       "56789"
+    │   ├── account_id               string       "1234567"
+    │   └── dashboard_url            URI          "https://one.newrelic.com/dashboards/abc123"
+    │
+    ├── datadog
+    │   ├── service                  string       "ticketing-api"
+    │   ├── env                      string       "production"
+    │   └── dashboard_url            URI          "https://app.datadoghq.com/dashboard/xyz"
+    │
+    ├── grafana
+    │   ├── dashboard_uid            string       "abc123def"
+    │   ├── dashboard_url            URI          "https://grafana.example.com/d/abc123def"
+    │   └── datasource               string       "Prometheus-Prod"
+    │
+    ├── archer
+    │   └── record_id                string       "ARCH-9921"
+    │
+    └── cloud
+        ├── provider                 enum         "AWS"                          (AWS|GCP|Azure|on-prem)
+        ├── region                   string       "us-east-1"
+        ├── account_id               string       "123456789012"
+        ├── infra_type               enum         "ECS"                          (ECS|EKS|Lambda|GKE|EC2|VM|Fargate|CloudRun|AppEngine)
+        ├── cluster_id               string       "parks-commerce-prod"
+        ├── service_name             string       "ticketing-api-prod"
+        │
+        ├── cloudwatch
+        │   ├── log_group            string       "/ecs/ticketing-api-prod"
+        │   ├── namespace            string       "Parks/Ticketing"
+        │   └── alarm_prefix         string       "ticketing-api-"
+        │
+        ├── loginsights
+        │   ├── log_group            string       "/ecs/ticketing-api-prod"
+        │   └── saved_query          string       "error-rate-by-endpoint"
+        │
+        ├── gcp
+        │   ├── project_id           string       "parks-ticketing-prod"
+        │   └── log_filter           string       "resource.type=\"cloud_run_revision\" severity>=ERROR"
+        │
+        └── services[]
+            ├── type                 string       "sqs"                          (sqs|sns|s3|dynamodb|rds|elasticache|pubsub|firestore|bucket|cloud-sql|redis|...)
+            └── name                 string       "ticketing-orders-queue-prod"
+
+    └── other_environments                                                      (optional — only fields that differ from production)
+        ├── stage
+        │   ├── health_check
+        │   │   └── url              URI          "https://ticketing-api.stage.example.com/health"
+        │   ├── splunk
+        │   │   ├── index            string       "parks_commerce_stage"
+        │   │   └── base_spl         SPL string   "index=parks_commerce_stage sourcetype=ticketing-api"
+        │   └── cloud
+        │       ├── region           string       "us-east-1"
+        │       └── service_name     string       "ticketing-api-stage"
+        ├── load
+        │   ├── health_check
+        │   │   └── url              URI          "https://ticketing-api.load.example.com/health"
+        │   ├── splunk
+        │   │   ├── index            string       "parks_commerce_load"
+        │   │   └── base_spl         SPL string   "index=parks_commerce_load sourcetype=ticketing-api"
+        │   └── cloud
+        │       ├── region           string       "us-west-2"
+        │       └── service_name     string       "ticketing-api-load"
+        └── latest
+            ├── health_check
+            │   └── url              URI          "https://ticketing-api.latest.example.com/health"
+            ├── splunk
+            │   ├── index            string       "parks_commerce_latest"
+            │   └── base_spl         SPL string   "index=parks_commerce_latest sourcetype=ticketing-api"
+            └── cloud
+                ├── region           string       "us-west-2"
+                └── service_name     string       "ticketing-api-latest"

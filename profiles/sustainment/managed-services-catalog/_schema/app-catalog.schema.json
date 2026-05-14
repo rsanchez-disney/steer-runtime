@@ -1,0 +1,255 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://adm.disney.com/schemas/managed-services-catalog.schema.json",
+  "title": "ADM Managed Services Catalog - Application Entry",
+  "description": "Schema for validating application catalog YAML files used by sustainment agents and teams.",
+  "type": "object",
+  "required": ["bapp_id", "app_name", "support_studio", "servicenow", "components"],
+  "additionalProperties": false,
+  "properties": {
+    "bapp_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Business application ID from CMDB/Archer"
+    },
+    "app_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Short kebab-case name used in queries, alerts, and filenames"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Human-readable full name"
+    },
+    "description": {
+      "type": "string",
+      "description": "One-line purpose of this application"
+    },
+    "support_studio": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Owning sustainment studio/team"
+    },
+    "escalation_channel": {
+      "type": "string",
+      "description": "Slack channel, Teams channel, or email DL"
+    },
+    "escalation_contacts": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/escalation_contact" }
+    },
+    "servicenow": { "$ref": "#/definitions/servicenow" },
+    "documentation": { "$ref": "#/definitions/documentation" },
+    "docs": { "$ref": "#/definitions/docs" },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/component" }
+    }
+  },
+  "definitions": {
+    "escalation_contact": {
+      "type": "object",
+      "required": ["name", "role", "contact"],
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["primary", "secondary", "SME", "manager"] },
+        "contact": { "type": "string" }
+      }
+    },
+    "servicenow": {
+      "type": "object",
+      "required": ["configuration_item", "assignment_group"],
+      "properties": {
+        "configuration_item": { "type": "string", "minLength": 1 },
+        "assignment_group": { "type": "string", "minLength": 1 },
+        "business_service": { "type": "string" }
+      }
+    },
+    "documentation": {
+      "type": "object",
+      "properties": {
+        "runbook": { "type": "string", "format": "uri" },
+        "wiki": { "type": "string", "format": "uri" },
+        "architecture_diagram": { "type": "string", "format": "uri" }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "properties": {
+        "troubleshooting": { "type": "string" },
+        "business_rules": { "type": "string" },
+        "runbook": { "type": "string" }
+      }
+    },
+    "component": {
+      "type": "object",
+      "required": ["component_name", "component_type"],
+      "additionalProperties": false,
+      "properties": {
+        "component_name": { "type": "string", "minLength": 1 },
+        "component_type": {
+          "type": "string",
+          "enum": ["api", "worker", "batch", "frontend", "database", "queue", "gateway", "cache", "mobile", "sdk"]
+        },
+        "description": { "type": "string" },
+        "docs": { "$ref": "#/definitions/docs" },
+        "documentation": { "$ref": "#/definitions/documentation" },
+        "repository": {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string" },
+            "branch": { "type": "string" },
+            "path": { "type": "string" }
+          }
+        },
+        "cicd": {
+          "type": "object",
+          "properties": {
+            "platform": { "type": "string" },
+            "pipeline_url": { "type": "string" },
+            "deploy_target": { "type": "string" }
+          }
+        },
+        "splunk": { "$ref": "#/definitions/splunk" },
+        "appdynamics": { "$ref": "#/definitions/appdynamics" },
+        "newrelic": { "$ref": "#/definitions/newrelic" },
+        "datadog": { "$ref": "#/definitions/datadog" },
+        "grafana": { "$ref": "#/definitions/grafana" },
+        "archer": { "$ref": "#/definitions/archer" },
+        "cloud": { "$ref": "#/definitions/cloud" },
+        "health_check": { "$ref": "#/definitions/health_check" },
+        "other_environments": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/environment_override" }
+        }
+      }
+    },
+    "splunk": {
+      "type": "object",
+      "required": ["index", "base_spl"],
+      "properties": {
+        "index": { "type": "string", "minLength": 1 },
+        "source": { "type": "string" },
+        "base_spl": { "type": "string", "minLength": 1 },
+        "error_spl": { "type": "string" },
+        "latency_spl": { "type": "string" }
+      }
+    },
+    "appdynamics": {
+      "type": "object",
+      "required": ["app_name"],
+      "properties": {
+        "app_name": { "type": "string", "minLength": 1 },
+        "app_id": { "type": "string" },
+        "tier": { "type": "string" },
+        "dashboard_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "newrelic": {
+      "type": "object",
+      "required": ["app_id"],
+      "properties": {
+        "app_id": { "type": "string", "minLength": 1 },
+        "account_id": { "type": "string" },
+        "dashboard_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "datadog": {
+      "type": "object",
+      "required": ["service"],
+      "properties": {
+        "service": { "type": "string", "minLength": 1 },
+        "env": { "type": "string" },
+        "dashboard_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "grafana": {
+      "type": "object",
+      "required": ["dashboard_url"],
+      "properties": {
+        "dashboard_uid": { "type": "string" },
+        "dashboard_url": { "type": "string", "format": "uri" },
+        "datasource": { "type": "string" }
+      }
+    },
+    "archer": {
+      "type": "object",
+      "properties": {
+        "record_id": { "type": "string" }
+      }
+    },
+    "cloud": {
+      "type": "object",
+      "required": ["provider", "region"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["AWS", "GCP", "Azure", "on-prem"] },
+        "region": { "type": "string", "minLength": 1 },
+        "account_id": { "type": "string" },
+        "infra_type": {
+          "type": "string",
+          "enum": ["ECS", "EKS", "Lambda", "GKE", "EC2", "VM", "Fargate", "CloudRun", "AppEngine"]
+        },
+        "cluster_id": { "type": "string" },
+        "service_name": { "type": "string" },
+        "cloudwatch": {
+          "type": "object",
+          "required": ["log_group"],
+          "properties": {
+            "log_group": { "type": "string", "minLength": 1 },
+            "namespace": { "type": "string" },
+            "alarm_prefix": { "type": "string" }
+          }
+        },
+        "loginsights": {
+          "type": "object",
+          "required": ["log_group"],
+          "properties": {
+            "log_group": { "type": "string", "minLength": 1 },
+            "saved_query": { "type": "string" }
+          }
+        },
+        "gcp": {
+          "type": "object",
+          "required": ["project_id"],
+          "properties": {
+            "project_id": { "type": "string", "minLength": 1 },
+            "log_filter": { "type": "string" }
+          }
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "name"],
+            "properties": {
+              "type": { "type": "string", "minLength": 1 },
+              "name": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "health_check": {
+      "type": "object",
+      "required": ["url"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "expected_status": { "type": "integer", "default": 200 }
+      }
+    },
+    "environment_override": {
+      "type": "object",
+      "description": "Per-environment overrides — only fields that differ from production",
+      "properties": {
+        "health_check": { "$ref": "#/definitions/health_check" },
+        "splunk": { "$ref": "#/definitions/splunk" },
+        "appdynamics": { "$ref": "#/definitions/appdynamics" },
+        "newrelic": { "$ref": "#/definitions/newrelic" },
+        "datadog": { "$ref": "#/definitions/datadog" },
+        "grafana": { "$ref": "#/definitions/grafana" },
+        "cloud": { "$ref": "#/definitions/cloud" }
+      }
+    }
+  }
+}

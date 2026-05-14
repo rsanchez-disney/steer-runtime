@@ -1,0 +1,181 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# One file per business application. Agents and teams use this to locate
+# observability data, escalation paths, and infrastructure context.
+# ============================================================================
+
+# --- Identity ---
+bapp_id: ""                          # Business application ID (from CMDB/Archer)
+app_name: ""                         # Short name (used in queries, alerts, filenames)
+full_name: ""                        # Human-readable full name
+description: ""                      # One-line purpose of this application
+
+# --- Ownership ---
+support_studio: ""                   # Owning sustainment studio/team
+escalation_channel: ""               # Slack channel, Teams channel, or email DL
+escalation_contacts:                 # Named escalation contacts (optional)
+  - name: ""
+    role: ""                         # e.g., "primary", "secondary", "SME"
+    contact: ""                      # email or Slack handle
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: ""             # CI name exactly as it appears in SNOW
+  assignment_group: ""               # SNOW assignment group for routing
+  business_service: ""               # SNOW business service (optional)
+
+# --- Documentation ---
+documentation:
+  runbook: ""                        # URL to primary runbook
+  wiki: ""                           # URL to team wiki/Confluence space
+  architecture_diagram: ""           # URL to arch diagram (optional)
+
+# --- Companion Docs (Markdown) ---
+# Free-form documentation that lives alongside this YAML file.
+# Path is relative to the studio folder (e.g., "app-name/troubleshooting.md")
+docs:
+  troubleshooting: ""                # How to diagnose common issues
+  business_rules: ""                 # Domain logic, SLAs, peak periods
+  runbook: ""                        # Step-by-step operational procedures
+
+# --- Components ---
+# Each independently observable unit (microservice, batch job, frontend, etc.)
+components:
+
+  - component_name: ""               # Unique name within this app
+    component_type: ""               # "api" | "worker" | "batch" | "frontend" | "database" | "queue"
+    description: ""                  # What this component does
+
+    # -- Component-specific docs (optional, overrides app-level docs) --
+    docs:
+      troubleshooting: ""            # e.g., "app-name/component-name-troubleshooting.md"
+      runbook: ""                    # e.g., "app-name/component-name-runbook.md"
+
+    # -- Component-specific documentation links (optional) --
+    documentation:
+      wiki: ""                       # URL to component-specific wiki page
+      architecture_diagram: ""       # URL to component-specific arch diagram
+
+    # -- Source Code & CI/CD --
+    repository:
+      url: ""                        # Git repo URL (e.g., https://github.disney.com/org/repo)
+      branch: ""                     # Primary branch (e.g., "main")
+      path: ""                       # Path within monorepo (optional, if applicable)
+
+    cicd:
+      platform: ""                   # "harness" | "github-actions" | "jenkins" | "spinnaker"
+      pipeline_url: ""               # Direct link to pipeline/workflow
+      deploy_target: ""              # Where it deploys to (e.g., "ECS parks-commerce-prod")
+
+    # -- Health Check --
+    health_check:
+      url: ""                        # Health endpoint URL (optional)
+      expected_status: 200           # Expected HTTP status code
+
+    # -- Splunk --
+    splunk:
+      index: ""                      # Primary Splunk index
+      source: ""                     # source or sourcetype filter (optional)
+      base_spl: >-                   # Base search that isolates this component's logs
+        index=myindex sourcetype=mysource
+      error_spl: >-                  # Error/exception search (for RCA agent)
+        index=myindex sourcetype=mysource level=ERROR
+      latency_spl: >-               # Response time / latency search (for stability agent)
+        index=myindex sourcetype=mysource
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+
+    # -- AppDynamics --
+    appdynamics:
+      app_name: ""                   # AppD application name
+      app_id: ""                     # AppD application ID
+      tier: ""                       # AppD tier name (optional)
+      dashboard_url: ""              # Direct link to relevant dashboard
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""                     # NewRelic application ID
+      account_id: ""                 # NewRelic account
+      dashboard_url: ""              # Direct link (optional)
+
+    # -- Datadog --
+    datadog:
+      service: ""                    # Datadog service name (APM)
+      env: ""                        # Environment tag
+      dashboard_url: ""              # Direct link (optional)
+
+    # -- Grafana --
+    grafana:
+      dashboard_uid: ""              # Grafana dashboard UID
+      dashboard_url: ""              # Direct link
+      datasource: ""                 # Underlying datasource name (optional)
+
+    # -- Archer --
+    archer:
+      record_id: ""                  # Archer GRC record ID (optional)
+
+    # -- Cloud Infrastructure & Native Observability --
+    cloud:
+      provider: ""                   # "AWS" | "GCP" | "Azure" | "on-prem"
+      region: ""                     # e.g., "us-east-1"
+      account_id: ""                 # Cloud account/project ID
+      infra_type: ""                 # "ECS" | "EKS" | "Lambda" | "GKE" | "EC2" | "VM"
+      cluster_id: ""                 # Cluster name or ARN (if applicable)
+      service_name: ""               # ECS service name / K8s deployment (if applicable)
+
+      # AWS-native logging
+      cloudwatch:
+        log_group: ""                # CloudWatch log group
+        namespace: ""                # CloudWatch metrics namespace (optional)
+        alarm_prefix: ""             # Alarm name prefix for filtering (optional)
+
+      # AWS CloudWatch Log Insights
+      loginsights:
+        log_group: ""                # Log group (if different from CloudWatch)
+        saved_query: ""              # Named saved query (optional)
+
+      # GCP-native logging
+      gcp:
+        project_id: ""              # GCP project
+        log_filter: ""              # Cloud Logging filter expression (optional)
+
+      # Supporting infrastructure this component depends on
+      services:
+        - type: ""                   # "sqs" | "sns" | "s3" | "dynamodb" | "rds" | "elasticache" | "pubsub" | "firestore" | "bucket" | "cloud-sql" | "memorystore" | "redis"
+          name: ""                   # Resource name or identifier
+
+    # -- Other Environments (optional — only fields that differ from production) --
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_stage sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_load sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_latest sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
