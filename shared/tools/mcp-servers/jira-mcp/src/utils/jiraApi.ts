@@ -259,26 +259,36 @@ export class JiraApiClient {
         return await response.json();
     }
 
-    async createJiraIssue(
-        projectKey: string,
-        summary: string,
-        issueType: string,
-        description?: string,
-        assignee?: string,
-        reporter?: string,
-        epicLink?: string,
-        components?: string[],
-        labels?: string[],
-        sprint?: string,
-        storyPoints?: number,
-        customFields?: Record<string, unknown>,
-    ): Promise<any> {
+    async createJiraIssue(opts: {
+        projectKey: string;
+        summary: string;
+        issueType: string;
+        description?: string;
+        assignee?: string;
+        reporter?: string;
+        epicLink?: string;
+        components?: string[];
+        labels?: string[];
+        sprint?: string;
+        storyPoints?: number;
+        customFields?: Record<string, unknown>;
+        parent?: string;
+    }): Promise<any> {
+        const {
+            projectKey, summary, issueType, description, assignee,
+            reporter, epicLink, components, labels, sprint,
+            storyPoints, customFields, parent,
+        } = opts;
 
         const fields: any = {
             project: { key: projectKey },
             summary,
             issuetype: { name: issueType },
         };
+
+        if (parent) {
+            fields.parent = { key: parent };
+        }
 
         if (description) {
             fields.description = this.auth.isCloud() ? toADF(description) : description;

@@ -22,7 +22,11 @@ export const jiraCreateIssueSchema = {
             },
             issueType: {
                 type: "string",
-                description: 'Issue type (e.g., "Bug", "Story", "Task")',
+                description: 'Issue type (e.g., "Bug", "Story", "Task", "Sub-task")',
+            },
+            parent: {
+                type: "string",
+                description: 'Parent issue key for sub-tasks (e.g., "GRPS-1534"). Required when issueType is "Sub-task".',
             },
             description: {
                 type: "string",
@@ -82,6 +86,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             projectKey,
             summary,
             issueType,
+            parent,
             description,
             assignee,
             epicLink,
@@ -96,6 +101,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             projectKey: string;
             summary: string;
             issueType: string;
+            parent?: string;
             description?: string;
             assignee?: string;
             reporter?: string;
@@ -109,7 +115,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
         };
 
         const apiClient = new JiraApiClient();
-        const createResponse = await apiClient.createJiraIssue(
+        const createResponse = await apiClient.createJiraIssue({
             projectKey,
             summary,
             issueType,
@@ -122,7 +128,8 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             sprint,
             storyPoints,
             customFields,
-        );
+            parent,
+        });
 
         // Fetch the created issue to get full details
         const ticket = await apiClient.fetchJiraTicket(createResponse.key);
