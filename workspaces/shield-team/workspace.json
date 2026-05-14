@@ -15,5 +15,6 @@
   ],
   "enable_tools": true,
   "jira_prefix": ["AEXP-", "IEXP-", "COREEXP-"],
-  "workspace_path": "${SHIELD_WORKSPACE_PATH}"
+  "workspace_path": "${SHIELD_WORKSPACE_PATH}",
+  "managed_studios": ["studio-antman", "studio-beast"]
 }
