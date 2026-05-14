@@ -115,7 +115,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
         };
 
         const apiClient = new JiraApiClient();
-        const createResponse = await apiClient.createJiraIssue(
+        const createResponse = await apiClient.createJiraIssue({
             projectKey,
             summary,
             issueType,
@@ -129,7 +129,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             storyPoints,
             customFields,
             parent,
-        );
+        });
 
         // Fetch the created issue to get full details
         const ticket = await apiClient.fetchJiraTicket(createResponse.key);
