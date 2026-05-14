@@ -25,5 +25,6 @@
     "jira-safety"
   ],
   "enable_tools": true,
-  "jira_prefix": "COMARC-"
+  "jira_prefix": "COMARC-",
+  "managed_studios": ["studio-mars"]
 }
