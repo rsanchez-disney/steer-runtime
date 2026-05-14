@@ -6,6 +6,41 @@ All notable changes to steer-runtime.
 
 ---
 
+## [0.2.81] — 2026-05-14
+
+### Added
+- **Orchestration harness + context compression** — E1-E14 execution engine with automatic context budget management for kiro-cli 2.2.1 (#338)
+- **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with `mcp-meta.json` discovery, variable resolution, `_overrides`, and `_source` tracking (#341)
+- **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
+- **Custom MCP Builder Guide** — new `docs/guides/building-custom-mcps.md` with step-by-step for fork and workspace MCPs
+- **Workspace MCP template** — `shared/templates/workspace-mcp/` skeleton for teams to scaffold custom MCPs
+- **failing_scenarios_finder_agent** (QA) — Jenkins MCP integration with Feature column, emojis, and token persistence (#351)
+- **docs_curator_agent: MkDocs maintenance** — MkDocs site generation and maintenance knowledge (#354)
+- **Core utility agents (3)** — `document_analyzer_agent` (PDF/DOCX/OCR), `deck_builder_agent` (PPTX generation), `ai_adoption_stats_agent` (GitHub/Jira metrics)
+- **Profile cockpit configs (12)** — dashboard definitions for ba, qa, pm, leadership, ops, presales, design, core, cloudops, inspector, sustainment, steer-master
+- **MkDocs documentation site** — context flow and daily commands cheat sheet with GitHub Pages link (#350)
+- **JIRA MCP: Agile API epic link fallback** — bypasses screen scheme restrictions using `/rest/agile/1.0/epic/{key}/issue`
+- **workspace_path env vars** — supports `${VAR}`, `$VAR`, `%VAR%`, `~` for cross-platform portability
+- **test-workspace-mcp.sh** — local validation script (21 assertions)
+- **Artifact emit model spec** — documentation for artifact emit model and steer-master maintenance (#347)
+
+### Changed
+- **kiro-cli 2.2.1 compat** — removed `contextBudget`, renamed `agentComplete` hook (#339)
+
+### Fixed
+- JIRA MCP no longer includes epicLink in create fields — prevents hard errors on restrictive projects
+- Shield workspace config and README corrections (#331, #353)
+- Release guardrails to prevent wrong-repo publishing (#332)
+- Mermaid diagram rendering error in AGENTS.md (#333)
+- Stale agent counts updated across all docs (55→124 agents, 9→21 profiles) (#334)
+- Profile READMEs updated with missing agents (#335)
+- Remaining docs cleanup — setup.sh refs, broken links, release notes (#336)
+- Duplicated context files removed from shared/context/ (#337)
+- Preserve user-added MCP servers during mcp-install regeneration
+- Correct MCP server prefixes in core agent configs
+
+---
+
 ## [3.10.0] — 2026-05-08
 
 ### Added
