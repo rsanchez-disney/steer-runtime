@@ -82,6 +82,7 @@ nav:
   - Guides:
       - Building Custom MCPs: guides/building-custom-mcps.md
       - MCP Levels: guides/mcp-levels.md
+      - Koda Apps: guides/koda-apps.md
   - Memory:
       - Memory MCP: memory/MEMORY_MCP.md
       - yax Architecture: memory/yax-architecture.md

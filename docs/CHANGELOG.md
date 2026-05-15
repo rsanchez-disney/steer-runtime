@@ -4,6 +4,38 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+### Added
+- **Koda Apps guide** — documentation for `koda apps` commands and available desktop apps (#guides)
+- **managed_studios workspace schema** — catalog scoping per studio for managed services (#357)
+- **Managed Services Catalog** — initial draft with studio mars bapps (#356)
+- **app-team deployment context** — deployment endpoints & versions in workspace config (#358)
+- **jira-mcp: all myjira custom fields + native sub-task creation** (#355)
+- **failing_scenarios_finder_agent** (QA) — checks last 5 Jenkins executions, identifies scenarios failing in 2+ runs (#351)
+- **MkDocs site** — GitHub Pages with context flow and daily commands cheat sheet (#350)
+- **docs_curator_agent** — MkDocs maintenance knowledge for steer-master (#354)
+- **Profile-specific cockpit configs** — cockpit.json for all profiles
+- **Core utility agents** — document_analyzer, deck_builder, ai_adoption_stats (#core)
+- **Workspace + fork level MCPs** — multi-level MCP discovery with user server preservation
+- **Fork-level MCP discovery** — via mcp-meta.json auto-detection
+- **Workspace MCP template** — orchestrator awareness of workspace-scoped MCPs
+
+### Changed
+- **jira-mcp refactored** — replace 13 positional params with options object (#355)
+- **jira-mcp** — Agile API fallback for Epic Link assignment, remove epicLink from create fields
+
+### Fixed
+- Remove unconfirmed managed_studios from shield and commerce-ticketing workspaces
+- shield-team workspace config and README (#353)
+- Preserve user-added MCP servers during mcp-install regeneration
+- Core utility agents: correct MCP server prefixes
+
+### Documentation
+- Koda Apps guide (guides/koda-apps.md)
+- MCP Levels guide and custom MCP builder guide
+- Workspace MCP spec and implementation plan
+- Env variable support for workspace_path
+- Artifact emit model and steer-master maintenance spec (#347)
+
 ---
 
 ## [3.10.0] — 2026-05-08
