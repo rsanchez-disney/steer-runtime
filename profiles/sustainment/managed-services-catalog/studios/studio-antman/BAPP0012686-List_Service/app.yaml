@@ -1,0 +1,179 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# Remove any sections that do not apply to this application.
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0012686"
+app_name: "list-service"
+full_name: "List Service"
+description: ""
+
+# --- Ownership ---
+support_studio: "Ant Man"
+escalation_channel: ""
+escalation_contacts:
+  - name: ""
+    role: "primary"
+    contact: ""
+  - name: ""
+    role: "secondary"
+    contact: ""
+  - name: ""
+    role: "SME"
+    contact: ""
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: ""
+  assignment_group: "app-global-ant-man"
+  business_service: ""
+
+# --- Documentation ---
+documentation:
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+
+# --- Components ---
+components:
+
+  - component_name: ""
+    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: ""
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
+    repository:
+      url: ""
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: ""
+      deploy_target: ""
+
+    # -- Health Check --
+    health_check:
+      url: ""
+      expected_status: 200
+
+    # -- Splunk --
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+        index=myindex sourcetype=mysource
+      error_spl: >-
+        index=myindex sourcetype=mysource level=ERROR
+      latency_spl: >-
+        index=myindex sourcetype=mysource
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+
+    # -- AppDynamics --
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
+    cloud:
+      provider: ""                   # AWS | GCP | Azure | on-prem
+      region: ""
+      account_id: ""
+      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: ""
+
+    # -- Other Environments (only fields that differ from production) --
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_stage sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_load sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_latest sourcetype=mysource
+        cloud:
+          region: ""
+          service_name: ""
