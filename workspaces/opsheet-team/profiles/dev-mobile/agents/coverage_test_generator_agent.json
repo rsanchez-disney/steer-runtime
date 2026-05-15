@@ -1,0 +1,24 @@
+{
+  "name": "coverage_test_generator_agent",
+  "description": "Generates missing Flutter tests based on coverage gap reports, processing tickets sequentially with OPP tagging and test validation",
+  "prompt": "coverage_test_generator_agent.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        ".kiro/specs/qa-coverage-analyzer/**",
+        "test/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://.kiro/steering/02-tech.md",
+    "file://.kiro/steering/05-code-style.md",
+    "file://.kiro/steering/01-structure.md",
+    "file://README.md"
+  ]
+}

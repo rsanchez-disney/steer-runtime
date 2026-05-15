@@ -1,0 +1,21 @@
+{
+  "name": "coverage_analyzer_agent",
+  "description": "Analyzes automated test coverage by comparing XRay test cases in JIRA against existing Flutter tests, generates gap reports, and offers interactive test generation",
+  "prompt": "coverage_analyzer_agent.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        ".kiro/specs/qa-coverage-analyzer/**",
+        "test/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://README.md"
+  ]
+}
