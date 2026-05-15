@@ -67,6 +67,11 @@ nav:
       - Ops Prompt Guide: profiles/ops/OPS_PROMPT_GUIDE.md
       - PM Prompt Guide: profiles/pm/PM_PROMPT_GUIDE.md
       - Leadership Prompt Guide: profiles/leadership/LEADERSHIP_PROMPT_GUIDE.md
+      - CloudOps Prompt Guide: profiles/cloudops/CLOUDOPS_PROMPT_GUIDE.md
+      - Design Prompt Guide: profiles/design/DESIGN_PROMPT_GUIDE.md
+      - Inspector Prompt Guide: profiles/inspector/INSPECTOR_PROMPT_GUIDE.md
+      - Sustainment Prompt Guide: profiles/sustainment/SUSTAINMENT_PROMPT_GUIDE.md
+      - Presales Prompt Guide: profiles/presales/PRESALES_PROMPT_GUIDE.md
   - Reference:
       - Full Reference: reference/REFERENCE.md
       - MCP Setup: reference/MCP_SETUP.md
@@ -82,6 +87,7 @@ nav:
   - Guides:
       - Building Custom MCPs: guides/building-custom-mcps.md
       - MCP Levels: guides/mcp-levels.md
+      - Koda Apps: guides/koda-apps.md
   - Memory:
       - Memory MCP: memory/MEMORY_MCP.md
       - yax Architecture: memory/yax-architecture.md
