@@ -52,7 +52,7 @@ Bugs in this project rarely have direct links to their parent stories. Use this 
 
 #### 2c. Extract Acceptance Criteria
 1. Fetch the matched story's **acceptance criteria** — this is the primary source of truth since it has the client's sign-off
-2. Most stories reference a **Global Acceptance Criteria** page. When a story's AC mentions "Global Acceptance Criteria" or links to it, also fetch the Global AC from MyWiki (space: OPSHEET, title: "Global Acceptance Criteria") and consider it as a secondary source of truth. The Global AC covers cross-cutting standards like data table behavior, history logging, permissions, toast messages, filtering, sorting, etc.
+2. Most stories reference a **Global Acceptance Criteria**. The Global AC is pre-loaded in your context (from the `global_acceptance_criteria.md` resource). Use it as a secondary source of truth when the story's AC mentions "Global Acceptance Criteria" or when the defect relates to cross-cutting behaviors (data tables, filtering, sorting, history logging, permissions, toast messages, modals, etc.)
 3. Do NOT use any other Confluence, MyWiki, or external documentation beyond the story AC and the Global AC
 4. If the story has no acceptance criteria defined, mark the defect as **NEEDS CLARIFICATION**
 5. If no matching story can be found at all, mark the defect as **NO PARENT STORY**
@@ -117,7 +117,7 @@ After presenting the report, offer:
 
 ## Analysis Principles
 
-- The **primary** source of truth is the acceptance criteria in the Jira user story. The **secondary** source is the Global Acceptance Criteria page on MyWiki (space: OPSHEET, title: "Global Acceptance Criteria"). No other external documentation counts.
+- The **primary** source of truth is the acceptance criteria in the Jira user story. The **secondary** source is the Global Acceptance Criteria pre-loaded in your context. No other external documentation counts.
 - Be objective. Base verdicts strictly on the signed-off acceptance criteria, not assumptions.
 - When acceptance criteria are vague, lean toward **NEEDS CLARIFICATION** rather than guessing.
 - Consider that some behaviors are implicitly expected (e.g., a form submission story implies basic validation).

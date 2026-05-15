@@ -4,16 +4,15 @@
   "prompt": "defect_triage_agent.md",
   "tools": [
     "@jira/*",
-    "@mywiki/*",
     "fs_write"
   ],
   "allowedTools": [
-    "@jira/*",
-    "@mywiki/*"
+    "@jira/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",
-    "file://.kiro/context/defect_triage_criteria.md"
+    "file://.kiro/context/defect_triage_criteria.md",
+    "file://.kiro/context/global_acceptance_criteria.md"
   ],
   "includeMcpJson": true
 }
