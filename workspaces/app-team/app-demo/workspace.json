@@ -2,6 +2,9 @@
   "name": "app-demo",
   "extends": "app-team",
   "description": "Payment Demo — demo apps, payment sheet, and supporting services for E2E payment flows",
+  "default_agent": "orchestrator",
+  "jira_prefix": ["DPAY-"],
+  "jira_board_id": "4498",
   "profiles": ["dev-web", "dev-mobile"],
   "projects": [
     { "name": "wdpr-payment-demo", "path": "wdpr-payment-demo", "repo": "DisneyPaymentsOrg/wdpr-payment-demo" },
@@ -13,5 +16,6 @@
     { "name": "wdpr-payments-ref", "path": "wdpr-payments-ref", "repo": "DisneyPaymentsOrg/wdpr-payments-ref" },
     { "name": "dpay-android-ui", "path": "dpay-android-ui", "repo": "DisneyPaymentsOrg/dpay-android-ui" },
     { "name": "dpayios", "path": "dpayios", "repo": "DisneyPaymentsOrg/dpayios" }
-  ]
+  ],
+  "rules": ["demo-safety"]
 }
