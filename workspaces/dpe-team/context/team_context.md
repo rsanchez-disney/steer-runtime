@@ -261,7 +261,7 @@ The Impact Analysis answers: "When a price factor change becomes effective, whic
 
 ## Security
 
-- OAuth2 scopes: `tpr-dpe-svc-query-price`, `tpr-dpe-svc-query-product`, `tpr-dpe-svc-price-token`, `tpr-dpe-svc-actuator`
+- OAuth2 scopes: configured per service (see `~/.env.dpe`)
 - All services require VPN access for AWS RDS
 - Vault for credentials (never hardcode)
 - Non-root Docker containers (UID 1000, GID 3000)

@@ -260,3 +260,16 @@ Rules for the summary:
 - Breaking changes get their own table with dimension and affected services
 - Verdict at the bottom
 - Keep it under 50 lines — this goes into a GitHub comment, not a document
+
+<!-- Keep in sync with dpe-conventions.md Java 17 section -->
+### Java 17 Idioms
+
+| Check | Severity | What to look for |
+|-------|----------|-----------------|
+| Missing pattern matching | WARNING | `instanceof` check followed by explicit cast on next line — use pattern matching `if (x instanceof Foo f)` |
+| Switch statement over expression | WARNING | `switch` with `case:` + `break` that could be a `switch` expression with `->` |
+| Mutable DTO over record | WARNING | New class with only fields + getters (or Lombok `@Value`/`@Data`) that should be a `record` |
+| `Collectors.toList()` over `Stream.toList()` | INFO | Prefer `Stream.toList()` for unmodifiable lists (Java 16+) |
+| Multi-line string without text block | INFO | SQL, JSON, or GraphQL strings using concatenation instead of `"""` text blocks |
+| Missing `var` | INFO | Local variable with redundant type declaration (e.g., `Map<String, List<Price>> map = new HashMap<String, List<Price>>()`) |
+| Inline fully qualified class names | WARNING | Field/variable declarations using `com.disney.pcs.dpe.service.FooService` instead of importing and using `FooService` — always prefer imports |

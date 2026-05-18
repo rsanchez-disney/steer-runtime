@@ -66,7 +66,7 @@ All repos resolved from `workspace_path` in `workspace.json`. Set this to your l
 | Agent | Override | What's different |
 |-------|---------|-----------------|
 | `code_review_agent` | `profiles/dev-core/` | DPE-specific checks (calculator statelessness, DataContract accuracy, cache invalidation, GraphQL backward compat, Impact Analysis bugs, config naming). Loads `performance_engineering_guide.md`. Runs breaking change detection (⚠️ warnings) with cross-service impact matrix. Mandatory BEFORE/AFTER code blocks for every finding. Generates compact GitHub review comment summary. Generates PR description on approve (own code only, skipped for others' PRs). English output. |
-
+| `data_agent` | `profiles/dev-core/` | Manages DPE data via DataService GraphQL. Creates products, rates, commissions, bundles from Jira tickets. Enforces traceability mapping (products → ACs → tests), duplicate prevention, and date integrity rules. Reads credentials from `~/.env.dpe`. |
 ### Service Banks
 
 | Service | Path | Content |
@@ -90,3 +90,97 @@ All repos resolved from `workspace_path` in `workspace.json`. Set this to your l
 - **Jira**: `PPODPE-` — https://myjira.disney.com/projects/PPODPE
 - **Wiki**: MyWiki space `DPE` — use `@mywiki/*` tools, not `@confluence/*`
 - **GitHub**: `WDPR-SPS` on github.disney.com
+
+## Environment Setup (Data Agent)
+
+### Prerequisites
+
+- `jq` — macOS: `brew install jq` / WSL: `sudo apt install jq`
+- `curl` — pre-installed on both platforms
+
+### 1. Install Helper Scripts
+
+```bash
+mkdir -p ~/.local/bin
+cp dpe-token dpe-query dpe-preflight ~/.local/bin/
+chmod +x ~/.local/bin/dpe-*
+```
+
+Add to PATH (if not already):
+- **macOS** (`~/.zshrc`): `export PATH="$HOME/.local/bin:$PATH"`
+- **WSL** (`~/.bashrc`): `export PATH="$HOME/.local/bin:$PATH"`
+
+### 2. Configure Credentials
+
+```bash
+touch ~/.env.dpe && chmod 600 ~/.env.dpe
+```
+
+Required variables in `~/.env.dpe`:
+
+```bash
+# OAuth2 credentials (request from DPE team)
+DPE_CLIENT_ID="<your-client-id>"
+DPE_CLIENT_SECRET="<your-client-secret>"
+
+# Token endpoint (ask team lead for environment-specific URL)
+DPE_TOKEN_URL="<auth-server-token-endpoint>"
+
+# Target Data Service GraphQL endpoint (active — switch with export)
+# Define per site/env: DPE_DATASVC_URL_{SITE}_{ENV}
+DPE_DATASVC_URL="${DPE_DATASVC_URL_SANDBOX_LATEST}"
+DPE_DATASVC_URL_SANDBOX_LATEST="<sandbox-latest-url>"
+#DPE_DATASVC_URL_WDW_LATEST="<wdw-latest-url>"
+#DPE_DATASVC_URL_WDW_STAGE="<wdw-stage-url>"
+
+# OAuth2 scopes (space-separated)
+DPE_SCOPE="<space-separated-scopes>"
+
+# Active bearer token (set by `eval $(dpe-token)`)
+DPE_TOKEN=""
+```
+
+### 3. Verify Setup
+
+```bash
+eval $(dpe-token)
+dpe-preflight
+```
+
+### How to Invoke
+
+```bash
+kiro-cli chat --agent data_agent
+```
+
+Then: `"Create test products for PPODPE-XXXX"`
+
+### Available Scripts
+
+| Script | Usage | Purpose |
+|---|---|---|
+| `dpe-token` | `eval $(dpe-token [query\|mutation])` | Get OAuth token (~1hr expiry) |
+| `dpe-query` | `dpe-query <PRODUCT_CODE>` | Extract full product tree from sandbox |
+| `dpe-preflight` | `dpe-preflight` | Validate env, credentials, and token |
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `ERROR: Set DPE_CLIENT_ID...` | Fill `~/.env.dpe` with credentials |
+| `ERROR: Token request failed` | Check client_id/secret, verify client is active |
+| Auth 401 on query | Token expired — `eval $(dpe-token)` |
+| Auth 403 on mutation | Client missing mutation scope |
+| `\r` errors in WSL | `dos2unix ~/.local/bin/dpe-*` |
+| Permission denied | `chmod +x ~/.local/bin/dpe-*` |
+
+### Platform Notes
+
+| Concern | macOS | Windows (WSL) |
+|---|---|---|
+| Shell | zsh | bash |
+| PATH config | `~/.zshrc` | `~/.bashrc` |
+| Package manager | `brew` | `apt` |
+| File permissions | Native chmod | Works in `~/`, not in `/mnt/c/` |
+
+> **WSL:** Keep `~/.env.dpe` and scripts inside the WSL filesystem (`~/`), not on the Windows mount.
