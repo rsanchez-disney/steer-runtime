@@ -63,6 +63,15 @@ All Go repos use `.github/pull_request_template.md` with:
 - PR dependencies
 - Reviewer guidelines
 
+### PR Conventions
+
+- NEVER create PRs automatically during development — the developer creates PRs manually using the `Create PR` hook or CLI
+- Always assign the PR to the creator
+- Always use the repo's PR template if it exists — never use freeform body
+- Fill in all template sections; mark build/test/coverage as `_Pending_` (requires manual screenshots)
+- If there are dependent PRs (e.g., shared lib change + consumer update), list them in the PR Dependencies section
+- All PR titles, descriptions, and comments must be in English
+
 ## CI/CD — Harness
 
 Pipelines defined in `.harness/` directory:

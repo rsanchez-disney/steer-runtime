@@ -80,14 +80,7 @@ return lastErr
 
 ### Custom errors
 
-Define domain errors in `core/` or `models/`:
-
-```go
-var (
-    ErrEntityNotFound = errors.New("entity not found")
-    ErrUnauthorized   = errors.New("unauthorized")
-)
-```
+See `06-error-handling-convention.md` for the full sentinel error and HTTP error mapping pattern.
 
 ## Dependency Injection
 
@@ -146,6 +139,26 @@ import (
     // 4. Local module
     "github.disney.com/wdpr-parkops-opsheet-suite/counts-service-go/internal/core"
     "github.disney.com/wdpr-parkops-opsheet-suite/counts-service-go/internal/models"
+)
+```
+
+### Standard Import Aliases
+
+Use these `camelCase` aliases consistently across all repos:
+
+| Alias | Package |
+|-------|---------|
+| `opsheetTypes` | `opsheet-types-go/v2` |
+| `facilityTypes` | `opsheet-types-go/v2/facility` |
+| `diEventStream` | `opsheet-types-go/v2/dispatch-interval-events-streams` |
+| `httpclients` | `http-clients-go/v3` |
+
+```go
+import (
+    opsheetTypes "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-types-go/v2"
+    facilityTypes "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-types-go/v2/facility"
+    diEventStream "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-types-go/v2/dispatch-interval-events-streams"
+    httpclients "github.disney.com/wdpr-parkops-opsheet-suite/http-clients-go/v3"
 )
 ```
 
@@ -341,3 +354,89 @@ Use `sync.WaitGroup` only when goroutines do not return errors
 - Do not use `interface{}` or `any` when a concrete type is known
 - Do not log sensitive data at any level
 - Do not use `panic` for recoverable errors
+
+## MongoDB Conventions
+
+- Use `bson.D` for filters in writes and upserts (ordered, deterministic)
+- Use `bson.M` for filters in reads (unordered, simpler)
+- Upsert pattern: `$set` with `options.Update().SetUpsert(true)`
+
+```go
+// ✅ Write/upsert — bson.D (ordered)
+filter := bson.D{{Key: "entityId", Value: entityID}, {Key: "businessDate", Value: date}}
+update := bson.D{{Key: "$set", Value: doc}}
+opts := options.Update().SetUpsert(true)
+_, err := collection.UpdateOne(ctx, filter, update, opts)
+
+// ✅ Read — bson.M (unordered, simpler)
+filter := bson.M{"entityId": entityID, "active": true}
+err := collection.FindOne(ctx, filter).Decode(&result)
+```
+
+## Slice & Map Preallocation
+
+Always preallocate slices when the capacity is known:
+
+```go
+// ✅ Preallocate
+results := make([]Result, 0, len(items))
+for _, item := range items {
+    results = append(results, transform(item))
+}
+
+// ❌ Grows dynamically — unnecessary allocations
+var results []Result
+for _, item := range items {
+    results = append(results, transform(item))
+}
+```
+
+## Defer Cleanup
+
+Always `defer` resource cleanup immediately after acquisition:
+
+```go
+// ✅ Defer immediately after open
+rows, err := db.QueryContext(ctx, query)
+if err != nil {
+    return err
+}
+defer rows.Close()
+
+// ❌ Never defer inside a loop — defers stack until function returns
+for _, id := range ids {
+    rows, _ := db.QueryContext(ctx, query, id)
+    defer rows.Close() // WRONG: all closes happen at function exit
+}
+```
+
+## Log Injection Prevention
+
+Never interpolate user-provided input directly into log messages. Use structured key-value pairs:
+
+```go
+// ✅ Safe — structured logging
+slog.InfoContext(ctx, "processing request", "entityId", entityID, "userId", userID)
+
+// ❌ Unsafe — user input could inject newlines or fake log entries
+slog.InfoContext(ctx, fmt.Sprintf("processing request for %s", userInput))
+```
+
+## Shared Library Rules
+
+- Partition keys are defined in `kinesis-go` (`partitionKeys` package) — never hardcode locally
+- Event types and domain types are defined in `opsheet-types-go` — never duplicate locally
+- Collection name constants come from `opsheet-types-go` — never hardcode
+- HTTP client wrappers come from `http-clients-go` — never create ad-hoc HTTP callers
+
+## External Service Calls
+
+When calling external services via HTTP, all calls go through circuit breaker with retry:
+
+```go
+result, err := s.cbManager.ExecuteWithRetry(ctx, "cle-service", func() (any, error) {
+    return s.cleClient.GetTargets(ctx, headers, entityID, date)
+})
+```
+
+Only retry on HTTP 5xx, `context.DeadlineExceeded`, and network timeouts. This does not apply to simple CRUD services that only interact with MongoDB.

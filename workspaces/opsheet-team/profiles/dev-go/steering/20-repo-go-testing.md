@@ -158,3 +158,41 @@ Requires `CGO_ENABLED=1` for race detector.
 - Do not use real external services in unit tests — mock all I/O boundaries
 - Do not skip error case tests
 - Do not use `t.Skip()` without a TODO ticket reference
+- Do not mock what you don't own — wrap external dependencies behind interfaces first
+
+## Error Assertions
+
+Use the right assertion for the right check:
+
+```go
+// ✅ Check error type (sentinel errors)
+assert.ErrorIs(t, err, services.ErrEntityNotFound)
+
+// ✅ Check error message content
+assert.ErrorContains(t, err, "entity not found")
+
+// ✅ Check exact error message
+assert.EqualError(t, err, "fetch entity abc123: entity not found")
+
+// ❌ Don't compare error strings manually
+assert.Equal(t, "entity not found", err.Error())
+```
+
+## Black-Box Testing
+
+Prefer black-box testing with `_test` package suffix to test only the public API:
+
+```go
+// internal/core/services/counts_service_test.go
+package services_test  // note: _test suffix
+
+import (
+    "testing"
+    "module/internal/core/services"
+    "module/mocks/internal_/core/services"
+)
+```
+
+Use same-package tests only when you need to test unexported helpers.
+
+
