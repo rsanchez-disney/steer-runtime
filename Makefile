@@ -71,6 +71,12 @@ mcp-build-%: ## Build a single MCP server (e.g., make mcp-build-jira-mcp)
 		else echo "⚠ no build/bundle script"; fi; \
 	echo "✅ $*"
 
+validate-catalog: ## Validate managed services catalog app.yaml files and report fill-rate
+	@./scripts/validate-catalog.sh
+
+validate-catalog-strict: ## Validate catalog in strict mode (fails on missing required fields)
+	@./scripts/validate-catalog.sh --strict
+
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 

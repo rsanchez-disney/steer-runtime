@@ -1,0 +1,17 @@
+{
+  "name": "app-demo",
+  "extends": "app-team",
+  "description": "Payment Demo — demo apps, payment sheet, and supporting services for E2E payment flows",
+  "profiles": ["dev-web", "dev-mobile"],
+  "projects": [
+    { "name": "wdpr-payment-demo", "path": "wdpr-payment-demo", "repo": "DisneyPaymentsOrg/wdpr-payment-demo" },
+    { "name": "wdpr-payment-demo-api", "path": "wdpr-payment-demo-api", "repo": "DisneyPaymentsOrg/wdpr-payment-demo-api" },
+    { "name": "wdpr-payment-sheet", "path": "wdpr-payment-sheet", "repo": "DisneyPaymentsOrg/wdpr-payment-sheet" },
+    { "name": "wdpr-payment-sheet-api", "path": "wdpr-payment-sheet-api", "repo": "DisneyPaymentsOrg/wdpr-payment-sheet-api" },
+    { "name": "wdpr-payment-session", "path": "wdpr-payment-session", "repo": "DisneyPaymentsOrg/wdpr-payment-session" },
+    { "name": "wdpr-config-services", "path": "wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services" },
+    { "name": "wdpr-payments-ref", "path": "wdpr-payments-ref", "repo": "DisneyPaymentsOrg/wdpr-payments-ref" },
+    { "name": "dpay-android-ui", "path": "dpay-android-ui", "repo": "DisneyPaymentsOrg/dpay-android-ui" },
+    { "name": "dpayios", "path": "dpayios", "repo": "DisneyPaymentsOrg/dpayios" }
+  ]
+}
