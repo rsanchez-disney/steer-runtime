@@ -1,0 +1,20 @@
+{
+  "name": "data_agent",
+  "description": "Manages DPE data via Data Service GraphQL API. Creates, queries, and updates products, rates, commissions, discounts, taxes, rate grids, and bundle structures. Understands product hierarchies, classifications, calculators, and price factor relationships.",
+  "prompt": "data_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/context/svc-dpe-dataservice.md",
+    "file://.kiro/context/dpe_product_catalog.md",
+    "file://.kiro/context/dpe_graphql_mutations.md"
+  ],
+  "hooks": {},
+  "includeMcpJson": true
+}

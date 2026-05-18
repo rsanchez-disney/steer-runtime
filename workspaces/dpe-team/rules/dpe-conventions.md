@@ -97,3 +97,41 @@
 - Include BEFORE/AFTER for any behavioral change
 - Run `mvn clean test` before submitting
 - Minimal diff — don't refactor unrelated code
+
+## Java 17 Conventions
+
+All DPE services use Java 17. Code must follow modern Java idioms:
+
+### Prefer
+
+- `record` for immutable data carriers (DTOs, value objects) — not classes with Lombok `@Value`
+- `sealed` interfaces/classes for closed type hierarchies (e.g., pipeline results, error types)
+- Pattern matching with `instanceof` — no explicit cast after type check
+- `switch` expressions (with `->` and `yield`) over `switch` statements
+- `Stream.toList()` over `Collectors.toList()` (returns unmodifiable list)
+- Text blocks (`"""`) for multi-line strings (SQL, JSON templates, GraphQL queries)
+- `Optional` for return types that may be absent — never for fields or parameters
+- `var` for local variables when the type is obvious from the right-hand side
+- `List.of()`, `Map.of()`, `Set.of()` for immutable collections
+- `Objects.requireNonNull()` at method entry for fail-fast validation
+
+### Avoid
+
+- Raw types (`List` instead of `List<String>`)
+- `null` returns — use `Optional` or empty collections
+- Mutable DTOs when immutability suffices — prefer records
+- `instanceof` + cast on separate lines (use pattern matching)
+- Anonymous inner classes where a lambda or method reference works
+- `StringBuffer` — use `StringBuilder` (no thread contention in local scope)
+- Checked exceptions for control flow — use unchecked + proper error handling
+- Fully qualified class names inline — always use `import` statements and reference classes by simple name
+
+### Review Checklist (Java 17)
+
+When reviewing DPE PRs, flag:
+- [ ] `instanceof` without pattern matching
+- [ ] `switch` statements that could be expressions
+- [ ] Mutable DTOs that should be records
+- [ ] `Collectors.toList()` instead of `Stream.toList()`
+- [ ] Multi-line strings not using text blocks
+- [ ] Missing `var` where type is redundant
