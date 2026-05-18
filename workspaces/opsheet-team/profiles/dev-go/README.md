@@ -1,4 +1,4 @@
-# Dev Go Profile (OpSheet Go)
+# Dev Core Profile (OpSheet Go)
 
 Go specialist for OpSheet+ core backend services — APIs, event processors, shared libraries, and monorepo services.
 
@@ -6,29 +6,24 @@ Requires `dev-core` (base) as a foundation.
 
 ## Agents (1)
 
-| Agent | Purpose |
-|-------|---------|
+| Agent | Purpose                                                    |
+|-------|------------------------------------------------------------|
 | godev | Go specialist for OpSheet+ core services (APIs, processors, libraries) |
 
 ## Structure
 
 ```
-profiles/dev-go/
+profiles/dev-core/
 ├── agents/       # godev.json
 ├── prompts/      # godev.md
-├── steering/     # Go architecture, tech stack, code patterns, error handling, testing, PR review, git workflow
-├── skills/       # go-api-endpoint, go-event-processor, go-shared-library, go-monorepo-service
-└── context/      # Koda workflow guide, lessons learned
+├── steering/     # Go architecture, tech stack, code patterns, testing, PR review, git workflow
+└── skills/       # go-api-endpoint, go-event-processor, go-shared-library, go-monorepo-service
 ```
 
 ## Install
 
-The `orchestrator` automatically detects `godev` via the agent registry and delegates Go tasks to it. No explicit install step is needed.
-
-To invoke directly:
-
 ```bash
-kiro-cli chat --agent godev
+./setup.sh install dev-core dev-core   # within opsheet-team workspace
 ```
 
 ---
