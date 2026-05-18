@@ -90,14 +90,22 @@ context resource for detailed instructions.
    Background). Format using Jira wiki markup — use `*bold:*` for labels, real newlines (not
    literal `\n`), and bullet points (`* Given ...`) for Background items. All Gherkin content goes
    exclusively into `customfield_20102`.
-5. **Issue linking:** Do NOT create Jira issue links (`jira_link_issues`) between Test tickets and
-   the testable ticket. The only association is via the Xray API (see Step 4d). Xray manages its
-   own internal links when tests are added to a Test Execution.
+5. **Issue linking — Jira links vs Xray assignments:**
+    - **Jira issue links** (`jira_link_issues`): Do NOT create Jira issue links between individual
+      Test tickets and the testable ticket. These are standard Jira relationships and are not used
+      here.
+    - **Xray assignments** (`xray_add_tests_to_test_exec`): This is the required mechanism. Tests
+      are associated to the testable ticket exclusively through the Test Execution (see Step 4d).
+      The Xray API registers tests inside the execution tracker — this is NOT the same as a Jira
+      issue link.
+    - In summary: individual Test tickets → no Jira links to the story. Test Execution → linked to
+      the story via a Jira "Test" link (created in Step 4d). Tests → assigned to the Test Execution
+      via the Xray API.
 
 ### Step 4d — Add Test tickets to a Test Execution
 
-Every Test ticket must belong to a Test Execution. After creating all Test tickets and linking them
-to the testable ticket, follow this process:
+Every Test ticket must belong to a Test Execution. After creating all Test tickets, follow this
+process:
 
 1. **Search for an existing Test Execution:** Run a JQL query:
    `issuetype = "Test Execution" AND issue in linkedIssues("{testableTicketId}") AND labels = QA_GB_Internal`
@@ -112,17 +120,27 @@ to the testable ticket, follow this process:
     - `components`: copied from the testable ticket
     - `epicLink`: copied from the testable ticket (same epic as the testable ticket)
     - `assignee`: the resolved current user's Jira username
-    - Do NOT create Jira issue links between the Test Execution and the testable ticket.
+    - **Create a Jira issue link** between the Test Execution and the testable ticket using
+      `jira_link_issues` with link type `"Test"` (inward: Test Execution, outward: testable
+      ticket). This Jira link is what makes the `linkedIssues()` JQL search work on subsequent
+      runs. Note: this is the only Jira issue link created in the entire pipeline — individual Test
+      tickets are never linked to the story via Jira (they use Xray assignments instead).
 
 5. **Add tests to the Test Execution via Xray API:** Use `xray_add_tests_to_test_exec` with:
     - `testExecKey`: the Test Execution ticket key
     - `testKeys`: array of all newly created Test ticket keys
 
-   This registers the tests in Xray's internal test execution tracker (issue links alone are not
-   enough — the Xray API call is required).
+   This is an **Xray assignment**, not a Jira issue link. It registers the tests inside Xray's
+   internal test execution tracker. Without this call, tests will not appear in the Test Execution
+   even if Jira issue links exist.
 
-After completing this step, report which Test Execution was used and how many Test tickets were
-added to it.
+6. **Verify the assignment:** After the Xray API call, fetch the Test Execution's tests using
+   `xray_get_test_exec_tests` with `testExecKey`. Confirm that all newly created Test ticket keys
+   appear in the response. If any are missing, retry `xray_add_tests_to_test_exec` with only the
+   missing keys. If the retry also fails, warn the user with the list of unassigned test keys.
+
+After completing this step, report which Test Execution was used, how many Test tickets were
+added, and whether verification passed.
 
 ### Step 5 — Xray folder structure
 
