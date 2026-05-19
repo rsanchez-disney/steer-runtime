@@ -6,6 +6,11 @@ All notable changes to steer-runtime.
 
 ### Added
 - **chrome-devtools-mcp** — global MCP bundle for headless browser automation (isolated Chrome, no user session interference)
+- **AI Metrics post-PR hook** — `ai-metrics-post-pr.kiro.hook` automatically calls `koda stats submit` after PR creation
+- **AI Metrics Integration spec** — detailed implementation plan in `docs/specs/ai-metrics-integration.md`
+
+### Changed
+- **AI Metrics steering** — updated `35-ai-metrics-tracking.md` to use `koda stats submit` instead of Google Form workflow
 
 ### Removed
 - **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle

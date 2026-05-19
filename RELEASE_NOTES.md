@@ -4,8 +4,12 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.81
+## v0.2.86
 
+- **Chrome DevTools MCP** — global headless browser automation bundle (isolated Chrome, no user session interference, replaces dangerous hook)
+- **AI Metrics post-PR hook** — automatically records metrics via `koda stats submit` after every PR creation
+- **AI Metrics steering update** — session tracking now uses `koda stats submit` pipeline instead of Google Form
+- **AI Metrics Integration spec** — full architecture and implementation plan across koda, Kite, and prompt-scorer
 - **Orchestration harness + context compression** — E1-E14 execution engine with automatic context budget management for kiro-cli 2.2.1 (#338)
 - **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with `mcp-meta.json` discovery, variable resolution, `_overrides`, and `_source` tracking
 - **MCP Levels Guide + Custom MCP Builder Guide** — new docs explaining all 4 levels with step-by-step for fork and workspace MCPs
@@ -28,7 +32,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** Jira MCP field ID corrections — sprint, storyPoints, epicLink now point to correct myjira fields
 <!-- END LATEST -->
 
-## v0.2.81
+## v0.2.86
 
 - **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with variable resolution, `_overrides`, and `_source` tracking
 - **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
@@ -41,7 +45,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **test-workspace-mcp.sh** — local validation script (21 assertions)
 - **fix:** JIRA MCP no longer includes epicLink in create fields (prevents hard errors on restrictive projects)
 
-## v0.2.81
+## v0.2.86
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -50,7 +54,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 
-## v0.2.81
+## v0.2.86
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API
