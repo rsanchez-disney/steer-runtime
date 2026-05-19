@@ -1,0 +1,36 @@
+# Requirements: {{TICKET_ID}} — {{TITLE}}
+
+## Summary
+
+<!-- One paragraph: what this ticket delivers and why it matters -->
+
+## Functional Requirements
+
+<!-- Each requirement should be testable and unambiguous -->
+
+- [ ] FR-1: ...
+- [ ] FR-2: ...
+
+## Non-Functional Requirements
+
+<!-- Performance, security, accessibility, backward compatibility -->
+
+- [ ] NFR-1: ...
+
+## Acceptance Criteria
+
+<!-- From the Jira ticket + any discovered during analysis -->
+
+1. ...
+
+## Out of Scope
+
+<!-- Explicitly state what this ticket does NOT include -->
+
+- ...
+
+## Dependencies
+
+<!-- External services, other tickets, or teams that must be coordinated -->
+
+- ...

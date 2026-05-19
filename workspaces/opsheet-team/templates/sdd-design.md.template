@@ -1,0 +1,53 @@
+# Design: {{TICKET_ID}} — {{TITLE}}
+
+## Context
+
+<!-- Current state, constraints, and relevant background -->
+
+## Approach
+
+<!-- High-level description of the solution approach -->
+
+## Files to Create/Modify
+
+| File                          | Layer/Type  | Action | Purpose                     |
+|-------------------------------|-------------|--------|-----------------------------|
+| `path/to/file`                | ...         | Create | ...                         |
+
+## Interfaces and Contracts
+
+<!-- New or modified interfaces, API contracts, request/response shapes -->
+
+```typescript
+// Example interface
+```
+
+## Service Dependencies
+
+<!-- External services called, URLs, methods, headers -->
+
+| Service       | Method | Endpoint                  | Notes          |
+|---------------|--------|---------------------------|----------------|
+| ...           | GET    | `${baseUrl}/v1/...`       | ...            |
+
+## Test Scenarios
+
+<!-- Key scenarios the implementation must cover -->
+
+| Scenario                     | Type   | Expected Outcome              |
+|------------------------------|--------|-------------------------------|
+| Happy path                   | Unit   | ...                           |
+| Service failure              | Unit   | ...                           |
+| Unauthorized access          | Unit   | ...                           |
+
+## Risks and Mitigations
+
+<!-- Known risks and how to address them -->
+
+- **Risk:** ... → **Mitigation:** ...
+
+## Open Questions
+
+<!-- Decisions still pending — resolve before implementation -->
+
+- [ ] ...
