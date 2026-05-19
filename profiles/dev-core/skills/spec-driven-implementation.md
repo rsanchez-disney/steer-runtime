@@ -176,6 +176,7 @@ Present to the user:
 1. Commit with conventional message including ticket ID
 2. Push branch
 3. Create PR (what, how, what was tested)
+4. AI metrics are captured automatically via the post-PR hook (`koda stats submit`)
 
 ## Rules
 
