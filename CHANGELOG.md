@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+### Added
+- **chrome-devtools-mcp** — global MCP bundle for headless browser automation (isolated Chrome, no user session interference)
+
+### Removed
+- **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle
+
 ---
 
 ## [0.2.81] — 2026-05-14
