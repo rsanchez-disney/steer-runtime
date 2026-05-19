@@ -1,0 +1,21 @@
+{
+  "name": "cerebro-sustainment",
+  "description": "ADM PCS · DX Profile — Incident management & triage agent for sustainment operations",
+  "team": "ADM PCS / DX Profile (Cerebro)",
+  "profiles": ["sustainment", "ops", "dev-core"],
+  "default_agent": "orchestrator",
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "ADMPROFILE-",
+  "services": [
+    "dx-profile-web",
+    "dx-profile-api",
+    "config-services",
+    "photo-services",
+    "vas-integration",
+    "content-publisher",
+    "facilities-publisher",
+    "characters-publisher",
+    "facility-status"
+  ]
+}
