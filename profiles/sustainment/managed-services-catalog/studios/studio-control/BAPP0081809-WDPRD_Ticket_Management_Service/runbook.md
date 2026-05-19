@@ -1,29 +1,19 @@
-# Runbook — WDPRD Ticket Management Service
+# Runbook — TMS WDW
+
+## Health Checks
+
+- TMS WDW: https://tms-wdw.wdprapps.disney.com/ticket-management-service/healthcheck
 
 ## Restart Procedures
 
 1.
 2.
 
-**Validation:**
-
----
-
 ## Scaling
 
 - **Scale up:**
 - **Scale down:**
 
-## Failover
-
--
-
 ## Rollback
 
 -
-
-## Contacts for External Dependencies
-
-| System | Contact | When to Engage |
-|--------|---------|----------------|
-| | | |

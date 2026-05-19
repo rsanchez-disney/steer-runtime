@@ -1,0 +1,47 @@
+bapp_id: "BAPP0061980"
+app_name: "evas-wdw"
+full_name: "Entitlement View Assembly Service (WDW)"
+description: "Assembles ticket/pass views for guest-facing display (WDW)"
+support_studio: "Studio Control"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_item: "WDPRD Entitlement-View-Assembly-Service"
+  assignment_group: "web-global-salestickets"
+documentation:
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/484022636/EVAS"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484022636/EVAS"
+  architecture_diagram: "https://docs.google.com/drawings/d/1WdFvPj9eJyuaR5GrqV5CIOyqNA9DMPSEWWKOFzfU8rM/edit"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "evas-wdw"
+    component_type: "api"
+    description: "Assembles entitlement data from TMS for display"
+    health_check:
+      url: "https://evas-wdw.wdprapps.disney.com/entitlement-view-assembly-service/healthcheck"
+      expected_status: 200
+    splunk:
+      index: "wdpr-ecommerce"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-use1*\" ecs_task_definition=\"evas-svc*\""
+      error_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-use1*\" ecs_task_definition=\"evas-svc*\" (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-use1*\" ecs_task_definition=\"evas-svc*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
+    appdynamics:
+      app_name: "prod_ecommerce-S0001479_aws"
+      app_id: "563"
+      tier: "core_ecommerce-S0001479_evas-svc-east-wdw"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_4_hours.BEFORE_NOW.-1.-1.240&application=563&component=349815&dashboardMode=force"
+    grafana:
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-east-1&var-clusters=wdw-ecommerce-S0001479-use1-prd&var-service=evas-svc-wdw-prod-live"
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "820987038150"
+      infra_type: "ECS"
+      cluster_id: "wdw-ecommerce-S0001479-usw2-prd"
+      service_name: "evas-wdw-svc-prod-live"
