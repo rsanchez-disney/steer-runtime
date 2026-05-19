@@ -1,0 +1,10 @@
+{
+  "name": "chrome-devtools",
+  "env": {
+    "CHROME_WS_ENDPOINT": "WebSocket endpoint for remote Chrome",
+    "CHROME_WS_TOKEN": "Bearer auth token (valid ~8h)"
+  },
+  "env_required": [],
+  "env_secret": ["CHROME_WS_TOKEN"],
+  "env_defaults": {}
+}
