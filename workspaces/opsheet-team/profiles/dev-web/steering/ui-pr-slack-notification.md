@@ -18,70 +18,80 @@ This is the **last step** before returning the final result to the user.
 
 ---
 
-## Team Slack ID Lookup
+## Slack Lookup
 
-When the user provides reviewer names, the agent **MUST resolve them to Slack user IDs** using this table.
+The agent **MUST resolve users to Slack user IDs** using this table.
 Match by any of the aliases (full name, short name, username). Matching is **case-insensitive**.
 
-| Full Name | Aliases | Slack ID |
-|-----------|---------|----------|
-| Andres Herrera | a.herrera | UJYJCBAHF |
-| Alan Valdez | | U023HDUSW8J |
-| Alvaro Joel Paz Monsalve | alvaro.pazmonsalve | UTM7GK9R8 |
-| Brenda Sabrina Schenkel | brenda.schenkel | U01A00B2JJJ |
-| Cintia Tahirih Jaliri Pancca | Cintia Tahirih | U02490VGT3Q |
-| Cristian Tangarife | | U03N17J2MDM |
-| Daniel Alejandro Esquivel Correa | Daniel Esquivel | U037BKA9WBT |
-| Fabio Catriel Cruz Gonella | Fabio Cruz | U03J8DUPXUG |
-| Jonathan Villaverde | | U03JCQVENBX |
-| Joseth Guerrero Escobar | Joseth David, Joseth Guerrero | U02P1N7KAQH |
-| Juan David Porras Palencia | Juan David Porras | U02653L79GE |
-| Juan Pablo Ortiz Palacio | Juan Pablo Ortiz | UDNDQSBQU |
-| Juan David Uribe Cardenas | Juanda Uribe | UCJNXGE6T |
-| Julian Murillo | | U06PBCEU45S |
-| Luis Gutierrez | Luis | UU02LDF88 |
-| Mario Andres Ojeda | Mario Ojeda | UDNAR0Z7E |
-| Cristian Martin Chavez Gutoff | Martín Chavez, Martin Chavez | U09102DCHV5 |
-| Martin Perez | | U03CSE5TU48 |
-| Miguel Angel Sanchez Gonzalez | Miguel Sanchez | U03KEGFQEH3 |
-| Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE |
-| Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB |
-| Nilda De Marco | | U05RF4FHBE2 |
-| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEAJ |
-| Patricia Horna | Patty Horna | U02J4T55YTF |
-| Ricardo Martinez | | UKF19US83 |
-| Rodrigo Veloso | | U023AJ90KM4 |
-| Victor Rodriguez Muñoz | Victor Rodriguez | U76RE3DEG |
+| Full Name | Aliases | Slack ID | Pod | Champ |
+|-----------|---------|----------|-----|-------|
+| Alan Valdez | | U023HDUSW8J | Disney | No |
+| Alvaro Joel Paz Monsalve | alvaro.pazmonsalve | UTM7GK9R8 | Pod 2 | No |
+| Brenda Sabrina Schenkel | brenda.schenkel | U01A00B2JJJ | Pod 1 | No |
+| Cintia Tahirih Jaliri Pancca | Cintia Tahirih | U02490VGT3Q | Pod 4 | No |
+| Fabio Catriel Cruz Gonella | Fabio Cruz | U03J8DUPXUG | Pod 1 | No |
+| Joseth Guerrero Escobar | Joseth David, Joseth Guerrero | U02P1N7KAQH | Pod 3 | Yes |
+| Juan David Porras Palencia | Juan David Porras | U02653L79GE | Pod 5 | No |
+| Juan David Uribe Cardenas | Juanda Uribe | UCJNXGE6T | Pod 5 | No |
+| Julian Murillo | | U06PBCEU45S | Pod 5 | No |
+| Luis Gutierrez | Luis | UU02LDF88 | Pod 5 | Yes |
+| Cristian Martin Chavez Gutoff | Martín Chavez, Martin Chavez | U09102DCHV5 | Pod 1 | No |
+| Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE | Pod 3 | Yes |
+| Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB | Pod 3 | No |
+| Nilda De Marco | | U05RF4FHBE2 | Pod 4 | No |
+| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEAJ | Pod 5 | No |
+| Patricia Horna | Patty Horna | U02J4T55YTF | Pod 2 | No |
+| Ricardo Martinez | | UKF19US83 | Pod 4 | No |
+| Victor Rodriguez Muñoz | Victor Rodriguez | U76RE3DEG | Pod 2 | Yes |
 
 ---
 
-## Required User Input
+## Urgency Lookup
 
-Before sending the webhook, the agent **MUST ask the user** for the following data that cannot be derived automatically:
+| id | Urgency |
+|----|---------|
+| 0 | Not Urgent |
+| 1 | Timely, but Not Urgent |
+| 2 | Urgent |
+| 3 | Blocker |
 
-1. **Urgency** — ask: "What is the CR urgency?"
-   - Options: `Not Urgent`, `Timely, but Not Urgent`, `Urgent`, `Blocker`
-   - Default: `Not Urgent`
+---
 
-2. **Pod** — ask: "Which Pod does this belong to?"
-   - Options: `Pod 1`, `Pod 2`, `Pod 3`, `Pod 4`, `Pod 5`
+## User Input Format
 
-3. **Pod Reviewers** — ask: "Who are the Pod reviewers? (provide names, I'll resolve the Slack IDs)"
-   - Example: `Victor Rodriguez, Nacho Smirlian`
-   - **Required** — do not send without at least one reviewer
-   - **Maximum 2 reviewers** — the workflow supports up to 2 individual reviewer slots
-   - Resolve each name to a Slack user ID using the lookup table
+Ask the user to provide only:
 
-4. **Code Champs** (optional) — ask: "Is a Code Champs review required? If yes, defaults are Victor Rodriguez, Joseth Guerrero, and Patty Horna"
-   - If the user says yes without specifying names, use the defaults:
-     - `champ_1`: `U76RE3DEG` (Victor Rodriguez)
-     - `champ_2`: `U02P1N7KAQH` (Joseth Guerrero)
-     - `champ_3`: `U02J4T55YTF` (Patty Horna)
-   - **Maximum 3 champs** — the workflow supports up to 3 individual champ slots
-   - If they say no or don't respond, send `U123456789` for all three champ fields
+```
+User: Victor Rodriguez
+Urgency: 0
+```
 
-The following fields are derived automatically:
-- **Greeting**: a greeting in Spanish, e.g.: `"Hola equipo, por favor revisen cuando puedan. ¡Gracias!"`
+---
+
+## Resolution Logic
+
+With the user's name, the agent **MUST**:
+
+1. **Look up the user** in the Slack Lookup table (case-insensitive match on Full Name or Aliases).
+2. **Identify the user's Pod** from the matched row.
+3. **Assign reviewers**: all other members of the same Pod (excluding the requesting user). Fill `reviewer_1`, `reviewer_2` in order. Leave unused slots as `"U123456789"`.
+4. **Assign champs**: the member(s) in the same Pod where `Champ = Yes` (excluding the requesting user). Fill `champ_1`, `champ_2`, `champ_3` in order. If fewer than 3 champs exist, fill unused slots with `"U123456789"`.
+
+### Example
+
+If the user is **Alvaro Joel Paz Monsalve** (Pod 2):
+- Pod 2 members: Alvaro Joel Paz Monsalve, Patricia Horna, Victor Rodriguez Muñoz
+- Reviewers (excluding user): `U02J4T55YTF` (Patricia), `U76RE3DEG` (Victor)
+- Champ (Pod 2, Champ=Yes, excluding user): `U76RE3DEG` (Victor)
+- Result: `reviewer_1 = "U02J4T55YTF"`, `reviewer_2 = "U76RE3DEG"`, `champ_1 = "U76RE3DEG"`, `champ_2 = "U123456789"`, `champ_3 = "U123456789"`
+
+---
+
+## Auto-Derived Fields
+
+The following fields are derived automatically (do NOT ask the user):
+- **Pod**: resolved from the Slack Lookup table based on the user's name
+- **Greeting**: generated from the user's full name, e.g.: `"Victor Rodriguez has created a new PR, please review"`
 - **URL**: the URL of the newly created PR
 - **Jira ticket**: the Jira ticket URL associated with the story/bug (format: `https://myjira.disney.com/browse/OPS-XXXXX`). If no ticket is associated, use `"N/A"`
 - **Type**: derived from the change type (branch name or commit type)
@@ -125,17 +135,17 @@ Empty strings for unused slots.
 | Field | Source | Example |
 |-------|--------|---------|
 | `urgency` | Asked from user | `"Not Urgent"` |
-| `pod` | Asked from user | `"Pod 3"` |
-| `greeting` | Auto-generated in Spanish | `"Hola equipo, por favor revisen cuando puedan. ¡Gracias!"` |
+| `pod` | Resolved from Slack Lookup | `"Pod 2"` |
+| `greeting` | Auto-generated from user's name | `"Victor Rodriguez has created a new PR, please review"` |
 | `url` | URL of the newly created PR | `"https://github.disney.com/repo/pull/43"` |
 | `jira_ticket` | Jira ticket URL for the story/bug | `"https://myjira.disney.com/browse/OPS-12345"` |
 | `type` | Derived from change type | `"Feature"`, `"Fix"`, `"BugFix"`, `"Refactor"`, `"Docs"`, `"Style"`, `"Performance"`, `"Test"`, `"Build"` |
 | `goal` | Summary of the PR objective | `"Adds date range validation to the schedules table"` |
-| `reviewer_1` | 1st Pod Reviewer Slack ID | `"U76RE3DEG"` |
-| `reviewer_2` | 2nd Pod Reviewer Slack ID (or `""`) | `"U0396SQ3XGE"` |
-| `champ_1` | 1st Code Champ Slack ID (or `"U123456789"`) | `"U76RE3DEG"` |
-| `champ_2` | 2nd Code Champ Slack ID (or `"U123456789"`) | `"U02P1N7KAQH"` |
-| `champ_3` | 3rd Code Champ Slack ID (or `"U123456789"`) | `"U02J4T55YTF"` |
+| `reviewer_1` | 1st Pod member (excluding user) | `"U02J4T55YTF"` |
+| `reviewer_2` | 2nd Pod member (excluding user, or `""`) | `"U76RE3DEG"` |
+| `champ_1` | 1st Pod Champ (excluding user, or `"U123456789"`) | `"U76RE3DEG"` |
+| `champ_2` | 2nd Pod Champ (excluding user, or `"U123456789"`) | `"U123456789"` |
+| `champ_3` | 3rd Pod Champ (excluding user, or `"U123456789"`) | `"U123456789"` |
 
 **Important:** Each `reviewer_*` and `champ_*` field must contain a **single** Slack user ID string (e.g., `"U76RE3DEG"`), NOT the `<@ID>` mention format. The Slack workflow handles the mention rendering. If a slot is unused, send an empty string `""`.
 
@@ -242,14 +252,14 @@ The agent should choose the correct option based on context:
 
 ## Rules
 
-1. **Always ask** for Pod, Pod Reviewers, and Urgency from the user before sending — do not assume values.
+1. **Only ask** for User name and Urgency — derive Pod, reviewers, and champs automatically from the Slack Lookup table.
 2. **Resolve names to Slack IDs** — always look up the Slack user ID from the team table. Send raw IDs (e.g., `U76RE3DEG`), not `<@ID>` format.
 3. **One ID per field** — each `reviewer_*` and `champ_*` field takes exactly one Slack user ID. Never comma-separate multiple IDs in one field.
 4. **Empty unused slots** — if fewer than 2 reviewers, send `""` for unused reviewer fields. For unused champ fields, send `"U123456789"` instead of empty string.
-5. **Greeting in Spanish** — generate a short, friendly greeting in Spanish.
-6. **Non-blocking** — if the webhook fails, report the error but do NOT fail the PR workflow.
-7. **Escape JSON** — ensure special characters in goal and greeting are properly escaped.
-8. **Code Champs fallback** — if the user doesn't need Code Champs, send `"U123456789"` for all three champ fields (not empty string).
+5. **Exclude the requesting user** — never include the user themselves as a reviewer or champ.
+6. **Greeting** — generate using the pattern: `"<Full Name> has created a new PR, please review"`.
+7. **Non-blocking** — if the webhook fails, report the error but do NOT fail the PR workflow.
+8. **Escape JSON** — ensure special characters in goal and greeting are properly escaped.
 9. **Confirm before sending** — show the user a summary of the payload before firing the webhook so they can correct any data.
 10. **Always send** the notification after a successful PR — do not skip this step.
 11. **Warn on unresolved names** — if a name can't be matched to a Slack ID, warn the user and ask them to provide the Slack ID manually.
