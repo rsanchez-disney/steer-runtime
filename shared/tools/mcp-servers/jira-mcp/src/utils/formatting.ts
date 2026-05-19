@@ -101,10 +101,18 @@ export function buildFormattedSummary(
         summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
         ticket.fields.issuelinks.forEach((link: any) => {
             if (link.outwardIssue) {
-                summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+                const label = link.type?.outward || "relates to";
+                const key = link.outwardIssue.key;
+                const status = link.outwardIssue.fields?.status?.name || "Unknown";
+                const linkSummary = link.outwardIssue.fields?.summary || "Unknown";
+                summary.push(`- ${label} ${key} (${status}) — ${linkSummary}`);
             }
             if (link.inwardIssue) {
-                summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+                const label = link.type?.inward || "relates to";
+                const key = link.inwardIssue.key;
+                const status = link.inwardIssue.fields?.status?.name || "Unknown";
+                const linkSummary = link.inwardIssue.fields?.summary || "Unknown";
+                summary.push(`- ${label} ${key} (${status}) — ${linkSummary}`);
             }
         });
     }

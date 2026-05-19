@@ -12,7 +12,7 @@ import {
 export const jiraGetIssueSchema = {
     name: "jira_get_issue",
     description:
-        "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
+        "Fetch a JIRA ticket by ID with support for custom fields. Issue links (e.g., blocks, split from, depends on) are included by default. Optionally save to output directory.",
     inputSchema: {
         type: "object",
         properties: {
@@ -41,6 +41,7 @@ export const jiraGetIssueSchema = {
                         "comment",
                         "labels",
                         "components",
+                        "issuelinks",
                         "storyPoints",
                         "customfield_10003",
                     ],
@@ -76,6 +77,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             "created",
             "description",
             "comment",
+            "issuelinks",
             "storyPoints",
         ];
         const requestedFields = fields || defaultFields;

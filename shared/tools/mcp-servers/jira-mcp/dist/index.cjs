@@ -7061,10 +7061,18 @@ function buildFormattedSummary(ticket, requestedFields) {
     summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
     ticket.fields.issuelinks.forEach((link) => {
       if (link.outwardIssue) {
-        summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+        const label = link.type?.outward || "relates to";
+        const key = link.outwardIssue.key;
+        const status = link.outwardIssue.fields?.status?.name || "Unknown";
+        const linkSummary = link.outwardIssue.fields?.summary || "Unknown";
+        summary.push(`- ${label} ${key} (${status}) \u2014 ${linkSummary}`);
       }
       if (link.inwardIssue) {
-        summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+        const label = link.type?.inward || "relates to";
+        const key = link.inwardIssue.key;
+        const status = link.inwardIssue.fields?.status?.name || "Unknown";
+        const linkSummary = link.inwardIssue.fields?.summary || "Unknown";
+        summary.push(`- ${label} ${key} (${status}) \u2014 ${linkSummary}`);
       }
     });
   }
@@ -7210,7 +7218,7 @@ function sprintBoard(sprint, issues) {
 init_customFields();
 var jiraGetIssueSchema = {
   name: "jira_get_issue",
-  description: "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
+  description: "Fetch a JIRA ticket by ID with support for custom fields. Issue links (e.g., blocks, split from, depends on) are included by default. Optionally save to output directory.",
   inputSchema: {
     type: "object",
     properties: {
@@ -7238,6 +7246,7 @@ var jiraGetIssueSchema = {
             "comment",
             "labels",
             "components",
+            "issuelinks",
             "storyPoints",
             "customfield_10003"
           ]
@@ -7265,6 +7274,7 @@ async function handleJiraGetIssue(args) {
       "created",
       "description",
       "comment",
+      "issuelinks",
       "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
