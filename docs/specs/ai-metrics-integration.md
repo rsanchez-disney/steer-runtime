@@ -45,7 +45,7 @@ flowchart TD
     %% Trigger flow
     GH -->|PR created| HOOK
     HOOK -->|extracts ticket + PR URL| CLI
-    STEERING -->|manual: "AI form OPS-123"| CLI
+    STEERING -->|manual trigger| CLI
 
     %% Koda internal
     CLI -->|writes| STORE
