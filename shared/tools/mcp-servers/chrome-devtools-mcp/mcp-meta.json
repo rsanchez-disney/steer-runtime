@@ -1,8 +1,11 @@
 {
   "name": "chrome-devtools",
   "description": "Chrome DevTools MCP — headless browser automation (navigate, screenshot, click, evaluate, network)",
-  "env": {},
+  "env": {
+    "CHROME_WS_ENDPOINT": "WebSocket endpoint for remote Chrome (optional, leave empty for local headless)",
+    "CHROME_WS_TOKEN": "Bearer auth token for remote Chrome (optional, ~8h validity)"
+  },
   "env_required": [],
-  "env_secret": [],
+  "env_secret": ["CHROME_WS_TOKEN"],
   "env_defaults": {}
 }
