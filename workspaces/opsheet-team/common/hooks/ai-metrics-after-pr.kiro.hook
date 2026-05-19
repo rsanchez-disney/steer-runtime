@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "AI Metrics Form After PR",
+  "description": "After a GitHub PR is created, automatically build and open the AI Metrics Tracking Google Form pre-filled with ticket info inferred from the PR context.",
+  "version": "1",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [
+      ".*create_pr.*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A PR was just created. Submit the AI Metrics Tracking Form:\n\n1. Extract the Jira ticket ID from the PR title or branch name (e.g., OPS-22371). If no ticket ID is found, skip the form and tell the user.\n2. Fetch it with mcp_jira_jira_get_issue (fields: summary, labels; customFields: storyPoints)\n3. Infer ticket type from summary/labels:\n   - bug/fix/defect/incident = Bug Fixing (Incidents, Defects)\n   - refactor/uplift/moderniz = Modernization (Uplift, Refactoring, Modernization)\n   - automation/infra/performance = Platform, Reliability and Ops (Automation Testing, PE testing, Performance, Infra)\n   - enhancement/sustainment/minor = Minor enhancement (Sustainment small changes)\n   - otherwise = New development (New Features)\n4. Use story points from Jira or default 3\n5. Generate a qualitative description from the ticket summary\n6. Build the Google Form URL and open it. DO NOT ask questions. Just open it.\n\nForm base URL: https://docs.google.com/forms/d/e/1FAIpQLSeqlnsHZjIwxGxtVXmaKXBz584Nv4U7plbeY0UYOkxVp_bYBw/viewform\n\nField entry IDs and defaults:\n- entry.1717213524 = ticket ID (Jira Ticket ID)\n- entry.1503849254 = Yes (AI Assisted)\n- entry.46886505 = inferred ticket type (Type of Work)\n- entry.1594158063 = Amazon Q / Kiro ( Claude Opus 4.6 ) (AI Tool Used)\n- entry.1403588886 = story points, default 3 (Story Points)\n- entry.192932190 = (Overall Time Variation — leave empty for user to fill)\n- entry.545880799 = (Analysis / Requirements — leave empty for user to fill)\n- entry.1900671662 = (Coding / Implementation — leave empty for user to fill)\n- entry.121969981 = (Unit Testing — leave empty for user to fill)\n- entry.360899435 = 0% (Integration Testing)\n- entry.1017453479 = (Code Review — leave empty for user to fill)\n- entry.1615264491 = (Documentation — leave empty for user to fill)\n- entry.2091479198 = qualitative description (Qualitative Feedback)\n\nURL encode all values (spaces to %20, / to %2F, ( to %28, ) to %29, % to %25).\nAppend as query params and run: open \"FULL_URL\"\n\nTell user: \"Form opened in your browser. Review and click Submit.\""
+  }
+}
