@@ -10,6 +10,7 @@
 
 - Windows 10 (version 2004+) or Windows 11
 - Git
+- Node.js (LTS recommended) — 👉 [https://nodejs.org/](https://nodejs.org/)
 - SSH connection to GitHub configured (required for Koda)
 
 ---
@@ -50,6 +51,22 @@ Download and install the native Windows IDE from:
 
 ## 3. Install GitHub CLI
 
+### Generate a GitHub Personal Access Token
+
+Before installing the CLI, generate a token you'll use to authenticate:
+
+👉 [https://github.disney.com/settings/tokens](https://github.disney.com/settings/tokens)
+
+When creating the token, make sure the following scopes are checked:
+
+- **repo** (full control of private repositories)
+- **admin:org** (read and write org and team membership)
+- **user** (update all user data)
+
+Save the token somewhere safe — you'll need it in the next step.
+
+### Install and authenticate
+
 Download and install `gh` from:
 
 👉 [https://cli.github.com/](https://cli.github.com/)
@@ -65,6 +82,8 @@ Authenticate with Disney GitHub Enterprise:
 ```powershell
 gh auth login --hostname github.disney.com
 ```
+
+When prompted, use the personal access token you generated above.
 
 ---
 
@@ -100,13 +119,25 @@ koda version
 
 ## 6. Setup Koda and Install Agents
 
-Select the fork `wdpr-parkops-opsheet-suite/steer-runtime`, then select the workspace `opsheet-team` and install the `dev-web` profile:
+Run the interactive setup:
 
 ```powershell
 koda setup
+```
+
+During setup:
+1. Press **f** and select the fork: `wdpr-parkops-opsheet-suite/steer-runtime`
+2. Press **p** and select the profile you need (e.g. `dev-web`, `qa`, etc.)
+
+Then install agents and verify:
+
+```powershell
 koda install dev
 koda mcp-install
+koda doctor
 ```
+
+> `koda doctor` runs a health check to verify everything is configured correctly.
 
 For detailed MCP server configuration, see [MCP Setup](../reference/MCP_SETUP.md).
 
@@ -118,7 +149,33 @@ koda                              # TUI — press [p] for profiles, [t] for toke
 
 ---
 
-## 7. Start Chatting
+## 7. Sync Agents to Steering (Kiro IDE)
+
+If you are using **Kiro IDE**, you need to sync the installed agents to steering files so Kiro can use them.
+
+Open the Kiro IDE (or kiro-cli chat) and send the following message:
+
+```
+sync agents using \.kiro\steer-runtime\common\skills\sync-agents-to-steering.md
+```
+
+### Loading agent skills
+
+Once an agent is installed (e.g. `#agent-ui`), ask Kiro for the available skills:
+
+```
+What skills are available?
+```
+
+If the skill you need is not listed, ask Kiro to load them from the global skills directory:
+
+```
+use the skills from ~/.kiro/skills/
+```
+
+---
+
+## 8. Start Chatting
 
 ```powershell
 koda chat --agent orchestrator           # Dev orchestrator
@@ -129,16 +186,43 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 
 ## Troubleshooting
 
-| Issue                          | Fix                                                                                              |
-|--------------------------------|--------------------------------------------------------------------------------------------------|
-| `kiro-cli: command not found`  | Close and reopen PowerShell, or check that the install path is in your system PATH               |
-| Browser doesn't open for login | Copy the URL from the terminal and paste it into your browser manually                           |
-| `koda: command not found`      | Close and reopen PowerShell, or re-run the Koda install script                                   |
-| SSH connection fails           | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
-| `gh` not recognized            | Restart PowerShell after installing GitHub CLI                                                   |
+| Issue | Fix |
+|-------|-----|
+| `kiro-cli: command not found` | Close and reopen PowerShell, or check that the install path is in your system PATH. See [environment variables note](#environment-variables) below. |
+| `koda: command not found` | Close and reopen PowerShell, or re-run the Koda install script. See [environment variables note](#environment-variables) below. |
+| Browser doesn't open for login | Copy the URL from the terminal and paste it into your browser manually |
+| SSH connection fails | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
+| `gh` not recognized | Restart PowerShell after installing GitHub CLI |
+| Content renders outside the terminal (visualization issues) | Switch to **Git Bash** instead of PowerShell/CMD. Git Bash handles ANSI escape codes and wide content better. |
+
+### Environment Variables
+
+If `kiro-cli` or `koda` commands are not recognized after installation, the most common cause is that their install directories are not in your system `PATH` environment variable.
+
+To check and fix:
+
+1. Open **Start** → search for **"Environment Variables"** → click **"Edit the system environment variables"**
+2. Click **Environment Variables…**
+3. Under **User variables**, select `Path` and click **Edit**
+4. Verify these paths are present (adjust username as needed):
+   - `C:\Users\<username>\AppData\Local\Kiro-Cli`
+   - The Koda install directory (shown during installation)
+5. If missing, click **New** and add them
+6. Click **OK**, close all dialogs, and **restart your terminal**
 
 ---
 
+## Can I add images to a Markdown file?
+
+Yes. Markdown supports images with the following syntax:
+
+```markdown
+![Alt text](path/to/image.png)
+```
+
+You can use relative paths (e.g. `../../assets/screenshot.png`) or absolute URLs. Most Markdown renderers (GitHub, VS Code preview, Kiro) will display them inline.
+
+---
 
 ### Kiro CLI silent failure on Windows
 
