@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 
 const DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
 const DEFAULT_TIMEOUT_MS = 30000;
+export const USER_AGENT = `ConfluenceMCP/0.1.0 (${process.env.MCP_USER_AGENT_CONTACT || "steer-runtime"}) ${process.env.MCP_USER_AGENT_ENV || "local-dev nonprod"}`;
 
 export class ConfluenceApiClient {
     private confluenceUrl: string | null = null;
@@ -63,6 +64,7 @@ export class ConfluenceApiClient {
                 signal: controller.signal,
                 headers: {
                     Authorization: `Bearer ${pat}`,
+                    "User-Agent": USER_AGENT,
                     Accept: "application/json",
                     "Content-Type": "application/json",
                     ...options.headers,
