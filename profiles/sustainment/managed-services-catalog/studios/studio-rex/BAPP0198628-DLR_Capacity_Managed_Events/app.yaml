@@ -6,7 +6,7 @@
 
 # --- Identity ---
 bapp_id: "BAPP0198628"
-app_name: "DLR Capacity Managed Events"
+app_name: "dlr-capacity-managed-events"
 full_name: "DLR Capacity Managed Events"
 description: "Park reservation eligibility, availability, booking, and retrieval for DLR"
 

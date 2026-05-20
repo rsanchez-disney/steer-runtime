@@ -5,7 +5,10 @@
 ### VIDs not showing in guest view
 - Check EVAS-WDW health endpoint
 - If TMS-WDW is healthy but EVAS returns no VIDs → EVAS assembly issue
-- Check Splunk for assembly errors: `index=wdw_evas source=*int* "error"`
+- Check Splunk for assembly errors:
+  ```spl
+  index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-use1*" ecs_task_definition="evas-svc-wdw*" ("*error*" OR "*exception*") earliest=-1h
+  ```
 
 ### Slow response times
 - EVAS aggregates data from TMS — check TMS-WDW latency first

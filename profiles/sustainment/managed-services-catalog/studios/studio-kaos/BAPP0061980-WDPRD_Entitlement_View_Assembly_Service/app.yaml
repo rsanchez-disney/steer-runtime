@@ -1,7 +1,7 @@
 bapp_id: "BAPP0061980"
 app_name: "evas-dlr"
 full_name: "Entitlement View Assembly Service (DLR)"
-description: "Assembles ticket/pass views for guest-facing display (DLR)"
+description: "Aggregates product instance information on top of TMS responses for DLR. Adds product instances, policies, and enriched entitlement data for guest-facing display. Integrates with CME retrieval for reservation data."
 support_studio: "Studio Kaos"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3AeNbcha4UraJUCngdy1oP_SuMd5GrCvgScaei1uhdhoc1%40thread.tacv2/DX%20-%20Studio%20Kaos?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
@@ -12,7 +12,7 @@ servicenow:
   configuration_item: "WDPRD Entitlement-View-Assembly-Service"
   assignment_group: "web-global-salestickets"
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/484022636/EVAS"
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/688921351/DLR+EVAS+Runbook"
   wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484022636/EVAS"
   architecture_diagram: "https://docs.google.com/drawings/d/1WdFvPj9eJyuaR5GrqV5CIOyqNA9DMPSEWWKOFzfU8rM/edit"
 docs:
@@ -20,24 +20,86 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 components:
-  - component_name: "evas-dlr"
+  - component_name: "evas-dlr-int"
     component_type: "api"
-    description: "Assembles entitlement data from TMS for display. If EVAS does NOT return VIDs but TMS is healthy → EVAS assembly issue."
+    description: "Internal entitlement view assembly for DLR — not internet-facing"
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-evas-svc"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_EntitlementViewAssemblyService/deployments"
     health_check:
-      url: "https://evas-dlr.wdprapps.disney.com/entitlement-view-assembly-service/healthcheck"
+      url: "https://evas.int.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
       expected_status: 200
     splunk:
       index: "wdpr-ecommerce"
-      base_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2*\" ecs_task_definition=\"evas*\""
-      error_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2*\" ecs_task_definition=\"evas*\" (\"*error*\" OR \"*exception*\")"
-      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2*\" ecs_task_definition=\"evas*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evasint*\""
+      error_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evasint*\" (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evasint*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
+    appdynamics:
+      app_name: "prod_ecommerce-S0001477_aws"
+      app_id: "501"
+      tier: "core_ecommerce-S0001477_evasint-svc-dlr"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=501&component=306236&dashboardMode=force"
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "820987038150"
+      infra_type: "ECS"
+      cluster_id: "dlr-ecommerce-S0001477-usw2-prd"
+      service_name: "evasint-svc-prod-live"
+    other_environments:
+      stage:
+        health_check:
+          url: "https://stage.evas.int.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "2981"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2981&component=6187841&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-stg"
+          service_name: "evasint-svc-stage-live"
+      load:
+        health_check:
+          url: "https://lt.evas.int.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "3057"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3057&component=6187955&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-lod"
+          service_name: "evasint-svc-load-live"
+      latest:
+        health_check:
+          url: "https://latest.evas.int.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "2852"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2852&component=6493727&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-lst"
+          service_name: "evasint-svc-latest-live"
+
+  - component_name: "evas-dlr-ext"
+    component_type: "api"
+    description: "External (internet-facing) entitlement view assembly for DLR guest apps"
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-evas-svc"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_EntitlementViewAssemblyService/deployments"
+    health_check:
+      url: "https://evas.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+      expected_status: 200
+    splunk:
+      index: "wdpr-ecommerce"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evas-svc*\""
+      error_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evas-svc*\" (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"dlr-ecommerce-S0001477-usw2-*\" ecs_task_definition=\"evas-svc*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
     appdynamics:
       app_name: "prod_ecommerce-S0001477_aws"
       app_id: "501"
       tier: "core_ecommerce-S0001477_evas-svc-dlr"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=501&component=306014&dashboardMode=force"
-    grafana:
-      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-west-2&var-clusters=dlr-ecommerce-S0001477-usw2-prd&var-service=evas-svc-prod-live"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=501&component=306014&dashboardMode=force"
     cloud:
       provider: "AWS"
       region: "us-west-2"
@@ -45,3 +107,31 @@ components:
       infra_type: "ECS"
       cluster_id: "dlr-ecommerce-S0001477-usw2-prd"
       service_name: "evas-svc-prod-live"
+    other_environments:
+      stage:
+        health_check:
+          url: "https://stage.evas.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "2981"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2981&component=6187792&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-stg"
+          service_name: "evas-svc-stage-live"
+      load:
+        health_check:
+          url: "https://lt.evas.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "3057"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3057&component=6187898&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-lod"
+          service_name: "evas-svc-load-live"
+      latest:
+        health_check:
+          url: "https://latest.evas.dlr.wdpro.disney.com/entitlement-view-assembly-service/health/deep"
+        appdynamics:
+          app_id: "2852"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2852&component=6493563&dashboardMode=force"
+        cloud:
+          cluster_id: "dlr-ecommerce-S0001477-usw2-lst"
+          service_name: "evas-svc-latest-live"

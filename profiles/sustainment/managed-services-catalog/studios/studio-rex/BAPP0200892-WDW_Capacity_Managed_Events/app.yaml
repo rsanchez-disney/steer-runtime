@@ -6,7 +6,7 @@
 
 # --- Identity ---
 bapp_id: "BAPP0200892"
-app_name: "WDW Capacity Managed Events"
+app_name: "wdw-capacity-managed-events"
 full_name: "WDW Capacity Managed Events"
 description: "Park reservation eligibility, availability, booking, and retrieval for WDW"
 

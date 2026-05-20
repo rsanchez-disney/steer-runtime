@@ -14,7 +14,7 @@ servicenow:
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602155/UC+-+OrderVAS+WDW+Runbook"
   wiki: "https://confluence.disney.com/spaces/WDPROS/pages/497948019/Operational+Readiness+Review+-+Unified+Checkout"
-  architecture_diagram: "https://docs.google.com/drawings/d/1gQsfr1GWbK73N43hgHB_iwG6Z1yL84hg9RIadeNngjA/edit"
+  architecture_diagram: "https://docs.google.com/spreadsheets/d/1x8yRBUAEOaGd4JD_YdfEczilVgENa3NAMx9Q7qGFlII/edit"
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
@@ -22,19 +22,27 @@ docs:
 components:
   - component_name: "order-vas-wdw"
     component_type: "api"
-    description: "Order orchestration for UC path"
+    description: "VAS for checkout — order orchestration for UC path (WDW and DLR)"
+    repository:
+      url: "https://github.disney.com/wdpro-peplite/ecommerce-order-vas-java-17"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDW_Order_View_Assembler_Service/pipelines"
+      rundeck_url: "https://rundeck.wdprapps.disney.com/project/ecommerce-order-vas-java-17_aws/job/show/7bcbc6a0-e0f6-4316-950a-c4a8a28440e5"
     health_check:
-      url: "https://order-vas-wdw.wdprapps.disney.com/wdpr-order-vas/version"
+      url: "https://order-vas-r53-wdw.wdprapps.disney.com/wdpr-order-vas/version"
       expected_status: 200
     splunk:
       index: "wdpr_wdw_ordervas"
-      base_spl: "index=wdpr_wdw_ordervas"
+      base_spl: "index=wdpr_wdw_ordervas OR index=wdpr_dlr_ordervas"
       error_spl: "index=wdpr_wdw_ordervas (\"*error*\" OR \"*exception*\")"
       latency_spl: "index=wdpr_wdw_ordervas RESP_OUT | spath input=Msg path=timeTakenInMillis | stats avg(timeTakenInMillis) as avg_ms, p95(timeTakenInMillis) as p95_ms"
     appdynamics:
       app_name: "UC Order VAS WDW"
       app_id: "1750"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_3_hours.BEFORE_NOW.-1.-1.180&application=1750&dashboardMode=force"
+      tier: "order-vas"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=1750&component=368124&dashboardMode=force"
     grafana:
       dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-east-1&var-clusters=wdw-ecommerce-S0014092-use1-prd&var-service=order-vas-prod-live"
     cloud:
@@ -44,3 +52,37 @@ components:
       infra_type: "ECS"
       cluster_id: "wdw-ecommerce-S0014092-use1-prd"
       service_name: "order-vas-prod-live"
+      services:
+        - type: "elasticache"
+          name: "order-vas-prod"
+    other_environments:
+      stage:
+        health_check:
+          url: "https://stage.order-vas-r53-wdw.wdprapps.disney.com/wdpr-order-vas/version"
+        appdynamics:
+          app_id: "6853"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=6853&dashboardMode=force"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0014092-use1-stg"
+          services:
+            - type: "elasticache"
+              name: "order-vas-stage"
+      load:
+        health_check:
+          url: "https://load.order-vas-r53-wdw.wdprapps.disney.com/wdpr-order-vas/version"
+        appdynamics:
+          app_id: "6854"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=6854&dashboardMode=force"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0014092-use1-lod"
+          services:
+            - type: "elasticache"
+              name: "order-vas-load"
+      latest:
+        health_check:
+          url: "https://latest.order-vas-r53-wdw.wdprapps.disney.com/wdpr-order-vas/version"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0014092-use1-lst"
+          services:
+            - type: "elasticache"
+              name: "order-vas-latest"
