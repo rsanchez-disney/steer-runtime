@@ -139,4 +139,4 @@ Reference: [Kiro CLI Website](https://kiro.dev/docs/cli/)
 
 > 🪟 **Windows users:** See [Windows Setup Guide](../getting-started/WINDOWS_SETUP.md) for PowerShell equivalents.
 
-Back to [README](../README.md)
+Back to [README](../index.md)

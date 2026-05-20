@@ -295,4 +295,4 @@ A typical setup: each org has a fork of steer-runtime, and within that fork team
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

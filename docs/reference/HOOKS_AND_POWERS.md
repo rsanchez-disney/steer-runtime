@@ -225,8 +225,8 @@ Add to an agent's JSON config:
    };
    ```
 
-See [`profiles/dev-core/powers/GUIDE.md`](../../profiles/dev-core/powers/GUIDE.md) for the full creation guide.
+See [`profiles/dev-core/powers/GUIDE.md`](https://github.disney.com/SANCR225/steer-runtime/blob/main/profiles/dev-core/powers/GUIDE.md) for the full creation guide.
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

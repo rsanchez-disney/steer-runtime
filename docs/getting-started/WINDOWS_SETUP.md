@@ -205,4 +205,4 @@ You should see output like `kiro-cli-chat 2.0.1` (version may vary).
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

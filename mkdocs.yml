@@ -48,10 +48,12 @@ nav:
       - Overview: getting-started/GETTING_STARTED.md
       - Setup (macOS/Linux): getting-started/SETUP.md
       - Windows Setup: getting-started/WINDOWS_SETUP.md
+      - Setup Consolidation: getting-started/SETUP_CONSOLIDATION.md
       - Dev Quick Start: getting-started/DEV_QUICK_START.md
       - Daily Commands: getting-started/DAILY_COMMANDS.md
       - Mobile Agents: getting-started/MOBILE_AGENTS_SETUP.md
       - Kiro UI Setup: getting-started/KIRO_UI_SETUP.md
+      - Kite Setup: getting-started/KITE.md
       - Cursor Setup: getting-started/CURSOR_SETUP.md
       - IDE Comparison: getting-started/IDE_CONCEPTS_COMPARISON.md
       - Kiro CLI vs UI: getting-started/KIRO_CLI_VS_UI.md
@@ -67,15 +69,25 @@ nav:
   - Profiles:
       - Dev Prompt Guide: profiles/dev/PROMPT_GUIDE.md
       - BA Prompt Guide: profiles/ba/BA_PROMPT_GUIDE.md
+      - BA Quick Reference: profiles/ba/BA_QUICK_REFERENCE.md
+      - BA Workflows: profiles/ba/BA_WORKFLOWS.md
       - QA Prompt Guide: profiles/qa/QA_PROMPT_GUIDE.md
+      - QA Profile Overview: profiles/qa/QA_PROFILE_OVERVIEW.md
+      - QA Quick Reference: profiles/qa/QA_QUICK_REFERENCE.md
+      - QA Workflows: profiles/qa/QA_WORKFLOWS.md
       - Ops Prompt Guide: profiles/ops/OPS_PROMPT_GUIDE.md
+      - Ops Quick Reference: profiles/ops/OPS_QUICK_REFERENCE.md
+      - Ops Workflows: profiles/ops/OPS_WORKFLOWS.md
       - PM Prompt Guide: profiles/pm/PM_PROMPT_GUIDE.md
+      - PM Workspaces Guide: profiles/pm/PM_WORKSPACES_GUIDE.md
       - Leadership Prompt Guide: profiles/leadership/LEADERSHIP_PROMPT_GUIDE.md
       - CloudOps Prompt Guide: profiles/cloudops/CLOUDOPS_PROMPT_GUIDE.md
       - Design Prompt Guide: profiles/design/DESIGN_PROMPT_GUIDE.md
       - Inspector Prompt Guide: profiles/inspector/INSPECTOR_PROMPT_GUIDE.md
       - Sustainment Prompt Guide: profiles/sustainment/SUSTAINMENT_PROMPT_GUIDE.md
       - Presales Prompt Guide: profiles/presales/PRESALES_PROMPT_GUIDE.md
+      - Steer Master Quick Start: profiles/steer-master/STEER_MASTER_QUICK_START.md
+      - Release Manager: profiles/steer-master/RELEASE_MANAGER.md
   - Reference:
       - Full Reference: reference/REFERENCE.md
       - MCP Setup: reference/MCP_SETUP.md
@@ -92,9 +104,22 @@ nav:
       - Building Custom MCPs: guides/building-custom-mcps.md
       - MCP Levels: guides/mcp-levels.md
       - Koda Apps: guides/koda-apps.md
+  - Specs:
+      - AI Metrics Integration: specs/ai-metrics-integration.md
+      - Artifact Emit & Maintenance: specs/artifact-emit-and-steer-master-maintenance.md
+      - Orchestration Harness Context: specs/orchestration-harness-context.md
+      - Workspace-Level MCP: specs/workspace-level-mcp.md
+  - Plans:
+      - Orchestration Harness Plan: plans/orchestration-harness-context-plan.md
+      - Orchestration Nice-to-Have: plans/orchestration-nice-to-have.md
   - Memory:
       - Memory MCP: memory/MEMORY_MCP.md
       - yax Architecture: memory/yax-architecture.md
       - Enterprise Assessment: memory/ENTERPRISE_MEMORY_BANK_ASSESSMENT.md
       - Memory Diagrams: memory/ENTERPRISE_MEMORY_BANK_DIAGRAMS.md
   - Changelog: CHANGELOG.md
+  - Internal:
+      - Documentation Status: DOCUMENTATION_STATUS.md
+      - Roadmap: ROADMAP.md
+      - Workspace Agent Merge: WORKSPACE_AGENT_MERGE.md
+      - Lodging Sales Distribution: lodging-sales-distribution.md
