@@ -41,6 +41,10 @@
       {
         "command": "$HOME/.kiro/hooks/delegation-map.sh",
         "description": "Generate delegation map for routing decisions"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/catalog-index.sh",
+        "description": "Generate managed services catalog index for scoped applications"
       }
     ]
   },
@@ -49,6 +53,7 @@
     "file://.kiro/context/servicenow_reference.md",
     "file://.kiro/context/mcp_priority.md",
     "file://.kiro/context/orchestrator_rules.md",
-    "file://.kiro/context/_dynamic/delegation-map.md"
+    "file://.kiro/context/_dynamic/delegation-map.md",
+    "file://.kiro/context/_dynamic/catalog-index.md"
   ]
 }

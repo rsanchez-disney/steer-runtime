@@ -61,7 +61,7 @@ components:
 
     # -- Source Code & CI/CD --
     repository:
-      url: ""
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-booking-svc"
       branch: ""
       path: ""
 
