@@ -24,7 +24,7 @@ export class JiraApiClient {
     /** Centralized fetch with User-Agent header for Atlassian compliance. */
     private async fetch(url: string, options: RequestInit = {}): Promise<Response> {
         const headers = options.headers as Record<string, string> || {};
-        return fetch(url, { ...options, headers: { "User-Agent": USER_AGENT, ...headers } });
+        return fetch(url, { ...options, headers: { ...headers, "User-Agent": USER_AGENT } });
     }
 
 
