@@ -1,5 +1,6 @@
 import type { JiraTicket } from "./types.js";
 import { JiraAuth } from "./auth.js";
+const USER_AGENT = `JiraMCP/0.1.0 (${process.env.MCP_USER_AGENT_CONTACT || "steer-runtime"}) ${process.env.MCP_USER_AGENT_ENV || "local-dev nonprod"}`;
 
 function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
     const seen = new Set(existing.map(key));
@@ -20,6 +21,13 @@ export class JiraApiClient {
 
     private static fieldCache: Map<string, string> | null = null;
 
+    /** Centralized fetch with User-Agent header for Atlassian compliance. */
+    private async fetch(url: string, options: RequestInit = {}): Promise<Response> {
+        const headers = options.headers as Record<string, string> || {};
+        return fetch(url, { ...options, headers: { "User-Agent": USER_AGENT, ...headers } });
+    }
+
+
     /** Resolves custom field names to IDs. Caches the field list on first call. */
     async resolveCustomFields(): Promise<string[]> {
         const raw = this.auth.getRawCustomFields();
@@ -31,7 +39,7 @@ export class JiraApiClient {
         // Fetch field metadata once
         if (!JiraApiClient.fieldCache) {
             try {
-                const response = await fetch(
+                const response = await this.fetch(
                     `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`,
                     { headers: { Authorization: await this.auth.getAuthHeader() } },
                 );
@@ -88,7 +96,7 @@ export class JiraApiClient {
         ];
         const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`,
             {
                 headers: {
@@ -119,7 +127,7 @@ export class JiraApiClient {
             JSON.stringify(updates, null, 2),
         );
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`,
             {
                 method: "PUT",
@@ -147,7 +155,7 @@ export class JiraApiClient {
         transitionId: string,
     ): Promise<void> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`,
             {
                 method: "POST",
@@ -169,7 +177,7 @@ export class JiraApiClient {
 
     async getJiraTransitions(ticketId: string): Promise<any> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`,
             {
                 headers: {
@@ -190,7 +198,7 @@ export class JiraApiClient {
 
     async addJiraComment(ticketId: string, comment: string): Promise<any> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/comment`,
             {
                 method: "POST",
@@ -232,7 +240,7 @@ export class JiraApiClient {
         ];
         const fields = [...new Set([...baseFields, ...extraFields])];
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`,
             {
                 method: "POST",
@@ -346,7 +354,7 @@ export class JiraApiClient {
             JSON.stringify(fields, null, 2),
         );
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue`,
             {
                 method: "POST",
@@ -384,7 +392,7 @@ export class JiraApiClient {
 
     async getJiraProjects(): Promise<any> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`,
             {
                 headers: {
@@ -406,7 +414,7 @@ export class JiraApiClient {
 
     async getJiraIssueTypes(): Promise<any> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issuetype`,
             {
                 headers: {
@@ -443,7 +451,7 @@ export class JiraApiClient {
         if (boardType) params.append("type", boardType);
         if (name) params.append("name", name);
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/agile/1.0/board?${params}`,
             {
                 headers: {
@@ -477,7 +485,7 @@ export class JiraApiClient {
 
         if (state) params.append("state", state);
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`,
             {
                 headers: {
@@ -499,7 +507,7 @@ export class JiraApiClient {
 
     async getJiraAttachments(ticketId: string): Promise<any[]> {
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=attachment`,
             {
                 headers: {
@@ -521,7 +529,7 @@ export class JiraApiClient {
 
     async downloadAttachment(url: string): Promise<Buffer> {
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
             },
@@ -549,7 +557,7 @@ export class JiraApiClient {
             fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004",
         });
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`,
             {
                 headers: {
@@ -586,7 +594,7 @@ export class JiraApiClient {
     async getXrayTestSteps(testKey: string): Promise<any[]> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`,
             {
                 headers: {
@@ -613,7 +621,7 @@ export class JiraApiClient {
     async getXrayTestStep(testKey: string, stepId: string): Promise<any> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`,
             {
                 headers: {
@@ -653,7 +661,7 @@ export class JiraApiClient {
         const queryString = params.toString();
         const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
@@ -677,7 +685,7 @@ export class JiraApiClient {
     async getXrayTestPreConditions(testKey: string): Promise<any[]> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`,
             {
                 headers: {
@@ -704,7 +712,7 @@ export class JiraApiClient {
     async getXrayTestSets(testKey: string): Promise<any[]> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`,
             {
                 headers: {
@@ -742,7 +750,7 @@ export class JiraApiClient {
         const queryString = params.toString();
         const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
@@ -766,7 +774,7 @@ export class JiraApiClient {
     async getXrayTestPlans(testKey: string): Promise<any[]> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`,
             {
                 headers: {
@@ -804,7 +812,7 @@ export class JiraApiClient {
         const queryString = params.toString();
         const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
@@ -839,7 +847,7 @@ export class JiraApiClient {
         const queryString = params.toString();
         const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
@@ -882,7 +890,7 @@ export class JiraApiClient {
         const queryString = params.toString();
         const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
 
-        const response = await fetch(url, {
+        const response = await this.fetch(url, {
             headers: {
                 Authorization: await this.auth.getAuthHeader(),
                 "Content-Type": "application/json",
@@ -906,7 +914,7 @@ export class JiraApiClient {
     async getXrayTestStatuses(): Promise<any[]> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`,
             {
                 headers: {
@@ -935,7 +943,7 @@ export class JiraApiClient {
         this.assertXRayServer();
 
         // Fetch the Jira issue with all fields
-        const issueResponse = await fetch(
+        const issueResponse = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`,
             {
                 headers: {
@@ -996,7 +1004,7 @@ export class JiraApiClient {
         this.assertXRayServer();
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`,
             {
                 headers: {
@@ -1029,7 +1037,7 @@ export class JiraApiClient {
         outwardTicketId: string,
         linkType: string,
     ): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`,
             {
                 method: "POST",
@@ -1058,7 +1066,7 @@ export class JiraApiClient {
      * GET /rest/api/{version}/issueLinkType
      */
     async getJiraIssueLinkTypes(): Promise<any> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`,
             {
                 headers: {
@@ -1083,7 +1091,7 @@ export class JiraApiClient {
      * GET /rest/api/{version}/myself
      */
     async getMyself(): Promise<any> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`,
             {
                 headers: {
@@ -1123,7 +1131,7 @@ export class JiraApiClient {
                     applicationType: "githube",
                     dataType,
                 });
-                const response = await fetch(
+                const response = await this.fetch(
                     `${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`,
                     {
                         headers: {
@@ -1177,7 +1185,7 @@ export class JiraApiClient {
     ): Promise<void> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`,
             {
                 method: "POST",
@@ -1206,7 +1214,7 @@ export class JiraApiClient {
         epicKey: string,
         issueKeys: string[],
     ): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/agile/1.0/epic/${epicKey}/issue`,
             {
                 method: "POST",
