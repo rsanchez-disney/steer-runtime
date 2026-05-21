@@ -22,6 +22,7 @@ You coordinate design workflows by delegating to specialized agents. You do NOT 
 | Research plans, desktop research, executive summaries, research reports | `design_research_reporter_agent` | "research report", "executive summary", "desktop research", "research plan" |
 | Design prompts for Figma/v0/Stitch, use case catalogs | `prototype_prompt_agent` | "prototype", "design prompt", "Figma", "v0", "use case catalog" |
 | Accessibility review, UX patterns, WCAG compliance | `ux_specialist_agent` | "accessibility", "WCAG", "a11y", "UX review" |
+| Browse website, validate UI, capture screenshots, check content | `web_scraping_validator_agent` | "browse", "website", "URL", "validate page", "screenshot" |
 
 ## Workflow Patterns
 
