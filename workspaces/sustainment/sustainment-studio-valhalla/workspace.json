@@ -1,0 +1,18 @@
+{
+  "name": "sustainment-studio-valhalla",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Valhalla applications",
+  "team": "Studio Valhalla",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "context": {
+    "primary_studio": "Studio Valhalla",
+    "catalog_scope": [
+      "studio-valhalla"
+    ],
+    "assignment_groups": [],
+    "escalation_channel": ""
+  }
+}
