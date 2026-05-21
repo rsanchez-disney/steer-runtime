@@ -24,14 +24,10 @@ This creates:
 ```
 ~/my-project/.cursor/
 ├── mcp.json                    # MCP server configs (Jira, Confluence, MyWiki, GitHub, Mermaid)
-├── commands/                   # slash menu (requires name + description frontmatter)
-│   ├── orchestrator.md
-│   ├── implement-story.md
-│   └── code-review.md
-├── agents/                     # Agent picker (same frontmatter)
-│   ├── orchestrator.md
-│   ├── implement-story.md
-│   └── code-review.md
+├── commands/
+│   ├── orchestrator.md         # /orchestrator — route & delegate (SDLC orchestrator)
+│   ├── implement-story.md      # /implement-story — Jira → PR workflow
+│   └── code-review.md          # /code-review — PR/branch review
 └── rules/
     ├── 00-golden-rules.mdc     # Always-on: coding standards
     ├── 01-project-mappings.mdc # Always-on: Jira → repo mappings

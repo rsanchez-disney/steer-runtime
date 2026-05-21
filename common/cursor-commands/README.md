@@ -20,19 +20,13 @@ From steer-runtime root:
 ./setup.sh cursor install ~/my-project
 ```
 
-Copies rules, MCP config, commands to `.cursor/commands/`, and agents to `.cursor/agents/`.
+Copies rules, MCP config, and these commands to `<project>/.cursor/commands/`.
 
 ## Use in Cursor
 
-1. Open the **steer-runtime** folder (or your project after `cursor install`) as the workspace root.
-2. Use **Agent** mode (not inline Edit).
-3. **Reload window** once after adding files (`Developer: Reload Window`).
-4. Either:
-   - Type `/` → choose **orchestrator**, **implement-story**, or **code-review**, or
-   - Open the **Agent** dropdown → select **orchestrator**
-5. Add your task after the command (e.g. `/implement-story DPAY-14337`).
-
-If `/orchestrator` is missing, see [CURSOR_SETUP.md](../../docs/getting-started/CURSOR_SETUP.md#troubleshooting-orchestrator-not-in-the-menu).
+1. Open the project in **Agent** mode (Composer Agent).
+2. Type `/` and pick `orchestrator`, `implement-story`, or `code-review`.
+3. Add arguments after the command (e.g. `/implement-story DPAY-14337`).
 
 ## Source
 

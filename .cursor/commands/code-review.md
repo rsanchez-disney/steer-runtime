@@ -1,11 +1,6 @@
----
-name: code-review
-description: Review PR URL or current branch diff — security, tests, golden rules
----
-
 # Code Review
 
-Act as **code_review_agent** for the PR URL or topic in the user's message.
+Act as **code_review_agent** for: **$ARGUMENTS**
 
 If empty, review the current branch diff vs `main` (or the default base branch).
 
