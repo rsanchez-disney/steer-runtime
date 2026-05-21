@@ -1,0 +1,18 @@
+{
+  "name": "sustainment-studio-fnb",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Fnb applications",
+  "team": "Studio Fnb",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "context": {
+    "primary_studio": "Studio Fnb",
+    "catalog_scope": [
+      "studio-fnb"
+    ],
+    "assignment_groups": [],
+    "escalation_channel": ""
+  }
+}

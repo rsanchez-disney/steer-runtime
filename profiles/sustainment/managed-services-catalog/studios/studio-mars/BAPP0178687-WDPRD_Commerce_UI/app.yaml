@@ -45,37 +45,32 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+  - component_name: "pci-apps-commerce-ui"
+    component_type: "frontend"
     description: ""
 
-    # -- Component-specific docs --
     docs:
       troubleshooting: ""
       runbook: ""
 
-    # -- Component-specific documentation links --
     documentation:
       wiki: ""
       architecture_diagram: ""
 
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
+      url: "https://github.disney.com/commerce/pci-apps-commerce-ui"
       branch: ""
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: ""
       pipeline_url: ""
       deploy_target: ""
 
-    # -- Health Check --
     health_check:
       url: ""
       expected_status: 200
 
-    # -- Splunk --
     splunk:
       index: ""
       source: ""
@@ -86,41 +81,35 @@ components:
       latency_spl: >-
 
 
-    # -- AppDynamics --
     appdynamics:
       app_name: ""
       app_id: ""
       tier: ""
       dashboard_url: ""
 
-    # -- NewRelic --
     newrelic:
       app_id: ""
       account_id: ""
       dashboard_url: ""
 
-    # -- Datadog --
     datadog:
       service: ""
       env: ""
       dashboard_url: ""
 
-    # -- Grafana --
     grafana:
       dashboard_uid: ""
       dashboard_url: ""
       datasource: ""
 
-    # -- Archer --
     archer:
       record_id: ""
 
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
+      provider: ""
       region: ""
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      infra_type: ""
       cluster_id: ""
       service_name: ""
 
@@ -138,10 +127,249 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+        - type: ""
           name: ""
 
-    # -- Other Environments (only fields that differ from production) --
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+  - component_name: "mdx-php-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-php-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+  - component_name: "mdx-asset-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-asset-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
     other_environments:
 
       stage:
