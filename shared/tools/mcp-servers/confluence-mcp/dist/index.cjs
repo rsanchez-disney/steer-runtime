@@ -5671,6 +5671,7 @@ var import_path = require("path");
 var import_url = require("url");
 var DEFAULT_CONFLUENCE_URL = "https://confluence.disney.com";
 var DEFAULT_TIMEOUT_MS = 3e4;
+var USER_AGENT = `ConfluenceMCP/0.1.0 (${process.env.MCP_USER_AGENT_CONTACT || "steer-runtime"}) ${process.env.MCP_USER_AGENT_ENV || "local-dev nonprod"}`;
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
@@ -5718,6 +5719,7 @@ var ConfluenceApiClient = class {
         signal: controller.signal,
         headers: {
           Authorization: `Bearer ${pat}`,
+          "User-Agent": USER_AGENT,
           Accept: "application/json",
           "Content-Type": "application/json",
           ...options.headers
@@ -6215,7 +6217,8 @@ async function handleUploadAttachment(args) {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiClient.getConfluencePat()}`,
-        "X-Atlassian-Token": "no-check"
+        "X-Atlassian-Token": "no-check",
+        "User-Agent": USER_AGENT
       },
       body: formData
     });
