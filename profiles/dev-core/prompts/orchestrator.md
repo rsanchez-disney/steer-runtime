@@ -79,7 +79,8 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "risk", "blockers", "dependencies"                            | `risk_tracker_agent`           |
 | "estimation", "story points"                                  | `estimation_agent`             |
 | "send email", "notify"                                        | `email_agent`                  |
-| "Splunk", "splunk logs", "check logs"                         | `splunk_query_agent`           |
+| "Splunk interactive", "splunk dashboard", "splunk search"     | `splunk_query_agent`           |
+| "Splunk", "splunk logs", "check logs", "log errors"           | `log_analyzer_agent`           |
 | "ServiceNow", "incident", "INC", "CHG"                       | `log_analyzer_agent`           |
 | "flaky test", "test stability"                                | `flaky_test_fixer_agent`       |
 | "record test", "playwright codegen"                           | `test_recorder_agent`          |
