@@ -1,3 +1,8 @@
+---
+name: implement-story
+description: Full Jira story workflow — analyze, plan, implement, quality checks, then PR
+---
+
 # Implement Jira Story
 
 Run the **full SDLC workflow** for one Jira story. Behave as the dev orchestrator; delegate via **Task** for each phase.

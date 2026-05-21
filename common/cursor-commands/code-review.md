@@ -1,3 +1,8 @@
+---
+name: code-review
+description: Review PR URL or current branch diff — security, tests, golden rules
+---
+
 # Code Review
 
 Act as **code_review_agent** for: **$ARGUMENTS**

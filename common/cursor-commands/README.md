@@ -1,6 +1,10 @@
 # Cursor Agent Commands
 
-Plain Markdown commands for Cursor Agent mode. Filename (without `.md`) becomes the `/` command name.
+Plain Markdown for Cursor **Agent** mode. Each file **must** include YAML frontmatter (`name`, `description`) or Cursor will not list it.
+
+Installed to both:
+- `.cursor/commands/` — slash menu (`/orchestrator`)
+- `.cursor/agents/` — Agent picker (select **orchestrator**)
 
 | Command | File | Purpose |
 |---------|------|---------|

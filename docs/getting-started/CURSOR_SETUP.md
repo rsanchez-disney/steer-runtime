@@ -62,7 +62,23 @@ This creates:
 
 ## Agent commands (orchestrator)
 
-In Cursor **Agent** mode, type `/` to run steer-runtime orchestrator workflows:
+Cursor discovers custom **commands** (`.cursor/commands/`) and **agents** (`.cursor/agents/`) only when each `.md` file has YAML frontmatter with `name` and `description`. steer-runtime installs the same orchestrator files to both folders.
+
+In Cursor **Agent** mode (not inline Edit), type `/` to run steer-runtime orchestrator workflows:
+
+### Troubleshooting: `/orchestrator` not in the menu
+
+1. **Workspace root** — Open the folder that contains `.cursor/` (e.g. `steer-runtime`, not a parent monorepo path unless `.cursor` is there).
+2. **Agent mode** — Use the **Agent** chat/composer; custom `/` commands often do not load in Editor-only mode.
+3. **Reload** — `Cmd+Shift+P` → **Developer: Reload Window** (Cursor sometimes hides custom commands until reload).
+4. **Type the full name** — Even if the menu is empty, try `/orchestrator` + Enter.
+5. **Agent picker** — Open the **Agent** dropdown and select **orchestrator** (from `.cursor/agents/`).
+6. **Re-install** — From steer-runtime: `./setup.sh cursor install /path/to/your-project`
+7. **Check files exist:**
+   ```bash
+   ls .cursor/commands/ .cursor/agents/
+   head -5 .cursor/agents/orchestrator.md   # must show --- name: orchestrator ---
+   ```
 
 | Command | Example | What it does |
 |---------|---------|--------------|
