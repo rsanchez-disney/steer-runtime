@@ -4,9 +4,23 @@
   "team": "ADM PCS / DX Profile (Cerebro)",
   "profiles": ["sustainment", "ops", "dev-core"],
   "default_agent": "orchestrator",
-  "rules": [],
+  "rules": ["cerebro-incident-response"],
   "enable_tools": true,
   "jira_prefix": "ADMPROFILE-",
+  "projects": [
+    {
+      "name": "dx-profile-webapi",
+      "repo": "profile-vertical/profile-webapi"
+    },
+    {
+      "name": "profile-spa",
+      "repo": "profile-vertical/profile-spa"
+    },
+    {
+      "name": "sustainment-toolkit",
+      "repo": "MARIS117/sustainment-toolkit"
+    }
+  ],
   "services": [
     "dx-profile-web",
     "dx-profile-api",

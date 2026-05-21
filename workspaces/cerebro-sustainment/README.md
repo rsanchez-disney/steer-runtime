@@ -12,8 +12,8 @@ koda workspace apply cerebro-sustainment
 
 When you apply this workspace, your AI assistant (in Kiro, Cursor, or kiro-cli) gains knowledge about:
 
-- **Live ServiceNow integration** — Reads INCs in vivo, busca históricos similares automáticamente
-- **Live Splunk queries** — Ejecuta queries de error rate antes de responder
+- **Live ServiceNow integration** — Reads INCs in real-time, searches historical similar incidents automatically
+- **Live Splunk queries** — Runs error rate queries before responding
 - **8 known incident patterns** with Splunk queries and resolution steps
 - **Structured 8-section response format** for incident analysis
 - **ServiceNow conventions** (Disney state codes, SLAs, close codes, work note format)
@@ -40,12 +40,12 @@ Open chat and describe an incident. Examples:
 
 | You type | Cerebro responds with |
 |----------|----------------------|
-| `Analiza: Cast Members en City Hall no pueden sincronizar perfiles en DLM` | Full 8-section analysis |
-| `Login loop en DLR, usuarios atrapados en redirect` | Pattern match → Login Loops + 3 steps |
-| `Dame query de Splunk para SWID abc-123-def-456` | Ready-to-paste SPL query |
-| `Work note para un 502 en profile API` | Disney-format work note |
-| `¿A quién escalo un problema de OneID?` | Routing: IDY- via Jira |
-| `Tengo un DuplicateKeyException en VAS` | Pattern match → VAS Duplicate Key |
+| `Analyze: Cast Members at City Hall cannot sync profiles in DLM` | Full 8-section analysis |
+| `Login loop at DLR, users stuck in redirect` | Pattern match → Login Loops + 3 steps |
+| `Give me Splunk query for SWID abc-123-def-456` | Ready-to-paste SPL query |
+| `Work note for a 502 on profile API` | Disney-format work note |
+| `Who do I escalate a OneID issue to?` | Routing: IDY- via Jira |
+| `I have a DuplicateKeyException in VAS` | Pattern match → VAS Duplicate Key |
 
 ## The 8-Section Response
 

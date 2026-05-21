@@ -1,5 +1,7 @@
 # ADM PCS · DX Profile (Cerebro) — Team Context
 
+> **Last verified: 2026-05** — Review quarterly or after infrastructure changes.
+
 ## Assignment Group & On-Call
 
 - **AG**: web-global-Digital Profile
