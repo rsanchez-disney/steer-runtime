@@ -6115,6 +6115,7 @@ var JiraAuth = class {
 };
 
 // build/utils/jiraApi.js
+var USER_AGENT = `JiraMCP/0.1.0 (${process.env.MCP_USER_AGENT_CONTACT || "steer-runtime"}) ${process.env.MCP_USER_AGENT_ENV || "local-dev nonprod"}`;
 function dedup(existing, incoming, key) {
   const seen = new Set(existing.map(key));
   return [...existing, ...incoming.filter((i) => !seen.has(key(i)))];
@@ -6129,6 +6130,11 @@ function toADF(text) {
 var JiraApiClient = class _JiraApiClient {
   auth = new JiraAuth();
   static fieldCache = null;
+  /** Centralized fetch with User-Agent header for Atlassian compliance. */
+  async fetch(url, options = {}) {
+    const headers = options.headers || {};
+    return fetch(url, { ...options, headers: { ...headers, "User-Agent": USER_AGENT } });
+  }
   /** Resolves custom field names to IDs. Caches the field list on first call. */
   async resolveCustomFields() {
     const raw = this.auth.getRawCustomFields();
@@ -6138,7 +6144,7 @@ var JiraApiClient = class _JiraApiClient {
       return raw;
     if (!_JiraApiClient.fieldCache) {
       try {
-        const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`, { headers: { Authorization: await this.auth.getAuthHeader() } });
+        const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/field`, { headers: { Authorization: await this.auth.getAuthHeader() } });
         if (response.ok) {
           const fields = await response.json();
           _JiraApiClient.fieldCache = /* @__PURE__ */ new Map();
@@ -6185,7 +6191,7 @@ var JiraApiClient = class _JiraApiClient {
       "fixVersions"
     ];
     const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6199,14 +6205,25 @@ var JiraApiClient = class _JiraApiClient {
     return result;
   }
   async updateJiraTicket(ticketId, updates) {
-    console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`, {
+    const { fixVersions, duedate, ...fields } = updates;
+    const updateSection = {};
+    if (fixVersions !== void 0)
+      updateSection.fixVersions = [{ set: fixVersions }];
+    if (duedate !== void 0)
+      updateSection.duedate = [{ set: duedate }];
+    const body = {};
+    if (Object.keys(fields).length > 0)
+      body.fields = fields;
+    if (Object.keys(updateSection).length > 0)
+      body.update = updateSection;
+    console.error("Updating JIRA ticket:", JSON.stringify(body, null, 2));
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`, {
       method: "PUT",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ fields: updates })
+      body: JSON.stringify(body)
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -6216,7 +6233,7 @@ var JiraApiClient = class _JiraApiClient {
     console.error("JIRA update successful");
   }
   async transitionJiraTicket(ticketId, transitionId) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6230,7 +6247,7 @@ var JiraApiClient = class _JiraApiClient {
     }
   }
   async getJiraTransitions(ticketId) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6242,7 +6259,7 @@ var JiraApiClient = class _JiraApiClient {
     return await response.json();
   }
   async addJiraComment(ticketId, comment) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/comment`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/comment`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6269,7 +6286,7 @@ var JiraApiClient = class _JiraApiClient {
       "updated"
     ];
     const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6337,7 +6354,7 @@ var JiraApiClient = class _JiraApiClient {
       }
     }
     console.error("Creating JIRA issue with fields:", JSON.stringify(fields, null, 2));
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6362,7 +6379,7 @@ var JiraApiClient = class _JiraApiClient {
     return result;
   }
   async getJiraProjects() {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/project`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6375,7 +6392,7 @@ var JiraApiClient = class _JiraApiClient {
     return await response.json();
   }
   async getJiraIssueTypes() {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issuetype`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issuetype`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6398,7 +6415,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("type", boardType);
     if (name)
       params.append("name", name);
-    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board?${params}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/agile/1.0/board?${params}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6417,7 +6434,7 @@ var JiraApiClient = class _JiraApiClient {
     });
     if (state)
       params.append("state", state);
-    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/agile/1.0/board/${boardId}/sprint?${params}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6430,7 +6447,7 @@ var JiraApiClient = class _JiraApiClient {
     return await response.json();
   }
   async getJiraAttachments(ticketId) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=attachment`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=attachment`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6443,7 +6460,7 @@ var JiraApiClient = class _JiraApiClient {
     return result.fields?.attachment || [];
   }
   async downloadAttachment(url) {
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader()
       }
@@ -6460,7 +6477,7 @@ var JiraApiClient = class _JiraApiClient {
       maxResults: maxResults.toString(),
       fields: "summary,status,assignee,reporter,priority,issuetype,project,created,updated,customfield_10004"
     });
-    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/agile/1.0/sprint/${sprintId}/issue?${params}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6486,7 +6503,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestSteps(testKey) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6504,7 +6521,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestStep(testKey, stepId) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/step/${stepId}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6531,7 +6548,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("limit", limit.toString());
     const queryString = params.toString();
     const url = `${this.baseUrl}/rest/raven/2.0/api/testexec/${testExecKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6549,7 +6566,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestPreConditions(testKey) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/precondition`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6567,7 +6584,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestSets(testKey) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testset`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6592,7 +6609,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("limit", limit.toString());
     const queryString = params.toString();
     const url = `${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testexecution${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6610,7 +6627,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestPlans(testKey) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/test/${testKey}/testplan`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6635,7 +6652,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("limit", limit.toString());
     const queryString = params.toString();
     const url = `${this.baseUrl}/rest/raven/2.0/api/testplan/${testPlanKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6660,7 +6677,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("limit", limit.toString());
     const queryString = params.toString();
     const url = `${this.baseUrl}/rest/raven/2.0/api/testset/${testSetKey}/test${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6693,7 +6710,7 @@ var JiraApiClient = class _JiraApiClient {
       params.append("limit", limit.toString());
     const queryString = params.toString();
     const url = `${this.baseUrl}/rest/raven/2.0/api/testruns${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(url, {
+    const response = await this.fetch(url, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6711,7 +6728,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async getXrayTestStatuses() {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/settings/teststatuses`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6730,7 +6747,7 @@ var JiraApiClient = class _JiraApiClient {
   async getXrayTestCaseFull(testKey) {
     this.assertXRayServer();
     this.assertXRayServer();
-    const issueResponse = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`, {
+    const issueResponse = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${testKey}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6765,7 +6782,7 @@ var JiraApiClient = class _JiraApiClient {
   async getXrayPreConditionTests(preConditionKey) {
     this.assertXRayServer();
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/2.0/api/precondition/${preConditionKey}/test`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6785,7 +6802,7 @@ var JiraApiClient = class _JiraApiClient {
    * POST /rest/api/{version}/issueLink
    */
   async linkJiraIssues(inwardTicketId, outwardTicketId, linkType) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLink`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6807,7 +6824,7 @@ var JiraApiClient = class _JiraApiClient {
    * GET /rest/api/{version}/issueLinkType
    */
   async getJiraIssueLinkTypes() {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issueLinkType`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6824,7 +6841,7 @@ var JiraApiClient = class _JiraApiClient {
    * GET /rest/api/{version}/myself
    */
   async getMyself() {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/myself`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6853,7 +6870,7 @@ var JiraApiClient = class _JiraApiClient {
         applicationType: "githube",
         dataType
       });
-      const response = await fetch(`${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`, {
+      const response = await this.fetch(`${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`, {
         headers: {
           Authorization: await this.auth.getAuthHeader(),
           "Content-Type": "application/json"
@@ -6891,7 +6908,7 @@ var JiraApiClient = class _JiraApiClient {
    */
   async addTestsToTestExec(testExecKey, testKeys) {
     this.assertXRayServer();
-    const response = await fetch(`${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testexec/${testExecKey}/test`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6910,7 +6927,7 @@ var JiraApiClient = class _JiraApiClient {
    * POST /rest/agile/1.0/epic/{epicKey}/issue
    */
   async assignIssuesToEpic(epicKey, issueKeys) {
-    const response = await fetch(`${this.baseUrl}/rest/agile/1.0/epic/${epicKey}/issue`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/agile/1.0/epic/${epicKey}/issue`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -7241,9 +7258,18 @@ async function handleJiraUpdateIssue(args) {
       }
     }
     if (customFields) {
+      const NATIVE_FIELDS = {
+        fixversions: "fixVersions",
+        duedate: "duedate"
+      };
       for (const [key, value] of Object.entries(customFields)) {
         if (storyPoints !== void 0 && key.toLowerCase() === "storypoints")
           continue;
+        const nativeField = NATIVE_FIELDS[key.toLowerCase()];
+        if (nativeField) {
+          updates[nativeField] = value;
+          continue;
+        }
         const resolved = resolveCustomFieldIds([key]);
         if (resolved.length > 0) {
           updates[resolved[0]] = value;

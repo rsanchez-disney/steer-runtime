@@ -1,0 +1,18 @@
+{
+  "name": "sustainment-studio-castlife",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Castlife applications",
+  "team": "Studio Castlife",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "context": {
+    "primary_studio": "Studio Castlife",
+    "catalog_scope": [
+      "studio-castlife"
+    ],
+    "assignment_groups": [],
+    "escalation_channel": ""
+  }
+}

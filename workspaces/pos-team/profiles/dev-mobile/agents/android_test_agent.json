@@ -1,0 +1,32 @@
+{
+  "name": "android_test_agent",
+  "description": "Test Engineer — generates MockK-based unit tests following project conventions. Manages Jira tickets for POS project.",
+  "prompt": "prompts/android_test_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "execute_bash",
+    "jira_get_issue",
+    "jira_search_issues",
+    "jira_create_issue",
+    "jira_update_issue",
+    "jira_add_comment",
+    "jira_get_current_user"
+  ],
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/testing_conventions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "~/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to build/, .gradle/, .git/"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}

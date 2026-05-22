@@ -1,0 +1,56 @@
+{
+  "name": "android_arch_agent",
+  "description": "Android Architect — primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
+  "prompt": "prompts/android_arch_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "code",
+    "thinking",
+    "todo_list",
+    "subagent"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "android_dev_agent",
+        "android_test_agent",
+        "android_quality_agent",
+        "android_pr_agent"
+      ],
+      "trustedAgents": [
+        "android_dev_agent",
+        "android_test_agent",
+        "android_quality_agent",
+        "android_pr_agent"
+      ]
+    },
+    "execute_bash": {
+      "allowedCommands": [
+        "./gradlew --console=plain *"
+      ]
+    }
+  },
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/testing_conventions.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "~/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "~/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to build/, .gradle/, .git/"
+      }
+    ]
+  },
+  "welcomeMessage": "Android Architect ready. Describe the feature or task and I'll orchestrate the implementation through Dev, Test, Quality, and PR agents."
+}

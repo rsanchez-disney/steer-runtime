@@ -90,4 +90,4 @@ Enables **thinking**, **todo**, and **knowledge** tools used by orchestrators.
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

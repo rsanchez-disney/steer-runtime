@@ -227,7 +227,7 @@ kiro-cli chat --agent orchestrator    # Start working
 ```
 
 For detailed setup: [Getting Started](../getting-started/GETTING_STARTED.md)  
-For agent reference: [AGENTS.md](../../AGENTS.md)
+For agent reference: [AGENTS.md](https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md)
 For troubleshooting: [Troubleshooting](../reference/TROUBLESHOOTING.md)
 
 ---

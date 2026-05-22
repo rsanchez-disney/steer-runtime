@@ -104,6 +104,7 @@ subagent(
 | Estimate effort (story points, hours, DRIFT) | `estimation_agent` | `jira_*`, `confluence_*` |
 | Generate PRD from epic or stakeholder context | `prd_generator_agent` | `jira_*`, `confluence_*` |
 | Generate backlog / epic breakdown | `backlog_generator_agent` | `jira_*` |
+| Browse website, validate content, check accessibility | `web_scraping_validator_agent` | `@chrome/*` |
 | Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
 | Validate translations, localization review, i18n quality | `translation_validator_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*`, `github_*` |
 | Send email | `email_agent` | `compass` |

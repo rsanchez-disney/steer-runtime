@@ -1,0 +1,61 @@
+{
+  "title": "Steer Platform",
+  "sections": [
+    {
+      "id": "releases",
+      "title": "Release Status",
+      "source": "static",
+      "display": "metric",
+      "powers": [
+        { "id": "versions", "label": "Check Versions", "prompt": "Check current versions of all platform components: steer-runtime (from ~/.kiro/steer-runtime/VERSION), Koda (koda version), Kite (from ~/.koda/bin/kite/Kite.app/Contents/Resources/app/package.json). Also check latest published releases on github.com/rsanchez-disney for each. Report which are up to date and which need publishing." },
+        { "id": "publish", "label": "Publish All", "prompt": "Run the full publish pipeline: cd ~/Workspace/Disney/SANCR225/Koda && make publish-all. Report the results." },
+        { "id": "release-notes", "label": "Generate Release Notes", "prompt": "Review commits since the last tag in steer-runtime and Koda. Generate RELEASE_NOTES.md entries following the existing format. Show me the draft before writing." },
+        { "id": "changelog", "label": "Update Changelogs", "prompt": "Update CHANGELOG.md in steer-runtime and Koda with entries from commits since the last release. Follow conventional commit format grouping (feat, fix, docs, chore)." }
+      ]
+    },
+    {
+      "id": "prs",
+      "title": "Pending PRs",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "list-prs", "label": "List All PRs", "prompt": "List all open PRs across steer platform repos on github.disney.com/SANCR225: steer-runtime, Koda, Kite, mouseketool. Show title, author, age, and review status for each." },
+        { "id": "review-prs", "label": "Review Oldest", "prompt": "Find the oldest open PR across steer-runtime, Koda, and Kite repos. Review it: check the diff, assess quality, identify issues, and provide a review summary." }
+      ]
+    },
+    {
+      "id": "roadmap",
+      "title": "Roadmap & Specs",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "roadmap-status", "label": "Roadmap Status", "prompt": "Read ~/Workspace/Disney/SANCR225/steer-runtime/docs/ROADMAP.md and summarize: what's completed, what's in progress, and what's planned next. Highlight any items that are overdue." },
+        { "id": "specs-status", "label": "Specs Status", "prompt": "List all spec documents in ~/Workspace/Disney/SANCR225/steer-runtime/docs/specs/. For each, determine if it's been implemented (check for related commits/PRs) or still pending." },
+        { "id": "update-roadmap", "label": "Update Roadmap", "prompt": "Based on recent commits and completed work across steer-runtime and Koda, suggest updates to the ROADMAP.md. Show me the proposed changes before writing." }
+      ]
+    },
+    {
+      "id": "health",
+      "title": "Platform Health",
+      "source": "static",
+      "display": "metric",
+      "powers": [
+        { "id": "doctor", "label": "Run Doctor", "prompt": "Run koda doctor and report the full results. Highlight any failures or warnings that need attention." },
+        { "id": "agents-audit", "label": "Audit Agents", "prompt": "Audit all installed agents. Count per profile, check for missing prompts, validate JSON schemas, identify any agents without descriptions." },
+        { "id": "mcp-health", "label": "MCP Health", "prompt": "Check all MCP servers: which are configured, which have missing tokens, which failed to start. Report status for each." },
+        { "id": "docs-deploy", "label": "Deploy Docs", "prompt": "Run: cd ~/Workspace/Disney/SANCR225/steer-runtime && make docs-deploy. Report the result." }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "title": "Maintenance",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "validate-configs", "label": "Validate Configs", "prompt": "Validate all steer-runtime configurations: workspace.json files, agent configs, profile settings, mcp-meta.json files. Report any errors or inconsistencies." },
+        { "id": "sync-forks", "label": "Check Fork Sync", "prompt": "Check if any team forks of steer-runtime are behind main. List repos that need to pull latest changes." },
+        { "id": "cleanup", "label": "Cleanup Old Releases", "prompt": "Check github.com/rsanchez-disney repos for old releases (keeping last 3). List what would be cleaned up." }
+      ]
+    }
+  ]
+}

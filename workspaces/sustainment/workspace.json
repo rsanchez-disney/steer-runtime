@@ -1,0 +1,20 @@
+{
+  "name": "sustainment",
+  "description": "Parent workspace for all sustainment verticals — provides shared defaults for incident response, catalog access, and orchestration",
+  "team": "ADM Sustainment",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "projects": null,
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "",
+  "workspace_path": "~/ws/",
+  "context": {
+    "catalog_scope": ["*"],
+    "catalog_path": "managed-services-catalog/studios",
+    "assignment_groups": [],
+    "escalation_channel": ""
+  }
+}

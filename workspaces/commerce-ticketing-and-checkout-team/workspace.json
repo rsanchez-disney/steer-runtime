@@ -1,11 +1,10 @@
 {
   "name": "commerce-ticketing-and-checkout-team",
-  "description": "Commerce Ticketing & Checkout L1 Support — incident response, CTASK validation, stability monitoring, and GSM reporting",
+  "description": "Commerce Ticketing & Checkout L1 Support \u2014 incident response, CTASK validation, stability monitoring, and GSM reporting",
   "team": "Commerce Ticketing & Checkout",
   "profiles": [
     "sustainment",
-    "dev-core",
-    "dev-java"
+    "dev-core"
   ],
   "default_agent": "sustainment_orchestrator_agent",
   "projects": [

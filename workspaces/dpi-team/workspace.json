@@ -1,8 +1,10 @@
 {
   "name": "dpi-team",
-  "description": "DPI Team — Java + Spring Boot microservices development",
+  "description": "DPI Team \u2014 Java + Spring Boot microservices development",
   "team": "DPI Team",
-  "profiles": ["dev-core", "dev-java"],
+  "profiles": [
+    "dev-core"
+  ],
   "default_agent": "orchestrator",
   "rules": [
     "conventional_commit",

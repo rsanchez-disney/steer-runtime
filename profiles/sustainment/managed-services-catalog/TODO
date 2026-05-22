@@ -1,4 +1,7 @@
 TODO
 - Create a schema validation agent for the bapp yamls similar to steer
 	schema_validator_agent
+- Setup new agent for snow deep dive
+- Validate workspaces for multi studio
+- Determine right structure for multiple CIs by bapp
 

@@ -28,7 +28,7 @@ docs:
   runbook: "runbook.md"
 
 components:
-  - component_name: "commerce-ui"
+  - component_name: "pci-apps-commerce-ui"
     component_type: "frontend"
     description: "Frontend for EC checkout path — renders cart, checkout, and confirmation pages"
     splunk:
@@ -49,3 +49,243 @@ components:
       infra_type: "ECS"
       cluster_id: "dlr-pci-S0001593-usw2-prd"
       service_name: "commerce-ui-prod-live"
+      
+  - component_name: "mdx-php-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-php-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+  - component_name: "mdx-asset-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-asset-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""

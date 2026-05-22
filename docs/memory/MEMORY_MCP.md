@@ -203,4 +203,4 @@ The `CONTAINER_RUNTIME` env var is read by Koda/Kite to determine which CLI to u
 
 ---
 
-Back to [MCP Setup](../reference/MCP_SETUP.md) · [README](../README.md)
+Back to [MCP Setup](../reference/MCP_SETUP.md) · [README](../index.md)

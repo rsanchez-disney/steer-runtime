@@ -1,5 +1,5 @@
 import { readFile } from "fs/promises";
-import { apiClient } from "../utils/apiClient.js";
+import { apiClient, USER_AGENT } from "../utils/apiClient.js";
 import { saveToFile } from "../utils/fileUtils.js";
 
 export const uploadAttachmentSchema = {
@@ -45,6 +45,7 @@ export async function handleUploadAttachment(args: any) {
                 headers: {
                     Authorization: `Bearer ${apiClient.getConfluencePat()}`,
                     "X-Atlassian-Token": "no-check",
+                    "User-Agent": USER_AGENT,
                 },
                 body: formData,
             },

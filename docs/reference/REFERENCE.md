@@ -344,16 +344,16 @@ steer-runtime/
 **Version:** 3.7.0 · **Agents:** 50 · **Updated:** March 30, 2026
 
 <!-- Links -->
-[agents]: ../../AGENTS.md
-[agents-mcp]: ../../AGENTS.md#mcp-server-coverage
-[amazonq-readme]: ../../.amazonq-templates/README.md
+[agents]: https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md
+[agents-mcp]: https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md#mcp-server-coverage
+[amazonq-readme]: https://github.disney.com/SANCR225/steer-runtime/blob/main/.amazonq-templates/README.md
 [ba-guide]: ../profiles/ba/BA_PROMPT_GUIDE.md
 [ba-quick-ref]: ../profiles/ba/BA_QUICK_REFERENCE.md
 [ba-workflows]: ../profiles/ba/BA_WORKFLOWS.md
 [cursor-setup]: ../getting-started/CURSOR_SETUP.md
 [design]: ../architecture/DESIGN.md
-[example-java]: ../../common/templates/examples/project-java-spring.yaml
-[example-node]: ../../common/templates/examples/project-node-express.yaml
+[example-java]: https://github.disney.com/SANCR225/steer-runtime/blob/main/common/templates/examples/project-java-spring.yaml
+[example-node]: https://github.disney.com/SANCR225/steer-runtime/blob/main/common/templates/examples/project-node-express.yaml
 [figma-tokens]: https://www.figma.com/developers/api#access-tokens
 [fork-strategy]: FORK_STRATEGY.md
 [getting-started]: ../getting-started/GETTING_STARTED.md
@@ -374,11 +374,11 @@ steer-runtime/
 [qa-overview]: ../profiles/qa/QA_PROFILE_OVERVIEW.md
 [qa-quick-ref]: ../profiles/qa/QA_QUICK_REFERENCE.md
 [qa-workflows]: ../profiles/qa/QA_WORKFLOWS.md
-[readme]: ../README.md
+[readme]: ../index.md
 [roadmap]: ../ROADMAP.md
-[schema-project]: ../../common/schemas/project.schema.json
+[schema-project]: https://github.disney.com/SANCR225/steer-runtime/blob/main/common/schemas/project.schema.json
 [team-workspaces]: TEAM_WORKSPACES.md
-[template-project]: ../../common/templates/project.yaml
+[template-project]: https://github.disney.com/SANCR225/steer-runtime/blob/main/common/templates/project.yaml
 [troubleshooting]: TROUBLESHOOTING.md
 [waypoints]: https://github.disney.com/users/SANCR225/projects/2/views/1
 [windows-setup]: ../getting-started/WINDOWS_SETUP.md

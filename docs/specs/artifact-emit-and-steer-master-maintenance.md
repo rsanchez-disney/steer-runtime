@@ -353,7 +353,7 @@ Initial sidecar example (illustrative, not binding):
 - [Hooks & powers](../reference/HOOKS_AND_POWERS.md)
 - [Orchestrator delegation](../architecture/ORCHESTRATOR_DELEGATION_REVIEW.md)
 - [Workspace-level MCP](./workspace-level-mcp.md)
-- [AGENTS.md](../../AGENTS.md) — steer-master profile entries
+- [AGENTS.md](https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md) — steer-master profile entries
 
 ---
 

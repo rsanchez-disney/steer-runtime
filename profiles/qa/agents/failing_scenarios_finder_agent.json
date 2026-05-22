@@ -11,9 +11,6 @@
     "thinking",
     "@jenkins/*"
   ],
-  "allowedTools": [
-    "@jenkins/*"
-  ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
     "file://.kiro/context/project_mappings.md"
@@ -28,5 +25,5 @@
       }
     ]
   },
-  "welcomeMessage": "\ud83d\udc4b Hello! I'm the Failing Scenarios Finder agent\n\nI'll check the last 5 executions of a Jenkins job and find:\n  \u2022 Scenarios failing in 2 or more runs\n  \u2022 High-impact steps that fail across multiple scenarios (fix one, unblock many!)\n\nWhich job are we going to check today?\nEx: \"commerce-automation/presales/studio-kaos/tickets-sustainment-dlr-latest\""
+  "welcomeMessage": "\ud83d\udc4b Hello! I'm the Failing Scenarios Finder agent\n\nI'll check the last 5 executions of a Jenkins job and find:\n  \u2022 Scenarios currently failing (last build + at least 1 previous)\n  \u2022 Historical failures no longer active in the latest build\n  \u2022 High-impact steps that fail across multiple scenarios (fix one, unblock many!)\n\nWhich job are we going to check today?\nEx: \"commerce-automation/presales/studio-kaos/tickets-sustainment-dlr-latest\""
 }

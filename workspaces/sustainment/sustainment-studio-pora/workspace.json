@@ -1,0 +1,18 @@
+{
+  "name": "sustainment-studio-pora",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Pora applications",
+  "team": "Studio Pora",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "context": {
+    "primary_studio": "Studio Pora",
+    "catalog_scope": [
+      "studio-pora"
+    ],
+    "assignment_groups": [],
+    "escalation_channel": ""
+  }
+}

@@ -2,6 +2,9 @@
   "name": "trips",
   "extends": "ge-team",
   "description": "Trips sub-team",
-  "profiles": [],
-  "projects": []
+  "profiles": [
+    "dev-core"
+  ],
+  "projects": [],
+  "default_agent": "orchestrator"
 }
