@@ -135,9 +135,19 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
 
         // Resolve custom field aliases and merge into updates
         if (customFields) {
+            // Native Jira fields that bypass custom field resolution
+            const NATIVE_FIELDS: Record<string, string> = {
+                fixversions: "fixVersions",
+                duedate: "duedate",
+            };
+
             for (const [key, value] of Object.entries(customFields)) {
-                // Skip storyPoints alias if dedicated param was provided
                 if (storyPoints !== undefined && key.toLowerCase() === "storypoints") continue;
+                const nativeField = NATIVE_FIELDS[key.toLowerCase()];
+                if (nativeField) {
+                    updates[nativeField] = value;
+                    continue;
+                }
                 const resolved = resolveCustomFieldIds([key]);
                 if (resolved.length > 0) {
                     updates[resolved[0]] = value;
