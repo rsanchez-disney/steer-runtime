@@ -104,12 +104,12 @@ export const jiraSmartChecklistAddItemSchema = {
 
 export const jiraSmartChecklistCheckItemSchema = {
     name: "jira_smart_checklist_check_item",
-    description: "Check or uncheck a specific item by 1-based index or text substring match.",
+    description: "Check or uncheck a specific item. You MUST provide either 'index' (1-based) or 'match' (text substring) to identify the target item.",
     inputSchema: {
         type: "object",
         properties: {
             issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" },
-            index: { type: "number", description: "1-based index of the item. Use this OR 'match'." },
+            index: { type: "number", description: "1-based index of the item to check/uncheck." },
             match: { type: "string", description: "Text substring to match (case-insensitive). First match is used." },
             checked: { type: "boolean", description: "true to check, false to uncheck. Omit to toggle." },
         },
