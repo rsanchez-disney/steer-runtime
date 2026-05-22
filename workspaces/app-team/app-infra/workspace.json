@@ -2,14 +2,45 @@
   "name": "app-infra",
   "extends": "app-team",
   "description": "APP shared libraries, stream handlers, and infrastructure",
-  "profiles": ["ops"],
+  "profiles": [
+    "ops"
+  ],
   "projects": [
-    { "name": "wdpr-payments-ref", "path": "wdpr-payments-ref", "repo": "DisneyPaymentsOrg/wdpr-payments-ref" },
-    { "name": "wdpr-payments-model", "path": "wdpr-payments-model", "repo": "DisneyPaymentsOrg/wdpr-payments-model" },
-    { "name": "app-common-keystore", "path": "app-common-keystore", "repo": "DisneyPaymentsOrg/app-common-keystore" },
-    { "name": "wdpr-app-crypto-key-mgmt", "path": "wdpr-app-crypto-key-mgmt", "repo": "DisneyPaymentsOrg/wdpr-app-crypto-key-mgmt" },
-    { "name": "wdpr-app-admin-service", "path": "wdpr-app-admin-service", "repo": "DisneyPaymentsOrg/wdpr-app-admin-service" },
-    { "name": "wdpr-app-payment-stream-handler", "path": "wdpr-app-payment-stream-handler", "repo": "DisneyPaymentsOrg/wdpr-app-payment-stream-handler" },
-    { "name": "wdpr-app-payment-event-handler", "path": "wdpr-app-payment-event-handler", "repo": "DisneyPaymentsOrg/wdpr-app-payment-event-handler" }
-  ]
+    {
+      "name": "wdpr-payments-ref",
+      "path": "wdpr-payments-ref",
+      "repo": "DisneyPaymentsOrg/wdpr-payments-ref"
+    },
+    {
+      "name": "wdpr-payments-model",
+      "path": "wdpr-payments-model",
+      "repo": "DisneyPaymentsOrg/wdpr-payments-model"
+    },
+    {
+      "name": "app-common-keystore",
+      "path": "app-common-keystore",
+      "repo": "DisneyPaymentsOrg/app-common-keystore"
+    },
+    {
+      "name": "wdpr-app-crypto-key-mgmt",
+      "path": "wdpr-app-crypto-key-mgmt",
+      "repo": "DisneyPaymentsOrg/wdpr-app-crypto-key-mgmt"
+    },
+    {
+      "name": "wdpr-app-admin-service",
+      "path": "wdpr-app-admin-service",
+      "repo": "DisneyPaymentsOrg/wdpr-app-admin-service"
+    },
+    {
+      "name": "wdpr-app-payment-stream-handler",
+      "path": "wdpr-app-payment-stream-handler",
+      "repo": "DisneyPaymentsOrg/wdpr-app-payment-stream-handler"
+    },
+    {
+      "name": "wdpr-app-payment-event-handler",
+      "path": "wdpr-app-payment-event-handler",
+      "repo": "DisneyPaymentsOrg/wdpr-app-payment-event-handler"
+    }
+  ],
+  "default_agent": "orchestrator"
 }
