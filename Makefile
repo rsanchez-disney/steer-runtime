@@ -74,6 +74,9 @@ mcp-build-%: ## Build a single MCP server (e.g., make mcp-build-jira-mcp)
 validate-catalog: ## Validate managed services catalog app.yaml files and report fill-rate
 	@./scripts/validate-catalog.sh
 
+validate-workspaces: ## Validate all workspace.json files for required fields and portability
+	@./scripts/validate-workspaces.sh
+
 validate-catalog-strict: ## Validate catalog in strict mode (fails on missing required fields)
 	@./scripts/validate-catalog.sh --strict
 
