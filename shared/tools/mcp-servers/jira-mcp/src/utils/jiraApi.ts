@@ -122,9 +122,19 @@ export class JiraApiClient {
 
     async updateJiraTicket(ticketId: string, updates: any): Promise<void> {
 
+        // Separate native fields that require the update section (bypasses screen scheme)
+        const { fixVersions, duedate, ...fields } = updates;
+        const updateSection: any = {};
+        if (fixVersions !== undefined) updateSection.fixVersions = [{ set: fixVersions }];
+        if (duedate !== undefined) updateSection.duedate = [{ set: duedate }];
+
+        const body: any = {};
+        if (Object.keys(fields).length > 0) body.fields = fields;
+        if (Object.keys(updateSection).length > 0) body.update = updateSection;
+
         console.error(
-            "Updating JIRA ticket with fields:",
-            JSON.stringify(updates, null, 2),
+            "Updating JIRA ticket:",
+            JSON.stringify(body, null, 2),
         );
 
         const response = await this.fetch(
@@ -135,7 +145,7 @@ export class JiraApiClient {
                     Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ fields: updates }),
+                body: JSON.stringify(body),
             },
         );
 

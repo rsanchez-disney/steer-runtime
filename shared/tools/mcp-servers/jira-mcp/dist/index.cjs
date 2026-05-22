@@ -6205,14 +6205,25 @@ var JiraApiClient = class _JiraApiClient {
     return result;
   }
   async updateJiraTicket(ticketId, updates) {
-    console.error("Updating JIRA ticket with fields:", JSON.stringify(updates, null, 2));
+    const { fixVersions, duedate, ...fields } = updates;
+    const updateSection = {};
+    if (fixVersions !== void 0)
+      updateSection.fixVersions = [{ set: fixVersions }];
+    if (duedate !== void 0)
+      updateSection.duedate = [{ set: duedate }];
+    const body = {};
+    if (Object.keys(fields).length > 0)
+      body.fields = fields;
+    if (Object.keys(updateSection).length > 0)
+      body.update = updateSection;
+    console.error("Updating JIRA ticket:", JSON.stringify(body, null, 2));
     const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`, {
       method: "PUT",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ fields: updates })
+      body: JSON.stringify(body)
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -7247,9 +7258,18 @@ async function handleJiraUpdateIssue(args) {
       }
     }
     if (customFields) {
+      const NATIVE_FIELDS = {
+        fixversions: "fixVersions",
+        duedate: "duedate"
+      };
       for (const [key, value] of Object.entries(customFields)) {
         if (storyPoints !== void 0 && key.toLowerCase() === "storypoints")
           continue;
+        const nativeField = NATIVE_FIELDS[key.toLowerCase()];
+        if (nativeField) {
+          updates[nativeField] = value;
+          continue;
+        }
         const resolved = resolveCustomFieldIds([key]);
         if (resolved.length > 0) {
           updates[resolved[0]] = value;
