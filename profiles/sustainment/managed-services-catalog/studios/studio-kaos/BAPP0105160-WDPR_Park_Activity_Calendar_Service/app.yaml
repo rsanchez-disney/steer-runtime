@@ -91,11 +91,8 @@ components:
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
     # -- AppDynamics --
-    appd:
-      prod:
-        url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=447&component=3176&dashboardMode=force"
-      load:
-        url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2340&component=3481083&dashboardMode=force"
+    appdynamics:
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=447&component=3176&dashboardMode=force"
 
     # -- NewRelic --
     # Not applicable
@@ -157,6 +154,8 @@ components:
           role: "wdpr-apps"
           cluster_id: "dlr-commerce2-01323-load"
           service_name: "pacs-svc-load-live"
+        appdynamics:
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2340&component=3481083&dashboardMode=force"
 
       latest:
         health_check:

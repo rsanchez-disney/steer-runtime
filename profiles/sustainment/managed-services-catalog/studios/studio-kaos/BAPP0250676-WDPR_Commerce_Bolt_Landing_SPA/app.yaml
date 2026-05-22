@@ -35,7 +35,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "http://mywiki.disney.com/spaces/StudioKaos/pages/1056999213/Application+Details+WDPR+Commerce+Bolt+Landing+SPA"
+  runbook: "https://mywiki.disney.com/pages/viewpage.action?pageId=1056999213&spaceKey=StudioKaos&title=Application%2BDetails%2BWDPR%2BCommerce%2BBolt%2BLanding%2BSPA"
   wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=1056999213"
   architecture_diagram: ""
 

@@ -92,11 +92,8 @@ components:
       dashboard_url: "https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/dory_for_tickets"
 
     # -- AppDynamics --
-    appd:
-      prod:
-        url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_INFRASTRUCTURE&application=515&component=306832"
-      load:
-        url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2983&component=7462060&dashboardMode=force"
+    appdynamics:
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_INFRASTRUCTURE&application=515&component=306832"
 
     # -- NewRelic --
     # Not applicable
@@ -156,6 +153,8 @@ components:
           account_id: "168997411205"
           cluster_id: "wdpr-ecommerce-S0001323-usw2-lod"
           service_name: "doryfortickets-api-load-live"
+        appdynamics:
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2983&component=7462060&dashboardMode=force"
 
       latest:
         health_check:
