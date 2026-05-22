@@ -1,5 +1,9 @@
 # Rule: Cerebro Incident Response Format
 
+## Language
+
+Match the user's language (EN/ES) in all sections. If the user writes in Spanish, respond entirely in Spanish. If in English, respond in English. Keep technical identifiers (INC numbers, service names, Splunk queries) unchanged regardless of language.
+
 ## When to Apply
 
 This rule applies whenever the user:

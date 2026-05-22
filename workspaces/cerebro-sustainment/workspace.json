@@ -7,17 +7,21 @@
   "rules": ["cerebro-incident-response"],
   "enable_tools": true,
   "jira_prefix": "ADMPROFILE-",
+  "workspace_path": "${WORKSPACE_ROOT}/cerebro",
   "projects": [
     {
       "name": "dx-profile-webapi",
+      "path": "profile-webapi",
       "repo": "profile-vertical/profile-webapi"
     },
     {
       "name": "profile-spa",
+      "path": "profile-spa",
       "repo": "profile-vertical/profile-spa"
     },
     {
       "name": "sustainment-toolkit",
+      "path": "sustainment-toolkit",
       "repo": "MARIS117/sustainment-toolkit"
     }
   ],
