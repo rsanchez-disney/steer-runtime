@@ -1,40 +1,43 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
+# BAPP0105586 — WDPRD DTI Traffic Controller (DTC)
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0105586"
 app_name: "wdprd-dti-traffic-controller"
 full_name: "WDPRD DTI Traffic Controller"
-description: ""
+description: "DTI Traffic Controller — routes ticket transactions between DLR/WDW and DTI systems"
 
 # --- Ownership ---
 support_studio: "Studio Kaos"
-escalation_channel: ""
+escalation_channel: "#dprd-studio-kaos"
 escalation_contacts:
-  - name: ""
+  - name: "Fernanda Roque"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Lead Software Engineer"
+  - name: "Gabriela Rossi"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Thai Murugappan"
     role: "SME"
-    contact: ""
+    contact: "Sr Mgr-Technology"
+on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
+email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
+jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPRD DTI Traffic Controller"
   assignment_group: "web-global-salestickets"
   business_service: ""
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681694957/DTC+DTI+Traffic+Controller"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/681694957/DTC+DTI+Traffic+Controller"
+  architecture_diagram: "https://bluedolphin.app/twdc/objects/68010b074147687d3191faf4/item/68a7791cf509ce9b27272092/views"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +48,126 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "dti-traffic-controller"
+    component_type: "api"
+    description: "DTI Traffic Controller — routes ticket transactions between DLR/WDW and DTI systems"
 
     # -- Component-specific docs --
     docs:
       troubleshooting: ""
-      runbook: ""
+      runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681694957/DTC+DTI+Traffic+Controller"
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
-      architecture_diagram: ""
+      wiki: "https://confluence.disney.com/spaces/WDPROS/pages/681694957/DTC+DTI+Traffic+Controller"
+      architecture_diagram: "https://bluedolphin.app/twdc/objects/68010b074147687d3191faf4/item/68a7791cf509ce9b27272092/views"
 
     # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/wdpro-peplite/dti-traffic-controller"
+      branch: "develop"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Commerce/projects/WDPRD_DTI_Traffic_Controller/pipelines"
       deploy_target: ""
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "https://dti-controller.dlr.wdprapps.disney.com/dti-traffic-controller/api/health/shallow"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr-apps"
       source: ""
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-apps ecs_cluster=*dtc* ecs_task_definition=*dtc*
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-apps ecs_cluster=*dtc* ecs_task_definition=*dtc* level=ERROR
       latency_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-apps ecs_cluster=*dtc* ecs_task_definition=*dtc*
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
     # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+    appd:
+      prod:
+        url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=299&dashboardMode=forcehttps://disney-prod.saas.appdynamics.com/controller/"
+      load:
+        url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=1344&component=7024&dashboardMode=force"
 
     # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
+    # Not applicable
 
     # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
+    # Not applicable
 
     # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
+    # Not applicable
 
     # -- Archer --
-    archer:
-      record_id: ""
+    # Not applicable
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "876496569223"
+      role: "wdpr-apps"
+      infra_type: "ECS"
+      cluster_id: "dlr-dtc-prod"  # Also: wdpr-dtc-prod (WDW)
+      service_name: "dtc-prod-live"
 
       cloudwatch:
         log_group: ""
         namespace: ""
         alarm_prefix: ""
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+      # -- GCP --
+      # Not applicable
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "httpss://stage.dti-controller.dlr.wdprapps.disney.com/dti-traffic-controller/api/health/shallow"
         splunk:
-          index: ""
+          index: "wdpr-apps"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-apps ecs_cluster="dlr-dtc-stage" ecs_task_definition=*dtc*
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-west-2"
+          account_id: "876496569223"
+          role: "wdpr-apps"
+          cluster_id: "dlr-dtc-stage"
+          service_name: "dtc-stage-live"
 
       load:
         health_check:
-          url: ""
+          url: "https://load.dti-controller.dlr.wdprapps.disney.com/dti-traffic-controller/api/health/shallow"
         splunk:
-          index: ""
+          index: "wdpr-apps"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-apps ecs_cluster="dlr-dtc-load" ecs_task_definition=*dtc*
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-west-2"
+          account_id: "876496569223"
+          role: "wdpr-apps"
+          cluster_id: "dlr-dtc-load"
+          service_name: "dtc-load-live"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.dti-controller.dlr.wdprapps.disney.com/dti-traffic-controller/api/health/shallow"
         splunk:
-          index: ""
+          index: "wdpr-apps"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-apps ecs_cluster="dlr-dtc-latest" ecs_task_definition=*dtc*
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-west-2"
+          account_id: "876496569223"
+          role: "wdpr-apps"
+          cluster_id: "dlr-dtc-latest"
+          service_name: "dtc-latest-live"
