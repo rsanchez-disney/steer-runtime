@@ -13,54 +13,35 @@ DYNAMIC_DIR="$KIRO_DIR/context/_dynamic"
 mkdir -p "$DYNAMIC_DIR"
 
 INDEX_FILE="$DYNAMIC_DIR/catalog-index.md"
-CATALOG_BASE="$KIRO_DIR/steer-runtime/profiles/sustainment/managed-services-catalog"
+# Catalog always lives in the global steer-runtime install (not per-workspace)
+CATALOG_BASE="$HOME/.kiro/steer-runtime/profiles/sustainment/managed-services-catalog"
 CATALOG_DIR="$CATALOG_BASE/studios"
 
 [ -d "$CATALOG_DIR" ] || exit 0
 
-# Resolve active workspace name from settings (checks kite.json, then settings.json)
+# Read managed_studios from workspace snapshot (written by Koda at workspace apply)
+SCOPE_DIRS=$(python3 -c "
+import json, os, sys
+kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
+snapshot = os.path.join(kiro, 'settings', 'workspace.json')
+if not os.path.isfile(snapshot):
+    print('*')
+    sys.exit(0)
+try:
+    ws = json.load(open(snapshot))
+    scope = ws.get('managed_studios', [])
+    print(' '.join(scope) if scope else '*')
+except:
+    print('*')
+" 2>/dev/null)
+
 WS_NAME=$(python3 -c "
 import json, os, sys
 kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
-for f in ['kite.json', 'settings.json']:
-    p = os.path.join(kiro, 'settings', f)
-    if not os.path.isfile(p): continue
-    try:
-        d = json.load(open(p))
-        ws = d.get('steerRuntime', {}).get('activeWorkspace', '')
-        if ws:
-            print(ws)
-            sys.exit(0)
+snapshot = os.path.join(kiro, 'settings', 'workspace.json')
+if os.path.isfile(snapshot):
+    try: print(json.load(open(snapshot)).get('name', ''))
     except: pass
-" 2>/dev/null)
-
-# Read catalog_scope from workspace source (supports extends, searches subdirs)
-SCOPE_DIRS=$(python3 -c "
-import json, os, sys, glob
-kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
-ws_name = '$WS_NAME'
-if not ws_name:
-    print('*')
-    sys.exit(0)
-
-def find_workspace(name):
-    patterns = [
-        os.path.join(kiro, 'steer-runtime/workspaces', name, 'workspace.json'),
-        os.path.join(kiro, 'steer-runtime/workspaces', '*', name, 'workspace.json'),
-    ]
-    for pattern in patterns:
-        matches = glob.glob(pattern)
-        if matches:
-            return json.load(open(matches[0]))
-    return {}
-
-ws = find_workspace(ws_name)
-scope = ws.get('context', {}).get('catalog_scope')
-if not scope and ws.get('extends'):
-    parent = find_workspace(ws['extends'])
-    scope = parent.get('context', {}).get('catalog_scope')
-
-print(' '.join(scope if scope else ['*']))
 " 2>/dev/null)
 
 # Default to all if no scope resolved
