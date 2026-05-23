@@ -27,6 +27,12 @@
 
 Alias: `dev` expands to `dev-core` + `dev-web` + `dev-mobile` + `dev-python` + `dev-infra`
 
+## Naming Convention
+
+See [docs/WORKSPACE_NAMING.md](../../docs/WORKSPACE_NAMING.md) for the full naming convention.
+
+Summary: `{name}-vertical` | `{name}-team` | `sustainment-{studio}` | `app-{name}`
+
 ## Breaking Changes
 - Removing a required field
 - Renaming a field (old configs stop working)
