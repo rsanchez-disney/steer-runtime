@@ -1,0 +1,63 @@
+{
+  "title": "Sustainment Operations",
+  "sections": [
+    {
+      "id": "incidents",
+      "title": "Active Incidents",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "open-incs", "label": "Open INCs", "prompt": "Query ServiceNow for all open incidents assigned to my workspace's assignment groups. Show a table with: number, priority, short_description, state, age (days since created), and assignment_group. Sort by priority then age." },
+        { "id": "triage-latest", "label": "Triage Latest", "prompt": "Find the most recent open P1 or P2 INC for my team and perform a full 8-section triage analysis using the incident response format." },
+        { "id": "triage-inc", "label": "Triage INC...", "prompt": "Which INC number should I triage? Provide the INC number and I'll perform a full 8-section analysis." },
+        { "id": "p1-p2-summary", "label": "P1/P2 Summary", "prompt": "Query ServiceNow for all P1 and P2 incidents from the last 30 days for my team's assignment groups. Summarize: total count, MTTR, recurring services, resolution patterns." }
+      ]
+    },
+    {
+      "id": "health",
+      "title": "Application Health",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "health-all", "label": "Check All Apps", "prompt": "Read my catalog index, then for each app that has a health_check.url in its app.yaml, hit the endpoint and report status (HTTP code, response time). Flag any non-200 responses." },
+        { "id": "error-spike", "label": "Error Spike Check", "prompt": "For each app in my catalog scope that has an error_spl in its app.yaml, run the Splunk query scoped to the last 4 hours. Report any services with elevated error counts (>50 errors)." },
+        { "id": "latency-check", "label": "Latency Check", "prompt": "For each app in my catalog scope that has a latency_spl in its app.yaml, run the query. Report any services with p95 latency above 3 seconds." },
+        { "id": "app-health", "label": "Check App...", "prompt": "Which application should I check? I'll read its app.yaml and run health check, Splunk error query, and latency query." }
+      ]
+    },
+    {
+      "id": "catalog",
+      "title": "My Applications",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "list-apps", "label": "List Apps", "prompt": "Show my managed services catalog index — all apps in scope with BAPP ID, full name, studio, and assignment group in a table." },
+        { "id": "app-details", "label": "App Details...", "prompt": "Which application do you want details for? Provide the name or BAPP ID and I'll read its app.yaml showing: repositories, Splunk queries, health checks, CI/CD, contacts, and cloud infrastructure." },
+        { "id": "runbook", "label": "Runbook...", "prompt": "Which application's runbook do you need? Provide the name or BAPP ID and I'll read its runbook.md with restart procedures, scaling info, and validation steps." },
+        { "id": "escalation", "label": "Escalation Matrix", "prompt": "Show the escalation contacts and routing table for all apps in my scope. Include: primary contact, escalation channel, and reassignment rules per root cause category." }
+      ]
+    },
+    {
+      "id": "changes",
+      "title": "Changes & Validation",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "recent-ctasks", "label": "Recent CTASKs", "prompt": "Query ServiceNow for CTASKs related to my applications from the last 14 days. Show: number, short_description, state, scheduled_start_date, assignment_group." },
+        { "id": "pre-validate", "label": "Pre-Change Validate", "prompt": "I'm about to apply a change. Run pre-change stability validation: check current health endpoints, capture baseline error rates from Splunk, and document the current state for comparison." },
+        { "id": "post-validate", "label": "Post-Change Validate", "prompt": "A change was just applied. Run post-change stability validation: check health endpoints, compare error rates against baseline, verify no new error patterns in Splunk." }
+      ]
+    },
+    {
+      "id": "reports",
+      "title": "Reports",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "gsm", "label": "GSM Report", "prompt": "Generate a GSM report for my team's applications covering the last 7 days: incident count by priority, MTTR, SLA compliance, top affected services, and trend vs previous week." },
+        { "id": "weekly", "label": "Weekly Summary", "prompt": "Summarize this week's sustainment activity: total INCs opened/resolved, P1/P2 count, CTASKs completed, recurring patterns, and recommendations." },
+        { "id": "monthly-trends", "label": "Monthly Trends", "prompt": "Analyze incident trends for the last 30 days: volume by week, top 5 affected applications, most common root causes, and SLA breach rate. Include a comparison to the previous month." }
+      ]
+    }
+  ]
+}
