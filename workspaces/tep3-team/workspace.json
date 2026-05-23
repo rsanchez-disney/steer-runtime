@@ -1,0 +1,47 @@
+{
+  "name": "tep3-team",
+  "description": "Cart & Checkout TEP3 team associated to StandAlone and Package projects",
+  "team": "TEP3 Cart & Checkout",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "qa",
+    "pm"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "cart-service-java8",
+      "path": "../cart-service-java8",
+      "memory_bank": "cart-service-java8"
+    },
+    {
+      "name": "ecommerce-order-vas-java-17",
+      "path": "../ecommerce-order-vas-java-17",
+      "memory_bank": "ecommerce-order-vas-java-17"
+    },
+    {
+      "name": "wdpr-mock-svc",
+      "path": "../wdpr-mock-svc",
+      "memory_bank": "wdpr-mock-svc"
+    },
+    {
+      "name": "wdpr-ecommerce-uc-spa",
+      "path": "../wdpr-ecommerce-uc-spa",
+      "memory_bank": "wdpr-ecommerce-uc-spa"
+    },
+    {
+      "name": "com-uc-ui-components",
+      "path": "../com-uc-ui-components",
+      "memory_bank": "com-uc-ui-components"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-node-development",
+    "general-angular-development"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "TEP3-"
+}

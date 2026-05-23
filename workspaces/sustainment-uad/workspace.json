@@ -1,0 +1,12 @@
+{
+  "name": "sustainment-uad",
+  "description": "Resort Sales \u2014 UAD sustainment PM workspace",
+  "team": "UAD Team (Sustainment)",
+  "profiles": [
+    "pm"
+  ],
+  "default_agent": "pm_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "UAD-"
+}

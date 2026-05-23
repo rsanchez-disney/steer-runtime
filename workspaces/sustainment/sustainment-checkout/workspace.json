@@ -1,0 +1,16 @@
+{
+  "name": "sustainment-checkout",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Checkout vertical management \u2014 spans Mars, Valhalla, and Kaos",
+  "team": "Checkout Management",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-mars",
+    "studio-valhalla",
+    "studio-kaos"
+  ],
+  "enable_tools": true
+}

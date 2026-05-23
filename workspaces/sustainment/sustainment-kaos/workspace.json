@@ -1,0 +1,16 @@
+{
+  "name": "sustainment-kaos",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Kaos \u2014 DLR ticketing, availability, entitlements, and commerce UI",
+  "team": "Studio Kaos",
+  "profiles": [
+    "sustainment",
+    "ba"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-kaos"
+  ],
+  "jira_prefix": "COM-",
+  "enable_tools": true
+}

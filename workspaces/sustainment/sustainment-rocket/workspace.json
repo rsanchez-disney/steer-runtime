@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-rocket",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Rocket applications",
+  "team": "Studio Rocket",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-rocket"
+  ],
+  "enable_tools": true
+}
