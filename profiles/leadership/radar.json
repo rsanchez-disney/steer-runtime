@@ -1,0 +1,51 @@
+{
+  "title": "Leadership Dashboard",
+  "sections": [
+    {
+      "id": "delivery",
+      "title": "Delivery Health",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "velocity-trends", "label": "Velocity Trends", "prompt": "Show velocity trends for all teams in my vertical over the last 4 sprints: story points committed vs completed, trend direction, and outliers." },
+        { "id": "sprint-completion", "label": "Sprint Completion Rates", "prompt": "For each team in my vertical, show current sprint completion rate: done vs total, at-risk items, and predicted end-of-sprint outcome." },
+        { "id": "carry-over", "label": "Carry-Over Analysis", "prompt": "Identify stories carried over from previous sprints across all teams. Show: ticket, age, reason for carry-over, and impact on delivery." },
+        { "id": "epic-progress", "label": "Epic Progress", "prompt": "Show progress for all active epics across my vertical: percentage complete, remaining stories, target date, and risk level." }
+      ]
+    },
+    {
+      "id": "risks",
+      "title": "Risks & Blockers",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "blockers", "label": "Cross-Team Blockers", "prompt": "Identify all blocked tickets across my teams. Show: ticket, blocking reason, which team is blocked, which team can unblock, and age." },
+        { "id": "stale-items", "label": "Stale Items", "prompt": "Find tickets that haven't moved in 5+ days across all teams. Show: ticket, assignee, status, days stale, and last activity." },
+        { "id": "dependency-risks", "label": "Dependency Risks", "prompt": "Analyze cross-team dependencies for the current sprint. Identify items where one team's delivery depends on another team's incomplete work." },
+        { "id": "risk-register", "label": "Risk Register Update", "prompt": "Generate an updated risk register: new risks identified this week, existing risks with changed probability/impact, and mitigations in progress." }
+      ]
+    },
+    {
+      "id": "people",
+      "title": "Team & People",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "capacity", "label": "Team Capacity", "prompt": "Show capacity utilization for each team: assigned story points vs available capacity, overloaded members, and unassigned work." },
+        { "id": "ai-adoption", "label": "AI Adoption Stats", "prompt": "Show AI adoption metrics across my teams: sessions per developer, AI-assisted PRs percentage, tools usage, and adoption trend." },
+        { "id": "standup-all", "label": "All Teams Standup", "prompt": "Generate a consolidated standup summary across all my teams: key progress, blockers, and items needing my attention." }
+      ]
+    },
+    {
+      "id": "reporting",
+      "title": "Reporting",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "quarterly", "label": "Quarterly Report Draft", "prompt": "Generate a quarterly report draft: achievements, metrics (velocity, quality, delivery), risks, roadmap progress, AI adoption, and next quarter priorities." },
+        { "id": "exec-briefing", "label": "Executive Briefing", "prompt": "Generate a concise executive briefing (1 page): delivery status, key wins, risks requiring attention, and resource needs. Director-level audience." },
+        { "id": "weekly-email", "label": "Weekly Status Email", "prompt": "Draft a weekly status email for stakeholders: sprint progress, completed items with business value, upcoming milestones, and blockers needing escalation." }
+      ]
+    }
+  ]
+}

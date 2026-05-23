@@ -1,0 +1,50 @@
+{
+  "title": "Quality Assurance",
+  "sections": [
+    {
+      "id": "coverage",
+      "title": "Test Coverage",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "coverage-report", "label": "Coverage Report", "prompt": "Analyze test coverage for the current sprint's stories: which have test cases, which are missing, and what's the overall coverage percentage." },
+        { "id": "missing-scenarios", "label": "Missing Scenarios", "prompt": "For each story in the current sprint, identify test scenarios that should exist but don't. Consider: happy path, edge cases, error handling, and boundary conditions." },
+        { "id": "generate-tests", "label": "Generate Test Cases...", "prompt": "Which story should I generate test cases for? I'll create comprehensive test scenarios covering functional, edge cases, and negative testing." },
+        { "id": "regression-risk", "label": "Regression Risk", "prompt": "Analyze recent code changes (PRs merged this sprint) and identify areas with high regression risk based on: files changed, test coverage gaps, and dependency impact." }
+      ]
+    },
+    {
+      "id": "defects",
+      "title": "Defects & Issues",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "open-defects", "label": "Open Defects", "prompt": "List all open defects/bugs for my project. Show: key, priority, summary, age, and affected component. Sort by priority then age." },
+        { "id": "flaky-tests", "label": "Flaky Tests Report", "prompt": "Identify tests that have failed intermittently in recent CI runs. Show: test name, failure rate, last failure reason, and suggested fix approach." },
+        { "id": "defect-trends", "label": "Defect Trends", "prompt": "Analyze defect trends for the last 30 days: opened vs closed, by priority, by component, and escape rate (defects found in production vs testing)." }
+      ]
+    },
+    {
+      "id": "automation",
+      "title": "Test Automation",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "generate-e2e", "label": "Generate E2E Scenarios...", "prompt": "Which story or feature should I generate E2E test scenarios for? I'll create Gherkin scenarios covering the full user flow." },
+        { "id": "generate-api-tests", "label": "Generate API Tests...", "prompt": "Which API endpoint should I generate tests for? I'll create a Bruno collection with assertions for status codes, response schema, and edge cases." },
+        { "id": "automation-gaps", "label": "Automation Gaps", "prompt": "Compare manual test cases against automated tests. Identify high-value scenarios that should be automated based on: frequency, risk, and effort." }
+      ]
+    },
+    {
+      "id": "quality-gates",
+      "title": "Quality Gates",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "release-checklist", "label": "Pre-Release Checklist", "prompt": "Generate a pre-release quality checklist: test execution status, defect closure, coverage thresholds, performance baselines, and sign-off requirements." },
+        { "id": "sonar-summary", "label": "Code Quality Summary", "prompt": "Summarize code quality metrics: SonarQube issues (blockers, criticals), code coverage percentage, duplications, and technical debt." },
+        { "id": "sprint-quality", "label": "Sprint Quality Metrics", "prompt": "Generate sprint quality metrics: defect density, test pass rate, automation coverage, escaped defects, and comparison to previous sprint." }
+      ]
+    }
+  ]
+}
