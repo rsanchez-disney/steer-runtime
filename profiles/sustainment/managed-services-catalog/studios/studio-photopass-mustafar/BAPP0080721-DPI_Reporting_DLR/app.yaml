@@ -1,0 +1,65 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0080721"
+app_name: "dpi-reporting-dlr"
+full_name: "DPI Reporting DLR"
+description: ""
+
+# --- Ownership ---
+support_studio: "Photopass-Mustafar"
+escalation_channel: ""
+escalation_contacts:
+  - name: ""
+    role: "primary"
+    contact: ""
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: ""
+  assignment_group: "app-flwdw-dpi"
+  business_service: ""
+
+# --- Documentation ---
+documentation:
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+
+# --- Components ---
+components:
+
+  - component_name: ""
+    component_type: ""
+    description: ""
+    repository:
+      url: ""
+      branch: ""
+      path: ""
+    health_check:
+      url: ""
+      expected_status: 200
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
