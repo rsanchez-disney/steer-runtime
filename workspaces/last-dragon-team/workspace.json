@@ -1,6 +1,6 @@
 {
   "name": "last-dragon-team",
-  "description": "Studio Last Dragon — search tech sustainment team responsible for Search Service, Search Indexing Service, Elasticsearch, and search relevancy across Disney digital properties",
+  "description": "Studio Last Dragon \u2014 search tech sustainment team responsible for Search Service, Search Indexing Service, Elasticsearch, and search relevancy across Disney digital properties",
   "team": "Studio Last Dragon",
   "profiles": [
     "core",
@@ -54,5 +54,8 @@
     "general-node-development"
   ],
   "enable_tools": true,
-  "jira_prefix": "GIT-"
+  "jira_prefix": "GIT-",
+  "managed_studios": [
+    "studio-last-dragon"
+  ]
 }
