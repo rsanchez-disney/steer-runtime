@@ -1,9 +1,0 @@
-{
-  "name": "dotnet-example",
-  "description": "Example workspace for .NET teams using self-host-api or serverless archetypes",
-  "team": "DPI .NET Studio",
-  "profiles": ["dev-dotnet"],
-  "default_agent": "dotnet_senior_agent",
-  "rules": ["conventional_commit"],
-  "enable_tools": true
-}
