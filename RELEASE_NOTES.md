@@ -34,7 +34,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** Jira MCP field ID corrections — sprint, storyPoints, epicLink now point to correct myjira fields
 <!-- END LATEST -->
 
-## v0.2.89
+## v0.2.93
 
 - **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with variable resolution, `_overrides`, and `_source` tracking
 - **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
@@ -47,7 +47,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **test-workspace-mcp.sh** — local validation script (21 assertions)
 - **fix:** JIRA MCP no longer includes epicLink in create fields (prevents hard errors on restrictive projects)
 
-## v0.2.89
+## v0.2.93
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -56,7 +56,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 
-## v0.2.89
+## v0.2.93
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API
