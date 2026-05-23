@@ -3,12 +3,12 @@
   "extends": "sustainment",
   "description": "Sustainment workspace for Studio Antman applications",
   "team": "Studio Antman",
-  "profiles": ["sustainment"],
+  "profiles": [
+    "sustainment"
+  ],
   "default_agent": "sustainment_orchestrator_agent",
-  "context": {
-    "primary_studio": "Studio Antman",
-    "catalog_scope": ["studio-antman"],
-    "assignment_groups": [],
-    "escalation_channel": ""
-  }
+  "managed_studios": [
+    "studio-antman"
+  ],
+  "enable_tools": true
 }

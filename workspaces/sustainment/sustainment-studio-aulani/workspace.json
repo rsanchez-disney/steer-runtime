@@ -7,12 +7,8 @@
     "sustainment"
   ],
   "default_agent": "sustainment_orchestrator_agent",
-  "context": {
-    "primary_studio": "Studio Aulani",
-    "catalog_scope": [
-      "studio-aulani"
-    ],
-    "assignment_groups": [],
-    "escalation_channel": ""
-  }
+  "managed_studios": [
+    "studio-aulani"
+  ],
+  "enable_tools": true
 }

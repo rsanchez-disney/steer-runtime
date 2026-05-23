@@ -7,12 +7,8 @@
     "sustainment"
   ],
   "default_agent": "sustainment_orchestrator_agent",
-  "context": {
-    "primary_studio": "Studio Rex",
-    "catalog_scope": [
-      "studio-rex"
-    ],
-    "assignment_groups": [],
-    "escalation_channel": ""
-  }
+  "managed_studios": [
+    "studio-rex"
+  ],
+  "enable_tools": true
 }

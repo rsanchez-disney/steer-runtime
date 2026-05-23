@@ -3,12 +3,12 @@
   "extends": "sustainment",
   "description": "Sustainment workspace for Studio Mars applications",
   "team": "Studio Mars",
-  "profiles": ["sustainment"],
+  "profiles": [
+    "sustainment"
+  ],
   "default_agent": "sustainment_orchestrator_agent",
-  "context": {
-    "primary_studio": "Studio Mars",
-    "catalog_scope": ["studio-mars"],
-    "assignment_groups": [],
-    "escalation_channel": ""
-  }
+  "managed_studios": [
+    "studio-mars"
+  ],
+  "enable_tools": true
 }

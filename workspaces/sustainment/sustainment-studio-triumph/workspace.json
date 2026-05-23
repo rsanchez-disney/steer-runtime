@@ -7,12 +7,8 @@
     "sustainment"
   ],
   "default_agent": "sustainment_orchestrator_agent",
-  "context": {
-    "primary_studio": "Studio Triumph",
-    "catalog_scope": [
-      "studio-triumph"
-    ],
-    "assignment_groups": [],
-    "escalation_channel": ""
-  }
+  "managed_studios": [
+    "studio-triumph"
+  ],
+  "enable_tools": true
 }
