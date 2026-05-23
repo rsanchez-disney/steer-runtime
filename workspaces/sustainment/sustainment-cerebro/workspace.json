@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-cerebro",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Cerebro applications",
+  "team": "Studio Cerebro",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-cerebro"
+  ],
+  "enable_tools": true
+}

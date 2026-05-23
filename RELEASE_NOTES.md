@@ -4,15 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.89
+## v0.2.93
 
-- **Chrome DevTools MCP** — global headless browser automation bundle (isolated Chrome, no user session interference, replaces dangerous hook)
-- **AI Metrics post-PR hook** — automatically records metrics via `koda stats submit` after every PR creation
-- **AI Metrics steering update** — session tracking now uses `koda stats submit` pipeline instead of Google Form
-- **AI Metrics Integration spec** — full architecture and implementation plan across koda, Kite, and prompt-scorer
-- **Orchestration harness + context compression** — E1-E14 execution engine with automatic context budget management for kiro-cli 2.2.1 (#338)
-- **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with `mcp-meta.json` discovery, variable resolution, `_overrides`, and `_source` tracking
-- **MCP Levels Guide + Custom MCP Builder Guide** — new docs explaining all 4 levels with step-by-step for fork and workspace MCPs
+- **Workspace naming convention** — formal 4-tier naming: `{name}-vertical`, `{name}-team`, `sustainment-{studio}`, `app-{name}` (docs/WORKSPACE_NAMING.md)
+- **29 workspace renames** — all workspaces now follow the naming convention (auto-migrated via `renames.json`)
+- **`managed_studios` schema field** — scopes managed services catalog per workspace (replaces invalid `context.catalog_scope`)
+- **Sustainment Radar** — new `radar.json` with 18 powers for incident triage, health checks, catalog browse, and reports
+- **Smart Checklist tools** — 5 new jira-mcp tools for managing Smart Checklist plugin (get, set, add, check, delete)
+- **PhotoPass studios** — 25 new catalog entries across studio-photopass-dpi-support and studio-photopass-imagine
+- **fix:** Welcome message shows correct workspace after switch (Koda ordering fix)
+- **fix:** Hangar ETIMEDOUT — async exec with 10min timeout for app updates (Kite)
+<!-- END LATEST -->
 - **Workspace MCP template** — `shared/templates/workspace-mcp/` skeleton for teams to scaffold custom MCPs
 - **failing_scenarios_finder_agent** (QA) — Jenkins MCP integration with Feature column, emojis, and token persistence (#351)
 - **docs_curator_agent: MkDocs knowledge** — MkDocs maintenance and site generation knowledge added (#354)

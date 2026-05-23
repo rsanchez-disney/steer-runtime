@@ -5,14 +5,25 @@ All notable changes to steer-runtime.
 ## [Unreleased]
 
 ### Added
-- **chrome-devtools-mcp** — global MCP bundle for headless browser automation (isolated Chrome, no user session interference)
-- **AI Metrics post-PR hook** — `ai-metrics-post-pr.kiro.hook` automatically calls `koda stats submit` after PR creation
-- **AI Metrics Integration spec** — detailed implementation plan in `docs/specs/ai-metrics-integration.md`
+- **Workspace naming convention** — `docs/WORKSPACE_NAMING.md` with 4 tiers (vertical, team, sustainment, project), validation in `make validate-workspaces`
+- **`managed_studios` field** — workspace schema field for scoping managed services catalog; `catalog-index.sh` hook reads from workspace snapshot
+- **Sustainment Radar** — `profiles/sustainment/radar.json` with 5 sections, 18 powers (incidents, health, catalog, changes, reports)
+- **Smart Checklist tools** — 5 new jira-mcp tools via Issue Properties API (get, set, add_item, check_item, delete)
+- **PhotoPass catalog** — 25 app entries across studio-photopass-dpi-support and studio-photopass-imagine
+- **Team context files** — auto-generated `context/team_context.md` for all 19 sustainment studio workspaces
+- **`workspaces/renames.json`** — migration mapping for Koda auto-migration on sync
 
 ### Changed
-- **AI Metrics steering** — updated `35-ai-metrics-tracking.md` to use `koda stats submit` instead of Google Form workflow
+- **29 workspace renames** — applied naming convention (sustainment-studio-X → sustainment-X, added -team/-vertical suffixes)
+- **`catalog-index.sh`** — reads `managed_studios` from workspace snapshot instead of searching source files
+- **`sustainment/workspace.json`** — removed invalid `context` object, uses `managed_studios: ["*"]`
+- **`steer_orchestrator_agent`** — added WORKSPACE_NAMING.md to resources
+- **`workspace_schema.md`** — documented `managed_studios` field and naming convention reference
+- **Dev workspaces linked to catalog** — last-dragon-team, shield-team, dpi-team, finder-services-team now have `managed_studios`
 
-### Removed
+### Fixed
+- **Welcome message stale workspace** — `EnrichWelcomeMessages` now runs after `WriteWorkspaceSnapshot`
+- **jira-mcp check_item schema** — clarified that `index` or `match` is required
 - **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle
 
 ---
