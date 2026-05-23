@@ -57,6 +57,20 @@ Any modification to agent JSON configs, hook scripts, or orchestrator prompts re
 - `profiles/*/prompts/*.md` — agent behavior
 - `shared/hooks/*` — guardrails and lifecycle scripts
 
+## PR workflow (platform repos)
+
+For **steer-runtime**, **Koda**, and **Kite** repositories:
+
+1. **Never commit directly to main** — always create a feature branch
+2. **Collect changes into a PR** — group related changes, use conventional commit title
+3. **Document the PR** — include summary, what changed, what was tested, and any migration notes
+4. **Auto-review after creation** — once the PR is created, perform a code review (check for: breaking changes, schema violations, missing tests, naming convention compliance)
+5. **Wait for approval** — do not merge without explicit user confirmation
+
+Branch naming: `feat/`, `fix/`, `chore/`, `docs/` prefix + short kebab-case description.
+
+Exception: trivial fixes (typos, formatting) may be committed directly if the user explicitly says so.
+
 ## Instance routing
 
 When the user provides a URL or mentions a wiki/Jira:
