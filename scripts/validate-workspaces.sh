@@ -88,12 +88,10 @@ for ws_file in ws_files:
     # Directory = name check
     dir_name = os.path.basename(os.path.dirname(ws_file))
     if name and dir_name != name and dir_name != "sustainment":
-        # Allow children under parent dirs (e.g., sustainment/sustainment-kaos)
         parent_dir = os.path.basename(os.path.dirname(os.path.dirname(ws_file)))
-        if parent_dir == "workspaces" or parent_dir == "sustainment":
-            if dir_name != name:
-                print(f"⚠  {rel} — directory '{dir_name}' doesn't match name '{name}'")
-                warnings += 1
+        if parent_dir in ("workspaces", "sustainment"):
+            print(f"⚠  {rel} — directory '{dir_name}' doesn't match name '{name}'")
+            warnings += 1
 
 print()
 print(f"📋 Workspace Validation: {total} workspaces scanned")

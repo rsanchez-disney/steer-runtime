@@ -21,7 +21,7 @@ Every workspace belongs to one of four tiers, identified by its suffix:
 
 ## Rules
 
-1. **Suffix is mandatory** — every workspace must have `-vertical`, `-team`, `sustainment-`, or `app-` to indicate its tier
+1. **Tier indicator is mandatory** — every workspace must include `-vertical`, `-team`, `sustainment-` prefix, or `app-` prefix to indicate its tier
 2. **kebab-case** — all lowercase, hyphens only, no underscores or spaces
 3. **Directory = name** — the workspace directory name must match the `name` field in workspace.json
 4. **No redundant words** — don't include "workspace", "studio-" (in sustainment), or "project" in the name
