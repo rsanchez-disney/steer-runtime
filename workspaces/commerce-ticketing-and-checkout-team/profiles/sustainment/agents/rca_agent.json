@@ -1,0 +1,19 @@
+{
+  "name": "rca_agent",
+  "description": "RCA Agent (Commerce Ticketing) — Managed Services Catalog approach. Preloads index + auto-triage, reads app.yaml/troubleshooting/business-rules on-demand from managed-services-catalog.",
+  "prompt": "file://../steer-ticketing-checkout-kb/rca_agent/rca_agent.md",
+  "tools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://../steer-ticketing-checkout-kb/rca_agent/rca_agent.md",
+    "file://../steer-ticketing-checkout-kb/rca_agent/_index.yaml",
+    "file://../steer-ticketing-checkout-kb/rca_agent/auto-triage.md"
+  ],
+  "welcomeMessage": "👋 RCA Agent (Commerce Ticketing) ready!\n\nManaged Services Catalog approach: preloaded index + auto-triage.\nApp catalogs (health checks, Splunk queries, AppD, infra) + troubleshooting/business-rules loaded on-demand per incident.\n\nℹ️ Requires: steer-ticketing-checkout-kb cloned as sibling (see workspace README).\n\nProvide me with:\n • A ServiceNow INC number (e.g. INC28757188)\n • A PRB number for root cause investigation\n • An incident description to investigate"
+}

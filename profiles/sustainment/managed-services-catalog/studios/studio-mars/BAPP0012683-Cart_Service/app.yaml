@@ -1,40 +1,32 @@
 # ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# Remove any sections that do not apply to this application.
+# Cart Service — Digital Purchase Flow Cart Management
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0012683"
 app_name: "cart-service"
 full_name: "Cart Service"
-description: ""
+description: "RESTful Java web service for digital purchase flows — lodging, Annual Passes, Memory Maker, Tickets. Has 24-hour cache for package service; if package service is unreachable, cache persists (impacts SiteShield changes)."
 
 # --- Ownership ---
 support_studio: "Studio Mars"
-escalation_channel: ""
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
-  - name: ""
+  - name: "Tomas Grana"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "Tomas.Grana.-ND@disney.com"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "Cart Service"
   assignment_group: "web-global-salescart"
   business_service: ""
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681705297/Cart+Service+Runbook"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484023191/Cart"
+  architecture_diagram: "https://docs.google.com/drawings/d/1KUyEt_wWqE26BvdK5BBo-0thF1WGlnH3C-8XatY68HQ/edit"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,9 +37,9 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "cart-service"
+    component_type: "api"
+    description: "Cart management for digital purchase flows — item validation, availability checks, product pricing for lodging, AP, Memory Maker, Tickets."
 
     # -- Component-specific docs --
     docs:
@@ -61,68 +53,54 @@ components:
 
     # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/wdprd-development/cart-service-java8"
+      branch: "develop"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "jenkins"
+      pipeline_url: "https://ecommerce.cicd.wdprapps.disney.com/job/cart-service-java8/"
+      deploy_target: "ECS wdpr-apps us-west-2"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "https://cart-service.wdprapps.disney.com/cart-service/admin/health-report"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr_commerce_cart"
       source: ""
       base_spl: >-
-
+        index=wdpr_commerce_cart
       error_spl: >-
-
+        index=wdpr_commerce_cart ("*error*" OR "*exception*")
       latency_spl: >-
-
+        index=wdpr_commerce_cart response-millis
+        | rex "response-millis=(?<response_millis>\d+)"
+        | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms
 
     # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
+      app_name: "prod_cart_aws"
+      app_id: "278"
+      tier: "core_cart_machine_agent"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15&application=278&dashboardMode=force"
 
     # -- Grafana --
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
+      dashboard_uid: "6cRDMP8nz"
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-apps&var-Region=us-west-2&var-clusters=cart-prod&var-service=cart-prod-live"
       datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
+      provider: "AWS"
+      region: "us-west-2"
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      infra_type: "ECS"
+      cluster_id: "cart-prod"
+      service_name: "cart-prod-live"
 
       cloudwatch:
         log_group: ""
@@ -133,46 +111,64 @@ components:
         log_group: ""
         saved_query: ""
 
-      gcp:
-        project_id: ""
-        log_filter: ""
-
+      # Supporting infrastructure this component depends on
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "rds"
+          name: "dlr-cart-service-prod-master.wdatdbs.disney.com:4001"
 
-    # -- Other Environments (only fields that differ from production) --
+    # -- Other Environments --
     other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-
-        cloud:
-          region: ""
-          service_name: ""
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.cart-service.wdprapps.disney.com/cart-service/admin/health-report"
         splunk:
-          index: ""
+          index: "wdpr_commerce_cart"
           base_spl: >-
-
+            index=wdpr_commerce_cart
+        appdynamics:
+          app_id: "1051"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15&application=1051&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-west-2"
+          cluster_id: "cart-latest"
+          service_name: "cart-latest-live"
+          services:
+            - type: "rds"
+              name: "cart-service-mariadb-latest.czadbdnytwxi.us-west-2.rds.amazonaws.com:4001"
+
+      stage:
+        health_check:
+          url: "https://stage.cart-service.wdprapps.disney.com/cart-service/admin/health-report"
+        splunk:
+          index: "wdpr_commerce_cart"
+          base_spl: >-
+            index=wdpr_commerce_cart
+        appdynamics:
+          app_id: "1338"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15&application=1338&dashboardMode=force"
+        cloud:
+          region: "us-west-2"
+          cluster_id: "cart-stage"
+          service_name: "cart-stage-live"
+          services:
+            - type: "rds"
+              name: "cart-service-mariadb-stage.czadbdnytwxi.us-west-2.rds.amazonaws.com:4001"
+
+      load:
+        health_check:
+          url: "https://load.cart-service.wdprapps.disney.com/cart-service/admin/health-report"
+        splunk:
+          index: "wdpr_commerce_cart"
+          base_spl: >-
+            index=wdpr_commerce_cart
+        appdynamics:
+          app_id: "1371"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15&application=1371&dashboardMode=force"
+        cloud:
+          region: "us-west-2"
+          cluster_id: "cart-load"
+          service_name: "cart-load-live"
+          services:
+            - type: "rds"
+              name: "dlr-cart-service-load-master.wdatdbs.disney.com:4001"
