@@ -2,7 +2,9 @@
   "name": "steer_reviewer_agent",
   "description": "Reviews steer-runtime PRs for breaking changes, schema violations, and consistency issues",
   "prompt": "prompts/steer_reviewer_agent.md",
-  "tools": [],
+  "tools": [
+    "@gitlab/*"
+  ],
   "resources": [
     "file://profiles/steer-master/context/agent_schema.md",
     "file://profiles/steer-master/context/prompt_structure.md",
@@ -29,6 +31,9 @@
       }
     ]
   },
-  "allowedTools": ["@github/*"],
+  "allowedTools": [
+    "@github/*",
+    "@gitlab/*"
+  ],
   "includeMcpJson": true
 }

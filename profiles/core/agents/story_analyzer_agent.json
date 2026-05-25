@@ -6,6 +6,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "fs_read",
     "grep",
@@ -16,6 +17,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*"
   ],
   "resources": [

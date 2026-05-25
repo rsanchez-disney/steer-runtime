@@ -10,10 +10,12 @@
     "execute_bash",
     "thinking",
     "@github/*",
+    "@gitlab/*",
     "@yax/*"
   ],
   "allowedTools": [
     "@github/*",
+    "@gitlab/*",
     "@yax/*"
   ],
   "resources": [

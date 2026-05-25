@@ -6,6 +6,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "execute_bash",
     "fs_read",
@@ -26,6 +27,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@compass/*",
     "@yax/*"
