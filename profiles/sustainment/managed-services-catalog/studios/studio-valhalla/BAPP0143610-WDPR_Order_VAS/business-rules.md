@@ -1,4 +1,4 @@
-# Business Rules — WDPRD Ticket Management Service
+# Business Rules — WDPR Order VAS
 
 ## SLAs & Availability Targets
 

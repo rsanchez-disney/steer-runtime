@@ -1,32 +1,40 @@
 # ============================================================================
-# WDPR Notification Service (DLR + WDW)
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# Remove any sections that do not apply to this application.
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0094245"
-app_name: "notification-service"
+app_name: "wdpr-notification-service"
 full_name: "WDPR Notification Service"
-description: "RESTful Java service for sending post-order confirmation emails via UM and SparkPost. Deployed as two independent components: DLR (us-west-2) and WDW (us-east-1)."
+description: ""
 
 # --- Ownership ---
 support_studio: "Studio Mars"
-escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_channel: ""
 escalation_contacts:
-  - name: "Tomas Grana"
+  - name: ""
     role: "primary"
-    contact: "Tomas.Grana.-ND@disney.com"
+    contact: ""
+  - name: ""
+    role: "secondary"
+    contact: ""
+  - name: ""
+    role: "SME"
+    contact: ""
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Notification Service"
+  configuration_item: ""
   assignment_group: "web-global-salescart"
   business_service: ""
 
 # --- Documentation ---
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/555646814/DLR+Notification+Service+Runbook"
-  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/542457788/Notification+Service"
-  architecture_diagram: "https://docs.google.com/spreadsheets/d/1NE0e2dayCXMpLBfWJgUyatwlDXfk29wHjdQVSezL6mw/edit#gid=0"
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -37,63 +45,84 @@ docs:
 # --- Components ---
 components:
 
-  # ─── DLR Component (us-west-2) ───
-  - component_name: "notification-dlr"
-    component_type: "worker"
-    description: "Post-order email delivery for DLR via SparkPost"
+  - component_name: ""
+    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: ""
 
+    # -- Component-specific docs --
     docs:
       troubleshooting: ""
       runbook: ""
 
+    # -- Component-specific documentation links --
     documentation:
       wiki: ""
       architecture_diagram: ""
 
+    # -- Source Code & CI/CD --
     repository:
-      url: "https://github.disney.com/wdpro-peplite/sales2-01323-notifysvc"
-      branch: "develop"
+      url: ""
+      branch: ""
       path: ""
 
     cicd:
-      platform: "jenkins"
-      pipeline_url: "https://ecommerce.cicd.wdprapps.disney.com/job/sales2-01323-notifysvc/"
-      deploy_target: "ECS wdpr-apps us-west-2"
+      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: ""
+      deploy_target: ""
 
+    # -- Health Check --
     health_check:
-      url: "https://dlrns.wdprapps.disney.com/notifysvc/info"
+      url: ""
       expected_status: 200
 
+    # -- Splunk --
     splunk:
-      index: "wdpr_tixsale_dlr"
-      source: "*notify*"
+      index: ""
+      source: ""
       base_spl: >-
-        index=wdpr_tixsale_dlr source=*notify*
+
       error_spl: >-
-        index=wdpr_tixsale_dlr source=*notify* ("*error*" OR "*exception*")
+
       latency_spl: >-
-        index=wdpr_tixsale_dlr source=*notify* RESP_OUT
-        | spath input=Msg path=timeTakenInMillis
-        | stats avg(timeTakenInMillis) as avg_ms, p95(timeTakenInMillis) as p95_ms
 
+
+    # -- AppDynamics --
     appdynamics:
-      app_name: "prod_01323_aws"
-      app_id: "447"
-      tier: "core_01323_dlr-notifysvc"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=447&component=3194&dashboardMode=force"
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
 
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
     grafana:
-      dashboard_uid: "6cRDMP8nz"
-      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-apps&var-Region=us-west-2&var-clusters=dlr-commerce2-01323-prod&var-service=notifysvc-prod-live"
+      dashboard_uid: ""
+      dashboard_url: ""
       datasource: ""
 
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: "AWS"
-      region: "us-west-2"
+      provider: ""                   # AWS | GCP | Azure | on-prem
+      region: ""
       account_id: ""
-      infra_type: "ECS"
-      cluster_id: "dlr-commerce2-01323-prod"
-      service_name: "notifysvc-prod-live"
+      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: ""
+      service_name: ""
 
       cloudwatch:
         log_group: ""
@@ -104,205 +133,46 @@ components:
         log_group: ""
         saved_query: ""
 
+      gcp:
+        project_id: ""
+        log_filter: ""
+
       services:
-        - type: "rds"
-          name: "dlr-ns-prod-master.wdatdbs.disney.com:4001/dlrns"
-        - type: "elasticache"
-          name: "clustercfg.commerce-cfg-mgr-prod.cvhlhl.usw2.cache.amazonaws.com"
+        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: ""
 
+    # -- Other Environments (only fields that differ from production) --
     other_environments:
-
-      latest:
-        health_check:
-          url: "https://latest.dlrns.wdprapps.disney.com/notifysvc/info"
-        splunk:
-          index: "wdpr_tixsale_dlr"
-          base_spl: >-
-            index=wdpr_tixsale_dlr source=*notify*
-        appdynamics:
-          app_id: "2190"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2190&component=1282920"
-        cloud:
-          region: "us-west-2"
-          cluster_id: "dlr-commerce2-01323-latest"
-          service_name: "notifysvc-latest-live"
-          services:
-            - type: "rds"
-              name: "dlrns-mariadb-latest.czadbdnytwxi.us-west-2.rds.amazonaws.com:4001/dlrns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-latest.7ozysg.usw2.cache.amazonaws.com"
 
       stage:
         health_check:
-          url: "https://stage.dlrns.wdprapps.disney.com/notifysvc/info"
+          url: ""
         splunk:
-          index: "wdpr_tixsale_dlr"
+          index: ""
           base_spl: >-
-            index=wdpr_tixsale_dlr source=*notify*
-        appdynamics:
-          app_id: "2515"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2515"
+
         cloud:
-          region: "us-west-2"
-          cluster_id: "dlr-commerce2-01323-stage"
-          service_name: "notifysvc-stage-live"
-          services:
-            - type: "rds"
-              name: "dlrns-mariadb-stage.czadbdnytwxi.us-west-2.rds.amazonaws.com:4001/dlrns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-stage.b5f2xn.usw2.cache.amazonaws.com"
+          region: ""
+          service_name: ""
 
       load:
         health_check:
-          url: "https://load.dlrns.wdprapps.disney.com/notifysvc/info"
+          url: ""
         splunk:
-          index: "wdpr_tixsale_dlr"
+          index: ""
           base_spl: >-
-            index=wdpr_tixsale_dlr source=*notify*
-        appdynamics:
-          app_id: "2340"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2340&component=4864933"
+
         cloud:
-          region: "us-west-2"
-          cluster_id: "dlr-commerce2-01323-load"
-          service_name: "notifysvc-load-live"
-          services:
-            - type: "rds"
-              name: "dlr-ns-load-master.wdatdbs.disney.com:4001/dlrns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-load.b5f2xn.usw2.cache.amazonaws.com"
-
-  # ─── WDW Component (us-east-1) ───
-  - component_name: "notification-wdw"
-    component_type: "worker"
-    description: "Post-order email delivery for WDW via SparkPost"
-
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    documentation:
-      wiki: "https://confluence.disney.com/spaces/WDPROS/pages/691602917/WDW+Notification+Service+Runbook"
-      architecture_diagram: ""
-
-    repository:
-      url: "https://github.disney.com/wdpro-peplite/sales2-01323-notifysvc"
-      branch: "develop"
-      path: ""
-
-    cicd:
-      platform: "jenkins"
-      pipeline_url: "https://ecommerce.cicd.wdprapps.disney.com/job/sales2-01323-notifysvc/"
-      deploy_target: "ECS wdpr-apps us-east-1"
-
-    health_check:
-      url: "https://wdwns.wdprapps.disney.com/notifysvc/info"
-      expected_status: 200
-
-    splunk:
-      index: "wdpr_tixsale_wdw"
-      source: "*notify*"
-      base_spl: >-
-        index=wdpr_tixsale_wdw source=*notify*
-      error_spl: >-
-        index=wdpr_tixsale_wdw source=*notify* ("*error*" OR "*exception*")
-      latency_spl: >-
-        index=wdpr_tixsale_wdw source=*notify* RESP_OUT
-        | spath input=Msg path=timeTakenInMillis
-        | stats avg(timeTakenInMillis) as avg_ms, p95(timeTakenInMillis) as p95_ms
-
-    appdynamics:
-      app_name: "prod_01323_aws"
-      app_id: "447"
-      tier: "core_01323_wdw-notifysvc"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=447&component=307070&dashboardMode=force"
-
-    grafana:
-      dashboard_uid: "6cRDMP8nz"
-      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-apps&var-Region=us-east-1&var-clusters=wdw-sales2-01323-prod&var-service=notifysvc-prod-live"
-      datasource: ""
-
-    cloud:
-      provider: "AWS"
-      region: "us-east-1"
-      account_id: ""
-      infra_type: "ECS"
-      cluster_id: "wdw-sales2-01323-prod"
-      service_name: "notifysvc-prod-live"
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      services:
-        - type: "rds"
-          name: "wdw-ns-prod-master.wdatdbs.disney.com:4001/wdwns"
-        - type: "elasticache"
-          name: "clustercfg.commerce-cfg-mgr-prod.xuqkma.use1.cache.amazonaws.com"
-
-    other_environments:
+          region: ""
+          service_name: ""
 
       latest:
         health_check:
-          url: "https://latest.wdwns.wdprapps.disney.com/notifysvc/info"
+          url: ""
         splunk:
-          index: "wdpr_tixsale_wdw"
+          index: ""
           base_spl: >-
-            index=wdpr_tixsale_wdw source=*notify*
-        appdynamics:
-          app_id: "2190"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2190&component=1287035"
-        cloud:
-          region: "us-east-1"
-          cluster_id: "wdw-sales2-01323-latest"
-          service_name: "notifysvc-latest-live"
-          services:
-            - type: "rds"
-              name: "wdwns-mariadb-latest.cch2jmarqtv7.us-east-1.rds.amazonaws.com:4001/wdwns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-latest.rvhfcl.use1.cache.amazonaws.com"
 
-      stage:
-        health_check:
-          url: "https://stage.wdwns.wdprapps.disney.com/notifysvc/info"
-        splunk:
-          index: "wdpr_tixsale_wdw"
-          base_spl: >-
-            index=wdpr_tixsale_wdw source=*notify*
-        appdynamics:
-          app_id: "2515"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2515&component=2693383"
         cloud:
-          region: "us-east-1"
-          cluster_id: "wdw-sales2-01323-stage"
-          service_name: "notifysvc-stage-live"
-          services:
-            - type: "rds"
-              name: "wdwns-mariadb-stage.cch2jmarqtv7.us-east-1.rds.amazonaws.com:4001/wdwns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-stage.fwkg1l.use1.cache.amazonaws.com"
-
-      load:
-        health_check:
-          url: "https://load.wdwns.wdprapps.disney.com/notifysvc/info"
-        splunk:
-          index: "wdpr_tixsale_wdw"
-          base_spl: >-
-            index=wdpr_tixsale_wdw source=*notify*
-        appdynamics:
-          app_id: "2340"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/application=2340&component=4864995"
-        cloud:
-          region: "us-east-1"
-          cluster_id: "wdw-sales2-01323-load"
-          service_name: "notifysvc-load-live"
-          services:
-            - type: "rds"
-              name: "wdw-ns-load-master.wdatdbs.disney.com:4001/wdwns"
-            - type: "elasticache"
-              name: "clustercfg.commerce-cfg-mgr-load.fwkg1l.use1.cache.amazonaws.com"
+          region: ""
+          service_name: ""

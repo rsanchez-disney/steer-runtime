@@ -1,55 +1,170 @@
 # ============================================================================
-# Commerce UI — EC Frontend
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# Remove any sections that do not apply to this application.
 # ============================================================================
 
+# --- Identity ---
 bapp_id: "BAPP0178687"
-app_name: "commerce-ui"
-full_name: "Commerce UI"
-description: "Guest-facing pages for cart, checkout, and confirmation (EC path)"
+app_name: "wdprd-commerce-ui"
+full_name: "WDPRD Commerce UI"
+description: ""
 
+# --- Ownership ---
 support_studio: "Studio Mars"
-escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_channel: ""
 escalation_contacts:
-  - name: "Tomas Grana"
+  - name: ""
     role: "primary"
-    contact: "Tomas.Grana.-ND@disney.com"
+    contact: ""
+  - name: ""
+    role: "secondary"
+    contact: ""
+  - name: ""
+    role: "SME"
+    contact: ""
 
+# --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Commerce UI"
+  configuration_item: ""
   assignment_group: "web-global-salescart"
+  business_service: ""
 
+# --- Documentation ---
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/517689355/COM-UI"
-  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/765343654/Operational+Readiness+Review+-+COM+UI+Docker"
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
 
+# --- Companion Docs (Markdown) ---
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Components ---
 components:
+
   - component_name: "pci-apps-commerce-ui"
     component_type: "frontend"
-    description: "Frontend for EC checkout path — renders cart, checkout, and confirmation pages"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/commerce/pci-apps-commerce-ui"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
     splunk:
-      index: "wdpr_commerce_ui"
-      base_spl: "index=wdpr_commerce_ui"
-      error_spl: "index=wdpr_commerce_ui (\"*error*\" OR \"*exception*\")"
-      latency_spl: "index=wdpr_commerce_ui \"Response completed\" | spath responseTime | stats avg(responseTime) as avg_ms, p95(responseTime) as p95_ms"
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
     appdynamics:
-      app_name: "Commerce UI"
-      app_id: "1235"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=1235&dashboardMode=force"
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
     grafana:
-      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=pci-apps-prod&var-Region=us-west-2&var-clusters=dlr-pci-S0001593-usw2-prd&var-service=commerce-ui-prod-live"
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
     cloud:
-      provider: "AWS"
-      region: "us-west-2"
-      account_id: "517471039377"
-      infra_type: "ECS"
-      cluster_id: "dlr-pci-S0001593-usw2-prd"
-      service_name: "commerce-ui-prod-live"
-      
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
   - component_name: "mdx-php-library"
     component_type: "frontend"
     description: ""

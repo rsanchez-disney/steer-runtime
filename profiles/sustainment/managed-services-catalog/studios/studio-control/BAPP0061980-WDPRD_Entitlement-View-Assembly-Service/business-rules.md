@@ -1,4 +1,4 @@
-# Business Rules — WDPRD Ticket Management Service
+# Business Rules — WDPRD Entitlement-View-Assembly-Service
 
 ## SLAs & Availability Targets
 
