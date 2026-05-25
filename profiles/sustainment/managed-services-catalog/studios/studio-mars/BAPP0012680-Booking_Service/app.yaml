@@ -1,178 +1,58 @@
 # ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# Remove any sections that do not apply to this application.
+# Booking Service — EC Checkout Orchestrator
 # ============================================================================
 
-# --- Identity ---
 bapp_id: "BAPP0012680"
 app_name: "booking-service"
 full_name: "Booking Service"
-description: ""
+description: "EC checkout orchestrator — handles trade tickets, AP new sales/renewals, Photopass, ticket-to-pass upgrades, VO/Packages DTA, Room Only DTA, WDW consumer mods, Aulani"
 
-# --- Ownership ---
 support_studio: "Studio Mars"
-escalation_channel: ""
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
-  - name: ""
+  - name: "Tomas Grana"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "Tomas.Grana.-ND@disney.com"
 
-# --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "Booking Service"
   assignment_group: "web-global-salescart"
-  business_service: ""
 
-# --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/633354892/Operational+Readiness+Review+-+Booking+ECS"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484023178/Booking"
+  architecture_diagram: "https://docs.google.com/drawings/d/1yRgS82trU0wDoCUBuVz8P3BTzz1vjVyUKfBO02FRwOg/edit"
 
-# --- Companion Docs (Markdown) ---
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
-# --- Components ---
 components:
-
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
-    repository:
-      url: "https://github.disney.com/commerce/wdpr-ecommerce-booking-svc"
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
+  - component_name: "booking-service"
+    component_type: "api"
+    description: "Checkout orchestrator for EC path: Cart → Booking Service → Payment Service"
     health_check:
-      url: ""
+      url: "https://bookingsvc-nap7.wdpro.starwave.com/booking-service/admin/health-report"
       expected_status: 200
-
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-
-      error_spl: >-
-
-      latency_spl: >-
-
-
-    # -- AppDynamics --
+      index: "wdpr_booking_service"
+      base_spl: "index=wdpr_booking_service"
+      error_spl: "index=wdpr_booking_service (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr_booking_service response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
+      app_name: "prod_pci_S0001663_WDPR-Ticketing-Booking_aws"
+      app_id: "945"
+      tier: "wdpr_bap0012680_booking-service"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=945&dashboardMode=force"
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=pci-apps-prod&var-Region=us-west-2&var-clusters=wdpr-pci-S0001663-usw2-prd&var-service=booking-svc-prod-live"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "517471039377"
+      infra_type: "ECS"
+      cluster_id: "wdpr-pci-S0001663-usw2-prd"
+      service_name: "booking-svc-prod-live"
       cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-
-        cloud:
-          region: ""
-          service_name: ""
-
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-
-        cloud:
-          region: ""
-          service_name: ""
+        log_group: "wdpr-pci-S0001663-usw2-booking-svc-prd"
