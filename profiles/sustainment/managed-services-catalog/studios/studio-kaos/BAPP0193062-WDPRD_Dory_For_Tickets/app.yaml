@@ -1,84 +1,179 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# Remove any sections that do not apply to this application.
+# ============================================================================
+
+# --- Identity ---
 bapp_id: "BAPP0193062"
 app_name: "wdprd-dory-for-tickets"
 full_name: "WDPRD Dory For Tickets"
-description: "Backend service ensuring compliance with privacy regulations (CCPA). Processes RTA (Request to Acknowledge) and RTF (Request to Forget) operations across systems containing guest personal data (TMS, Booking Service, CME). Acts as orchestrator via Incognito Service without storing personal data itself."
+description: ""
+
+# --- Ownership ---
 support_studio: "Studio Kaos"
-escalation_channel: "https://teams.microsoft.com/l/channel/19%3AeNbcha4UraJUCngdy1oP_SuMd5GrCvgScaei1uhdhoc1%40thread.tacv2/DX%20-%20Studio%20Kaos?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_channel: ""
 escalation_contacts:
-  - name: "Gabriela Rossi"
+  - name: ""
     role: "primary"
-    contact: "Gabriela.X.Rossi.-ND@disney.com"
+    contact: ""
+  - name: ""
+    role: "secondary"
+    contact: ""
+  - name: ""
+    role: "SME"
+    contact: ""
+
+# --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Dory For Tickets"
+  configuration_item: ""
   assignment_group: "web-global-salestickets"
+  business_service: ""
+
+# --- Documentation ---
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
-  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
-  architecture_diagram: "https://docs.google.com/drawings/d/15jIC8mTphwjNqP6ggmcfUCiFirzo8Nhg79vxTocI4BM/edit"
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
+
+# --- Companion Docs (Markdown) ---
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
+
+# --- Components ---
 components:
-  - component_name: "doryfortickets-api"
-    component_type: "api"
-    description: "Privacy compliance orchestrator — processes RTA/RTF requests from Incognito Service against TMS, Booking Service, and CME"
+
+  - component_name: ""
+    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: ""
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
     repository:
-      url: "https://github.disney.com/commerce/wdpr-ecommerce-doryfortickets-api"
-      branch: "develop"
+      url: ""
+      branch: ""
+      path: ""
+
     cicd:
-      platform: "harness"
-      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/ci/orgs/Commerce/projects/WDPRD_Dory_For_Tickets/deployments"
+      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: ""
+      deploy_target: ""
+
+    # -- Health Check --
     health_check:
-      url: "https://doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+      url: ""
       expected_status: 200
+
+    # -- Splunk --
     splunk:
-      index: "wdpr_dory_for_tickets"
-      base_spl: "index=wdpr_dory_for_tickets"
-      error_spl: "index=wdpr_dory_for_tickets (\"*error*\" OR \"*exception*\")"
-      latency_spl: "index=wdpr_dory_for_tickets | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint"
+      index: ""
+      source: ""
+      base_spl: >-
+        index=myindex sourcetype=mysource
+      error_spl: >-
+        index=myindex sourcetype=mysource level=ERROR
+      latency_spl: >-
+        index=myindex sourcetype=mysource
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+
+    # -- AppDynamics --
     appdynamics:
-      app_name: "prod_ecommerce-S0001323_aws"
-      app_id: "515"
-      tier: "doryfortickets-api"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_INFRASTRUCTURE&application=515&component=306832"
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: "AWS"
-      region: "us-west-2"
-      infra_type: "ECS"
-      cluster_id: "wdpr-ecommerce-S0001323-usw2-prd"
-      service_name: "doryfortickets-api-prod-live"
+      provider: ""                   # AWS | GCP | Azure | on-prem
+      region: ""
+      account_id: ""
+      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: ""
+
+    # -- Other Environments (only fields that differ from production) --
     other_environments:
+
       stage:
         health_check:
-          url: "https://stage.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+          url: ""
         splunk:
-          base_spl: "index=wdpr_dory_for_tickets source=*stage*"
-        appdynamics:
-          app_id: "2951"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2951&component=7462058&dashboardMode=force"
+          index: ""
+          base_spl: >-
+            index=myindex_stage sourcetype=mysource
         cloud:
-          cluster_id: "wdpr-ecommerce-S0001323-usw2-stg"
-          service_name: "doryfortickets-api-stage-live"
+          region: ""
+          service_name: ""
+
       load:
         health_check:
-          url: "https://load.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+          url: ""
         splunk:
-          base_spl: "index=wdpr_dory_for_tickets source=*load*"
-        appdynamics:
-          app_id: "2983"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2983&component=7462060&dashboardMode=force"
+          index: ""
+          base_spl: >-
+            index=myindex_load sourcetype=mysource
         cloud:
-          cluster_id: "wdpr-ecommerce-S0001323-usw2-lod"
-          service_name: "doryfortickets-api-load-live"
+          region: ""
+          service_name: ""
+
       latest:
         health_check:
-          url: "https://latest.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+          url: ""
         splunk:
-          base_spl: "index=wdpr_dory_for_tickets source=*latest*"
-        appdynamics:
-          app_id: "2840"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2840&component=7462044&dashboardMode=force"
+          index: ""
+          base_spl: >-
+            index=myindex_latest sourcetype=mysource
         cloud:
-          cluster_id: "wdpr-ecommerce-S0001323-usw2-lst"
-          service_name: "doryfortickets-api-latest-live"
+          region: ""
+          service_name: ""

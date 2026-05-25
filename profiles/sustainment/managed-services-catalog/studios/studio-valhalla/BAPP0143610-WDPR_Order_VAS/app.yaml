@@ -5,13 +5,13 @@
 # ============================================================================
 
 # --- Identity ---
-bapp_id: "BAPP0081809"
-app_name: "wdprd-ticket-management-service"
-full_name: "WDPRD Ticket Management Service"
+bapp_id: "BAPP0143610"
+app_name: "wdpr-order-vas"
+full_name: "WDPR Order VAS"
 description: ""
 
 # --- Ownership ---
-support_studio: "Studio Control"
+support_studio: "Studio Valhalla"
 escalation_channel: ""
 escalation_contacts:
   - name: ""
@@ -27,7 +27,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_item: ""
-  assignment_group: "web-global-salestickets"
+  assignment_group: "web-global-salescart"
   business_service: ""
 
 # --- Documentation ---

@@ -1,4 +1,4 @@
-# Troubleshooting — Cart Service
+# Troubleshooting — WDPR - Unified Checkout
 
 ## Common Issues
 

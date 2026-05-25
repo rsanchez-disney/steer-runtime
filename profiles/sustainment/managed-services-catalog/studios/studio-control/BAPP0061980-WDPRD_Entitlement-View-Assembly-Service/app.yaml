@@ -5,9 +5,9 @@
 # ============================================================================
 
 # --- Identity ---
-bapp_id: "BAPP0081809"
-app_name: "wdprd-ticket-management-service"
-full_name: "WDPRD Ticket Management Service"
+bapp_id: "BAPP0061980"
+app_name: "wdprd-entitlement-view-assembly-service"
+full_name: "WDPRD Entitlement-View-Assembly-Service"
 description: ""
 
 # --- Ownership ---

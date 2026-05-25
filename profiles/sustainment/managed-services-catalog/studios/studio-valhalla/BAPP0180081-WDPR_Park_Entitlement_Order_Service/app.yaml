@@ -1,153 +1,179 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# Remove any sections that do not apply to this application.
+# ============================================================================
+
+# --- Identity ---
 bapp_id: "BAPP0180081"
-app_name: "peos"
-full_name: "PEOS (Payment + Entitlement Orchestration Service)"
-description: "Orchestrates payment processing and entitlement fulfillment for UC orders"
+app_name: "wdpr-park-entitlement-order-service"
+full_name: "WDPR Park Entitlement Order Service"
+description: ""
+
+# --- Ownership ---
 support_studio: "Studio Valhalla"
-escalation_channel: "https://teams.microsoft.com/l/channel/19%3AHrtAmjWm2y4h0qeT_A3MvhPwqHLCY-iQOsHZbK5s0rw1%40thread.tacv2/DX%20-%20Studio%20Valhalla?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_channel: ""
 escalation_contacts:
-  - name: "Christian Orrego"
+  - name: ""
     role: "primary"
-    contact: "Christian.A.Orrego.-ND@disney.com"
+    contact: ""
+  - name: ""
+    role: "secondary"
+    contact: ""
+  - name: ""
+    role: "SME"
+    contact: ""
+
+# --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Park Entitlement Order Service"
+  configuration_item: ""
   assignment_group: "web-global-salescart"
+  business_service: ""
+
+# --- Documentation ---
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602159/UC+-+PEOS+WDW+-+Runbook"
-  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/691604408/UC+-+PEOS+DLR+-+Runbook"
+  runbook: ""
+  wiki: ""
+  architecture_diagram: ""
+
+# --- Companion Docs (Markdown) ---
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
+
+# --- Components ---
 components:
-  - component_name: "peos-dlr"
-    component_type: "api"
-    description: "Booking handler for Tickets on the UC flow — coordinates payment capture and ticket fulfillment (DLR)"
+
+  - component_name: ""
+    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: ""
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
     repository:
-      url: "https://github.disney.com/wdprt-paap-api/wdpr-park-entitlement-order-service"
-      branch: "develop"
+      url: ""
+      branch: ""
+      path: ""
+
     cicd:
-      platform: "jenkins"
-      pipeline_url: "https://ee.cicd.wdprapps.disney.com/job/wdpr-park-entitlement-order-service"
+      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: ""
+      deploy_target: ""
+
+    # -- Health Check --
     health_check:
-      url: "https://peos-dlr.wdprapps.disney.com/version"
+      url: ""
       expected_status: 200
+
+    # -- Splunk --
     splunk:
-      index: "wdpr_peos"
-      base_spl: "index=wdpr_peos"
-      error_spl: "index=wdpr_peos (\"*error*\" OR \"*exception*\")"
+      index: ""
+      source: ""
+      base_spl: >-
+        index=myindex sourcetype=mysource
+      error_spl: >-
+        index=myindex sourcetype=mysource level=ERROR
+      latency_spl: >-
+        index=myindex sourcetype=mysource
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+
+    # -- AppDynamics --
     appdynamics:
-      app_name: "prod_ecommerce_S0001477-dlr-resort_technology_ticketing_aws"
-      app_id: "826"
-      tier: "dlr_bapp0180081_peos-svc"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=826&component=306761&dashboardMode=force"
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
     grafana:
-      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-west-2&var-clusters=dlr-ecommerce-S0001477-usw2-prd&var-service=peos-svc-prod-live"
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: "AWS"
-      region: "us-west-2"
-      account_id: "820987038150"
-      infra_type: "ECS"
-      cluster_id: "dlr-ecommerce-S0001477-usw2-prd"
-      service_name: "peos-svc-prod-live"
+      provider: ""                   # AWS | GCP | Azure | on-prem
+      region: ""
+      account_id: ""
+      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
       services:
-        - type: "elasticache"
-          name: "peos-svc-prod"
+        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: ""
+
+    # -- Other Environments (only fields that differ from production) --
     other_environments:
+
       stage:
         health_check:
-          url: "https://stage.peos-dlr.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "4094"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4094&component=7459189&dashboardMode=grid"
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_stage sourcetype=mysource
         cloud:
-          cluster_id: "dlr-ecommerce-S0001477-usw2-stg"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-stage"
+          region: ""
+          service_name: ""
+
       load:
         health_check:
-          url: "https://load.peos-dlr.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "4125"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4125&component=7459284&dashboardMode=grid"
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_load sourcetype=mysource
         cloud:
-          cluster_id: "dlr-ecommerce-S0001477-usw2-lod"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-load"
+          region: ""
+          service_name: ""
+
       latest:
         health_check:
-          url: "https://latest.peos-dlr.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "3994"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3994&component=7458661"
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+            index=myindex_latest sourcetype=mysource
         cloud:
-          cluster_id: "dlr-ecommerce-S0001477-usw2-lst"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-latest"
-  - component_name: "peos-wdw"
-    component_type: "api"
-    description: "Booking handler for Tickets on the UC flow — coordinates payment capture and ticket fulfillment (WDW)"
-    repository:
-      url: "https://github.disney.com/wdprt-paap-api/wdpr-park-entitlement-order-service"
-      branch: "develop"
-    cicd:
-      platform: "jenkins"
-      pipeline_url: "https://ee.cicd.wdprapps.disney.com/job/wdpr-park-entitlement-order-service"
-    health_check:
-      url: "https://peos-wdw.wdprapps.disney.com/version"
-      expected_status: 200
-    splunk:
-      index: "wdpr_peos"
-      base_spl: "index=wdpr_peos"
-      error_spl: "index=wdpr_peos (\"*error*\" OR \"*exception*\")"
-    appdynamics:
-      app_name: "prod_ecommerce_S0001479-wdw-resort_technology_ticketing_aws"
-      app_id: "825"
-      tier: "wdw_bapp0180081_peos-svc"
-      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=825&component=306759&dashboardMode=force"
-    cloud:
-      provider: "AWS"
-      region: "us-east-1"
-      account_id: "820987038150"
-      infra_type: "ECS"
-      cluster_id: "wdw-ecommerce-S0001479-use1-prd"
-      service_name: "peos-svc-prod-live"
-      services:
-        - type: "elasticache"
-          name: "peos-svc-prod"
-    other_environments:
-      stage:
-        health_check:
-          url: "https://stage.peos-wdw.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "4094"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4094&component=7459189&dashboardMode=grid"
-        cloud:
-          cluster_id: "wdw-ecommerce-S0001479-use1-stg"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-stage"
-      load:
-        health_check:
-          url: "https://load.peos-wdw.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "4125"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4125&component=7459284&dashboardMode=grid"
-        cloud:
-          cluster_id: "wdw-ecommerce-S0001479-use1-lod"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-load"
-      latest:
-        health_check:
-          url: "https://latest.peos-wdw.wdprapps.disney.com/version"
-        appdynamics:
-          app_id: "3994"
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3994&component=7458661"
-        cloud:
-          cluster_id: "wdw-ecommerce-S0001479-use1-lst"
-          services:
-            - type: "elasticache"
-              name: "peos-svc-latest"
+          region: ""
+          service_name: ""

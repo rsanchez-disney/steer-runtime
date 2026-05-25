@@ -1,4 +1,4 @@
-# Runbook — WDPRD Commerce UI
+# Runbook — WDPRD Entitlement-View-Assembly-Service
 
 ## Restart Procedures
 
