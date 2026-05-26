@@ -1,40 +1,43 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
+# DLP OLCI — Online Check-In for Disneyland Paris Hotels
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0211386"
 app_name: "dlp-olci"
 full_name: "DLP OLCI"
-description: ""
+description: "Online Check-In service for Disneyland Paris hotels. Allows guests to check in early via the mobile app by filling out registration forms, avoiding long lines at hotel reception. Handles police registration forms for non-French guests via DocuSign, reservation preferences via Opera PMS, and push notifications."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "#dlp-hotels-ohip"
 escalation_contacts:
-  - name: ""
+  - name: "Nicolas Rameaux"
     role: "primary"
     contact: ""
   - name: ""
-    role: "secondary"
+    role: "PO"
     contact: ""
   - name: ""
-    role: "SME"
+    role: "QA"
     contact: ""
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "DLP OLCI"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090170/DLP+OLCI+BAPP0211386"
+  architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
+  confluence: "https://confluence.disney.com/pages/viewpage.action?pageId=968734007"
+  sequence_diagrams: "https://confluence.disney.com/display/DGMA/4.0-Sequence+Diagrams?src=contextnavpagetreemode"
+  known_prod_errors: "https://confluence.disney.com/pages/viewpage.action?spaceKey=DGMA&title=Production+Errors"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -42,138 +45,366 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "17"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  # ==========================================================================
+  # 1. PMS Registration Form Provider (ECS) — Main Service
+  # ==========================================================================
+  - component_name: "pms-registration-form-provider"
+    component_type: "api"
+    description: "Central OLCI component. Manages guest reservation package information, police registration forms via DocuSign, and interacts with Opera PMS for reservation updates, queries, and preferences."
 
-    # -- Component-specific docs --
     docs:
       troubleshooting: ""
       runbook: ""
 
-    # -- Component-specific documentation links --
     documentation:
-      wiki: ""
-      architecture_diagram: ""
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/866749288/PMS+Registration+Form+Provider"
+      architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
+      swagger: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/swagger-ui.html"
 
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider"
+      branch: "develop"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck"
+      deep_url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck/deep"
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlp_digital"
+      source: "eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:pms01a-prod/pms-registration-form-provider/*"
+      dashboard_url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:pms01a-prod/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:pms01a-prod/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider Level=ERROR
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:pms01a-prod/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider Logger=com.disney.dlp.is.foundation.fw.servletfilter.HttpBoundaryLoggingFilter
+        | search requestUrl="*/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/*" AND NOT requestUrl="*/healthcheck"
+        | stats avg(responseTime) as avg_rt p95(responseTime) as p95_rt by requestUrl
+      dashboards:
+        - label: "Functional Dashboard (OLCI)"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_func/dlp_magic_mobile_functional"
+        - label: "PMS Registration Form Provider"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider"
+        - label: "PMS v2 Errors"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider-v2_errors"
+        - label: "PMS v2 Inbounds"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider-v2"
+        - label: "PMS v2 Outbounds"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider-v2_outbound"
+        - label: "Errors All Versions"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-pms-registration-form-provider_errors_all_versions"
+        - label: "OLCI Push Notification"
+          url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/dlp_olci_push_notification"
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "dlp_digital_back_end"
+      app_id: "959"
+      tier: "pms-registration-form-provider"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2569"
+      dashboards:
+        prod:
+          - label: "PMS Overview"
+            url: "https://disney-prod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2569"
+          - label: "PMS Detail"
+            url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=959&component=307608&dashboardMode=force"
+        stage:
+          - label: "PMS Overview"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2726"
+          - label: "PMS Detail"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=4618&component=7468661&dashboardMode=force"
+        load:
+          - label: "PMS Overview"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2727"
+          - label: "PMS Detail"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=4698&component=7471118&dashboardMode=force"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: "725065748993"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "pms-registration-form-provider"
 
       cloudwatch:
         log_group: ""
         namespace: ""
         alarm_prefix: ""
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "rds"
+          name: "pms-registration-form-mariadb-prod"
+          url: "https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1#database:id=pms-registration-form-mariadb-prod;is-cluster=false;tab=monitoring"
 
-    # -- Other Environments (only fields that differ from production) --
+    # -- Configuration Management --
+    configuration:
+      vault_non_secret: "non_secret/apps/is/eu-west-1/{env}/lodging/pms-registration-form-provider/1.0.0"
+      vault_secret: "secret/apps/is/eu-west-1/{env}/lodging/pms-registration-form-provider/1.0.0/secret"
+
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck"
+          deep_url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck/deep"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-stg-applogs:pms01a-stage/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          account_id: "564479547993"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "pms-registration-form-provider"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-stg/services/pms-registration-form-provider-stage-live/health?region=eu-west-1"
 
       load:
         health_check:
-          url: ""
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck"
+          deep_url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck/deep"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lod-applogs:pms01a-load/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          account_id: "564479547993"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "pms-registration-form-provider"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-lod/services/pms-registration-form-provider-load-live/health?region=eu-west-1"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck"
+          deep_url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/healthcheck/deep"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lst-applogs:pms01a-latest/pms-registration-form-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-pms-registration-form-provider
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          account_id: "301080195839"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "pms-registration-form-provider"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-lst/services/pms-registration-form-provider-latest-live/health?region=eu-west-1"
+
+  # ==========================================================================
+  # 2. OLCI Business Event Processor (ECS)
+  # ==========================================================================
+  - component_name: "ooc-olci-business-event-processor"
+    component_type: "worker"
+    description: "Resets police forms and retrieves reservation changes from Opera Business Events. Feeds data to PMS Registration Form Provider for envelope creation in DocuSign."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/866749290/OLCI+Business+Event+Processor"
+      architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: ""
+      deploy_target: "ECS"
+
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck"
+      deep_url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck/deep"
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      source: ""
+      dashboard_url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-ooc-olci-business-event-processor"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-olci-business-event-processor
+      error_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-olci-business-event-processor Level=ERROR
+      latency_spl: ""
+
+    appdynamics:
+      app_name: "dlp_digital_back_end"
+      app_id: "959"
+      tier: "ooc-olci-business-event-processor"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2699"
+      dashboards:
+        prod:
+          - label: "OLCI Business Events"
+            url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=959&component=360882&dashboardMode=force"
+          - label: "Business Events Dashboard"
+            url: "https://disney-prod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=2699"
+        stage:
+          - label: "OLCI Business Events"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=4618&component=7548479&dashboardMode=force"
+          - label: "Business Events Dashboard"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_12_hours.BEFORE_NOW.-1.-1.720&mode=MODE_DASHBOARD&dashboard=3385"
+        load:
+          - label: "OLCI Business Events"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_day.BEFORE_NOW.-1.-1.1440&application=4698&component=7549906&dashboardMode=force"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "ooc-olci-business-event-processor"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      services: []
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck"
+          deep_url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck/deep"
+        splunk:
+          index: "wdpr_dlp_digital"
+          dashboard_url: "https://stage.splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-ooc-olci-business-event-processor"
+          base_spl: >-
+            index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-olci-business-event-processor
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "ooc-olci-business-event-processor"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-stg/services/ooc-olci-business-event-processor-stage-live/health?region=eu-west-1"
+
+      load:
+        health_check:
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck"
+          deep_url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck/deep"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-olci-business-event-processor
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "ooc-olci-business-event-processor"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-lod/services/ooc-olci-business-event-processor-load-live/health?region=eu-west-1"
+
+      latest:
+        health_check:
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck"
+          deep_url: "https://latest.dlpis-digital.wdprapps.disney.com/wdpr-dlp-is-lodging-ooc-olci-business-event-processor/healthcheck/deep"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-olci-business-event-processor
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "ooc-olci-business-event-processor"
+          ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-lst/services/ooc-olci-business-event-processor-latest-live/health?region=eu-west-1"
+
+  # ==========================================================================
+  # 3. DocuSign Purge Processor (ECS)
+  # ==========================================================================
+  - component_name: "dcs-docusign-purge-processor"
+    component_type: "worker"
+    description: "Cleans up completed/expired registration form data from DocuSign. Purges validated signatures 6 months after departure date. Purges expired signatures (unsigned or reset) at arrival date."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871075021/DocuSign+Purge+Processor"
+      purge_docs: "https://confluence.disney.com/pages/viewpage.action?spaceKey=DGMA&title=4.11-Purge"
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-dcs-docusign-purge-processor"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: ""
+      deploy_target: "ECS"
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      source: ""
+      dashboard_url: "https://splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-dcs-docusign-purge-processor"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-dcs-docusign-purge-processor
+      error_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-dcs-docusign-purge-processor Level=ERROR
+      latency_spl: ""
+      validate_purge_spl: >-
+        index=wdpr_dlp_digital source=eu-west-1:dlp-apps-S0001481-euw1-stg-applogs:wdpr-dlp-is-lodging-dcs-docusign-purge-processor-stage/* "Identifiers.App-Name"=wdpr-dlp-is-lodging-dcs-docusign-purge-processor BOOKINGID
+
+    appdynamics:
+      app_name: "dlp_digital_back_end"
+      app_id: "959"
+      tier: "dcs-docusign-purge-processor"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_3_days.BEFORE_NOW.-1.-1.4320&application=959&component=362441&dashboardMode=force"
+      dashboards:
+        prod:
+          - label: "DocuSign Purge"
+            url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_3_days.BEFORE_NOW.-1.-1.4320&application=959&component=362441&dashboardMode=force"
+        stage:
+          - label: "DocuSign Purge"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4618&component=7552176&dashboardMode=force"
+        load:
+          - label: "DocuSign Purge"
+            url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=4698&component=7552194&dashboardMode=force"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "dcs-docusign-purge-processor"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      services: []
+
+    other_environments:
+
+      stage:
+        splunk:
+          index: "wdpr_dlp_digital"
+          dashboard_url: "https://stage.splunk.wdprapps.disney.com/en-US/app/dlp_digital_back_end/wdpr-dlp-is-lodging-dcs-docusign-purge-processor"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-stg-applogs:wdpr-dlp-is-lodging-dcs-docusign-purge-processor-stage/*" "Identifiers.App-Name"=wdpr-dlp-is-lodging-dcs-docusign-purge-processor
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "dcs-docusign-purge-processor"
