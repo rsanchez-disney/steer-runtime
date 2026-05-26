@@ -1,6 +1,7 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { buildFormattedSummary } from "../utils/formatting.js";
 import { saveTicketData } from "../utils/fileUtils.js";
+import { ticketCard } from "../utils/uiWidgets.js";
 import {
     CUSTOM_FIELD_ALIASES,
     resolveCustomFieldIds,
@@ -126,6 +127,26 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
                 {
                     type: "text",
                     text: `${fullSummary}${savedInfo}`,
+                },
+                {
+                    type: "resource",
+                    resource: {
+                        uri: `ui://jira-mcp/ticket/${ticketId}`,
+                        mimeType: "text/html;profile=mcp-app",
+                        text: ticketCard({
+                            key: ticketId,
+                            summary: (ticket as any).fields?.summary || '',
+                            status: (ticket as any).fields?.status?.name || 'Unknown',
+                            assignee: (ticket as any).fields?.assignee?.displayName,
+                            priority: (ticket as any).fields?.priority?.name,
+                            type: (ticket as any).fields?.issuetype?.name,
+                            description: (ticket as any).fields?.description,
+                            labels: (ticket as any).fields?.labels,
+                            created: (ticket as any).fields?.created?.slice(0, 10),
+                            updated: (ticket as any).fields?.updated?.slice(0, 10),
+                            storyPoints: (ticket as any).fields?.story_points || (ticket as any).fields?.customfield_10028,
+                        }),
+                    },
                 },
             ],
         };
