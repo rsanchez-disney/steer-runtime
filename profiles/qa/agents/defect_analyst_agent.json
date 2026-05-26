@@ -6,6 +6,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "code",
     "execute_bash",
@@ -17,6 +18,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@qtest/*"
   ],

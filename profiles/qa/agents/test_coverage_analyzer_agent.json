@@ -5,6 +5,7 @@
   "tools": [
     "@confluence/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@mywiki/*",
     "fs_read",
@@ -16,6 +17,7 @@
   "allowedTools": [
     "@confluence/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@mywiki/*",
     "@bruno/*",

@@ -6,6 +6,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "code",
     "execute_bash",
     "fs_read",
@@ -19,6 +20,7 @@
   "allowedTools": [
     "@confluence/*",
     "@github/*",
+    "@gitlab/*",
     "@mermaid/*"
   ],
   "includeMcpJson": true

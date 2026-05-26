@@ -6,6 +6,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "fs_read",
     "fs_write",
@@ -15,6 +16,7 @@
     "@confluence/*",
     "@mywiki/*",
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@sharepoint/*"
   ],

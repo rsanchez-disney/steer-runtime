@@ -11,6 +11,7 @@
     "fs_write",
     "thinking",
     "todo_list",
+    "@gitlab/*",
     "@yax/*"
   ],
   "resources": [
@@ -81,6 +82,7 @@
   },
   "allowedTools": [
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "@compass/*",
     "@yax/*"

@@ -4,6 +4,7 @@
   "prompt": "code_review_agent.md",
   "tools": [
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "code",
     "execute_bash",
@@ -16,6 +17,7 @@
   ],
   "allowedTools": [
     "@github/*",
+    "@gitlab/*",
     "@jira/*"
   ],
   "includeMcpJson": true
