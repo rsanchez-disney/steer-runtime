@@ -1,0 +1,90 @@
+bapp_id: "BAPP0096925"
+app_name: "wdw-order-service"
+full_name: "WDW Order Service"
+description: "Core order processing — sits between Order VAS and PEOS in the UC path (WDW)"
+support_studio: "Studio Valhalla"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AHrtAmjWm2y4h0qeT_A3MvhPwqHLCY-iQOsHZbK5s0rw1%40thread.tacv2/DX%20-%20Studio%20Valhalla?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
+escalation_contacts:
+  - name: "Christian Orrego"
+    role: "primary"
+    contact: "Christian.A.Orrego.-ND@disney.com"
+servicenow:
+  configuration_item: "WDW Order Service"
+  assignment_group: "web-global-salescart"
+documentation:
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691604358/UC+-+Order+Service+WDW+Runbook"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/497948019/Operational+Readiness+Review+-+Unified+Checkout"
+  architecture_diagram: "https://docs.google.com/spreadsheets/d/1_35g8mnhmNzwXlXmgwcUFwHrB95ke2iXHjc8L8F1wd4/edit#gid=0"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "order-service-wdw"
+    component_type: "api"
+    description: "Booking handler for UC products — order processing and orchestration (UC path: Order VAS → Order Service → PEOS)"
+    repository:
+      url: "https://github.disney.com/wdprt-paap-api/order-service"
+      branch: "develop"
+    cicd:
+      platform: "jenkins"
+      pipeline_url: "https://ee.cicd.wdprapps.disney.com/job/order-service/"
+    health_check:
+      url: "https://order-svc-wdw.wdprapps.disney.com/application/health"
+      expected_status: 200
+    splunk:
+      index: "wdpr_core_api"
+      source: "us-*:order-service*"
+      base_spl: "index=wdpr_core_api source=*:order-service*"
+      error_spl: "index=wdpr_core_api source=*:order-service* (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr_core_api source=*:order-service* RESP_OUT | spath input=Msg path=timeTakenInMillis | stats avg(timeTakenInMillis) as avg_ms, p95(timeTakenInMillis) as p95_ms"
+    appdynamics:
+      app_name: "prod_paap-d_aws"
+      app_id: "494"
+      tier: "core_paap-d_order-svc"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=494&component=306093&dashboardMode=grid"
+    grafana:
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-apps&var-Region=us-east-1&var-clusters=paap-d-prod&var-service=order-service-prod-live"
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "ECS"
+      cluster_id: "paap-d-prod"
+      service_name: "order-service-prod-live"
+      services:
+        - type: "elasticache"
+          name: "order-prod"
+    other_environments:
+      stage:
+        health_check:
+          url: "https://stage.order-svc-wdw.wdprapps.disney.com/application/health"
+        appdynamics:
+          app_id: "2308"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2308&component=6336554&dashboardMode=grid"
+        cloud:
+          cluster_id: "paap-d-stage"
+          services:
+            - type: "elasticache"
+              name: "order-stage"
+      load:
+        health_check:
+          url: "https://load.order-svc-wdw.wdprapps.disney.com/application/health"
+        appdynamics:
+          app_id: "2371"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2371&component=6401342&dashboardMode=grid"
+        cloud:
+          cluster_id: "paap-d-load"
+          services:
+            - type: "elasticache"
+              name: "order-load"
+      latest:
+        health_check:
+          url: "https://latest.order-svc-wdw.wdprapps.disney.com/application/health"
+        appdynamics:
+          app_id: "2198"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2198&component=5992937&dashboardMode=grid"
+        cloud:
+          cluster_id: "paap-d-latest"
+          services:
+            - type: "elasticache"
+              name: "order-latest"
