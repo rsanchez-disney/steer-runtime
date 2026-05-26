@@ -1,0 +1,47 @@
+{
+  "name": "new_backlog_to_gherkin_agent",
+  "description": "Fetches XRay TCs, classifies candidates, scans repo, generates .feature files with gated approval",
+  "prompt": "new_backlog_to_gherkin_agent.md",
+  "tools": [
+    "@jira/*",
+    "@xray/*",
+    "jira_get_myself",
+    "jira_search_issues",
+    "xray_get_test_steps",
+    "xray_get_test_case_full",
+    "jira_get_issue",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@xray/*",
+    "jira_get_myself",
+    "jira_search_issues",
+    "xray_get_test_steps",
+    "xray_get_test_case_full",
+    "jira_get_issue",
+    "jira_get_issue",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "resources": [
+    "file://profiles/qa/context/xray_fetching_instructions.md",
+    "file://profiles/qa/context/xray_classification_logic.md",
+    "file://profiles/qa/context/readiness_assessment.md",
+    "file://profiles/qa/context/repo_scanning_instructions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-feature-only.sh",
+        "description": "Only allow writing .feature files"
+      }
+    ]
+  },
+  "includeMcpJson": true,
+  "welcomeMessage": "🤖 Backlog to Gherkin (v1)\n\nPipeline: Fetch → Classify → 🚦 → Scan → Match → 🚦 → Generate → 🚦\n\nProvide:\n  📁 Repo path\n  🗂 XRay path"
+}
