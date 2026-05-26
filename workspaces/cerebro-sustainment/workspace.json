@@ -3,11 +3,20 @@
   "description": "ADM PCS · DX Profile — Incident management & triage agent for sustainment operations",
   "team": "ADM PCS / DX Profile (Cerebro)",
   "profiles": ["sustainment", "ops", "dev-core"],
-  "default_agent": "orchestrator",
+  "default_agent": "sustainment_orchestrator_agent",
   "rules": ["cerebro-incident-response"],
   "enable_tools": true,
   "jira_prefix": "ADMPROFILE-",
   "workspace_path": "${WORKSPACE_ROOT}/cerebro",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
+  "hooks": {
+    "on_agent_spawn": {
+      "action": "load_catalog_context",
+      "description": "Pre-load BAPP info for studio-cerebro from managed-services-catalog",
+      "catalog_path": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
+      "load_fields": ["app.yaml", "runbook.md", "troubleshooting.md"]
+    }
+  },
   "projects": [
     {
       "name": "dx-profile-webapi",
