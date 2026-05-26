@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-control",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Control applications",
+  "team": "Studio Control",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-control"
+  ],
+  "enable_tools": true
+}

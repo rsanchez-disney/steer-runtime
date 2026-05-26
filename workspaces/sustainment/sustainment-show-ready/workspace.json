@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-show-ready",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Show Ready applications",
+  "team": "Studio Show Ready",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-show-ready"
+  ],
+  "enable_tools": true
+}

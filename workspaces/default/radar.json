@@ -1,0 +1,41 @@
+{
+  "title": "Getting Started",
+  "sections": [
+    {
+      "id": "setup",
+      "title": "Setup & Health",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "doctor", "label": "Run Doctor", "prompt": "Run koda doctor and report the full results. Highlight any failures or warnings that need attention." },
+        { "id": "mcp-status", "label": "MCP Status", "prompt": "Check all configured MCP servers: which are connected, which have missing tokens, and which need setup. Provide instructions for any that need fixing." },
+        { "id": "my-profiles", "label": "My Profiles", "prompt": "List my installed profiles and what each one provides: agents, rules, and capabilities. Suggest additional profiles based on my role." },
+        { "id": "my-workspace", "label": "My Workspace", "prompt": "Show my current workspace configuration: team, profiles, projects, Jira prefix, and available agents. Suggest improvements if anything is missing." }
+      ]
+    },
+    {
+      "id": "discover",
+      "title": "Discover",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "list-workspaces", "label": "Available Workspaces", "prompt": "List all available workspaces I can activate. Show: name, team, profiles, and description. Group by tier (vertical, team, sustainment)." },
+        { "id": "list-agents", "label": "My Agents", "prompt": "List all agents available to me with a brief description of what each does. Group by profile." },
+        { "id": "what-can-i-do", "label": "What Can I Do?", "prompt": "Based on my current profiles and workspace, explain what I can do: Jira integration, code review, testing, deployments, incident response, etc. Give 3-5 example prompts I can try." },
+        { "id": "suggest-workspace", "label": "Suggest Workspace", "prompt": "Based on my role and team, suggest which workspace I should activate. Ask me about my team, projects, and daily tasks to make a recommendation." }
+      ]
+    },
+    {
+      "id": "quick-wins",
+      "title": "Quick Wins",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "standup", "label": "Generate Standup", "prompt": "Generate my daily standup update based on my Jira tickets. Include what I did yesterday, what I'm doing today, and any blockers." },
+        { "id": "explain-ticket", "label": "Explain a Ticket...", "prompt": "Which Jira ticket should I explain? Provide the ticket key and I'll break down the scope, acceptance criteria, and context." },
+        { "id": "code-review", "label": "Review a PR...", "prompt": "Which PR should I review? Provide the repo and PR number and I'll check for quality, security, and testing issues." },
+        { "id": "ask-anything", "label": "Ask Anything", "prompt": "What would you like help with? I can assist with code, Jira, architecture, testing, documentation, or any other development task." }
+      ]
+    }
+  ]
+}

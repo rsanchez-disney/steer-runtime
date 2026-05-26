@@ -1,0 +1,23 @@
+[
+  {
+    "id": "2026-05-23-radars",
+    "date": "2026-05-23",
+    "type": "feature",
+    "title": "Profile Radars now available",
+    "body": "BA, QA, PM, Leadership, Ops, and Sustainment profiles now have custom Radar dashboards with role-specific powers. Activate your profile to see them."
+  },
+  {
+    "id": "2026-05-23-naming",
+    "date": "2026-05-23",
+    "type": "info",
+    "title": "Workspace naming convention applied",
+    "body": "29 workspaces renamed to follow the new convention: {name}-team, {name}-vertical, sustainment-{studio}. Your settings auto-migrate on next sync."
+  },
+  {
+    "id": "2026-05-22-managed-studios",
+    "date": "2026-05-22",
+    "type": "feature",
+    "title": "Managed services catalog scoping",
+    "body": "Workspaces now use managed_studios to scope which catalog apps agents see. Sustainment agents only see your team's applications."
+  }
+]

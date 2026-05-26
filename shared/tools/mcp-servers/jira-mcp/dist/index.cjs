@@ -6940,6 +6940,52 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to assign issues to epic ${epicKey}: ${response.status} ${response.statusText} - ${errText}`);
     }
   }
+  // ==========================================
+  // Issue Properties API
+  // ==========================================
+  async getIssueProperty(issueKey, propertyKey) {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 404)
+        return null;
+      const errorText = await response.text();
+      throw new Error(`Failed to get issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    return await response.json();
+  }
+  async setIssueProperty(issueKey, propertyKey, value) {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+      method: "PUT",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(value)
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to set issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+  }
+  async deleteIssueProperty(issueKey, propertyKey) {
+    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: await this.auth.getAuthHeader()
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 404)
+        return;
+      const errorText = await response.text();
+      throw new Error(`Failed to delete issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+  }
 };
 
 // build/utils/formatting.js
@@ -7059,6 +7105,107 @@ function shouldSaveOutput(outputDir, isGetOperation) {
   return true;
 }
 
+// build/utils/uiWidgets.js
+function ticketCard(ticket) {
+  const statusColor = ticket.status === "Done" || ticket.status === "Closed" ? "#1a7f37" : ticket.status === "In Progress" ? "#1f6feb" : ticket.status === "Blocked" ? "#cf222e" : "#6e7681";
+  return `<!DOCTYPE html><html><head><style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    body { padding:16px; background:#0d1117; color:#e6edf3; }
+    .header { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+    .key { font-size:14px; font-weight:600; color:#58a6ff; }
+    .status { font-size:11px; padding:2px 8px; border-radius:12px; background:${statusColor}22; color:${statusColor}; font-weight:500; }
+    .summary { font-size:15px; font-weight:500; margin-bottom:12px; line-height:1.4; }
+    .meta { display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px; color:#8b949e; }
+    .meta-item { display:flex; flex-direction:column; gap:2px; }
+    .meta-label { font-size:10px; text-transform:uppercase; color:#6e7681; }
+    .desc { margin-top:12px; padding-top:12px; border-top:1px solid #21262d; font-size:13px; color:#8b949e; line-height:1.5; max-height:120px; overflow:auto; }
+    .labels { display:flex; gap:4px; flex-wrap:wrap; margin-top:8px; }
+    .label { font-size:10px; padding:2px 6px; border-radius:4px; background:#1f6feb22; color:#58a6ff; }
+    .actions { display:flex; gap:8px; margin-top:12px; padding-top:12px; border-top:1px solid #21262d; }
+    .btn { font-size:11px; padding:4px 10px; border-radius:6px; border:1px solid #30363d; background:#21262d; color:#e6edf3; cursor:pointer; }
+    .btn:hover { background:#30363d; }
+  </style></head><body>
+    <div class="header">
+      <span class="key">${ticket.key}</span>
+      <span class="status">${ticket.status}</span>
+      ${ticket.priority ? `<span style="font-size:11px;color:#8b949e">${ticket.priority}</span>` : ""}
+      ${ticket.storyPoints ? `<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:#8957e522;color:#a371f7">${ticket.storyPoints}sp</span>` : ""}
+    </div>
+    <div class="summary">${ticket.summary}</div>
+    <div class="meta">
+      ${ticket.assignee ? `<div class="meta-item"><span class="meta-label">Assignee</span>${ticket.assignee}</div>` : ""}
+      ${ticket.type ? `<div class="meta-item"><span class="meta-label">Type</span>${ticket.type}</div>` : ""}
+      ${ticket.created ? `<div class="meta-item"><span class="meta-label">Created</span>${ticket.created}</div>` : ""}
+      ${ticket.updated ? `<div class="meta-item"><span class="meta-label">Updated</span>${ticket.updated}</div>` : ""}
+    </div>
+    ${ticket.labels?.length ? `<div class="labels">${ticket.labels.map((l) => `<span class="label">${l}</span>`).join("")}</div>` : ""}
+    ${ticket.description ? `<div class="desc">${ticket.description.slice(0, 500).replace(/</g, "&lt;")}</div>` : ""}
+    <div class="actions">
+      <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_transition_issue',params:{ticketId:'${ticket.key}'}}},'*')">Transition</button>
+      <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_comment_on_issue',params:{ticketId:'${ticket.key}'}}},'*')">Comment</button>
+      <button class="btn" onclick="window.parent.postMessage({type:'open-link',payload:{url:'https://myjira.disney.com/browse/${ticket.key}'}}},'*')">Open in Jira \u2197</button>
+    </div>
+  </body></html>`;
+}
+function issueTable(issues) {
+  const rows = issues.map((t) => {
+    const sc = t.status === "Done" ? "#1a7f37" : t.status === "In Progress" ? "#1f6feb" : "#6e7681";
+    return `<tr>
+      <td><a href="#" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_get_issue',params:{ticketId:'${t.key}'}}},'*');return false" style="color:#58a6ff;text-decoration:none;font-family:monospace">${t.key}</a></td>
+      <td>${t.summary}</td>
+      <td><span style="color:${sc};font-size:11px">${t.status}</span></td>
+      <td style="color:#8b949e">${t.assignee || "\u2014"}</td>
+      <td style="color:#8b949e">${t.storyPoints || "\u2014"}</td>
+    </tr>`;
+  }).join("");
+  return `<!DOCTYPE html><html><head><style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    body { padding:12px; background:#0d1117; color:#e6edf3; }
+    table { width:100%; border-collapse:collapse; font-size:12px; }
+    th { text-align:left; padding:6px 8px; border-bottom:1px solid #21262d; color:#8b949e; font-size:10px; text-transform:uppercase; }
+    td { padding:6px 8px; border-bottom:1px solid #21262d; }
+    tr:hover { background:#161b22; }
+    .count { font-size:11px; color:#8b949e; margin-bottom:8px; }
+  </style></head><body>
+    <div class="count">${issues.length} issues</div>
+    <table><thead><tr><th>Key</th><th>Summary</th><th>Status</th><th>Assignee</th><th>SP</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+  </body></html>`;
+}
+function sprintBoard(sprint, issues) {
+  const todo = issues.filter((i) => ["To Do", "Open", "New", "Backlog"].includes(i.status));
+  const inProgress = issues.filter((i) => ["In Progress", "In Review", "In Development"].includes(i.status));
+  const done = issues.filter((i) => ["Done", "Closed", "Resolved"].includes(i.status));
+  const col = (title, items, color) => `
+    <div class="col">
+      <div class="col-header" style="border-top:3px solid ${color}">${title} (${items.length})</div>
+      ${items.map((i) => `<div class="card" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_get_issue',params:{ticketId:'${i.key}'}}},'*')">
+        <span class="card-key">${i.key}</span>
+        <span class="card-summary">${i.summary.slice(0, 60)}</span>
+      </div>`).join("")}
+    </div>`;
+  return `<!DOCTYPE html><html><head><style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    body { padding:12px; background:#0d1117; color:#e6edf3; }
+    .header { font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; }
+    .days { font-size:11px; color:#f0883e; }
+    .board { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+    .col { background:#161b22; border-radius:8px; padding:8px; }
+    .col-header { font-size:11px; font-weight:600; padding:4px 8px; margin-bottom:6px; color:#8b949e; }
+    .card { padding:6px 8px; margin-bottom:4px; background:#0d1117; border-radius:6px; border:1px solid #21262d; cursor:pointer; }
+    .card:hover { border-color:#30363d; }
+    .card-key { font-size:10px; font-family:monospace; color:#58a6ff; display:block; }
+    .card-summary { font-size:11px; color:#8b949e; }
+  </style></head><body>
+    <div class="header"><span>${sprint.name}</span><span class="days">${sprint.daysRemaining}d remaining</span></div>
+    <div class="board">
+      ${col("To Do", todo, "#6e7681")}
+      ${col("In Progress", inProgress, "#1f6feb")}
+      ${col("Done", done, "#1a7f37")}
+    </div>
+  </body></html>`;
+}
+
 // build/tools/jiraGetIssue.js
 init_customFields();
 var jiraGetIssueSchema = {
@@ -7148,6 +7295,26 @@ async function handleJiraGetIssue(args) {
         {
           type: "text",
           text: `${fullSummary}${savedInfo}`
+        },
+        {
+          type: "resource",
+          resource: {
+            uri: `ui://jira-mcp/ticket/${ticketId}`,
+            mimeType: "text/html;profile=mcp-app",
+            text: ticketCard({
+              key: ticketId,
+              summary: ticket.fields?.summary || "",
+              status: ticket.fields?.status?.name || "Unknown",
+              assignee: ticket.fields?.assignee?.displayName,
+              priority: ticket.fields?.priority?.name,
+              type: ticket.fields?.issuetype?.name,
+              description: ticket.fields?.description,
+              labels: ticket.fields?.labels,
+              created: ticket.fields?.created?.slice(0, 10),
+              updated: ticket.fields?.updated?.slice(0, 10),
+              storyPoints: ticket.fields?.story_points || ticket.fields?.customfield_10028
+            })
+          }
         }
       ]
     };
@@ -7647,6 +7814,21 @@ async function handleJiraSearchIssues(args) {
         {
           type: "text",
           text: `${summaryText}${savedInfo}`
+        },
+        {
+          type: "resource",
+          resource: {
+            uri: `ui://jira-mcp/search/${Date.now()}`,
+            mimeType: "text/html;profile=mcp-app",
+            text: issueTable(searchResults.issues.map((i) => ({
+              key: i.key,
+              summary: i.fields?.summary || "",
+              status: i.fields?.status?.name || "Unknown",
+              assignee: i.fields?.assignee?.displayName,
+              priority: i.fields?.priority?.name,
+              storyPoints: i.fields?.story_points || i.fields?.customfield_10028
+            })))
+          }
         }
       ]
     };
@@ -8266,6 +8448,18 @@ async function handleJiraGetSprintIssues(args) {
         {
           type: "text",
           text: `${summaryText}${savedInfo}`
+        },
+        {
+          type: "resource",
+          resource: {
+            uri: `ui://jira-mcp/sprint/${sprintId}`,
+            mimeType: "text/html;profile=mcp-app",
+            text: sprintBoard({ name: `Sprint ${sprintId}`, daysRemaining: 0 }, sprintIssues.issues.map((i) => ({
+              key: i.key,
+              summary: i.fields?.summary || "",
+              status: i.fields?.status?.name || "Unknown"
+            })))
+          }
         }
       ]
     };
@@ -9572,6 +9766,231 @@ Added ${testKeys.length} test(s): ${testKeys.join(", ")}`
   }
 }
 
+// build/tools/jiraSmartChecklist.js
+var PROPERTY_KEY = "com.railsware.SmartChecklist.checklist";
+function parseChecklist(raw) {
+  const items = [];
+  const lines = raw.split("\n").filter((l) => l.length > 0);
+  for (const line of lines) {
+    if (line.startsWith("+ ") || line.startsWith("- ")) {
+      items.push({ text: line.slice(2), checked: line.startsWith("+ "), details: [] });
+    } else if (line.startsWith("> ") && items.length > 0) {
+      items[items.length - 1].details.push(line.slice(2));
+    }
+  }
+  return items;
+}
+function serializeChecklist(items) {
+  const lines = [];
+  for (const item of items) {
+    lines.push(`${item.checked ? "+" : "-"} ${item.text}`);
+    for (const detail of item.details) {
+      lines.push(`> ${detail}`);
+    }
+  }
+  return lines.join("\n") + "\n";
+}
+async function fetchCurrentChecklist(apiClient, issueKey) {
+  const result = await apiClient.getIssueProperty(issueKey, PROPERTY_KEY);
+  if (!result || !result.value)
+    return [];
+  return parseChecklist(result.value);
+}
+var jiraSmartChecklistGetSchema = {
+  name: "jira_smart_checklist_get",
+  description: "Get the Smart Checklist items from a Jira issue.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" }
+    },
+    required: ["issueKey"]
+  }
+};
+var jiraSmartChecklistSetSchema = {
+  name: "jira_smart_checklist_set",
+  description: "Create or replace the entire Smart Checklist on a Jira issue. Use jira_smart_checklist_add_item to append without replacing.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" },
+      items: {
+        type: "array",
+        description: "Array of checklist items",
+        items: {
+          type: "object",
+          properties: {
+            text: { type: "string", description: "Text content of the checklist item" },
+            checked: { type: "boolean", description: "Whether the item is checked/completed" },
+            details: { type: "array", items: { type: "string" }, description: "Optional detail lines" }
+          },
+          required: ["text", "checked"]
+        }
+      }
+    },
+    required: ["issueKey", "items"]
+  }
+};
+var jiraSmartChecklistAddItemSchema = {
+  name: "jira_smart_checklist_add_item",
+  description: "Add one or more items to an existing Smart Checklist without replacing it. If no checklist exists, one is created.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" },
+      items: {
+        type: "array",
+        description: "Items to append",
+        items: {
+          type: "object",
+          properties: {
+            text: { type: "string", description: "Text content" },
+            checked: { type: "boolean", description: "Starts as checked (default: false)" },
+            details: { type: "array", items: { type: "string" }, description: "Optional detail lines" }
+          },
+          required: ["text"]
+        }
+      }
+    },
+    required: ["issueKey", "items"]
+  }
+};
+var jiraSmartChecklistCheckItemSchema = {
+  name: "jira_smart_checklist_check_item",
+  description: "Check or uncheck a specific item. You MUST provide either 'index' (1-based) or 'match' (text substring) to identify the target item.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" },
+      index: { type: "number", description: "1-based index of the item to check/uncheck." },
+      match: { type: "string", description: "Text substring to match (case-insensitive). First match is used." },
+      checked: { type: "boolean", description: "true to check, false to uncheck. Omit to toggle." }
+    },
+    required: ["issueKey"]
+  }
+};
+var jiraSmartChecklistDeleteSchema = {
+  name: "jira_smart_checklist_delete",
+  description: "Delete the entire Smart Checklist from a Jira issue permanently.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      issueKey: { type: "string", description: "The Jira issue key (e.g., COM-1234)" }
+    },
+    required: ["issueKey"]
+  }
+};
+async function handleJiraSmartChecklistGet(args) {
+  try {
+    const { issueKey } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getIssueProperty(issueKey, PROPERTY_KEY);
+    if (!result || !result.value) {
+      return { content: [{ type: "text", text: `No Smart Checklist found on ${issueKey}.` }] };
+    }
+    const raw = result.value;
+    const items = parseChecklist(raw);
+    const checked = items.filter((i) => i.checked).length;
+    let output = `**Smart Checklist for ${issueKey}** (${checked}/${items.length} completed)
+
+`;
+    for (let i = 0; i < items.length; i++) {
+      output += `${i + 1}. ${items[i].checked ? "\u2611" : "\u2610"} ${items[i].text}
+`;
+      for (const d of items[i].details)
+        output += `   \u21B3 ${d}
+`;
+    }
+    output += `
+---
+**Raw value:**
+\`\`\`
+${raw}\`\`\``;
+    return { content: [{ type: "text", text: output }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true };
+  }
+}
+async function handleJiraSmartChecklistSet(args) {
+  try {
+    const { issueKey, items } = args;
+    const apiClient = new JiraApiClient();
+    const normalized = items.map((i) => ({ text: i.text, checked: i.checked, details: i.details || [] }));
+    await apiClient.setIssueProperty(issueKey, PROPERTY_KEY, serializeChecklist(normalized));
+    const checked = normalized.filter((i) => i.checked).length;
+    let output = `**Smart Checklist updated on ${issueKey}** (${checked}/${normalized.length} items)
+
+`;
+    for (const item of normalized)
+      output += `${item.checked ? "\u2611" : "\u2610"} ${item.text}
+`;
+    return { content: [{ type: "text", text: output }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true };
+  }
+}
+async function handleJiraSmartChecklistAddItem(args) {
+  try {
+    const { issueKey, items } = args;
+    const apiClient = new JiraApiClient();
+    const current = await fetchCurrentChecklist(apiClient, issueKey);
+    const newItems = items.map((i) => ({ text: i.text, checked: i.checked ?? false, details: i.details || [] }));
+    const all = [...current, ...newItems];
+    await apiClient.setIssueProperty(issueKey, PROPERTY_KEY, serializeChecklist(all));
+    let output = `**Added ${newItems.length} item(s) to ${issueKey}** (${all.length} total)
+
+`;
+    for (const item of newItems)
+      output += `${item.checked ? "\u2611" : "\u2610"} ${item.text}
+`;
+    return { content: [{ type: "text", text: output }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true };
+  }
+}
+async function handleJiraSmartChecklistCheckItem(args) {
+  try {
+    const { issueKey, index, match, checked } = args;
+    if (!index && !match) {
+      return { content: [{ type: "text", text: "Error: Provide 'index' (1-based) or 'match' (text substring)." }], isError: true };
+    }
+    const apiClient = new JiraApiClient();
+    const items = await fetchCurrentChecklist(apiClient, issueKey);
+    if (items.length === 0) {
+      return { content: [{ type: "text", text: `No Smart Checklist found on ${issueKey}.` }], isError: true };
+    }
+    let targetIndex = -1;
+    if (index !== void 0) {
+      targetIndex = index - 1;
+      if (targetIndex < 0 || targetIndex >= items.length) {
+        return { content: [{ type: "text", text: `Error: Index ${index} out of range (1-${items.length}).` }], isError: true };
+      }
+    } else if (match) {
+      const lower = match.toLowerCase();
+      targetIndex = items.findIndex((i) => i.text.toLowerCase().includes(lower));
+      if (targetIndex === -1) {
+        return { content: [{ type: "text", text: `Error: No item matching "${match}" found.` }], isError: true };
+      }
+    }
+    const item = items[targetIndex];
+    item.checked = checked !== void 0 ? checked : !item.checked;
+    await apiClient.setIssueProperty(issueKey, PROPERTY_KEY, serializeChecklist(items));
+    return { content: [{ type: "text", text: `**Item ${targetIndex + 1} ${item.checked ? "checked \u2611" : "unchecked \u2610"}:** ${item.text}` }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true };
+  }
+}
+async function handleJiraSmartChecklistDelete(args) {
+  try {
+    const { issueKey } = args;
+    const apiClient = new JiraApiClient();
+    await apiClient.deleteIssueProperty(issueKey, PROPERTY_KEY);
+    return { content: [{ type: "text", text: `**Smart Checklist deleted from ${issueKey}.**` }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error: ${error instanceof Error ? error.message : "Unknown error"}` }], isError: true };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -9612,7 +10031,13 @@ var tools = [
   { schema: prefixed(jiraGetMyselfSchema), handler: handleJiraGetMyself },
   { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
   // XRay write
-  { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec }
+  { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec },
+  // Smart Checklist
+  { schema: prefixed(jiraSmartChecklistGetSchema), handler: handleJiraSmartChecklistGet },
+  { schema: prefixed(jiraSmartChecklistSetSchema), handler: handleJiraSmartChecklistSet },
+  { schema: prefixed(jiraSmartChecklistAddItemSchema), handler: handleJiraSmartChecklistAddItem },
+  { schema: prefixed(jiraSmartChecklistCheckItemSchema), handler: handleJiraSmartChecklistCheckItem },
+  { schema: prefixed(jiraSmartChecklistDeleteSchema), handler: handleJiraSmartChecklistDelete }
 ];
 var JiraMCPServer = class {
   server;

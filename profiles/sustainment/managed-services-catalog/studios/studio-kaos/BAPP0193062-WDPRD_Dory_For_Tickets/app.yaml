@@ -1,170 +1,84 @@
-# ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# BAPP0193062 — WDPRD Dory For Tickets
-# ============================================================================
-
-# --- Identity ---
 bapp_id: "BAPP0193062"
 app_name: "wdprd-dory-for-tickets"
 full_name: "WDPRD Dory For Tickets"
-description: "Dory For Tickets — ticket entitlement lookup and validation service"
-
-# --- Ownership ---
+description: "Backend service ensuring compliance with privacy regulations (CCPA). Processes RTA (Request to Acknowledge) and RTF (Request to Forget) operations across systems containing guest personal data (TMS, Booking Service, CME). Acts as orchestrator via Incognito Service without storing personal data itself."
 support_studio: "Studio Kaos"
-escalation_channel: "#dprd-studio-kaos"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AeNbcha4UraJUCngdy1oP_SuMd5GrCvgScaei1uhdhoc1%40thread.tacv2/DX%20-%20Studio%20Kaos?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
-  - name: "Fernanda Roque"
-    role: "primary"
-    contact: "Lead Software Engineer"
   - name: "Gabriela Rossi"
-    role: "secondary"
-    contact: "Tech Lead"
-  - name: "Thai Murugappan"
-    role: "SME"
-    contact: "Sr Mgr-Technology"
-on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
-email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
-jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
-
-# --- ServiceNow ---
+    role: "primary"
+    contact: "Gabriela.X.Rossi.-ND@disney.com"
 servicenow:
   configuration_item: "WDPRD Dory For Tickets"
   assignment_group: "web-global-salestickets"
-  business_service: ""
-
-# --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
   wiki: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
-  architecture_diagram: "https://twdc.sharepoint.com/sites/Design_Team/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FDesign%5FTeam%2FShared%20Documents%2FAID%20%2D%20Legacy%20GDraw%20Designs%2FWDPRD%20Dory%20For%20Tickets%20%2D%20BAPP0193062&sortField=LinkFilename&isAscending=false&viewid=abfca89a%2Dec30%2D4de7%2D9cdf%2Daa87fe782fd9&p=true&ga=1&LOF=1"
-
-# --- Companion Docs (Markdown) ---
+  architecture_diagram: "https://docs.google.com/drawings/d/15jIC8mTphwjNqP6ggmcfUCiFirzo8Nhg79vxTocI4BM/edit"
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
-
-# --- Components ---
 components:
-
-  - component_name: "wdpr-ecommerce-doryfortickets-api"
+  - component_name: "doryfortickets-api"
     component_type: "api"
-    description: "Dory For Tickets — ticket entitlement lookup and validation service"
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+    description: "Privacy compliance orchestrator — processes RTA/RTF requests from Incognito Service against TMS, Booking Service, and CME"
     repository:
       url: "https://github.disney.com/commerce/wdpr-ecommerce-doryfortickets-api"
       branch: "develop"
-      path: ""
-
     cicd:
       platform: "harness"
-      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Commerce/projects/WDPRD_Dory_For_Tickets/pipelines"
-      deploy_target: ""
-
-    # -- Health Check --
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/ci/orgs/Commerce/projects/WDPRD_Dory_For_Tickets/deployments"
     health_check:
       url: "https://doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
       expected_status: 200
-
-    # -- Splunk --
     splunk:
       index: "wdpr_dory_for_tickets"
-      source: ""
-      base_spl: >-
-        index=wdpr_dory_for_tickets
-      error_spl: >-
-        index=wdpr_dory_for_tickets level=ERROR
-      latency_spl: >-
-        index=wdpr_dory_for_tickets
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-      dashboard_url: "https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/dory_for_tickets"
-
-    # -- AppDynamics --
+      base_spl: "index=wdpr_dory_for_tickets"
+      error_spl: "index=wdpr_dory_for_tickets (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr_dory_for_tickets | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint"
     appdynamics:
+      app_name: "prod_ecommerce-S0001323_aws"
+      app_id: "515"
+      tier: "doryfortickets-api"
       dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_INFRASTRUCTURE&application=515&component=306832"
-
-    # -- NewRelic --
-    # Not applicable
-
-    # -- Datadog --
-    # Not applicable
-
-    # -- Grafana --
-    # Not applicable
-
-    # -- Archer --
-    # Not applicable
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
       provider: "AWS"
       region: "us-west-2"
-      account_id: "820987038150"
       infra_type: "ECS"
       cluster_id: "wdpr-ecommerce-S0001323-usw2-prd"
       service_name: "doryfortickets-api-prod-live"
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-        dashboard: "PACE-DLR-wdpr-ecommerce-S0001323-usw2-prd-Ver5"
-
-      # -- GCP --
-      # Not applicable
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
-
       stage:
         health_check:
           url: "https://stage.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
         splunk:
-          index: "wdpr_dory_for_tickets"
-          base_spl: >-
-            index=wdpr_dory_for_tickets source=*stage*
+          base_spl: "index=wdpr_dory_for_tickets source=*stage*"
+        appdynamics:
+          app_id: "2951"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2951&component=7462058&dashboardMode=force"
         cloud:
-          region: "us-west-2"
-          account_id: "168997411205"
           cluster_id: "wdpr-ecommerce-S0001323-usw2-stg"
           service_name: "doryfortickets-api-stage-live"
-
       load:
         health_check:
           url: "https://load.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
         splunk:
-          index: "wdpr_dory_for_tickets"
-          base_spl: >-
-            index=wdpr_dory_for_tickets source=*load*
+          base_spl: "index=wdpr_dory_for_tickets source=*load*"
+        appdynamics:
+          app_id: "2983"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2983&component=7462060&dashboardMode=force"
         cloud:
-          region: "us-west-2"
-          account_id: "168997411205"
           cluster_id: "wdpr-ecommerce-S0001323-usw2-lod"
           service_name: "doryfortickets-api-load-live"
-        appdynamics:
-          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2983&component=7462060&dashboardMode=force"
-
       latest:
         health_check:
           url: "https://latest.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
         splunk:
-          index: "wdpr_dory_for_tickets"
-          base_spl: >-
-            index=wdpr_dory_for_tickets source=*latest*
+          base_spl: "index=wdpr_dory_for_tickets source=*latest*"
+        appdynamics:
+          app_id: "2840"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2840&component=7462044&dashboardMode=force"
         cloud:
-          region: "us-west-2"
-          account_id: "718439781381"
           cluster_id: "wdpr-ecommerce-S0001323-usw2-lst"
           service_name: "doryfortickets-api-latest-live"

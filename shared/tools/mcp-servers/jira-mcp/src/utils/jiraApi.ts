@@ -1243,4 +1243,61 @@ export class JiraApiClient {
             );
         }
     }
+
+    // ==========================================
+    // Issue Properties API
+    // ==========================================
+
+    async getIssueProperty(issueKey: string, propertyKey: string): Promise<any> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
+            {
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        if (!response.ok) {
+            if (response.status === 404) return null;
+            const errorText = await response.text();
+            throw new Error(`Failed to get issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        return await response.json();
+    }
+
+    async setIssueProperty(issueKey: string, propertyKey: string, value: unknown): Promise<void> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(value),
+            },
+        );
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to set issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+    }
+
+    async deleteIssueProperty(issueKey: string, propertyKey: string): Promise<void> {
+        const response = await fetch(
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                },
+            },
+        );
+        if (!response.ok) {
+            if (response.status === 404) return;
+            const errorText = await response.text();
+            throw new Error(`Failed to delete issue property "${propertyKey}" for ${issueKey}: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+    }
 }

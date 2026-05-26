@@ -1,0 +1,75 @@
+{
+  "name": "payments-accounting-vertical",
+  "description": "Vertical workspace for Payments & Accounting teams",
+  "team": "LSWM | Payments & Accounting",
+  "profiles": [
+    "leadership"
+  ],
+  "default_agent": "portfolio_analyst_agent",
+  "projects": [],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "DPAY-",
+  "teams": [
+    {
+      "name": "TEP3 - Cart & Checkout",
+      "jira_projects": [
+        "TEP3"
+      ],
+      "board_ids": [
+        11731
+      ],
+      "notes": "C&C team within TEP3"
+    },
+    {
+      "name": "TEP3 - Cart & Checkout - Package",
+      "jira_projects": [
+        "TEP3"
+      ],
+      "board_ids": [
+        12702
+      ],
+      "notes": "C&C Package team within TEP3"
+    },
+    {
+      "name": "UCM",
+      "jira_projects": [
+        "UCM"
+      ],
+      "board_ids": [
+        10017
+      ],
+      "notes": "Unified Checkout Mods - DLR Checkout, BOLT Bulk"
+    },
+    {
+      "name": "Centralized Accounting Platform",
+      "jira_projects": [
+        "TIMON"
+      ],
+      "board_ids": [],
+      "dashboard_id": 57215,
+      "notes": "Revenue recognition, DLR TEP3 CAP, LaunchDarkly"
+    },
+    {
+      "name": "Wallet",
+      "jira_projects": [
+        "WALLET"
+      ],
+      "board_ids": [],
+      "dashboard_id": 57219,
+      "notes": "DVC Points Parcel, CMS, Dscribe"
+    },
+    {
+      "name": "APP Payments",
+      "jira_projects": [
+        "DPAY"
+      ],
+      "board_ids": [
+        4962
+      ],
+      "notes": "DPI, GC_Wallet, Payment Sheet"
+    }
+  ]
+}

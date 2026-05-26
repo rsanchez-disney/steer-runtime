@@ -67,6 +67,32 @@ for ws_file in ws_files:
             print(f"⚠  {rel} — invalid repo format: '{repo}' (expected org/repo)")
             warnings += 1
 
+    # Naming convention check
+    EXEMPT = {"default", "sustainment"}
+    if name and name not in EXEMPT:
+        # Children of a team workspace (sub-scopes) are exempt
+        parent_dir = os.path.basename(os.path.dirname(os.path.dirname(ws_file)))
+        is_child = parent_dir not in ("workspaces", "sustainment")
+        valid_pattern = (
+            is_child or
+            name.endswith("-team") or
+            name.endswith("-vertical") or
+            name.startswith("sustainment-") or
+            name.startswith("app-") or
+            name == "steer-platform"
+        )
+        if not valid_pattern:
+            print(f"⚠  {rel} — name '{name}' doesn't follow naming convention (expected -team, -vertical, sustainment-*, or app-*)")
+            warnings += 1
+
+    # Directory = name check
+    dir_name = os.path.basename(os.path.dirname(ws_file))
+    if name and dir_name != name and dir_name != "sustainment":
+        parent_dir = os.path.basename(os.path.dirname(os.path.dirname(ws_file)))
+        if parent_dir in ("workspaces", "sustainment"):
+            print(f"⚠  {rel} — directory '{dir_name}' doesn't match name '{name}'")
+            warnings += 1
+
 print()
 print(f"📋 Workspace Validation: {total} workspaces scanned")
 print(f"   ✅ Valid: {total - errors}")

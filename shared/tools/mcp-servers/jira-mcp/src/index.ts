@@ -132,6 +132,20 @@ import {
     handleXrayAddTestsToTestExec,
 } from "./tools/xrayAddTestsToTestExec.js";
 
+// Smart Checklist tools
+import {
+    jiraSmartChecklistGetSchema,
+    handleJiraSmartChecklistGet,
+    jiraSmartChecklistSetSchema,
+    handleJiraSmartChecklistSet,
+    jiraSmartChecklistAddItemSchema,
+    handleJiraSmartChecklistAddItem,
+    jiraSmartChecklistCheckItemSchema,
+    handleJiraSmartChecklistCheckItem,
+    jiraSmartChecklistDeleteSchema,
+    handleJiraSmartChecklistDelete,
+} from "./tools/jiraSmartChecklist.js";
+
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 
@@ -175,6 +189,12 @@ const tools = [
     { schema: prefixed(jiraLinkIssuesSchema), handler: handleJiraLinkIssues },
     // XRay write
     { schema: prefixed(xrayAddTestsToTestExecSchema), handler: handleXrayAddTestsToTestExec },
+    // Smart Checklist
+    { schema: prefixed(jiraSmartChecklistGetSchema), handler: handleJiraSmartChecklistGet },
+    { schema: prefixed(jiraSmartChecklistSetSchema), handler: handleJiraSmartChecklistSet },
+    { schema: prefixed(jiraSmartChecklistAddItemSchema), handler: handleJiraSmartChecklistAddItem },
+    { schema: prefixed(jiraSmartChecklistCheckItemSchema), handler: handleJiraSmartChecklistCheckItem },
+    { schema: prefixed(jiraSmartChecklistDeleteSchema), handler: handleJiraSmartChecklistDelete },
 ];
 
 class JiraMCPServer {

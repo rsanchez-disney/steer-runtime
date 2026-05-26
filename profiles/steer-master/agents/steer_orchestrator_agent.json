@@ -26,6 +26,8 @@
     "file://.kiro/context/mcp_priority.md",
     "file://profiles/steer-master/context/agent_creation_guide.md",
     "file://docs/WORKSPACE_AGENT_MERGE.md",
+    "file://docs/WORKSPACE_NAMING.md",
+    "file://shared/announcements.json",
     "file://profiles/steer-master/context/features_guide.md",
     "file://.kiro/context/orchestrator_rules.md",
     "file://.kiro/context/sdlc-workflow.md",

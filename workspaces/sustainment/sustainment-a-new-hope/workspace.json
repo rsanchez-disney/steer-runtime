@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-a-new-hope",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio A New Hope applications",
+  "team": "Studio A New Hope",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-a-new-hope"
+  ],
+  "enable_tools": true
+}

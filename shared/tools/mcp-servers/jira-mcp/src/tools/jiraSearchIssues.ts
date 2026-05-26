@@ -1,4 +1,5 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
+import { issueTable } from "../utils/uiWidgets.js";
 import { saveData } from "../utils/fileUtils.js";
 import {
     CUSTOM_FIELD_ALIASES,
@@ -119,6 +120,21 @@ export async function handleJiraSearchIssues(args: any): Promise<any> {
                 {
                     type: "text",
                     text: `${summaryText}${savedInfo}`,
+                },
+                {
+                    type: "resource",
+                    resource: {
+                        uri: `ui://jira-mcp/search/${Date.now()}`,
+                        mimeType: "text/html;profile=mcp-app",
+                        text: issueTable(searchResults.issues.map((i: any) => ({
+                            key: i.key,
+                            summary: i.fields?.summary || '',
+                            status: i.fields?.status?.name || 'Unknown',
+                            assignee: i.fields?.assignee?.displayName,
+                            priority: i.fields?.priority?.name,
+                            storyPoints: i.fields?.story_points || i.fields?.customfield_10028,
+                        }))),
+                    },
                 },
             ],
         };

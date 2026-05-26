@@ -5,17 +5,21 @@ All notable changes to steer-runtime.
 ## [Unreleased]
 
 ### Added
-- **chrome-devtools-mcp** — global MCP bundle for headless browser automation (isolated Chrome, no user session interference)
-- **AI Metrics post-PR hook** — `ai-metrics-post-pr.kiro.hook` automatically calls `koda stats submit` after PR creation
-- **AI Metrics Integration spec** — detailed implementation plan in `docs/specs/ai-metrics-integration.md`
+- **MCP-UI widgets** — `jira_get_issue`, `jira_search_issues`, `jira_get_sprint_issues` now return interactive HTML resource blocks (ticket cards, tables, Kanban boards) for Kite rendering
+- **`ui_inspector_agent`** — Chrome DevTools Protocol agent for DOM/CSS inspection, console execution, layout validation (dev-core profile)
+- **`cerebro-sustainment` workspace** — DX Profile incident ops with 8-section structured response format
+- **`retail-restaurant` workspace** — FNB/MERCH teams with architecture diagrams, testing conventions, team context
+- **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with Splunk queries, runbooks, troubleshooting docs
 
 ### Changed
-- **AI Metrics steering** — updated `35-ai-metrics-tracking.md` to use `koda stats submit` instead of Google Form workflow
+- **`chrome-launch.sh`** — requires `--user-data-dir` for debug port binding; restored `--headless=new`; platform-aware debug dir; restored WSL support
+- **`ui_inspector_agent` tools** — scoped to `@chrome-devtools/*` + `thinking` only (removed redundant `allowedTools`)
 
-### Removed
-- **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle
+### Fixed
+- **chrome-launch.sh** — Chrome silently ignored `--remote-debugging-port` without `--user-data-dir`
 
 ---
+
 
 ## [0.2.81] — 2026-05-14
 

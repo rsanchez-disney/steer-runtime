@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-beast",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Beast applications",
+  "team": "Studio Beast",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-beast"
+  ],
+  "enable_tools": true
+}
