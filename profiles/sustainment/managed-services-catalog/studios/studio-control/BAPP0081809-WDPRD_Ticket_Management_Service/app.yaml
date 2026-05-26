@@ -1,179 +1,166 @@
-# ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
-
-# --- Identity ---
 bapp_id: "BAPP0081809"
-app_name: "wdprd-ticket-management-service"
-full_name: "WDPRD Ticket Management Service"
-description: ""
-
-# --- Ownership ---
+app_name: "tms-wdw"
+full_name: "Ticket Management Service (WDW)"
+description: "Digital services for post-purchase and park operation flows for WDW. Provides endpoints for mobile and web flows to retrieve guest entitlements. Completely relies on GAM for entitlement retrieval."
 support_studio: "Studio Control"
-escalation_channel: ""
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
-  - name: ""
+  - name: "Victor Ramirez"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
-
-# --- ServiceNow ---
+    contact: "Victor.Ramirez.-ND@disney.com"
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPRD Ticket Management Service"
   assignment_group: "web-global-salestickets"
-  business_service: ""
-
-# --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
-
-# --- Companion Docs (Markdown) ---
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681701804/WDW+TMS+Runbook"
+  wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484022646/TMS"
+  architecture_diagram: "https://docs.google.com/spreadsheets/d/1lx97wsiUTiLX30szpyFzPBC7twwLR2G0S48YQ3JfMeo/edit#gid=0"
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
-
-# --- Components ---
 components:
-
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+  - component_name: "tms-wdw-int"
+    component_type: "api"
+    description: "Internal services for WDW (Profile, GSS, Keyring)"
     repository:
-      url: ""
-      branch: ""
-      path: ""
-
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-tms-svc"
+      branch: "develop"
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Ticket_Management_Service/deployments"
     health_check:
-      url: ""
+      url: "https://tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep"
       expected_status: 200
-
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
+      index: "wdpr-ecommerce"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tmsint-svc*\""
+      error_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tmsint-svc*\" (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tmsint-svc*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
+      app_name: "prod_ecommerce-S0001479_aws"
+      app_id: "563"
+      tier: "core_ecommerce-S0001479_tmsint-wdw-svc"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=563&component=288251&dashboardMode=force"
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-west-2&var-clusters=wdw-ecommerce-S0001479-usw2-prd&var-service=tmsint-wdw-svc-prod-live"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "820987038150"
+      infra_type: "ECS"
+      cluster_id: "wdw-ecommerce-S0001479-usw2-prd"
+      service_name: "tmsint-wdw-svc-prod-live"
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
+        - type: "rds"
+          name: "wdw-tms-prod-mysql.czadbdnytwxi.us-west-2.rds.amazonaws.com:3306/wdwtms_prod"
+        - type: "elasticache"
+          name: "wdw-tms-prod-ec.i8pkwr.0001.usw2.cache.amazonaws.com"
     other_environments:
-
       stage:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
+          url: "https://stage.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "3056"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=3056&component=6401643&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "wdw-ecommerce-S0001479-usw2-stg"
+          service_name: "tmsint-wdw-svc-stage-live"
+          services:
+            - type: "rds"
+              name: "wdw-tms-svc-stage-master.wdatdbs.disney.com:4001/wdwtms_stage"
+            - type: "elasticache"
+              name: "wdw-tms-stage-ec.i8pkwr.0001.usw2.cache.amazonaws.com"
       load:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
+          url: "https://lt.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "3058"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=3058&component=6401747&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "wdw-ecommerce-S0001479-usw2-lod"
+          service_name: "tmsint-wdw-svc-load-live"
+          services:
+            - type: "rds"
+              name: "wdw-tms-svc-load-master.wdatdbs.disney.com:4001/wdwtms_lt"
+            - type: "elasticache"
+              name: "wdw-tms-lt-ec.i8pkwr.0001.usw2.cache.amazonaws.com"
       latest:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
+          url: "https://latest.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "2846"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2846&component=6394101&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "wdw-ecommerce-S0001479-usw2-lst"
+          service_name: "tmsint-wdw-svc-latest-live"
+          services:
+            - type: "rds"
+              name: "wdw-tms-svc-1-mariadb-latest.che79lwtdc3w.us-west-2.rds.amazonaws.com:4001/wdwtms_latest"
+            - type: "elasticache"
+              name: "wdwtms-latest.7ozysg.clustercfg.usw2.cache.amazonaws.com"
+
+  - component_name: "tms-wdw-ext"
+    component_type: "api"
+    description: "Guest-facing traffic for WDW (Itinerary, CME, Mobile App)"
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-tms-svc"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Ticket_Management_Service/deployments"
+    health_check:
+      url: "https://tms.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+      expected_status: 200
+    splunk:
+      index: "wdpr-ecommerce"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tms-svc*\""
+      error_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tms-svc*\" (\"*error*\" OR \"*exception*\")"
+      latency_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-usw2*\" ecs_task_definition=\"tms-svc*\" response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
+    appdynamics:
+      app_name: "prod_ecommerce-S0001479_aws"
+      app_id: "563"
+      tier: "core_ecommerce-S0001479_tms-wdw-svc"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=563&component=288169&dashboardMode=force"
+    grafana:
+      dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=wdpr-ecommerce-prod&var-Region=us-west-2&var-clusters=wdw-ecommerce-S0001479-usw2-prd&var-service=tms-wdw-svc-prod-live"
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "820987038150"
+      infra_type: "ECS"
+      cluster_id: "wdw-ecommerce-S0001479-usw2-prd"
+      service_name: "tms-wdw-svc-prod-live"
+      services:
+        - type: "rds"
+          name: "wdw-tms-prod-mysql.czadbdnytwxi.us-west-2.rds.amazonaws.com:3306/wdwtms_prod"
+        - type: "elasticache"
+          name: "wdw-tms-prod-ec.i8pkwr.0001.usw2.cache.amazonaws.com"
+    other_environments:
+      stage:
+        health_check:
+          url: "https://stage.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "3056"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=3056&component=6401644&dashboardMode=force"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0001479-usw2-stg"
+          service_name: "tms-wdw-svc-stage-live"
+      load:
+        health_check:
+          url: "https://lt.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "3058"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=3058&component=6401747&dashboardMode=force"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0001479-usw2-lod"
+          service_name: "tms-wdw-svc-load-live"
+      latest:
+        health_check:
+          url: "https://latest.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep"
+        appdynamics:
+          app_id: "2846"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2846&component=6394100&dashboardMode=force"
+        cloud:
+          cluster_id: "wdw-ecommerce-S0001479-usw2-lst"
+          service_name: "tms-wdw-svc-latest-live"
