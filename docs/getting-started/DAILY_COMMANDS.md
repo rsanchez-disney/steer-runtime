@@ -10,6 +10,7 @@ The essential commands for day-to-day work with steer-runtime. For full details,
 koda chat                           # Default agent
 koda chat --agent orchestrator      # SDLC orchestrator (multi-step work)
 koda chat --agent code_review_agent # Direct specialist (focused tasks)
+koda chat --legacy-ui               # Classic UI (Windows TUI workaround)
 kiro-cli chat --resume              # Resume most recent session
 kiro-cli chat --resume-picker       # Pick a session to resume
 ```

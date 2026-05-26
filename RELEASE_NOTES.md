@@ -4,7 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.93
+## v0.2.96
+
+- **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
+- **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)
+- **cerebro-sustainment workspace** — DX Profile incident ops with 8-section response format
+- **Retail & Restaurant workspace** — full workspace for FNB/MERCH teams with architecture, testing conventions
+- **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with real Splunk queries, runbooks, troubleshooting
+- **chrome-launch.sh fix** — `--user-data-dir` required for debug port binding, restored headless mode and WSL support
+<!-- END LATEST -->
+
+## v0.2.95
 
 - **Workspace naming convention** — formal 4-tier naming: `{name}-vertical`, `{name}-team`, `sustainment-{studio}`, `app-{name}` (docs/WORKSPACE_NAMING.md)
 - **29 workspace renames** — all workspaces now follow the naming convention (auto-migrated via `renames.json`)
@@ -14,7 +24,6 @@ Format: version header followed by bullet points. Only the latest version block 
 - **PhotoPass studios** — 25 new catalog entries across studio-photopass-dpi-support and studio-photopass-imagine
 - **fix:** Welcome message shows correct workspace after switch (Koda ordering fix)
 - **fix:** Hangar ETIMEDOUT — async exec with 10min timeout for app updates (Kite)
-<!-- END LATEST -->
 - **Workspace MCP template** — `shared/templates/workspace-mcp/` skeleton for teams to scaffold custom MCPs
 - **failing_scenarios_finder_agent** (QA) — Jenkins MCP integration with Feature column, emojis, and token persistence (#351)
 - **docs_curator_agent: MkDocs knowledge** — MkDocs maintenance and site generation knowledge added (#354)
@@ -34,7 +43,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** Jira MCP field ID corrections — sprint, storyPoints, epicLink now point to correct myjira fields
 <!-- END LATEST -->
 
-## v0.2.93
+## v0.2.95
 
 - **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with variable resolution, `_overrides`, and `_source` tracking
 - **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
@@ -47,7 +56,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **test-workspace-mcp.sh** — local validation script (21 assertions)
 - **fix:** JIRA MCP no longer includes epicLink in create fields (prevents hard errors on restrictive projects)
 
-## v0.2.93
+## v0.2.95
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -56,7 +65,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 
-## v0.2.93
+## v0.2.95
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API
