@@ -5,28 +5,21 @@ All notable changes to steer-runtime.
 ## [Unreleased]
 
 ### Added
-- **Workspace naming convention** — `docs/WORKSPACE_NAMING.md` with 4 tiers (vertical, team, sustainment, project), validation in `make validate-workspaces`
-- **`managed_studios` field** — workspace schema field for scoping managed services catalog; `catalog-index.sh` hook reads from workspace snapshot
-- **Sustainment Radar** — `profiles/sustainment/radar.json` with 5 sections, 18 powers (incidents, health, catalog, changes, reports)
-- **Smart Checklist tools** — 5 new jira-mcp tools via Issue Properties API (get, set, add_item, check_item, delete)
-- **PhotoPass catalog** — 25 app entries across studio-photopass-dpi-support and studio-photopass-imagine
-- **Team context files** — auto-generated `context/team_context.md` for all 19 sustainment studio workspaces
-- **`workspaces/renames.json`** — migration mapping for Koda auto-migration on sync
+- **MCP-UI widgets** — `jira_get_issue`, `jira_search_issues`, `jira_get_sprint_issues` now return interactive HTML resource blocks (ticket cards, tables, Kanban boards) for Kite rendering
+- **`ui_inspector_agent`** — Chrome DevTools Protocol agent for DOM/CSS inspection, console execution, layout validation (dev-core profile)
+- **`cerebro-sustainment` workspace** — DX Profile incident ops with 8-section structured response format
+- **`retail-restaurant` workspace** — FNB/MERCH teams with architecture diagrams, testing conventions, team context
+- **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with Splunk queries, runbooks, troubleshooting docs
 
 ### Changed
-- **29 workspace renames** — applied naming convention (sustainment-studio-X → sustainment-X, added -team/-vertical suffixes)
-- **`catalog-index.sh`** — reads `managed_studios` from workspace snapshot instead of searching source files
-- **`sustainment/workspace.json`** — removed invalid `context` object, uses `managed_studios: ["*"]`
-- **`steer_orchestrator_agent`** — added WORKSPACE_NAMING.md to resources
-- **`workspace_schema.md`** — documented `managed_studios` field and naming convention reference
-- **Dev workspaces linked to catalog** — last-dragon-team, shield-team, dpi-team, finder-services-team now have `managed_studios`
+- **`chrome-launch.sh`** — requires `--user-data-dir` for debug port binding; restored `--headless=new`; platform-aware debug dir; restored WSL support
+- **`ui_inspector_agent` tools** — scoped to `@chrome-devtools/*` + `thinking` only (removed redundant `allowedTools`)
 
 ### Fixed
-- **Welcome message stale workspace** — `EnrichWelcomeMessages` now runs after `WriteWorkspaceSnapshot`
-- **jira-mcp check_item schema** — clarified that `index` or `match` is required
-- **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle
+- **chrome-launch.sh** — Chrome silently ignored `--remote-debugging-port` without `--user-data-dir`
 
 ---
+
 
 ## [0.2.81] — 2026-05-14
 
