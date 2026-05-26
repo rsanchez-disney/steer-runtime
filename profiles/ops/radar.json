@@ -1,0 +1,53 @@
+{
+  "title": "Operations",
+  "sections": [
+    {
+      "id": "deployments",
+      "title": "Deployments",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "recent-deploys", "label": "Recent Deployments", "prompt": "List recent deployments across my team's services: service name, environment, timestamp, status (success/failed), and deployer." },
+        { "id": "failed-pipelines", "label": "Failed Pipelines", "prompt": "Show CI/CD pipelines that failed in the last 24 hours: pipeline name, failure stage, error summary, and link to logs." },
+        { "id": "rollback-status", "label": "Rollback Status", "prompt": "Check if any services are currently running on a rolled-back version. Show: service, current version, expected version, and rollback reason." },
+        { "id": "deploy-readiness", "label": "Deploy Readiness", "prompt": "Check deployment readiness for pending releases: build status, test results, approval gates, and environment availability." }
+      ]
+    },
+    {
+      "id": "infra",
+      "title": "Infrastructure",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "ecs-health", "label": "ECS Task Health", "prompt": "Check ECS task health for my services: running vs desired count, recent task stops, OOM kills, and unhealthy targets." },
+        { "id": "scaling-events", "label": "Scaling Events", "prompt": "Show auto-scaling events in the last 24 hours: service, direction (up/down), trigger metric, and current task count." },
+        { "id": "cost-check", "label": "Cost Anomalies", "prompt": "Check for cost anomalies in my team's AWS accounts: services with unusual spend increase, idle resources, and optimization opportunities." },
+        { "id": "resource-util", "label": "Resource Utilization", "prompt": "Show CPU and memory utilization for my services: average, peak, and services that are over-provisioned or under-provisioned." }
+      ]
+    },
+    {
+      "id": "incidents",
+      "title": "Incidents & Alerts",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "open-alerts", "label": "Open Alerts", "prompt": "List active alerts and incidents for my services: severity, service affected, duration, and current status." },
+        { "id": "error-rates", "label": "Error Rate Check", "prompt": "Check error rates across my services for the last 4 hours: 5xx count, error percentage, and services exceeding threshold." },
+        { "id": "latency-check", "label": "Latency Check", "prompt": "Check p95 latency for my services: current vs baseline, services exceeding SLA, and trend direction." },
+        { "id": "oncall-handoff", "label": "On-Call Handoff", "prompt": "Generate on-call handoff notes: active incidents, recent changes, known issues, and items to watch." }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "title": "Maintenance",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "cert-expiry", "label": "Certificate Expirations", "prompt": "Check for certificates expiring in the next 30 days across my services: domain, expiry date, auto-renewal status." },
+        { "id": "patch-status", "label": "Patch Status", "prompt": "Show patching status: services needing OS/runtime updates, security vulnerabilities pending fix, and compliance status." },
+        { "id": "security-scan", "label": "Security Scan Results", "prompt": "Summarize latest security scan results: critical/high vulnerabilities, affected services, and remediation priority." },
+        { "id": "cleanup", "label": "Resource Cleanup", "prompt": "Identify resources to clean up: unused ECR images, orphaned EBS volumes, stale DNS records, and old CloudWatch log groups." }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "name": "sustainment-cerebro",
   "extends": "sustainment",
-  "description": "ADM PCS · DX Profile — Incident management & triage agent for sustainment operations",
+
   "team": "Studio Cerebro",
   "profiles": [
     "sustainment"

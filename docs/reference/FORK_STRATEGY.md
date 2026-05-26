@@ -332,8 +332,8 @@ git merge upstream/main              # Sync
 - [ ] Add project memory banks via `koda init-memory`
 - [ ] Set up weekly upstream sync (manual or automated)
 - [ ] Designate a fork owner
-- [ ] Read [Golden Rules](../../shared/context/golden_rules.md)
+- [ ] Read [Golden Rules](https://github.disney.com/SANCR225/steer-runtime/blob/main/shared/context/golden_rules.md)
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

@@ -354,6 +354,18 @@ After creating any agent, verify:
 - [ ] Cross-references resolve (run `check-cross-references.sh`)
 - [ ] If workspace merge: only additive fields present, no duplication
 
+## Announcements
+
+Kite displays notifications from 3 sources:
+
+1. **`RELEASE_NOTES.md`** — parsed `<!-- LATEST -->` block, shown as "What's New" after sync
+2. **`shared/announcements.json`** — planned announcements, synced with steer-runtime
+3. **GitHub Issues** (label: `announcement`) — urgent/ad-hoc, polled once per day
+
+To create an announcement:
+- **Planned:** Add an entry to `shared/announcements.json` with `id`, `date`, `type` (feature|breaking|info|urgent), `title`, `body`
+- **Urgent:** Create a GitHub issue on `SANCR225/steer-runtime` with the `announcement` label
+
 ## Shared rules
 
 Refer to `orchestrator_rules.md` in your context for: delegation mandate, yax persistent memory rules, protected files, instance routing.

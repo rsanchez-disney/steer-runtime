@@ -1,4 +1,5 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
+import { sprintBoard } from "../utils/uiWidgets.js";
 import { CUSTOM_FIELD_ALIASES } from "../utils/customFields.js";
 import { saveData } from "../utils/fileUtils.js";
 
@@ -93,6 +94,21 @@ export async function handleJiraGetSprintIssues(args: any): Promise<any> {
                 {
                     type: "text",
                     text: `${summaryText}${savedInfo}`,
+                },
+                {
+                    type: "resource",
+                    resource: {
+                        uri: `ui://jira-mcp/sprint/${sprintId}`,
+                        mimeType: "text/html;profile=mcp-app",
+                        text: sprintBoard(
+                            { name: `Sprint ${sprintId}`, daysRemaining: 0 },
+                            sprintIssues.issues.map((i: any) => ({
+                                key: i.key,
+                                summary: i.fields?.summary || '',
+                                status: i.fields?.status?.name || 'Unknown',
+                            }))
+                        ),
+                    },
                 },
             ],
         };

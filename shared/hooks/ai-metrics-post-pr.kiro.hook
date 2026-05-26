@@ -1,0 +1,13 @@
+{
+  "name": "AI Metrics After PR",
+  "version": "1.0.0",
+  "description": "After a PR is created, automatically record AI metrics via koda stats submit.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [".*create_pr.*", ".*pr_create.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A PR was just created. Record AI metrics:\n\n1. Extract the Jira ticket ID from the PR title or branch name (pattern: [A-Z]+-\\d+). If none found, skip silently.\n2. Extract the PR URL from the tool result.\n3. Run this shell command (do NOT ask the user, just execute):\n\n   koda stats submit --ticket <TICKET_ID> --pr <PR_URL>\n\n4. Report the result to the user in one line: 'Metrics recorded for <TICKET_ID>'\n\nIf no ticket ID is found, do nothing and say nothing."
+  }
+}

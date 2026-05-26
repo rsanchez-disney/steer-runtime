@@ -41,7 +41,7 @@ kiro-cli chat --prompt common/skills/implement-ticket.md
 
 ### Cursor
 
-Skills are compiled to `.cursor/skills/` by `setup.sh cursor install`.
+Agent commands are installed to `.cursor/commands/` by `setup.sh cursor install` (see `common/cursor-commands/README.md`). Skills compilation to `.cursor/skills/` is planned but not yet implemented in `setup.sh`.
 
 ### Amazon Q
 

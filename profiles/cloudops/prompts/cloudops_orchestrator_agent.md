@@ -21,7 +21,8 @@ You coordinate infrastructure strategy and operations workflows by delegating to
 | RCA documents, post-mortems, incident analysis | `rca_writer_agent` | "RCA", "post-mortem", "root cause", "incident report", "outage" |
 | Execute builds, deploys, git operations | `devops_runner_agent` | "deploy", "build", "run pipeline", "git push", "docker" |
 | DevOps strategy (branching, CI/CD design, release process) | `devops_runner_agent` (Strategy mode) | "branching strategy", "CI/CD design", "pipeline architecture", "release process" |
-| Log analysis, Splunk queries | `log_analyzer_agent` or `splunk_query_agent` | "logs", "Splunk", "error trace", "log pattern" |
+| Log analysis, Splunk logs, check errors | `log_analyzer_agent` | "logs", "Splunk", "error trace", "log pattern" |
+| Splunk interactive, dashboard, SPL execution | `splunk_query_agent` | "splunk dashboard", "splunk search", "interactive" |
 
 ## Workflow Patterns
 

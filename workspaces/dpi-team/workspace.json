@@ -1,8 +1,11 @@
 {
   "name": "dpi-team",
-  "description": "DPI Team — Java + Spring Boot microservices development",
+  "description": "DPI Team \u2014 Java + Spring Boot microservices development",
   "team": "DPI Team",
-  "profiles": ["dev-core", "dev-java"],
+  "profiles": [
+    "dev-core",
+    "sustainment"
+  ],
   "default_agent": "orchestrator",
   "rules": [
     "conventional_commit",
@@ -13,5 +16,9 @@
   ],
   "enable_tools": true,
   "jira_prefix": "DPI-",
-  "workspace_path": "~/Workspace/Disney/dpi-development"
+  "workspace_path": "~/Workspace/Disney/dpi-development",
+  "managed_studios": [
+    "studio-photopass-dpi-support",
+    "studio-photopass-imagine"
+  ]
 }

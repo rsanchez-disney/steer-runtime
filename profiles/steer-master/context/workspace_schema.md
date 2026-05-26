@@ -20,11 +20,18 @@
 | `services` | string[] | Service bank names from `shared/services/` |
 | `channels` | string[] | Channel bank names from `channels/` |
 | `workspace_path` | string | Base path for project resolution |
+| `managed_studios` | string[] | Managed services catalog scope — studio directory names to include (e.g., `["studio-mars", "studio-kaos"]`). Use `["*"]` for all studios. Consumed by `catalog-index.sh` hook to filter which apps agents see. |
 
 ## Valid Profile IDs
 `dev-core`, `dev-web`, `dev-mobile`, `dev-python`, `dev-infra`, `ba`, `qa`, `ops`, `pm`, `steer-master`
 
 Alias: `dev` expands to `dev-core` + `dev-web` + `dev-mobile` + `dev-python` + `dev-infra`
+
+## Naming Convention
+
+See [docs/WORKSPACE_NAMING.md](../../docs/WORKSPACE_NAMING.md) for the full naming convention.
+
+Summary: `{name}-vertical` | `{name}-team` | `sustainment-{studio}` | `app-{name}`
 
 ## Breaking Changes
 - Removing a required field

@@ -1,0 +1,51 @@
+{
+  "title": "Product & Sprint Management",
+  "sections": [
+    {
+      "id": "sprint",
+      "title": "Sprint Health",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "sprint-health", "label": "Sprint Health Check", "prompt": "Analyze current sprint health: burndown trajectory, at-risk items (not started, blocked, stale), completion forecast, and recommended actions." },
+        { "id": "standup", "label": "Generate Standup", "prompt": "Generate today's standup summary from Jira activity: what moved yesterday, what's in progress today, blockers, and items needing attention." },
+        { "id": "goal-progress", "label": "Sprint Goal Progress", "prompt": "Evaluate progress toward the sprint goal: which goal-related stories are done, in progress, or at risk. Provide a confidence score." },
+        { "id": "at-risk", "label": "At-Risk Items", "prompt": "Identify items at risk of not completing this sprint: stories not started, blocked items, items with no recent activity, and overcommitted developers." }
+      ]
+    },
+    {
+      "id": "backlog",
+      "title": "Backlog Health",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "grooming", "label": "Grooming Candidates", "prompt": "Identify backlog items needing grooming: unestimated stories, stories without acceptance criteria, stale items (>30 days), and items missing priority." },
+        { "id": "priority-conflicts", "label": "Priority Conflicts", "prompt": "Analyze the backlog for priority conflicts: multiple P1s competing, misaligned priorities between epics, and items that should be reprioritized based on dependencies." },
+        { "id": "epic-health", "label": "Epic Health", "prompt": "For each active epic: show progress percentage, remaining stories, estimated completion date, and whether it's on track for the target release." }
+      ]
+    },
+    {
+      "id": "planning",
+      "title": "Planning",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "capacity", "label": "Capacity vs Committed", "prompt": "Compare team capacity (available story points based on velocity) against committed work for the current and next sprint. Flag overcommitment." },
+        { "id": "next-sprint", "label": "Next Sprint Candidates", "prompt": "Recommend items for next sprint based on: priority, dependencies resolved, grooming status, and alignment with roadmap goals." },
+        { "id": "release-readiness", "label": "Release Readiness", "prompt": "Assess release readiness: feature completion, test coverage, open defects, documentation status, and deployment prerequisites." }
+      ]
+    },
+    {
+      "id": "comms",
+      "title": "Communication",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "sprint-review-deck", "label": "Sprint Review Deck", "prompt": "Generate sprint review content: completed features with demos, metrics (velocity, quality), retrospective themes, and next sprint preview." },
+        { "id": "release-notes", "label": "Release Notes", "prompt": "Generate release notes from completed stories: group by feature, include business value, known issues, and migration notes if applicable." },
+        { "id": "stakeholder-update", "label": "Stakeholder Update", "prompt": "Draft a stakeholder update email: delivery progress, key decisions made, upcoming milestones, risks, and items needing input." },
+        { "id": "retro-prep", "label": "Retro Prep", "prompt": "Prepare retrospective data: sprint metrics vs previous, recurring patterns from Jira (blocked items, carry-over), and suggested discussion topics." }
+      ]
+    }
+  ]
+}

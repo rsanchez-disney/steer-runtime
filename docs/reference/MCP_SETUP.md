@@ -252,7 +252,7 @@ Set `CONTAINER_RUNTIME` in your shell or env.vars if auto-detection picks the wr
 export CONTAINER_RUNTIME=podman   # or docker, nerdctl
 ```
 
-> See [MEMORY_MCP.md](MEMORY_MCP.md) for full details — data model, tools reference, and troubleshooting.
+> See [MEMORY_MCP.md](../memory/MEMORY_MCP.md) for full details — data model, tools reference, and troubleshooting.
 
 ## Verification
 
@@ -286,4 +286,4 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

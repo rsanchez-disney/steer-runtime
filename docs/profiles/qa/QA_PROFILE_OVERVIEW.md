@@ -393,7 +393,7 @@ koda install dev qa
 
 ## See Also
 
-- **Setup Guide:** `../README.md`
+- **Setup Guide:** `../index.md`
 - **Agent Reference:** `../AGENTS.md`
 - **QA Guidelines:** `.kiro-qa/context/qa_guidelines.md`
 - **Test Templates:** `.kiro-qa/context/test_templates.md`

@@ -539,7 +539,7 @@ Legacy UI specialists for Angular 15, Polymer 2/3, and lightweight Lambda develo
 
 ---
 
-## Profile: ba (8 agents)
+## Profile: ba (9 agents)
 
 Business Analyst and Product Owner agents for requirements, scope, and feature definition.
 
@@ -601,6 +601,12 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **Purpose:** Dual-mode project estimation — CCV (hours/story points/FTEs) and DRIFT (tokens/cost)  
 **Use for:** RFP estimation, sprint planning, AI cost projection, team sizing  
 **MCP Servers:** jira, confluence
+
+#### web_scraping_validator_agent
+**File:** `profiles/ba/agents/web_scraping_validator_agent.json`  
+**Purpose:** Validates web pages by browsing, checking structure, accessibility, and content  
+**Use for:** Validating requirements against live UI, checking content correctness, browsing URLs  
+**MCP Servers:** Chrome MCP
 
 ---
 
@@ -1000,7 +1006,7 @@ Shared utility agents available across all profiles.
 
 ---
 
-## Profile: design (6 agents)
+## Profile: design (7 agents)
 
 Design discovery, user research, and UX pipeline.
 
@@ -1045,6 +1051,12 @@ Design discovery, user research, and UX pipeline.
 **File:** `profiles/design/agents/prototype_prompt_agent.json`  
 **Purpose:** Transforms requirements into high-fidelity design prompts for Figma Make, Google Stitch, or v0  
 **Use for:** AI-powered prototyping, use case catalogs, prompt template libraries
+
+#### web_scraping_validator_agent
+**File:** `profiles/design/agents/web_scraping_validator_agent.json`  
+**Purpose:** Validates web pages by browsing, checking structure, accessibility, and content  
+**Use for:** Browsing prototypes, capturing screenshots, validating UI against specs, accessibility checks  
+**MCP Servers:** Chrome MCP
 
 ---
 

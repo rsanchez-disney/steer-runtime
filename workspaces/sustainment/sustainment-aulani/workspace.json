@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-aulani",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Aulani applications",
+  "team": "Studio Aulani",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-aulani"
+  ],
+  "enable_tools": true
+}

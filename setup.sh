@@ -2019,7 +2019,9 @@ HOOKEOF
                 fi
                 
                 rules_dir="$cursor_dir/.cursor/rules"
-                mkdir -p "$rules_dir"
+                commands_dir="$cursor_dir/.cursor/commands"
+                agents_dir="$cursor_dir/.cursor/agents"
+                mkdir -p "$rules_dir" "$commands_dir" "$agents_dir"
                 
                 echo "🖱️  Installing Cursor rules to $rules_dir"
                 echo ""
@@ -2034,6 +2036,32 @@ HOOKEOF
                 
                 echo ""
                 echo "✅ Installed $count rules to $rules_dir"
+                
+                echo ""
+                echo "⌨️  Installing Cursor commands to $commands_dir"
+                cmd_count=0
+                for cmd in "$STEER_ROOT"/common/cursor-commands/*.md; do
+                    [ -f "$cmd" ] || continue
+                    base=$(basename "$cmd")
+                    [ "$base" = "README.md" ] && continue
+                    cp "$cmd" "$commands_dir/"
+                    echo "  ✓ /${base%.md}"
+                    cmd_count=$((cmd_count + 1))
+                done
+                echo "✅ Installed $cmd_count commands (type /orchestrator in Agent chat)"
+                
+                echo ""
+                echo "🤖 Installing Cursor agents to $agents_dir"
+                agent_count=0
+                for cmd in "$STEER_ROOT"/common/cursor-commands/*.md; do
+                    [ -f "$cmd" ] || continue
+                    base=$(basename "$cmd")
+                    [ "$base" = "README.md" ] && continue
+                    cp "$cmd" "$agents_dir/"
+                    echo "  ✓ agent:${base%.md}"
+                    agent_count=$((agent_count + 1))
+                done
+                echo "✅ Installed $agent_count agents (Agent picker or /orchestrator)"
                 
                 # Generate mcp.json if MCP servers are installed
                 if [ -d "$HOME/.kiro/tools/mcp-servers" ]; then
@@ -2274,12 +2302,16 @@ if has_placeholder or '${jira_pat}' == 'YOUR_TOKEN' or '${confluence_pat}' == 'Y
                 fi
                 cursor_dir="${cursor_dir/#\~/$HOME}"
                 rules_dir="$cursor_dir/.cursor/rules"
+                commands_dir="$cursor_dir/.cursor/commands"
+                agents_dir="$cursor_dir/.cursor/agents"
                 
                 if [ ! -d "$rules_dir" ]; then
                     echo "❌ No Cursor rules found at $rules_dir"
                     echo "   Run: ./setup.sh cursor install $cursor_dir"
                     exit 1
                 fi
+                
+                mkdir -p "$commands_dir" "$agents_dir"
                 
                 echo "🔄 Syncing Cursor rules in $rules_dir"
                 echo ""
@@ -2294,6 +2326,26 @@ if has_placeholder or '${jira_pat}' == 'YOUR_TOKEN' or '${confluence_pat}' == 'Y
                 
                 echo ""
                 echo "✅ Synced $count rules"
+                
+                cmd_count=0
+                for cmd in "$STEER_ROOT"/common/cursor-commands/*.md; do
+                    [ -f "$cmd" ] || continue
+                    base=$(basename "$cmd")
+                    [ "$base" = "README.md" ] && continue
+                    cp "$cmd" "$commands_dir/"
+                    echo "  ✓ /${base%.md}"
+                    cmd_count=$((cmd_count + 1))
+                done
+                [ "$cmd_count" -gt 0 ] && echo "✅ Synced $cmd_count commands"
+                agent_count=0
+                for cmd in "$STEER_ROOT"/common/cursor-commands/*.md; do
+                    [ -f "$cmd" ] || continue
+                    base=$(basename "$cmd")
+                    [ "$base" = "README.md" ] && continue
+                    cp "$cmd" "$agents_dir/"
+                    agent_count=$((agent_count + 1))
+                done
+                [ "$agent_count" -gt 0 ] && echo "✅ Synced $agent_count agents"
                 ;;
             
             remove)
@@ -2384,8 +2436,8 @@ if has_placeholder or '${jira_pat}' == 'YOUR_TOKEN' or '${confluence_pat}' == 'Y
                 echo "Cursor IDE integration"
                 echo ""
                 echo "Usage:"
-                echo "  ./setup.sh cursor install <project-dir>   Install rules + MCP config"
-                echo "  ./setup.sh cursor sync <project-dir>      Update rules from templates"
+                echo "  ./setup.sh cursor install <project-dir>   Install rules + commands + MCP config"
+                echo "  ./setup.sh cursor sync <project-dir>      Update rules and commands from templates"
                 echo "  ./setup.sh cursor remove <project-dir>    Remove .cursor/ directory"
                 echo "  ./setup.sh cursor init-memory <project-dir>  Generate project context rule"
                 ;;

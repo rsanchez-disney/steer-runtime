@@ -5,10 +5,12 @@ This directory contains `.mdc` rule templates for Cursor IDE, generated from the
 ## Installation
 
 ```bash
-./setup.sh cursor install <project-dir>   # Install rules + MCP config
-./setup.sh cursor sync <project-dir>      # Update rules from latest templates
+./setup.sh cursor install <project-dir>   # Install rules + commands + MCP config
+./setup.sh cursor sync <project-dir>      # Update rules and commands from latest templates
 ./setup.sh cursor remove <project-dir>    # Remove .cursor/ directory
 ```
+
+Agent commands live in `common/cursor-commands/` (`/orchestrator`, `/implement-story`, `/code-review`). Use them in Cursor **Agent** mode via `/`.
 
 ## Rule Numbering
 

@@ -1,0 +1,19 @@
+{
+  "name": "ui_inspector_agent",
+  "description": "Inspects running web applications via Chrome DevTools Protocol. Navigates pages, executes console commands, inspects DOM/CSS, validates UI state, and captures layout information.",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/chrome-launch.sh",
+        "description": "Ensure Chrome is running with remote debugging on port 9222"
+      }
+    ]
+  },
+  "includeMcpJson": true,
+  "prompt": "ui_inspector_agent.md",
+  "tools": [
+    "@chrome-devtools/*",
+    "thinking"
+  ],
+  "resources": []
+}

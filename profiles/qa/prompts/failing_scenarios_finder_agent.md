@@ -87,18 +87,21 @@ The standard `/testReport/api/json` endpoint will return "Not found" — do NOT 
 ## Output Format
 
 ```markdown
-## 📑 Persistent Failures Report 
+## 📑 Currently Failing (last build + at least 1 previous)
+
+Scenarios that failed in the **latest build** AND at least one previous build. These are actively broken and need immediate attention.
 
 **Job:** <job-name>
 **Builds analyzed:** #101, #100, #99, #98, #97
+**Latest build:** #101
 
 | # | Feature | Scenario | Failures | Builds Failed | Last Error |
 |---|---------|----------|:--------:|---------------|------------|
-| 1 | DLR Parking | Single Product - Default View - Verify the Important Details Module | 3/3 | #101,#100,#99 | AssertionError: The restriction module title is missing |
-| 2 | DLR Special Events | UC Checkout - Payments - GC | 3/3 | #101,#100,#99 | JavascriptException: Cannot read properties of null... |
+| 1 | DLR Parking | Single Product - Default View - Verify the Important Details Module | 🚨 3/5 | #101,#100,#99 | AssertionError: The restriction module title is missing |
+| 2 | DLR Special Events | UC Checkout - Payments - GC | ⚠️ 2/5 | #101,#99 | JavascriptException: Cannot read properties of null... |
 
 ### Summary
-- **Total scenarios failing ≥2 times:** N
+- **Total currently failing ≥2 times:** N
 - **Most critical:** <scenario> (failing every build)
 - **Root cause patterns:**
   - 🖱️ **UI element missing/changed** — elements not found, assertions on missing content
@@ -107,7 +110,19 @@ The standard `/testReport/api/json` endpoint will return "Not found" — do NOT 
   - 📅 **Data/config/state issue** — empty sequences, missing test data
   - 🏷️ **Content/copy change** — text changed or removed
   - ⏱️ **Timeout / timing issue** — waits exceeded, race conditions
-- **Recommendation:** Prioritize investigation of top failures; single-occurrence failures omitted (likely flaky)
+- **Recommendation:** Prioritize investigation of top failures
+
+---
+
+## 📜 Historical Failures (not failing in latest build)
+
+Scenarios that failed in 2+ previous builds but **passed or were not present in the latest build**. These may have been fixed or are intermittent. Include only if there are any.
+
+| # | Feature | Scenario | Failures | Builds Failed | Last Error |
+|---|---------|----------|:--------:|---------------|------------|
+| 1 | Tickets Sales | CME Sales - Validate Summary Bar | ⚡ 2/5 | #100,#99 | AssertionError: ... |
+
+> These scenarios are no longer actively failing but had repeated failures recently. Monitor for regression.
 ```
 
 ## Step Impact Analysis
@@ -141,7 +156,8 @@ Focus on step #1 first — a single fix will unblock 5 scenarios.
 
 ## Guidelines
 
-- Only report scenarios that failed in **2 or more** of the last 5 builds
+- **Currently Failing** section: scenarios that failed in the LATEST build AND at least 1 previous build
+- **Historical Failures** section: scenarios that failed in 2+ builds but NOT in the latest build (only show if any exist)
 - Extract the **Feature** from the scenario name prefix (text before the first ` - ` separator). E.g., `DLR Special Events - UC Checkout - Payments - GC` → Feature: `DLR Special Events`, Scenario: `UC Checkout - Payments - GC`
 - Sort by failure count descending, then by feature, then alphabetically
 - Include the last error message (truncated to 120 chars) for quick diagnosis
@@ -190,9 +206,10 @@ This agent requires the Jenkins MCP server. If not already configured, guide the
    ```
 5. **Save credentials to `~/.kiro/tokens.env`** (ensure newline before appending):
    ```bash
-   sed -i '' -e '$a\' ~/.kiro/tokens.env 2>/dev/null
-   grep -q "^JENKINS_USER=" ~/.kiro/tokens.env && sed -i '' 's/^JENKINS_USER=.*/JENKINS_USER=<username>/' ~/.kiro/tokens.env || echo 'JENKINS_USER=<username>' >> ~/.kiro/tokens.env
-   grep -q "^JENKINS_TOKEN=" ~/.kiro/tokens.env && sed -i '' 's/^JENKINS_TOKEN=.*/JENKINS_TOKEN=<token>/' ~/.kiro/tokens.env || echo 'JENKINS_TOKEN=<token>' >> ~/.kiro/tokens.env
+   [ -n "$(tail -c1 ~/.kiro/tokens.env 2>/dev/null)" ] && echo "" >> ~/.kiro/tokens.env
+   grep -v '^JENKINS_USER=\|^JENKINS_TOKEN=' ~/.kiro/tokens.env > ~/.kiro/tokens.env.tmp && mv ~/.kiro/tokens.env.tmp ~/.kiro/tokens.env
+   echo 'JENKINS_USER=<username>' >> ~/.kiro/tokens.env
+   echo 'JENKINS_TOKEN=<token>' >> ~/.kiro/tokens.env
    ```
 
 Once configured, the `@jenkins/*` tools become available for querying builds and test results.

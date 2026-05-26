@@ -1,0 +1,14 @@
+{
+  "name": "sustainment-rex",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio Rex applications",
+  "team": "Studio Rex",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-rex"
+  ],
+  "enable_tools": true
+}

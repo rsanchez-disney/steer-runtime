@@ -720,3 +720,73 @@ Switch mid-session:
 Switch to autopilot
 Switch to review mode
 ```
+
+---
+
+## Spec-Driven Implementation
+
+Use the `spec-driven-implementation` skill to generate a structured spec (requirements, design, tasks) before any code is written. The agent will stop and wait for your approval before implementing.
+
+### Activation
+
+Reference the skill directly:
+```
+#spec-driven-implementation OPS-123
+```
+
+Or use natural language:
+```
+Generate a spec for OPS-123
+Spec out DPAY-456 before implementing
+Plan the implementation for WDPR-789
+```
+
+### Example Prompts
+
+**Basic — spec only:**
+```
+#spec-driven-implementation OPS-22371
+```
+→ Agent fetches Jira, explores codebase, generates requirements.md + design.md + tasks.md, stops for approval.
+
+**With context hints:**
+```
+#spec-driven-implementation OPS-22371
+Focus on the payment validation layer. The fix should not change the API contract.
+```
+
+**Approve and implement:**
+```
+approved
+```
+→ Agent proceeds with implementation following the tasks.md plan.
+
+**Request changes before approving:**
+```
+Move the validation logic to a shared utility instead of the controller. Also add an integration test.
+```
+→ Agent updates the spec files and presents again.
+
+**Full lifecycle in one session:**
+```
+#spec-driven-implementation DPAY-456
+```
+1. Agent generates spec → stops
+2. You review → "approved"
+3. Agent implements → creates PR
+4. Metrics auto-captured via post-PR hook
+
+### What Gets Generated
+
+| File | Contents |
+|------|----------|
+| `~/.kiro/.specs/<TICKET>/requirements.md` | Functional/non-functional requirements, acceptance criteria, scope |
+| `~/.kiro/.specs/<TICKET>/design.md` | Approach, files to modify, interfaces, test scenarios, risks |
+| `~/.kiro/.specs/<TICKET>/tasks.md` | Ordered implementation checklist with verification steps |
+
+### Tips
+
+- Works with any Jira prefix (OPS, DPAY, WDPR, etc.)
+- Specs persist across sessions — re-run to update, or reference later
+- Combine with execution modes: `#spec-driven-implementation OPS-123` then `Switch to autopilot` after approval
+- The orchestrator may delegate exploration to `codebase_explorer_agent` and implementation to specialist agents (backend, ui, etc.)

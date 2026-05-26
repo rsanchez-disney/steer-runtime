@@ -117,7 +117,7 @@ Current status of all documentation after the installation guides consolidation.
 **Version:** 3.7.0
 
 <!-- Links -->
-[AGENTS.md]: ../AGENTS.md
+[AGENTS.md]: https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md
 [ARCHITECTURE.md]: architecture/ARCHITECTURE.md
 [BA_PROMPT_GUIDE.md]: profiles/ba/BA_PROMPT_GUIDE.md
 [BA_QUICK_REFERENCE.md]: profiles/ba/BA_QUICK_REFERENCE.md
@@ -151,7 +151,7 @@ Current status of all documentation after the installation guides consolidation.
 [QA_PROMPT_GUIDE.md]: profiles/qa/QA_PROMPT_GUIDE.md
 [QA_QUICK_REFERENCE.md]: profiles/qa/QA_QUICK_REFERENCE.md
 [QA_WORKFLOWS.md]: profiles/qa/QA_WORKFLOWS.md
-[README.md]: ../README.md
+[README.md]: index.md
 [REFERENCE.md]: reference/REFERENCE.md
 [ROADMAP.md]: ROADMAP.md
 [SETUP.md]: getting-started/SETUP.md

@@ -1,0 +1,15 @@
+{
+  "name": "android_quality_agent",
+  "description": "Quality Engineer — mandatory review gate for all code before delivery. Reviews code quality, test quality, and architecture compliance.",
+  "prompt": "prompts/android_quality_agent.md",
+  "tools": [
+    "fs_read",
+    "code",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/testing_conventions.md"
+  ],
+  "includeMcpJson": true
+}

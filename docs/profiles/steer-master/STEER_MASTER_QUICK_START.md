@@ -251,4 +251,4 @@ Switch mid-session: `Switch to autopilot` or `Switch to review mode`
 
 ---
 
-Back to [Getting Started](../../getting-started/GETTING_STARTED.md) · [Dev Quick Start](../../getting-started/DEV_QUICK_START.md) · [README](../../README.md)
+Back to [Getting Started](../../getting-started/GETTING_STARTED.md) · [Dev Quick Start](../../getting-started/DEV_QUICK_START.md) · [README](../../index.md)

@@ -1,0 +1,50 @@
+{
+  "title": "Business Analysis",
+  "sections": [
+    {
+      "id": "stories",
+      "title": "My Stories",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "my-stories", "label": "My Assigned Stories", "prompt": "Query Jira for all stories assigned to me in the current sprint. Show: key, summary, status, story points, and acceptance criteria count." },
+        { "id": "analyze-story", "label": "Analyze Story...", "prompt": "Which story should I analyze? I'll check for: missing acceptance criteria, unclear scope, missing dependencies, and testability gaps." },
+        { "id": "generate-ac", "label": "Generate AC...", "prompt": "Which story needs acceptance criteria? Provide the ticket key and I'll generate Given/When/Then acceptance criteria based on the description and context." },
+        { "id": "story-gaps", "label": "Story Gaps Check", "prompt": "Review all stories in the current sprint. Flag any that are missing: acceptance criteria, story points, description, or have vague scope." }
+      ]
+    },
+    {
+      "id": "scope",
+      "title": "Sprint Scope",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "scope-summary", "label": "Sprint Scope Summary", "prompt": "Summarize the current sprint scope: total stories, story points committed, epics represented, and key deliverables." },
+        { "id": "scope-creep", "label": "Scope Creep Check", "prompt": "Compare the current sprint contents against what was committed at sprint start. Identify any items added mid-sprint and their impact on capacity." },
+        { "id": "dependency-map", "label": "Dependency Map", "prompt": "Analyze stories in the current sprint for dependencies: cross-team, technical, and external. Flag any blocked or at-risk items." }
+      ]
+    },
+    {
+      "id": "requirements",
+      "title": "Requirements",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "epic-coverage", "label": "Epic Coverage Analysis", "prompt": "For each epic in my project, analyze: total stories vs completed, missing scenarios, and gaps between epic description and story coverage." },
+        { "id": "generate-prd", "label": "Generate PRD...", "prompt": "Which epic or feature should I generate a PRD for? I'll create a Product Requirements Document with problem statement, user stories, acceptance criteria, and success metrics." },
+        { "id": "spec-vs-impl", "label": "Spec vs Implementation", "prompt": "Compare the requirements/spec for a feature against what's been implemented. Identify gaps, deviations, and untested scenarios." }
+      ]
+    },
+    {
+      "id": "comms",
+      "title": "Communication",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "standup", "label": "Standup Summary", "prompt": "Generate my daily standup update based on my Jira activity: what I worked on yesterday, what I'm doing today, and any blockers or decisions needed." },
+        { "id": "sprint-review", "label": "Sprint Review Prep", "prompt": "Prepare sprint review talking points: completed stories with business value, demos to show, metrics, and items that didn't make it (with reasons)." },
+        { "id": "release-notes", "label": "Release Notes Draft", "prompt": "Generate user-facing release notes from completed stories in the current sprint. Group by feature area, use non-technical language." }
+      ]
+    }
+  ]
+}

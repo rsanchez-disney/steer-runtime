@@ -5,12 +5,21 @@ All notable changes to steer-runtime.
 ## [Unreleased]
 
 ### Added
-- **chrome-devtools-mcp** — global MCP bundle for headless browser automation (isolated Chrome, no user session interference)
+- **MCP-UI widgets** — `jira_get_issue`, `jira_search_issues`, `jira_get_sprint_issues` now return interactive HTML resource blocks (ticket cards, tables, Kanban boards) for Kite rendering
+- **`ui_inspector_agent`** — Chrome DevTools Protocol agent for DOM/CSS inspection, console execution, layout validation (dev-core profile)
+- **`cerebro-sustainment` workspace** — DX Profile incident ops with 8-section structured response format
+- **`retail-restaurant` workspace** — FNB/MERCH teams with architecture diagrams, testing conventions, team context
+- **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with Splunk queries, runbooks, troubleshooting docs
 
-### Removed
-- **chrome-devtools-mcp.sh hook** — killed user Chrome sessions on Windows/macOS/Linux; replaced by isolated MCP bundle
+### Changed
+- **`chrome-launch.sh`** — requires `--user-data-dir` for debug port binding; restored `--headless=new`; platform-aware debug dir; restored WSL support
+- **`ui_inspector_agent` tools** — scoped to `@chrome-devtools/*` + `thinking` only (removed redundant `allowedTools`)
+
+### Fixed
+- **chrome-launch.sh** — Chrome silently ignored `--remote-debugging-port` without `--user-data-dir`
 
 ---
+
 
 ## [0.2.81] — 2026-05-14
 

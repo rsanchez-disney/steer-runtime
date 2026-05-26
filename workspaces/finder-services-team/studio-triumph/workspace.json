@@ -1,0 +1,13 @@
+{
+  "name": "studio-triumph",
+  "extends": "finder-services",
+  "description": "Studio Triumph \u2014 Dash platform sustainment and development (Kanban)",
+  "profiles": [
+    "sustainment",
+    "ops"
+  ],
+  "managed_studios": [
+    "studio-triumph"
+  ],
+  "default_agent": "orchestrator"
+}

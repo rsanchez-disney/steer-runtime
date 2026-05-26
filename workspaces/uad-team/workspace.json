@@ -1,0 +1,12 @@
+{
+  "name": "uad-team",
+  "description": "Cast Sales Experience \u2014 UAD ongoing projects PM workspace",
+  "team": "UAD Team (Ongoing)",
+  "profiles": [
+    "pm"
+  ],
+  "default_agent": "pm_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true,
+  "jira_prefix": "UAD-"
+}

@@ -136,6 +136,30 @@ koda chat --agent qa_orchestrator_agent  # QA orchestrator
 | `koda: command not found`      | Close and reopen PowerShell, or re-run the Koda install script                                   |
 | SSH connection fails           | Run `ssh-keygen` to generate a key, then add it to your GitHub account under Settings → SSH keys |
 | `gh` not recognized            | Restart PowerShell after installing GitHub CLI                                                   |
+| TUI crash / `napi_reference_unref` panic | Use `koda chat --legacy-ui` (see below)                                                |
+
+---
+
+### TUI crash on Windows (Bun NAPI bug)
+
+If `koda chat` crashes with:
+```
+FATAL ERROR: Finalizer is calling a function that may affect GC state.
+panic(main thread): napi_reference_unref
+oh no: Bun has crashed.
+```
+
+This is a known bug in Bun v1.3.13 on Windows. Use the legacy UI as a workaround:
+
+```powershell
+koda chat --legacy-ui                          # Classic readline (no TUI)
+koda chat --legacy-ui --agent orchestrator     # With specific agent
+koda chat --legacy-ui --ws my-workspace        # With workspace
+```
+
+The `--legacy-ui` flag skips the TUI and uses kiro-cli's classic interface. All features work the same — only the visual rendering differs.
+
+**Permanent fix:** Update kiro-cli when a new version is available (`kiro-cli update`). The bug is fixed in Bun 1.4+.
 
 ---
 
@@ -205,4 +229,4 @@ You should see output like `kiro-cli-chat 2.0.1` (version may vary).
 
 ---
 
-Back to [README](../README.md)
+Back to [README](../index.md)

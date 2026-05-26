@@ -209,7 +209,7 @@ find_tests({path, framework})   // Locate tests
 test_coverage({command})        // Coverage analysis
 ```
 
-See [profiles/dev-core/powers/GUIDE.md](../../profiles/dev-core/powers/GUIDE.md) for creating custom powers.
+See [profiles/dev-core/powers/GUIDE.md](https://github.disney.com/SANCR225/steer-runtime/blob/main/profiles/dev-core/powers/GUIDE.md) for creating custom powers.
 
 ---
 
@@ -501,8 +501,8 @@ State persists across:
 
 ## References
 
-- **[README.md](../README.md)** - Quick start
-- **[AGENTS.md](../../AGENTS.md)** - Agent reference
+- **[README.md](../index.md)** - Quick start
+- **[AGENTS.md](https://github.disney.com/SANCR225/steer-runtime/blob/main/AGENTS.md)** - Agent reference
 - **[PROMPT_GUIDE.md](../profiles/dev/PROMPT_GUIDE.md)** - Usage examples
 
 ---

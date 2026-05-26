@@ -24,6 +24,10 @@ This creates:
 ```
 ~/my-project/.cursor/
 ├── mcp.json                    # MCP server configs (Jira, Confluence, MyWiki, GitHub, Mermaid)
+├── commands/
+│   ├── orchestrator.md         # /orchestrator — route & delegate (SDLC orchestrator)
+│   ├── implement-story.md      # /implement-story — Jira → PR workflow
+│   └── code-review.md          # /code-review — PR/branch review
 └── rules/
     ├── 00-golden-rules.mdc     # Always-on: coding standards
     ├── 01-project-mappings.mdc # Always-on: Jira → repo mappings
@@ -50,11 +54,44 @@ This creates:
 ## Commands
 
 ```bash
-./setup.sh cursor install <dir>       # Install rules + MCP config
-./setup.sh cursor sync <dir>          # Update rules from latest templates
+./setup.sh cursor install <dir>       # Install rules + agent commands + MCP config
+./setup.sh cursor sync <dir>          # Update rules and commands from templates
 ./setup.sh cursor remove <dir>        # Remove .cursor/ directory
 ./setup.sh cursor init-memory <dir>   # Generate project context rule
 ```
+
+## Agent commands (orchestrator)
+
+Cursor discovers custom **commands** (`.cursor/commands/`) and **agents** (`.cursor/agents/`) only when each `.md` file has YAML frontmatter with `name` and `description`. steer-runtime installs the same orchestrator files to both folders.
+
+In Cursor **Agent** mode (not inline Edit), type `/` to run steer-runtime orchestrator workflows:
+
+### Troubleshooting: `/orchestrator` not in the menu
+
+1. **Workspace root** — Open the folder that contains `.cursor/` (e.g. `steer-runtime`, not a parent monorepo path unless `.cursor` is there).
+2. **Agent mode** — Use the **Agent** chat/composer; custom `/` commands often do not load in Editor-only mode.
+3. **Reload** — `Cmd+Shift+P` → **Developer: Reload Window** (Cursor sometimes hides custom commands until reload).
+4. **Type the full name** — Even if the menu is empty, try `/orchestrator` + Enter.
+5. **Agent picker** — Open the **Agent** dropdown and select **orchestrator** (from `.cursor/agents/`).
+6. **Re-install** — From steer-runtime: `./setup.sh cursor install /path/to/your-project`
+7. **Check files exist:**
+   ```bash
+   ls .cursor/commands/ .cursor/agents/
+   head -5 .cursor/agents/orchestrator.md   # must show --- name: orchestrator ---
+   ```
+
+| Command | Example | What it does |
+|---------|---------|--------------|
+| `/orchestrator` | `/orchestrator implement DPAY-14337` | Routes intent; delegates via **Task**; SDLC gates |
+| `/implement-story` | `/implement-story DPAY-14337` | Full Jira → plan → implement → quality → PR |
+| `/code-review` | `/code-review` or paste PR URL | Review checklist (golden rules, security, tests) |
+
+Source files: `common/cursor-commands/*.md` (adapted from `profiles/dev-core/prompts/orchestrator.md`).
+
+**Tips:**
+- Enable Jira/GitHub MCP (`koda mcp-install` + `cursor install`) so the agent can fetch tickets without paste.
+- Manually attach `@50-sdlc-workflow` for extra SDLC detail, or rely on `/implement-story`.
+- Kiro uses `subagent`; Cursor uses the **Task** tool — the command text maps steer agents to `explore`, `code-reviewer`, `generalPurpose`, `shell`, etc.
 
 ## How Rules Work
 
@@ -91,8 +128,8 @@ git pull
 |--------------------------------------|-----------------------------|------------------------------|
 | Coding standards                     | ✅ via agent prompts         | ✅ via .mdc rules             |
 | MCP tools (Jira, Confluence, GitHub) | ✅                           | ✅                            |
-| Multi-agent orchestration            | ✅ 40 agents                 | ❌ single agent               |
-| Automated SDLC workflow              | ✅ 12-step pipeline          | ⚠️ manual guidance           |
+| Multi-agent orchestration            | ✅ 40 agents                 | ⚠️ via `/orchestrator` + Task subagents |
+| Automated SDLC workflow              | ✅ 12-step pipeline          | ✅ `/implement-story` + `50-sdlc-workflow` rule |
 | Programmatic hooks                   | ✅ guard-writes, git-context | ⚠️ rule instructions         |
 | Profile switching (dev/ba/qa/ops/pm) | ✅                           | ❌ all rules present          |
 | Persistent memory (knowledge tool)   | ✅                           | ❌ session only               |
@@ -105,4 +142,4 @@ Use both: Kiro for complex orchestrated workflows, Cursor for day-to-day coding 
 
 ---
 
-**Last Updated:** March 19, 2026
+**Last Updated:** May 10, 2026
