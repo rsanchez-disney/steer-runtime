@@ -435,13 +435,14 @@ if "gitlab" in servers:
                 "GITLAB_HOST": host,
                 "GITLAB_TOKEN": token,
             }
-            servers["gitlab"] = entry
+            servers[f"gitlab-{remote}"] = entry
         changed = True
     else:
         gl_token = read_tok('GITLAB_TOKEN')
         if gl_token and gl_token != "YOUR_TOKEN":
             env = gitlab_entry.get("env", {})
             env["GITLAB_TOKEN"] = gl_token
+            gitlab_entry["env"] = env
         servers["gitlab"] = gitlab_entry
         changed = True
 
@@ -1257,7 +1258,7 @@ if gl_remotes:
                 'GITLAB_TOKEN': token,
             }
         }
-        mcp['mcpServers']['gitlab'] = entry
+        mcp['mcpServers'][f'gitlab-{remote}'] = entry
 else:
     legacy_gl_token = read_tok('GITLAB_TOKEN')
     legacy_gl_url = read_tok('GITLAB_URL')

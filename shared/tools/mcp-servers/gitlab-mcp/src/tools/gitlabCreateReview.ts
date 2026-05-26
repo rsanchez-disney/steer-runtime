@@ -68,13 +68,17 @@ export async function handleGitlabCreateReview(args: any) {
         await gl.MergeRequestNotes.create(projectPath, iid, body);
     }
 
+    // Fetch MR diff refs for accurate positioning
+    const mr = await gl.MergeRequests.show(projectPath, iid);
+    const { base_sha, head_sha, start_sha } = (mr as any).diff_refs;
+
     // Post inline discussion threads
     for (const comment of comments || []) {
         await gl.MergeRequestDiscussions.create(projectPath, iid, comment.body, {
             position: {
-                baseSha: "HEAD~1",
-                headSha: "HEAD",
-                startSha: "HEAD~1",
+                baseSha: base_sha,
+                headSha: head_sha,
+                startSha: start_sha,
                 positionType: "text",
                 newPath: comment.path,
                 newLine: String(comment.line),

@@ -34,9 +34,6 @@ export async function handleGitlabGetFile(args: any) {
     const projectPath = parseProject(project);
     const gl = getClient();
 
-    const options: any = {};
-    if (ref) options.ref = ref;
-
     const file = await gl.RepositoryFiles.show(projectPath, filePath, ref || "HEAD");
 
     const decoded = Buffer.from(file.content, "base64").toString("utf-8");
