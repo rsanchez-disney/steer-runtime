@@ -1,0 +1,70 @@
+{
+  "name": "dps-team",
+  "description": "Disney Package Service — package offer search, quote, freeze, and pricing for DLR/DLP resort packages",
+  "team": "DPS / Yield Management Platform",
+  "profiles": [
+    "dev-core"
+  ],
+  "workspace_path": "${WORKSPACE_ROOT}",
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "dps-core-offer",
+      "path": "dps-core-offer",
+      "repo": "WDPR-Resort-Sales/dps-core-offer",
+      "memory_bank": "dps-core-offer"
+    },
+    {
+      "name": "dps-core-resflowmgmt",
+      "path": "dps-core-resflowmgmt",
+      "repo": "WDPR-Resort-Sales/dps-core-resflowmgmt",
+      "memory_bank": "dps-core-resflowmgmt"
+    },
+    {
+      "name": "dps-core-quote",
+      "path": "dps-core-quote",
+      "repo": "WDPR-Resort-Sales/dps-core-quote",
+      "memory_bank": "dps-core-quote"
+    },
+    {
+      "name": "dps-core-scoreschemeconfig",
+      "path": "dps-core-scoreschemeconfig",
+      "repo": "WDPR-Resort-Sales/dps-core-scoreschemeconfig",
+      "memory_bank": "dps-core-scoreschemeconfig"
+    },
+    {
+      "name": "package-calendar-service-sync",
+      "path": "package-calendar-service-sync",
+      "repo": "WDPR-Resort-Sales/package-calendar-service-sync",
+      "memory_bank": "package-calendar-service-sync"
+    },
+    {
+      "name": "package-calendar-service",
+      "path": "package-calendar-service",
+      "repo": "WDPR-Resort-Sales/package-calendar-service",
+      "memory_bank": "package-calendar-service"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-aws",
+    "general-api-design",
+    "general-performance-optimization",
+    "general-testing-strategies",
+    "general-docker",
+    "jira-commit-format",
+    "jira-safety"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "ISOPP-",
+  "wiki_url": "https://mywiki.disney.com/pages/viewpage.action?spaceKey=DisneyPackageService&title=Disney+Package+Service+Home",
+  "services": [
+    "dps-core-offer",
+    "dps-core-quote",
+    "dps-core-resflowmgmt",
+    "dps-core-scoreschemeconfig",
+    "package-calendar-service-sync",
+    "package-calendar-service"
+  ]
+}
