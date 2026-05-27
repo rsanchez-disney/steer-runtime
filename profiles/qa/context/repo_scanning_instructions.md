@@ -2,21 +2,44 @@
 
 ## Primary Source: step_catalog.json
 
-Look for a pre-built step catalog at `{repo_path}/docs/ai/step_catalog.json`. If it exists, use it as your primary source.
+The repo contains a pre-built step catalog at `{repo_path}/docs/ai/step_catalog.json` (pretty-printed, ~8000 lines).
 
-### Structure
+**Do NOT read the entire file.** Read only the relevant domain.
+
+### How to Read by Domain
+
+1. `grep` for the domain name in the catalog to find its line range:
+   ```
+   grep -n "{domain}" {repo_path}/docs/ai/step_catalog.json
+   ```
+2. Read only that section using line offset + limit
+3. Print: "📚 Step catalog found — reading domain: {domain}"
+
+### Available Domains
+
+account, annual_passes, ap_upgrades, authentication, cart, checkout, configuration, confirmation, dining, dlr, dvic, enchanting_extras, extras, link_id, lodging, mobile, navigation, plans, reservations, services, support, tickets, travel_agents, utilities, wdw
+
+### Choosing the Right Domain
+
+Match the candidate's area to a domain:
+- Availability Calendar, Ticket Sales → `tickets`
+- Park Reservations, Select Date → `reservations`
+- Cart, Add to Cart → `cart`
+- Express Checkout, Payment → `checkout`
+- Annual Passes, Blockout Dates → `annual_passes`
+- Hotels, Rooms → `lodging`
+- Dining, Restaurants → `dining`
+
+If unsure, search multiple relevant domains.
+
+### Structure per Module
 
 ```json
 {
-  "version": "1.0",
-  "modules": [
-    {
-      "file": "common/general_common_steps/example_steps.py",
-      "steps": ["S|I access the page in \"{store}\" as \"{affiliation}\""],
-      "domain": "tickets",
-      "pages": ["example_page"]
-    }
-  ]
+  "file": "common/general_common_steps/example_steps.py",
+  "steps": ["S|I access the page in \"{store}\" as \"{affiliation}\""],
+  "domain": "tickets",
+  "pages": ["example_page"]
 }
 ```
 
@@ -26,14 +49,6 @@ Look for a pre-built step catalog at `{repo_path}/docs/ai/step_catalog.json`. If
 - `W|` = When
 - `S|` = Step (matches any keyword)
 - `T|` = Then
-
-### How to Use
-
-1. Read `{repo_path}/docs/ai/step_catalog.json`
-2. Print: "📚 Step catalog found — {N} modules, {M} total steps"
-3. Search modules by `domain` or `pages` relevant to the candidate's area
-4. Match candidate steps against the `steps` arrays
-5. The `file` field tells you where the step is implemented
 
 ## Fallback: grep (only if step_catalog.json is missing)
 
