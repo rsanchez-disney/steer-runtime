@@ -22,7 +22,6 @@
     "xray_get_test_steps",
     "xray_get_test_case_full",
     "jira_get_issue",
-    "jira_get_issue",
     "fs_read",
     "fs_write",
     "grep"
@@ -43,5 +42,5 @@
     ]
   },
   "includeMcpJson": true,
-  "welcomeMessage": "🤖 Backlog to Gherkin (v1)\n\nPipeline: Fetch → Classify → 🚦 → Scan → Match → 🚦 → Generate → 🚦\n\nProvide:\n  📁 Repo path\n  🗂 XRay path"
+  "welcomeMessage": "🤖 Backlog to Gherkin (v3)\n\nStart with:\n  @get_jira_backlog — I will ask for repo path and XRay path step by step\n\nAfter classification:\n  @get_automation_ready_candidates — Scan repo, show readiness table\n  @write_scenario — Generate .feature files for 🟢 candidates"
 }

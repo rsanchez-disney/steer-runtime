@@ -22,8 +22,9 @@ else:
 
 ## Detecting inRepo
 
-1. `grep` for `@{PROJECT}-\d+` in `*.feature` files at the repo path
-2. Build a set of keys found → those are "inRepo"
+1. `grep` for `@[A-Z]+-[0-9]+` in `*.feature` files at the repo path — this captures ALL Jira-style tags regardless of project prefix
+2. Build a set of ALL keys found in the repo (e.g., COM-123, CME-456, PROGENSTR-789)
+3. For each TC from Jira, check if its key exists in that set → those are "inRepo"
 
 ## Validation
 
