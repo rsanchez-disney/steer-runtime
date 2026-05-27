@@ -1,0 +1,12 @@
+{
+  "name": "feature_writer_agent",
+  "description": "Generates .feature files from readiness.json for green candidates",
+  "prompt": "feature_writer_agent.md",
+  "tools": ["fs_read", "fs_write", "shell"],
+  "allowedTools": ["fs_read", "fs_write", "shell"],
+  "resources": [
+    "file://.kiro/context/gherkin_best_practices.md",
+    "file://profiles/qa/context/feature_generation_guidelines.md"
+  ],
+  "includeMcpJson": false
+}

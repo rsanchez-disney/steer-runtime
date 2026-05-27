@@ -66,7 +66,10 @@ Interactive setup — ask one at a time, validate each before proceeding:
 
 Requires: `@get_jira_backlog` must have been run first.
 
-1. For each 🎯 candidate, run `xray_get_test_case_full` to get steps
+1. For each 🎯 candidate, get test steps:
+   - Run `jira_get_issue` with the candidate key and `customFields: ["customfield_20104"]` to get Manual Test Steps
+   - If `customfield_20104` is empty, fallback to `xray_get_test_case_full`
+   - If both empty → note "No steps defined" for that TC
 2. `grep` in `*.py` files for step decorators per `repo_scanning_instructions.md`
 3. Match candidate steps against repo patterns
 4. Assign readiness per `readiness_assessment.md` (🟢/🟡/🔴)
