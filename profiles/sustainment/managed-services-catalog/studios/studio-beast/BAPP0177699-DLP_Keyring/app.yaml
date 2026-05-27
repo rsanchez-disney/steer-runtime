@@ -1,14 +1,14 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
+# DLP Keyring — Guest profile, portfolio, and ticket management platform
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0177699"
 app_name: "dlp-keyring"
 full_name: "DLP Keyring"
-description: ""
+description: "Guest digital identity platform for Disneyland Paris. Manages guest profiles, ticket portfolios (packages, web tickets, DPAU/DPAO), ticket-guest associations, and portfolio reconciliation. Integrates with OneID (GCP Pub/Sub), BMacs booking system, and DLP ticket management services."
 
 # --- Ownership ---
 support_studio: "Beast"
@@ -26,14 +26,14 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "DLP Keyring"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring"
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090159/DLP+Keyring+BAPP0177699"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,135 +45,479 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  # ==========================================================================
+  # 1. Keyring Main Provider (ECS)
+  # ==========================================================================
+  - component_name: "keyring-main-provider"
+    component_type: "api"
+    description: "Core Keyring API. Manages guest profiles, portfolios (PACKAGE, WEBTICKET, TICKET, DPAU, DPAO, ROOMONLY, SYS, FOOD_ORDER), ticket-guest associations, auto-naming/linking, and BMacs event processing. Uses MariaDB for persistence and RabbitMQ for guest profile events."
 
-    # -- Component-specific docs --
     docs:
-      troubleshooting: ""
-      runbook: ""
+      troubleshooting: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring+-+Troubleshooting"
+      runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring+-+Runbook"
 
-    # -- Component-specific documentation links --
     documentation:
-      wiki: ""
-      architecture_diagram: ""
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871071762/Keyring+Main"
+      architecture_diagram: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring&preview=/559649363/562814436/image2020-4-1_11-1-6.png"
 
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider"
+      branch: "develop"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/wdprdlpisguestoidkeyringmainprovider"
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider/healthcheck"
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlp_digital"
+      source: "eu-west-1:dlp-apps-*-euw1-prd-applogs:oid01a-prod/oid-keyring-main-provider/*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-prd-applogs:oid01a-prod/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-prd-applogs:oid01a-prod/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider Level=ERROR
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-prd-applogs:oid01a-prod/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider Logger=com.disney.dlp.is.foundation.fw.servletfilter.HttpBoundaryLoggingFilter
+        | search requestUrl="*/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider/*" AND NOT requestUrl="*/healthcheck"
+        | stats avg(responseTime) as avg_rt p95(responseTime) as p95_rt by requestUrl
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "dlp_digital_back_end"
+      app_id: "PROD_DLP_BAPP0177699_wdpr-dlp-is-guest-oid-keyring-main-provider"
+      tier: "oid-keyring-main-provider"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=CDASHBOARD_DETAIL&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&mode=MODE_DASHBOARD&dashboard=2797"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
+      provider: "AWS"
+      region: "eu-west-1"
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "oid-keyring-main-provider"
 
       cloudwatch:
         log_group: ""
         namespace: ""
         alarm_prefix: ""
 
-      loginsights:
+      services:
+        - type: "rds"
+          name: "keyring-mariadb"
+        - type: "rabbitmq"
+          name: "dlp-rabbitmq-guest-profile"
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-stg-applogs:oid01a-stage/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-main-provider"
+
+      load:
+        health_check:
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-lod-applogs:oid01a-load/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-main-provider"
+
+      latest:
+        health_check:
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-main-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-*-euw1-lst-applogs:oid01a-latest/oid-keyring-main-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-main-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-main-provider"
+
+  # ==========================================================================
+  # 2. Keyring CNS PRC Listener (ECS)
+  # ==========================================================================
+  - component_name: "keyring-cns-prc-listener"
+    component_type: "worker"
+    description: "Consumes OneID account events from GCP Pub/Sub (account created, updated, deleted) and DTSS Change Notification System (CNS). Invokes Keyring Main profile service and Purge Processor to synchronize guest identity changes."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871071768/Keyring+CNS+PRC+Listener"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-cns-prc-listener"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/wdprdlpisguestoidkeyringcnsprclistener"
+      deploy_target: "ECS"
+
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-cns-prc-listener/healthcheck"
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      source: "eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid02l-prod/oid-keyring-cns-prc-listener/*"
+      base_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid02l-prod/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener
+      error_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid02l-prod/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener Level=ERROR
+      latency_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid02l-prod/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener
+        | stats count by Level
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "oid-keyring-cns-prc-listener"
+
+      cloudwatch:
         log_group: ""
-        saved_query: ""
+        namespace: ""
+        alarm_prefix: ""
 
       gcp:
         project_id: ""
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "pubsub"
+          name: "OneID account events (GCP Pub/Sub)"
 
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-cns-prc-listener/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-stg-applogs:oid02l-stage/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-cns-prc-listener"
 
       load:
         health_check:
-          url: ""
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-cns-prc-listener/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lod-applogs:oid02l-load/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-cns-prc-listener"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-keyring-cns-prc-listener/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr_dlp_digital"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lst-applogs:oid02l-latest/oid-keyring-cns-prc-listener/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-keyring-cns-prc-listener
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-keyring-cns-prc-listener"
+
+  # ==========================================================================
+  # 3. Guest Ticket Provider (ECS)
+  # ==========================================================================
+  - component_name: "ticket-provider"
+    component_type: "worker"
+    description: "Processes ticket creation and booking events via RabbitMQ. Links tickets to guest portfolios in Keyring Main. Integrates with package-reservation-service (Core API) and ticket-linking-service."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074124/Guest+Ticket+Provider"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-ticket-provider"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/wdprdlpisguestoidticketprovider"
+      deploy_target: "ECS"
+
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-ticket-provider/healthcheck"
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      source: "eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid07a-prod/oid-ticket-provider/*"
+      base_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid07a-prod/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider
+      error_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid07a-prod/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider Level=ERROR
+      latency_spl: >-
+        index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:oid07a-prod/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider Marker=WEB_SVC_RESPONSE
+        | dedup "Identifiers.Correlation-Id"
+        | stats avg(responseTime) as avg_rt p95(responseTime) as p95_rt
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "oid-ticket-provider"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      services:
+        - type: "rabbitmq"
+          name: "dlp-rabbitmq-ticket-events"
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-ticket-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-stg-applogs:oid07a-stage/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-ticket-provider"
+
+      load:
+        health_check:
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-ticket-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lod-applogs:oid07a-load/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-ticket-provider"
+
+      latest:
+        health_check:
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-ticket-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlp_digital"
+          base_spl: >-
+            index=wdpr_dlp_digital source="eu-west-1:dlp-apps-S0001481-euw1-lst-applogs:oid07a-latest/oid-ticket-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-oid-ticket-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1"
+          service_name: "oid-ticket-provider"
+
+  # ==========================================================================
+  # 4. Package Digital Provider (ECS)
+  # ==========================================================================
+  - component_name: "package-digital-provider"
+    component_type: "api"
+    description: "Manages digital package portfolios. Provides APIs to add, retrieve, and manage package bookings linked to guest profiles. Supports cast and guest-facing operations."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074108/Package+Digital+Provider"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/wdprdlpisguestpackagedigitalprovider"
+      deploy_target: "ECS"
+
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider/healthcheck"
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlpis"
+      source: "eu-west-1:dlp-apps-S090262-euw1-prd-applogs:oid06a-prod/package-digital-provider/*"
+      base_spl: >-
+        index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-prd-applogs:oid06a-prod/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider
+      error_spl: >-
+        index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-prd-applogs:oid06a-prod/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider Level=ERROR
+      latency_spl: >-
+        index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-prd-applogs:oid06a-prod/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider Logger=com.disney.dlp.is.foundation.fw.servletfilter.HttpBoundaryLoggingFilter
+        | search requestUrl="*/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider/v1/*"
+        | stats avg(responseTime) as avg_rt p95(responseTime) as p95_rt by requestUrl
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S090262-euw1"
+      service_name: "package-digital-provider"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      services: []
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlpis"
+          base_spl: >-
+            index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-stg-applogs:oid06a-stage/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S090262-euw1"
+          service_name: "package-digital-provider"
+
+      load:
+        health_check:
+          url: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlpis"
+          base_spl: >-
+            index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-lod-applogs:oid06a-load/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S090262-euw1"
+          service_name: "package-digital-provider"
+
+      latest:
+        health_check:
+          url: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-package-digital-provider/healthcheck"
+        splunk:
+          index: "wdpr_dlpis"
+          base_spl: >-
+            index=wdpr_dlpis source="eu-west-1:dlp-apps-S090262-euw1-lts-applogs:oid06a-latest/package-digital-provider/*" "Identifiers.App-Name"=wdpr-dlp-is-guest-package-digital-provider
+        cloud:
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S090262-euw1"
+          service_name: "package-digital-provider"
+
+  # ==========================================================================
+  # 5. Lambda Guest BMACS Portfolio Reconciliation
+  # ==========================================================================
+  - component_name: "lambda-guest-portfolio-bmacs-reconciliation"
+    component_type: "batch"
+    description: "Scheduled AWS Lambda that reconciles guest portfolios against BMacs booking system. Triggered by CloudWatch Events on a schedule. Invokes Keyring Main reconciliation endpoints to ensure portfolio consistency."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074113/Lambda+Guest+BMACS+Portfolio+Reconciliation"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/dlp-apps-bapp0177699-guest-portfolio-bmacs-reconciliation"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/dlpappsbapp0177699guestportfoliobmacsreconciliation"
+      deploy_target: "Lambda"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "Lambda"
+      cluster_id: ""
+      service_name: "dlp-apps-bapp0177699-guest-portfolio-bmacs-reconciliation"
+
+      cloudwatch:
+        log_group: "/aws/lambda/dlp-apps-bapp0177699-guest-portfolio-bmacs-reconciliation"
+        namespace: ""
+        alarm_prefix: ""
+
+      services:
+        - type: "eventbridge"
+          name: "Scheduled Event (CloudWatch Events)"
+
+  # ==========================================================================
+  # 6. Lambda Ticket Provider
+  # ==========================================================================
+  - component_name: "lambda-ticket-provider"
+    component_type: "batch"
+    description: "Scheduled AWS Lambda that links unlinked ticket portfolios. Triggered by CloudWatch Events on a schedule. Invokes Keyring Main to process ticket portfolios that were not linked during initial creation."
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074121/Lambda+Ticket+Provider"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/dlp-apps-bapp0177699-guest-ticket-provider"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Disneyland_Paris/projects/DLP_Keyring/pipelines/dlpappsbapp0177699guestticketprovider"
+      deploy_target: "Lambda"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "Lambda"
+      cluster_id: ""
+      service_name: "dlp-apps-bapp0177699-guest-ticket-provider"
+
+      cloudwatch:
+        log_group: "/aws/lambda/dlp-apps-bapp0177699-guest-ticket-provider"
+        namespace: ""
+        alarm_prefix: ""
+
+      services:
+        - type: "eventbridge"
+          name: "Scheduled Event (CloudWatch Events)"
