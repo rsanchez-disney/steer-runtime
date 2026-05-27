@@ -23,5 +23,11 @@
     "general-angular-development"
   ],
   "enable_tools": true,
-  "jira_prefix": "OPS-"
+  "jira_prefix": "OPS-",
+  "exclusive_overrides": {
+    "dev-web": [
+      "agents",
+      "skills"
+    ]
+  }
 }
