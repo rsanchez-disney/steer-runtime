@@ -8,7 +8,11 @@
 bapp_id: "BAPP0243958"
 app_name: "wdpr-cme-admin"
 full_name: "WDPR CME Admin"
-description: "CME Admin UI for managing park reservation configuration (DLR and WDW)"
+description: >
+  CME Admin UI for managing park reservation configuration (DLR and WDW).
+  Flows: park-reservation (admin/config side).
+  Keywords: CME admin, park reservation config, capacity management, blockout configuration,
+  reservation rules, park pass admin.
 
 # --- Ownership ---
 support_studio: "Studio Rex"

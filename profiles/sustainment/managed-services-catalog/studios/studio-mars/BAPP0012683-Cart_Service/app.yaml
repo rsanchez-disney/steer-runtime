@@ -5,7 +5,11 @@
 bapp_id: "BAPP0012683"
 app_name: "cart-service"
 full_name: "Commerce Cart"
-description: "Cart management service — item validation, availability checks"
+description: >
+  Cart management service — item validation, availability checks. Upstream of Booking Service in EC path.
+  Flows: ec-checkout.
+  Keywords: commerce cart, cart checkout, express checkout, cart error, item validation, availability check,
+  trade ticket, DTA, payment error, one or more errors.
 
 support_studio: "Studio Mars"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"

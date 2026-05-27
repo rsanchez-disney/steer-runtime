@@ -1,7 +1,12 @@
 bapp_id: "BAPP0081809"
 app_name: "tms-wdw"
 full_name: "Ticket Management Service (WDW)"
-description: "Digital services for post-purchase and park operation flows for WDW. Provides endpoints for mobile and web flows to retrieve guest entitlements. Completely relies on GAM for entitlement retrieval."
+description: >
+  Digital services for post-purchase and park operation flows for WDW. Provides endpoints for mobile and web flows
+  to retrieve guest entitlements. Completely relies on GAM for entitlement retrieval.
+  Flows: ticket-linking, ticket-upgrade-wdw.
+  Keywords: ticket not showing, can't see ticket, link ticket, claim ticket, LLMP not showing, ticket visibility,
+  shared ticket, self admit, MEP, WDW AP upgrade, upgrade annual pass, WDW ticket upgrade, GAM, TMS.
 support_studio: "Studio Control"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:

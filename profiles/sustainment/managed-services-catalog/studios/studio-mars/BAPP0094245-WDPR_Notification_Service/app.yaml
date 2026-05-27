@@ -5,7 +5,11 @@
 bapp_id: "BAPP0094245"
 app_name: "notification-service"
 full_name: "WDPR Notification Service"
-description: "Sends confirmation emails after order completion via SparkPost (DLR and WDW)"
+description: >
+  Sends confirmation emails after order completion via SparkPost (DLR and WDW).
+  Flows: confirmation-email.
+  Keywords: confirmation email, email not received, no email, notification, SparkPost, order confirmation,
+  purchase email, receipt not received.
 
 support_studio: "Studio Mars"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
