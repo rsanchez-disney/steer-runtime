@@ -66,10 +66,9 @@ Interactive setup — ask one at a time, validate each before proceeding:
 
 Requires: `@get_jira_backlog` must have been run first.
 
-1. Get test steps for all candidates in one batch:
-   - Run `jira_search_issues` with `jql: "key in (KEY-1, KEY-2, ...)"` and `customFields: ["customfield_20104"]`
-   - This returns Manual Test Steps for all candidates in a single call
-   - For any TC where `customfield_20104` is empty → fallback to `xray_get_test_case_full` for that one only
+1. For each 🎯 candidate, get test steps:
+   - Run `jira_get_issue` with the candidate key and `customFields: ["customfield_20104"]` to get Manual Test Steps
+   - If `customfield_20104` is empty, fallback to `xray_get_test_case_full`
    - If both empty → note "No steps defined" for that TC
 2. `grep` in `*.py` files for step decorators per `repo_scanning_instructions.md`
 3. Match candidate steps against repo patterns
