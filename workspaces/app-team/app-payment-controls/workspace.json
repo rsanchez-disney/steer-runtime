@@ -76,9 +76,18 @@
   ],
   "default_agent": "orchestrator",
   "services": [
-    "config-services"
+    "config-services",
+    "wdpr-payment-controls-client",
+    "wdpr-payment-controls-api",
+    "wdpr-gcp-admin-api",
+    "wdpr-gcp-admin",
+    "gcp-guest-services",
+    "dpay-admin-inquiry-ui-client",
+    "dpay-admin-inquiry-webapi",
+    "wdpr-app-inquiry-service"
   ],
   "channels": [
-    "config-studio"
+    "config-studio",
+    "payment-controls"
   ]
 }
