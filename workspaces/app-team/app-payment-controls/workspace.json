@@ -1,7 +1,7 @@
 {
   "name": "app-payment-controls",
   "extends": "app-team",
-  "description": "Payment Controls — Config Studio, GCP Admin, and Inquiry",
+  "description": "Payment Controls \u2014 Config Studio, GCP Admin, and Inquiry",
   "workspace_path": "${WORKSPACE_ROOT}/Disney/DisneyPaymentsOrg",
   "profiles": [
     "dev-web"
@@ -10,58 +10,75 @@
     {
       "name": "wdpr-payment-controls-client",
       "path": "wdpr-payment-controls-client",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client",
+      "memory_bank": "wdpr-payment-controls-client"
     },
     {
       "name": "wdpr-payment-controls-api",
       "path": "wdpr-payment-controls-api",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api",
+      "memory_bank": "wdpr-payment-controls-api"
     },
     {
       "name": "wdpr-config-services",
       "path": "wdpr-config-services",
-      "repo": "DisneyPaymentsOrg/wdpr-config-services"
+      "repo": "DisneyPaymentsOrg/wdpr-config-services",
+      "memory_bank": "wdpr-config-services"
     },
     {
       "name": "wdpr-gcp-admin-api",
       "path": "wdpr-gcp-admin-api",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api",
+      "memory_bank": "wdpr-gcp-admin-api"
     },
     {
       "name": "wdpr-gcp-admin",
       "path": "wdpr-gcp-admin",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin",
+      "memory_bank": "wdpr-gcp-admin"
     },
     {
       "name": "gcp-guest-services",
       "path": "gcp-guest-services",
-      "repo": "DisneyPaymentsOrg/gcp-guest-services"
+      "repo": "DisneyPaymentsOrg/gcp-guest-services",
+      "memory_bank": "gcp-guest-services"
     },
     {
       "name": "gcp-common-components",
       "path": "gcp-common-components",
-      "repo": "DisneyPaymentsOrg/gcp-common-components"
+      "repo": "DisneyPaymentsOrg/gcp-common-components",
+      "memory_bank": "gcp-common-components"
     },
     {
       "name": "dpay-admin-inquiry-ui-client",
       "path": "dpay-admin-inquiry-ui-client",
-      "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-ui-client"
+      "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-ui-client",
+      "memory_bank": "dpay-admin-inquiry-ui-client"
     },
     {
       "name": "dpay-admin-inquiry-webapi",
       "path": "dpay-admin-inquiry-webapi",
-      "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-webapi"
+      "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-webapi",
+      "memory_bank": "dpay-admin-inquiry-webapi"
     },
     {
       "name": "wdpr-app-inquiry-service",
       "path": "wdpr-app-inquiry-service",
-      "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service"
+      "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service",
+      "memory_bank": "wdpr-app-inquiry-service"
     },
     {
       "name": "wdpr-payments-ref",
       "path": "wdpr-payments-ref",
-      "repo": "DisneyPaymentsOrg/wdpr-payments-ref"
+      "repo": "DisneyPaymentsOrg/wdpr-payments-ref",
+      "memory_bank": "wdpr-payments-ref"
     }
   ],
-  "default_agent": "orchestrator"
+  "default_agent": "orchestrator",
+  "services": [
+    "config-services"
+  ],
+  "channels": [
+    "config-studio"
+  ]
 }
