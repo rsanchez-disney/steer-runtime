@@ -60,3 +60,19 @@ Feature: {Feature name from TC summary}
 - Tag feature level with epic/parent key
 - Tag scenario level with TC key
 - Use steps EXACTLY as they appear in the catalog (including parameters)
+
+## Parameter Validation
+
+NEVER invent parameter combinations. Before using any parameterized step:
+
+1. `grep` the step pattern in `*.feature` files in the repo
+2. Collect the parameter values that have actually been used
+3. Only use those verified values
+
+If no usage is found for a step+parameter combination:
+- Do NOT write it
+- Report: "⚠️ Untested combination: `{step}`. Verified alternatives from repo: `{list}`"
+
+If no usage of the step exists at all:
+- Do NOT write it
+- Report: "⚠️ Step never used in repo: `{step}`. Skipping."
