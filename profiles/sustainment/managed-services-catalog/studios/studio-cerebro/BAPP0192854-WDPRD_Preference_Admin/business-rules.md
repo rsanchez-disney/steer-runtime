@@ -4,23 +4,28 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | | |
-| Response time (p95) | | |
-| Error rate | | |
+| Uptime | Not documented in MyWiki | |
+| Response time (p95) | Not documented in MyWiki | |
+| Error rate | Not documented in MyWiki | |
 
 ## Peak Periods
 
--
+- Not documented in MyWiki
 
 ## Business Logic
 
--
+- Internal Cast Member tool for managing guest preferences
+- Not guest-facing — no direct guest impact if service fails
+- Angular 18 frontend application
+- Backend powered by Preference Service (BAPP0170520)
+- Cast Member authentication via OneID
 
 ## Dependencies
 
--
+- Preference Service (BAPP0170520) — backend for all preference data operations
+- OneID — Cast Member authentication
 
 ## Impact Classification
 
-- **Full outage:**
-- **Degraded:**
+- **Full outage:** Cast Members cannot manage guest preferences through the admin tool. No guest-facing impact. LOW severity.
+- **Degraded:** Slow loading or partial functionality in the admin interface.

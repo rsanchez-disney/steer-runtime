@@ -8,32 +8,32 @@
 bapp_id: "BAPP0229223"
 app_name: "wdpr-mobile-device-notification-optin-service"
 full_name: "WDPR Mobile Device Notification Optin Service"
-description: ""
+description: "UM replacement service for Parks to record Guests' opt-ins to mobile push notification lists. The service does NOT perform actual push notifications — that is handled by mobile applications' services."
 
 # --- Ownership ---
 support_studio: "Cerebro"
-escalation_channel: ""
+escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: ""
+  - name: "Andrew Southwick"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Zachary Boone"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Glenn Raposo"
     role: "SME"
-    contact: ""
+    contact: "Disney Manager and POC"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPR Mobile Device Notification Optin Service"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
+  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1332547810"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,9 +45,9 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "mobile-notification-svc-ha"
+    component_type: "api"               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: "Java 17 service that records guest opt-ins to mobile push notification lists. Active-active across US-EAST-1 and US-WEST-2."
 
     # -- Component-specific docs --
     docs:
@@ -56,7 +56,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1332547810"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -66,30 +66,30 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "mobile-notification-svc"
+      deploy_target: "ECS Fargate"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "https://use1.mobile-notification-ha.gam-prod.wdprapps.disney.com/mobile-notification-svc/healthcheck"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr-gam"
       source: ""
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-gam "ids.app"="*mobile-notification*" environment=prod
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-gam "ids.app"="*mobile-notification*" environment=prod level>=40
       latency_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-gam "ids.app"="*mobile-notification*" environment=prod
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
     # -- AppDynamics --
     appdynamics:
-      app_name: ""
+      app_name: "prod-gam-profile-svc-aws"
       app_id: ""
       tier: ""
       dashboard_url: ""
@@ -109,7 +109,7 @@ components:
     # -- Grafana --
     grafana:
       dashboard_uid: ""
-      dashboard_url: ""
+      dashboard_url: "Profile-Prod-Active-Active-Dashboard"
       datasource: ""
 
     # -- Archer --
@@ -118,12 +118,12 @@ components:
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"                   # AWS | GCP | Azure | on-prem
+      region: "us-east-1"
+      account_id: "wdpr-gam-prod"
+      infra_type: "Fargate"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: "wdw-gam2-B0229223-use1-prd"
+      service_name: "mobile-notification-svc-ha-prod"
 
       cloudwatch:
         log_group: ""
@@ -139,41 +139,172 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "dynamodb"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: "Not documented in MyWiki"
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "https://stage.use1.mobile-notification-ha.gam-test.wdprapps.disney.com/mobile-notification-svc/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="stage"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "mobile-notification-svc-stage-live"
 
       load:
         health_check:
-          url: ""
+          url: "https://load.use1.mobile-notification-ha.gam-test.wdprapps.disney.com/mobile-notification-svc/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="load"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "mobile-notification-svc-load-live"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.use1.mobile-notification-ha.gam-dev.wdprapps.disney.com/mobile-notification-svc/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="latest"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "mobile-notification-svc-latest-live"
+
+  - component_name: "mobile-notification-svc-ha-west"
+    component_type: "api"               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: "US-WEST-2 replica of MNO service for active-active"
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
+    repository:
+      url: ""
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "mobile-notification-svc"
+      deploy_target: "ECS Fargate"
+
+    # -- Health Check --
+    health_check:
+      url: "https://usw2.mobile-notification-ha.gam-prod.wdprapps.disney.com/mobile-notification-svc/healthcheck"
+      expected_status: 200
+
+    # -- Splunk --
+    splunk:
+      index: "wdpr-gam"
+      source: ""
+      base_spl: >-
+        index=wdpr-gam "ids.app"="*mobile-notification*" environment=prod
+      error_spl: >-
+        index=wdpr-gam "ids.app"="*mobile-notification*" environment=prod level>=40
+      latency_spl: ""
+
+    # -- AppDynamics --
+    appdynamics:
+      app_name: "prod-gam-profile-svc-aws"
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: "Profile-Prod-Active-Active-Dashboard"
+      datasource: ""
+
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
+    cloud:
+      provider: "AWS"                   # AWS | GCP | Azure | on-prem
+      region: "us-west-2"
+      account_id: "wdpr-gam-prod"
+      infra_type: "Fargate"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: "dlr-gam-B0229223-usw2-prd"
+      service_name: "mobile-notification-svc-ha-prod"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: "dynamodb"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: "Not documented in MyWiki"
+
+    # -- Other Environments (only fields that differ from production) --
+    other_environments:
+
+      stage:
+        health_check:
+          url: "https://stage.usw2.mobile-notification-ha.gam-test.wdprapps.disney.com/mobile-notification-svc/healthcheck"
+        splunk:
+          index: "wdpr-gam"
+          base_spl: >-
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="stage"
+        cloud:
+          region: "us-west-2"
+          service_name: "mobile-notification-svc-stage-live"
+
+      load:
+        health_check:
+          url: "https://load.usw2.mobile-notification-ha.gam-test.wdprapps.disney.com/mobile-notification-svc/healthcheck"
+        splunk:
+          index: "wdpr-gam"
+          base_spl: >-
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="load"
+        cloud:
+          region: "us-west-2"
+          service_name: "mobile-notification-svc-load-live"
+
+      latest:
+        health_check:
+          url: "https://latest.usw2.mobile-notification-ha.gam-dev.wdprapps.disney.com/mobile-notification-svc/healthcheck"
+        splunk:
+          index: "wdpr-gam"
+          base_spl: >-
+            index=wdpr-gam "ids.app"="*mobile-notification*" environment="latest"
+        cloud:
+          region: "us-west-2"
+          service_name: "mobile-notification-svc-latest-live"

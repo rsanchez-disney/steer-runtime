@@ -7,33 +7,33 @@
 # --- Identity ---
 bapp_id: "BAPP0180565"
 app_name: "wdprd-wdwdlrdcl-web-application-magic-bands-cards"
-full_name: "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards)"
-description: ""
+full_name: "WDPRD WDWDLRDCL Web Application Magic Bands + Cards"
+description: "Magic Bands + Cards (MB+C) SPA allows guests to manage MagicBand and DisneyBand reservations, link/unlink bands, list MB/DB orders, and view reservation data. High dependency on VAS for data aggregation. Revenue-impacting (MagicBand purchases and management)."
 
 # --- Ownership ---
 support_studio: "Cerebro"
-escalation_channel: ""
+escalation_channel: "MB-Triage-Latest-Stage-Load-Prod"
 escalation_contacts:
-  - name: ""
+  - name: "Andrew Southwick"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Cesar Munoz"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Sustainment Tech Lead"
+  - name: "Gerson Barrera"
     role: "SME"
-    contact: ""
+    contact: "Sustainment Web Dev (with Tomas Aimar)"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards)"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
+  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1335887272"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,9 +45,9 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "profile-mb-spa-ha"
+    component_type: "frontend"
+    description: "Angular 18 / Node.js 20 SPA on ECS Fargate. Guest-facing MagicBand/DisneyBand management. Features: List MB/DB orders, Manage MB/DB, Reservation data, Band customization."
 
     # -- Component-specific docs --
     docs:
@@ -56,7 +56,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1335887272"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -66,30 +66,32 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "profile-mb-spa-ha pipeline"
+      deploy_target: "ECS Fargate (US-EAST-1 & US-WEST-2)"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "https://origin.profilembspa.wdprapps.disney.com/healthcheck"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr-profile-ui"
+      source: "*profile-mb-spa-ha-prod/profile-mb-spa*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-profile-ui Identifiers.App-Name="mbc-spa" level>=40
+        | stats count by log.message | sort -count
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-profile-ui Identifiers.App-Name="mbc-spa" statusCode>=500 earliest="-1h"
+        | timechart count span=5m
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr-profile-ui Identifiers.App-Name="mbc-spa"
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt
 
     # -- AppDynamics --
     appdynamics:
-      app_name: ""
+      app_name: "core-profile-mb-spa-ha-east / core-profile-mb-spa-ha-west"
       app_id: ""
       tier: ""
       dashboard_url: ""
@@ -118,17 +120,17 @@ components:
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "wdpr-gam-prod"
+      infra_type: "ECS Fargate"
+      cluster_id: "wdw-gam2-B0180565-use1-profile-mb-spa-ha-svc-prd"
+      service_name: "profile-mb-spa-ha-prod"
 
       cloudwatch:
         log_group: ""
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "Error > 3% | ART East > 5s | West > 6s | CPU > 30% | Memory > 50%"
 
       loginsights:
         log_group: ""
@@ -139,7 +141,7 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+        - type: ""
           name: ""
 
     # -- Other Environments (only fields that differ from production) --
@@ -147,33 +149,33 @@ components:
 
       stage:
         health_check:
-          url: ""
+          url: "https://origin.stage.profilembspa.wdprapps.disney.com/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-profile-ui source="*profile-mb-spa-svc-stg:profile-mb-spa-ha-stage/profile-mb-spa/*"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-mb-spa-ha-stage"
 
       load:
         health_check:
-          url: ""
+          url: "https://origin.load.profilembspa.wdprapps.disney.com/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-profile-ui source="*profile-mb-spa-svc-lod:profile-mb-spa-ha-load/profile-mb-spa/*"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-mb-spa-ha-load"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.use1.profile-mb-spa-ha.gam-dev.wdprapps.disney.com/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-profile-ui source="*profile-mb-spa-latest/profile-mb-spa/*"
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-mb-spa-latest-live"
