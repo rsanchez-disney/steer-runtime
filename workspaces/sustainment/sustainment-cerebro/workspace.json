@@ -1,7 +1,7 @@
 {
   "name": "sustainment-cerebro",
   "extends": "sustainment",
-
+  "description": "Sustainment workspace for Studio Cerebro — incident response, profile services, and catalog operations",
   "team": "Studio Cerebro",
   "profiles": [
     "sustainment"
@@ -15,14 +15,6 @@
   "jira_prefix": "ADMPROFILE-",
   "workspace_path": "${WORKSPACE_ROOT}/cerebro",
   "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
-  "hooks": {
-    "on_agent_spawn": {
-      "action": "load_catalog_context",
-      "description": "Pre-load BAPP info for studio-cerebro from managed-services-catalog",
-      "catalog_path": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
-      "load_fields": ["app.yaml", "runbook.md", "troubleshooting.md"]
-    }
-  },
   "projects": [
     {
       "name": "dx-profile-webapi",
