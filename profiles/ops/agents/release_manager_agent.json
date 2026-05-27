@@ -1,9 +1,10 @@
 {
   "name": "release_manager_agent",
-  "description": "Manages releases — compares tags, generates release notes, creates GitHub releases, tracks readiness",
+  "description": "Manages releases \u2014 compares tags, generates release notes, creates GitHub releases, tracks readiness",
   "prompt": "release_manager_agent.md",
   "tools": [
     "@github/*",
+    "@gitlab/*",
     "@jira/*",
     "fs_read",
     "fs_write",
@@ -11,6 +12,7 @@
   ],
   "allowedTools": [
     "@github/*",
+    "@gitlab/*",
     "@jira/*"
   ],
   "resources": [

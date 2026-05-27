@@ -60,6 +60,7 @@ precompute_mcp_paths() {
     _p_jira="$(to_win_path "$HOME/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs")"
     _p_confluence="$(to_win_path "$HOME/.kiro/tools/mcp-servers/confluence-mcp/dist/index.cjs")"
     _p_github="$(to_win_path "$HOME/.kiro/tools/mcp-servers/github-mcp/dist/index.cjs")"
+    _p_gitlab="$(to_win_path "$HOME/.kiro/tools/mcp-servers/gitlab-mcp/dist/index.cjs")"
     _p_mermaid="$(to_win_path "$HOME/.kiro/tools/mcp-servers/mermaid-diagram-mcp/dist/index.cjs")"
     _p_bruno="$(to_win_path "$HOME/.kiro/tools/mcp-servers/bruno-mcp/dist/index.cjs")"
     _p_splunk="$(to_win_path "$HOME/.kiro/tools/mcp-servers/splunk-mcp/dist/index.cjs")"
@@ -81,6 +82,14 @@ discover_github_remotes() {
     local tokens_file="$1"
     [ -f "$tokens_file" ] || return
     grep -o 'GITHUB_TOKEN_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/GITHUB_TOKEN_//' | sort -u
+}
+
+# Discover GitLab remotes from tokens.env by scanning for GITLAB_TOKEN_{remote} keys
+# Outputs one remote name per line, sorted and deduplicated
+discover_gitlab_remotes() {
+    local tokens_file="$1"
+    [ -f "$tokens_file" ] || return
+    grep -o 'GITLAB_TOKEN_[a-zA-Z0-9_]*' "$tokens_file" | sed 's/GITLAB_TOKEN_//' | sort -u
 }
 
 # Discover Confluence instances from tokens.env by scanning for CONFLUENCE_PAT_{instance} keys
@@ -317,9 +326,11 @@ inject_agent_tokens() {
     local github_remotes
     github_remotes=$(discover_github_remotes "$tokens_file")
     
+    local gitlab_remotes
+    gitlab_remotes=$(discover_gitlab_remotes "$tokens_file")
     for agent_json in "$target_dir/agents/"*.json; do
         [ -f "$agent_json" ] || continue
-        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_remotes" "$tokens_file" << 'INJECT_PY'
+        python3 - "$agent_json" "$jira_pat" "$confluence_pat" "$github_remotes" "$tokens_file" "$gitlab_remotes" << 'INJECT_PY'
 import json, sys, os
 
 path = sys.argv[1]
@@ -327,6 +338,7 @@ jira = sys.argv[2]
 conf = sys.argv[3]
 remotes_raw = sys.argv[4]
 tokens_file = sys.argv[5]
+gitlab_remotes_raw = sys.argv[6] if len(sys.argv) > 6 else ""
 
 def read_tok(key):
     try:
@@ -404,6 +416,34 @@ if "github" in servers:
             if "GITHUB_TOKEN_disney" in env:
                 env["GITHUB_TOKEN_disney"] = gh_token
         servers["github"] = github_entry
+        changed = True
+
+# GitLab: per-remote injection or legacy fallback
+if "gitlab" in servers:
+    gl_remotes = [r for r in gitlab_remotes_raw.strip().split('\n') if r.strip()]
+    gitlab_entry = servers.pop("gitlab")
+
+    if gl_remotes:
+        for remote in gl_remotes:
+            token = read_tok('GITLAB_TOKEN_' + remote)
+            host = read_tok('GITLAB_HOST_' + remote)
+            if not token or not host:
+                continue
+            entry = dict(gitlab_entry)
+            entry["env"] = {
+                "GITLAB_REMOTE": remote,
+                "GITLAB_HOST": host,
+                "GITLAB_TOKEN": token,
+            }
+            servers[f"gitlab-{remote}"] = entry
+        changed = True
+    else:
+        gl_token = read_tok('GITLAB_TOKEN')
+        if gl_token and gl_token != "YOUR_TOKEN":
+            env = gitlab_entry.get("env", {})
+            env["GITLAB_TOKEN"] = gl_token
+            gitlab_entry["env"] = env
+        servers["gitlab"] = gitlab_entry
         changed = True
 
 if changed:
@@ -857,6 +897,9 @@ case "${1:-help}" in
         echo "  GitHub:"
         echo "  https://github.disney.com/settings/tokens"
         echo ""
+        echo ""
+        echo "  GitLab:"
+        echo "  https://gitlab.disney.com/-/user_settings/personal_access_tokens"
         echo "  qTest:"
         echo "  Your qTest instance → Profile → API Token"
         echo ""
@@ -939,6 +982,45 @@ CONFEOF
                 fi
             done
             echo ""
+            # GitLab remotes (multi-remote loop)
+            echo "━━━ GitLab Remotes ━━━"
+            echo "Configure one or more GitLab remotes (e.g., disney, public)"
+            echo ""
+            _add_gitlab_remote=true
+            while [ "$_add_gitlab_remote" = true ]; do
+                read -r -p "Remote name (e.g., disney): " _gl_remote
+                if [ -z "$_gl_remote" ]; then
+                    echo "  ⏭ Skipped GitLab configuration"
+                    break
+                fi
+                read -r -p "GitLab host for '$_gl_remote' (e.g., gitlab.disney.com): " _gl_host
+                if [ -z "$_gl_host" ]; then
+                    echo "  ⚠️  Host is required, skipping remote '$_gl_remote'"
+                    continue
+                fi
+                read -r -p "GitLab token for '$_gl_remote': " _gl_token
+                if [ -z "$_gl_token" ]; then
+                    echo "  ⚠️  Token is required, skipping remote '$_gl_remote'"
+                    continue
+                fi
+
+                # Write to gitlab-mcp .env
+                gitlab_env="$KIRO_ROOT/tools/mcp-servers/gitlab-mcp/.env"
+                if [ ! -f "$gitlab_env" ]; then
+                    : > "$gitlab_env"
+                fi
+                grep -v "^GITLAB_TOKEN_${_gl_remote}=" "$gitlab_env" 2>/dev/null | grep -v "^GITLAB_HOST_${_gl_remote}=" > "$gitlab_env.tmp" || true
+                echo "GITLAB_TOKEN_${_gl_remote}=$_gl_token" >> "$gitlab_env.tmp"
+                echo "GITLAB_HOST_${_gl_remote}=$_gl_host" >> "$gitlab_env.tmp"
+                mv "$gitlab_env.tmp" "$gitlab_env"
+                echo "  ✓ Saved remote '$_gl_remote' (host: $_gl_host)"
+
+                read -r -p "Add another GitLab remote? (y/N): " _more_gl
+                if [[ ! "$_more_gl" =~ ^[Yy]$ ]]; then
+                    _add_gitlab_remote=false
+                fi
+            done
+            echo ""
             # qTest token
             echo "━━━ qTest ━━━"
             read -r -p "Paste your qTest Bearer Token (or Enter to skip): " qtest_token
@@ -998,6 +1080,14 @@ TOKHEADER
                     [[ "$key" =~ ^GITHUB_(TOKEN|HOST|API_PATH)_ ]] && _upsert_token "$key" "$val"
                 done < "$github_env"
             fi
+
+            # GitLab remotes from gitlab-mcp/.env
+            gitlab_env="$KIRO_ROOT/tools/mcp-servers/gitlab-mcp/.env"
+            if [ -f "$gitlab_env" ]; then
+                while IFS='=' read -r key val; do
+                    [[ "$key" =~ ^GITLAB_(TOKEN|HOST)_ ]] && _upsert_token "$key" "$val"
+                done < "$gitlab_env"
+            fi
             
             # qTest tokens from qtest-mcp/.env
             qtest_env="$KIRO_ROOT/tools/mcp-servers/qtest-mcp/.env"
@@ -1034,6 +1124,9 @@ TOKHEADER
         # Discover GitHub remotes from tokens.env
         _github_remotes=$(discover_github_remotes "$KIRO_ROOT/tokens.env")
         
+
+        # Discover GitLab remotes from tokens.env
+        _gitlab_remotes=$(discover_gitlab_remotes "$KIRO_ROOT/tokens.env")
         # Discover Confluence instances from tokens.env
         _confluence_instances=$(discover_confluence_instances "$KIRO_ROOT/tokens.env")
         
@@ -1068,10 +1161,12 @@ import json, sys, os
 tokens_file = '$KIRO_ROOT/tokens.env'
 remotes_raw = '''$_github_remotes'''.strip()
 confluence_instances_raw = '''$_confluence_instances'''.strip()
+gitlab_remotes_raw = '''$_gitlab_remotes'''.strip()
 
 p_jira = r'$_p_jira'
 p_confluence = r'$_p_confluence'
 p_github = r'$_p_github'
+p_gitlab = r'$_p_gitlab'
 p_mermaid = r'$_p_mermaid'
 p_bruno = r'$_p_bruno'
 p_splunk = r'$_p_splunk'
@@ -1158,6 +1253,37 @@ else:
             'GITHUB_TOKEN': legacy_token or 'YOUR_TOKEN',
         }
     }
+
+# GitLab entries: per-remote with flat env vars, or legacy fallback
+gl_remotes = [r for r in gitlab_remotes_raw.split('\n') if r.strip()]
+if gl_remotes:
+    for remote in gl_remotes:
+        token = read_tok('GITLAB_TOKEN_' + remote)
+        host = read_tok('GITLAB_HOST_' + remote)
+        if not token or not host:
+            continue
+        entry = {
+            'command': 'node',
+            'args': [p_gitlab],
+            'env': {
+                'GITLAB_REMOTE': remote,
+                'GITLAB_HOST': host,
+                'GITLAB_TOKEN': token,
+            }
+        }
+        mcp['mcpServers'][f'gitlab-{remote}'] = entry
+else:
+    legacy_gl_token = read_tok('GITLAB_TOKEN')
+    legacy_gl_url = read_tok('GITLAB_URL')
+    if legacy_gl_token:
+        mcp['mcpServers']['gitlab'] = {
+            'command': 'node',
+            'args': [p_gitlab],
+            'env': {
+                'GITLAB_HOST': legacy_gl_url or 'gitlab.disney.com',
+                'GITLAB_TOKEN': legacy_gl_token,
+            }
+        }
 
 # Non-GitHub MCP servers
 mcp['mcpServers']['mermaid'] = {
@@ -1704,6 +1830,83 @@ YAMLEOF
             echo "  ✓ Added remote '$_new_remote' (host: $_new_host)"
         done
         
+
+        # --- GitLab remotes (multi-remote management) ---
+        echo ""
+        echo "━━━ GitLab Remotes ━━━"
+
+        _existing_gl_remotes=$(discover_gitlab_remotes "$tokens_file")
+
+        if [ -n "$_existing_gl_remotes" ]; then
+            echo "Existing remotes:"
+            while IFS= read -r _remote; do
+                _cur_token=$(grep "^GITLAB_TOKEN_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                _cur_host=$(grep "^GITLAB_HOST_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                if [ -n "$_cur_token" ]; then
+                    _masked_tok="${_cur_token:0:4}***${_cur_token: -3}"
+                else
+                    _masked_tok="not set"
+                fi
+                echo "  $_remote: ${_cur_host:-no host} ($_masked_tok)"
+            done <<< "$_existing_gl_remotes"
+            echo ""
+
+            while IFS= read -r _remote; do
+                read -r -p "Update remote '$_remote'? (y/N): " _update
+                if [[ "$_update" =~ ^[Yy]$ ]]; then
+                    _cur_host=$(grep "^GITLAB_HOST_${_remote}=" "$tokens_file" 2>/dev/null | head -1 | cut -d= -f2-)
+                    read -r -p "  Host for '$_remote' [${_cur_host:-not set}]: " _new_host
+                    [ -z "$_new_host" ] && _new_host="$_cur_host"
+                    read -r -p "  Token for '$_remote' (Enter to keep current): " _new_token
+
+                    if [ -n "$_new_host" ]; then
+                        grep -v "^GITLAB_HOST_${_remote}=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                        echo "GITLAB_HOST_${_remote}=$_new_host" >> "$tokens_file.tmp"
+                        mv "$tokens_file.tmp" "$tokens_file"
+                    fi
+                    if [ -n "$_new_token" ]; then
+                        grep -v "^GITLAB_TOKEN_${_remote}=" "$tokens_file" > "$tokens_file.tmp" 2>/dev/null || true
+                        echo "GITLAB_TOKEN_${_remote}=$_new_token" >> "$tokens_file.tmp"
+                        mv "$tokens_file.tmp" "$tokens_file"
+                    fi
+                    echo "  ✓ Updated remote '$_remote'"
+                else
+                    echo "  ⏭ Kept"
+                fi
+            done <<< "$_existing_gl_remotes"
+        else
+            echo "No GitLab remotes configured yet."
+        fi
+
+        echo ""
+        _add_more_gl=true
+        while [ "$_add_more_gl" = true ]; do
+            read -r -p "Add a new GitLab remote? (y/N): " _add_yn
+            if [[ ! "$_add_yn" =~ ^[Yy]$ ]]; then
+                break
+            fi
+            read -r -p "  Remote name (e.g., disney): " _new_remote
+            if [ -z "$_new_remote" ]; then
+                echo "  ⚠️  Remote name is required"
+                continue
+            fi
+            read -r -p "  GitLab host for '$_new_remote' (e.g., gitlab.disney.com): " _new_host
+            if [ -z "$_new_host" ]; then
+                echo "  ⚠️  Host is required, skipping remote '$_new_remote'"
+                continue
+            fi
+            read -r -p "  GitLab token for '$_new_remote': " _new_token
+            if [ -z "$_new_token" ]; then
+                echo "  ⚠️  Token is required, skipping remote '$_new_remote'"
+                continue
+            fi
+
+            grep -v "^GITLAB_TOKEN_${_new_remote}=" "$tokens_file" 2>/dev/null | grep -v "^GITLAB_HOST_${_new_remote}=" > "$tokens_file.tmp" || true
+            echo "GITLAB_TOKEN_${_new_remote}=$_new_token" >> "$tokens_file.tmp"
+            echo "GITLAB_HOST_${_new_remote}=$_new_host" >> "$tokens_file.tmp"
+            mv "$tokens_file.tmp" "$tokens_file"
+            echo "  ✓ Added remote '$_new_remote' (host: $_new_host)"
+        done
         echo ""
         echo "✅ Tokens saved to $tokens_file"
         echo "💡 Run ./setup.sh install <profiles> to inject into agent configs"
