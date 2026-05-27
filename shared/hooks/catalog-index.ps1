@@ -10,53 +10,29 @@ $CatalogDir = Join-Path $KiroDir "steer-runtime/profiles/sustainment/managed-ser
 if (-not (Test-Path $CatalogDir)) { exit 0 }
 New-Item -ItemType Directory -Force -Path $DynamicDir | Out-Null
 
-# Resolve active workspace
-$WsName = ""
-foreach ($f in @("kite.json", "settings.json")) {
-    $p = Join-Path $KiroDir "settings/$f"
-    if (Test-Path $p) {
-        try {
-            $d = Get-Content $p | ConvertFrom-Json
-            $ws = $d.steerRuntime.activeWorkspace
-            if ($ws) { $WsName = $ws; break }
-        } catch {}
-    }
-}
-
-# Read catalog_scope from workspace source (supports nested subdirs)
+# Read managed_studios from workspace snapshot (with fallback for older Koda versions)
+$WsName = "default"
 $ScopeDirs = @("*")
-if ($WsName) {
-    $found = $null
-    # Search flat and nested workspace directories
-    $patterns = @(
-        (Join-Path $KiroDir "steer-runtime/workspaces/$WsName/workspace.json"),
-        (Join-Path $KiroDir "steer-runtime/workspaces/*/$WsName/workspace.json")
-    )
-    foreach ($pattern in $patterns) {
-        $matches = Get-Item $pattern -ErrorAction SilentlyContinue
-        if ($matches) { $found = $matches | Select-Object -First 1; break }
-    }
-    if ($found) {
-        try {
-            $wsData = Get-Content $found.FullName | ConvertFrom-Json
-            $scope = $wsData.context.catalog_scope
-            if (-not $scope -and $wsData.extends) {
-                # Follow extends chain
-                $parentPatterns = @(
-                    (Join-Path $KiroDir "steer-runtime/workspaces/$($wsData.extends)/workspace.json"),
-                    (Join-Path $KiroDir "steer-runtime/workspaces/*/$($wsData.extends)/workspace.json")
-                )
-                foreach ($pp in $parentPatterns) {
-                    $pm = Get-Item $pp -ErrorAction SilentlyContinue
-                    if ($pm) {
-                        $parentData = Get-Content ($pm | Select-Object -First 1).FullName | ConvertFrom-Json
-                        $scope = $parentData.context.catalog_scope
-                        break
-                    }
-                }
-            }
-            if ($scope) { $ScopeDirs = $scope }
-        } catch {}
+$SnapshotFile = Join-Path $KiroDir "settings/workspace.json"
+if (Test-Path $SnapshotFile) {
+    try {
+        $wsData = Get-Content $SnapshotFile -Raw | ConvertFrom-Json
+        if ($wsData.name) { $WsName = $wsData.name }
+        if ($wsData.managed_studios -and $wsData.managed_studios.Count -gt 0) {
+            $ScopeDirs = @($wsData.managed_studios)
+        }
+    } catch {}
+} else {
+    # Fallback: older Koda versions write activeWorkspace to kite.json or settings.json
+    foreach ($f in @("kite.json", "settings.json")) {
+        $p = Join-Path $KiroDir "settings/$f"
+        if (Test-Path $p) {
+            try {
+                $d = Get-Content $p -Raw | ConvertFrom-Json
+                $ws = $d.steerRuntime.activeWorkspace
+                if ($ws) { $WsName = $ws; break }
+            } catch {}
+        }
     }
 }
 
@@ -86,8 +62,17 @@ foreach ($studio in $Studios) {
         $fullName = if ($content -match '(?m)^full_name:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $supportStudio = if ($content -match '(?m)^support_studio:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $ci = if ($content -match '(?m)\s+configuration_item:\s*"([^"]*)"') { $Matches[1] } else { "" }
+        # Extract ServiceNow assignment group for incident routing
+        $assignGroup = if ($content -match '(?m)\s+assignment_group:\s*"([^"]*)"') { $Matches[1] } else { "" }
+        # Extract full app description (collapsed to single line for table format)
+        $desc = ""
+        if ($content -match '(?ms)^description:\s*[>|]-?\s*\n((?:\s+.+\n?)+)') {
+            $desc = ($Matches[1] -replace '\r?\n\s*', ' ').Trim()
+        } elseif ($content -match '(?m)^description:\s*"([^"]*)"') {
+            $desc = $Matches[1]
+        }
 
-        $Lines += "| $bappId | $fullName | $supportStudio | $ci | $studioName/$($appDir.Name)/ |"
+        $Lines += "| $bappId | $fullName | $supportStudio | $ci | $assignGroup | $desc | $studioName/$($appDir.Name)/ |"
         $Total++
     }
 }
@@ -99,8 +84,8 @@ $output = @"
 Workspace: $(if ($WsName) { $WsName } else { 'default' })
 Scope: $($ScopeDirs -join ' ')
 
-| BAPP ID | Full Name | Studio | CI | Catalog Path |
-|---------|-----------|--------|-----|--------------|
+| BAPP ID | Full Name | Studio | CI | Assignment Group | Description | Catalog Path |
+|---------|-----------|--------|-----|------------------|-------------|--------------|
 $($Lines -join "`n")
 
 ### How to Get App Details

@@ -100,10 +100,10 @@ For full app details (splunk queries, cloud infra, health checks), read the app.
 
 ### What to Pass to Sub-Agents
 
-When delegating, include the resolved catalog context in the prompt_template:
+When delegating, keep it minimal — each agent resolves its own context from the catalog:
 
-- **To incident_triage_agent:** app.yaml (servicenow, escalation_contacts, escalation_channel)
-- **To rca_agent:** app.yaml (splunk queries, cloud infra, health_check) + troubleshooting.md
+- **To rca_agent:** Just the INC number (or free-text description). The rca_agent has the catalog-index in its context and will autonomously fetch the incident, classify it, read the relevant troubleshooting.md/app.yaml, execute Splunk queries, and produce a full RCA report.
+- **To incident_triage_agent:** The ticket number + any urgency context
 - **To stability_validator_agent:** app.yaml (health_check, splunk.latency_spl, cloud) + runbook.md
 - **To splunk_query_agent:** the specific SPL from app.yaml (base_spl, error_spl, or latency_spl)
 - **To servicenow_analyst_agent:** app.yaml (servicenow CI, assignment_group)

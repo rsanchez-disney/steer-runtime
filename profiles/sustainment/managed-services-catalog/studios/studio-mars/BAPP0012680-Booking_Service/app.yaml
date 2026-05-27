@@ -5,7 +5,13 @@
 bapp_id: "BAPP0012680"
 app_name: "booking-service"
 full_name: "Booking Service"
-description: "EC checkout orchestrator — handles trade tickets, AP new sales/renewals, Photopass, ticket-to-pass upgrades, VO/Packages DTA, Room Only DTA, WDW consumer mods, Aulani"
+description: >
+  EC checkout orchestrator — handles trade tickets, AP new sales/renewals, Photopass, ticket-to-pass upgrades,
+  VO/Packages DTA, Room Only DTA, WDW consumer mods, Aulani.
+  Flows: ec-checkout, mk-renewal.
+  Keywords: trade ticket, booking service, AP new sale, Photopass purchase, VO package DTA, Room Only DTA, Aulani,
+  cart checkout, express checkout, lodging DTA, resort package DTA, Duck Out, payment error, payment declined,
+  credit card auth, AVS mismatch, card declined, MK renewal, Magic Key renewal, renew pass, annual pass renewal.
 
 support_studio: "Studio Mars"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"

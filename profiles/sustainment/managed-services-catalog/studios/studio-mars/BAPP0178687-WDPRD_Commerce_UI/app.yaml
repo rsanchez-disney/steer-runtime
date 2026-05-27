@@ -5,7 +5,11 @@
 bapp_id: "BAPP0178687"
 app_name: "commerce-ui"
 full_name: "Commerce UI"
-description: "Guest-facing pages for cart, checkout, and confirmation (EC path)"
+description: >
+  Guest-facing pages for cart, checkout, and confirmation (EC path). Also renders UC entry points.
+  Flows: ec-checkout, uc-checkout.
+  Keywords: commerce UI, cart page, checkout page, confirmation page, trade ticket, consumer purchase,
+  payment error, payment declined, express checkout, Duck Out, UC, EC.
 
 support_studio: "Studio Mars"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"

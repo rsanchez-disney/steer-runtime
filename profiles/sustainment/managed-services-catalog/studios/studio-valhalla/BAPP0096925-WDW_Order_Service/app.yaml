@@ -1,7 +1,11 @@
 bapp_id: "BAPP0096925"
 app_name: "wdw-order-service"
 full_name: "WDW Order Service"
-description: "Core order processing — sits between Order VAS and PEOS in the UC path (WDW)"
+description: >
+  Core order processing — sits between Order VAS and PEOS in the UC path (WDW).
+  Flows: uc-checkout.
+  Keywords: consumer purchase, consumer ticket, UC, order service, Genie+, Lightning Lane, schedule activity,
+  VO consumer, Room Only consumer, vacation package consumer, consumer mods, order processing.
 support_studio: "Studio Valhalla"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3AHrtAmjWm2y4h0qeT_A3MvhPwqHLCY-iQOsHZbK5s0rw1%40thread.tacv2/DX%20-%20Studio%20Valhalla?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
