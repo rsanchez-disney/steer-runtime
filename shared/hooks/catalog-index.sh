@@ -76,8 +76,12 @@ for studio_path in "${STUDIOS[@]}"; do
     full_name=$(yq -r '.full_name // ""' "$app_dir/app.yaml")
     support_studio=$(yq -r '.support_studio // ""' "$app_dir/app.yaml")
     ci=$(yq -r '.servicenow.configuration_item // ""' "$app_dir/app.yaml")
+    # Extract ServiceNow assignment group
+    assign_group=$(yq -r '.servicenow.assignment_group // ""' "$app_dir/app.yaml")
+    # Extract full app description (collapsed to single line for table format)
+    description=$(yq -r '.description // ""' "$app_dir/app.yaml" | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ //;s/ $//')
 
-    LINES="${LINES}| ${bapp_id} | ${full_name} | ${support_studio} | ${ci} | ${studio}/${dir_name}/ |
+    LINES="${LINES}| ${bapp_id} | ${full_name} | ${support_studio} | ${ci} | ${assign_group} | ${description} | ${studio}/${dir_name}/ |
 "
     TOTAL=$((TOTAL + 1))
   done
@@ -90,8 +94,8 @@ cat << EOF
 Workspace: ${WS_NAME:-default}
 Scope: ${SCOPE_DIRS}
 
-| BAPP ID | Full Name | Studio | CI | Catalog Path |
-|---------|-----------|--------|-----|--------------|
+| BAPP ID | Full Name | Studio | CI | Assignment Group | Description | Catalog Path |
+|---------|-----------|--------|-----|------------------|-------------|--------------|
 ${LINES}### How to Get App Details
 
 To get full details for any app listed above, use your file reading tool:
@@ -116,8 +120,8 @@ These are YOUR applications. Use this as the default list when asked about apps 
 When asked for details about any app (repositories, splunk queries, cloud, contacts, etc.), read the app.yaml file at:
 ~/.kiro/steer-runtime/profiles/sustainment/managed-services-catalog/studios/<Catalog Path>/app.yaml
 
-| BAPP ID | Full Name | Studio | CI | Catalog Path |
-|---------|-----------|--------|-----|--------------|
+| BAPP ID | Full Name | Studio | CI | Assignment Group | Description | Catalog Path |
+|---------|-----------|--------|-----|------------------|-------------|--------------|
 ${LINES}### How to Get App Details
 
 To get full details for any app listed above, use your file reading tool:

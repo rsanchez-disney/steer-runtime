@@ -1,7 +1,13 @@
 bapp_id: "BAPP0081809"
 app_name: "tms-dlr"
 full_name: "Ticket Management Service (DLR)"
-description: "Digital services for post-purchase and park operation flows. Acts as cache layer for DLR system of record (eGalaxy). Supports ticket linking, claiming, renewals, upgrades, and park reservations."
+description: >
+  Digital services for post-purchase and park operation flows. Acts as cache layer for DLR system of record (eGalaxy).
+  Supports ticket linking, claiming, renewals, upgrades, and park reservations.
+  Flows: ticket-linking, park-reservation, mk-renewal, ticket-upgrade-dlr.
+  Keywords: ticket not showing, can't see ticket, link ticket, claim ticket, LLMP not showing, ticket visibility,
+  shared ticket, self admit, MEP, park reservation, MK renewal, Magic Key renewal, ticket to pass, ticket to MK,
+  DLR upgrade, eGalaxy, TMS.
 support_studio: "Studio Kaos"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3AeNbcha4UraJUCngdy1oP_SuMd5GrCvgScaei1uhdhoc1%40thread.tacv2/DX%20-%20Studio%20Kaos?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:

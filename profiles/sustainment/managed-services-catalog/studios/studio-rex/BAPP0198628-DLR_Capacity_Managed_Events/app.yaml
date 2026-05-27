@@ -8,7 +8,12 @@
 bapp_id: "BAPP0198628"
 app_name: "dlr-capacity-managed-events"
 full_name: "DLR Capacity Managed Events"
-description: "Park reservation eligibility, availability, booking, and retrieval for DLR"
+description: >
+  Park reservation eligibility, availability, booking, and retrieval for DLR.
+  Flows: park-reservation, mk-renewal, ticket-upgrade-dlr, ticket-upgrade-wdw.
+  Keywords: park reservation, calendar, blockout, no-show, CME, park pass, reserve a date, can't reserve,
+  no current reservations, shared ticket reservation, MK renewal, Magic Key renewal, ticket to pass,
+  ticket to MK, DLR upgrade, upgrade to Magic Key.
 
 # --- Ownership ---
 support_studio: "Studio Rex"

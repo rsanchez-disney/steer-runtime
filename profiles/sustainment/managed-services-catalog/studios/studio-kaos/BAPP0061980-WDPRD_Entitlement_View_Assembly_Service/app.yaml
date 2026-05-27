@@ -1,7 +1,12 @@
 bapp_id: "BAPP0061980"
 app_name: "evas-dlr"
 full_name: "Entitlement View Assembly Service (DLR)"
-description: "Aggregates product instance information on top of TMS responses for DLR. Adds product instances, policies, and enriched entitlement data for guest-facing display. Integrates with CME retrieval for reservation data."
+description: >
+  Aggregates product instance information on top of TMS responses for DLR. Adds product instances, policies,
+  and enriched entitlement data for guest-facing display. Integrates with CME retrieval for reservation data.
+  Flows: ticket-linking.
+  Keywords: ticket not showing, can't see ticket, link ticket, claim ticket, LLMP not showing, ticket visibility,
+  entitlement, evas, ticket-view, product-instance, policy, view-assembly, guest-entitlement, DLR.
 support_studio: "Studio Kaos"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3AeNbcha4UraJUCngdy1oP_SuMd5GrCvgScaei1uhdhoc1%40thread.tacv2/DX%20-%20Studio%20Kaos?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
