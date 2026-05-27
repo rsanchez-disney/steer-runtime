@@ -5,8 +5,18 @@ ADM PCS · DX Profile — Incident management & triage agent for daily sustainme
 ## Apply
 
 ```bash
-koda workspace apply cerebro-sustainment
+koda workspace apply sustainment-cerebro
 ```
+
+## Catalog Context Loading
+
+When the orchestrator agent spawns, it should pre-load BAPP context from the managed-services-catalog. This can be configured via a hook script that loads:
+
+- `app.yaml` — Service metadata, health checks, ECS clusters
+- `runbook.md` — Operational runbooks per BAPP
+- `troubleshooting.md` — Known issues and diagnostic steps
+
+Catalog path: `profiles/sustainment/managed-services-catalog/studios/studio-cerebro`
 
 ## What Does This Give You?
 

@@ -1,7 +1,7 @@
 {
   "name": "sustainment-cerebro",
   "extends": "sustainment",
-  "description": "Sustainment workspace for Studio Cerebro applications",
+  "description": "Sustainment workspace for Studio Cerebro — incident response, profile services, and catalog operations",
   "team": "Studio Cerebro",
   "profiles": [
     "sustainment"
@@ -10,5 +10,26 @@
   "managed_studios": [
     "studio-cerebro"
   ],
-  "enable_tools": true
+  "rules": ["cerebro-incident-response"],
+  "enable_tools": true,
+  "jira_prefix": "ADMPROFILE-",
+  "workspace_path": "${WORKSPACE_ROOT}/cerebro",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
+  "projects": [
+    {
+      "name": "dx-profile-webapi",
+      "path": "profile-webapi",
+      "repo": "profile-vertical/profile-webapi"
+    },
+    {
+      "name": "profile-spa",
+      "path": "profile-spa",
+      "repo": "profile-vertical/profile-spa"
+    },
+    {
+      "name": "sustainment-toolkit",
+      "path": "sustainment-toolkit",
+      "repo": "MARIS117/sustainment-toolkit"
+    }
+  ]
 }
