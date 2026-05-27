@@ -84,7 +84,9 @@
     "gcp-guest-services",
     "dpay-admin-inquiry-ui-client",
     "dpay-admin-inquiry-webapi",
-    "wdpr-app-inquiry-service"
+    "wdpr-app-inquiry-service",
+    "gcp-common-components",
+    "wdpr-payments-ref"
   ],
   "channels": [
     "config-studio",
