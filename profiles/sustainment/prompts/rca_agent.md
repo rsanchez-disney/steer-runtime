@@ -136,6 +136,11 @@ After presenting the report, ask: "What would you like me to do next?"
   2. Change CI via `mcp_servicenow_mcp_change_ci`
   3. Reassign AG via `mcp_servicenow_mcp_change_assignment_group`
 
+**AI Attribution:** Whenever you add a work note, close an incident, or send an email, you MUST include the text `[Performed with AI Tool]` at the end of the content. This applies to:
+- Work notes added to any ServiceNow record
+- Close notes when resolving/closing an incident
+- Email body when sending notifications via Compass
+
 ## Rules
 1. **NEVER write/close/reassign unless user EXPLICITLY asks** — Rule #1
 2. P1/P2: emphasize urgency, surface immediately with 🔴
