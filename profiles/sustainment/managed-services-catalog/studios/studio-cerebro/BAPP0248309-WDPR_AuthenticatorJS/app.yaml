@@ -8,32 +8,32 @@
 bapp_id: "BAPP0248309"
 app_name: "wdpr-authenticatorjs"
 full_name: "WDPR AuthenticatorJS"
-description: ""
+description: "Stand-alone JavaScript bundle that handles OneID Lightbox events and persists the PEPCOM session. Manages OneID V5 Trust State transitions. Injects pep_jwt_token and pep_oauth_token cookies into the browser. Critical for ALL login/registration flows across the Profile ecosystem (WDW, DLR, DCL)."
 
 # --- Ownership ---
 support_studio: "Cerebro"
-escalation_channel: ""
+escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: ""
+  - name: "Cesar Munoz"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead / Sustainment"
+  - name: "Gerson Barrera"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Sustainment Web Dev"
+  - name: "Glenn Raposo"
     role: "SME"
-    contact: ""
+    contact: "Disney POC"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPR AuthenticatorJS"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
+  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1335887456"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,9 +45,9 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "authenticatorjs"
+    component_type: "sdk"               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: "JavaScript bundle (V4) - OneID Lightbox, PEPCOM session, cookie injection"
 
     # -- Component-specific docs --
     docs:
@@ -56,35 +56,35 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1335888476"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
     repository:
-      url: ""
+      url: "https://github.disney.com/profile-vertical/authenticatorjs"
       branch: ""
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "authenticatorbundlejs_build / authenticatorbundlejs_deploy"
+      deploy_target: "S3 + Akamai CDN"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "No healthcheck - static bundle on S3/Akamai (ALERT GAP)"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr-profile-ui"
       source: ""
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" level>=40 | table _time, log.level, log.message
       latency_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS"
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
     # -- AppDynamics --
@@ -118,12 +118,12 @@ components:
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
+      provider: "AWS"                   # AWS | GCP | Azure | on-prem
+      region: "us-east-1"
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      infra_type: "S3"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
       cluster_id: ""
-      service_name: ""
+      service_name: "authenticatorjs"
 
       cloudwatch:
         log_group: ""
@@ -139,8 +139,139 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "s3"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: "digital-media S3 bucket (static JS bundle)"
+
+    # -- Other Environments (only fields that differ from production) --
+    other_environments:
+
+      stage:
+        health_check:
+          url: "Not documented in MyWiki"
+        splunk:
+          index: "wdpr-profile-ui"
+          base_spl: >-
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="stage"
+        cloud:
+          region: "us-east-1"
+          service_name: ""
+
+      load:
+        health_check:
+          url: "Not documented in MyWiki"
+        splunk:
+          index: "wdpr-profile-ui"
+          base_spl: >-
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="load"
+        cloud:
+          region: "us-east-1"
+          service_name: ""
+
+      latest:
+        health_check:
+          url: "Not documented in MyWiki"
+        splunk:
+          index: "wdpr-profile-ui"
+          base_spl: >-
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="latest"
+        cloud:
+          region: "us-east-1"
+          service_name: ""
+
+  - component_name: "authenticator-v5-js"
+    component_type: "sdk"               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
+    description: "JavaScript bundle (V5) - New implementation with Trust States (isMediumTrust, isLowTrust, isHighTrust)"
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
+    repository:
+      url: "https://github.disney.com/profile-vertical/authenticator-v5-js"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "authenticatorv5js (Harness Org: WDPR_OneID_Integration)"
+      deploy_target: "S3 + Akamai CDN"
+
+    # -- Health Check --
+    health_check:
+      url: "No healthcheck - static bundle on S3/Akamai (ALERT GAP)"
+      expected_status: 200
+
+    # -- Splunk --
+    splunk:
+      index: "wdpr-profile-ui"
+      source: ""
+      base_spl: >-
+        index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS"
+      error_spl: >-
+        index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" level>=40
+      latency_spl: ""
+
+    # -- AppDynamics --
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    # -- NewRelic --
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    # -- Datadog --
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    # -- Grafana --
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    # -- Archer --
+    archer:
+      record_id: ""
+
+    # -- Cloud Infrastructure & Native Observability --
+    cloud:
+      provider: "AWS"                   # AWS | GCP | Azure | on-prem
+      region: "us-east-1"
+      account_id: ""
+      infra_type: "S3"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      cluster_id: ""
+      service_name: "authenticator-v5-js"
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: "s3"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
+          name: "digital-media S3 bucket"
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
@@ -149,31 +280,31 @@ components:
         health_check:
           url: ""
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="stage"
         cloud:
-          region: ""
+          region: "us-east-1"
           service_name: ""
 
       load:
         health_check:
           url: ""
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="load"
         cloud:
-          region: ""
+          region: "us-east-1"
           service_name: ""
 
       latest:
         health_check:
           url: ""
         splunk:
-          index: ""
+          index: "wdpr-profile-ui"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" environment="latest"
         cloud:
-          region: ""
+          region: "us-east-1"
           service_name: ""

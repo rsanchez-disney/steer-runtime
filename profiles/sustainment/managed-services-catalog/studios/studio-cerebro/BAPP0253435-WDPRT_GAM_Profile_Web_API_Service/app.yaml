@@ -8,32 +8,32 @@
 bapp_id: "BAPP0253435"
 app_name: "wdprt-gam-profile-web-api-service"
 full_name: "WDPRT GAM Profile Web API Service"
-description: ""
+description: "Profile Java WAM (Web API Manager) is the orchestration/BFF layer migrated from Node.js to Java 17. Routes requests from SPAs to backend services (GAM, B2C, VAS). Handles authentication, session management, and request routing. ~85% of requests routed to GAM CORE APIGW."
 
 # --- Ownership ---
 support_studio: "Cerebro"
-escalation_channel: ""
+escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: ""
+  - name: "Andrew Southwick"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead - Architecture, Node→Java migration"
+  - name: "Cesar Munoz"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Sustainment Tech Lead"
+  - name: "Yash Sugandh"
     role: "SME"
-    contact: ""
+    contact: "Sustainment Backend (with Nerio Baez, Julian Martinez)"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPRT GAM Profile Web API Service"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
+  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1332547811"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,9 +45,9 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "profile-wam-ha"
+    component_type: "gateway"
+    description: "Java 17 / Spring Boot BFF/orchestration layer. Routes all SPA traffic to backend services. Manages DynamoDB sessions. Critical endpoint: /profile-api/authentication/session"
 
     # -- Component-specific docs --
     docs:
@@ -56,7 +56,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1332547811"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -66,30 +66,33 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "disney.harness.io"
+      deploy_target: "ECS Fargate (US-EAST-1 & US-WEST-2)"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "origin.profile-wam.wdprapps.disney.com/profile-api/healthcheck"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr-gam"
+      source: "*profile-wam-ha-wam-prd:profile-wam-ha-prod/profile-wam/*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-gam ids.app=wdw-webapi msg.path!=/status environment=prod
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-gam ids.app=wdw-webapi environment=prod msg.code>=500
+        | timechart span=5m count
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr-gam ids.app=wdw-webapi msg.path!=/status environment=prod
+        | eval statusCode='msg.code'
+        | timechart span=15m count as calls, count(eval(not like(statusCode,"2%"))) as Errors
+        | eval pcErrors=round((Errors/calls)*100,0)
 
     # -- AppDynamics --
     appdynamics:
-      app_name: ""
+      app_name: "core-profile-wam-ha-east / core-profile-wam-ha-west"
       app_id: ""
       tier: ""
       dashboard_url: ""
@@ -109,7 +112,7 @@ components:
     # -- Grafana --
     grafana:
       dashboard_uid: ""
-      dashboard_url: ""
+      dashboard_url: "Profile GAM WEBAPI dashboard"
       datasource: ""
 
     # -- Archer --
@@ -118,17 +121,17 @@ components:
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "wdpr-gam-prod"
+      infra_type: "ECS Fargate"
+      cluster_id: "wdw-gam2-B0082601-use1-profile-wam-ha-wam-prd"
+      service_name: "profile-wam-ha-prod"
 
       cloudwatch:
         log_group: ""
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "CPU > 30% | Memory > 50%"
 
       loginsights:
         log_group: ""
@@ -139,41 +142,41 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "dynamodb"
+          name: "wdpr-gam-b0253435-prd-webapi"
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "origin.stage.profile-wam.wdprapps.disney.com/profile-api/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-gam ids.app=wdw-webapi environment=stage
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-wam-ha-stage"
 
       load:
         health_check:
-          url: ""
+          url: "origin.load.profile-wam.wdprapps.disney.com/profile-api/healthcheck"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-gam ids.app=wdw-webapi environment=load
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-wam-ha-load"
 
       latest:
         health_check:
           url: ""
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-gam ids.app=wdw-webapi environment=latest
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-wam-latest"

@@ -8,32 +8,32 @@
 bapp_id: "BAPP0242566"
 app_name: "wdpr-profile-view-assembly-service"
 full_name: "WDPR Profile View Assembly Service"
-description: ""
+description: "High-performance data aggregation service that assembles guest profile views from multiple backend sources. Critical for avatar loading, MB/DB orders, and profile data composition."
 
 # --- Ownership ---
 support_studio: "Cerebro"
-escalation_channel: ""
+escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: ""
+  - name: "Andrew Southwick"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Zachary Boone"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "Tech Lead"
+  - name: "Glenn Raposo"
     role: "SME"
-    contact: ""
+    contact: "Manager"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "WDPR Profile View Assembly Service"
   assignment_group: "web-global-Digital Profile"
-  business_service: ""
+  business_service: "WDPR Profile View Assembly Service"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "https://rundeck.wdprapps.disney.com/project/profile-view-assembly-service-ha_aws/jobs"
+  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331176583"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -45,18 +45,18 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "profile-view-assembly-service"
+    component_type: "api"
+    description: "Java 17 data aggregation service. Assembles guest profile views from Profile data, Avatar selection, XBMS (orders/linked bands), FnF (friends with plans), DCL Reservation Service, and Facility Service."
 
     # -- Component-specific docs --
     docs:
-      troubleshooting: ""
-      runbook: ""
+      troubleshooting: "troubleshooting.md"
+      runbook: "runbook.md"
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331176583"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -66,30 +66,30 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      deploy_target: "ECS Fargate"
 
     # -- Health Check --
     health_check:
-      url: ""
+      url: "https://use1.profile-vas-ha.gam-prod.wdprapps.disney.com/profile-view-assembly-service/v1/bb8/status/summary"
       expected_status: 200
 
     # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr-gam"
       source: ""
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-gam "ids.app"="*profile-view-assembly-service"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr-gam "ids.app"="*profile-view-assembly-service" level>=40
       latency_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr-gam "ids.app"="*profile-view-assembly-service"
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
     # -- AppDynamics --
     appdynamics:
-      app_name: ""
+      app_name: "prod-gam-profile-svc-aws"
       app_id: ""
       tier: ""
       dashboard_url: ""
@@ -109,7 +109,7 @@ components:
     # -- Grafana --
     grafana:
       dashboard_uid: ""
-      dashboard_url: ""
+      dashboard_url: "Profile-Prod-Active-Active-Dashboard"
       datasource: ""
 
     # -- Archer --
@@ -118,15 +118,15 @@ components:
 
     # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "wdpr-gam-prod"
+      infra_type: "ECS"
+      cluster_id: "wdw-gam-B0242566-use1-prd"
+      service_name: "profile-vas-ha-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "prod-gam-profile-svc"
         namespace: ""
         alarm_prefix: ""
 
@@ -139,41 +139,41 @@ components:
         log_filter: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "elasticache"
+          name: "Redis"
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
+          url: "https://stage.use1.profile-vas-ha.gam-test.wdprapps.disney.com/profile-view-assembly-service/v1/bb8/status/summary"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
+            index=wdpr-gam "ids.app"="*profile-view-assembly-service" environment=stage
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-vas-stage-live"
 
       load:
         health_check:
-          url: ""
+          url: "https://load.use1.profile-vas-ha.gam-test.wdprapps.disney.com/profile-view-assembly-service/v1/bb8/status/summary"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
+            index=wdpr-gam "ids.app"="*profile-view-assembly-service" environment=load
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-vas-ha-load-live"
 
       latest:
         health_check:
-          url: ""
+          url: "https://latest.use1.profile-vas-ha.gam-dev.wdprapps.disney.com/profile-view-assembly-service/v1/bb8/status/summary"
         splunk:
-          index: ""
+          index: "wdpr-gam"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
+            index=wdpr-gam "ids.app"="*profile-view-assembly-service" environment=latest
         cloud:
-          region: ""
-          service_name: ""
+          region: "us-east-1"
+          service_name: "profile-vas-latest-live"
