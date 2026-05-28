@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shield Sustain · Defect Trend Report — Jun 2025 – May 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #212435;
+    --border: #2d3148;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --accent: #6c8ef5;
+    --accent2: #5e72e4;
+    --green: #2dce89;
+    --red: #f5365c;
+    --orange: #fb6340;
+    --yellow: #ffd600;
+    --purple: #9665f0;
+    --teal: #11cdef;
+    --real-defect: #6c8ef5;
+    --tech-debt: #9665f0;
+    --font: 'Inter', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ── Layout ── */
+  .page-wrapper { max-width: 1200px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── Header ── */
+  .report-header {
+    background: linear-gradient(135deg, #1a1d27 0%, #151825 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .report-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(108,142,245,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .report-header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .report-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(108,142,245,0.15);
+    border: 1px solid rgba(108,142,245,0.3);
+    color: var(--accent);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .report-title { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: -0.02em; line-height: 1.2; }
+  .report-subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; }
+  .report-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .meta-value { font-size: 13px; font-weight: 500; color: var(--text); }
+
+  /* ── Sections ── */
+  section { margin-bottom: 40px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+
+  /* ── KPI Grid ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(108,142,245,0.4); }
+  .kpi-value { font-size: 32px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .kpi-label { font-size: 12px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+  .kpi-trend { font-size: 11px; margin-top: 4px; font-weight: 600; }
+  .trend-down { color: var(--green); }
+  .trend-up   { color: var(--red); }
+  .trend-flat { color: var(--muted); }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .callout-critical { background: rgba(245,54,92,0.08); border-color: var(--red); }
+  .callout-info     { background: rgba(108,142,245,0.08); border-color: var(--accent); }
+  .callout-success  { background: rgba(45,206,137,0.08); border-color: var(--green); }
+  .callout-warning  { background: rgba(255,214,0,0.08);  border-color: var(--yellow); }
+  .callout-title    { font-weight: 700; margin-bottom: 4px; }
+  .callout-critical .callout-title { color: var(--red); }
+  .callout-info .callout-title     { color: var(--accent); }
+  .callout-success .callout-title  { color: var(--green); }
+  .callout-warning .callout-title  { color: var(--yellow); }
+
+  /* ── Chart ── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 28px 20px;
+  }
+  .chart-header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  .chart-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .chart-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .chart-legend { display: flex; gap: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .chart-container { position: relative; height: 320px; margin-top: 16px; }
+
+  /* ── Insight Row ── */
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex; gap: 14px;
+  }
+  .insight-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .insight-body { flex: 1; }
+  .insight-title { font-weight: 600; font-size: 13px; color: #fff; margin-bottom: 4px; }
+  .insight-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Monthly table ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left; padding: 10px 14px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(45,49,72,0.5);
+    vertical-align: middle;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(108,142,245,0.04); }
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--real-defect); }
+  .bar-fill.debt { background: var(--tech-debt); }
+
+  /* ── Stacked bar inline ── */
+  .stack-bar { display: flex; height: 6px; border-radius: 4px; overflow: hidden; width: 100px; }
+  .stack-real { background: var(--real-defect); }
+  .stack-debt { background: var(--tech-debt); }
+
+  /* ── Tags ── */
+  .tag {
+    display: inline-flex; align-items: center;
+    padding: 2px 8px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .tag-open    { background: rgba(255,214,0,0.12);  color: var(--yellow); }
+  .tag-inprog  { background: rgba(108,142,245,0.12); color: var(--accent); }
+  .tag-closed  { background: rgba(45,206,137,0.12);  color: var(--green); }
+  .tag-crit    { background: rgba(245,54,92,0.15);   color: var(--red); }
+  .tag-high    { background: rgba(251,99,64,0.12);   color: var(--orange); }
+  .tag-med     { background: rgba(255,214,0,0.10);   color: var(--yellow); }
+  .tag-low     { background: rgba(130,138,164,0.12); color: var(--muted); }
+  .tag-bug     { background: rgba(108,142,245,0.12); color: var(--accent); }
+  .tag-crash   { background: rgba(245,54,92,0.12);   color: var(--red); }
+  .tag-tech    { background: rgba(150,101,240,0.12); color: var(--purple); }
+  .tag-cicd    { background: rgba(17,205,239,0.12);  color: var(--teal); }
+  .tag-perf    { background: rgba(251,99,64,0.12);   color: var(--orange); }
+  .tag-l10n    { background: rgba(45,206,137,0.12);  color: var(--green); }
+  .tag-ing     { background: rgba(255,214,0,0.10);   color: var(--yellow); }
+  .tag-sec     { background: rgba(245,54,92,0.15);   color: var(--red); }
+
+  /* ── Issue list ── */
+  .issue-row td { font-size: 12px; }
+  .issue-key { font-family: 'Courier New', monospace; font-size: 11px; color: var(--accent); white-space: nowrap; }
+  .issue-summary { color: var(--text); max-width: 380px; }
+  .note-text { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  /* ── Info tooltip ── */
+  .info-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: rgba(136,146,164,0.12);
+    border: 1px solid rgba(136,146,164,0.25);
+    color: var(--muted); font-size: 9px; font-weight: 700;
+    cursor: default; position: relative;
+    vertical-align: middle; margin-left: 5px; flex-shrink: 0;
+    line-height: 1;
+  }
+  .info-btn:hover .tt { visibility: visible; opacity: 1; }
+  .tt {
+    visibility: hidden; opacity: 0;
+    width: 230px; background: #1a1d27;
+    border: 1px solid var(--border); color: var(--text);
+    font-size: 11px; font-weight: 400; line-height: 1.55;
+    border-radius: 8px; padding: 10px 13px;
+    position: absolute; z-index: 200;
+    bottom: 130%; left: 50%; transform: translateX(-50%);
+    transition: opacity 0.15s; pointer-events: none;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    text-align: left;
+  }
+  .tt::after {
+    content: ''; position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent; border-top-color: var(--border);
+  }
+
+  /* ── Print / export note ── */
+  .export-note {
+    text-align: center; font-size: 12px; color: var(--muted);
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .report-header { padding: 24px 20px; }
+    .chart-container { height: 220px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ══════════════════════════════════════════════════════ HEADER -->
+  <div class="report-header">
+    <div class="report-header-top">
+      <div>
+        <div class="report-badge">&#9679; Shield Sustainment</div>
+        <div class="report-title">Defect Trend Report</div>
+        <div class="report-subtitle">All defects in Sustainment Epics</div>
+        <div class="report-subtitle" style="margin-top:6px;font-style:italic;font-size:12px;color:#606880;">project IN (IEXP, AEXP, COREEXP) AND (&quot;Epic Link&quot; IN (AEXP-92, IEXP-1027) OR &quot;Feature&quot; IN (&quot;Shield Tech Sustainment&quot;, &quot;Shield Salesforce Sustainment&quot;, &quot;Shield Tech Hardening Crashes&quot;)) AND issuetype IN (Defect, Bug) AND created &gt;= &quot;2025-06-01&quot;</div>
+      </div>
+    </div>
+    <div class="report-meta">
+      <div class="meta-item"><span class="meta-label">Period</span><span class="meta-value">Jun 2025 – May 2026 (12 months)</span></div>
+      <div class="meta-item"><span class="meta-label">Projects</span><span class="meta-value">IEXP · AEXP · COREEXP</span></div>
+      <div class="meta-item"><span class="meta-label">Total tickets</span><span class="meta-value">933</span></div>
+      <div class="meta-item"><span class="meta-label">Real defects</span><span class="meta-value">772 (82.7 %)</span></div>
+      <div class="meta-item"><span class="meta-label">Misclassified</span><span class="meta-value">161 (17.3 %)</span></div>
+      <div class="meta-item"><span class="meta-label">Report date</span><span class="meta-value">May 26, 2026</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ EXECUTIVE SUMMARY -->
+  <div class="section-label">Executive Summary</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:32px;">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
+
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2dce89;margin-bottom:10px;">📉 Trend Observed</div>
+        <p style="font-size:13px;color:var(--text);line-height:1.7;margin:0;">
+          The team peaked at <strong>90 real defects</strong> in October 2025, driven by in-park testing that surfaced ~40 issues in a single week. Since then, a consistent downward trend has brought May 2026 to <strong>46 real defects — a 49% reduction</strong>. The 3-month rolling average has stayed below the 12-month mean of 64 since January 2026, confirming structural improvement rather than seasonal variance. Notably, 17% of all tickets (161/933) were engineering work misclassified as bugs — stripping those out reveals an even cleaner decline.
+        </p>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#fb6340;margin-bottom:10px;">🔍 Probable Root Causes</div>
+        <ul style="font-size:13px;color:var(--text);line-height:1.8;margin:0;padding-left:16px;">
+          <li><strong>Recurring crashes filed per-release</strong> — CouchbaseLite expiry, TransactionTooLargeException, and Flutter lifecycle crashes generate new tickets each cycle instead of a single permanent fix. Accounts for ~14% of all real defects.</li>
+          <li><strong>Finder / Map defects</strong> — Wayfinding and Map Finder surface ~95 defects over 12 months. A good improvement would be higher test coverage for map data and UI changes.</li>
+          <li><strong>Misclassified engineering work</strong> — SonarQube compliance, CI/CD fixes, and Monorepo cleanups were routinely filed as Defects, inflating the apparent bug rate by 17%.</li>
+        </ul>
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6c8ef5;margin-bottom:10px;">✅ Recommended Actions</div>
+        <ul style="font-size:13px;color:var(--text);line-height:1.8;margin:0;padding-left:16px;">
+          <li><strong>Fix top-3 crash root causes permanently</strong> — CouchbaseLite migration, TransactionTooLargeException guard, and Flutter lifecycle audit. Estimated impact: −14% defect volume.</li>
+          <li><strong>Automate tests for Finder/Map component</strong> — dedicated test regression suite per month to stop ~12% of monthly defects from recurring.</li>
+          <li><strong>Enforce correct issue types</strong> — require Stories/Tasks for engineering work. Would immediately reduce visible defect count by ~17% and improve metric accuracy.</li>
+          <li><strong>Monthly defect triage review</strong> — classify tickets at time-of-creation to avoid misclassification accumulating over quarters.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ TREND SUMMARY KPIs -->
+  <div class="section-label">12-Month Trend Summary</div>
+  <div class="kpi-grid" style="margin-bottom:32px;">
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#6c8ef5;">933</div>
+      <div class="kpi-label">Total tickets filed <span class="info-btn">i<span class="tt">All Defect/Bug issue types created in IEXP, AEXP, and COREEXP between June 2025 and May 2026, regardless of classification.</span></span></div>
+      <div class="kpi-trend trend-flat">Jun 2025 – May 2026</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#6c8ef5;">772</div>
+      <div class="kpi-label">Real defects <span class="info-btn">i<span class="tt">Tickets classified as genuine app issues: functional bugs, UX regressions, native crashes, localization gaps, and performance problems. Excludes engineering tasks, CI/CD, and build issues.</span></span></div>
+      <div class="kpi-trend trend-flat">82.7% of total</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#9665f0;">161</div>
+      <div class="kpi-label">Misclassified as bug <span class="info-btn">i<span class="tt">Tickets filed as Defect/Bug but representing engineering work: SonarQube code-coverage tasks, CI/CD pipeline fixes, Monorepo cleanups, Jacoco configs, and unit-test improvements.</span></span></div>
+      <div class="kpi-trend trend-flat">Eng tasks / SonarQube / CI</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#f5365c;">105</div>
+      <div class="kpi-label">Peak month (Oct '25) <span class="info-btn">i<span class="tt">October 2025 had the highest total ticket volume (105). Real defects that month: 90 — the majority were surfaced by the in-park 2025 testing event (~40 issues in a single week), compounded by the post-RC defect wave and Wayfinding/Finder crash cluster.</span></span></div>
+      <div class="kpi-trend trend-up">Highest volume</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#2dce89;">46</div>
+      <div class="kpi-label">May 2026 real defects <span class="info-btn">i<span class="tt">Real defects created in May 2026 (partial month in progress). 49% below the October 2025 peak of 90 — the lowest monthly count in the 12-month period.</span></span></div>
+      <div class="kpi-trend trend-down">↓ 49% vs peak</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" style="color:#2dce89;">64</div>
+      <div class="kpi-label">12-month avg / month <span class="info-btn">i<span class="tt">Average real defects per month across the full 12-month period. May 2026 at 46 is 28% below this average, confirming a sustained downward trend.</span></span></div>
+      <div class="kpi-trend trend-flat">Real defects only</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ TREND CHART -->
+  <div class="section-label">Monthly Defect Volume — Real vs Misclassified</div>
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Monthly Tickets Created (Jun 2025 – May 2026)</div>
+        <div class="chart-desc">Stacked: real defects (blue) + misclassified engineering tickets (purple)</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c8ef5;"></div>Real defects</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#9665f0;"></div>Misclassified (Eng / CI / SonarQube)</div>
+        <div class="legend-item" style="display:flex;align-items:center;gap:6px;">
+          <div style="width:18px;height:2px;background:rgba(255,214,0,0.95);border-radius:1px;"></div>3-mo rolling avg
+        </div>
+        <div class="legend-item" style="display:flex;align-items:center;gap:6px;">
+          <div style="width:18px;height:2px;border-top:2px dashed #2dce89;"></div>64 avg (real)
+        </div>
+      </div>
+    </div>
+    <div class="chart-container">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ KEY INSIGHTS -->
+  <div class="section-label">Key Insights</div>
+  <div class="insight-grid" style="margin-bottom:32px;">
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(45,206,137,0.12);">📉</div>
+      <div class="insight-body">
+        <div class="insight-title">Defects are trending down</div>
+        <div class="insight-text">Real defects peaked at 90 in Oct 2025 and have declined to 46 in May 2026 — a 49% reduction. The 3-month rolling average has been consistently below the annual average since Jan 2026.</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(150,101,240,0.12);">🔬</div>
+      <div class="insight-body">
+        <div class="insight-title">SonarQube campaign inflated Feb–Mar</div>
+        <div class="insight-text">Feb 2026 (21 eng tasks) and Mar 2026 (35 eng tasks) saw a large number of SonarQube / Jacoco code-coverage tickets filed as "Defects". Stripping them reveals a steady decline in true bugs.</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(255,214,0,0.12);">🔷</div>
+      <div class="insight-body">
+        <div class="insight-title">Sep–Oct 2025 spike from in-park testing</div>
+        <div class="insight-text">The September 2025 "in-park 2025" testing session flooded the backlog with ~40 issues in a single week. Many were duplicate observations across platform. Real unique issues were significantly fewer.</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(108,142,245,0.12);">📊</div>
+      <div class="insight-body">
+        <div class="insight-title">17% of tickets should not be bugs</div>
+        <div class="insight-text">161 out of 933 tickets were engineering tasks (SonarQube, Grafana, Monorepo cleanup, CI/CD fixes, Vendomatic retirement, unit-test improvements) filed as Defect/Bug issue type.</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(251,99,64,0.12);">💥</div>
+      <div class="insight-body">
+        <div class="insight-title">Crashes are a persistent category</div>
+        <div class="insight-text">NewRelic and Google Play Console crashes appear every month. Many are recurring root-cause patterns (Couchbase, Flutter engine lifecycle, TransactionTooLargeException) tracked as separate tickets each release.</div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon" style="background:rgba(17,205,239,0.12);">🌍</div>
+      <div class="insight-body">
+        <div class="insight-title">Localization Phase 2 drove COREEXP in May</div>
+        <div class="insight-text">5 out of 55 May 2026 issues are Spanish translation gaps from the L10n Phase 2 rollout (COREEXP project). These are expected planned work, not regressions.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- ══════════════════════════════════════════════════════ TOP PROBLEM AREAS -->
+  <div class="section-label">Top Problem Areas — 12-Month Real Defect Analysis</div>
+
+  <div class="callout callout-warning" style="margin-bottom:20px;">
+    <div class="callout-title">⚠️ Classification Note</div>
+    Areas were identified by keyword pattern-matching issue summaries across all 772 real defects (e.g. "crash" → Crashes, "finder/map/wayfinding" → Finder, "analytics/trackAction" → Analytics). Distributions are estimated; exact counts would require per-issue functional labels in Jira.
+  </div>
+
+  <!-- Area highlight KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px;" id="areaKpis"></div>
+
+  <!-- Ranked bars + sparklines -->
+  <div class="chart-card" style="margin-bottom:24px;">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Problem Areas — Ranked by Volume (Jun 2025 – May 2026)</div>
+        <div class="chart-desc">Bar = share of 772 real defects · Sparkline = monthly trend · Badge = months present / 12</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><span style="color:#2dce89;font-weight:700;">↓</span>&nbsp;Improving</div>
+        <div class="legend-item"><span style="color:#8892a4;font-weight:700;">→</span>&nbsp;Stable</div>
+        <div class="legend-item"><span style="color:#f5365c;font-weight:700;">↑</span>&nbsp;Growing</div>
+        <div class="legend-item"><span style="color:#2dce89;font-weight:700;">✓</span>&nbsp;Resolved</div>
+      </div>
+    </div>
+    <!-- Header row -->
+    <div style="display:grid;grid-template-columns:22px 1fr 130px 58px 68px 72px 88px;gap:10px;padding:8px 0 6px;border-bottom:1px solid var(--border);margin-top:16px;">
+      <div style="font-size:10px;color:var(--muted);font-weight:700;">#</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Area</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Volume</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:right;">Share</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:center;">Persist.</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:center;">Trend</div>
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:right;">12-Mo Sparkline</div>
+    </div>
+    <div id="areaRankedList"></div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="chart-card" style="margin-bottom:32px;">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Area Recurrence Heatmap</div>
+        <div class="chart-desc">Monthly issue count per area · Darker = more issues · Reveals seasonal patterns, resolved blitzes and ongoing chronic areas</div>
+      </div>
+    </div>
+    <div id="areaHeatmap" style="margin-top:20px;overflow-x:auto;"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ MONTHLY BREAKDOWN TABLE -->
+  <div class="section-label">Month-by-Month Breakdown</div>
+  <div class="table-card" style="margin-bottom:32px;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Total tickets</th>
+          <th>Real defects</th>
+          <th>Misclassified</th>
+          <th>% Real</th>
+          <th>Distribution</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="monthTable"></tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <!-- ══════════════════════════════════════════════════════ MAY 2026 DEEP DIVE -->
+  <div class="section-label">May 2026 Deep Dive — Current Sprint</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;margin-bottom:24px;" id="mayKpis"></div>
+
+  <div class="callout callout-info" style="margin-bottom:20px;">
+    <div class="callout-title">Cross-platform duplicates inflate the count</div>
+    The Notification Center (IEXP-11964 + AEXP-10879) and Wayfinding (IEXP-11951 + AEXP-10875) entries each represent a single root problem filed as two separate tickets — one per platform. That reduces the effective unique App Bug count from 22 to 20 distinct issues.
+  </div>
+
+  <!-- Category summary -->
+  <div class="section-label">May 2026 — Category Breakdown</div>
+  <div class="table-card" style="margin-bottom:24px;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Count</th>
+          <th>Is a real bug?</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="tag tag-bug">App Bug</span></td><td><strong>22</strong></td><td><span style="color:#2dce89;">✓ Yes</span></td><td style="color:var(--muted)">Functional / UX defects found in testing or from INC reports</td></tr>
+        <tr><td><span class="tag tag-crash">Crash</span></td><td><strong>8</strong></td><td><span style="color:#2dce89;">✓ Yes</span></td><td style="color:var(--muted)">Native crashes surfaced via New Relic / Google Play Console</td></tr>
+        <tr><td><span class="tag tag-tech">Tech Debt</span></td><td><strong>8</strong></td><td><span style="color:#f5365c;">✗ No</span></td><td style="color:var(--muted)">Engineering tasks, refactors, or cleanups filed as bugs</td></tr>
+        <tr><td><span class="tag tag-l10n">Localization</span></td><td><strong>6</strong></td><td><span style="color:#2dce89;">✓ Yes</span></td><td style="color:var(--muted)">Spanish translation gaps from L10n Phase 2 (COREEXP)</td></tr>
+        <tr><td><span class="tag tag-cicd">CI/CD &amp; Build</span></td><td><strong>6</strong></td><td><span style="color:#f5365c;">✗ No</span></td><td style="color:var(--muted)">Pipeline failures, broken builds, test configuration issues</td></tr>
+        <tr><td><span class="tag tag-perf">Performance</span></td><td><strong>2</strong></td><td><span style="color:#2dce89;">✓ Yes</span></td><td style="color:var(--muted)">Launch time regression, missing observability tags</td></tr>
+        <tr><td><span class="tag tag-ing">Ingestion</span></td><td><strong>2</strong></td><td><span style="color:#f5365c;">✗ No</span></td><td style="color:var(--muted)">App Store / TestFlight submission failures</td></tr>
+        <tr><td><span class="tag tag-sec">Security</span></td><td><strong>1</strong></td><td><span style="color:#f5365c;">⚠ Critical</span></td><td style="color:var(--muted)">Encryption key exposed — FIND-49557 (Red Team)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- May 2026 — App Bugs by Functionality -->
+  <div class="section-label">May 2026 — App Bugs by Functionality</div>
+  <div class="table-card" style="margin-bottom:24px;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Feature Area</th>
+          <th>iOS</th>
+          <th>Android</th>
+          <th>Tickets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Finder / Map / Wayfinding</td><td>IEXP-11951</td><td>AEXP-10875, AEXP-10879, AEXP-10831, AEXP-10815</td><td>5</td></tr>
+        <tr><td>Dashboard / Home Screen</td><td>IEXP-11910</td><td>AEXP-10828, AEXP-10834, AEXP-10838</td><td>4</td></tr>
+        <tr><td>Notification Center</td><td>IEXP-11964</td><td>AEXP-10879</td><td>2</td></tr>
+        <tr><td>Chat with Us</td><td>—</td><td>AEXP-10814</td><td>1</td></tr>
+        <tr><td>Search</td><td>IEXP-11966</td><td>AEXP-10892</td><td>2 (HKDL)</td></tr>
+        <tr><td>Onboarding / FTUE</td><td>IEXP-11921</td><td>AEXP-10835</td><td>2</td></tr>
+        <tr><td>Park Hours / Calendar</td><td>IEXP-11979</td><td>—</td><td>1</td></tr>
+        <tr><td>LL Hub / Genie</td><td>IEXP-11987</td><td>—</td><td>1</td></tr>
+        <tr><td>Resort Reservation</td><td>IEXP-11980</td><td>—</td><td>1</td></tr>
+        <tr><td>Finder (HKDL)</td><td>IEXP-11920</td><td>—</td><td>1</td></tr>
+        <tr><td>Feature Menu</td><td>IEXP-11910</td><td>—</td><td>1</td></tr>
+        <tr><td>Map Finder – Pins</td><td>—</td><td>AEXP-10815</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ SECURITY CALLOUT -->
+  <div class="callout callout-critical" style="margin-top:32px;">
+    <div class="callout-title">🔴 Critical Security — AEXP-10915 · FIND-49557</div>
+    Encryption key exposed across WDW / DLR / HKDL (Red Team finding). Remediation deadline: <strong>June 7, 2026</strong>. Escalate immediately if not already in progress.
+  </div>
+
+  <p class="export-note">Shield Sustainment Defect Trend Report · Generated May 26, 2026 · Jira data: IEXP · AEXP · COREEXP</p>
+</div><!-- /page-wrapper -->
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const months = ['Jun\'25','Jul\'25','Aug\'25','Sep\'25','Oct\'25','Nov\'25','Dec\'25','Jan\'26','Feb\'26','Mar\'26','Apr\'26','May\'26'];
+const totalCounts  = [82, 72, 96, 100, 105, 57, 72, 53, 84, 93, 65, 54];
+const realDefects  = [73, 62, 75, 86, 90,  51, 63, 47, 63, 58, 58, 46];
+const techDebt     = [9,  10, 21, 14, 15,  6,  9,  6,  21, 35, 7,  8 ];
+const AVG = 64;
+
+// 3-month rolling average
+function rolling3(arr) {
+  return arr.map((v, i) => {
+    if (i === 0) return v;
+    if (i === 1) return Math.round((arr[0] + arr[1]) / 2);
+    return Math.round((arr[i-2] + arr[i-1] + arr[i]) / 3);
+  });
+}
+const rollingAvg = rolling3(realDefects);
+
+const monthNotes = [
+  'INC-driven bugs, analytics defects, HKDL content',
+  'Revert Flutter 3.32, crash reports, DAS/wayfinding',
+  'In-Park pre-testing, SonarQube integration begins, security finding',
+  'In-Park 2025 event surge (~40 tickets in one week), RC cycle',
+  'Post RC cycle + wayfinding / Finder crash wave',
+  'Holiday slowdown, chat/notification bugs',
+  'Crash cluster (launch crashes), resort reservation issues',
+  'Chat SDK, search, instrumentation fixes',
+  'SonarQube campaign (iOS): 14 code-coverage tickets',
+  'SonarQube campaign (Android): 21 Jacoco/code-coverage tickets',
+  'App Store Accountability feature bugs, chat crashes',
+  'L10n Phase 2 (COREEXP), Couchbase / crash wave. Partial month.',
+];
+
+// ═══════════════════════════════════════════════════
+// RENDER MONTHLY TABLE
+// ═══════════════════════════════════════════════════
+const monthFull = ['June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026','April 2026','May 2026'];
+const tbody = document.getElementById('monthTable');
+months.forEach((m, i) => {
+  const total = totalCounts[i];
+  const real  = realDefects[i];
+  const debt  = techDebt[i];
+  const pct   = Math.round(real / total * 100);
+  const realW = Math.round(real / total * 100);
+  const debtW = Math.round(debt / total * 100);
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-weight:600;white-space:nowrap">${monthFull[i]}</td>
+    <td>${total}</td>
+    <td style="color:#6c8ef5;font-weight:600">${real}</td>
+    <td style="color:#9665f0;">${debt}</td>
+    <td>${pct}%</td>
+    <td>
+      <div class="stack-bar">
+        <div class="stack-real" style="width:${realW}%"></div>
+        <div class="stack-debt" style="width:${debtW}%"></div>
+      </div>
+    </td>
+    <td style="color:var(--muted);font-size:12px;">${monthNotes[i]}</td>`;
+  tbody.appendChild(tr);
+});
+
+// ═══════════════════════════════════════════════════
+// MAY 2026 KPIs
+// ═══════════════════════════════════════════════════
+const mayKpis = document.getElementById('mayKpis');
+const kpiData = [
+  { v: 55, l: 'Total May issues', c: '#6c8ef5' },
+  { v: 21, l: 'iOS issues', c: '#11cdef' },
+  { v: 29, l: 'Android issues', c: '#2dce89' },
+  { v: 5,  l: 'Core / Flutter', c: '#9665f0' },
+];
+kpiData.forEach(k => {
+  const card = document.createElement('div');
+  card.className = 'kpi-card';
+  card.innerHTML = `<div class="kpi-value" style="color:${k.c}">${k.v}</div><div class="kpi-label">${k.l}</div>`;
+  mayKpis.appendChild(card);
+});
+
+// ═══════════════════════════════════════════════════
+// CHART 1 — Stacked bar: real + tech debt
+// ═══════════════════════════════════════════════════
+const ctx1 = document.getElementById('trendChart').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Real Defects',
+        data: realDefects,
+        backgroundColor: 'rgba(108,142,245,0.75)',
+        borderColor: 'rgba(108,142,245,1)',
+        borderWidth: 1,
+        borderRadius: 4,
+        stack: 'total',
+      },
+      {
+        label: 'Misclassified',
+        data: techDebt,
+        backgroundColor: 'rgba(150,101,240,0.7)',
+        borderColor: 'rgba(150,101,240,1)',
+        borderWidth: 1,
+        borderRadius: 4,
+        stack: 'total',
+      },
+      {
+        label: '3-mo rolling avg (real)',
+        data: rollingAvg,
+        type: 'line',
+        borderColor: 'rgba(255,214,0,0.95)',
+        backgroundColor: 'rgba(255,214,0,0.05)',
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(255,214,0,1)',
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        fill: false,
+        tension: 0.35,
+        stack: 'rolling',
+        order: -2,
+      },
+      {
+        label: '12-month avg (real)',
+        data: Array(12).fill(AVG),
+        type: 'line',
+        borderColor: 'rgba(45,206,137,0.6)',
+        borderDash: [5, 4],
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: false,
+        stack: 'avg',
+        order: -1,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: '#1a1d27',
+        borderColor: '#2d3148',
+        borderWidth: 1,
+        titleColor: '#e8eaf0',
+        bodyColor: '#8892a4',
+        padding: 12,
+        callbacks: {
+          afterBody(items) {
+            const i = items[0].dataIndex;
+            return [`Total: ${totalCounts[i]}`, `Real: ${realDefects[i]}  (${Math.round(realDefects[i]/totalCounts[i]*100)}%)`, `Misclassified: ${techDebt[i]}`];
+          }
+        }
+      },
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: { color: 'rgba(45,49,72,0.4)', drawTicks: false },
+        ticks: { color: '#8892a4', font: { size: 12 } },
+      },
+      y: {
+        stacked: true,
+        grid: { color: 'rgba(45,49,72,0.4)' },
+        ticks: { color: '#8892a4', font: { size: 12 }, stepSize: 20 },
+        max: 130,
+      },
+    },
+  },
+});
+
+// ═══════════════════════════════════════════════════
+// AREA ANALYSIS DATA
+// ═══════════════════════════════════════════════════
+const areaData = [
+  { name:'Crashes',                   total:110, color:'#f5365c', icon:'💥', persistence:12, trend:'down',     data:[10,8,9,12,15,7,12,7,8,8,6,8]   },
+  { name:'Finder / Map / Wayfinding', total:95,  color:'#6c8ef5', icon:'🗺️', persistence:12, trend:'flat',     data:[7,6,8,15,14,5,6,4,6,7,11,6]    },
+  { name:'Analytics / Tracking',      total:80,  color:'#fb6340', icon:'📊', persistence:12, trend:'down',     data:[18,14,12,10,8,5,3,3,2,2,2,1]   },
+  { name:'Content / CMS Issues',      total:76,  color:'#11cdef', icon:'📝', persistence:12, trend:'flat',     data:[13,1,3,10,7,8,4,8,8,6,3,4]     },
+  { name:'Dashboard / Home Screen',   total:65,  color:'#2dce89', icon:'🏠', persistence:12, trend:'flat',     data:[5,5,7,8,8,4,6,4,5,4,5,4]       },
+  { name:'Notification / Chat',       total:60,  color:'#9665f0', icon:'💬', persistence:12, trend:'down',     data:[3,3,4,5,6,8,9,7,5,4,4,2]       },
+  { name:'Lightning Lane / Genie',    total:55,  color:'#ffd600', icon:'⚡', persistence:12, trend:'down',     data:[5,4,5,7,8,4,5,3,4,4,4,2]       },
+  { name:'Search',                    total:45,  color:'#2dce89', icon:'🔍', persistence:12, trend:'flat',     data:[4,4,4,4,5,3,4,3,4,4,4,2]       },
+  { name:'Localization / Content',    total:40,  color:'#2dce89', icon:'🌍', persistence:12, trend:'up',       data:[3,2,3,3,3,2,2,2,3,3,7,7]       },
+  { name:'FTUE / Onboarding',         total:38,  color:'#11cdef', icon:'🚀', persistence:12, trend:'flat',     data:[3,3,3,4,5,3,3,3,3,3,3,2]       },
+  { name:'Resort Reservation',        total:35,  color:'#fb6340', icon:'🏨', persistence:11, trend:'down',     data:[3,3,3,4,5,3,4,3,3,3,2,1]       },
+  { name:'Performance',               total:27,  color:'#ffd600', icon:'⚙️', persistence:12, trend:'flat',     data:[2,2,2,3,3,2,2,2,3,3,2,2]       },
+  { name:'Edge-to-Edge (Android 15)', total:24,  color:'#9665f0', icon:'📱', persistence:4,  trend:'resolved', data:[0,10,8,5,1,0,0,0,0,0,0,0]      },
+];
+const TOTAL_REAL = 772;
+
+// ── Sparkline SVG helper ──────────────────────────
+function sparklineSVG(data, color, w, h) {
+  w = w || 80; h = h || 28;
+  var mx = Math.max.apply(null, data) || 1;
+  var pts = data.map(function(v, i) {
+    var x = (i / (data.length - 1)) * w;
+    var y = h - (v / mx) * (h - 6) - 3;
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  var last = pts[pts.length - 1].split(',');
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" style="display:block;">'
+    + '<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + color + '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>'
+    + '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="2.5" fill="' + color + '"/>'
+    + '</svg>';
+}
+
+// ── Area highlight KPIs ──────────────────────────
+(function() {
+  var kpis = [
+    { title:'Most Frequent Area',   value:'Crashes',      sub:'~110 defects · present every month',           sub2:'↓ Trending down since Oct \'25',         color:'#f5365c' },
+    { title:'2nd Most Frequent',    value:'Finder / Map', sub:'~95 defects · 12.3% of all real defects',      sub2:'Sep–Oct spikes from in-park testing',     color:'#6c8ef5' },
+    { title:'Newly Growing',        value:'Localization', sub:'Jumped to 7/mo in Apr–May 2026',               sub2:'↑ L10n Phase 2 rollout in progress',       color:'#ffd600' },
+    { title:'Content Issues',       value:'76',           sub:'content label or keyword in ticket title',     sub2:'~8.1% of all 933 tickets · cross-cutting',  color:'#11cdef' },
+  ];
+  var el = document.getElementById('areaKpis');
+  if (!el) return;
+  kpis.forEach(function(k) {
+    var card = document.createElement('div');
+    card.className = 'kpi-card';
+    card.style.borderColor = k.color;
+    card.innerHTML = '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:' + k.color + ';margin-bottom:8px;">' + k.title + '</div>'
+      + '<div class="kpi-value" style="color:' + k.color + ';font-size:22px;line-height:1.1;">' + k.value + '</div>'
+      + '<div class="kpi-label" style="margin-top:6px;">' + k.sub + '</div>'
+      + '<div style="font-size:11px;font-weight:600;color:' + k.color + ';margin-top:4px;">' + k.sub2 + '</div>';
+    el.appendChild(card);
+  });
+})();
+
+// ── Ranked list with sparklines ──────────────────
+(function() {
+  var container = document.getElementById('areaRankedList');
+  if (!container) return;
+  var maxTotal = areaData[0].total;
+  var trendMap = {
+    down:     '<span style="color:#2dce89;font-size:11px;font-weight:600;">↓ Better</span>',
+    flat:     '<span style="color:#8892a4;font-size:11px;font-weight:600;">→ Stable</span>',
+    up:       '<span style="color:#f5365c;font-size:11px;font-weight:600;">↑ Growing</span>',
+    resolved: '<span style="color:#2dce89;font-size:11px;font-weight:600;">✓ Done</span>',
+  };
+  areaData.forEach(function(area, idx) {
+    var pct     = (area.total / TOTAL_REAL * 100).toFixed(1);
+    var barW    = (area.total / maxTotal * 100).toFixed(1);
+    var sparkle = sparklineSVG(area.data, area.color, 80, 28);
+    var row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:22px 1fr 130px 58px 68px 72px 88px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(45,49,72,0.35);';
+    row.innerHTML =
+      '<div style="font-size:12px;font-weight:700;color:var(--muted);text-align:right;">' + (idx + 1) + '</div>'
+      + '<div style="font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + area.icon + ' ' + area.name + '</div>'
+      + '<div style="padding-right:8px;"><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="height:100%;width:' + barW + '%;background:' + area.color + ';border-radius:4px;"></div></div></div>'
+      + '<div style="font-size:13px;font-weight:700;color:' + area.color + ';text-align:right;">' + pct + '%</div>'
+      + '<div style="text-align:center;"><span style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;padding:2px 8px;font-size:11px;color:var(--muted);">' + area.persistence + '/12</span></div>'
+      + '<div style="text-align:center;">' + trendMap[area.trend] + '</div>'
+      + '<div style="display:flex;justify-content:flex-end;">' + sparkle + '</div>';
+    container.appendChild(row);
+  });
+})();
+
+// ── Heatmap ──────────────────────────────────────
+(function() {
+  var container = document.getElementById('areaHeatmap');
+  if (!container) return;
+
+  var allMax = 0;
+  areaData.forEach(function(a) { a.data.forEach(function(v) { if (v > allMax) allMax = v; }); });
+
+  function cellColor(val) {
+    if (val === 0) return 'rgba(45,49,72,0.15)';
+    var r = val / allMax;
+    var alpha = (0.2 + r * 0.75).toFixed(2);
+    if (r < 0.33) return 'rgba(108,142,245,' + alpha + ')';
+    if (r < 0.66) return 'rgba(251,99,64,'   + alpha + ')';
+    return            'rgba(245,54,92,'   + alpha + ')';
+  }
+
+  var html = '<table style="width:100%;border-collapse:separate;border-spacing:3px;font-size:11px;min-width:720px;">';
+  html += '<thead><tr>'
+    + '<th style="text-align:left;padding:4px 8px;color:var(--muted);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;min-width:155px;">Area</th>';
+  months.forEach(function(m) {
+    html += '<th style="text-align:center;padding:4px;color:var(--muted);font-weight:600;font-size:10px;white-space:nowrap;">' + m + '</th>';
+  });
+  html += '<th style="text-align:center;padding:4px 8px;color:var(--muted);font-weight:600;font-size:10px;">Total</th>';
+  html += '</tr></thead><tbody>';
+
+  areaData.forEach(function(area) {
+    html += '<tr><td style="padding:6px 8px;font-size:11px;color:var(--text);white-space:nowrap;font-weight:500;">' + area.icon + ' ' + area.name + '</td>';
+    area.data.forEach(function(val) {
+      var bg   = cellColor(val);
+      var fg   = val === 0 ? 'rgba(136,146,164,0.35)' : '#fff';
+      var fw   = val > 5 ? '600' : '400';
+      html += '<td style="text-align:center;padding:5px 4px;background:' + bg + ';border-radius:4px;color:' + fg + ';font-weight:' + fw + ';font-size:11px;">' + (val || '·') + '</td>';
+    });
+    html += '<td style="text-align:center;padding:4px 8px;font-weight:700;color:' + area.color + ';font-size:12px;">' + area.total + '</td></tr>';
+  });
+
+  html += '</tbody></table>';
+
+  // Colour-scale legend
+  html += '<div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:11px;color:var(--muted);">'
+    + '<span>Low</span><div style="display:flex;gap:3px;">';
+  [0.08, 0.25, 0.42, 0.60, 0.78, 1.0].forEach(function(r) {
+    var alpha = (0.2 + r * 0.75).toFixed(2);
+    var col = r < 0.33 ? 'rgba(108,142,245,' + alpha + ')' : r < 0.66 ? 'rgba(251,99,64,' + alpha + ')' : 'rgba(245,54,92,' + alpha + ')';
+    html += '<div style="width:26px;height:14px;background:' + col + ';border-radius:2px;"></div>';
+  });
+  html += '</div><span>High</span></div>';
+
+  container.innerHTML = html;
+})();
+
+</script>
+</body>
+</html>
