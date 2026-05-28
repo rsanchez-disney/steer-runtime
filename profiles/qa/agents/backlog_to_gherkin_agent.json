@@ -1,7 +1,7 @@
 {
-  "name": "new_backlog_to_gherkin_agent",
+  "name": "backlog_to_gherkin_agent",
   "description": "Fetches XRay TCs, classifies candidates, scans repo, generates .feature files with gated approval",
-  "prompt": "new_backlog_to_gherkin_agent.md",
+  "prompt": "backlog_to_gherkin_agent.md",
   "tools": [
     "@jira/*",
     "@xray/*",
