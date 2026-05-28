@@ -11,8 +11,8 @@
   "resources": [
     "file://.kiro/context/domain_context.md",
     "file://.kiro/context/team_context.md",
+    "file://.kiro/context/pat_catalog_reference.md",
     "file://.kiro/steering/**/*.md"
   ],
-  "allowedTools": [],
   "includeMcpJson": true
 }
