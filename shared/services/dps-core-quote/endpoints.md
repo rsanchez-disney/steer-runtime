@@ -1,12 +1,11 @@
-<!-- owner: @team-name -->
-<!-- last-updated: YYYY-MM-DD -->
 # dps-core-quote — Endpoints
 
-## Endpoint Details
+## Base Path
+`/v1`
 
-### `METHOD /path`
-- **Description:**
-- **Request body:** (if applicable)
-- **Response:** (key fields)
-- **Error codes:** (service-specific)
-- **Notes:**
+## API Endpoints
+
+- `POST /v1/sales-offers/packages/offer-quote — Generate quote (price lock)`
+
+## Health Check
+- `GET /actuator/health`

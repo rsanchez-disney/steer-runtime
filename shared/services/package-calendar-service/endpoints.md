@@ -1,12 +1,11 @@
-<!-- owner: @team-name -->
-<!-- last-updated: YYYY-MM-DD -->
 # package-calendar-service — Endpoints
 
-## Endpoint Details
+## Base Path
+`/v1`
 
-### `METHOD /path`
-- **Description:**
-- **Request body:** (if applicable)
-- **Response:** (key fields)
-- **Error codes:** (service-specific)
-- **Notes:**
+## API Endpoints
+
+- `GET /v1/package-calendar — Query package availability`
+
+## Health Check
+- `GET /actuator/health`

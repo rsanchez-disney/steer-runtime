@@ -1,12 +1,11 @@
-<!-- owner: @team-name -->
-<!-- last-updated: YYYY-MM-DD -->
 # package-calendar-service-sync — Endpoints
 
-## Endpoint Details
+## Base Path
+`/v1`
 
-### `METHOD /path`
-- **Description:**
-- **Request body:** (if applicable)
-- **Response:** (key fields)
-- **Error codes:** (service-specific)
-- **Notes:**
+## API Endpoints
+
+- `POST /v1/package-calendar — Trigger calendar sync`
+
+## Health Check
+- `GET /actuator/health`

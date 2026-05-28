@@ -1,24 +1,22 @@
-<!-- owner: @team-name -->
-<!-- last-updated: YYYY-MM-DD -->
 # package-calendar-service — API Contracts
 
-## Overview
-Brief description of the service and its role in the ecosystem.
+## Protocol
+- JAX-RS (Apache CXF)
+- JSON request/response
+- OAuth2 bearer token authentication
 
-## Base URL
-| Environment | URL |
-|---|---|
-| Dev | |
-| Stage | |
-| Prod | |
+## Common Headers
+| Header | Required | Description |
+|--------|----------|-------------|
+| Authorization | Yes | Bearer token from OAuth2 |
+| Content-Type | Yes | application/json |
+| X-Correlation-Id | No | Request tracing ID |
 
-## Key Endpoints
-| Method | Path | Description |
-|---|---|---|
-| | | |
-
-## Authentication
-Describe auth mechanism (OAuth2, API key, mTLS, etc.)
-
-## Full Spec
-Link to Swagger/OpenAPI: `https://swagger.example.com/{service}/v1`
+## Error Format
+```json
+{
+  "errorCode": "string",
+  "errorMessage": "string",
+  "details": []
+}
+```

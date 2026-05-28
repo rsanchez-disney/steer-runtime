@@ -1,22 +1,23 @@
-<!-- owner: @team-name -->
-<!-- last-updated: YYYY-MM-DD -->
 # dps-core-quote — Architecture
 
+## Description
+Quote generation — locks price for a specific package configuration
+
 ## Tech Stack
-- Language:
-- Framework:
-- Database:
-- Message broker:
+Java 21, Spring Boot, Apache CXF (JAX-RS), Redis, RabbitMQ, OpenFeign
+
+## Source
+- Repository: WDPR-Resort-Sales/dps-core-quote
+- 390 Java source files
+- Package: com.disney.wdpr.pkg.svc
 
 ## Dependencies
-| Service | Purpose |
-|---|---|
-| | |
+dps-core-offer (offer data), DPE (pricing), Redis (cache + shedlock), RabbitMQ (events)
 
-## Data Flow
-Describe the primary data flow through this service.
+## Infrastructure
+AWS ECS, Redis ElastiCache, RabbitMQ
 
 ## Deployment
-- Cluster:
-- Namespace:
-- Scaling: (min/max replicas)
+- Platform: AWS ECS (Fargate)
+- Environments: latest → stage → load → prod
+- Sites: DLR (Disneyland Resort), DLP (Disneyland Paris)
