@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Run this from wdpr-config-services root (recommended).
+# Run this from your project root.
 # Expected sibling repos:
 #   ../wdpr-payment-controls-api
 #   ../wdpr-payment-controls-client

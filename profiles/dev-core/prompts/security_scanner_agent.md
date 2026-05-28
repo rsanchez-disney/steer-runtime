@@ -175,7 +175,7 @@ SECURITY SCAN RESULTS
 ═══════════════════════════════════════════════════════════
 
 Scan Date: 2026-03-02 17:45:00
-Project: wdpr-config-services
+Project: my-service
 Branch: feature/DPAY-14337
 
 📦 DEPENDENCY SCAN
@@ -279,7 +279,7 @@ Always return structured JSON:
 {
   "status": "CRITICAL|HIGH|MEDIUM|PASSED",
   "scanDate": "2026-03-02T17:45:00Z",
-  "project": "wdpr-config-services",
+  "project": "my-service",
   "summary": {
     "total": 4,
     "critical": 1,

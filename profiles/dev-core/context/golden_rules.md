@@ -1,4 +1,4 @@
-# Golden Rules for Config Studio Development
+# Golden Rules for Development
 
 These rules MUST be followed for all code changes. They are enforced at approval gates.
 
