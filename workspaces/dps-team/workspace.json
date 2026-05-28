@@ -1,6 +1,6 @@
 {
   "name": "dps-team",
-  "description": "Disney Package Service — package offer search, quote, freeze, and pricing for DLR/DLP resort packages",
+  "description": "Disney Package Service \u2014 package offer search, quote, freeze, and pricing for DLR/DLP resort packages",
   "team": "DPS / Yield Management Platform",
   "profiles": [
     "dev-core"
@@ -66,5 +66,8 @@
     "dps-core-scoreschemeconfig",
     "package-calendar-service-sync",
     "package-calendar-service"
+  ],
+  "channels": [
+    "dps-core"
   ]
 }
