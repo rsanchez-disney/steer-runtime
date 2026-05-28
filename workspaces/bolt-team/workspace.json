@@ -1,37 +1,52 @@
 {
   "name": "bolt-team",
-  "description": "BOLT Admin Migration — AngularJS 1.4 → Angular 20 + WAM → WebTier BFF",
+  "description": "BOLT Admin Migration \u2014 AngularJS 1.4 \u2192 Angular 20 + WAM \u2192 WebTier BFF",
   "team": "BOLT Migration Team",
-  "profiles": ["dev-core", "dev-web", "ba", "qa", "pm"],
-  "default_agent": "bolt_migration_agent",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "ba",
+    "qa",
+    "pm"
+  ],
+  "default_agent": "orchestrator",
   "projects": [
     {
       "name": "wdprt-bolt-admin-spa",
       "path": "../wdprt-bolt-admin-spa",
-      "memory_bank": "wdprt-bolt-admin-spa"
+      "memory_bank": "wdprt-bolt-admin-spa",
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-spa"
     },
     {
       "name": "wdprt-bolt-admin-wam",
       "path": "../wdprt-bolt-admin-wam",
-      "memory_bank": "wdprt-bolt-admin-wam"
+      "memory_bank": "wdprt-bolt-admin-wam",
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-wam"
     },
     {
       "name": "wdprt-bolt-service",
       "path": "../wdprt-bolt-service",
-      "memory_bank": "wdprt-bolt-service"
+      "memory_bank": "wdprt-bolt-service",
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-service"
     },
     {
       "name": "bolt-admin",
       "path": "../bolt-admin",
-      "memory_bank": "bolt-admin-ng"
+      "memory_bank": "bolt-admin",
+      "repo": "WDPR-Resort-Sales/bolt-admin"
     },
     {
       "name": "bolt-docs",
       "path": "../docs",
-      "memory_bank": "bolt-docs"
+      "memory_bank": "bolt-docs",
+      "repo": "WDPR-Resort-Sales/bolt-docs"
     }
   ],
-  "rules": ["conventional_commit", "general-node-development", "general-angular-development"],
+  "rules": [
+    "conventional_commit",
+    "general-node-development",
+    "general-angular-development"
+  ],
   "enable_tools": true,
   "jira_prefix": "GRPS-",
   "jira_components": [

@@ -9,5 +9,5 @@
   "managed_studios": [
     "studio-triumph"
   ],
-  "default_agent": "orchestrator"
+  "default_agent": "sustainment_orchestrator_agent"
 }
