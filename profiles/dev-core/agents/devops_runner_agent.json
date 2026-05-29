@@ -8,7 +8,11 @@
     "fs_write",
     "grep",
     "code",
-    "thinking"
+    "thinking",
+    "@bruno/*"
   ],
-  "includeMcpJson": false
+  "includeMcpJson": false,
+  "resources": [
+    "file://.kiro/context/api_testing_with_bruno.md"
+  ]
 }

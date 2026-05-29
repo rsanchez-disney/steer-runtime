@@ -4,7 +4,9 @@
   "description": "Studio Triumph \u2014 Dash platform sustainment and development (Kanban)",
   "profiles": [
     "sustainment",
-    "ops"
+    "ops",
+    "dev-core",
+    "qa"
   ],
   "managed_studios": [
     "studio-triumph"

@@ -10,7 +10,8 @@
     "fs_read",
     "thinking",
     "todo_list",
-    "@yax/*"
+    "@yax/*",
+    "@bruno/*"
   ],
   "resources": [
     "file://AGENTS.md",
@@ -21,7 +22,8 @@
     "file://.kiro/steering/**/*.md",
     "file://.kiro/context/mcp_priority.md",
     "file://.kiro/context/domain_context.md",
-    "file://.kiro/context/team_context.md"
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/api_testing_with_bruno.md"
   ],
   "welcomeMessage": "\ud83d\udc4b Ready to orchestrate your development workflow!\n\nI can help you:\n  \u2022 Implement Jira stories: \"Help me implement <JIRA_URL>\"\n  \u2022 Coordinate multi-repo features across backend, webapi, ui\n  \u2022 Run full SDLC: story \u2192 plan \u2192 implement \u2192 review \u2192 PR",
   "hooks": {

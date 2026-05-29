@@ -1,0 +1,12 @@
+{
+  "name": "bruno-mcp",
+  "description": "Execute and manage Bruno API collections — run authenticated requests, create collections, generate test suites from OpenAPI/Gherkin",
+  "env": {
+    "BRUNO_COLLECTIONS_PATH": "Base path where Bruno collections are stored"
+  },
+  "env_required": [],
+  "env_secret": [],
+  "env_defaults": {
+    "BRUNO_COLLECTIONS_PATH": "."
+  }
+}

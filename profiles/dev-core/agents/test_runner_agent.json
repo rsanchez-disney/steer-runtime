@@ -5,9 +5,11 @@
   "tools": [
     "execute_bash",
     "fs_read",
-    "grep"
+    "grep",
+    "@bruno/*"
   ],
   "resources": [
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/api_testing_with_bruno.md"
   ]
 }
