@@ -67,9 +67,10 @@ Use Compass MCP ServiceNow tools to fetch the incident.
 
 1. **Match keywords** from the incident against the catalog index (Full Name, CI columns)
 2. **Resolve catalog path** for matched application(s)
-3. **Read troubleshooting.md** FIRST (investigation steps + routing decisions)
-4. **Read app.yaml** for Splunk queries, health checks, ServiceNow metadata
-5. **Read business-rules.md** for flow context
+3. **Search BAPP Runbooks via Compass** — use the Compass BAPP Runbooks tool to search for vectorized runbook content matching the incident symptoms. This may surface relevant runbooks from other BAPPs with similar patterns.
+4. **Read troubleshooting.md** FIRST (investigation steps + routing decisions)
+5. **Read app.yaml** for Splunk queries, health checks, ServiceNow metadata
+6. **Read business-rules.md** for flow context
 
 **If no keyword match** → fall back to CI field from the incident and look it up in the catalog index.
 
@@ -152,4 +153,4 @@ After presenting the report, ask: "What would you like me to do next?"
 8. Always search both logs AND metrics — don't rely on one data source
 9. Always check recent changes (deployments, configs, patches)
 10. Always quantify impact (users, transactions, duration)
-11. Search runbooks before proposing novel fixes
+11. Search runbooks before proposing novel fixes — use BOTH local catalog `troubleshooting.md` AND Compass BAPP Runbooks search for cross-BAPP patterns

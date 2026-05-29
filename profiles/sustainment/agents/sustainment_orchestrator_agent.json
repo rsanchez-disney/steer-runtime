@@ -6,6 +6,7 @@
     "@jira/*",
     "@confluence/*",
     "@mywiki/*",
+    "@compass/*",
     "@appdynamics-mcp/*",
     "@servicenow-mcp/*",
     "@splunk-mcp/*",
