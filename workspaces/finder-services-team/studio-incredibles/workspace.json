@@ -3,7 +3,8 @@
   "extends": "finder-services-team",
   "description": "Studio Incredibles — 100% development scrum team within Finder Services",
   "profiles": [
-    "dev-core"
+    "dev-core",
+    "qa"
   ],
   "default_agent": "orchestrator"
 }

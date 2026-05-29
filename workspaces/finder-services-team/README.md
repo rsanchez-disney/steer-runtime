@@ -1,27 +1,23 @@
 # Finder Services Team Workspace
 
-Content propagation, publishing, facility services, and discovery across Disney digital properties.
+Maintain and develop the guest discovery data pipeline and the real-time client data sync pipeline in the Disney Parks (WDW, DLR, HKDL) organization.
 
 ## Studios
 
 | Studio | Focus | Profiles |
 |--------|-------|----------|
-| **Triumph** | Sustainment + development (explorer, facility-svc, publishers) | sustainment, ops, dev-core, qa |
-| **Incredibles** | PM / project management | pm |
+| **Triumph** | Sustainment + development (Kanban) | dev-core, sustainment, qa |
+| **Incredibles** | Development (Scrum) | dev-core, qa |
 
 ## Services
 
-- `facility-svc` — Facility data service
-- `finder-assembler` — Content assembly/aggregation
-- `explorer-svc` — Content exploration API
-
-## Channels (Publishers)
-
-- `characters-publisher`
-- `content-publisher`
-- `schedules-publisher`
-- `facilities-publisher`
-- `facility-status-publisher`
+- `finder-assembler` — Cache assembly layer (FAS)
+- `explorer-svc` — Content discovery read API
+- `characters-publisher` — Character data publishing (Lambda)
+- `content-publisher` — Generic content write/read (REST + Queue Consumer)
+- `facilities-publisher` — Facility data publishing
+- `facility-status-publisher` — Wait times and facility status
+- `schedules-publisher` — Schedule data publishing
 
 ## Testing Tickets
 
@@ -54,6 +50,10 @@ See `context/testing_workflow.md` for the full testing protocol.
 # Apply as your primary workspace
 koda workspace apply finder-services-team
 
+# Or use a studio-specific workspace
+koda workspace apply finder-services-team/studio-triumph
+koda workspace apply finder-services-team/studio-incredibles
+
 # Or use as an isolated session
 koda chat --ws finder-services-team
 ```
@@ -64,6 +64,7 @@ koda chat --ws finder-services-team
 |------|---------|
 | `context/team_context.md` | Team structure, services, architecture |
 | `context/testing_workflow.md` | Black-box testing protocol (inherited by all studios) |
+| `context/tool_restrictions.md` | Restricted MCP tools |
 
 ## Profiles
 
@@ -73,6 +74,6 @@ koda chat --ws finder-services-team
 
 ## Jira
 
-- Prefix: `GIT-`
-- Host: myjira.disney.com
-- Boards: Triumph (8644), Incredibles (4972)
+- **Project**: GIT
+- **Instance**: myjira.disney.com
+- **Boards**: Triumph (8644), Incredibles (4972)
