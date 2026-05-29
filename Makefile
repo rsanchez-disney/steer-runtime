@@ -77,6 +77,11 @@ validate-catalog: ## Validate managed services catalog app.yaml files and report
 validate-workspaces: ## Validate all workspace.json files for required fields and portability
 	@./scripts/validate-workspaces.sh
 
+validate-agents: ## Validate all agent JSONs reference existing prompt files
+	@./scripts/validate-agents.sh
+
+validate-all: validate-workspaces validate-agents validate-catalog ## Run all validations
+
 validate-catalog-strict: ## Validate catalog in strict mode (fails on missing required fields)
 	@./scripts/validate-catalog.sh --strict
 
