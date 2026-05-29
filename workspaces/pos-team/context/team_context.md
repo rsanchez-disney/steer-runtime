@@ -1,3 +1,8 @@
+---
+name: activatex-architecture
+description: ActivateX project architecture guide — module structure, patterns, tech stack, conventions. Use when implementing features, reviewing code, or making architectural decisions.
+---
+
 # ActivateX (DSP Go & Check-Sync) — Architecture Guide
 
 ## Project Overview
@@ -19,7 +24,7 @@ Additional integrations: Emma (dining plans), Disney CAS, Disney PMS, FiPay, har
 ### Core App Modules (`gc/`)
 | Module | Purpose |
 |---|---|
-| `AppetizeActivate` | Main app library — features, presenters, views, business logic |
+| `AppetizeActivate` | Main app library — contains all features, presenters, views, and business logic |
 | `AppetizeActivateApp` | Application entry point, Espresso UI tests |
 | `domain` | Domain layer — interfaces, models, interactors |
 | `dataModel` | Data models and entities |
@@ -70,13 +75,13 @@ Additional integrations: Emma (dining plans), Disney CAS, Disney PMS, FiPay, har
 ## Architecture Patterns
 
 ### Presentation Layer
-- **MVP (Model-View-Presenter)**: Primary pattern for most features
+- **MVP (Model-View-Presenter)**: Primary pattern for most features. Presenters live in `AppetizeActivate`.
 - **MVVM**: Used in newer features with `ViewModel` + Jetpack Compose
-- **Composables**: Jetpack Compose being adopted for new UI components
+- **Composables**: Jetpack Compose is being adopted for new UI components
 
 ### Domain Layer
-- **Interactors/Use Cases**: Business logic in single-responsibility classes
-- **Repository Pattern**: Data access abstracted through interfaces in `domain`, implemented in `repository`/`repository_room`
+- **Interactors/Use Cases**: Business logic encapsulated in single-responsibility classes
+- **Repository Pattern**: Data access abstracted through repository interfaces in `domain`, implemented in `repository`/`repository_room`
 
 ### Dependency Injection
 - **Hilt/Dagger**: `@AndroidEntryPoint`, `@Inject`, `@Module`
@@ -112,29 +117,9 @@ feature/
 - **Testing**: JUnit + MockK + Espresso
 - **CI**: Detekt, Spotless, JaCoCo, SonarQube
 
-## Module Dependency Rules
-- **Domain** must NOT depend on Android framework
-- **AppetizeActivate (Presentation)** depends on `domain`, `dataModel`, `common-lib`, feature modules
-- **Feature modules** depend on `domain` and `dataModel`, not on `AppetizeActivate`
-
 ## Conventions
-- Branch naming: `{jiraTicketType}/{jiraTicketId}/description` (e.g., `task/POS-5897/add-printer-handling`)
-- Commit messages: `{type} description - Amazon Q [ticket]` or `{type} description [ticket]`
-- Commit types: task→`chore`, story→`feature`, bug→`fix`, spike→`chore`, epic→`feature`
+- Branch naming: `{jiraTicketType}/{jiraTicketId}` (e.g., `task/POS-5897`)
+- Commit messages: CommitLint format
 - Tests in `src/test/java` using Kotlin classes
 - Base package: `com.appetizeactivate.android`
 - Domain package: `com.appetizeapp.domain`
-- Gradle test command: `./gradlew :AppetizeActivate:testDisneyDebugUnitTest`
-- Available flavors: `disney`, `disneyHongKong`, `qa`
-
-## Golden Rules
-1. **Backward Compatibility** — All API changes must be additive
-2. **Test Coverage ≥90%** — Unit, integration, and E2E tests
-3. **No Secrets in Code** — Use env vars or secret management
-4. **Structured Logging** — Context-rich structured logs
-5. **Minimal Diff** — One story = one PR, no unrelated changes
-6. **Input Validation** — Validate all user inputs
-7. **Error Handling** — Structured error responses
-8. **Accessibility (WCAG 2.1 AA)** — ARIA, keyboard nav, contrast
-9. **Performance** — No regressions, pagination, caching
-10. **Documentation** — Public APIs documented, READMEs updated

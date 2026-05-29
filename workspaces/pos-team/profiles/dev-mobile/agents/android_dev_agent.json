@@ -7,6 +7,7 @@
     "fs_write",
     "code",
     "grep",
+    "glob",
     "execute_bash",
     "jira_get_issue",
     "jira_search_issues",
@@ -17,7 +18,10 @@
   ],
   "resources": [
     "file://.kiro/context/team_context.md",
-    "file://.kiro/context/testing_conventions.md"
+    "file://.kiro/context/testing_conventions.md",
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/memory-bank/learnings.md",
+    "file://.kiro/context/hilt_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [

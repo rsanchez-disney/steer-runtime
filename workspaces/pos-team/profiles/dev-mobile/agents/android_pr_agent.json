@@ -11,7 +11,8 @@
     "jira_search_issues"
   ],
   "resources": [
-    "file://.kiro/context/team_context.md"
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/pr_template.md"
   ],
   "includeMcpJson": true
 }

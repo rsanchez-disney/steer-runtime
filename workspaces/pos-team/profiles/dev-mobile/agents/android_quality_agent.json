@@ -4,12 +4,16 @@
   "prompt": "prompts/android_quality_agent.md",
   "tools": [
     "fs_read",
+    "fs_write",
     "code",
-    "grep"
+    "grep",
+    "glob"
   ],
   "resources": [
     "file://.kiro/context/team_context.md",
-    "file://.kiro/context/testing_conventions.md"
+    "file://.kiro/context/testing_conventions.md",
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/memory-bank/learnings.md"
   ],
   "includeMcpJson": true
 }
