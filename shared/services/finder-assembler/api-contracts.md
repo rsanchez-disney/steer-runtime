@@ -4,10 +4,10 @@
 
 | Environment | Base URL |
 |-------------|----------|
-| latest | `https://latest-finder-assembler.wdpro.disney.com/finder-assembler-service` |
-| stage | `https://stage-finder-assembler.wdpro.disney.com/finder-assembler-service` |
-| load | `https://load-finder-assembler.wdpro.disney.com/finder-assembler-service` |
-| prod | `https://prod-finder-assembler.wdpro.disney.com/finder-assembler-service` |
+| latest | `https://latest.fas.wdprapps.disney.com/finder-assembler-service` |
+| stage | `https://stage.fas.wdprapps.disney.com/finder-assembler-service` |
+| load | `https://load.fas.wdprapps.disney.com/finder-assembler-service` |
+| prod | `https://fas.wdprapps.disney.com/finder-assembler-service` |
 
 ## Authentication
 

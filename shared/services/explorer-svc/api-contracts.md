@@ -1,3 +1,5 @@
+<!-- owner: @finder-services-team -->
+<!-- last-updated: 2026-05-28 -->
 # Explorer Service — API Contracts
 
 ## Base URLs
@@ -7,24 +9,30 @@
 | Latest | `https://latest.explorer.wdprapps.disney.com/explorer-service` |
 | Stage | `https://stage.explorer.wdprapps.disney.com/explorer-service` |
 | Load | `https://load.explorer.wdprapps.disney.com/explorer-service` |
-| Production | `https://prod.explorer.wdprapps.disney.com/explorer-service` |
+| Production | `https://explorer.wdprapps.disney.com/explorer-service` |
+
+## Swagger
+
+Available at `{base-url}/swagger.yaml`. Requires Bearer token with `wdpro-explorer-admin-crud` scope.
 
 ## Authentication
 
-Requests require a valid auth token passed via standard headers. Token validation is handled at the gateway/service layer. Helix endpoints may require additional cast/guest identity context.
+- **OneID JWT** (v4 and v5) — validated via `jwt.namedConfigs` per environment
+- **Client ID control** — `jwt.clientId.oneId.allowedNames` restricts access to registered clients (e.g., `TPR-WDW-LBJS.WEB`, `TPR-WDW-LBSDK.IOS`, `TPR-DLR-LBSDK.AND`)
+- Admin/debug endpoints require `wdpro-explorer-admin-crud` scope
 
 ## Partial Response (Field Filtering)
 
-Explorer supports field filtering via the `wdpr-partial-response` library. Clients can request a subset of fields to reduce payload size.
+Explorer supports field filtering via the `wdpr-partial-response` library.
 
 **Usage:**
 ```
 GET /explorer-service/finder-data/detail/{id}?fields=name,coordinates,schedule
 ```
 
-- The `fields` query parameter accepts a comma-separated list of top-level or nested field paths.
-- Omitting `fields` returns the full response.
-- Invalid field names are silently ignored.
+- `fields` query parameter accepts comma-separated field paths
+- Omitting `fields` returns the full response
+- Invalid field names are silently ignored
 
 ## Response Format
 
@@ -50,12 +58,31 @@ All endpoints return JSON (`application/json`).
 }
 ```
 
-**Error response:**
+## Error Responses
+
+**CXF-level errors** (unexpected failures):
 ```json
 {
-  "status": 404,
-  "message": "Facility not found",
-  "correlationId": "abc-123"
+  "errors": [
+    {
+      "message": "Internal Server Error",
+      "typeId": "UNEXPECTED_ERROR"
+    }
+  ]
+}
+```
+
+**Data-level errors** (partial failures — individual entities that failed within a successful response):
+```json
+{
+  "results": [ ... ],
+  "errors": [
+    {
+      "exception": "java.lang.NullPointerException",
+      "message": "Facility data unavailable",
+      "facilityId": "80007944"
+    }
+  ]
 }
 ```
 

@@ -11,8 +11,8 @@
   "projects": [
     {
       "name": "content-publisher",
-      "path": "content-publisher",
-      "repo": "wdpro-development/content-publisher"
+      "path": "contpub-svc",
+      "repo": "wdpro-development/contpub-svc"
     },
     {
       "name": "schedules-publisher",
@@ -33,11 +33,6 @@
       "name": "characters-publisher-lambda",
       "path": "characters-publisher-lambda",
       "repo": "wdpro-development/characters-publisher-lambda"
-    },
-    {
-      "name": "wdpr-content-facility-svc",
-      "path": "wdpr-content-facility-svc",
-      "repo": "wdpro-development/wdpr-content-facility-svc"
     },
     {
       "name": "wdpr-experience-01431-fas",
@@ -127,16 +122,13 @@
     "myjira": "customfield_10003"
   },
   "services": [
-    "facility-svc",
     "finder-assembler",
-    "explorer-svc"
-  ],
-  "channels": [
+    "explorer-svc",
     "characters-publisher",
     "content-publisher",
-    "schedules-publisher",
     "facilities-publisher",
-    "facility-status-publisher"
+    "facility-status-publisher",
+    "schedules-publisher"
   ],
   "workspace_path": "~/Workspace/Disney/wdpro-development",
   "teams": [

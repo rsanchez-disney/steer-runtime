@@ -1,9 +1,10 @@
 {
   "name": "studio-triumph",
-  "extends": "finder-services",
-  "description": "Studio Triumph \u2014 Dash platform sustainment and development (Kanban)",
+  "extends": "finder-services-team",
+  "description": "Studio Triumph — Dash platform and Underminer pipeline sustainment and development (Kanban)",
   "profiles": [
-    "sustainment",
+    "dev-core",
+    "sustainment"
     "ops",
     "dev-core",
     "qa"
@@ -11,5 +12,5 @@
   "managed_studios": [
     "studio-triumph"
   ],
-  "default_agent": "sustainment_orchestrator_agent"
+  "default_agent": "orchestrator"
 }

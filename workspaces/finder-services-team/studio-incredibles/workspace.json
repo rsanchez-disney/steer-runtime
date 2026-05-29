@@ -1,9 +1,9 @@
 {
   "name": "studio-incredibles",
-  "extends": "finder-services",
-  "description": "Studio Incredibles \u2014 Advanced Finder, Astro Homepage, Discovery Services, Search UI (Scrum)",
+  "extends": "finder-services-team",
+  "description": "Studio Incredibles — 100% development scrum team within Finder Services",
   "profiles": [
-    "pm"
+    "dev-core"
   ],
-  "default_agent": "sustainment_orchestrator_agent"
+  "default_agent": "orchestrator"
 }

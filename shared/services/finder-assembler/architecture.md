@@ -8,62 +8,79 @@
 | Layer | Technology |
 |-------|-----------|
 | Language | Java 17 |
-| Framework | Spring 5.3.18 |
+| Framework | Spring 5.3.18 / Spring Boot 2.5.15 |
 | API | Apache CXF 3.5.5 (JAX-RS) |
 | Packaging | WAR deployed on Tomcat 9 |
-| Cache | Redis + Couchbase 3.10.1 |
-| Messaging | AWS SNS/SQS |
-| Scheduling | Quartz |
-| Feature Flags | LaunchDarkly |
-| Object Diffing | Javers |
-| Config | mpropz / Consul |
+| Cache | Redis |
+| Messaging | AWS SNS (publish) / SQS (consume from Yellowjacket) |
+| Scheduling | Quartz 2.1.7 |
+| Feature Flags | LaunchDarkly (wdpr-java-ld-sdk-wrapper) |
+| Object Diffing | Javers 7.8.0 |
+| Auth | authz library (OAuth2) |
+| Config | mpropz |
 | Secrets | Vault |
-| CI/CD | Jenkins, Docker on ECR |
+| Container | Docker on ECR |
+| CI/CD | Harness |
 
 ### Key Dependencies
-- `finder-cache-models` 465.0.0.340 — shared cache model definitions
-- `realtime-content-wrapper` 7.6.0 — content retrieval abstraction
+- `finder-cache-models` 470.0.0.345 — shared cache model definitions
+- `realtime-content-wrapper` 7.6.0 — shared library for reading/writing to Couchbase (used for transportation data; being retired with Transportation Publisher)
 
 ## Role: Cache Assembler
 
 FAS is the **cache assembly layer** between upstream content systems and downstream consumers. It does not serve end-user traffic directly. Its responsibilities:
 
-1. Receive change notifications from DScribe (content management system)
-2. Fetch full content from Facility Service and other backend sources
+1. Receive change notifications from D-Scribe via Yellowjacket(SNS) → SQS
+2. Fetch full content from upstream data sources
 3. Assemble/transform content into cache-ready models (`finder-cache-models`)
-4. Write assembled data to Redis (hot cache) and Couchbase (warm/persistent cache)
-5. Publish change events via AWS SNS/SQS so downstream services react to updates
+4. Write assembled data to Redis (hot cache consumed by Explorer Service)
+5. Publish change events via AWS SNS so downstream services react to updates
+
+## Upstream Data Sources
+
+| Source | Purpose | Notes |
+|--------|---------|-------|
+| Watcher (GCx) | Guest-facing and Cast-facing facility data (facets, content, media bundles) | |
+| OpSheet | Facility schedules | |
+| LaunchDarkly | Feature flag evaluation | |
+| Vendomatic via Lists Service | Feature flag evaluation | Being retired, replaced by LaunchDarkly |
+| Remy Product Service | Dine products | |
+| Lodging Facility Service | Lodging facility data | |
+| Lodging Service (ex Pricing Service) | Lodging/pricing data | |
+| Lexicon Service | No info available | |
+| Transportation System | Next bus arrival times | Being retired → Transportation Publisher |
 
 ## Data Flow
 
 ```
-DScribe (CMS)
+D-Scribe (CMS) → Yellowjacket (SNS) → SQS
     │
-    ▼  POST /finder-assembler-service/notify-change
+    ▼
 ┌─────────────────────────┐
 │   Finder Assembler (FAS) │
 │                           │
-│  1. Parse notification    │
-│  2. Fetch from Facility   │
-│     Service + backends    │
+│  1. Receive SQS event    │
+│  2. Fetch from upstream   │
+│     data sources          │
 │  3. Transform → cache     │
 │     models                │
 │  4. Diff (Javers)         │
-│  5. Write Redis +         │
-│     Couchbase             │
-│  6. Publish SNS/SQS       │
+│  5. Write Redis           │
+│  6. Publish SNS           │
 └─────────────────────────┘
     │                │
     ▼                ▼
-  Redis          Couchbase
- (hot cache)    (warm cache)
-    │
-    ▼
-  AWS SNS → SQS
-    │
-    ▼
-  Downstream consumers
+  Redis            AWS SNS
+ (→ Explorer)      (→ Search Indexing Svc, KB Ingress Lambda, Parks website)
 ```
+
+### Integrations Being Retired
+
+| Integration | Replacement |
+|-------------|-------------|
+| Transportation System → FAS | Transportation System → Transportation Publisher |
+| FAS → CB Server (transportation data) | Transportation Publisher → CB Server |
+| Vendomatic via Lists Service → FAS | LaunchDarkly → FAS |
 
 ## Quartz Scheduling
 

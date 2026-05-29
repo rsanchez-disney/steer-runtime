@@ -2,44 +2,27 @@
 
 ## Team Overview
 
-Studio Triumph owns the **Dash platform** — Disney's content propagation and publishing system. The team operates in a **Kanban** workflow with a 50/50 split between development and sustainment.
+Studio Triumph owns the **Dash platform** and **Underminer pipeline** — Disney's content propagation, publishing, and discovery systems. The team operates in a **Kanban** workflow handling both sustainment and development.
 
-**Jira Board**: https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=8644 (Kanban)
-**Jira Prefix**: GIT-
-
-## Scope
-
-- **Development (50%)**: Couchbase Observability, HKDL-Dash Secure Integration, RCW Delta Check, Jedai/Helix enhancements, OneId JWT v5 migration
-- **Sustainment (50%)**: Content propagation delay investigations, Splunk alert standardization, Lambda transitions, security findings remediation, load testing, monitoring setup
-
-## Active Epics
-
-| Epic | Key | Description |
-|------|-----|-------------|
-| Couchbase Observability | GIT-59387 | Correlation IDs, monitoring, eventing functions for content propagation traceability |
-| HKDL-Dash Secure Integration | GIT-59388 | Hong Kong Disneyland secure content integration |
-| RCW Delta Check | GIT-59390 | Delta checking for content updates |
-| Jedai/Helix Enhancements | GIT-59389 | Platform enhancements |
-| Dash Sustainment | GIT-30944 | Ongoing maintenance and reliability |
-
-## Key Technologies
-
-- **Couchbase** (Server + Lite + Sync Gateway) — primary data store and mobile sync
-- **AWS Lambda** — serverless processing (transitioning from Shuri platform)
-- **Splunk** — monitoring and alerting
-- **AppDynamics** — APM
-- Content publishers (Characters, Content, Configuration)
+**Jira Board**: [8644](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=8644) (Kanban)
+**Jira Project**: GIT
 
 ## Team Members
 
 | Name | Role |
 |------|------|
-| Rico, Alexander | Tech Lead / Architect |
-| Abecasis, Federico | Senior Developer |
-| Zapata, Santiago | Developer |
-| Betancur, Daniel | Developer |
-| Hurtado, Omar | Developer |
-| Apaza, Jeferson Joel | Developer |
-| Chavez, Renzo Loui | Developer |
-| Ramirez, Angela | QA |
-| Puerta, David | Developer |
+| Gurjot Tur | Tech Manager |
+| Federico Abecasis | |
+| Alexander Rico | Tech Lead |
+| Santiago Zapata | SWE |
+| Daniel Betancur | SWE |
+| Jeferson Joel Apaza | SWE |
+| Renzo Loui Chavez | SWE |
+| Dara Torrez | SWE |
+| Angela Ramirez | SWE |
+| David Puerta | SWE |
+
+## Scope (non-exhaustive)
+
+- **Sustainment**: Content propagation monitoring, incident response, load testing, security remediation, Splunk alerting
+- **Development**: Couchbase observability, HKDL Dash Secure integration, platform enhancements, infrastructure modernization
