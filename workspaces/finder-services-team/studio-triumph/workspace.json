@@ -4,9 +4,8 @@
   "description": "Studio Triumph — Dash platform and Underminer pipeline sustainment and development (Kanban)",
   "profiles": [
     "dev-core",
-    "sustainment"
+    "sustainment",
     "ops",
-    "dev-core",
     "qa"
   ],
   "managed_studios": [
