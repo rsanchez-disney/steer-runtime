@@ -130,7 +130,7 @@
     "facility-status-publisher",
     "schedules-publisher"
   ],
-  "workspace_path": "~/Workspace/Disney/wdpro-development",
+  "workspace_path": "${WORKSPACE_ROOT}/Disney",
   "teams": [
     {
       "name": "Studio Triumph",
