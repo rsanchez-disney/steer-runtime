@@ -82,7 +82,16 @@ else
   echo -e "${GREEN}OK${NC} (no workspace files)"
 fi
 
-# 5. No direct commits to main (warn only)
+# 5. Run make validate-all
+echo -n "  Running make validate-all... "
+if make validate-all >/dev/null 2>&1; then
+  echo -e "${GREEN}OK${NC}"
+else
+  echo -e "${RED}FAIL${NC} — make validate-all failed"
+  ERRORS=$((ERRORS + 1))
+fi
+
+# 6. No direct commits to main (warn only)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$BRANCH" = "main" ]; then
   echo -e "  ${RED}⚠️  Committing directly to main${NC} — consider using a feature branch"
