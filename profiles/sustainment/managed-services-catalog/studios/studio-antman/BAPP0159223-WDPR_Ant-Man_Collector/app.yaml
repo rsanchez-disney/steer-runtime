@@ -1,40 +1,44 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0159223"
 app_name: "wdpr-ant-man-collector"
 full_name: "WDPR Ant-Man Collector"
-description: ""
+description: "D-Scribe content collector service. Collects messages from D-Scribe, enriches XML with schedule data from D-Scribe Schedule Service, and persists completed XML to S3. Feeds downstream to MMA, Composite/FACSVC, Watcher, and Assembler."
+technologies: "Java 11.0.11, Spring Boot"
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0159223 - WDPR Ant-Man Collector"
+  ci_link: "https://disney.service-now.com/nav_to.do?uri=u_cmdb_ci_business_appl.do?sys_id=1ec5223cdb787f807ee051d7f4961928%26sysparm_view=corporate"
   assignment_group: "app-global-ant-man"
-  business_service: ""
+  ticket_atscode_ag: "app-flwdw-TBXLoad"
+  business_service: "D-Scribe Content Management"
+  access_request_form: "https://disney.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_guide_view.do%3Fv%3D1%26sysparm_initial%3Dtrue%26sysparm_guide%3Debcf5d57db1427c0d3839696db961953%26sysparm_link_parent%3D07706001db0a0300c536f3f7bf96199d%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dtext_search"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/458858991/Collector"
+  wiki: "https://confluence.disney.com/spaces/ECM/pages/1891477981/Working+with+AIDs"
+  recovery_procedures: "https://confluence.disney.com/pages/viewpage.action?pageId=582022415"
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +49,90 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "d-scribe-collector"
+    component_type: "service"
+    description: "Content collector — receives messages from D-Scribe via SDM Courier, enriches XML with schedule data, persists to S3, and sends downstream to MMA/Composite."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/WDPR-ECM/EcmServices/tree/develop/d-tour-collector"
+      branch: "develop"
+      path: "d-tour-collector"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Content_Management_System/projects/WDPR_AntMan_Collector/pipelines"
+      harness_org: "Content_Management_System"
+      harness_project: "WDPR_AntMan_Collector"
+      harness_identifier: "dtourcollector"
+      rundeck_id: "c96c1e94-3bcc-4d9e-a488-57e789689a38"
+      deploy_target: "ECS d-scribe-prod/collector-d-scribe-prod-live"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://d-scribe-collector.wdprapps.disney.com/information"
       expected_status: 200
+      environments:
+        prod: "https://d-scribe-collector.wdprapps.disney.com/information"
+        prod-load: "https://prod-load.d-scribe-collector.wdprapps.disney.com/information"
+        prod-stage: "Retired"
+        prod-latest: "Retired"
+        stage: "Retired"
+        latest: "Retired"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_d-scribe"
+      source: "*collector-prod/*"
+      additional_index: "wdpr_product_content_mma"
+      splunk_prod_url: "https://splunk.wdprapps.disney.com/en-US/app/launcher/search"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index="wdpr_d-scribe" source="*collector-prod/*"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_d-scribe source="*collector-prod/*" ERROR | rex "\"statusCode\":\"(?<errorCode>\d\d\d)\"" | rex "\"message\":\"(?<message>[^\"]+)\"" | stats count by errorCode, message | sort -count
+      eid_trace_spl: >-
+        index="wdpr_d-scribe" source="*collector-prod/*" AND ("Sdm*" OR "PublishEvent*" OR "*Builder*" OR "Schedule*" OR "ERROR" OR "*Exception*" OR "SUCCESS" OR "Connection") AND ( <ENTERPRISE_ID> ) AND NOT("CombineService" OR "BucketUtils")
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "876496569223"
+      account_name: "wdpr-apps"
+      infra_type: "ECS EC2"
+      cluster_id: "d-scribe-prod"
+      service_name: "collector-d-scribe-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "d-scribe-collector"
+        dashboard: "PACE-DLR-d-scribe-prod-Ver5"
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "collector-"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+    appdynamics:
+      prod: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=653&dashboardMode=force"
+      prod-load: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_2_weeks.BEFORE_NOW.-1.-1.20160&application=3370&dashboardMode=force"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
-      stage:
-        health_check:
-          url: ""
+      prod-load:
+        account_id: "876496569223"
+        account_name: "wdpr-apps"
+        cluster_id: "d-scribe-prod-load"
+        service_name: "collector-d-scribe-prod-load-live"
+        health_check: "https://prod-load.d-scribe-collector.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-d-scribe-prod-load-Ver5"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*collector-prod-load/*"
 
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"
 
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    retired_environments:
+      - "prod-stage"
+      - "prod-latest"
+      - "stage"
+      - "latest"

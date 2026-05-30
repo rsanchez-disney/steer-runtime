@@ -1,40 +1,36 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0012686"
 app_name: "list-service"
 full_name: "List Service"
-description: ""
+description: "WDPRO Support List Service (PEP Platform). Front end for all other services — gets content data from Vendomatic (configuration) and DLP Tridion CMS (content). RabbitMQ notifies List Service of file changes. Outputs to Couchbase and Redis."
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0012686"
   assignment_group: "app-global-ant-man"
-  business_service: ""
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://confluence.disney.com/display/ECM/List+Service"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +41,101 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "list-service"
+    component_type: "api"
+    description: "Java WAR (lists-service.war) on ECS Fargate. Serves configuration and content data via REST endpoints."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/wdprd-development/list-service"
+      branch: "main"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Content_Management_System/projects/List_Service/pipelines"
+      harness_org: "Content_Management_System"
+      harness_project: "List_Service"
+      deploy_target: "ECS Fargate (wdpr-content-prod cluster)"
+      rundeck_url: "https://rundeck.wdprapps.disney.com/project/list-service_aws/jobs"      
 
-    # -- Health Check --
     health_check:
-      url: ""
-      expected_status: 200
+      url: "http://listservice.wdprapps.disney.com/lists-service/admin/status"
+      expected_status: 204
+      health_report: "https://listservice.wdprapps.disney.com/lists-service/admin/health-report"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_lists_service"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_lists_service
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_lists_service log_level=ERROR
+      couchbase_errors_spl: >-
+        index=wdpr_lists_service log_level=INFO "com.couchbase.client" "Could not dispatch request" | timechart span=5m count by host      
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "prod_list-svc_aws"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_INFRASTRUCTURE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=6&component=56"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
+      provider: "AWS"
+      region: "us-west-2"
+      infra_type: "Fargate"
+      cluster_id: "wdpr-content-prod"
+      service_name: "wdpr-content-B0012686-usw2-prod-list-service"
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "elasticache"
+          name: "listservice-prod"
+          endpoint: "prod.lists-svc-redis.wdprapps.disney.com"
+        - type: "rds"
+          name: "MariaDB (Vendomatic)"
+          endpoint: "prod.vendomatic-mariadb.wdprapps.disney.com"
 
-    # -- Other Environments (only fields that differ from production) --
+    networking:
+      internal_dns: "listservice.wdprapps.disney.com"
+      external_dns: "api.wdprapps.disney.com/list-service"
+      external_origin: "origin.prod.listservice.wdprapps.disney.com"
+      cdn: "Akamai (external traffic)"
+      internal_alb: "internal-B20250801034605923100000001-1256715936.us-west-2.elb.amazonaws.com"
+      external_alb: "B20250808034359526900000001-510164173.us-west-2.elb.amazonaws.com"
+      note: "Do NOT run Terraform on internal ALB (has manually created HTTP listener bandaid fix)"
+
+    messaging:
+      rabbitmq:
+        prod: "https://mdx-svc-rmq.wdprapps.disney.com/#/"
+        load: "https://load.mdx-svc-rmq.wdprapps.disney.com/#/"
+        stage: "https://stage.mdx-svc-rmq.wdprapps.disney.com/#/"
+        latest: "https://latest.mdx-svc-rmq.wdprapps.disney.com/#/"
+        note: "Application will NOT start if RabbitMQ is unavailable"
+
+    databases:
+      - type: "redis"
+        name: "listservice-prod"
+        endpoint: "prod.lists-svc-redis.wdprapps.disney.com"
+        purpose: "Caching layer"
+      - type: "couchbase"
+        purpose: "Content data storage (output from Vendomatic processing)"
+      - type: "mariadb"
+        endpoint: "prod.vendomatic-mariadb.wdprapps.disney.com"
+        purpose: "Vendomatic configuration data source"
+
+    terraform:
+      fargate: "https://github.disney.com/peeti-infra-config/wdpr-content-ws/blob/master/fargate-workspaces/wdpr-content-B0012686-usw2-prd-list-service.tfvars"
+      rmq: "https://github.disney.com/peeti-infra-config/wdpr-content-ws/blob/master/pet-rabbitmq-workspaces/wdpr-content-B0012686-usw2-prd-listsvc.tfvars"
+      redis: "https://github.disney.com/peeti-infra-config/wdpr-content-ws/blob/master/elasticache-workspaces/wdpr-content-B0012686-usw2-prd-list-service.tfvars"
+
     other_environments:
 
       stage:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+          url: "http://stage.listservice.wdprapps.disney.com/lists-service/admin/status"
+          health_report: "http://stage.listservice.wdprapps.disney.com/lists-service/admin/health-report"
 
       load:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+          url: "http://load.listservice.wdprapps.disney.com/lists-service/admin/status"
+          health_report: "http://load.listservice.wdprapps.disney.com/lists-service/admin/health-report"
 
       latest:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+          url: "http://latest.listservice.wdprapps.disney.com/lists-service/admin/status"
+          health_report: "http://latest.listservice.wdprapps.disney.com/lists-service/admin/health-report"

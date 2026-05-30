@@ -1,29 +1,36 @@
 # Runbook — WDPR Ant-Man Lambda Helix Loader
 
-## Restart Procedures
+## Monitoring
 
-1.
-2.
+- **Grafana Lambda Dashboard:** https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1
+- **CloudWatch Logs (prod):** /aws/lambda/wdpr-content-S01431-usw2-prd-d-scribe-to-helix-lambda
+- **Splunk (prod):** `index=wdpr_d-scribe source="*usw2-prd-d-scribe-to-helix-lambda*"`
 
-**Validation:**
+## Lambda Functions
 
----
+| Environment | Account | Function Name |
+|-------------|---------|---------------|
+| prod | 211570175858 | wdpr-content-S01431-usw2-prd-d-scribe-to-helix-lambda |
+| load | 716715798470 | wdpr-content-S01431-usw2-lod-d-scribe-to-helix-lambda |
+| stage | 716715798470 | wdpr-content-S01431-usw2-stg-d-scribe-to-helix-lambda |
+| latest | 539934483486 | wdpr-content-S01431-usw2-lst-d-scribe-to-helix-lambda |
 
-## Scaling
+## Manual Populate via GCx Tools API
 
-- **Scale up:**
-- **Scale down:**
+```
+GET https://gcx-tools-api.wdprapps.disney.com/helixloader/populate?HelixLoaderLambda={ARN}&HelixLambda={ARN}&ContentType={CT}&EnterpriseId={EID}
+```
 
-## Failover
+## Deployment
 
--
-
-## Rollback
-
--
+- **Jenkins Pipeline:** https://gam.cicd.wdprapps.disney.com/job/ant-man-lambda-helix-loader/view/all/
+- **Deploy Job:** https://gam.cicd.wdprapps.disney.com/job/ant-man-lambda-helix-loader/view/Deploy/job/ant-man-lambda-helix-loader-aws-lambda-live/
 
 ## Contacts for External Dependencies
 
 | System | Contact | When to Engage |
 |--------|---------|----------------|
-| | | |
+| Filter Lambda | Ant-Man Sustainment | Trigger not firing |
+| GCx Tools API Gateway | Ant-Man Sustainment | Manual populate issues |
+| Helix (downstream) | Ant-Man Sustainment | Content not appearing in Helix |
+| S3 | Platform Engineering | S3 access issues |

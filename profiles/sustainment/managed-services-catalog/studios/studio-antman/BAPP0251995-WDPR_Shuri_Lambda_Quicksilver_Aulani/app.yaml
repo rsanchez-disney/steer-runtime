@@ -1,40 +1,42 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0251995"
 app_name: "wdpr-shuri-lambda-quicksilver-aulani"
 full_name: "WDPR Shuri Lambda Quicksilver Aulani"
-description: ""
+description: "Quicksilver Aulani Lambda function. Triggered by QuickSilver API Gateway for Aulani resort content operations. Part of the Shuri/ECM platform."
+technologies: "Python 3.9 (AWS Lambda)"
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0251995 - WDPR Shuri Lambda Quicksilver Aulani"
+  ci_link: "https://disney.service-now.com/now/nav/ui/classic/params/target/cmdb_ci_business_app.do%3Fsys_id%3Df420a29393849a941185fa6f3bba1027%26sysparm_stack%3D%26sysparm_view%3Ddefault%26sysparm_view_forced%3Dtrue"
   assignment_group: "app-global-ant-man"
-  business_service: ""
+  business_service: "D-Scribe Content Management"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/1496246082/Quicksilver+Aulani+Lambda"
+  wiki: "https://confluence.disney.com/spaces/ECM/pages/648043257/Quicksilver"
+  api_gateway: "https://confluence.disney.com/spaces/ECM/pages/682154035/Quicksilver+API+Gateway"
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +47,60 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "quicksilver-aulani-lambda"
+    component_type: "lambda"
+    description: "Quicksilver Aulani Lambda — triggered by QuickSilver API Gateway for Aulani content operations."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-ECM/quicksilver-aulani-lambda"
+      branch: "main"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "jenkins"
+      pipeline_url: "https://gam.cicd.wdprapps.disney.com/job/quicksilver-aulani-lambda/"
+      deploy_url: "https://gam.cicd.wdprapps.disney.com/job/quicksilver-aulani-lambda/view/Deploy/job/quicksilver-aulani-lambda-aws-lambda-live/"
+      deploy_target: "Lambda wdpr-content-S01431-usw2-prd-quicksilver-aulani-lambda"
 
-    # -- Health Check --
     health_check:
       url: ""
-      expected_status: 200
+      note: "No traditional health check — monitor via Grafana Lambda metrics. No CloudWatch log group available."
 
-    # -- Splunk --
     splunk:
       index: ""
       source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+      note: "No Splunk available for this Lambda"
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "211570175858"
+      account_name: "wdpr-content-prod"
+      infra_type: "Lambda"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+      lambda_functions:
+        prod: "wdpr-content-S01431-usw2-prd-quicksilver-aulani-lambda"
+        load: "wdpr-content-S01431-usw2-lod-quicksilver-aulani-lambda"
+        stage: "wdpr-content-S01431-usw2-stg-quicksilver-aulani-lambda"
+        latest: "wdpr-content-S01431-usw2-lst-quicksilver-aulani-lambda"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+      trigger: "QuickSilver API Gateway"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+      stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"

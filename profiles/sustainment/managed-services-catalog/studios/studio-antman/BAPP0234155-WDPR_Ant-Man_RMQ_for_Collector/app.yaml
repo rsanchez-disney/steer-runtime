@@ -1,0 +1,113 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0234155"
+app_name: "wdpr-ant-man-rmq-for-collector"
+full_name: "WDPR Ant-Man RMQ for Collector"
+description: "RabbitMQ broker service for the D-Scribe Collector. Routes messages from SDM Courier to the Collector service for content processing. Managed RabbitMQ instance providing message queuing for the D-Scribe/ECM content pipeline."
+technologies: "RabbitMQ (Cloud)"
+
+# --- Ownership ---
+support_studio: "Ant Man"
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
+escalation_contacts:
+  - name: "On-Call Engineer"
+    role: "primary"
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: "BAPP0234155 - WDPR Ant-Man RMQ for Collector"
+  assignment_group: "app-global-ant-man"
+  business_service: "D-Scribe Content Management"
+  access_request_form: "https://disney.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_guide_view.do%3Fv%3D1%26sysparm_initial%3Dtrue%26sysparm_guide%3Debcf5d57db1427c0d3839696db961953%26sysparm_link_parent%3D07706001db0a0300c536f3f7bf96199d%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dtext_search"
+
+# --- Documentation ---
+documentation:
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/991233551/Cloud+Rabbit+MQ"
+  wiki: "https://confluence.disney.com/spaces/ECM/pages/845852050/Diagram+Collector+RMQ+Routing+to+Downstream"
+  architecture_diagram: "https://confluence.disney.com/spaces/ECM/pages/845852050/Diagram+Collector+RMQ+Routing+to+Downstream"
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
+  grafana_cert_expiry: "https://grafana.wdprapps.disney.com/d/cdwb3kwo1fg1sc/gcx-ssl-tls-certificate-expiry?orgId=1&refresh=30m"
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+
+# --- Components ---
+components:
+
+  - component_name: "collector-rmq"
+    component_type: "messaging"
+    description: "RabbitMQ broker — routes messages from SDM Courier to the D-Scribe Collector service for content processing and downstream delivery."
+
+    repository:
+      url: ""
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: "https://collector-rmq.wdprapps.disney.com/"
+      expected_status: 200
+      environments:
+        prod: "https://collector-rmq.wdprapps.disney.com/"
+        prod-stage: "https://prod-stage.collector-rmq.wdprapps.disney.com/"
+        prod-load: "https://prod-load.collector-rmq.wdprapps.disney.com/"
+        prod-latest: "https://prod-latest.collector-rmq.wdprapps.disney.com/"
+
+    splunk:
+      index: "wdpr_d-scribe"
+      source: "*sdm-prd*"
+      base_spl: >-
+        index=wdpr_d-scribe source="*sdm-prd*" sendRabbitMQ OR RabbitMQ
+      error_spl: >-
+        index=wdpr_d-scribe source="*sdm-prd*" RabbitMQ level=ERROR
+        | stats count by error_code, message
+        | sort -count
+
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: ""
+      infra_type: "Amazon MQ (RabbitMQ)"
+      cluster_id: ""
+      service_name: "collector-rmq"
+
+    other_environments:
+
+      prod-stage:
+        health_check: "https://prod-stage.collector-rmq.wdprapps.disney.com/"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*sdm-prd-stg*" sendRabbitMQ OR RabbitMQ
+
+      prod-load:
+        health_check: "https://prod-load.collector-rmq.wdprapps.disney.com/"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*sdm-prd-lod*" sendRabbitMQ OR RabbitMQ
+
+      prod-latest:
+        health_check: "https://prod-latest.collector-rmq.wdprapps.disney.com/"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*sdm-prd-lst*" sendRabbitMQ OR RabbitMQ

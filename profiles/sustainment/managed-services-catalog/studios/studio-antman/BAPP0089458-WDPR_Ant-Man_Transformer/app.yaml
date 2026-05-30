@@ -1,40 +1,44 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0089458"
 app_name: "wdpr-ant-man-transformer"
 full_name: "WDPR Ant-Man Transformer"
-description: ""
+description: "Content transformation service for the D-Scribe/ECM platform. Transforms assembled content into consumable formats for downstream delivery (mobile apps, web). Part of the Ant-Man content pipeline."
+technologies: "Node 20.19"
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0089458 - WDPR Ant-Man Transformer"
+  ci_link: "https://disney.service-now.com/now/nav/ui/classic/params/target/cmdb_ci_business_app.do%3Fsys_id%3D8c8ccf6c1b1a78d048b7da01dd4bcb9d%26sysparm_stack%3D%26sysparm_view%3Ddefault%26sysparm_view_forced%3Dtrue"
   assignment_group: "app-global-ant-man"
-  business_service: ""
+  business_service: "D-Scribe Content Management"
+  access_request_form: "https://disney.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_guide_view.do%3Fv%3D1%26sysparm_initial%3Dtrue%26sysparm_guide%3Debcf5d57db1427c0d3839696db961953%26sysparm_link_parent%3D07706001db0a0300c536f3f7bf96199d%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dtext_search"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/286828757/Transformer"
+  wiki: "https://confluence.disney.com/spaces/ECM/pages/1891477981/Working+with+AIDs"
   architecture_diagram: ""
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
+  sonarqube: "https://sonar.cicd.wdprapps.disney.com/dashboard?id=ant-man-transformer"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +49,131 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "ant-man-transformer"
+    component_type: "service"
+    description: "Content transformation processor — converts assembled D-Scribe content into consumable formats, reading from and writing to S3 buckets."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-ECM/ant-man-transformer"
+      branch: "main"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Content_Management_System/projects/WDPR_AntMan_Transformer/pipelines"
+      harness_org: "Content_Management_System"
+      harness_project: "WDPR_AntMan_Transformer"
+      rundeck_id: "63d40c18-46a8-4a59-9ff7-04a654ead761"
+      deploy_target: "ECS wdpr-content-B0089458-usw2-prod-ant-man-trans/ant-man-transformer-prod-live"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://ant-man-transformer.wdprapps.disney.com/information"
       expected_status: 200
+      environments:
+        prod: "https://ant-man-transformer.wdprapps.disney.com/information"
+        prod-stage: "https://prod-stage.ant-man-transformer.wdprapps.disney.com/information"
+        prod-load: "https://prod-load.ant-man-transformer.wdprapps.disney.com/information"
+        prod-latest: "https://prod-latest.ant-man-transformer.wdprapps.disney.com/information"
+        stage: "https://stage.ant-man-transformer.wdprapps.disney.com/information"
+        latest: "https://latest.ant-man-transformer.wdprapps.disney.com/information"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_d-scribe"
+      source: "*transformer-prod/*"
+      splunk_prod_url: "https://splunk.wdprapps.disney.com/en-US/app/launcher/search"
+      splunk_lower_url: "https://stage.splunk.wdprapps.disney.com/en-US/app/launcher/search"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_d-scribe source="*transformer-prod/*"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr_d-scribe source="*transformer-prod/*" ERROR
+        | stats count by error_code, message
+        | sort -count
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_d-scribe source="*transformer-prod/*"
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "211570175858"
+      account_name: "wdpr-content-prod"
+      infra_type: "ECS Fargate"
+      cluster_id: "wdpr-content-B0089458-usw2-prod-ant-man-trans"
+      service_name: "ant-man-transformer-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "/ecs/ant-man-transformer"
+        dashboard: "wdpr-content-ant-man-services-fargate-prod"
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "ant-man-transformer-"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+    appdynamics:
+      prod: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=1590&dashboardMode=force"
+      prod-stage: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=6688&dashboardMode=force"
+      prod-load: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=6679&dashboardMode=force"
+      prod-latest: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=6677&dashboardMode=force"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
-      stage:
-        health_check:
-          url: ""
+      prod-stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        cluster_id: "wdpr-content-B0089458-usw2-prd-stg-ant-man-trans"
+        service_name: "ant-man-transformer-prod-stage-live"
+        health_check: "https://prod-stage.ant-man-transformer.wdprapps.disney.com/information"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*transformer-prod-stage/*"
 
-      load:
-        health_check:
-          url: ""
+      prod-load:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        cluster_id: "wdpr-content-B0089458-usw2-prd-lod-ant-man-trans"
+        service_name: "ant-man-transformer-prod-load-live"
+        health_check: "https://prod-load.ant-man-transformer.wdprapps.disney.com/information"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*transformer-prod-load/*"
+
+      prod-latest:
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        cluster_id: "wdpr-content-B0089458-usw2-prd-lst-ant-man-trans"
+        service_name: "ant-man-transformer-prod-latest-live"
+        health_check: "https://prod-latest.ant-man-transformer.wdprapps.disney.com/information"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*transformer-prod-latest/*"
+
+      stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        cluster_id: "wdpr-content-B0089458-usw2-stage-ant-man-trans"
+        service_name: "ant-man-transformer-stage-live"
+        health_check: "https://stage.ant-man-transformer.wdprapps.disney.com/information"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*transformer-stage/*"
 
       latest:
-        health_check:
-          url: ""
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        cluster_id: "wdpr-content-B0089458-usw2-latest-ant-man-trans"
+        service_name: "ant-man-transformer-latest-live"
+        health_check: "https://latest.ant-man-transformer.wdprapps.disney.com/information"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*transformer-latest/*"
+
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"

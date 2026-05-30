@@ -1,0 +1,119 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0251275"
+app_name: "wdpr-ant-man-lambda-sdm-content"
+full_name: "WDPR Ant-Man Lambda SDM Content"
+description: "On Legacy/Master content publish notification from the FILTER Lambda, THIS Lambda builds and sends SDM XML Content to composite application partners (D3, FacSvc, and Dreams) via a RabbitMQ transport layer."
+technologies: "Java 17 (AWS Lambda)"
+
+# --- Ownership ---
+support_studio: "Ant Man"
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
+escalation_contacts:
+  - name: "On-Call Engineer"
+    role: "primary"
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
+
+# --- ServiceNow ---
+servicenow:
+  configuration_item: "BAPP0251275 - WDPR Ant-Man Lambda SDM Content"
+  ci_link: "https://disney.service-now.com/now/nav/ui/classic/params/target/cmdb_ci_business_app.do%3Fsys_id%3De202edc1934786d87f4fba886cba10c0%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull%26sysparm_record_list%3Dsys_class_name%253dcmdb_ci_business_app%255enumberSTARTSWITHBAPP0251275%255eORDERBYDESCnumber%26sysparm_record_row%3D1%26sysparm_record_rows%3D1%26sysparm_view%3Ddefault%26sysparm_view_forced%3Dtrue"
+  assignment_group: "app-global-ant-man"
+  business_service: "D-Scribe Content Management"
+
+# --- Documentation ---
+documentation:
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/1248891878/SDM+Content+Lambda"
+  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1301776063/BAPP0251275+-+WDPR+Ant-Man+Lambda+SDM+Content"
+  gcx_tools_api: "https://confluence.disney.com/display/ECM/GCX+Tools+API+Gateway"
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+
+# --- Components ---
+components:
+
+  - component_name: "ant-man-sdm-content-lambda"
+    component_type: "lambda"
+    description: "On Legacy/Master content publish notification from the FILTER Lambda, THIS Lambda builds and sends SDM XML Content to composite application partners (D3, FacSvc, and Dreams) via a RabbitMQ transport layer."
+
+    repository:
+      url: "https://github.disney.com/WDPR-ECM/ant-man-lambda-sdm-content"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: ""
+      harness_identifier: "ant-man-lambda-sdm-content"
+      deploy_target: "Lambda wdpr-content-S01431-usw2-prd-ant-man-sdm-content-lambda"
+
+    health_check:
+      url: ""
+      note: "No traditional health check — monitor via Grafana Lambda metrics"
+
+    splunk:
+      index: "wdpr_d-scribe"
+      source: "*usw2-prd-ant-man-sdm-content-lambda*"
+      base_spl: >-
+        index=wdpr_d-scribe source="*usw2-prd-ant-man-sdm-content-lambda*"
+      error_spl: >-
+        index=wdpr_d-scribe source="*usw2-prd-ant-man-sdm-content-lambda*" level=ERROR
+        | stats count by error_code, message
+        | sort -count
+
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "211570175858"
+      account_name: "wdpr-content-prod"
+      infra_type: "Lambda"
+
+      lambda_functions:
+        prod: "wdpr-content-S01431-usw2-prd-ant-man-sdm-content-lambda"
+        prod-stage: "wdpr-content-S01431-usw2-prd-stg-ant-man-sdm-content-lambda"
+        prod-latest: "wdpr-content-S01431-usw2-prd-lst-ant-man-sdm-content-lambda"
+        stage: "wdpr-content-S01431-usw2-stg-ant-man-sdm-content-lambda"
+        latest: "wdpr-content-S01431-usw2-lst-ant-man-sdm-content-lambda"
+
+      trigger: "Filter Lambda"
+
+      cloudwatch:
+        log_group_prod: "/aws/lambda/wdpr-content-S01431-usw2-prd-ant-man-sdm-content-lambda"
+        log_group_stage: "/aws/lambda/wdpr-content-S01431-usw2-stg-ant-man-sdm-content-lambda"
+
+    other_environments:
+      prod-stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+      prod-latest:
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+      stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+      latest:
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"

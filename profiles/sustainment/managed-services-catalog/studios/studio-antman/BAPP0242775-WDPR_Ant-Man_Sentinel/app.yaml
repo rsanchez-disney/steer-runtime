@@ -1,40 +1,41 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0242775"
 app_name: "wdpr-ant-man-sentinel"
 full_name: "WDPR Ant-Man Sentinel"
-description: ""
+description: "Sentinel service is for Product Price/ Meal Period integration. It will take care of the store/retrieval of information in S3 QuickSilver bucket and Aurora D"
+technologies: "Java 17.0.15"
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0242775 - WDPR Ant-Man Sentinel"
   assignment_group: "app-global-ant-man"
-  business_service: ""
+  business_service: "D-Scribe Content Management"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://confluence.disney.com/spaces/ECM/pages/697485770/Sentinel"
+  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1182501215/BAPP0242775+-+Sentinel"
+  architecture_diagram: "https://confluence.disney.com/spaces/ECM/pages/1891477981/Working+with+AIDs"
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +46,123 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "d-tour-sentinel"
+    component_type: "service"
+    description: "Sentinel service is for Product Price/ Meal Period integration. It will take care of the store/retrieval of information in S3 QuickSilver bucket and Aurora D"
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/WDPR-ECM/EcmServices/tree/develop/d-tour-sentinel"
+      branch: "develop"
+      path: "d-tour-sentinel"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      harness_project: "WDPR_AntMan_Sentinel"
+      harness_identifier: "dtoursentinel"
+      rundeck_id: "a72e84c0-d36b-426b-b913-161dd714eccd"
+      deploy_target: "ECS d-tour-sentinel-prod-live"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://d-tour-sentinel.wdprapps.disney.com/information"
       expected_status: 200
+      environments:
+        prod: "https://d-tour-sentinel.wdprapps.disney.com/information"
+        prod-stage: "https://prod-stage.d-tour-sentinel.wdprapps.disney.com/information"
+        prod-load: "https://prod-load.d-tour-sentinel.wdprapps.disney.com/information"
+        prod-latest: "https://prod-latest.d-tour-sentinel.wdprapps.disney.com/information"
+        stage: "https://stage.d-tour-sentinel.wdprapps.disney.com/information"
+        latest: "https://latest.d-tour-sentinel.wdprapps.disney.com/information"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_d-scribe"
+      source: "*sentinel-prod*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index="wdpr_d-scribe" source="*sentinel-prod*"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index="wdpr_d-scribe" source="*sentinel-prod*" level=ERROR
+        | stats count by error_code, message
+        | sort -count
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index="wdpr_d-scribe" source="*sentinel-prod*"
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "211570175858"
+      account_name: "wdpr-content-prod"
+      infra_type: "ECS Fargate"
       cluster_id: ""
-      service_name: ""
+      service_name: "d-tour-sentinel-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "/ecs/d-tour-sentinel"
+        dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-prd-5Ver"
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "d-tour-sentinel-"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
-      stage:
-        health_check:
-          url: ""
+      prod-stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "d-tour-sentinel-prod-stage-live"
+        health_check: "https://prod-stage.d-tour-sentinel.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-stg-Ver5"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index="wdpr_d-scribe" source="*sentinel-prod-stage*"
 
-      load:
-        health_check:
-          url: ""
+      prod-load:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "d-tour-sentinel-prod-load-live"
+        health_check: "https://prod-load.d-tour-sentinel.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-lod-Ver5"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index="wdpr_d-scribe" source="*sentinel-prod-load*"
+
+      prod-latest:
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        service_name: "d-tour-sentinel-prod-latest-live"
+        health_check: "https://prod-latest.d-tour-sentinel.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-lst-Ver5"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index="wdpr_d-scribe" source="*sentinel-prod-latest*"
+
+      stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "d-tour-sentinel-stage-live"
+        health_check: "https://stage.d-tour-sentinel.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-stg-Ver5"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index="wdpr_d-scribe" source="*sentinel-stage*"
 
       latest:
-        health_check:
-          url: ""
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        service_name: "d-tour-sentinel-latest-live"
+        health_check: "https://latest.d-tour-sentinel.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "PACE-DLR-wdpr-content-S0001431-usw2-lst-Ver5"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index="wdpr_d-scribe" source="*sentinel-latest*"
+
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"

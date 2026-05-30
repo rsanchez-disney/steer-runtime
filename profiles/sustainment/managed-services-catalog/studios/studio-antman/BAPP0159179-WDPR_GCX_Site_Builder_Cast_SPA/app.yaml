@@ -1,40 +1,42 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0159179"
-app_name: "wdpr-gcx-site-builder-cast-spa"
-full_name: "WDPR GCX Site Builder Cast SPA"
-description: ""
+app_name: "wdpr-gcx-cast-portals-spa"
+full_name: "GCX Site Builder Cast SPA"
+description: "Cast Portals Single Page Application. Frontend web application for the Cast Portals platform, part of the D-Scribe/ECM content ecosystem. Serves content-driven pages for Cast Members."
+technologies: "Node 20.11.1, Spring Boot"
 
 # --- Ownership ---
 support_studio: "Ant Man"
-escalation_channel: ""
+escalation_channel: "GCx Help | Ant-Man Help (@gcx_antman)"
 escalation_contacts:
-  - name: ""
+  - name: "On-Call Engineer"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "+1 5707 347 639 Option 1"
+    rotation: "24x7 weekly: Alejandro Zapata, Hrushikesh Hood, Rodrigo Duarte, Lorenzo Gazzani, Juan Gallart"
+  - name: "Rodrigo Duarte"
+    role: "tech_lead"
+    contact: "Rodrigo.A.Duarte.-ND@disney.com"
+  - name: "Frank Kenes"
+    role: "manager"
+    contact: "708-712-8443"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "BAPP0159179 - GCX Site Builder Cast SPA"
   assignment_group: "app-global-ant-man"
-  business_service: ""
+  business_service: "D-Scribe Content Management"
+  access_request_form: "https://disney.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_guide_view.do%3Fv%3D1%26sysparm_initial%3Dtrue%26sysparm_guide%3Debcf5d57db1427c0d3839696db961953%26sysparm_link_parent%3D07706001db0a0300c536f3f7bf96199d%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dtext_search"
 
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: ""
+  wiki: "https://confluence.disney.com/spaces/ECM/pages/1891477981/Working+with+AIDs"
   architecture_diagram: ""
+  grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +47,125 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "cast-portals-spa"
+    component_type: "frontend"
+    description: "Cast Portals SPA — frontend web application serving content-driven pages for Cast Members. Part of the D-Scribe/ECM content platform."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-ECM/cast-portals-spa"
+      branch: "main"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      harness_project: "WDPR_GCX_Site_Builder_Cast_SPA"
+      harness_identifier: "castportalsspa"
+      rundeck_id: "6418577b-6c80-4a69-be18-143534ead803"
+      deploy_target: "ECS gcx-cast-spa-prod-live"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://cast-portals.wdprapps.disney.com/information"
       expected_status: 200
+      environments:
+        prod: "https://cast-portals.wdprapps.disney.com/information"
+        prod-stage: "https://prod-stage.cast-portals.wdprapps.disney.com/information"
+        prod-load: "https://prod-load.cast-portals.wdprapps.disney.com/information"
+        prod-latest: "https://prod-latest.cast-portals.wdprapps.disney.com/information"
+        stage: "https://stage.cast-portals.wdprapps.disney.com/information"
+        latest: "https://latest.cast-portals.wdprapps.disney.com/information"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_d-scribe"
+      source: "*cast-spa-prod*"
+      splunk_prod_url: "https://splunk.wdprapps.disney.com/en-US/app/launcher/search"
+      splunk_lower_url: "https://stage.splunk.wdprapps.disney.com/en-US/app/launcher/search"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_d-scribe source="*cast-spa-prod*"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr_d-scribe source="*cast-spa-prod*" level=ERROR
+        | stats count by error_code, message
+        | sort -count
       latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_d-scribe source="*cast-spa-prod*"
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by page
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "211570175858"
+      account_name: "wdpr-content-prod"
+      infra_type: "ECS Fargate"
       cluster_id: ""
-      service_name: ""
+      service_name: "gcx-cast-spa-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "/ecs/cast-portals-spa"
+        dashboard: "wdpr-content-ant-man-services-fargate-prod"
         namespace: ""
-        alarm_prefix: ""
+        alarm_prefix: "cast-portals-spa-"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
-      stage:
-        health_check:
-          url: ""
+      prod-stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "gcx-cast-spa-prod-stage-live"
+        health_check: "https://prod-stage.cast-portals.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "wdpr-content-ant-man-services-fargate-prod-stage"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*cast-spa-prod-stage*"
 
-      load:
-        health_check:
-          url: ""
+      prod-load:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "gcx-cast-spa-prod-load-live"
+        health_check: "https://prod-load.cast-portals.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "wdpr-content-ant-man-services-fargate-prod-load"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*cast-spa-prod-load*"
+
+      prod-latest:
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        service_name: "gcx-cast-spa-prod-latest-live"
+        health_check: "https://prod-latest.cast-portals.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "wdpr-content-ant-man-services-fargate-prod-latest"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*cast-spa-prod-latest*"
+
+      stage:
+        account_id: "716715798470"
+        account_name: "wdpr-content-test"
+        service_name: "gcx-cast-spa-stage-live"
+        health_check: "https://stage.cast-portals.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "wdpr-content-ant-man-services-fargate-stage"
+        splunk:
+          index: "wdpr_d-scribe"
+          base_spl: >-
+            index=wdpr_d-scribe source="*cast-spa-stage*"
 
       latest:
-        health_check:
-          url: ""
+        account_id: "539934483486"
+        account_name: "wdpr-content-dev"
+        service_name: "gcx-cast-spa-latest-live"
+        health_check: "https://latest.cast-portals.wdprapps.disney.com/information"
+        cloudwatch_dashboard: "wdpr-content-ant-man-services-fargate-latest"
         splunk:
-          index: ""
+          index: "wdpr_d-scribe"
           base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+            index=wdpr_d-scribe source="*cast-spa-latest*"
+
+    s3_buckets:
+      prod: "d-scribe-content-live"
+      prod-load: "d-scribe-content-prod-stage"
+      prod-stage: "d-scribe-content-prod-load"
+      prod-latest: "d-scribe-content-prod-latest"
+      s3_account_id: "876496569223"
+      s3_account_name: "wdpr-apps"

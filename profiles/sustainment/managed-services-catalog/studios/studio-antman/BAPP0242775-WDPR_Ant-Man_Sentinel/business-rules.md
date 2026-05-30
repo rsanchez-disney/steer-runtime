@@ -4,23 +4,30 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | | |
-| Response time (p95) | | |
-| Error rate | | |
+| Uptime | 99.9% | Monthly availability |
+| Response time (p95) | < 2000ms | Splunk latency_spl |
+| Error rate | < 1% | Errors / total requests |
 
 ## Peak Periods
 
--
+- Content publishing campaigns (park events, seasonal updates)
+- Bulk content operations
+- Holiday and festival content pushes
 
 ## Business Logic
 
--
+- Sentinel (d-tour-sentinel) is a content service in the Ant-Man/ECM platform
+- Part of the D-Scribe content ecosystem
+- Reads/writes content to S3 buckets (d-scribe-content-*)
 
 ## Dependencies
 
--
+- **Upstream:** D-Scribe content pipeline
+- **Downstream:** Content consumers
+- **Data stores:** S3 buckets (d-scribe-content-live, d-scribe-content-prod-*)
+- **Infrastructure:** AWS ECS Fargate (us-west-2)
 
 ## Impact Classification
 
-- **Full outage:**
-- **Degraded:**
+- **Full outage:** Content service unavailable; downstream consumers may receive stale content
+- **Degraded:** Slow processing; content updates delayed
