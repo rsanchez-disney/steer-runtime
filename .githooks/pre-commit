@@ -1,0 +1,96 @@
+#!/bin/bash
+# steer-runtime pre-commit hook
+# Install: cp .githooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+# Or: git config core.hooksPath .githooks
+
+set -e
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+ERRORS=0
+
+echo "🔍 Running pre-commit checks..."
+
+# 1. Block secrets
+echo -n "  Checking for secrets... "
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+if echo "$STAGED" | xargs grep -lE "(HARNESS_API_KEY|GITLAB_TOKEN|JIRA_PAT|CONFLUENCE_PAT|COMPASS_TOKEN|glpat-|pat\.[0-9]|ghp_|gho_)" 2>/dev/null | grep -v ".env.example" | grep -v "mcp-meta.json"; then
+  echo -e "${RED}BLOCKED${NC} — potential secret detected in staged files"
+  ERRORS=$((ERRORS + 1))
+else
+  echo -e "${GREEN}OK${NC}"
+fi
+
+# 2. Validate JSON files
+echo -n "  Validating JSON... "
+JSON_FILES=$(echo "$STAGED" | grep '\.json$' || true)
+if [ -n "$JSON_FILES" ]; then
+  for f in $JSON_FILES; do
+    if [ -f "$f" ] && ! python3 -c "import json; json.load(open('$f'))" 2>/dev/null; then
+      echo -e "${RED}INVALID${NC} — $f"
+      ERRORS=$((ERRORS + 1))
+    fi
+  done
+  if [ $ERRORS -eq 0 ]; then echo -e "${GREEN}OK${NC}"; fi
+else
+  echo -e "${GREEN}OK${NC} (no JSON files)"
+fi
+
+# 3. Agent JSON schema check (required fields)
+echo -n "  Checking agent schemas... "
+AGENT_FILES=$(echo "$STAGED" | grep 'agents/.*\.json$' || true)
+if [ -n "$AGENT_FILES" ]; then
+  for f in $AGENT_FILES; do
+    if [ -f "$f" ]; then
+      MISSING=$(python3 -c "
+import json,sys
+d=json.load(open('$f'))
+required=['name','prompt','tools']
+missing=[r for r in required if r not in d]
+if missing: print(f'$f: missing {missing}')
+" 2>/dev/null)
+      if [ -n "$MISSING" ]; then
+        echo -e "${RED}FAIL${NC} — $MISSING"
+        ERRORS=$((ERRORS + 1))
+      fi
+    fi
+  done
+  if [ $ERRORS -eq 0 ]; then echo -e "${GREEN}OK${NC}"; fi
+else
+  echo -e "${GREEN}OK${NC} (no agent files)"
+fi
+
+# 4. Workspace JSON check
+echo -n "  Checking workspace schemas... "
+WS_FILES=$(echo "$STAGED" | grep 'workspace\.json$' || true)
+if [ -n "$WS_FILES" ]; then
+  for f in $WS_FILES; do
+    if [ -f "$f" ]; then
+      MISSING=$(python3 -c "
+import json,sys
+d=json.load(open('$f'))
+if 'name' not in d: print(f'$f: missing name')
+" 2>/dev/null)
+      if [ -n "$MISSING" ]; then
+        echo -e "${RED}FAIL${NC} — $MISSING"
+        ERRORS=$((ERRORS + 1))
+      fi
+    fi
+  done
+  if [ $ERRORS -eq 0 ]; then echo -e "${GREEN}OK${NC}"; fi
+else
+  echo -e "${GREEN}OK${NC} (no workspace files)"
+fi
+
+# 5. No direct commits to main (warn only)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" = "main" ]; then
+  echo -e "  ${RED}⚠️  Committing directly to main${NC} — consider using a feature branch"
+fi
+
+if [ $ERRORS -gt 0 ]; then
+  echo -e "\n${RED}✗ Pre-commit failed ($ERRORS error(s))${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}✓ All checks passed${NC}"

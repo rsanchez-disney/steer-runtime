@@ -1,0 +1,21 @@
+# steer-runtime CODEOWNERS
+# Reviewers are automatically requested when a PR touches matching paths.
+# SANCR225 (admin) can bypass — everyone else needs 2 approvals.
+
+# Default: repo owner
+*                                       @SANCR225
+
+# MCP servers
+shared/tools/mcp-servers/               @SANCR225 @barbl058
+
+# Sustainment profile & catalog
+profiles/sustainment/                   @SANCR225 @MARTK331
+
+# Workspaces
+workspaces/                             @SANCR225 @QUINW019
+
+# Commerce workspaces
+workspaces/commerce-*/                  @SANCR225 @HERNJ878
+
+# Documentation
+docs/                                   @SANCR225
