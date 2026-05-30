@@ -1,0 +1,35 @@
+{
+  "name": "rocket_alert_analyst_agent",
+  "description": "Analyzes Splunk alerts for Studio Rocket applications — reads alert results from Chrome, determines severity, identifies root cause patterns, and recommends actions",
+  "prompt": "prompts/rocket_alert_analyst_agent.md",
+  "tools": [
+    "@chrome-devtools/*",
+    "@mywiki/*",
+    "@jira/*",
+    "@compass/*",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/alerts_runbook.md",
+    "file://.kiro/context/splunk_queries.md",
+    "file://.kiro/context/domain_context.md",
+    "file://.kiro/context/team_context.md"
+  ],
+  "allowedTools": [
+    "@chrome-devtools/*",
+    "@mywiki/*",
+    "@jira/*",
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/chrome-launch.sh",
+        "description": "Ensure Chrome is running with remote debugging on port 9222"
+      }
+    ]
+  }
+}

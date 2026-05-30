@@ -1,0 +1,22 @@
+{
+  "name": "dx-lodging-tools-team",
+  "description": "DX Lodging Tools — shared foundation for Rocket (sustainment), Star Lord (projects), and Yondu (projects) teams managing DLR resort reservations, checkout, celebrations, and lodging services",
+  "team": "DX Lodging Tools",
+  "profiles": [
+    "dev-core"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-node-development",
+    "general-angular-development",
+    "general-aws",
+    "general-api-design",
+    "general-testing-strategies",
+    "jira-commit-format",
+    "jira-safety"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}"
+}

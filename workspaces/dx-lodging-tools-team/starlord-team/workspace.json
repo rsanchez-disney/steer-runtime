@@ -1,0 +1,12 @@
+{
+  "name": "starlord-team",
+  "extends": "dx-lodging-tools-team",
+  "description": "Studio Star Lord — project team building new lodging applications (Non-Disney Add Ons, future projects)",
+  "team": "Studio Star Lord",
+  "profiles": [
+    "dev-core",
+    "dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "enable_tools": true
+}

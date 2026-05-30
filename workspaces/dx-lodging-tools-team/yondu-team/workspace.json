@@ -1,0 +1,12 @@
+{
+  "name": "yondu-team",
+  "extends": "dx-lodging-tools-team",
+  "description": "Studio Yondu — project team working on existing Rocket applications (Resort Reservation VA, Guest RR, Package Entitlement)",
+  "team": "Studio Yondu",
+  "profiles": [
+    "dev-core",
+    "dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "enable_tools": true
+}

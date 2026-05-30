@@ -1,0 +1,41 @@
+{
+  "name": "rocket-team",
+  "extends": "dx-lodging-tools-team",
+  "description": "Studio Rocket — sustainment team managing 20 DLR lodging applications (resort reservations, checkout, celebrations, trade retrieve, pinned offers, package entitlements)",
+  "team": "Studio Rocket",
+  "profiles": [
+    "sustainment",
+    "dev-core",
+    "dev-web",
+    "dev-ui"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-rocket"
+  ],
+  "jira_prefix": "ROS-",
+  "wiki_url": "https://mywiki.disney.com/spaces/ROS/pages/451024499/Studio+ROCKET",
+  "enable_tools": true,
+  "projects": [
+    { "name": "wdpr-lodging-auth-svc-auth", "repo": "wdpro-development/wdpr-lodging-auth-svc-auth", "path": "wdpr-lodging-auth-svc-auth", "memory_bank": "wdpr-lodging-auth-svc-auth" },
+    { "name": "wdpr-packaging-celebratn-svc", "repo": "wdpro-development/wdpr-packaging-celebratn-svc", "path": "wdpr-packaging-celebratn-svc", "memory_bank": "wdpr-packaging-celebratn-svc" },
+    { "name": "wdpr-packaging-celebratn-ui", "repo": "wdpro-development/wdpr-packaging-celebratn-ui", "path": "wdpr-packaging-celebratn-ui", "memory_bank": "wdpr-packaging-celebratn-ui" },
+    { "name": "wdpr-packaging-celebratn-api", "repo": "wdpro-development/wdpr-packaging-celebratn-api", "path": "wdpr-packaging-celebratn-api", "memory_bank": "wdpr-packaging-celebratn-api" },
+    { "name": "dlr-revmgmt-pkgentitlement-svc", "repo": "wdprt-paap-api/dlr-revmgmt-pkgentitlement-svc", "path": "dlr-revmgmt-pkgentitlement-svc", "memory_bank": "dlr-revmgmt-pkgentitlement-svc" },
+    { "name": "dlr-revmgmt-resortreserv-va", "repo": "wdprt-paap-api/dlr-revmgmt-resortreserv-va", "path": "dlr-revmgmt-resortreserv-va", "memory_bank": "dlr-revmgmt-resortreserv-va" },
+    { "name": "dlr-revmgmt-castresortres-api", "repo": "wdprd-development/dlr-revmgmt-castresortres-api", "path": "dlr-revmgmt-castresortres-api", "memory_bank": "dlr-revmgmt-castresortres-api" },
+    { "name": "dlr-revmgmt-castresortres-spa", "repo": "wdprd-development/dlr-revmgmt-castresortres-spa", "path": "dlr-revmgmt-castresortres-spa", "memory_bank": "dlr-revmgmt-castresortres-spa" },
+    { "name": "dlr-revmgmt-guestresortres-api", "repo": "wdprd-development/dlr-revmgmt-guestresortres-api", "path": "dlr-revmgmt-guestresortres-api", "memory_bank": "dlr-revmgmt-guestresortres-api" },
+    { "name": "dlr-revmgmt-guestresortres-spa", "repo": "wdprd-development/dlr-revmgmt-guestresortres-spa", "path": "dlr-revmgmt-guestresortres-spa", "memory_bank": "dlr-revmgmt-guestresortres-spa" },
+    { "name": "dlr-revmgmt-ticketorder-lambda", "repo": "wdprt-paap-api/dlr-revmgmt-ticketorder-lambda", "path": "dlr-revmgmt-ticketorder-lambda", "memory_bank": "dlr-revmgmt-ticketorder-lambda" },
+    { "name": "dlr-revmgmt-ticketvoucher-lambda", "repo": "wdprt-paap-api/dlr-revmgmt-ticketvoucher-lambda", "path": "dlr-revmgmt-ticketvoucher-lambda", "memory_bank": "dlr-revmgmt-ticketvoucher-lambda" },
+    { "name": "wdpr-packaging-traderetrieve-spa", "repo": "wdpro-development/wdpr-packaging-traderetrieve-spa", "path": "wdpr-packaging-traderetrieve-spa", "memory_bank": "wdpr-packaging-traderetrieve-spa" },
+    { "name": "wdpr-packaging-traderetrieve-api", "repo": "wdpro-development/wdpr-packaging-traderetrieve-api", "path": "wdpr-packaging-traderetrieve-api", "memory_bank": "wdpr-packaging-traderetrieve-api" },
+    { "name": "wdpr-packaging-traderetrieve-va", "repo": "wdpro-development/wdpr-packaging-traderetrieve-va", "path": "wdpr-packaging-traderetrieve-va", "memory_bank": "wdpr-packaging-traderetrieve-va" },
+    { "name": "dlr-revmgmt-resortsales-checkout-spa", "repo": "wdprd-development/dlr-revmgmt-resortsales-checkout-spa", "path": "dlr-revmgmt-resortsales-checkout-spa", "memory_bank": "dlr-revmgmt-resortsales-checkout-spa" },
+    { "name": "dlr-revmgmt-resortsales-checkout-webapi", "repo": "wdprd-development/dlr-revmgmt-resortsales-checkout-webapi", "path": "dlr-revmgmt-resortsales-checkout-webapi", "memory_bank": "dlr-revmgmt-resortsales-checkout-webapi" },
+    { "name": "dlr-revmgmt-resortsales-checkout-va", "repo": "wdprt-paap-api/dlr-revmgmt-resortsales-checkout-va", "path": "dlr-revmgmt-resortsales-checkout-va", "memory_bank": "dlr-revmgmt-resortsales-checkout-va" },
+    { "name": "wdpr-lodging-pinnedoffer-webapi", "repo": "wdpro-development/wdpr-lodging-pinnedoffer-webapi", "path": "wdpr-lodging-pinnedoffer-webapi", "memory_bank": "wdpr-lodging-pinnedoffer-webapi" },
+    { "name": "wdpr-lodging-pinnedoffer-spa", "repo": "wdpro-development/wdpr-lodging-pinnedoffer-spa", "path": "wdpr-lodging-pinnedoffer-spa", "memory_bank": "wdpr-lodging-pinnedoffer-spa" }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "yondu-tep3",
+  "extends": "yondu-team",
+  "description": "TEP3 project — DLR Pre-Arrival / Post Booking enhancements on Resort Reservation VA, Guest RR SPA/API, and Package Entitlement Service",
+  "team": "Studio Yondu — TEP3",
+  "jira_prefix": "TEP3-",
+  "jira_board_url": "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12887",
+  "default_agent": "orchestrator",
+  "enable_tools": true,
+  "projects": [
+    {
+      "name": "dlr-revmgmt-resortreserv-va",
+      "repo": "wdprt-paap-api/dlr-revmgmt-resortreserv-va",
+      "path": "dlr-revmgmt-resortreserv-va",
+      "memory_bank": "dlr-revmgmt-resortreserv-va"
+    },
+    {
+      "name": "dlr-revmgmt-guestresortres-spa",
+      "repo": "wdprd-development/dlr-revmgmt-guestresortres-spa",
+      "path": "dlr-revmgmt-guestresortres-spa",
+      "memory_bank": "dlr-revmgmt-guestresortres-spa"
+    },
+    {
+      "name": "dlr-revmgmt-guestresortres-api",
+      "repo": "wdprd-development/dlr-revmgmt-guestresortres-api",
+      "path": "dlr-revmgmt-guestresortres-api",
+      "memory_bank": "dlr-revmgmt-guestresortres-api"
+    },
+    {
+      "name": "dlr-revmgmt-pkgentitlement-svc",
+      "repo": "wdprt-paap-api/dlr-revmgmt-pkgentitlement-svc",
+      "path": "dlr-revmgmt-pkgentitlement-svc",
+      "memory_bank": "dlr-revmgmt-pkgentitlement-svc"
+    }
+  ]
+}
