@@ -4,26 +4,24 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.106]
+
 ### Added
-- **GitLab MCP server** — 9 tools (create/update/search MRs, get files, code review, list remotes) with multi-remote support and `mcp-meta.json`
-- **RCA agent v2** — autonomous catalog-based context resolution, ServiceNow MCP tools, AI attribution in work notes/close notes
-- **Studio Cerebro catalog** — 17 BAPPs with full operational data (app.yaml, runbooks, troubleshooting, business-rules) from MyWiki
-- **Studio Kaos catalog** — 9 BAPPs enriched with escalation contacts, Splunk queries, health checks, scaling policies
-- **`sustainment-beast` workspace** — DLP Beast Team with 42 projects, 3 BAPP catalogs, systems/team context
-- **`commerce-ticketing-and-checkout-team` workspace** — COMARC Jira prefix, RCA agent override, team context
-- **Catalog index columns** — Assignment Group and Description added to `catalog-index.sh/.ps1` output
-- **ServiceNow MCP** — 8 new tools (comments, related records, CHG, CI, KB articles, on-call, bulk ops, timeline)
-- **AppDynamics MCP** — 7 new tools (backends, errors, events, policies, actions, dashboards, compare)
-- **Splunk MCP** — 21 tools with Basic Auth and pre-built Node.js bundle
+- **Harness MCP server** — 7 tools (list/trigger pipelines, executions, logs, services, environments) with `mcp-meta.json` for auto-discovery
+- **`network_diagnostics_agent`** — DNS resolution, TLS certificate validation, connectivity checks via Compass
+- **DX Lodging Tools workspace** — hierarchical multi-team structure (Rocket, Star Lord, Yondu) with custom `rocket_alert_analyst_agent`
+- **Studio Ant-Man catalog** — 28 BAPPs with full operational data (app.yaml, runbooks, troubleshooting, business-rules)
+- **Release manager Quick Actions** — auto-commits RELEASE_NOTES.md + CHANGELOG.md + VERSION on approval
 
 ### Changed
-- **Cerebro workspace** — moved from `workspaces/cerebro-sustainment/` to `workspaces/sustainment/sustainment-cerebro/` (standard naming)
-- **ServiceNow MCP env vars** — renamed to `SNOW_API_USERNAME`/`SNOW_API_PASSWORD` and `SPLUNK_API_USERNAME`/`SPLUNK_API_PASSWORD`
-- **Catalog index hook** — simplified PowerShell version to read from workspace snapshot instead of traversing steer-runtime
+- **`sustainment_orchestrator_agent`** — added `@compass/*` to tools for direct access (hybrid: simple queries direct, complex workflows delegated)
+- **`deployment_agent`** — rewritten prompt with deploy/release/hotfix workflows and safety rails
+- **`ops_orchestrator_agent`** — added `@harness/*` to allowedTools, expanded routing for releases/hotfixes
+- **`cloudops_orchestrator_agent`** — added `@harness/*` to allowedTools
+- **MCP_REFERENCE.md** — added gitlab-mcp and harness-mcp documentation with prompt examples
 
 ### Fixed
-- **ServiceNow MCP** — JSON parse error handling for update_incident/update_ctask, close_ctask state validation
-- **Splunk MCP** — pipe command prefix fix, switched to v1 endpoints
+- **Finder-services workspace_path** — replaced hardcoded `~/Workspace/Disney/wdpro-development` with `${WORKSPACE_ROOT}/Disney`
 
 ---
 

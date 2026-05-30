@@ -4,22 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.104
+## v0.2.106
 
-- **GitLab MCP** — new MCP server with 9 tools (MRs, file access, code review, search) + `mcp-meta.json` for auto-discovery
-- **RCA agent enhancement** — autonomous context resolution via catalog index, ServiceNow MCP integration, AI tool attribution in work notes
-- **Studio Cerebro catalog** — 17 BAPPs fully populated (app.yaml, runbooks, troubleshooting, business-rules)
-- **Studio Kaos catalog** — 9 BAPPs enriched with operational data, Splunk queries, scaling info
-- **Studio Beast workspace** — `sustainment-beast` with 42 projects, 3 BAPPs, DLP Guest Mobile App context
-- **Cerebro workspace unified** — moved from root-level `cerebro-sustainment/` to `sustainment/sustainment-cerebro/` (standard pattern)
-- **Catalog index enrichment** — `catalog-index.sh/.ps1` now includes Assignment Group and Description columns
-- **Commerce ticketing workspace** — new workspace with RCA agent override, team context, ServiceNow conventions
-- **ServiceNow MCP** — 8 new tools (comments, related, CHG, CI, KB, on-call, bulk, timeline)
-- **AppDynamics MCP** — 7 new tools (backends, errors, events, policies, actions, dashboards, compare)
-- **Splunk MCP** — 21 tools with Basic Auth, pre-built bundle
+- **Harness MCP** — new MCP server with 7 tools for CI/CD pipeline management at disney.harness.io (list/trigger pipelines, executions, logs, services, environments)
+- **Compass MCP delegation fix** — `@compass/*` added to sustainment orchestrator for direct access + new `network_diagnostics_agent` for DNS/cert/connectivity checks
+- **DX Lodging Tools workspace** — hierarchical multi-team workspace (Rocket, Star Lord, Yondu) with custom alert analyst agent
+- **Studio Ant-Man catalog** — 28 BAPPs fully populated with operational data, escalation contacts, Splunk queries, and troubleshooting guides
+- **Release manager auto-commit** — `steer_release_manager_agent` now writes and commits RELEASE_NOTES/CHANGELOG on approval
+- **Finder-services workspace_path** — switched from hardcoded path to `${WORKSPACE_ROOT}` for cross-platform portability
 <!-- END LATEST -->
 
-## v0.2.104
+## v0.2.105
 
 - **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
 - **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)
@@ -27,7 +22,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **Retail & Restaurant workspace** — full workspace for FNB/MERCH teams with architecture, testing conventions
 - **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with real Splunk queries, runbooks, troubleshooting
 - **chrome-launch.sh fix** — `--user-data-dir` required for debug port binding, restored headless mode and WSL support
-## v0.2.104
+## v0.2.105
 
 - **Workspace naming convention** — formal 4-tier naming: `{name}-vertical`, `{name}-team`, `sustainment-{studio}`, `app-{name}` (docs/WORKSPACE_NAMING.md)
 - **29 workspace renames** — all workspaces now follow the naming convention (auto-migrated via `renames.json`)
@@ -54,7 +49,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **Jira MCP: 270+ custom field aliases** — complete myjira field registry so all teams can use friendly names (storyPoints, aiAssistedEffort, etc.) instead of raw IDs
 - **Jira MCP: native sub-task creation** — added `parent` parameter; agents can now create real Sub-tasks instead of Task+link workaround (#355)
 - **fix:** Jira MCP field ID corrections — sprint, storyPoints, epicLink now point to correct myjira fields
-## v0.2.104
+## v0.2.105
 
 - **Workspace + Fork MCP levels** — 4-level MCP architecture (global → fork → workspace → user) with variable resolution, `_overrides`, and `_source` tracking
 - **MCP Levels Guide** — new `docs/guides/mcp-levels.md` explaining all 4 levels with examples
@@ -67,7 +62,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **test-workspace-mcp.sh** — local validation script (21 assertions)
 - **fix:** JIRA MCP no longer includes epicLink in create fields (prevents hard errors on restrictive projects)
 
-## v0.2.104
+## v0.2.105
 
 - **KIRO_HOME-aware hooks** — all hooks respect KIRO_HOME env var for multi-workspace session isolation (#319)
 - **steer-workspace** — development workspace for the steer ecosystem with docs_curator_agent and ai_research_agent (#318)
@@ -76,7 +71,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **resource-aware delegation** — orchestrators respect system profile injection and RAM constraints (#310)
 - **yax recall-first** — all orchestrators auto-recall context on session start (#312)
 
-## v0.2.104
+## v0.2.105
 
 - **inspector profile** — multi-dimensional audit with 10 agents (security, dependencies, config, access, drift, compliance, architecture, performance, logging)
 - **SharePoint MCP server** — document management via Microsoft Graph API
