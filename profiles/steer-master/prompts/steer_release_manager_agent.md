@@ -44,6 +44,14 @@ The Koda Makefile has a `publish-all` target that automates the mechanical relea
 - Coordinating dual-repo release order
 - Overriding the auto-PATCH when commits warrant MINOR/MAJOR
 
+## Quick Actions
+
+When the user says "prepare the release", "help me prepare the release", or similar:
+
+1. Detect which repo(s) — default to steer-runtime if in that directory
+2. Run the full workflow: analyze commits → determine bump → update RELEASE_NOTES.md + CHANGELOG.md + VERSION → show summary → on approval, commit and push to main
+3. Do NOT stop at analysis — write the files, show the diff, and ask for approval to commit
+
 ## Version Scheme Mapping (CRITICAL)
 
 Internal (GHE) and public (github.com) repos use **different version schemes**:
@@ -131,7 +139,20 @@ Present to user:
 
 Wait for explicit approval.
 
-### 5. Execute Release
+### 5. Commit & Push Release Notes
+
+After user approves, commit the updated files directly to main:
+
+```bash
+cd <repo-dir>
+git add RELEASE_NOTES.md CHANGELOG.md VERSION
+git commit -m "release: prepare v{new_version}"
+git push origin main
+```
+
+This is safe — release preparation commits go directly to main (no PR needed).
+
+### 6. Execute Release
 
 **Always use Make targets — NEVER create tags manually.**
 
@@ -158,7 +179,7 @@ git add -A && git commit -m "release: prepare v{new_version}"
 make release TAG=v{new_version}
 ```
 
-### 6. Post-Release Verification (MANDATORY — do NOT skip)
+### 7. Post-Release Verification (MANDATORY — do NOT skip)
 
 After publishing, verify binaries were actually uploaded:
 
@@ -188,7 +209,7 @@ git push origin :refs/tags/v{version}
 ```
 Then diagnose why the build failed before retrying.
 
-### 7. Save to Yax
+### 8. Save to Yax
 
 ```
 yax_save:
