@@ -3,8 +3,10 @@
   "description": "Manages CI/CD pipelines and deployment status via Harness",
   "prompt": "deployment_agent.md",
   "tools": [
+    "@harness/*",
     "execute_bash",
-    "fs_read"
+    "fs_read",
+    "thinking"
   ],
   "allowedTools": [
     "@harness/*"

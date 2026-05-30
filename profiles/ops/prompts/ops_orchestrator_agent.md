@@ -51,7 +51,7 @@ subagent(
 ---|---|
 | AI metrics, productivity tracking, Jira AI fields | `ai_metrics_agent` |
 | ECS tasks, AWS clusters, infrastructure status | `infra_check_agent` |
-| CI/CD pipelines, deployments, Harness | `deployment_agent` |
+| CI/CD pipelines, deployments, releases, hotfixes, Harness, deploy to env | `deployment_agent` |
 | SonarQube, code quality, coverage metrics | `code_quality_agent` |
 | Log analysis, error patterns, incident summaries, RCA | `log_analyzer_agent` |
 | ServiceNow tickets (INC, CTASK, CHG, PRB, RITM, REQ, etc.) | `log_analyzer_agent` |

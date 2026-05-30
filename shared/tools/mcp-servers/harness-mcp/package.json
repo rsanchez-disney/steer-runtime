@@ -1,0 +1,22 @@
+{
+  "name": "harness-mcp",
+  "version": "1.0.0",
+  "description": "Harness CI/CD MCP server",
+  "type": "module",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "bundle": "esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --external:node:* --banner:js='#!/usr/bin/env node' && chmod 755 dist/index.cjs",
+    "prepare": "npm run build && npm run bundle",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.9.3"
+  }
+}

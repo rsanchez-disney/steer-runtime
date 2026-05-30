@@ -15,7 +15,8 @@
   ],
   "allowedTools": [
     "@confluence/*",
-    "@jira/*"
+    "@jira/*",
+    "@harness/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

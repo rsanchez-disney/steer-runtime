@@ -2,7 +2,7 @@
 
 Complete reference for all MCP servers: tools, capabilities, prompt examples, and agent access.
 
-**Total:** 14 MCP servers | 174+ tools | 58 agents connected
+**Total:** 16 MCP servers | 195+ tools | 58 agents connected
 
 ---
 
@@ -13,6 +13,8 @@ Complete reference for all MCP servers: tools, capabilities, prompt examples, an
 | [jira-mcp](#jira-mcp) | 25 | PAT | stdio | 40+ agents |
 | [confluence-mcp](#confluence-mcp) | 8 | PAT | stdio | 35+ agents |
 | [github-mcp](#github-mcp) | 15 | PAT | stdio | 20+ agents |
+| [gitlab-mcp](#gitlab-mcp) | 11 | PAT | stdio | 15+ agents |
+| [harness-mcp](#harness-mcp) | 7 | API Key | stdio | 4 agents |
 | [chrome-mcp](#chrome-mcp) | 8 | None | stdio | 2 agents |
 | [sharepoint-mcp](#sharepoint-mcp) | 6 | Azure AD | stdio | — |
 | [qtest-mcp](#qtest-mcp) | 20 | Bearer | stdio | 6 agents |
@@ -179,6 +181,90 @@ Comment on PR #280: "LGTM, approved"
 **PM:** pm_orchestrator
 **Ops:** ops_orchestrator, release_manager, release_documenter, ai_metrics
 **Steer-master:** steer_orchestrator, steer_reviewer, koda_reviewer, compatibility
+
+---
+
+## gitlab-mcp
+
+**Purpose:** GitLab merge requests, file access, code review, and repository operations.
+**Auth:** `GITLAB_TOKEN` (Personal Access Token with `api` scope).
+**Multi-instance:** `GITLAB_REMOTE` env var prefixes tool names (e.g., `disney_gitlab_get_mr`).
+**Default host:** `gitlab.disney.com`
+
+### Tools (11)
+
+| Tool | Description |
+|------|-------------|
+| `gitlab_get_project` | Fetch project (repository) information |
+| `gitlab_get_mr` | Fetch a merge request by IID |
+| `gitlab_create_mr` | Create a new merge request |
+| `gitlab_update_mr` | Update MR title, description, state, assignees, reviewers |
+| `gitlab_comment_on_mr` | Add a comment (note) to a merge request |
+| `gitlab_get_mr_comments` | Fetch all comments from a merge request |
+| `gitlab_search_mrs` | Search/list merge requests with filters |
+| `gitlab_get_file` | Read a single file from the repository |
+| `gitlab_get_files` | Read multiple files in a single call |
+| `gitlab_create_review` | Post inline review comments and optionally approve |
+| `gitlab_list_remotes` | Show the configured GitLab instance URL |
+
+### Prompt Examples
+
+```
+Get the details of MR !42 on WDPR-DLP-IS/wdpr-dlp-is-mobile-bff-core-service
+Search for open MRs targeting main in my project
+Create a MR from feat/my-branch to main with title "Add error handling"
+Read the src/config.ts file from the develop branch
+Post a code review on MR !15 with inline comments
+List all MRs I authored in the last week
+Get the README.md and package.json from the project
+```
+
+### Agents with Access
+
+**Dev-core:** pr_creator, code_review, story_analyzer, technical_writer
+**Steer-master:** steer_orchestrator, steer_reviewer, koda_reviewer, compatibility, steer_release_manager
+**Ops:** ops_orchestrator, release_manager, release_documenter, ai_metrics
+**QA:** qa_orchestrator, test_coverage_analyzer, defect_analyst, test_planner
+**BA:** ba_orchestrator, translation_validator, feature_writer, requirements_analyst, scope_definer, prd_generator
+**PM:** pm_orchestrator
+
+---
+
+## harness-mcp
+
+**Purpose:** Harness CI/CD — pipeline management, deployments, releases, and hotfixes.
+**Auth:** `HARNESS_API_KEY` (x-api-key header), `HARNESS_ACCOUNT_ID`.
+**Default host:** `https://disney.harness.io`
+
+### Tools (7)
+
+| Tool | Description |
+|------|-------------|
+| `harness_list_pipelines` | List pipelines in a project |
+| `harness_list_executions` | List recent pipeline executions with filters |
+| `harness_get_execution` | Get execution details with stages, steps, durations |
+| `harness_get_logs` | Get step-level logs from an execution |
+| `harness_trigger_pipeline` | Trigger a pipeline execution |
+| `harness_list_services` | List services in a project |
+| `harness_list_environments` | List environments in a project |
+
+### Prompt Examples
+
+```
+List all pipelines in the Commerce/WDPRT_Trimaxion project
+Show me the last 5 deployments for the trimaxion-api pipeline
+Why did the last deployment fail? Show me the logs
+Deploy the cart-service to the stage environment from the main branch
+What services are available in the Commerce/WDPR_Payments project?
+List environments for the ticketing project
+Trigger a hotfix deployment for payment-gateway from hotfix/fix-timeout branch
+What's the status of the currently running pipeline?
+```
+
+### Agents with Access
+
+**Ops:** deployment_agent (primary), ops_orchestrator (via delegation)
+**CloudOps:** cloudops_orchestrator (via delegation)
 
 ---
 

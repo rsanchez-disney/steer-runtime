@@ -1,0 +1,14 @@
+{
+  "name": "harness",
+  "description": "Harness CI/CD — pipeline executions, deployments, and service management",
+  "env": {
+    "HARNESS_API_KEY": "Harness API key (x-api-key header)",
+    "HARNESS_ACCOUNT_ID": "Harness account identifier",
+    "HARNESS_BASE_URL": "Harness instance URL"
+  },
+  "env_required": ["HARNESS_API_KEY", "HARNESS_ACCOUNT_ID"],
+  "env_secret": ["HARNESS_API_KEY"],
+  "env_defaults": {
+    "HARNESS_BASE_URL": "https://disney.harness.io"
+  }
+}
