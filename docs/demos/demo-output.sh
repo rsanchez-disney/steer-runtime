@@ -90,16 +90,17 @@ case "$1" in
     echo "✅ 3 tokens configured — MCP servers regenerated"
     echo ""
     ;;
-  7) # Chat
+  7) # Chat - agent ready
     echo ""
     echo "👋 Ready to orchestrate your development workflow!"
     echo ""
     echo "I can help you:"
-    echo "  • Implement Jira stories"
-    echo "  • Coordinate multi-repo features"
+    echo "  • Implement Jira stories: \"Help me implement DPAY-1234\""
+    echo "  • Coordinate multi-repo features across backend, webapi, ui"
     echo "  • Run full SDLC: story → plan → implement → review → PR"
     echo ""
-    echo "> help me implement DPAY-15393"
+    ;;
+  8) # Chat - response
     echo ""
     echo "📋 Analyzing DPAY-15393..."
     echo "   Fetching story from myjira.disney.com..."
