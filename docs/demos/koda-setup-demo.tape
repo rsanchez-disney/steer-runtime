@@ -79,11 +79,57 @@ Sleep 300ms
 Show
 Sleep 3s
 
-# Step 7
+# Step 7 - koda chat: agent ready
 Type "koda chat"
 Enter
 Hide
-Type "bash docs/demos/demo-output.sh 7"
+Type `echo ""`
+Enter
+Type `echo "👋 Ready to orchestrate your development workflow!"`
+Enter
+Type `echo ""`
+Enter
+Type `echo "I can help you:"`
+Enter
+Type `echo "  • Implement Jira stories: \"Help me implement DPAY-1234\""`
+Enter
+Type `echo "  • Coordinate multi-repo features across backend, webapi, ui"`
+Enter
+Type `echo "  • Run full SDLC: story → plan → implement → review → PR"`
+Enter
+Type `echo ""`
+Enter
+Sleep 300ms
+Show
+Sleep 3s
+
+# User types a prompt
+Type "help me implement DPAY-15393"
+Enter
+Hide
+Type `echo ""`
+Enter
+Type `echo "📋 Analyzing DPAY-15393..."`
+Enter
+Type `echo "   Fetching story from myjira.disney.com..."`
+Enter
+Type `echo "   Exploring codebase for relevant files..."`
+Enter
+Type `echo ""`
+Enter
+Type `echo "## Implementation Plan"`
+Enter
+Type `echo ""`
+Enter
+Type `echo "1. Update filterData.decorator.ts — fix startDate/startTime mismatch"`
+Enter
+Type `echo "2. Add unit tests for date filter edge cases"`
+Enter
+Type `echo "3. Create PR: fix/DPAY-15393-date-filter-mismatch"`
+Enter
+Type `echo ""`
+Enter
+Type `echo "Shall I proceed with the implementation?"`
 Enter
 Sleep 300ms
 Show
