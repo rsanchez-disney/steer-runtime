@@ -8,6 +8,15 @@ Set Padding 20
 Set Theme "Dracula"
 Set TypingSpeed 40ms
 
+# Prevent real koda from running
+Hide
+Type "alias koda=true"
+Enter
+Type "alias curl=true"
+Enter
+Sleep 200ms
+Show
+
 Sleep 1s
 
 # Step 1
