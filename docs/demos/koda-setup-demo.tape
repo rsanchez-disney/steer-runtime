@@ -14,7 +14,9 @@ Type "alias koda=true"
 Enter
 Type "alias curl=true"
 Enter
-Sleep 200ms
+Type "clear"
+Enter
+Sleep 300ms
 Show
 
 Sleep 1s
