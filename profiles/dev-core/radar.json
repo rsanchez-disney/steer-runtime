@@ -1,0 +1,71 @@
+{
+  "title": "Development",
+  "sections": [
+    {
+      "id": "my-tasks",
+      "title": "My Tasks",
+      "source": "jira",
+      "query": "project = {prefix} AND assignee = currentUser() AND status != Done ORDER BY priority DESC",
+      "display": "cards",
+      "maxItems": 8,
+      "powers": [
+        { "id": "implement", "label": "Implement", "prompt": "Help me implement {key} \"{summary}\"" },
+        { "id": "spec", "label": "Spec", "prompt": "Create a spec-driven implementation plan for {key} \"{summary}\". Define requirements, design, test cases, and implementation steps." },
+        { "id": "estimate", "label": "Estimate", "prompt": "Estimate {key} \"{summary}\" using story points. Consider complexity, unknowns, and dependencies." },
+        { "id": "analyze", "label": "Analyze", "prompt": "Analyze {key} \"{summary}\" — scope, acceptance criteria, dependencies, and risks." },
+        { "id": "review", "label": "Review", "prompt": "Review the code changes for {key} \"{summary}\". Check quality, tests, and architecture." },
+        { "id": "ai-track", "label": "AI Track", "prompt": "Track AI-assisted development session for {key} \"{summary}\". Log this as an AI-assisted task: record the ticket, summarize what was accomplished with AI help, and submit the metrics." }
+      ]
+    },
+    {
+      "id": "sprint",
+      "title": "Current Sprint",
+      "source": "jira",
+      "query": "project = {prefix} AND sprint in openSprints() ORDER BY rank ASC",
+      "display": "table",
+      "maxItems": 20,
+      "powers": [
+        { "id": "sprint-summary", "label": "Sprint Summary", "prompt": "Give me a full sprint summary for {prefix}: sprint name, start/end dates, goal, total stories, story points committed vs completed, and burndown status." },
+        { "id": "sprint-progress", "label": "Progress", "prompt": "Show sprint progress for {prefix}: how many stories are Done, In Progress, To Do? What percentage of story points are completed? Are we on track?" },
+        { "id": "blockers", "label": "Blockers", "prompt": "Identify blocked tickets and risks in the current {prefix} sprint. Include stale items (no update in 2+ days)." },
+        { "id": "standup", "label": "Standup", "prompt": "Generate my daily standup for {prefix}: what I completed yesterday, what I'm working on today, and any blockers." }
+      ]
+    },
+    {
+      "id": "prs",
+      "title": "Pull Requests",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "my-prs", "label": "My Open PRs", "prompt": "List my open pull requests across all repos. Show: title, branch, review status, CI status, and age." },
+        { "id": "review-needed", "label": "Awaiting My Review", "prompt": "Show pull requests where I'm requested as a reviewer but haven't reviewed yet." },
+        { "id": "recent-merges", "label": "Recently Merged", "prompt": "List PRs merged in the last 7 days for this project. Show: title, author, merge date." },
+        { "id": "create-pr", "label": "Create PR", "prompt": "Help me create a pull request for my current branch. Generate title and description from the commits." }
+      ]
+    },
+    {
+      "id": "bugs",
+      "title": "Open Bugs",
+      "source": "jira",
+      "query": "project = {prefix} AND type = Bug AND status != Done ORDER BY priority DESC",
+      "display": "table",
+      "maxItems": 10,
+      "powers": [
+        { "id": "triage", "label": "Triage", "prompt": "Triage open bugs in {prefix}: categorize by severity, suggest priority order, identify patterns." },
+        { "id": "fix", "label": "Fix Bug", "prompt": "Help me investigate and fix the highest priority bug in {prefix}. Analyze the root cause and suggest a fix." }
+      ]
+    },
+    {
+      "id": "quality",
+      "title": "Quality & DevOps",
+      "source": "static",
+      "display": "list",
+      "powers": [
+        { "id": "deploy-status", "label": "Pipeline Status", "prompt": "Check the status of recent CI/CD pipeline executions for this project." },
+        { "id": "release-readiness", "label": "Release Readiness", "prompt": "Assess release readiness: all sprint stories done? Open bugs? PRs pending? CI green?" },
+        { "id": "tech-debt", "label": "Tech Debt", "prompt": "Identify technical debt: open tech-debt tickets, TODOs in recent commits, areas with low test coverage." },
+        { "id": "architecture", "label": "Architecture", "prompt": "Describe the current architecture of this project: key components, dependencies, data flow, and deployment topology." }
+      ]
+    }
+  ]
+}
