@@ -67,10 +67,10 @@ Show
 Sleep 3s
 
 # Step 6: Configure Tokens
-Type "# Press [t] in Koda to configure tokens"
-Enter
 Hide
-Type `printf '\n━━━ Token Configuration ━━━\n\n  Jira PAT (myjira.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  GitHub PAT (github.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  Confluence PAT (mywiki.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n✅ 3 tokens configured — MCP servers regenerated\n\n'`
+Type "echo ''"
+Enter
+Type `printf '# Press [t] in Koda to configure tokens\n\n━━━ Token Configuration ━━━\n\n  Jira PAT (myjira.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  GitHub PAT (github.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  Confluence PAT (mywiki.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n✅ 3 tokens configured — MCP servers regenerated\n\n'`
 Enter
 Sleep 500ms
 Show
@@ -86,10 +86,8 @@ Sleep 500ms
 Show
 Sleep 2s
 
-Type "help me implement DPAY-15393"
-Enter
 Hide
-Type `printf '\n📋 Analyzing DPAY-15393...\n   Fetching story from myjira.disney.com...\n   Exploring codebase for relevant files...\n\n## Implementation Plan\n\n1. Update filterData.decorator.ts — fix startDate/startTime mismatch\n2. Add unit tests for date filter edge cases\n3. Create PR: fix/DPAY-15393-date-filter-mismatch\n\nShall I proceed with the implementation?\n\n'`
+Type `printf '> help me implement DPAY-15393\n\n📋 Analyzing DPAY-15393...\n   Fetching story from myjira.disney.com...\n   Exploring codebase for relevant files...\n\n## Implementation Plan\n\n1. Update filterData.decorator.ts — fix startDate/startTime mismatch\n2. Add unit tests for date filter edge cases\n3. Create PR: fix/DPAY-15393-date-filter-mismatch\n\nShall I proceed with the implementation?\n\n'`
 Enter
 Sleep 500ms
 Show
