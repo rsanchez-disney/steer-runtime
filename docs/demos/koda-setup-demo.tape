@@ -8,272 +8,81 @@ Set Width 1400
 Set Height 700
 Set Padding 20
 Set Theme "Dracula"
-Set TypingSpeed 50ms
-
-# Title
-Type "# Koda + steer-runtime — Quick Start Setup"
-Enter
-Sleep 1s
-Type ""
-Enter
+Set TypingSpeed 40ms
 
 # Step 1: Install Koda
-Type "echo '═══ Step 1: Install Koda ═══'"
-Enter
 Sleep 1s
-Type "curl -fsSL https://raw.githubusercontent.com/rsanchez-disney/Koda/main/install.sh | bash"
-Enter
-Sleep 2s
-Type "   Installing Koda..."
-Enter
-Type "   OS: darwin  Arch: arm64"
-Enter
-Sleep 1s
-Type "   Version: v0.4.28"
-Enter
-Type "   Installed: /Users/dev/.local/bin/koda"
-Enter
-Sleep 2s
-
-# Step 2: Setup
-Type ""
-Enter
-Type "echo '═══ Step 2: Run Setup ═══'"
-Enter
-Sleep 1s
-Type "koda setup"
-Enter
-Sleep 1.5s
-Type "🔍 Checking dependencies..."
+Type "# Step 1: Install Koda"
 Enter
 Sleep 500ms
-Type "  ✓ kiro-cli       2.2.1"
-Enter
-Type "  ✓ node           v20.19.5"
-Enter
-Type "  ✓ git            2.44.0"
-Enter
-Type "  ✓ gh             2.62.0"
-Enter
-Sleep 500ms
-Type "  ✓ yax"
-Enter
-Type "  ✓ prompt-scorer"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "✅ All dependencies installed"
-Enter
-Sleep 2s
-
-# Step 3: Doctor
-Type ""
-Enter
-Type "echo '═══ Step 3: Verify ═══'"
-Enter
-Sleep 1s
-Type "koda doctor"
-Enter
-Sleep 1s
-Type "  ✓ kiro-cli        2.2.1 (/usr/local/bin/kiro-cli)"
-Enter
-Type "  ✓ steer-runtime   v0.2.106 (synced)"
-Enter
-Type "  ✓ mcp.json        10 servers configured"
-Enter
-Type "  ✓ yax             running (142 observations)"
-Enter
-Type "  ✓ prompt-scorer   installed"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "✅ All checks passed"
-Enter
-Sleep 2s
-
-# Step 4: Install Profiles
-Type ""
-Enter
-Type "echo '═══ Step 4: Install Profiles ═══'"
-Enter
-Sleep 1s
-Type "koda install dev qa"
-Enter
-Sleep 1.5s
-Type "📦 Installing profiles: dev-core, dev-web, dev-mobile, qa"
-Enter
-Sleep 500ms
-Type "  ✓ dev-core (21 agents)"
-Enter
-Type "  ✓ dev-web (5 agents)"
-Enter
-Type "  ✓ dev-mobile (3 agents)"
-Enter
-Type "  ✓ qa (16 agents)"
-Enter
-Sleep 500ms
-Type ""
-Enter
-Type "✅ 4 profiles installed — 45 agents available"
-Enter
-Sleep 2s
-
-# Step 5: Select Workspace
-Type ""
-Enter
-Type "echo '═══ Step 5: Select Workspace ═══'"
-Enter
-Sleep 1s
-Type "koda"
-Enter
-Sleep 1s
-Type "┌─────────────────────────────────────────┐"
-Enter
-Type "│  Koda v0.4.28          [w] Workspaces   │"
-Enter
-Type "│                        [p] Profiles      │"
-Enter
-Type "│  Workspace: (none)     [t] Tokens        │"
-Enter
-Type "│  Profile: dev-core     [m] MCP           │"
-Enter
-Type "│  Agents: 45            [enter] Chat      │"
-Enter
-Type "└─────────────────────────────────────────┘"
-Enter
-Sleep 2s
-Type "w"
-Sleep 1s
-Enter
-Type ""
-Enter
-Type "  Select workspace:"
-Enter
-Type "  > app-team/app-payment-controls"
-Enter
-Type "    app-team/app-config-studio"
-Enter
-Type "    pos-team"
-Enter
-Type "    commerce-ticketing"
-Enter
-Type "    sustainment/sustainment-beast"
-Enter
-Sleep 1.5s
-Type ""
-Enter
-Type "✅ Workspace: app-payment-controls (DPAY)"
-Enter
-Sleep 2s
-
-# Step 6: Configure Tokens
-Type ""
-Enter
-Type "echo '═══ Step 6: Configure Tokens ═══'"
-Enter
-Sleep 1s
-Type "# Press [t] in Koda or configure manually:"
-Enter
-Sleep 500ms
-Type ""
-Enter
-Type "koda configure"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "━━━ Jira PAT ━━━"
-Enter
-Type "  Instance: myjira.disney.com"
-Enter
-Type "  Token: ●●●●●●●●●●●●●●●●●●●●"
-Enter
-Type "  ✓ Saved to ~/.kiro/tokens.env"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "━━━ GitHub PAT ━━━"
-Enter
-Type "  Instance: github.disney.com"
-Enter
-Type "  Token: ●●●●●●●●●●●●●●●●●●●●"
-Enter
-Type "  ✓ Saved to ~/.kiro/tokens.env"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "━━━ Confluence PAT ━━━"
-Enter
-Type "  Instance: mywiki.disney.com"
-Enter
-Type "  Token: ●●●●●●●●●●●●●●●●●●●●"
-Enter
-Type "  ✓ Saved to ~/.kiro/tokens.env"
-Enter
-Sleep 1s
-Type ""
-Enter
-Type "✅ 3 tokens configured — MCP servers generated"
-Enter
-Sleep 2s
-
-# Step 7: Start Chatting
-Type ""
-Enter
-Type "echo '═══ Step 7: Start Chatting ═══'"
-Enter
-Sleep 1s
-Type "koda chat"
-Enter
-Sleep 1.5s
-Type ""
-Enter
-Type "👋 Ready to orchestrate your development workflow!"
-Enter
-Type ""
-Enter
-Type "I can help you:"
-Enter
-Type "  • Implement Jira stories"
-Enter
-Type "  • Coordinate multi-repo features"
-Enter
-Type "  • Run full SDLC: story → plan → implement → review → PR"
-Enter
-Sleep 2s
-Type ""
-Enter
-Type "> help me implement DPAY-15393"
-Enter
-Sleep 2s
-Type ""
-Enter
-Type "📋 Analyzing DPAY-15393..."
-Enter
-Type "   Fetching story details from myjira.disney.com..."
-Enter
-Type "   Exploring codebase for relevant files..."
-Enter
-Sleep 1.5s
-Type ""
-Enter
-Type "## Implementation Plan"
-Enter
-Type "1. Update filterData.decorator.ts — fix field name mismatch"
-Enter
-Type "2. Add unit tests for date filter"
-Enter
-Type "3. Create PR with conventional commit"
+Type `printf '\n   Installing Koda...\n   OS: darwin  Arch: arm64\n\n   Version: v0.4.28\n   URL: https://github.com/rsanchez-disney/Koda/releases/download/v0.4.28/koda-darwin-arm64\n\n   Installed: ~/.local/bin/koda\n   ✓ koda v0.4.28\n\n'`
 Enter
 Sleep 3s
 
-# End
-Type ""
+# Step 2: Setup
+Type "koda setup"
 Enter
-Type "# ✅ Setup complete! Full docs: https://github.disney.com/SANCR225/steer-runtime"
+Sleep 500ms
+Type `printf '🔍 Checking dependencies...\n\n  ✓ kiro-cli       2.2.1\n  ✓ node           v20.19.5\n  ✓ git            2.44.0\n  ✓ gh             2.62.0\n\n✅ All dependencies installed\n\n📦 Companion tools:\n  ✓ yax\n  ✓ prompt-scorer\n\n'`
+Enter
+Sleep 3s
+
+# Step 3: Doctor
+Type "koda doctor"
+Enter
+Sleep 500ms
+Type `printf '  ✓ kiro-cli        2.2.1 (/usr/local/bin/kiro-cli)\n  ✓ steer-runtime   v0.2.106 (synced)\n  ✓ mcp.json        10 servers configured\n  ✓ yax             running (142 observations)\n  ✓ prompt-scorer   installed\n\n✅ All checks passed\n\n'`
+Enter
+Sleep 3s
+
+# Step 4: Install Profiles
+Type "koda install dev qa"
+Enter
+Sleep 500ms
+Type `printf '📦 Installing profiles: dev-core, dev-web, dev-mobile, qa\n\n  ✓ dev-core (21 agents)\n  ✓ dev-web (5 agents)\n  ✓ dev-mobile (3 agents)\n  ✓ qa (16 agents)\n\n✅ 4 profiles installed — 45 agents available\n\n'`
+Enter
+Sleep 3s
+
+# Step 5: Select Workspace (Koda TUI)
+Type "koda"
+Enter
+Sleep 500ms
+Type `printf '\n╔══════════════════════════════════════════════════════╗\n║  Koda v0.4.28                                        ║\n║                                                      ║\n║  Workspace: (none)          Profiles: dev-core, qa   ║\n║  Agents: 45                 MCP: 10 servers          ║\n║                                                      ║\n║  [w] Workspaces   [p] Profiles   [t] Tokens          ║\n║  [m] MCP          [e] Env vars   [enter] Chat        ║\n╚══════════════════════════════════════════════════════╝\n\n'`
+Enter
+Sleep 2s
+Type `printf '  Pressing [w] to select workspace...\n\n'`
+Enter
+Sleep 1s
+Type `printf '  Select workspace:\n  ❯ app-team/app-payment-controls\n    app-team/app-config-studio\n    pos-team\n    commerce-ticketing\n    sustainment/sustainment-beast\n    dx-lodging-tools-team/rocket-team\n\n'`
+Enter
+Sleep 2s
+Type `printf '  ✅ Workspace: app-payment-controls (DPAY)\n     Team: Payments & Commerce\n     Profiles: dev-core, dev-web\n\n'`
+Enter
+Sleep 3s
+
+# Step 6: Configure Tokens
+Type "# Step 6: Configure Tokens — press [t] in Koda"
+Enter
+Sleep 500ms
+Type `printf '\n━━━ Token Configuration ━━━\n\n  Jira PAT (myjira.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  GitHub PAT (github.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n  Confluence PAT (mywiki.disney.com)\n  Token: ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●\n  ✓ Saved\n\n✅ 3 tokens configured\n   MCP servers regenerated (jira-myjira, github-disney, confluence-mywiki)\n\n'`
+Enter
+Sleep 3s
+
+# Step 7: Start Chatting
+Type "koda chat"
+Enter
+Sleep 1s
+Type `printf '\n👋 Ready to orchestrate your development workflow!\n\nI can help you:\n  • Implement Jira stories: \"Help me implement DPAY-1234\"\n  • Coordinate multi-repo features across backend, webapi, ui\n  • Run full SDLC: story → plan → implement → review → PR\n\n'`
+Enter
+Sleep 2s
+Type `printf '> help me implement DPAY-15393\n\n'`
+Enter
+Sleep 1s
+Type `printf '📋 Analyzing DPAY-15393...\n   Fetching story from myjira.disney.com...\n   Exploring codebase for relevant files...\n\n## Implementation Plan\n\n1. Update filterData.decorator.ts — fix startDate/startTime field mismatch\n2. Add unit tests for date filter edge cases\n3. Create PR: fix/DPAY-15393-date-filter-mismatch\n\nShall I proceed with the implementation?\n\n'`
+Enter
+Sleep 4s
+
+# End
+Type `printf '# ✅ Setup complete!\n# Full docs: https://github.disney.com/SANCR225/steer-runtime\n'`
 Enter
 Sleep 3s
