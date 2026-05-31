@@ -10,6 +10,10 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 ---
 
+<p align="center">
+  <img src="docs/demos/koda-setup-demo.gif" alt="Koda Setup Demo" width="800" />
+</p>
+
 ## New Users — Quick Start
 
 ### 1. Install Koda
