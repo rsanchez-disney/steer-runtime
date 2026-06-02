@@ -1,0 +1,12 @@
+{
+  "name": "azure-devops",
+  "description": "Azure DevOps — repos, pull requests, pipelines, and work items",
+  "env": {
+    "AZDO_PAT": "Azure DevOps Personal Access Token",
+    "AZDO_ORG": "Organization name (e.g., disney)",
+    "AZDO_PROJECT": "Default project name"
+  },
+  "env_required": ["AZDO_PAT", "AZDO_ORG"],
+  "env_secret": ["AZDO_PAT"],
+  "env_defaults": {}
+}

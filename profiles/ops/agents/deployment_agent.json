@@ -4,12 +4,14 @@
   "prompt": "deployment_agent.md",
   "tools": [
     "@harness/*",
+    "@azure-devops/*",
     "execute_bash",
     "fs_read",
     "thinking"
   ],
   "allowedTools": [
-    "@harness/*"
+    "@harness/*",
+    "@azure-devops/*"
   ],
   "includeMcpJson": true,
   "resources": [

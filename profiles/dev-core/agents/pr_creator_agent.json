@@ -7,6 +7,7 @@
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
+    "@azure-devops/*",
     "@jira/*",
     "execute_bash",
     "fs_read",
@@ -17,6 +18,7 @@
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
+    "@azure-devops/*",
     "@jira/*"
   ],
   "includeMcpJson": true,

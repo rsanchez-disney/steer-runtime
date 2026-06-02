@@ -5,6 +5,7 @@
   "tools": [
     "@github/*",
     "@gitlab/*",
+    "@azure-devops/*",
     "@jira/*",
     "code",
     "execute_bash",
@@ -18,6 +19,7 @@
   "allowedTools": [
     "@github/*",
     "@gitlab/*",
+    "@azure-devops/*",
     "@jira/*"
   ],
   "includeMcpJson": true
