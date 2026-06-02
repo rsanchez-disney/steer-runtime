@@ -1,0 +1,25 @@
+{
+  "name": "demo_generator_agent",
+  "description": "Generates comprehensive demo documentation in Markdown format for presenting technical features to non-technical audiences. Takes log files and context to produce structured demo docs.",
+  "prompt": "prompts/demo_generator_agent.md",
+  "tools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "code"
+  ],
+  "allowedTools": [
+    "@confluence/*",
+    "@mywiki/*",
+    "@github/*",
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/domain_context.md",
+    "file://.kiro/context/team_context.md"
+  ],
+  "includeMcpJson": true
+}
