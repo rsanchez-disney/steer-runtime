@@ -53,9 +53,26 @@ Bugs in this project rarely have direct links to their parent stories. Use this 
 #### 2c. Extract Acceptance Criteria
 1. Fetch the matched story's **acceptance criteria** — this is the primary source of truth since it has the client's sign-off
 2. Most stories reference a **Global Acceptance Criteria**. The Global AC is pre-loaded in your context (from the `global_acceptance_criteria.md` resource). Use it as a secondary source of truth when the story's AC mentions "Global Acceptance Criteria" or when the defect relates to cross-cutting behaviors (data tables, filtering, sorting, history logging, permissions, toast messages, modals, etc.)
-3. Do NOT use any other Confluence, MyWiki, or external documentation beyond the story AC and the Global AC
+3. Do NOT use any other Confluence, MyWiki, or external documentation beyond the story AC, the Global AC, and linked test cases (see 2d below)
 4. If the story has no acceptance criteria defined, mark the defect as **NEEDS CLARIFICATION**
 5. If no matching story can be found at all, mark the defect as **NO PARENT STORY**
+
+#### 2d. Find Linked Test Cases (OPP Project)
+Test cases provide additional context for determining if a defect is in-scope. They often contain detailed scenarios and edge cases not explicitly listed in the story's AC.
+
+1. Search for linked OPP test cases associated with the parent story:
+   ```
+   issue in linkedIssues("{STORY_KEY}") AND project = OPP AND issuetype = Test
+   ```
+2. For each linked test case (OPP-xxx), fetch the ticket details
+3. Extract test steps from the custom field `customfield_20104` — this field contains the detailed test scenarios
+4. Test cases are considered a **tertiary source of truth** (after story AC and Global AC):
+   - If a defect scenario matches a test case step, it strengthens the **VALID** verdict
+   - If a defect describes behavior explicitly tested in a test case, it is likely in-scope
+   - Test cases can help clarify ambiguous AC by showing the intended behavior
+5. If no linked test cases exist, proceed with the analysis using only the story AC and Global AC
+
+**Important:** Test cases supplement but do not override the story's acceptance criteria. The story AC remains the primary source of truth for triage decisions.
 
 ### Step 3 — Analyze Each Defect
 
@@ -74,7 +91,8 @@ For each defect, read the **Steps to Reproduce**, **Expected Results**, and **Ac
 1. Read the defect's **Expected Results** — does it describe behavior that is stated in the story's AC? If yes, the defect is likely in scope.
 2. Read the defect's **Actual Results** — does it contradict a specific acceptance criterion? If yes, the defect is valid.
 3. Read the defect's **Steps to Reproduce** — does the scenario described fall within the scope of what the story covers? If the steps describe a flow or feature not mentioned in the AC, the defect may be out of scope.
-4. Cross-reference all three fields against the AC to determine the verdict.
+4. **Check linked test cases** — does the defect scenario match any test case steps from linked OPP tickets? If yes, this supports the defect being in-scope.
+5. Cross-reference all fields against the AC and test cases to determine the verdict.
 
 ### Step 4 — Produce the Triage Report
 
@@ -100,10 +118,12 @@ Generate a structured report with:
 #### [TICKET-KEY] — [Summary]
 - **Verdict:** [VALID/REJECT/NEEDS CLARIFICATION]
 - **Parent Story:** [STORY-KEY] — [Story Summary]
+- **Linked Test Cases:** [OPP-XXX, OPP-YYY] or "None found"
 - **Defect Expected Result:** [quote from the bug's Expected Results field]
 - **Defect Actual Result:** [quote from the bug's Actual Results field]
 - **Relevant Acceptance Criteria:** [quote the specific AC from the story]
-- **Reasoning:** [1-3 sentences explaining how the expected/actual results align or conflict with the AC]
+- **Relevant Test Case Scenario:** [quote matching test step if applicable, or "N/A"]
+- **Reasoning:** [1-3 sentences explaining how the expected/actual results align or conflict with the AC and/or test cases]
 - **Recommendation:** [Address / Reject / Discuss with PO]
 ```
 
@@ -117,14 +137,15 @@ After presenting the report, offer:
 
 ## Analysis Principles
 
-- The **primary** source of truth is the acceptance criteria in the Jira user story. The **secondary** source is the Global Acceptance Criteria pre-loaded in your context. No other external documentation counts.
+- The **primary** source of truth is the acceptance criteria in the Jira user story. The **secondary** source is the Global Acceptance Criteria pre-loaded in your context. The **tertiary** source is linked test cases (OPP project tickets).
+- Test cases (OPP-xxx) provide additional context and detailed scenarios. If a defect matches a test case scenario, it strengthens the in-scope verdict. However, test cases do not override the story's AC.
 - Be objective. Base verdicts strictly on the signed-off acceptance criteria, not assumptions.
-- When acceptance criteria are vague, lean toward **NEEDS CLARIFICATION** rather than guessing.
+- When acceptance criteria are vague, check if linked test cases clarify the expected behavior before marking as **NEEDS CLARIFICATION**.
 - Consider that some behaviors are implicitly expected (e.g., a form submission story implies basic validation).
 - If a defect is about performance, security, or accessibility and the story's AC didn't mention it, classify as **REJECT — Enhancement** unless it's a regression.
-- Always quote the specific acceptance criterion that supports your verdict.
+- Always quote the specific acceptance criterion or test case step that supports your verdict.
 - If no matching story can be found via epic + keyword search, mark it **NO PARENT STORY**.
-- If the parent story has no acceptance criteria defined, mark the defect as **NEEDS CLARIFICATION** and note the missing AC.
+- If the parent story has no acceptance criteria defined, check if linked test cases exist — if they do, use them to inform the verdict; if not, mark the defect as **NEEDS CLARIFICATION**.
 
 ## Edge Cases
 

@@ -9,20 +9,24 @@ Can we find the defect's epic (via epic link, labels, or components)?
          │
          Did we find a matching story with acceptance criteria?
          ├── NO matching story → Mark as NO PARENT STORY
-         ├── Story found but no AC defined → Mark as NEEDS CLARIFICATION
+         ├── Story found but no AC defined → Check for linked test cases (OPP)
+         │    ├── Test cases found → Use test cases to inform verdict
+         │    └── No test cases → Mark as NEEDS CLARIFICATION
          └── Story found with AC →
               │
               Does the defect contradict an explicit acceptance criterion?
               ├── YES → VALID — In Scope
-              └── NO → Is the behavior a reasonable implicit expectation?
-                       ├── YES → VALID — Implicit
-                       └── NO → Is this a regression (worked before, broken now)?
-                                ├── YES → VALID — Regression
-                                └── NO → Is this a new feature request?
-                                         ├── YES → REJECT — Enhancement
-                                         └── NO → Are the acceptance criteria ambiguous?
-                                                  ├── YES → NEEDS CLARIFICATION
-                                                  └── NO → REJECT — Out of Scope
+              └── NO → Does the defect match a linked test case scenario (OPP)?
+                       ├── YES → VALID — In Scope (Test Case)
+                       └── NO → Is the behavior a reasonable implicit expectation?
+                                ├── YES → VALID — Implicit
+                                └── NO → Is this a regression (worked before, broken now)?
+                                         ├── YES → VALID — Regression
+                                         └── NO → Is this a new feature request?
+                                                  ├── YES → REJECT — Enhancement
+                                                  └── NO → Are the acceptance criteria ambiguous?
+                                                           ├── YES → NEEDS CLARIFICATION
+                                                           └── NO → REJECT — Out of Scope
 ```
 
 ## What Counts as "Implicit"
@@ -77,6 +81,44 @@ project = OPS AND issuetype in (Bug, Defect) AND team = {TEAM} AND status = "Rea
 "Epic Link" = {EPIC_KEY} AND issuetype = Story AND summary !~ "VAS CORE GET POST PUT UPSERT UPDATE \"Reference Table\"" ORDER BY created ASC
 ```
 
+### Find linked test cases for a story (OPP project)
+```
+issue in linkedIssues("{STORY_KEY}") AND project = OPP AND issuetype = Test
+```
+
+## Test Case Discovery (OPP Project)
+
+Test cases in this project are stored in the **OPP** Jira project and linked to OPS stories. They provide detailed test scenarios that can help determine if a defect is in-scope.
+
+### How to Find Test Cases
+1. Once you have the parent story (e.g., OPS-9584), search for linked OPP tickets:
+   ```
+   issue in linkedIssues("OPS-9584") AND project = OPP AND issuetype = Test
+   ```
+2. Fetch each OPP ticket to get the test case details
+
+### How to Extract Test Steps
+Test steps are stored in the custom field `customfield_20104`. This field contains detailed test scenarios including:
+- Step-by-step actions
+- Expected results for each step
+- Test data and preconditions
+
+### How Test Cases Affect Triage
+| Scenario | Impact on Verdict |
+|----------|-------------------|
+| Defect matches a test case step | Strengthens **VALID — In Scope** verdict |
+| Defect describes behavior explicitly tested | Likely **VALID** |
+| Test case clarifies ambiguous AC | Helps resolve **NEEDS CLARIFICATION** |
+| No matching test case, but AC is clear | Test case absence doesn't change verdict |
+| No AC and no test cases | **NEEDS CLARIFICATION** |
+
+### Source of Truth Hierarchy
+1. **Primary:** Story Acceptance Criteria (signed-off by client)
+2. **Secondary:** Global Acceptance Criteria (MyWiki)
+3. **Tertiary:** Linked Test Cases (OPP project)
+
+Test cases supplement but do not override the story's acceptance criteria.
+
 ## Technical Story Exclusion
 
 Not all stories have signed-off acceptance criteria. Use this two-tier approach to determine which stories are valid for comparison:
@@ -112,6 +154,7 @@ Only compare defects against **business-facing stories** that contain user stori
 |-------|---------|
 | `triage-valid` | Defect is in-scope, should be fixed |
 | `triage-valid-implicit` | Defect is implicitly expected, should be fixed |
+| `triage-valid-testcase` | Defect matches a linked test case scenario |
 | `triage-reject-oos` | Defect is out of scope for the original story |
 | `triage-reject-enhancement` | Defect is actually a new feature request |
 | `triage-needs-clarification` | Ambiguous — needs PO decision |
