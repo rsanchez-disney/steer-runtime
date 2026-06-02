@@ -4,6 +4,7 @@
   "team": "OpSheet+ Product Team",
   "profiles": [
     "dev-core",
+    "dev-go",
     "dev-web",
     "dev-mobile",
     "qa",
