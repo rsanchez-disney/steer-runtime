@@ -1,0 +1,17 @@
+{
+  "name": "blocked_story_validator_agent",
+  "description": "Analyzes user stories in Blocked status to determine if they truly need to remain blocked or can be unblocked and tested. Generates a professional Jira comment in English requesting the unblock.",
+  "prompt": "blocked_story_validator_agent.md",
+  "tools": [
+    "@jira/*",
+    "fs_write"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ba_guidelines.md",
+    "file://.kiro/context/global_acceptance_criteria.md"
+  ],
+  "includeMcpJson": true
+}
