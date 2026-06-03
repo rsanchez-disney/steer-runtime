@@ -1,36 +1,37 @@
 {
-  "name": "backlog_to_gherkin_agent",
-  "description": "Fetches XRay TCs, classifies candidates, scans repo, generates .feature files with gated approval",
+  "name": "story_to_automation_agent",
+  "description": "Takes user stories, suggests test cases, creates in Jira, assesses readiness, generates .feature files",
   "tools": [
     "@jira/*",
     "@xray/*",
     "jira_get_myself",
+    "jira_get_issue",
     "jira_search_issues",
+    "jira_create_issue",
+    "jira_link_issues",
     "xray_get_test_steps",
     "xray_get_test_case_full",
-    "jira_get_issue",
     "fs_read",
     "fs_write",
-    "grep",
-    "execute_bash"
+    "grep"
   ],
   "allowedTools": [
     "@jira/*",
     "@xray/*",
     "jira_get_myself",
+    "jira_get_issue",
     "jira_search_issues",
+    "jira_create_issue",
+    "jira_link_issues",
     "xray_get_test_steps",
     "xray_get_test_case_full",
-    "jira_get_issue",
     "fs_read",
     "fs_write",
-    "grep",
-    "execute_bash"
+    "grep"
   ],
   "resources": [
-    "file://profiles/qa/prompts/backlog_to_gherkin_agent.md",
-    "file://profiles/qa/context/xray_fetching_instructions.md",
-    "file://profiles/qa/context/xray_classification_logic.md",
+    "file://profiles/qa/prompts/story_to_automation_agent.md",
+    "file://profiles/qa/context/test_creation_logic.md",
     "file://profiles/qa/context/readiness_assessment.md",
     "file://profiles/qa/context/repo_scanning_instructions.md",
     "file://profiles/qa/context/feature_generation_guidelines.md"
@@ -45,5 +46,5 @@
     ]
   },
   "includeMcpJson": true,
-  "welcomeMessage": "🤖 Backlog to Gherkin (v3)\n\nStart with:\n  @get_jira_backlog — I will ask for repo path and XRay path step by step\n\nAfter classification:\n  @get_automation_ready_candidates — Scan repo, show readiness table\n  @write_scenario — Generate .feature files for 🟢 candidates"
+  "welcomeMessage": "🤖 Story to Automation Agent\n\nCommands:\n  @analyze_story — Read a story, suggest test cases, check duplicates\n  @create_tests — Create approved TCs in Jira\n  @check_readiness — Assess automation readiness against repo\n  @write_scenario — Generate .feature files or suggest missing steps\n\nStart with: @analyze_story"
 }
