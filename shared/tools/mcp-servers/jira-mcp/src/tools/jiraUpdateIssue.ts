@@ -1,7 +1,6 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { saveTicketData } from "../utils/fileUtils.js";
 import {
-    CUSTOM_FIELD_ALIASES,
     resolveCustomFieldIds,
 } from "../utils/customFields.js";
 
@@ -63,6 +62,23 @@ export const jiraUpdateIssueSchema = {
                 type: "number",
                 description: "Story points estimate",
             },
+            fixVersions: {
+                type: "array",
+                items: { type: "string" },
+                description:
+                    'Array of fix version names (e.g., ["Hong Kong CPO", "v2.0"]). Replaces existing fix versions.',
+            },
+            addFixVersions: {
+                type: "array",
+                items: { type: "string" },
+                description:
+                    "Array of fix version names to ADD (keeps existing versions)",
+            },
+            removeFixVersions: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of fix version names to REMOVE",
+            },
             customFields: {
                 type: "object",
                 description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`,
@@ -86,6 +102,9 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             priority,
             reporter,
             storyPoints,
+            fixVersions,
+            addFixVersions,
+            removeFixVersions,
             customFields,
         } = args as {
             ticketId: string;
@@ -99,6 +118,9 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             priority?: string;
             reporter?: string;
             storyPoints?: number;
+            fixVersions?: string[];
+            addFixVersions?: string[];
+            removeFixVersions?: string[];
             customFields?: Record<string, unknown>;
         };
 
@@ -155,6 +177,27 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             }
         }
 
+        // Fix versions: replace mode (fields.fixVersions)
+        if (fixVersions && fixVersions.length > 0) {
+            updates.fixVersions = fixVersions.map((name) => ({ name }));
+        }
+
+        // Fix versions: add/remove mode (update.fixVersions)
+        const updateOps: any = {};
+        if (addFixVersions || removeFixVersions) {
+            updateOps.fixVersions = [];
+            if (addFixVersions) {
+                addFixVersions.forEach((name) => {
+                    updateOps.fixVersions.push({ add: { name } });
+                });
+            }
+            if (removeFixVersions) {
+                removeFixVersions.forEach((name) => {
+                    updateOps.fixVersions.push({ remove: { name } });
+                });
+            }
+        }
+
         // Try different Epic Link field IDs
         if (epicLink) {
             // Try the most common Epic Link field IDs one by one
@@ -173,7 +216,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
                         [fieldId]: epicLink,
                     };
                     console.error(`Trying Epic Link field ID: ${fieldId}`);
-                    await apiClient.updateJiraTicket(ticketId, testUpdates);
+                    await apiClient.updateJiraTicket(ticketId, testUpdates, updateOps);
                     console.error(`Success! Epic Link field ID is: ${fieldId}`);
                     epicSet = true;
                     break;
@@ -199,12 +242,12 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             // Apply remaining updates without epic link field
             if (!epicSet) {
                 console.error("All Epic Link methods failed, proceeding without Epic Link");
-            }
-            if (Object.keys(updates).length > 0) {
-                await apiClient.updateJiraTicket(ticketId, updates);
+                if (Object.keys(updates).length > 0 || Object.keys(updateOps).length > 0) {
+                    await apiClient.updateJiraTicket(ticketId, updates, updateOps);
+                }
             }
         } else {
-            await apiClient.updateJiraTicket(ticketId, updates);
+            await apiClient.updateJiraTicket(ticketId, updates, updateOps);
         }
 
         const ticket = await apiClient.fetchJiraTicket(ticketId);
