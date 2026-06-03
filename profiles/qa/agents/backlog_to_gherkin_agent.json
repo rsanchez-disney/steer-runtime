@@ -29,6 +29,7 @@
     "execute_bash"
   ],
   "resources": [
+    "file://profiles/qa/prompts/backlog_to_gherkin_agent.md",
     "file://profiles/qa/context/xray_fetching_instructions.md",
     "file://profiles/qa/context/xray_classification_logic.md",
     "file://profiles/qa/context/readiness_assessment.md",
@@ -45,5 +46,5 @@
     ]
   },
   "includeMcpJson": true,
-  "welcomeMessage": "\ud83e\udd16 Backlog to Gherkin (v3)\n\nStart with:\n  @get_jira_backlog \u2014 I will ask for repo path and XRay path step by step\n\nAfter classification:\n  @get_automation_ready_candidates \u2014 Scan repo, show readiness table\n  @write_scenario \u2014 Generate .feature files for \ud83d\udfe2 candidates"
+  "welcomeMessage": "🤖 Backlog to Gherkin (v3)\n\nStart with:\n  @get_jira_backlog — I will ask for repo path and XRay path step by step\n\nAfter classification:\n  @get_automation_ready_candidates — Scan repo, show readiness table\n  @write_scenario — Generate .feature files for 🟢 candidates"
 }
