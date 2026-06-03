@@ -19,29 +19,50 @@ CATALOG_DIR="$CATALOG_BASE/studios"
 
 [ -d "$CATALOG_DIR" ] || exit 0
 
-# Read managed_studios from workspace snapshot (written by Koda at workspace apply)
-SCOPE_DIRS=$(python3 -c "
-import json, os, sys
-kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
-snapshot = os.path.join(kiro, 'settings', 'workspace.json')
-if not os.path.isfile(snapshot):
-    print('*')
-    sys.exit(0)
-try:
-    ws = json.load(open(snapshot))
-    scope = ws.get('managed_studios', [])
-    print(' '.join(scope) if scope else '*')
-except:
-    print('*')
-" 2>/dev/null)
-
+# Read managed_studios from workspace SOURCE (Koda strips custom fields from settings/workspace.json)
+# 1. Get workspace name from resolved snapshot
+# 2. Find source workspace.json in steer-runtime/workspaces/
+# 3. Read managed_studios from source
 WS_NAME=$(python3 -c "
 import json, os, sys
 kiro = os.environ.get('KIRO_HOME', os.path.expanduser('~/.kiro'))
 snapshot = os.path.join(kiro, 'settings', 'workspace.json')
 if os.path.isfile(snapshot):
-    try: print(json.load(open(snapshot)).get('name', ''))
+    try:
+        data = json.load(open(snapshot))
+        ws = data[0] if isinstance(data, list) else data
+        print(ws.get('name', ''))
     except: pass
+" 2>/dev/null)
+
+SCOPE_DIRS=$(python3 -c "
+import json, os, sys
+ws_name = '$WS_NAME'
+if not ws_name:
+    print('*')
+    sys.exit(0)
+
+def find_workspace(name):
+    base = os.path.join(os.path.expanduser('~/.kiro'), 'steer-runtime', 'workspaces')
+    for root, dirs, files in os.walk(base):
+        if 'workspace.json' in files:
+            p = os.path.join(root, 'workspace.json')
+            try:
+                d = json.load(open(p))
+                if d.get('name') == name:
+                    return d
+            except: pass
+    return {}
+
+ws = find_workspace(ws_name)
+scope = ws.get('managed_studios', [])
+
+# Follow extends chain if child doesn't define it
+if not scope and ws.get('extends'):
+    parent = find_workspace(ws['extends'])
+    scope = parent.get('managed_studios', [])
+
+print(' '.join(scope) if scope else '*')
 " 2>/dev/null)
 
 # Default to all if no scope resolved

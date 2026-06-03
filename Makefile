@@ -74,6 +74,7 @@ mcp-build-%: ## Build a single MCP server (e.g., make mcp-build-jira-mcp)
 validate-catalog: ## Validate managed services catalog app.yaml files and report fill-rate
 	@./scripts/validate-catalog.sh
 	@./scripts/test-catalog-hook.sh
+	@command -v pwsh >/dev/null 2>&1 && pwsh -Command '$$null = [System.Management.Automation.PSParser]::Tokenize((Get-Content "shared/hooks/catalog-index.ps1" -Raw), [ref]$$null); Write-Host "  ✓ catalog-index.ps1 syntax OK"' || true
 
 validate-workspaces: ## Validate all workspace.json files for required fields and portability
 	@./scripts/validate-workspaces.sh

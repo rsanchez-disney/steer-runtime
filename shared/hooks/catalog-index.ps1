@@ -3,25 +3,49 @@
 # Also writes backup to _dynamic/catalog-index.md
 
 $KiroDir = if ($env:KIRO_HOME) { $env:KIRO_HOME } else { Join-Path $env:USERPROFILE ".kiro" }
+$HomeKiro = Join-Path $env:USERPROFILE ".kiro"
 $DynamicDir = Join-Path $KiroDir "context/_dynamic"
 $IndexFile = Join-Path $DynamicDir "catalog-index.md"
-$CatalogDir = Join-Path $KiroDir "steer-runtime/profiles/sustainment/managed-services-catalog/studios"
+$CatalogDir = Join-Path $HomeKiro "steer-runtime/profiles/sustainment/managed-services-catalog/studios"
 
 if (-not (Test-Path $CatalogDir)) { exit 0 }
 New-Item -ItemType Directory -Force -Path $DynamicDir | Out-Null
 
-# Read managed_studios from workspace snapshot (with fallback for older Koda versions)
+# Read workspace name from snapshot, then find source in steer-runtime for managed_studios
 $WsName = "default"
 $ScopeDirs = @("*")
 $SnapshotFile = Join-Path $KiroDir "settings/workspace.json"
 if (Test-Path $SnapshotFile) {
     try {
         $wsData = Get-Content $SnapshotFile -Raw | ConvertFrom-Json
+        if ($wsData -is [array]) { $wsData = $wsData[0] }
         if ($wsData.name) { $WsName = $wsData.name }
-        if ($wsData.managed_studios -and $wsData.managed_studios.Count -gt 0) {
-            $ScopeDirs = @($wsData.managed_studios)
-        }
     } catch {}
+}
+
+# Find source workspace.json in steer-runtime (always use ~/.kiro/steer-runtime)
+$WsSearchBase = Join-Path $HomeKiro "steer-runtime/workspaces"
+if (Test-Path $WsSearchBase) {
+    $found = Get-ChildItem -Path $WsSearchBase -Recurse -Filter "workspace.json" | ForEach-Object {
+        try {
+            $d = Get-Content $_.FullName -Raw | ConvertFrom-Json
+            if ($d.name -eq $WsName) { $d }
+        } catch {}
+    } | Select-Object -First 1
+    if ($found -and $found.managed_studios -and $found.managed_studios.Count -gt 0) {
+        $ScopeDirs = @($found.managed_studios)
+    } elseif ($found -and $found.extends) {
+        # Follow extends chain
+        $parent = Get-ChildItem -Path $WsSearchBase -Recurse -Filter "workspace.json" | ForEach-Object {
+            try {
+                $d = Get-Content $_.FullName -Raw | ConvertFrom-Json
+                if ($d.name -eq $found.extends) { $d }
+            } catch {}
+        } | Select-Object -First 1
+        if ($parent -and $parent.managed_studios -and $parent.managed_studios.Count -gt 0) {
+            $ScopeDirs = @($parent.managed_studios)
+        }
+    }
 } else {
     # Fallback: older Koda versions write activeWorkspace to kite.json or settings.json
     foreach ($f in @("kite.json", "settings.json")) {
