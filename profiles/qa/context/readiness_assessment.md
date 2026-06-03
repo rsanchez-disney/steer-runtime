@@ -2,8 +2,18 @@
 
 ## Inputs Required
 
-- **Candidate steps** — from `xray_get_test_steps` for each 🎯 candidate
+- **Candidate steps** — from `customfield_20104` (or `xray_get_test_steps` fallback) for each 🎯 candidate. Each step has three fields:
+  - `action` — the user action (maps to Given/When steps)
+  - `data` — test data or parameters (used for example values)
+  - `result` — expected outcome (maps to Then/assertion steps)
 - **Repo step catalog** — from scanning `*.py` files (see `repo_scanning_instructions.md`)
+
+## What to Match
+
+Match BOTH `action` AND `result` fields against the repo step catalog:
+- `action` → typically maps to Given/When steps (e.g., "Click on Add to Cart button" → `When I click on Add to Cart button`)
+- `result` → typically maps to Then steps (e.g., "Cart Page loads" → `Then I see the Cart Page displayed`)
+- `data` → not matched; used later during feature generation for parameter values
 
 ## Step Matching
 

@@ -29,11 +29,12 @@
     "execute_bash"
   ],
   "resources": [
-    "file://.kiro/context/xray_fetching_instructions.md",
-    "file://.kiro/context/xray_classification_logic.md",
-    "file://.kiro/context/readiness_assessment.md",
-    "file://.kiro/context/repo_scanning_instructions.md",
-    "file://.kiro/context/feature_generation_guidelines.md"
+    "file://profiles/qa/prompts/backlog_to_gherkin_agent.md",
+    "file://profiles/qa/context/xray_fetching_instructions.md",
+    "file://profiles/qa/context/xray_classification_logic.md",
+    "file://profiles/qa/context/readiness_assessment.md",
+    "file://profiles/qa/context/repo_scanning_instructions.md",
+    "file://profiles/qa/context/feature_generation_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [
