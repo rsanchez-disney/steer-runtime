@@ -12,7 +12,8 @@
     "jira_get_issue",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "execute_bash"
   ],
   "allowedTools": [
     "@jira/*",
@@ -24,7 +25,8 @@
     "jira_get_issue",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "execute_bash"
   ],
   "resources": [
     "file://profiles/qa/context/xray_fetching_instructions.md",

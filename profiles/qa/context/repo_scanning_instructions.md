@@ -1,19 +1,32 @@
 # Repo Scanning Instructions
 
-## Primary Source: step_catalog.json
+## Primary Source: Split Step Catalog
 
-Look for a pre-built step catalog at `{repo_path}/docs/ai/step_catalog.json`. If it exists, use it as your primary source.
+Look for a pre-built step catalog index at `{repo_path}/docs/ai/step_catalog_index.json`. If it exists, use it as your primary source.
 
-### Structure
+### Index Structure
 
 ```json
 {
   "version": "1.0",
+  "domains": {
+    "tickets": { "file": "steps/tickets.json", "modules": 42, "steps": 1059 },
+    "checkout": { "file": "steps/checkout.json", "modules": 35, "steps": 995 }
+  }
+}
+```
+
+### Domain File Structure
+
+Each domain file at `{repo_path}/docs/ai/steps/{domain}.json`:
+
+```json
+{
+  "domain": "tickets",
   "modules": [
     {
       "file": "common/general_common_steps/example_steps.py",
       "steps": ["S|I access the page in \"{store}\" as \"{affiliation}\""],
-      "domain": "tickets",
       "pages": ["example_page"]
     }
   ]
@@ -29,13 +42,17 @@ Look for a pre-built step catalog at `{repo_path}/docs/ai/step_catalog.json`. If
 
 ### How to Use
 
-1. Read `{repo_path}/docs/ai/step_catalog.json`
-2. Print: "📚 Step catalog found — {N} modules, {M} total steps"
-3. Search modules by `domain` or `pages` relevant to the candidate's area
-4. Match candidate steps against the `steps` arrays
-5. The `file` field tells you where the step is implemented
+1. Read `{repo_path}/docs/ai/step_catalog_index.json`
+2. Print: "📚 Step catalog found — {N} domains, {M} total steps"
+3. Identify relevant domain(s) from the candidate's test area (e.g., "Ticketing/PreSales" → `tickets`)
+4. Read ONLY the relevant domain file(s): `{repo_path}/docs/ai/steps/{domain}.json`
+5. Search modules by `pages` relevant to the candidate's area
+6. Match candidate steps against the `steps` arrays
+7. The `file` field tells you where the step is implemented
 
-## Fallback: grep (only if step_catalog.json is missing)
+**Important:** Do NOT read all domain files. Only load domains relevant to the candidates being assessed.
+
+## Fallback: grep (only if step_catalog_index.json is missing)
 
 If the catalog doesn't exist, scan manually:
 
