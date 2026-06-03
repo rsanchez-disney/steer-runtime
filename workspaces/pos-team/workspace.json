@@ -1,17 +1,23 @@
 {
   "name": "pos-team",
-  "description": "ActivateX (DSP Go & Check-Sync) — Disney POS Android application for Merchandise, QSR, and Table Service",
+  "description": "ActivateX (DSP Go & Check-Sync) \u2014 Disney POS Android application for Merchandise, QSR, and Table Service",
   "team": "POS Team",
-  "profiles": ["dev-core", "dev-mobile"],
+  "profiles": [
+    "dev-core",
+    "dev-mobile"
+  ],
   "default_agent": "android_arch_agent",
   "projects": [
     {
       "name": "activatex",
       "path": "activatex",
-      "repo": "DisneyPaymentsOrg/activatex"
+      "repo": "DisneyPaymentsOrg/activatex",
+      "host": "github.disney.com"
     }
   ],
-  "rules": ["conventional_commit"],
+  "rules": [
+    "conventional_commit"
+  ],
   "enable_tools": true,
   "jira_prefix": "POS-",
   "workspace_path": "~/Development"

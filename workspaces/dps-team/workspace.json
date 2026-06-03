@@ -12,37 +12,43 @@
       "name": "dps-core-offer",
       "path": "dps-core-offer",
       "repo": "WDPR-Resort-Sales/dps-core-offer",
-      "memory_bank": "dps-core-offer"
+      "memory_bank": "dps-core-offer",
+      "host": "github.disney.com"
     },
     {
       "name": "dps-core-resflowmgmt",
       "path": "dps-core-resflowmgmt",
       "repo": "WDPR-Resort-Sales/dps-core-resflowmgmt",
-      "memory_bank": "dps-core-resflowmgmt"
+      "memory_bank": "dps-core-resflowmgmt",
+      "host": "github.disney.com"
     },
     {
       "name": "dps-core-quote",
       "path": "dps-core-quote",
       "repo": "WDPR-Resort-Sales/dps-core-quote",
-      "memory_bank": "dps-core-quote"
+      "memory_bank": "dps-core-quote",
+      "host": "github.disney.com"
     },
     {
       "name": "dps-core-scoreschemeconfig",
       "path": "dps-core-scoreschemeconfig",
       "repo": "WDPR-Resort-Sales/dps-core-scoreschemeconfig",
-      "memory_bank": "dps-core-scoreschemeconfig"
+      "memory_bank": "dps-core-scoreschemeconfig",
+      "host": "github.disney.com"
     },
     {
       "name": "package-calendar-service-sync",
       "path": "package-calendar-service-sync",
       "repo": "WDPR-Resort-Sales/package-calendar-service-sync",
-      "memory_bank": "package-calendar-service-sync"
+      "memory_bank": "package-calendar-service-sync",
+      "host": "github.disney.com"
     },
     {
       "name": "package-calendar-service",
       "path": "package-calendar-service",
       "repo": "WDPR-Resort-Sales/package-calendar-service",
-      "memory_bank": "package-calendar-service"
+      "memory_bank": "package-calendar-service",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

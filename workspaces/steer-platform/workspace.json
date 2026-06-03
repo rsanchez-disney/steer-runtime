@@ -14,37 +14,44 @@
     {
       "name": "steer-runtime",
       "repo": "SANCR225/steer-runtime",
-      "path": "steer-runtime"
+      "path": "steer-runtime",
+      "host": "github.disney.com"
     },
     {
       "name": "Koda",
       "repo": "SANCR225/Koda",
-      "path": "Koda"
+      "path": "Koda",
+      "host": "github.disney.com"
     },
     {
       "name": "Kite",
       "repo": "SANCR225/Kite",
-      "path": "Kite"
+      "path": "Kite",
+      "host": "github.disney.com"
     },
     {
       "name": "Mouseketool",
       "repo": "SANCR225/mouseketool",
-      "path": "mouseketool"
+      "path": "mouseketool",
+      "host": "github.disney.com"
     },
     {
       "name": "prompt-score",
       "repo": "SANCR225/prompt-score",
-      "path": "prompt-score"
+      "path": "prompt-score",
+      "host": "github.disney.com"
     },
     {
       "name": "steer-autopilot",
       "repo": "SANCR225/steer-autopilot",
-      "path": "steer-autopilot"
+      "path": "steer-autopilot",
+      "host": "github.disney.com"
     },
     {
       "name": "steer-plugins",
       "repo": "SANCR225/steer-plugins",
-      "path": "steer-plugins"
+      "path": "steer-plugins",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

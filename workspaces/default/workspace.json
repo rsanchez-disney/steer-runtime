@@ -17,55 +17,64 @@
       "name": "wdpr-config-services",
       "path": "../wdpr-config-services",
       "memory_bank": "wdpr-config-services",
-      "repo": "DisneyPaymentsOrg/wdpr-config-services"
+      "repo": "DisneyPaymentsOrg/wdpr-config-services",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-controls-api",
       "path": "../wdpr-payment-controls-api",
       "memory_bank": "wdpr-payment-controls-api",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-controls-client",
       "path": "../wdpr-payment-controls-client",
       "memory_bank": "wdpr-payment-controls-client",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-gcp-admin-api",
       "path": "../wdpr-gcp-admin-api",
       "memory_bank": "wdpr-gcp-admin-api",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-cap-rev-rec-svc",
       "path": "../wdpr-cap-rev-rec-svc",
       "memory_bank": "wdpr-cap-rev-rec-svc",
-      "repo": "DisneyPaymentsOrg/wdpr-cap-rev-rec-svc"
+      "repo": "DisneyPaymentsOrg/wdpr-cap-rev-rec-svc",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-svc",
       "path": "../wdpr-payment-svc",
       "memory_bank": "wdpr-payment-svc",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-svc"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-svc",
+      "host": "github.disney.com"
     },
     {
       "name": "cart-service-java8",
       "path": "../cart-service-java8",
       "memory_bank": "cart-service-java8",
-      "repo": "WDPR-Commerce/cart-service-java8"
+      "repo": "WDPR-Commerce/cart-service-java8",
+      "host": "github.disney.com"
     },
     {
       "name": "spr-router",
       "path": "../spr-router",
       "memory_bank": "spr-router",
-      "repo": "DisneyPaymentsOrg/spr-router"
+      "repo": "DisneyPaymentsOrg/spr-router",
+      "host": "github.disney.com"
     },
     {
       "name": "spr-ai-adapter",
       "path": "../spr-ai-adapter",
       "memory_bank": "spr-ai-adapter",
-      "repo": "DisneyPaymentsOrg/spr-ai-adapter"
+      "repo": "DisneyPaymentsOrg/spr-ai-adapter",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

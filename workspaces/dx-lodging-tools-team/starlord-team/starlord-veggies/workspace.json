@@ -1,8 +1,8 @@
 {
   "name": "starlord-veggies",
   "extends": "starlord-team",
-  "description": "Veggies project — Non-Disney Add Ons SPA/API/VA for Rental Car, Shuttle, Travel Protection, Area Attractions (WDW/DLR/AUL)",
-  "team": "Studio Star Lord — Veggies",
+  "description": "Veggies project \u2014 Non-Disney Add Ons SPA/API/VA for Rental Car, Shuttle, Travel Protection, Area Attractions (WDW/DLR/AUL)",
+  "team": "Studio Star Lord \u2014 Veggies",
   "jira_prefix": "ROS-",
   "jira_board_url": "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10955",
   "default_agent": "orchestrator",
@@ -12,19 +12,22 @@
       "name": "wdpr-non-disney-addons-spa",
       "repo": "wdprd-development/wdpr-non-disney-addons-spa",
       "path": "wdpr-non-disney-addons-spa",
-      "memory_bank": "wdpr-non-disney-addons-spa"
+      "memory_bank": "wdpr-non-disney-addons-spa",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-non-disney-addons-api",
       "repo": "wdprd-development/wdpr-non-disney-addons-api",
       "path": "wdpr-non-disney-addons-api",
-      "memory_bank": "wdpr-non-disney-addons-api"
+      "memory_bank": "wdpr-non-disney-addons-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-non-disney-addons-va",
       "repo": "wdprt-paap-api/wdpr-non-disney-addons-va",
       "path": "wdpr-non-disney-addons-va",
-      "memory_bank": "wdpr-non-disney-addons-va"
+      "memory_bank": "wdpr-non-disney-addons-va",
+      "host": "github.disney.com"
     }
   ]
 }

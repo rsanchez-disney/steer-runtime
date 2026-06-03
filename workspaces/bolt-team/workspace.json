@@ -15,31 +15,36 @@
       "name": "wdprt-bolt-admin-spa",
       "path": "../wdprt-bolt-admin-spa",
       "memory_bank": "wdprt-bolt-admin-spa",
-      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-spa"
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-spa",
+      "host": "github.disney.com"
     },
     {
       "name": "wdprt-bolt-admin-wam",
       "path": "../wdprt-bolt-admin-wam",
       "memory_bank": "wdprt-bolt-admin-wam",
-      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-wam"
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-admin-wam",
+      "host": "github.disney.com"
     },
     {
       "name": "wdprt-bolt-service",
       "path": "../wdprt-bolt-service",
       "memory_bank": "wdprt-bolt-service",
-      "repo": "WDPR-Resort-Sales/wdprt-bolt-service"
+      "repo": "WDPR-Resort-Sales/wdprt-bolt-service",
+      "host": "github.disney.com"
     },
     {
       "name": "bolt-admin",
       "path": "../bolt-admin",
       "memory_bank": "bolt-admin",
-      "repo": "WDPR-Resort-Sales/bolt-admin"
+      "repo": "WDPR-Resort-Sales/bolt-admin",
+      "host": "github.disney.com"
     },
     {
       "name": "bolt-docs",
       "path": "../docs",
       "memory_bank": "bolt-docs",
-      "repo": "WDPR-Resort-Sales/bolt-docs"
+      "repo": "WDPR-Resort-Sales/bolt-docs",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

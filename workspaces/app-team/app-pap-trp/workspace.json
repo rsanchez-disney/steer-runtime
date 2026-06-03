@@ -9,27 +9,32 @@
     {
       "name": "wdpr-payment-controls-client",
       "path": "wdpr-payment-controls-client",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-controls-api",
       "path": "wdpr-payment-controls-api",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-services",
       "path": "wdpr-payment-services",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-services"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-services",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-inquiry-service",
       "path": "wdpr-app-inquiry-service",
-      "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service"
+      "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service",
+      "host": "github.disney.com"
     },
     {
       "name": "dpay-admin-inquiry-webapi",
       "path": "dpay-admin-inquiry-webapi",
-      "repo": "Nutech/dpay-admin-inquiry-webapi"
+      "repo": "Nutech/dpay-admin-inquiry-webapi",
+      "host": "github.disney.com"
     }
   ],
   "default_agent": "orchestrator"

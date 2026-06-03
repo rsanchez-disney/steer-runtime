@@ -15,37 +15,44 @@
     {
       "name": "wdpr-content-search-api",
       "path": "wdpr-content-search-api",
-      "repo": "StudioRaya/wdpr-content-search-api"
+      "repo": "StudioRaya/wdpr-content-search-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-content-search-webapi",
       "path": "wdpr-content-search-webapi",
-      "repo": "StudioRaya/wdpr-content-search-webapi"
+      "repo": "StudioRaya/wdpr-content-search-webapi",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-content-search-indexing-svc",
       "path": "wdpr-content-search-indexing-svc",
-      "repo": "StudioRaya/wdpr-content-search-indexing-svc"
+      "repo": "StudioRaya/wdpr-content-search-indexing-svc",
+      "host": "github.disney.com"
     },
     {
       "name": "Elastic",
       "path": "Elastic",
-      "repo": "StudioRaya/Elastic"
+      "repo": "StudioRaya/Elastic",
+      "host": "github.disney.com"
     },
     {
       "name": "spring-batch-app",
       "path": "spring-batch-app",
-      "repo": "StudioRaya/spring-batch-app"
+      "repo": "StudioRaya/spring-batch-app",
+      "host": "github.disney.com"
     },
     {
       "name": "ApacheNutch",
       "path": "ApacheNutch",
-      "repo": "StudioRaya/ApacheNutch"
+      "repo": "StudioRaya/ApacheNutch",
+      "host": "github.disney.com"
     },
     {
       "name": "PE_Scripts",
       "path": "PE_Scripts",
-      "repo": "PE/PE_Scripts"
+      "repo": "PE/PE_Scripts",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

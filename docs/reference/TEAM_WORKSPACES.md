@@ -82,7 +82,8 @@ workspaces/
   "projects": [
     {
       "name": "opsheet-plus-vas",
-      "repo": "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-plus-vas",
+      "repo": "wdpr-parkops-opsheet-suite/opsheet-plus-vas",
+      "host": "github.disney.com",
       "path": "../opsheet-plus-vas",
       "memory_bank": "opsheet-plus-vas"
     }
@@ -106,6 +107,39 @@ workspaces/
 | `enable_tools`   | boolean  | Enable thinking, todo, knowledge                           |
 | `jira_prefix`    | string   | Team's Jira project prefix                                 |
 | `workspace_path` | string   | Base path for project repos                                |
+
+---
+
+## Project Entry Schema
+
+Each entry in `projects` describes a repository:
+
+| Field         | Type   | Description                                                                 |
+|---------------|--------|-----------------------------------------------------------------------------|
+| `name`        | string | Project display name                                                        |
+| `path`        | string | Directory name (relative to `workspace_path`)                               |
+| `repo`        | string | Repository path — `org/repo` format (no host prefix)                        |
+| `host`        | string | Git host — `github.disney.com` (default) or `gitlab.disney.com`             |
+| `memory_bank` | string | Memory bank template name (optional, defaults to project name)              |
+
+### Host routing
+
+The `host` field determines which platform Koda uses for clone URLs and which MCP tools agents use for PRs/MRs:
+
+| `host` value | Clone URL | Agent tools |
+|---|---|---|
+| `github.disney.com` (or omitted) | `git@github.disney.com:org/repo.git` | `@github/*`, `gh` CLI |
+| `gitlab.disney.com` | `git@gitlab.disney.com:org/repo.git` | `@gitlab/*` |
+
+### Examples
+
+```json
+// GitHub repo (default)
+{ "name": "my-service", "path": "my-service", "repo": "MyOrg/my-service", "host": "github.disney.com" }
+
+// GitLab repo
+{ "name": "my-spa", "path": "my-spa", "repo": "cgs-wdw/myapp/my-spa", "host": "gitlab.disney.com" }
+```
 
 ---
 
@@ -209,12 +243,12 @@ When `workspace_path` is set on a workspace (or inherited from a parent), projec
 {
   "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
   "projects": [
-    { "name": "wdpr-config-services", "path": "wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services" }
+    { "name": "wdpr-config-services", "path": "wdpr-config-services", "repo": "DisneyPaymentsOrg/wdpr-config-services", "host": "github.disney.com" }
   ]
 }
 ```
 
-Koda resolves this to `~/Workspace/Disney/DisneyPaymentsOrg/wdpr-config-services`. The `repo` field enables auto-cloning when the directory doesn't exist.
+Koda resolves this to `~/Workspace/Disney/DisneyPaymentsOrg/wdpr-config-services`. The `repo` and `host` fields enable auto-cloning when the directory doesn't exist.
 
 ### Environment Variables in `workspace_path`
 

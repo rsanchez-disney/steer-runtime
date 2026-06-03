@@ -9,37 +9,44 @@
     {
       "name": "wdpr-payments-ref",
       "path": "wdpr-payments-ref",
-      "repo": "DisneyPaymentsOrg/wdpr-payments-ref"
+      "repo": "DisneyPaymentsOrg/wdpr-payments-ref",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payments-model",
       "path": "wdpr-payments-model",
-      "repo": "DisneyPaymentsOrg/wdpr-payments-model"
+      "repo": "DisneyPaymentsOrg/wdpr-payments-model",
+      "host": "github.disney.com"
     },
     {
       "name": "app-common-keystore",
       "path": "app-common-keystore",
-      "repo": "DisneyPaymentsOrg/app-common-keystore"
+      "repo": "DisneyPaymentsOrg/app-common-keystore",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-crypto-key-mgmt",
       "path": "wdpr-app-crypto-key-mgmt",
-      "repo": "DisneyPaymentsOrg/wdpr-app-crypto-key-mgmt"
+      "repo": "DisneyPaymentsOrg/wdpr-app-crypto-key-mgmt",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-admin-service",
       "path": "wdpr-app-admin-service",
-      "repo": "DisneyPaymentsOrg/wdpr-app-admin-service"
+      "repo": "DisneyPaymentsOrg/wdpr-app-admin-service",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-payment-stream-handler",
       "path": "wdpr-app-payment-stream-handler",
-      "repo": "DisneyPaymentsOrg/wdpr-app-payment-stream-handler"
+      "repo": "DisneyPaymentsOrg/wdpr-app-payment-stream-handler",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-payment-event-handler",
       "path": "wdpr-app-payment-event-handler",
-      "repo": "DisneyPaymentsOrg/wdpr-app-payment-event-handler"
+      "repo": "DisneyPaymentsOrg/wdpr-app-payment-event-handler",
+      "host": "github.disney.com"
     }
   ],
   "default_agent": "orchestrator"

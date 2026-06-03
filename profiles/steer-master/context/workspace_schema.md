@@ -13,7 +13,7 @@
 | Field | Type | Description |
 |---|---|---|
 | `extends` | string | Parent workspace name for inheritance |
-| `projects` | object[] | Repository entries (`name`, `path`, `repo`, `memory_bank`) |
+| `projects` | object[] | Repository entries (`name`, `path`, `repo`, `host`, `memory_bank`) |
 | `rules` | string[] | Rule file names from `common/rules/` |
 | `enable_tools` | boolean | Enable thinking, todo, knowledge tools |
 | `jira_prefix` | string \| string[] | Jira project prefix(es). Single string (e.g., `"DPAY-"`) or array for multi-prefix teams (e.g., `["AEXP-", "IEXP-", "COREEXP-"]`) |

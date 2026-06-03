@@ -1,27 +1,33 @@
 {
   "name": "txp-team",
-  "description": "TxP Team — Stencil web components for Disney vacation packages (quick quote, lodging, RA component library)",
+  "description": "TxP Team \u2014 Stencil web components for Disney vacation packages (quick quote, lodging, RA component library)",
   "team": "TxP Web Components",
-  "profiles": ["dev-core", "dev-web"],
+  "profiles": [
+    "dev-core",
+    "dev-web"
+  ],
   "default_agent": "orchestrator",
   "projects": [
     {
       "name": "wdpr-quick-quote",
-      "repo": "github.disney.com/wdprd-development/wdpr-quick-quote",
+      "repo": "wdprd-development/wdpr-quick-quote",
       "path": "wdpr-quick-quote",
-      "memory_bank": "wdpr-quick-quote"
+      "memory_bank": "wdpr-quick-quote",
+      "host": "github.disney.com"
     },
     {
       "name": "lodging-quick-quote",
-      "repo": "github.disney.com/wdprd-development/lodging-quick-quote",
+      "repo": "wdprd-development/lodging-quick-quote",
       "path": "lodging-quick-quote",
-      "memory_bank": "lodging-quick-quote"
+      "memory_bank": "lodging-quick-quote",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-ra-web-components",
-      "repo": "github.disney.com/WDPR-RA-UI-Components/wdpr-ra-web-components",
+      "repo": "WDPR-RA-UI-Components/wdpr-ra-web-components",
       "path": "wdpr-ra-web-components",
-      "memory_bank": "wdpr-ra-web-components"
+      "memory_bank": "wdpr-ra-web-components",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

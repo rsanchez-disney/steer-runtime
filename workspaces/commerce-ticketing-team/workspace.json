@@ -12,7 +12,8 @@
       "name": "steer-ticketing-checkout-kb",
       "path": "../steer-ticketing-checkout-kb",
       "repo": "WDPR-COMMERCE/steer-ticketing-checkout-kb",
-      "memory_bank": "steer-ticketing-checkout-kb"
+      "memory_bank": "steer-ticketing-checkout-kb",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

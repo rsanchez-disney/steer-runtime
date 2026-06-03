@@ -12,9 +12,10 @@
   "projects": [
     {
       "name": "opsheet-plus-vas",
-      "repo": "github.disney.com/wdpr-parkops-opsheet-suite/opsheet-plus-vas",
+      "repo": "wdpr-parkops-opsheet-suite/opsheet-plus-vas",
       "path": "../opsheet-plus-vas",
-      "memory_bank": "opsheet-plus-vas"
+      "memory_bank": "opsheet-plus-vas",
+      "host": "github.disney.com"
     }
   ],
   "rules": [

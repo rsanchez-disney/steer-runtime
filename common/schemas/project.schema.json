@@ -55,6 +55,14 @@
             "repo": { "type": "string", "description": "Repository name" }
           },
           "additionalProperties": false
+        },
+        "gitlab": {
+          "type": "object",
+          "properties": {
+            "host": { "type": "string", "description": "GitLab hostname (e.g., gitlab.disney.com)", "default": "gitlab.disney.com" },
+            "project": { "type": "string", "description": "Full project path (e.g., cgs-wdw/arrwui/arrwui-spa)" }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

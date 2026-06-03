@@ -9,37 +9,44 @@
     {
       "name": "wdpr-gcp-dgc",
       "path": "wdpr-gcp-dgc",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-dgc"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-dgc",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-gcp-admin",
       "path": "wdpr-gcp-admin",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-gcp-admin-api",
       "path": "wdpr-gcp-admin-api",
-      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api"
+      "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-admin-services",
       "path": "gcp-admin-services",
-      "repo": "DisneyPaymentsOrg/gcp-admin-services"
+      "repo": "DisneyPaymentsOrg/gcp-admin-services",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-batch",
       "path": "gcp-batch",
-      "repo": "DisneyPaymentsOrg/gcp-batch"
+      "repo": "DisneyPaymentsOrg/gcp-batch",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-guest-services",
       "path": "gcp-guest-services",
-      "repo": "DisneyPaymentsOrg/gcp-guest-services"
+      "repo": "DisneyPaymentsOrg/gcp-guest-services",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-common-components",
       "path": "gcp-common-components",
-      "repo": "DisneyPaymentsOrg/gcp-common-components"
+      "repo": "DisneyPaymentsOrg/gcp-common-components",
+      "host": "github.disney.com"
     }
   ],
   "default_agent": "orchestrator"

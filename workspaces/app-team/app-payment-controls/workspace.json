@@ -11,67 +11,78 @@
       "name": "wdpr-payment-controls-client",
       "path": "wdpr-payment-controls-client",
       "repo": "DisneyPaymentsOrg/wdpr-payment-controls-client",
-      "memory_bank": "wdpr-payment-controls-client"
+      "memory_bank": "wdpr-payment-controls-client",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-controls-api",
       "path": "wdpr-payment-controls-api",
       "repo": "DisneyPaymentsOrg/wdpr-payment-controls-api",
-      "memory_bank": "wdpr-payment-controls-api"
+      "memory_bank": "wdpr-payment-controls-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-config-services",
       "path": "wdpr-config-services",
       "repo": "DisneyPaymentsOrg/wdpr-config-services",
-      "memory_bank": "wdpr-config-services"
+      "memory_bank": "wdpr-config-services",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-gcp-admin-api",
       "path": "wdpr-gcp-admin-api",
       "repo": "DisneyPaymentsOrg/wdpr-gcp-admin-api",
-      "memory_bank": "wdpr-gcp-admin-api"
+      "memory_bank": "wdpr-gcp-admin-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-gcp-admin",
       "path": "wdpr-gcp-admin",
       "repo": "DisneyPaymentsOrg/wdpr-gcp-admin",
-      "memory_bank": "wdpr-gcp-admin"
+      "memory_bank": "wdpr-gcp-admin",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-guest-services",
       "path": "gcp-guest-services",
       "repo": "DisneyPaymentsOrg/gcp-guest-services",
-      "memory_bank": "gcp-guest-services"
+      "memory_bank": "gcp-guest-services",
+      "host": "github.disney.com"
     },
     {
       "name": "gcp-common-components",
       "path": "gcp-common-components",
       "repo": "DisneyPaymentsOrg/gcp-common-components",
-      "memory_bank": "gcp-common-components"
+      "memory_bank": "gcp-common-components",
+      "host": "github.disney.com"
     },
     {
       "name": "dpay-admin-inquiry-ui-client",
       "path": "dpay-admin-inquiry-ui-client",
       "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-ui-client",
-      "memory_bank": "dpay-admin-inquiry-ui-client"
+      "memory_bank": "dpay-admin-inquiry-ui-client",
+      "host": "github.disney.com"
     },
     {
       "name": "dpay-admin-inquiry-webapi",
       "path": "dpay-admin-inquiry-webapi",
       "repo": "DisneyPaymentsOrg/dpay-admin-inquiry-webapi",
-      "memory_bank": "dpay-admin-inquiry-webapi"
+      "memory_bank": "dpay-admin-inquiry-webapi",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-app-inquiry-service",
       "path": "wdpr-app-inquiry-service",
       "repo": "DisneyPaymentsOrg/wdpr-app-inquiry-service",
-      "memory_bank": "wdpr-app-inquiry-service"
+      "memory_bank": "wdpr-app-inquiry-service",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payments-ref",
       "path": "wdpr-payments-ref",
       "repo": "DisneyPaymentsOrg/wdpr-payments-ref",
-      "memory_bank": "wdpr-payments-ref"
+      "memory_bank": "wdpr-payments-ref",
+      "host": "github.disney.com"
     }
   ],
   "default_agent": "orchestrator",

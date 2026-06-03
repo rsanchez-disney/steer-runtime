@@ -39,85 +39,99 @@
       "name": "Dynamic-Pricing-Engine-Service",
       "path": "Dynamic-Pricing-Engine-Service",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-Service",
-      "memory_bank": "dpe-calculator"
+      "memory_bank": "dpe-calculator",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-DataService",
       "path": "Dynamic-Pricing-Engine-DataService",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-DataService",
-      "memory_bank": "dpe-dataservice"
+      "memory_bank": "dpe-dataservice",
+      "host": "github.disney.com"
     },
     {
       "name": "dpe-cache-service",
       "path": "dpe-cache-service",
       "repo": "WDPR-SPS/dpe-cache-service",
-      "memory_bank": "dpe-cache"
+      "memory_bank": "dpe-cache",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-Admin-UI",
       "path": "Dynamic-Pricing-Engine-Admin-UI",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-Admin-UI",
-      "memory_bank": "dpe-admin-ui"
+      "memory_bank": "dpe-admin-ui",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-Impact-Analysis-Java",
       "path": "Dynamic-Pricing-Engine-Impact-Analysis-Java",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-Impact-Analysis-Java",
-      "memory_bank": "dpe-impact-analysis"
+      "memory_bank": "dpe-impact-analysis",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-Product-Adapter",
       "path": "Dynamic-Pricing-Engine-Product-Adapter",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-Product-Adapter",
-      "memory_bank": "dpe-product-adapter"
+      "memory_bank": "dpe-product-adapter",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-CurrencyService",
       "path": "Dynamic-Pricing-Engine-CurrencyService",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-CurrencyService",
-      "memory_bank": "dpe-currency"
+      "memory_bank": "dpe-currency",
+      "host": "github.disney.com"
     },
     {
       "name": "Dynamic-Pricing-Engine-Price-Factor-Change-Broker",
       "path": "Dynamic-Pricing-Engine-Price-Factor-Change-Broker",
       "repo": "WDPR-SPS/Dynamic-Pricing-Engine-Price-Factor-Change-Broker",
-      "memory_bank": "dpe-pfcb"
+      "memory_bank": "dpe-pfcb",
+      "host": "github.disney.com"
     },
     {
       "name": "Product-Price-Promotion-Service",
       "path": "Product-Price-Promotion-Service",
       "repo": "WDPR-SPS/Product-Price-Promotion-Service",
-      "memory_bank": "dpe-promotion"
+      "memory_bank": "dpe-promotion",
+      "host": "github.disney.com"
     },
     {
       "name": "Product-Price-Promotion-UI",
       "path": "Product-Price-Promotion-UI",
       "repo": "WDPR-SPS/Product-Price-Promotion-UI",
-      "memory_bank": "dpe-promotion-ui"
+      "memory_bank": "dpe-promotion-ui",
+      "host": "github.disney.com"
     },
     {
       "name": "pricing-shared",
       "path": "pricing-shared",
       "repo": "WDPR-SPS/pricing-shared",
-      "memory_bank": "dpe-pricing-shared"
+      "memory_bank": "dpe-pricing-shared",
+      "host": "github.disney.com"
     },
     {
       "name": "Event-Service",
       "path": "Event-Service",
       "repo": "WDPR-SPS/Event-Service",
-      "memory_bank": "dpe-event-service"
+      "memory_bank": "dpe-event-service",
+      "host": "github.disney.com"
     },
     {
       "name": "wdw-publishing",
       "path": "wdw-publishing",
       "repo": "WDPR-SPS/wdw-publishing",
-      "memory_bank": "dpe-wdw-publishing"
+      "memory_bank": "dpe-wdw-publishing",
+      "host": "github.disney.com"
     },
     {
       "name": "dpe-monorepo",
       "path": "dpe-monorepo",
       "repo": "WDPR-SPS/dpe-monorepo",
-      "memory_bank": "dpe-monorepo"
+      "memory_bank": "dpe-monorepo",
+      "host": "github.disney.com"
     }
   ],
   "jira_prefix": "PPODPE-",

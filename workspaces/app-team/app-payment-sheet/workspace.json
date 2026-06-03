@@ -9,22 +9,26 @@
     {
       "name": "wdpr-payment-sheet",
       "path": "wdpr-payment-sheet",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-sheet"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-sheet",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-sheet-api",
       "path": "wdpr-payment-sheet-api",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-sheet-api"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-sheet-api",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-session",
       "path": "wdpr-payment-session",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-session"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-session",
+      "host": "github.disney.com"
     },
     {
       "name": "wdpr-payment-services",
       "path": "wdpr-payment-services",
-      "repo": "DisneyPaymentsOrg/wdpr-payment-services"
+      "repo": "DisneyPaymentsOrg/wdpr-payment-services",
+      "host": "github.disney.com"
     }
   ],
   "default_agent": "orchestrator"

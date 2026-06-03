@@ -1,16 +1,30 @@
 {
   "name": "dge-team",
-  "description": "DGE (Digital Guest Experience) — DLP Guest & Operations services for attractions, shows, virtual queues, tickets, and wallet",
+  "description": "DGE (Digital Guest Experience) \u2014 DLP Guest & Operations services for attractions, shows, virtual queues, tickets, and wallet",
   "team": "DGE Team",
-  "profiles": ["dev-core", "dev-web", "qa", "ops", "sustainment"],
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "qa",
+    "ops",
+    "sustainment"
+  ],
   "default_agent": "orchestrator",
-  "rules": ["conventional_commit", "general-java-development"],
+  "rules": [
+    "conventional_commit",
+    "general-java-development"
+  ],
   "enable_tools": true,
   "jira_prefix": "APP-",
   "jira_instance": "jira",
   "jira_cloud": {
     "url": "https://dxtdlp.atlassian.net",
-    "projects": ["DST", "DS", "ECO", "APP"],
+    "projects": [
+      "DST",
+      "DS",
+      "ECO",
+      "APP"
+    ],
     "board": 156
   },
   "harness": {
@@ -24,40 +38,46 @@
       "path": "wdpr-dlp-is-operations-pea-attraction-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-operations-pea-attraction-provider",
       "alias": "DPAO",
-      "description": "Premier Entry Access — Attraction provider (DPA operations)"
+      "description": "Premier Entry Access \u2014 Attraction provider (DPA operations)",
+      "host": "github.disney.com"
     },
     {
       "name": "dpa-all-access-show-provider",
       "path": "wdpr-dlp-is-operations-dpa-all-access-show-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-operations-dpa-all-access-show-provider",
       "alias": "DPAU",
-      "description": "DPA All Access — Show provider (operations)"
+      "description": "DPA All Access \u2014 Show provider (operations)",
+      "host": "github.disney.com"
     },
     {
       "name": "virtual-queue-provider",
       "path": "wdpr-dlp-is-operations-virtual-queue-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-operations-virtual-queue-provider",
       "alias": "VQ",
-      "description": "Virtual Queue — Operations provider"
+      "description": "Virtual Queue \u2014 Operations provider",
+      "host": "github.disney.com"
     },
     {
       "name": "tms-ticket-management-service-provider",
       "path": "wdpr-dlp-is-guest-tms-ticket-management-service-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-guest-tms-ticket-management-service-provider",
       "alias": "TMS",
-      "description": "Ticket Management Service — Guest ticket operations"
+      "description": "Ticket Management Service \u2014 Guest ticket operations",
+      "host": "github.disney.com"
     },
     {
       "name": "wallet-server-proxy-provider",
       "path": "wdpr-dlp-is-guest-wallet-server-proxy-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider",
-      "description": "Wallet Server Proxy — Guest wallet operations"
+      "description": "Wallet Server Proxy \u2014 Guest wallet operations",
+      "host": "github.disney.com"
     },
     {
       "name": "tms-tickets-linking-provider",
       "path": "wdpr-dlp-is-guest-tms-tickets-linking-provider",
       "repo": "WDPR-DLP-IS/wdpr-dlp-is-guest-tms-tickets-linking-provider",
-      "description": "TMS Tickets Linking — Guest ticket linking operations"
+      "description": "TMS Tickets Linking \u2014 Guest ticket linking operations",
+      "host": "github.disney.com"
     }
   ]
 }
