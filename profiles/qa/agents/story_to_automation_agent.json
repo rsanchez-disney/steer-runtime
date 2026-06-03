@@ -1,7 +1,6 @@
 {
   "name": "story_to_automation_agent",
   "description": "Takes user stories, suggests test cases, creates in Jira, assesses readiness, generates .feature files",
-  "prompt": "story_to_automation_agent.md",
   "tools": [
     "@jira/*",
     "@xray/*",
@@ -31,11 +30,11 @@
     "grep"
   ],
   "resources": [
-    "file://.kiro/prompts/story_to_automation_agent.md",
-    "file://.kiro/context/test_creation_logic.md",
-    "file://.kiro/context/readiness_assessment.md",
-    "file://.kiro/context/repo_scanning_instructions.md",
-    "file://.kiro/context/feature_generation_guidelines.md"
+    "file://profiles/qa/prompts/story_to_automation_agent.md",
+    "file://profiles/qa/context/test_creation_logic.md",
+    "file://profiles/qa/context/readiness_assessment.md",
+    "file://profiles/qa/context/repo_scanning_instructions.md",
+    "file://profiles/qa/context/feature_generation_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [
