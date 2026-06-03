@@ -1,1 +1,401 @@
-{"taxonomy_version":"1.0.0","categories":[{"id":"mobile","name":"Mobile Development","skills":[{"id":"ios-swift","name":"iOS (Swift)","tags":["mobile","native","apple"]},{"id":"android-kotlin","name":"Android (Kotlin)","tags":["mobile","native","google"]},{"id":"android-java","name":"Android (Java)","tags":["mobile","native","legacy"]},{"id":"flutter","name":"Flutter (Dart)","tags":["mobile","cross-platform"]},{"id":"platform-channels","name":"Platform Channels","tags":["mobile","bridge","native"]}]},{"id":"web","name":"Web Development","skills":[{"id":"angular","name":"Angular","tags":["web","frontend","typescript"]},{"id":"typescript","name":"TypeScript","tags":["web","language"]},{"id":"web-components","name":"Web Components","tags":["web","reusable"]},{"id":"scss","name":"SCSS/CSS","tags":["web","styling"]},{"id":"accessibility","name":"Web Accessibility (WCAG)","tags":["web","a11y"]}]},{"id":"backend","name":"Backend / Services","skills":[{"id":"java","name":"Java","tags":["backend","jvm"]},{"id":"spring-boot","name":"Spring Boot","tags":["backend","framework"]},{"id":"rest-api","name":"REST API Design","tags":["backend","api"]},{"id":"graphql","name":"GraphQL","tags":["backend","api"]},{"id":"couchbase","name":"Couchbase","tags":["backend","database","nosql"]},{"id":"dynamodb","name":"DynamoDB","tags":["backend","database","aws"]}]},{"id":"devops","name":"DevOps & Infrastructure","skills":[{"id":"jenkins","name":"Jenkins CI/CD","tags":["devops","ci-cd"]},{"id":"docker","name":"Docker","tags":["devops","containers"]},{"id":"aws","name":"AWS Services","tags":["devops","cloud"]},{"id":"newrelic","name":"NewRelic","tags":["devops","monitoring"]},{"id":"sonarqube","name":"SonarQube","tags":["devops","quality"]}]},{"id":"testing","name":"Testing & QA","skills":[{"id":"test-automation","name":"Test Automation","tags":["testing","automation"]},{"id":"appium","name":"Appium","tags":["testing","mobile"]},{"id":"espresso","name":"Espresso","tags":["testing","android"]},{"id":"xcuitest","name":"XCUITest","tags":["testing","ios"]},{"id":"performance-testing","name":"Performance Testing","tags":["testing","performance"]}]},{"id":"delivery","name":"Delivery & Management","skills":[{"id":"project-management","name":"Project Management","tags":["delivery","pm"]},{"id":"scrum","name":"Scrum / Agile","tags":["delivery","methodology"]},{"id":"stakeholder-mgmt","name":"Stakeholder Management","tags":["delivery","communication"]},{"id":"capacity-planning","name":"Capacity Planning","tags":["delivery","operations"]},{"id":"release-management","name":"Release Management","tags":["delivery","mobile"]}]}],"skill_to_domain_mapping":{"ios-swift":["Mobile Parks Apps","Shield","Connected Products"],"android-kotlin":["Mobile Parks Apps","Shield"],"android-java":["Mobile Parks Apps","Shield"],"flutter":["Mobile Parks Apps","GAC/Profile"],"angular":["Web Global Components","GAC/Profile"],"typescript":["Web Global Components","GAC/Profile"],"java":["Finders","Connected Products","GAC/Profile"],"spring-boot":["Finders","Connected Products","GAC/Profile"],"couchbase":["Mobile Parks Apps","Finders"],"jenkins":["Mobile Parks Apps","Web Global Components","Finders"],"newrelic":["Mobile Parks Apps","Shield"],"test-automation":["Mobile Parks Apps"],"release-management":["Mobile Parks Apps","Shield"]},"skill_to_pod_mapping":{"ios-swift":["Shield iOS","Mobile Parks Apps"],"android-kotlin":["Shield Magios","Mobile Parks Apps"],"flutter":["Mobile Parks Apps","Profile Mobile"],"angular":["Web Global Comp","Profile Web"],"java":["Finders","Connected Products","Profile Services"],"test-automation":["Mobile Parks Apps"]},"automation_opportunities":{"reporting":["Jira MCP for sprint metrics","Defect trend reports","Capacity dashboards"],"governance":["PR review automation","SonarQube gate enforcement","Jira hygiene checks"],"operations":["Release readiness checks","Crash rate monitoring alerts","Dependency update tracking"],"delivery":["Sprint burndown generation","Standup summaries","Cross-team dependency alerts"]}}
+{
+  "taxonomy_version": "1.0.0",
+  "categories": [
+    {
+      "id": "mobile",
+      "name": "Mobile Development",
+      "skills": [
+        {
+          "id": "ios-swift",
+          "name": "iOS (Swift)",
+          "tags": [
+            "mobile",
+            "native",
+            "apple"
+          ]
+        },
+        {
+          "id": "android-kotlin",
+          "name": "Android (Kotlin)",
+          "tags": [
+            "mobile",
+            "native",
+            "google"
+          ]
+        },
+        {
+          "id": "android-java",
+          "name": "Android (Java)",
+          "tags": [
+            "mobile",
+            "native",
+            "legacy"
+          ]
+        },
+        {
+          "id": "flutter",
+          "name": "Flutter (Dart)",
+          "tags": [
+            "mobile",
+            "cross-platform"
+          ]
+        },
+        {
+          "id": "platform-channels",
+          "name": "Platform Channels",
+          "tags": [
+            "mobile",
+            "bridge",
+            "native"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "name": "Web Development",
+      "skills": [
+        {
+          "id": "angular",
+          "name": "Angular",
+          "tags": [
+            "web",
+            "frontend",
+            "typescript"
+          ]
+        },
+        {
+          "id": "typescript",
+          "name": "TypeScript",
+          "tags": [
+            "web",
+            "language"
+          ]
+        },
+        {
+          "id": "web-components",
+          "name": "Web Components",
+          "tags": [
+            "web",
+            "reusable"
+          ]
+        },
+        {
+          "id": "scss",
+          "name": "SCSS/CSS",
+          "tags": [
+            "web",
+            "styling"
+          ]
+        },
+        {
+          "id": "accessibility",
+          "name": "Web Accessibility (WCAG)",
+          "tags": [
+            "web",
+            "a11y"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "backend",
+      "name": "Backend / Services",
+      "skills": [
+        {
+          "id": "java",
+          "name": "Java",
+          "tags": [
+            "backend",
+            "jvm"
+          ]
+        },
+        {
+          "id": "spring-boot",
+          "name": "Spring Boot",
+          "tags": [
+            "backend",
+            "framework"
+          ]
+        },
+        {
+          "id": "rest-api",
+          "name": "REST API Design",
+          "tags": [
+            "backend",
+            "api"
+          ]
+        },
+        {
+          "id": "graphql",
+          "name": "GraphQL",
+          "tags": [
+            "backend",
+            "api"
+          ]
+        },
+        {
+          "id": "couchbase",
+          "name": "Couchbase",
+          "tags": [
+            "backend",
+            "database",
+            "nosql"
+          ]
+        },
+        {
+          "id": "dynamodb",
+          "name": "DynamoDB",
+          "tags": [
+            "backend",
+            "database",
+            "aws"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Infrastructure",
+      "skills": [
+        {
+          "id": "jenkins",
+          "name": "Jenkins CI/CD",
+          "tags": [
+            "devops",
+            "ci-cd"
+          ]
+        },
+        {
+          "id": "docker",
+          "name": "Docker",
+          "tags": [
+            "devops",
+            "containers"
+          ]
+        },
+        {
+          "id": "aws",
+          "name": "AWS Services",
+          "tags": [
+            "devops",
+            "cloud"
+          ]
+        },
+        {
+          "id": "newrelic",
+          "name": "NewRelic",
+          "tags": [
+            "devops",
+            "monitoring"
+          ]
+        },
+        {
+          "id": "sonarqube",
+          "name": "SonarQube",
+          "tags": [
+            "devops",
+            "quality"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Testing & QA",
+      "skills": [
+        {
+          "id": "test-automation",
+          "name": "Test Automation",
+          "tags": [
+            "testing",
+            "automation"
+          ]
+        },
+        {
+          "id": "appium",
+          "name": "Appium",
+          "tags": [
+            "testing",
+            "mobile"
+          ]
+        },
+        {
+          "id": "espresso",
+          "name": "Espresso",
+          "tags": [
+            "testing",
+            "android"
+          ]
+        },
+        {
+          "id": "xcuitest",
+          "name": "XCUITest",
+          "tags": [
+            "testing",
+            "ios"
+          ]
+        },
+        {
+          "id": "performance-testing",
+          "name": "Performance Testing",
+          "tags": [
+            "testing",
+            "performance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery & Management",
+      "skills": [
+        {
+          "id": "project-management",
+          "name": "Project Management",
+          "tags": [
+            "delivery",
+            "pm"
+          ]
+        },
+        {
+          "id": "scrum",
+          "name": "Scrum / Agile",
+          "tags": [
+            "delivery",
+            "methodology"
+          ]
+        },
+        {
+          "id": "stakeholder-mgmt",
+          "name": "Stakeholder Management",
+          "tags": [
+            "delivery",
+            "communication"
+          ]
+        },
+        {
+          "id": "capacity-planning",
+          "name": "Capacity Planning",
+          "tags": [
+            "delivery",
+            "operations"
+          ]
+        },
+        {
+          "id": "release-management",
+          "name": "Release Management",
+          "tags": [
+            "delivery",
+            "mobile"
+          ]
+        }
+      ]
+    }
+  ],
+  "skill_to_domain_mapping": {
+    "ios-swift": [
+      "Mobile Parks Apps",
+      "Shield",
+      "Connected Products"
+    ],
+    "android-kotlin": [
+      "Mobile Parks Apps",
+      "Shield"
+    ],
+    "android-java": [
+      "Mobile Parks Apps",
+      "Shield"
+    ],
+    "flutter": [
+      "Mobile Parks Apps",
+      "GAC/Profile"
+    ],
+    "angular": [
+      "Web Global Components",
+      "GAC/Profile"
+    ],
+    "typescript": [
+      "Web Global Components",
+      "GAC/Profile"
+    ],
+    "java": [
+      "Finders",
+      "Connected Products",
+      "GAC/Profile"
+    ],
+    "spring-boot": [
+      "Finders",
+      "Connected Products",
+      "GAC/Profile"
+    ],
+    "couchbase": [
+      "Mobile Parks Apps",
+      "Finders"
+    ],
+    "jenkins": [
+      "Mobile Parks Apps",
+      "Web Global Components",
+      "Finders"
+    ],
+    "newrelic": [
+      "Mobile Parks Apps",
+      "Shield"
+    ],
+    "test-automation": [
+      "Mobile Parks Apps"
+    ],
+    "release-management": [
+      "Mobile Parks Apps",
+      "Shield"
+    ]
+  },
+  "skill_to_pod_mapping": {
+    "ios-swift": [
+      "Shield iOS",
+      "Mobile Parks Apps"
+    ],
+    "android-kotlin": [
+      "Shield Magios",
+      "Mobile Parks Apps"
+    ],
+    "flutter": [
+      "Mobile Parks Apps",
+      "Profile Mobile"
+    ],
+    "angular": [
+      "Web Global Comp",
+      "Profile Web"
+    ],
+    "java": [
+      "Finders",
+      "Connected Products",
+      "Profile Services"
+    ],
+    "test-automation": [
+      "Mobile Parks Apps"
+    ]
+  },
+  "automation_opportunities": {
+    "reporting": [
+      "Jira MCP for sprint metrics",
+      "Defect trend reports",
+      "Capacity dashboards"
+    ],
+    "governance": [
+      "PR review automation",
+      "SonarQube gate enforcement",
+      "Jira hygiene checks"
+    ],
+    "operations": [
+      "Release readiness checks",
+      "Crash rate monitoring alerts",
+      "Dependency update tracking"
+    ],
+    "delivery": [
+      "Sprint burndown generation",
+      "Standup summaries",
+      "Cross-team dependency alerts"
+    ]
+  }
+}
