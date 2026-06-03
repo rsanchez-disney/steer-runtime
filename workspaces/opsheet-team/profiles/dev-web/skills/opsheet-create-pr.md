@@ -5,13 +5,13 @@ description: Create a GitHub PR for the current branch with the OpSheet team tem
 
 # Skill: Create PR (OpSheet Web)
 
-Use this skill when the user says "make a PR", "create a PR", or similar. It gathers context from the branch, diff, and tests, fills in the team PR template, and creates the PR via `gh`.
+Use this skill when the user says "make a PR", "create a PR", or similar. It gathers context from the branch, diff, and push results, fills in the team PR template, and creates the PR via `gh`.
 
 ## Prerequisites
 
 - GitHub CLI (`gh`) authenticated
 - On a feature/fix branch (not `main`)
-- Changes committed and pushed (or ready to push)
+- Changes committed (push will be handled as part of this workflow)
 
 ---
 
@@ -60,15 +60,7 @@ git diff --stat main...HEAD
    - Files under `projects/ngx-opsheet-hyperion/` → `ngx-opsheet-hyperion`
    - If the path structure differs, infer from the top-level directories in the diff.
 
-6. **Run pre-push and capture output:**
-
-```bash
-npm run pre-push
-```
-
-   Capture the full pre-push output (lint, build, test results). This output will be pasted directly into the PR body. If pre-push fails, warn the user and ask whether to proceed.
-
-7. **If Jira MCP is available**, fetch the ticket summary for the description. If not available, ask the user for a brief description.
+6. **If Jira MCP is available**, fetch the ticket summary for the description. If not available, ask the user for a brief description.
 
 ### Step 1: Build the PR Body
 
@@ -90,7 +82,7 @@ Assemble the PR body using this exact template. Fill in everything you can from 
 
 ## Test Results
 ```
-<paste full pre-push output here>
+<paste full push output here>
 ```
 
 ## Type of Change
@@ -108,8 +100,8 @@ Assemble the PR body using this exact template. Fill in everything you can from 
 
 - **Description**: Summarize the changes from the diff. If the Jira ticket was fetched, incorporate the ticket summary/acceptance criteria. Keep it concise but informative — not just the title repeated.
 - **Related Tickets**: Use the ticket ID extracted from the branch. Format as a Jira link: `[OPS-XXXXX](https://myjira.disney.com/browse/OPS-XXXXX)`. If there are linked tickets from Jira, include those too.
-- **Checklist**: Check "All tests passing" only if tests actually passed in Step 0. Check "No unrelated code changes" only if the diff is scoped to the ticket. If unsure, leave unchecked and ask the user.
-- **Test Results**: Paste the full pre-push output from Step 0 inside a code block. Include everything — lint, build, and test results as-is.
+- **Checklist**: Check "All tests passing" only if the push (which triggers pre-push hooks) succeeded without test failures. Check "No unrelated code changes" only if the diff is scoped to the ticket. If unsure, leave unchecked and ask the user.
+- **Test Results**: Will be filled in after the push in Step 4. Leave a placeholder during initial assembly: `<will be populated after push>`.
 - **Type of Change**: Check the appropriate box based on the branch prefix mapping from Step 0. If "Other", fill in the type.
 - **Projects Affected**: Check the boxes based on the affected paths detected in Step 0.
 
@@ -128,27 +120,37 @@ Examples:
 
 Show the user:
 1. **PR Title**
-2. **PR Body** (fully rendered)
+2. **PR Body** (fully rendered, with test results placeholder noted)
 3. **Base branch**: `main`
 4. **Head branch**: current branch
 
-Ask: _"Here's the PR I'll create. Want me to change anything before submitting?"_
+Ask: _"Here's the PR I'll create. Want me to change anything before submitting? I'll push the branch next — the pre-push hook will run lint/build/tests and I'll include the output in the PR."_
 
 **⏸ CHECKPOINT — User approves or edits the PR content**
 
-### Step 4: Ensure Branch is Pushed
+### Step 4: Push the Branch and Capture Pre-Push Output
 
-Check if the branch has been pushed:
-
-```bash
-git log origin/<branch>..HEAD --oneline 2>/dev/null
-```
-
-If there are unpushed commits, push first:
+Push the branch to origin. The git pre-push hook will automatically execute `npm run pre-push` (lint, build, tests). Capture the **full output** of the push command:
 
 ```bash
-git push -u origin <branch>
+git push -u origin <branch> 2>&1
 ```
+
+**⚠️ Important: This command may take several minutes** because the pre-push hook runs lint, build, and tests before the push completes. This is expected behavior.
+
+- **If the command appears to hang or times out**: Ask the user _"The push is still running (the pre-push hook runs lint/build/tests which can take a few minutes). Is it still in progress?"_ — **never** suggest `--no-verify` or any way to skip the pre-push hook. Wait for the process to finish.
+- **If push succeeds**: Extract the pre-push output (lint, build, test results) from the captured output. This will be pasted into the Test Results section of the PR body.
+- **If push fails** (pre-push hook failure — lint errors, build errors, or test failures): Show the full output to the user, explain what failed, and **stop the workflow**. The user must fix the issues and retry. Do NOT create the PR with failing checks.
+- **If the failure is memory-related** (e.g., `JavaScript heap out of memory`, `FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed`, or similar OOM errors): Suggest the user increase Node's memory limit before retrying. Offer the command appropriate for their OS:
+  - **Linux/macOS (bash/zsh):** `export NODE_OPTIONS=--max-old-space-size=4096`
+  - **Windows (CMD):** `set NODE_OPTIONS=--max-old-space-size=4096`
+  - **Windows (PowerShell):** `$env:NODE_OPTIONS="--max-old-space-size=4096"`
+  
+  Then ask the user to retry the push.
+
+After a successful push, update the PR body:
+1. Replace the Test Results placeholder with the full captured push output.
+2. Check the "All tests passing" checkbox in the Checklist (since pre-push passed).
 
 ### Step 5: Create the PR
 
@@ -189,7 +191,7 @@ Only ask for information you cannot derive automatically:
 | Description | ✅ (partial) | Diff + Jira ticket |
 | Type of Change | ✅ | Branch prefix |
 | Projects Affected | ✅ | Changed file paths |
-| Test Results | ✅ | Full pre-push output pasted in code block |
+| Test Results | ✅ | Captured from `git push` output (pre-push hook runs lint/build/tests) |
 | PR Title | ✅ | Branch prefix + ticket summary |
 | Additional related tickets | ❌ | Ask user if there are linked tickets not in Jira |
 | Checklist confirmations | ❌ | Ask user to verify if unsure |
@@ -200,11 +202,13 @@ Only ask for information you cannot derive automatically:
 ## Important Rules
 
 - **Never create a PR on `main`** — verify you're on a feature/fix branch.
-- **Always pause for user approval** before creating the PR (Step 3 checkpoint).
+- **Always pause for user approval** before pushing and creating the PR (Step 3 checkpoint).
 - **Do not skip the Slack notification** — always execute Step 6 after PR creation.
 - **Title must follow conventional format**: `{type}: OPS-{number} - {description}`.
 - **Description must be meaningful** — not just the ticket title repeated.
-- **Test results are required** — run `npm run pre-push` and paste the full output into the PR body. If pre-push can't run, note it explicitly.
+- **Test results come from the push** — the git pre-push hook runs `npm run pre-push` automatically. Capture the full push output and paste it into the PR body. Do NOT run `npm run pre-push` manually.
+- **Never suggest `--no-verify`** — if the push takes a long time, ask the user if the process is still running. The pre-push hook is mandatory and must not be skipped under any circumstance.
+- **If push fails, stop** — do not create the PR. Show the error output and let the user fix the issue.
 - **One PR per ticket** — if the branch covers multiple tickets, list all in Related Tickets.
-- **Check all boxes honestly** — don't auto-check "All tests passing" if tests failed.
+- **Check all boxes honestly** — only check "All tests passing" if the push (and its pre-push hook) succeeded.
 - **Slack notification rules** — see `steering/ui-pr-slack-notification.md` for all webhook rules (non-blocking, resolve names, confirm payload, etc.).

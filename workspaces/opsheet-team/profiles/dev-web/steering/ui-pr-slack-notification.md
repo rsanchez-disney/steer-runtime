@@ -23,26 +23,28 @@ This is the **last step** before returning the final result to the user.
 The agent **MUST resolve users to Slack user IDs** using this table.
 Match by any of the aliases (full name, short name, username). Matching is **case-insensitive**.
 
-| Full Name | Aliases | Slack ID | Pod | Champ |
-|-----------|---------|----------|-----|-------|
-| Alan Valdez | | U023HDUSW8J | Disney | No |
-| Alvaro Joel Paz Monsalve | alvaro.pazmonsalve | UTM7GK9R8 | Pod 2 | No |
-| Brenda Sabrina Schenkel | brenda.schenkel | U01A00B2JJJ | Pod 1 | No |
-| Cintia Tahirih Jaliri Pancca | Cintia Tahirih | U02490VGT3Q | Pod 4 | No |
-| Fabio Catriel Cruz Gonella | Fabio Cruz | U03J8DUPXUG | Pod 1 | No |
-| Joseth Guerrero Escobar | Joseth David, Joseth Guerrero | U02P1N7KAQH | Pod 3 | Yes |
-| Juan David Porras Palencia | Juan David Porras | U02653L79GE | Pod 5 | No |
-| Juan David Uribe Cardenas | Juanda Uribe | UCJNXGE6T | Pod 5 | No |
-| Julian Murillo | | U06PBCEU45S | Pod 5 | No |
-| Luis Gutierrez | Luis | UU02LDF88 | Pod 5 | Yes |
-| Cristian Martin Chavez Gutoff | Martín Chavez, Martin Chavez | U09102DCHV5 | Pod 1 | No |
-| Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE | Pod 3 | Yes |
-| Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB | Pod 3 | No |
-| Nilda De Marco | | U05RF4FHBE2 | Pod 4 | No |
-| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEAJ | Pod 5 | No |
-| Patricia Horna | Patty Horna | U02J4T55YTF | Pod 2 | No |
-| Ricardo Martinez | | UKF19US83 | Pod 4 | No |
-| Victor Rodriguez Muñoz | Victor Rodriguez | U76RE3DEG | Pod 2 | Yes |
+A person can belong to **multiple pods** (comma-separated in the Pod column). When resolving, consider the person as a member of **all** listed pods. The Champ For column indicates which pod(s) they serve as code champion for.
+
+| Full Name | Aliases | Slack ID | Pod | Champ For |
+|-----------|---------|----------|-----|-----------|
+| Alan Valdez | | U023HDUSW8J | Disney | — |
+| Alvaro Joel Paz Monsalve | alvaro.pazmonsalve | UTM7GK9R8 | Pod 2 | — |
+| Brenda Sabrina Schenkel | brenda.schenkel | U01A00B2JJJ | Pod 1 | — |
+| Cintia Tahirih Jaliri Pancca | Cintia Tahirih | U02490VGT3Q | Pod 4 | — |
+| Fabio Catriel Cruz Gonella | Fabio Cruz | U03J8DUPXUG | Pod 1 | — |
+| Joseth Guerrero Escobar | Joseth David, Joseth Guerrero | U02P1N7KAQH | Pod 3 | Pod 3 |
+| Juan David Porras Palencia | Juan David Porras | U02653L79GE | Pod 5 | — |
+| Juan David Uribe Cardenas | Juanda Uribe | UCJNXGE6T | Pod 5 | — |
+| Julian Murillo | | U06PBCEU45S | Pod 5 | — |
+| Luis Gutierrez | Luis | UU02LDF88 | Pod 5 | Pod 5 |
+| Cristian Martin Chavez Gutoff | Martín Chavez, Martin Chavez | U09102DCHV5 | Pod 1 | — |
+| Ignacio Smirlian | Nacho Smirlian, nacho | U0396SQ3XGE | Pod 3, Pod 5 | Pod 3, Pod 5 |
+| Nelson Andres Sora Mora | Nelson Sora | U01JGKQ62KB | Pod 3 | — |
+| Nilda De Marco | | U05RF4FHBE2 | Pod 4 | Pod 4 |
+| Oscar Mauricio Larrotta Bernal | oscar.larrotta | U09LJATJEAJ | Pod 5 | — |
+| Patricia Horna | Patty Horna | U02J4T55YTF | Pod 2 | — |
+| Ricardo Martinez | | UKF19US83 | Pod 4 | — |
+| Victor Rodriguez Muñoz | Victor Rodriguez | U76RE3DEG | Pod 1, Pod 2 | Pod 1 |
 
 ---
 
@@ -73,17 +75,31 @@ Urgency: 0
 With the user's name, the agent **MUST**:
 
 1. **Look up the user** in the Slack Lookup table (case-insensitive match on Full Name or Aliases).
-2. **Identify the user's Pod** from the matched row.
-3. **Assign reviewers**: all other members of the same Pod (excluding the requesting user). Fill `reviewer_1`, `reviewer_2` in order. Leave unused slots as `"U123456789"`.
-4. **Assign champs**: the member(s) in the same Pod where `Champ = Yes` (excluding the requesting user). Fill `champ_1`, `champ_2`, `champ_3` in order. If fewer than 3 champs exist, fill unused slots with `"U123456789"`.
+2. **Identify the user's Pod(s)** from the matched row. If the user belongs to multiple pods, use the **first listed pod** as the primary pod for reviewer/champ resolution.
+3. **Assign reviewers**: all other members whose Pod column includes the user's primary pod (excluding the requesting user). Fill `reviewer_1`, `reviewer_2` in order. Leave unused slots as `""`.
+4. **Assign champs**: members whose "Champ For" column includes the user's primary pod (excluding the requesting user). Fill `champ_1`, `champ_2`, `champ_3` in order. If fewer than 3 champs exist, fill unused slots with `"U123456789"`.
 
-### Example
+### Multi-Pod Membership
+
+- A person can belong to multiple pods (comma-separated in the Pod column).
+- When listing members of a pod, include **anyone** whose Pod column contains that pod.
+- A person's "Champ For" column indicates which specific pod(s) they are a code champion for — this is independent of their pod membership.
+
+### Example 1: Single-pod user
 
 If the user is **Alvaro Joel Paz Monsalve** (Pod 2):
 - Pod 2 members: Alvaro Joel Paz Monsalve, Patricia Horna, Victor Rodriguez Muñoz
 - Reviewers (excluding user): `U02J4T55YTF` (Patricia), `U76RE3DEG` (Victor)
-- Champ (Pod 2, Champ=Yes, excluding user): `U76RE3DEG` (Victor)
+- Champ For Pod 2: Victor Rodriguez Muñoz → `U76RE3DEG`
 - Result: `reviewer_1 = "U02J4T55YTF"`, `reviewer_2 = "U76RE3DEG"`, `champ_1 = "U76RE3DEG"`, `champ_2 = "U123456789"`, `champ_3 = "U123456789"`
+
+### Example 2: Multi-pod user
+
+If the user is **Ignacio Smirlian** (Pod 3, Pod 5 — primary is Pod 3):
+- Pod 3 members: Joseth Guerrero Escobar, Ignacio Smirlian, Nelson Andres Sora Mora
+- Reviewers (excluding user): `U02P1N7KAQH` (Joseth), `U01JGKQ62KB` (Nelson)
+- Champ For Pod 3 (excluding user): Joseth Guerrero Escobar → `U02P1N7KAQH`
+- Result: `reviewer_1 = "U02P1N7KAQH"`, `reviewer_2 = "U01JGKQ62KB"`, `champ_1 = "U02P1N7KAQH"`, `champ_2 = "U123456789"`, `champ_3 = "U123456789"`
 
 ---
 
