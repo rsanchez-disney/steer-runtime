@@ -1,0 +1,30 @@
+{
+  "name": "cpc-team",
+  "description": "Core Platform Capabilities — vertical workspace for Mobile, Web, Finders, Profile, Shield, and Connected Products delivery",
+  "team": "CPC",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "dev-mobile",
+    "pm",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": [
+    "IEXP-",
+    "AEXP-",
+    "COREEXP-"
+  ],
+  "workspace_path": "${CPC_WORKSPACE_PATH}",
+  "managed_studios": [
+    "studio-shield",
+    "studio-web-global",
+    "studio-finders",
+    "studio-profile",
+    "studio-connected-products"
+  ]
+}

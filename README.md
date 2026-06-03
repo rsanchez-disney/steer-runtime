@@ -36,6 +36,17 @@ koda setup
 
 This installs all dependencies: kiro-cli, Node.js, Git, GitHub CLI, and yax (persistent memory).
 
+For Kiro login:
+
+This will redirect to browser URL: https://app.kiro.dev/signin
+
+Select "Your Organization" → "Sign in with AWS IAM Identity Center"
+
+Enter the following details:
+
+- Start URL: https://twdc-qdeveloper.awsapps.com/start
+- Region: us-east-1
+
 ### 3. Verify
 
 ```bash
