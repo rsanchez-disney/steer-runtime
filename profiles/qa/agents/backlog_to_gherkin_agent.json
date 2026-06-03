@@ -29,11 +29,11 @@
     "execute_bash"
   ],
   "resources": [
-    "file://profiles/qa/context/xray_fetching_instructions.md",
-    "file://profiles/qa/context/xray_classification_logic.md",
-    "file://profiles/qa/context/readiness_assessment.md",
-    "file://profiles/qa/context/repo_scanning_instructions.md",
-    "file://profiles/qa/context/feature_generation_guidelines.md"
+    "file://.kiro/context/xray_fetching_instructions.md",
+    "file://.kiro/context/xray_classification_logic.md",
+    "file://.kiro/context/readiness_assessment.md",
+    "file://.kiro/context/repo_scanning_instructions.md",
+    "file://.kiro/context/feature_generation_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [
