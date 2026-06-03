@@ -29,6 +29,7 @@
     "execute_bash"
   ],
   "resources": [
+    "file://.kiro/prompts/backlog_to_gherkin_agent.md",
     "file://.kiro/context/xray_fetching_instructions.md",
     "file://.kiro/context/xray_classification_logic.md",
     "file://.kiro/context/readiness_assessment.md",
