@@ -3,8 +3,10 @@
   "description": "ActivateX (DSP Go & Check-Sync) \u2014 Disney POS Android application for Merchandise, QSR, and Table Service",
   "team": "POS Team",
   "profiles": [
-    "dev-core",
-    "dev-mobile"
+    "dev-core", 
+    "dev-mobile", 
+    "ba", 
+    "pm"
   ],
   "default_agent": "android_arch_agent",
   "projects": [

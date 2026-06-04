@@ -5,6 +5,8 @@
   "tools": [
     "fs_read",
     "fs_write",
+    "@gitlab/*",
+    "@jira/*",
     "execute_bash",
     "grep",
     "glob",
@@ -16,6 +18,7 @@
   "toolsSettings": {
     "subagent": {
       "availableAgents": [
+        "ba_orchestrator_agent",
         "android_dev_agent",
         "android_test_agent",
         "android_quality_agent",

@@ -9,12 +9,8 @@
     "grep",
     "glob",
     "execute_bash",
-    "jira_get_issue",
-    "jira_search_issues",
-    "jira_create_issue",
-    "jira_update_issue",
-    "jira_add_comment",
-    "jira_get_current_user"
+    "@gitlab/*",
+    "@jira/*"
   ],
   "resources": [
     "file://.kiro/context/team_context.md",

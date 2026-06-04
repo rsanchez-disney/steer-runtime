@@ -7,8 +7,8 @@
     "fs_write",
     "code",
     "grep",
-    "jira_get_issue",
-    "jira_search_issues"
+    "@gitlab/*",
+    "@jira/*"
   ],
   "resources": [
     "file://.kiro/context/team_context.md",
