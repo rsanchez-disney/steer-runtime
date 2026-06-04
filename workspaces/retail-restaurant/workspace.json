@@ -2,7 +2,11 @@
   "name": "retail-restaurant",
   "description": "DXT Mobile Retail & Restaurant Engineering — Mobile Order, Dine Booking, DiSCO, and Pay at Table across iOS, Android, and backend services",
   "team": "Mobile Retail & Restaurant Engineering (FBT)",
-  "profiles": ["dev-core", "dev-mobile", "dev-web"],
+  "profiles": [
+    "dev-core",
+    "dev-mobile",
+    "dev-web"
+  ],
   "default_agent": "orchestrator",
   "projects": [
     {
@@ -174,9 +178,14 @@
       "studio": "lumiere"
     }
   ],
-  "rules": ["conventional_commit"],
+  "rules": [
+    "conventional_commit"
+  ],
   "enable_tools": true,
-  "jira_prefix": ["FNB-", "MERCH-"],
+  "jira_prefix": [
+    "FNB-",
+    "MERCH-"
+  ],
   "jira_host": "myjira.disney.com",
   "workspace_path": "${WORKSPACE_ROOT}/Disney"
 }
