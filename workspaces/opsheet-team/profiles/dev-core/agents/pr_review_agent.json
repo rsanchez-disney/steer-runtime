@@ -1,0 +1,19 @@
+{
+  "name": "pr_review_agent",
+  "description": "Automated PR reviewer — analyzes GitHub PRs, posts inline comments with severity emojis, and recommends approve or request changes",
+  "prompt": "pr_review_agent.md",
+  "tools": [
+    "@github/*",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "allowedTools": [
+    "@github/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://workspaces/opsheet-team/context/service_repo_mapping.md"
+  ]
+}

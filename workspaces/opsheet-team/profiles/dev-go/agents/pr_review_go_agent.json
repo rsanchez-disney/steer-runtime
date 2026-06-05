@@ -1,0 +1,19 @@
+{
+  "name": "pr_review_go_agent",
+  "description": "Go-specific PR reviewer — analyzes GitHub PRs with Go best practices, posts inline comments with severity emojis",
+  "prompt": "pr_review_go_agent.md",
+  "tools": [
+    "@github/*",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "allowedTools": [
+    "@github/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://workspaces/opsheet-team/profiles/dev-go/steering/10-pr-review-go-guide.md",
+    "file://workspaces/opsheet-team/context/service_repo_mapping.md"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "jira_commenter_agent",
+  "description": "Documents bugs and features in Jira with structured, phased comments using Jira wiki syntax",
+  "prompt": "jira_commenter_agent.md",
+  "tools": [
+    "@jira/*",
+    "fs_read"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://workspaces/opsheet-team/context/service_repo_mapping.md"
+  ]
+}

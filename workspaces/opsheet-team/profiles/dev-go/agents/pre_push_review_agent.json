@@ -1,0 +1,31 @@
+{
+  "name": "pre_push_review_agent",
+  "description": "Pre-push code reviewer — analyzes local changes against main, finds issues, and auto-fixes what it can before pushing",
+  "prompt": "pre_push_review_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "cmd/**",
+        "internal/**",
+        "mocks/**",
+        "models/**",
+        "processors/**",
+        "mappers/**",
+        "persisters/**",
+        "schemas/**",
+        "utils/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://workspaces/opsheet-team/profiles/dev-go/steering/10-pr-review-go-guide.md",
+    "file://workspaces/opsheet-team/profiles/dev-go/steering/05-repo-go-code-patterns.md",
+    "file://workspaces/opsheet-team/profiles/dev-go/steering/20-repo-go-testing.md"
+  ]
+}
