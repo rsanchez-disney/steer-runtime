@@ -18,6 +18,9 @@
 - <name> (Lautaro.Luna.-ND@disney.com)
 - <name> (Carlos.A.Orozco.-ND@disney.com)
 - <name> (David.Medina.-ND@disney.com)
+- <name> (Erik.X.Chavez.-ND@disney.com)
+- <name> (Felix.Ortiz.-ND@disney.com)
+
 
 ## Usage Notes
 
