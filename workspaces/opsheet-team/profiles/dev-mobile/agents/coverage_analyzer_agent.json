@@ -5,7 +5,8 @@
   "tools": [
     "read",
     "write",
-    "shell"
+    "shell",
+    "@jira/*"
   ],
   "toolsSettings": {
     "write": {
@@ -17,5 +18,13 @@
   },
   "resources": [
     "file://README.md"
+  ],
+  "skills": [
+    "skills/coverage-epic-mode.md",
+    "skills/coverage-lcov.md",
+    "skills/coverage-ticket-mode.md"
+  ],
+  "allowedTools": [
+    "@jira/*"
   ]
 }

@@ -5,7 +5,8 @@
   "tools": [
     "read",
     "write",
-    "shell"
+    "shell",
+    "@jira/*"
   ],
   "toolsSettings": {
     "write": {
@@ -19,6 +20,14 @@
     "file://.kiro/steering/02-tech.md",
     "file://.kiro/steering/05-code-style.md",
     "file://.kiro/steering/01-structure.md",
+    "file://profiles/dev-mobile/context/flutter_test_patterns.md",
     "file://README.md"
+  ],
+  "skills": [
+    "skills/coverage-lcov.md",
+    "skills/coverage-test-rules.md"
+  ],
+  "allowedTools": [
+    "@jira/*"
   ]
 }
