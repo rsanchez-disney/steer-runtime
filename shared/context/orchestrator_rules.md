@@ -49,6 +49,24 @@ Rules:
 - Use descriptive `title` (not "Session summary")
 - Use appropriate `type`: decision, architecture, bugfix, discovery, pattern, config, learning
 
+## Memory routing (yax vs mem)
+
+Two memory systems are available. Use the right one based on scope:
+
+| Tool prefix | System | Scope | When to use |
+|-------------|--------|-------|-------------|
+| `yax_*` | yax | Cross-project global | Team patterns, cross-project decisions, personal preferences, workflow learnings |
+| `mem_*` | koda-memory | Per-project isolated | Project-specific bugfixes, architecture decisions, configs, session context |
+
+**Decision guide:**
+
+- "This pattern applies to ALL projects" → `yax_save`
+- "This decision is specific to THIS codebase" → `mem_save`
+- Searching for prior work on the current project → `mem_search` first, then `yax_search` for broader context
+- Session lifecycle (start/end/summary) → use `yax_*` (cross-session history is more useful globally)
+
+**Never duplicate** — do not save the same observation to both systems. Pick one based on scope.
+
 ## Protected files
 
 Any modification to agent JSON configs, hook scripts, or orchestrator prompts requires **explicit user approval** with an isolated diff review. Never silently modify:
