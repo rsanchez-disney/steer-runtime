@@ -11,7 +11,7 @@ describe("Fix Versions — jira_update_issue", () => {
     beforeEach(() => { originalFetch = globalThis.fetch; });
     afterEach(() => { globalThis.fetch = originalFetch; vi.restoreAllMocks(); });
 
-    it("fixVersions replaces via fields.fixVersions with name objects", async () => {
+    it("fixVersions replaces via update.fixVersions with set operation", async () => {
         await fc.assert(
             fc.asyncProperty(
                 fc.array(versionName, { minLength: 1, maxLength: 5 }),
@@ -30,11 +30,12 @@ describe("Fix Versions — jira_update_issue", () => {
                     await handleJiraUpdateIssue({ ticketId: "TEST-1", fixVersions: versions, outputDir: false });
 
                     expect(capturedBody).not.toBeNull();
-                    expect(capturedBody.fields.fixVersions).toEqual(
-                        versions.map((name) => ({ name })),
+                    expect(capturedBody.update).toBeDefined();
+                    expect(capturedBody.update.fixVersions).toEqual(
+                        [{ set: versions.map((name) => ({ name })) }],
                     );
-                    // Should NOT have update.fixVersions when using replace mode
-                    expect(capturedBody.update).toBeUndefined();
+                    // Should NOT have fixVersions in fields when using update object
+                    expect(capturedBody.fields?.fixVersions).toBeUndefined();
                 },
             ),
             { numRuns: 50 },

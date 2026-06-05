@@ -177,14 +177,14 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             }
         }
 
-        // Fix versions: replace mode (fields.fixVersions)
-        if (fixVersions && fixVersions.length > 0) {
-            updates.fixVersions = fixVersions.map((name) => ({ name }));
-        }
-
-        // Fix versions: add/remove mode (update.fixVersions)
+        // Fix versions: use 'update' object for all modes (more reliable on Jira Server
+        // where the field may not be on the edit screen — 'fields' is silently ignored)
         const updateOps: any = {};
-        if (addFixVersions || removeFixVersions) {
+        if (fixVersions && fixVersions.length > 0) {
+            // Replace mode: use 'set' operation in update object
+            updateOps.fixVersions = [{ set: fixVersions.map((name) => ({ name })) }];
+        } else if (addFixVersions || removeFixVersions) {
+            // Granular add/remove mode
             updateOps.fixVersions = [];
             if (addFixVersions) {
                 addFixVersions.forEach((name) => {
