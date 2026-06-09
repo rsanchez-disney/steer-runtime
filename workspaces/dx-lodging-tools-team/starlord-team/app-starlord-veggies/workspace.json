@@ -1,5 +1,5 @@
 {
-  "name": "starlord-veggies",
+  "name": "app-starlord-veggies",
   "extends": "starlord-team",
   "description": "Veggies project \u2014 Non-Disney Add Ons SPA/API/VA for Rental Car, Shuttle, Travel Protection, Area Attractions (WDW/DLR/AUL)",
   "team": "Studio Star Lord \u2014 Veggies",

@@ -31431,7 +31431,7 @@ async function handleGitlabListPipelines(args) {
 // build/tools/gitlabTriggerPipeline.js
 var gitlabTriggerPipelineSchema = {
   name: "gitlab_trigger_pipeline",
-  description: "Trigger a new pipeline for a GitLab project",
+  description: "\u26A0\uFE0F TRIGGERS A REAL PIPELINE \u2014 runs a new pipeline on the specified branch. Confirm with user before executing.",
   inputSchema: {
     type: "object",
     properties: {
@@ -31645,7 +31645,7 @@ async function handleGitlabGetJobLog(args) {
 // build/tools/gitlabPlayJob.js
 var gitlabPlayJobSchema = {
   name: "gitlab_play_job",
-  description: "Trigger a manual job in a GitLab pipeline (jobs with 'when: manual')",
+  description: "\u26A0\uFE0F TRIGGERS A MANUAL JOB \u2014 runs a manual pipeline job (e.g. deploy). Confirm with user before executing. (jobs with 'when: manual')",
   inputSchema: {
     type: "object",
     properties: {
