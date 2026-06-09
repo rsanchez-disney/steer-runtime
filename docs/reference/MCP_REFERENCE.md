@@ -2,7 +2,7 @@
 
 Complete reference for all MCP servers: tools, capabilities, prompt examples, and agent access.
 
-**Total:** 16 MCP servers | 195+ tools | 58 agents connected
+**Total:** 17 MCP servers | 200+ tools | 58 agents connected
 
 ---
 
@@ -26,6 +26,7 @@ Complete reference for all MCP servers: tools, capabilities, prompt examples, an
 | [yax](#yax-persistent-memory) | 15 | None | stdio (Go) | All orchestrators |
 | [mermaid-diagram-mcp](#mermaid-diagram-mcp) | 1 | None | stdio | — |
 | [compass](#compass) | Dynamic | Token | Remote SSE | 10+ agents |
+| [newrelic-mcp](#newrelic-mcp) | 5 | API Key | stdio | 1 agent |
 
 ---
 
@@ -695,6 +696,41 @@ Search Splunk logs for payment errors in the last hour
 
 **Core:** email_agent, log_analyzer_agent
 **Orchestrators:** ba_orchestrator, qa_orchestrator, pm_orchestrator, ops_orchestrator, sustainment_orchestrator, leadership_orchestrator, steer_orchestrator
+
+---
+
+## newrelic-mcp
+
+**Purpose:** New Relic observability — NRQL queries, entity search, golden signals, alerts, deployments via NerdGraph API.
+**Auth:** `NEW_RELIC_API_KEY` (User API Key, starts with `NRAK-`), `NEW_RELIC_ACCOUNT_ID`.
+**Region:** US (default) or EU via `NEW_RELIC_REGION`.
+**Security:** Read-only enforced — queries validated to reject mutation keywords.
+
+### Tools (5)
+
+| Tool | Description |
+|------|-------------|
+| `run_nrql` | Execute NRQL SELECT queries (read-only enforced) |
+| `list_entities` | Search monitored entities (apps, hosts, services) by name/type |
+| `get_entity_golden_signals` | Get response time, throughput, error rate for an entity |
+| `get_alert_violations` | Get active/recent alert violations |
+| `get_deployments` | Get recent deployment markers for change correlation |
+
+### Prompt Examples
+
+```
+Run this NRQL: SELECT count(*) FROM Transaction SINCE 1 hour ago
+List all entities matching "booking-svc"
+What are the golden signals for the payment-gateway app?
+Are there any open alert violations?
+Show me recent deployments for the commerce-ui application
+Run: FROM MobileCrash SELECT uniqueCount(swid) WHERE appVersion not like '%-dev' SINCE 7 days ago TIMESERIES 1 day
+Compare crash rates today vs yesterday using COMPARE WITH
+```
+
+### Agents with Access
+
+**Sustainment:** sustainment_orchestrator_agent (via `@newrelic/*`)
 
 ---
 
