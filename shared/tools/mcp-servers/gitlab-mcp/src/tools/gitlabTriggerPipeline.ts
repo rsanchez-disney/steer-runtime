@@ -2,7 +2,7 @@ import { getClient, parseProject } from "../utils/apiClient.js";
 
 export const gitlabTriggerPipelineSchema = {
     name: "gitlab_trigger_pipeline",
-    description: "Trigger a new pipeline for a GitLab project",
+    description: "⚠️ TRIGGERS A REAL PIPELINE — runs a new pipeline on the specified branch. Confirm with user before executing.",
     inputSchema: {
         type: "object",
         properties: {

@@ -3,7 +3,7 @@ import { getClient, parseProject } from "../utils/apiClient.js";
 export const gitlabPlayJobSchema = {
     name: "gitlab_play_job",
     description:
-        "Trigger a manual job in a GitLab pipeline (jobs with 'when: manual')",
+        "⚠️ TRIGGERS A MANUAL JOB — runs a manual pipeline job (e.g. deploy). Confirm with user before executing. (jobs with 'when: manual')",
     inputSchema: {
         type: "object",
         properties: {
