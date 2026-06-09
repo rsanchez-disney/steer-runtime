@@ -1,0 +1,45 @@
+import { apiClient } from "../utils/apiClient.js";
+
+export const getCrashRateSchema = {
+    name: "get_crash_rate",
+    description: "Get mobile crash rate for a specific app version, segmented by experience (Total, At Home, Onboard). Returns crash percentage and count.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            appVersion: { type: "string", description: "App version (e.g., 5.44.0)" },
+            platform: { type: "string", enum: ["iOS", "Android"], description: "Platform" },
+            buildVariant: { type: "string", description: "Build variant: AppStore (iOS) or release (Android)" },
+            segment: { type: "string", enum: ["Total", "AtHome", "Onboard"], description: "Experience segment" },
+            since: { type: "string", description: "Start datetime (e.g., '2026-04-28 12:00:00')" },
+            appBuild: { type: "string", description: "Android appBuild (optional)" },
+            buildNumber: { type: "string", description: "Android buildNumber (optional)" },
+        },
+        required: ["appVersion", "platform", "segment", "since"],
+    },
+};
+
+export async function handleGetCrashRate(args: any) {
+    const { appVersion, platform, buildVariant, segment, since, appBuild, buildNumber } = args;
+
+    let where = `appVersion = '${appVersion}'`;
+    if (buildVariant) where += ` AND buildVariant = '${buildVariant}'`;
+    if (appBuild) where += ` AND appBuild = '${appBuild}'`;
+    if (buildNumber) where += ` AND buildNumber = '${buildNumber}'`;
+
+    if (segment === "AtHome") {
+        where += ` AND experience = 'AtHome'`;
+    } else if (segment === "Onboard") {
+        where += ` AND experience = 'Onboard'`;
+    }
+
+    const osFilter = platform === "iOS" ? "iOS" : "Android";
+    where += ` AND osName = '${osFilter}'`;
+
+    const query = `SELECT percentage(count(*), WHERE category = 'Crash') as crashRate, filter(count(*), WHERE category = 'Crash') as crashCount, count(*) as totalSessions FROM MobileSession WHERE ${where} SINCE '${since}'`;
+
+    const data = await apiClient.nrql(query);
+    const results = data?.data?.actor?.account?.nrql?.results;
+    return {
+        content: [{ type: "text", text: JSON.stringify({ platform, appVersion, segment, results: results ?? data }, null, 2) }],
+    };
+}

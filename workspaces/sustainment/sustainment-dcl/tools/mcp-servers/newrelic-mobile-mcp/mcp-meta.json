@@ -1,0 +1,19 @@
+{
+  "name": "newrelic-mobile",
+  "description": "DCL mobile app analytics \u2014 crash rates, top crashes, adoption rates, dashboards via New Relic",
+  "env": {
+    "NEWRELIC_API_KEY": "New Relic User API key",
+    "NEWRELIC_ACCOUNT_ID": "New Relic account ID",
+    "NEWRELIC_REGION": "New Relic region (US or EU)"
+  },
+  "env_required": [
+    "NEWRELIC_API_KEY",
+    "NEWRELIC_ACCOUNT_ID"
+  ],
+  "env_secret": [
+    "NEWRELIC_API_KEY"
+  ],
+  "env_defaults": {
+    "NEWRELIC_REGION": "US"
+  }
+}

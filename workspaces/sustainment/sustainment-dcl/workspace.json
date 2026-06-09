@@ -1,0 +1,33 @@
+{
+  "name": "sustainment-dcl",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for DCL Navigator mobile applications (iOS + Android) — embarkation reports, incident analysis, weekly reports, release follow-up",
+  "team": "DCL Sustainment Team",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-a-new-hope"
+  ],
+  "projects": [
+    {
+      "name": "dcl-navigator-ios",
+      "repo": "dclmobile-sust-ai/dcl-navigator-ios",
+      "host": "github.disney.com",
+      "path": "dcl-navigator-ios"
+    },
+    {
+      "name": "dcl-navigator-android",
+      "repo": "dclmobile-sust-ai/dcl-navigator-android",
+      "host": "github.disney.com",
+      "path": "dcl-navigator-android"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "DCLMSUST-",
+  "workspace_path": "${WORKSPACE_ROOT}/Disney/dcl-sustainment"
+}

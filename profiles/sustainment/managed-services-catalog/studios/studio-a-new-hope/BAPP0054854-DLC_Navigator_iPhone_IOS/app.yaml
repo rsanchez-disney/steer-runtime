@@ -1,40 +1,41 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0054854"
 app_name: "dlc-navigator-iphone-ios"
 full_name: "DLC Navigator iPhone (IOS)"
-description: ""
+description: "Mobile app - Mobile application (phone, tab...) for guest to use onboard the DCL ships to access ship specific information"
 
 # --- Ownership ---
 support_studio: "A New Hope"
-escalation_channel: ""
+escalation_channel: "https://globant.enterprise.slack.com/archives/C04DCRZFVBM"
 escalation_contacts:
-  - name: ""
+  - name: "Pablo Paiva"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "pablo.paiva@globant.com"
+  - name: "Marco Fernandez"
     role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "marco.fh@globant.com"
+  - name: "Sandy Marieli Salgado"
+    role: "SME - iOS Lead"
+    contact: "marieli.salgado@globant.com"
+  - name: "Karla Obando"
+    role: "SME - QA Lead"
+    contact: "karla.obando@globant.com"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_item: "DCL Navigator iOS"
   assignment_group: "app-global-dclmobl"
-  business_service: ""
+  business_service: "WDPRO"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks"
+  wiki: "https://mywiki.disney.com/spaces/DCLMGET/pages/447487455/DCL+Mobile+Navigator+Technical+Documents"
+  architecture_diagram: "https://mywiki.disney.com/spaces/DCLMGET/pages/504037574/High+Level+Application+Architecture"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -45,135 +46,122 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "DCL Navigator iOS App"
+    component_type: "mobile"
+    description: "Native iOS application for DCL ship guests"
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/dcl-applications/dcl-navigator-ios"
+      branch: "main"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "jenkins"
+      pipeline_url: "https://client-jenkins.disney.network/job/DCL_Navigator/job/iOS_App/"
+      deploy_target: "https://nexus3.disney.com/#browse/browse:maven-releases:com%2Fdisney%2Fwdpro%2Fdcl-navigator-ios"
 
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
     newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
+      entity_guid: "Nzg2ODAxfE1PQklMRXxBUFBMSUNBVElPTnw1Nzk3NTk3"
+      app_name: "DCL.iOS"
+      account_id: "786801"
+      dashboards:
+        - name: "At Home"
+          url: "https://onenr.io/0MRNYkmp2wn"
+        - name: "Onboard"
+          url: "https://onenr.io/0kjnaxLE1Ro"
+        - name: "Weekly/Daily Reports"
+          url: "https://onenr.io/02R5r5AGPjb"
+        - name: "Incidents Troubleshoot"
+          url: "https://onenr.io/0ERPxXeDvRW"
+        - name: "Ship Adventure"
+          url: "https://onenr.io/0Owve31m3Qv"
+        - name: "Ship Destiny"
+          url: "https://onenr.io/0dQepDV2Nje"
+        - name: "Ship Dream"
+          url: "https://onenr.io/01wZoEKLKR6"
+        - name: "Ship Fantasy"
+          url: "https://onenr.io/0OQMW4OxxRG"
+        - name: "Ship Magic"
+          url: "https://onenr.io/0VjYm5D2Nj0"
+        - name: "Ship Treasure"
+          url: "https://onenr.io/0bRmYaD8WRy"
+        - name: "Ship Wish"
+          url: "https://onenr.io/08jqq7W4djl"
+        - name: "Ship Wonder"
+          url: "https://onenr.io/0PwJrgpk7w7"
+        - name: "Lower Env Latest"
+          url: "https://onenr.io/0MRNYkmnGwn"
+        - name: "Lower Env Stage"
+          url: "https://onenr.io/07jbkLM5BQy"
 
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
+    loginsights:
+      instances:
+        - name: "Ship Dream"
+          url: "https://dcldrmvrlog.dcl-dream.dcl.wdpr.disney.com"
+        - name: "Ship Fantasy"
+          url: "https://dclfsyvrlog.dcl-fantasy.dcl.wdpr.disney.com"
+        - name: "Ship Wish"
+          url: "https://dclwshvrlog.dcl.wdpr.disney.com/"
+        - name: "Ship Magic"
+          url: "https://dclmagvrlog.dcl-magic.dcl.wdpr.disney.com"
+        - name: "Ship Wonder"
+          url: "https://dcldrmvrlog.dcl-dream.dcl.wdpr.disney.com"
+        - name: "Ship Treasure"
+          url: "https://dcltrevrlog.dcl.wdpr.disney.com"
+        - name: "Ship Destiny"
+          url: "https://dcldesvrlog.dcl.wdpr.disney.com/login?loginUrl=%2Findex"
+        - name: "Ship Adventure"
+          url: "https://dcladvvrlog.dcl.wdpr.disney.com/login?loginUrl=%2Findex"
 
-    # -- Grafana --
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
+      alerting:
+        - name: "Ship Dream"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/af8yl7dyvmyo0f/view"
+        - name: "Ship Fantasy"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/bf8ymxs8pzldsb/view"
+        - name: "Ship Wish"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/af8ymcubrr37kb/view"
+        - name: "Ship Magic"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/ff8ymlozofcaoa/view"
+        - name: "Ship Wonder"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/df8ymfksv59tsf/view"
+        - name: "Ship Treasure"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/bf8yn11bh5t6od/view"
+        - name: "Ship Destiny"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/ff8yn2qi9makgf/view"
+        - name: "Ship Adventure"
+          url: "https://dse-grafana.wdprapps.disney.com/alerting/grafana/af8yn4aio5j40f/view"
 
-    # -- Archer --
-    archer:
-      record_id: ""
+    health_check:
+      dashboards:
+        - name: "Latest"
+          url: "http://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=latest"
+        - name: "Stage"
+          url: "http://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=stage"
+        - name: "Ship Dream"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=dream"
+        - name: "Ship Fantasy"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=fantasy"
+        - name: "Ship Wish"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=wish"
+        - name: "Ship Magic"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=magic"
+        - name: "Ship Wonder"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=wonder"
+        - name: "Ship Treasure"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=treasure"
+        - name: "Ship Destiny"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=destiny"
+        - name: "Ship Adventure"
+          url: "https://dcldevmobile03.wdw.disney.com/Apps/NavigatorDashboard/dashboard.html?ship=adventure"
 
-    # -- Cloud Infrastructure & Native Observability --
-    cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+  - component_name: "DCL Navigator Flutter Module"
+    component_type: "mobile"
+    description: "Shared Flutter module used by both Android and iOS apps"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+    repository:
+      url: "https://github.disney.com/dcl-applications/dcl-navigator-flutter"
+      branch: "main"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    cicd:
+      platform: "jenkins"
+      pipeline_url: "https://client-jenkins.disney.network/job/DCL_Navigator/job/Components/job/iOS/job/dcl-applications/job/dcl-navigator-flutter/"
