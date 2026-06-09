@@ -19,7 +19,8 @@ escalation_contacts:
     contact: "Tomas.Grana.-ND@disney.com"
 
 servicenow:
-  configuration_item: "Cart Service"
+  configuration_items:
+    - "Cart Service"
   assignment_group: "web-global-salescart"
 
 documentation:

@@ -27,7 +27,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DCL Navigator Android"
+  configuration_items:
+    - "DCL Navigator Android"
   assignment_group: "app-global-dclmobl"
   business_service: "WDPRO"
 

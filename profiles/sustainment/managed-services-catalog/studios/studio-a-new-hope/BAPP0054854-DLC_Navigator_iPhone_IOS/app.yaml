@@ -27,7 +27,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DCL Navigator iOS"
+  configuration_items:
+    - "DCL Navigator iPhone/iOS"
   assignment_group: "app-global-dclmobl"
   business_service: "WDPRO"
 

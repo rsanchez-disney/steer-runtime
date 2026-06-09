@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0159199 - GCX Site Builder Cast WebAPI"
+  configuration_items:
+    - "BAPP0159199 - GCX Site Builder Cast WebAPI"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=u_cmdb_ci_business_appl.do?sys_id=4755e238db787f807ee051d7f4961960%26sysparm_view=corporate"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

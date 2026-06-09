@@ -14,7 +14,8 @@ escalation_contacts:
     role: "primary"
     contact: "Christian.A.Orrego.-ND@disney.com"
 servicenow:
-  configuration_item: "WDW Order View Assembler Service"
+  configuration_items:
+    - "WDW Order View Assembler Service"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602155/UC+-+OrderVAS+WDW+Runbook"

@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards)"
+  configuration_items:
+    - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards)"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

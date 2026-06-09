@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Mobile Device Notification Optin Service"
+  configuration_items:
+    - "WDPR Mobile Device Notification Optin Service"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

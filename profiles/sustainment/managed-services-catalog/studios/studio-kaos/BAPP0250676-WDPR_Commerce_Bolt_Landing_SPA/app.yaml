@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Commerce Bolt Landing SPA"
+  configuration_items:
+    - "WDPR Commerce Bolt Landing SPA"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

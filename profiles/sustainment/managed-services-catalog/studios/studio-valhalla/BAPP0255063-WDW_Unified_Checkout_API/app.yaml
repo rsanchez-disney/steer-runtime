@@ -14,7 +14,8 @@ escalation_contacts:
     role: "primary"
     contact: "Christian.A.Orrego.-ND@disney.com"
 servicenow:
-  configuration_item: "WDW Unified Checkout API"
+  configuration_items:
+    - "WDW Unified Checkout API"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/497948019/Operational+Readiness+Review+-+Unified+Checkout"

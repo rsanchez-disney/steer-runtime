@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "Vendomatic"
+  configuration_items:
+    - "Vendomatic"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

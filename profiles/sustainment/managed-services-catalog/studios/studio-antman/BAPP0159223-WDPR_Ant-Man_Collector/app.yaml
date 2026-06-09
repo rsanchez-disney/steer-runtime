@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0159223 - WDPR Ant-Man Collector"
+  configuration_items:
+    - "BAPP0159223 - WDPR Ant-Man Collector"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=u_cmdb_ci_business_appl.do?sys_id=1ec5223cdb787f807ee051d7f4961928%26sysparm_view=corporate"
   assignment_group: "app-global-ant-man"
   ticket_atscode_ag: "app-flwdw-TBXLoad"

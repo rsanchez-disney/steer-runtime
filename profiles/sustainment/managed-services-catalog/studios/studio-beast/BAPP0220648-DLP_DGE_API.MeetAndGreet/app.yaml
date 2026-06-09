@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLP DGE API.MeetAndGreet"
+  configuration_items:
+    - "DLP DGE API.MeetAndGreet"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: "wdpr-dlp-is-sales-srv-meet-and-greet-provider"
 

@@ -13,7 +13,8 @@ escalation_contacts:
     role: "primary"
     contact: "Christian.A.Orrego.-ND@disney.com"
 servicenow:
-  configuration_item: "WDW Order Service"
+  configuration_items:
+    - "WDW Order Service"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691604358/UC+-+Order+Service+WDW+Runbook"

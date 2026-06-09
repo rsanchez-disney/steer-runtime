@@ -15,7 +15,8 @@ escalation_contacts:
     role: "primary"
     contact: "Gabriela.X.Rossi.-ND@disney.com"
 servicenow:
-  configuration_item: "WDPRD Ticket Management Service"
+  configuration_items:
+    - "WDPRD Ticket Management Service"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681701749/DLR+TMS+Runbook"

@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLR Park Access Hub"
+  configuration_items:
+    - "DLR Park Access Hub"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

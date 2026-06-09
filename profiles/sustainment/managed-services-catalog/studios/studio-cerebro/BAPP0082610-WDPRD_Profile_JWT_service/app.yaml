@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Profile JWT service"
+  configuration_items:
+    - "WDPRD Profile JWT service"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

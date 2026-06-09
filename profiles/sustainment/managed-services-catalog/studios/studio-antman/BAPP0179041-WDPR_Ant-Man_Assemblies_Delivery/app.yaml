@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0179041"
+  configuration_items:
+    - "BAPP0179041"
   assignment_group: "app-global-ant-man"
   tier_1: "ops-global-peeti-oenoc"
   tier_2: "ops-global-parks-se-guestexp"

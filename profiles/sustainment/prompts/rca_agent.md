@@ -86,7 +86,7 @@ Execute Splunk queries from the app.yaml following the troubleshooting.md invest
 **MANDATORY:** Execute ALL investigation steps from troubleshooting.md in order. Do NOT stop early or skip steps.
 
 ### Step 4: Determine Routing
-Use routing info from troubleshooting.md + app.yaml's `servicenow.assignment_group` and `servicenow.configuration_item`.
+Use routing info from troubleshooting.md + app.yaml's `servicenow.assignment_group` and `servicenow.configuration_items`.
 
 ### Step 5: Report
 

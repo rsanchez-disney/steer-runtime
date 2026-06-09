@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLR Entitlement Sales App"
+  configuration_items:
+    - "DLR Entitlement Sales App"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

@@ -19,7 +19,8 @@ escalation_contacts:
     contact: "Tomas.Grana.-ND@disney.com"
 
 servicenow:
-  configuration_item: "WDPRD Commerce UI"
+  configuration_items:
+    - "WDPRD Commerce UI"
   assignment_group: "web-global-salescart"
 
 documentation:

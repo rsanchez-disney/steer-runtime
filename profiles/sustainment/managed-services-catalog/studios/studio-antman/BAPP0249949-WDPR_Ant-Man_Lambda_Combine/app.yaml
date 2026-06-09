@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0249949 - WDPR Ant-Man Lambda Combine"
+  configuration_items:
+    - "BAPP0249949 - WDPR Ant-Man Lambda Combine"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=cmdb_ci_business_app.do?sys_id=8059dbf2c3b80a54afefd0f4e401312d%26sysparm_view=default"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

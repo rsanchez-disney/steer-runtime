@@ -60,7 +60,7 @@
       "type": "object",
       "required": ["assignment_group"],
       "properties": {
-        "configuration_item": { "type": "string" },
+        "configuration_items": { "type": "array", "items": { "type": "string" } },
         "assignment_group": { "type": "string", "minLength": 1 },
         "business_service": { "type": "string" }
       }

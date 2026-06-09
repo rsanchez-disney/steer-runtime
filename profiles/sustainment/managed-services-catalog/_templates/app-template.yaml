@@ -21,7 +21,8 @@ escalation_contacts:                 # Named escalation contacts (optional)
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""             # CI name exactly as it appears in SNOW
+  configuration_items:               # CI names exactly as they appear in SNOW
+    - ""
   assignment_group: ""               # SNOW assignment group for routing
   business_service: ""               # SNOW business service (optional)
 

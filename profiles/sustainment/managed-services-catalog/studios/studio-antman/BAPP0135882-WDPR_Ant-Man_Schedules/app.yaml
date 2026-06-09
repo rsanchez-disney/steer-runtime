@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0135882 - WDPR Ant-Man Schedules (Kronos)"
+  configuration_items:
+    - "BAPP0135882 - WDPR Ant-Man Schedules (Kronos)"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

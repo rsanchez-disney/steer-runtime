@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLP OLCI"
+  configuration_items:
+    - "DLP OLCI"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 
