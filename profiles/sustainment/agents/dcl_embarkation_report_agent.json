@@ -1,0 +1,19 @@
+{
+  "name": "dcl_embarkation_report_agent",
+  "description": "Generates DCL Mobile Navigator embarkation day report — voyage detection, MAS data, NR metrics, and PDF generation",
+  "prompt": "dcl_embarkation_report_agent.md",
+  "tools": [
+    "@newrelic-mobile-mcp/*",
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@newrelic-mobile-mcp/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/sustainment_guidelines.md"
+  ]
+}

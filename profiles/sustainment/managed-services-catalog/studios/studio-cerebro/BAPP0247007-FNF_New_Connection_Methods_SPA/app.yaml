@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR FnF New Connection Methods SPA"
+  configuration_items:
+    - "WDPR FnF New Connection Methods SPA"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

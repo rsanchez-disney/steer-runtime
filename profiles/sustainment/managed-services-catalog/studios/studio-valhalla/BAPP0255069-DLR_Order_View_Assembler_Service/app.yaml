@@ -14,7 +14,8 @@ escalation_contacts:
     role: "primary"
     contact: "Christian.A.Orrego.-ND@disney.com"
 servicenow:
-  configuration_item: "DLR Order View Assembler Service"
+  configuration_items:
+    - "DLR Order View Assembler Service"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691604368/UC+-+OrderVAS+DLR+Runbook"

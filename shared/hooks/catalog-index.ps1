@@ -85,7 +85,7 @@ foreach ($studio in $Studios) {
         $bappId = if ($content -match '(?m)^bapp_id:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $fullName = if ($content -match '(?m)^full_name:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $supportStudio = if ($content -match '(?m)^support_studio:\s*"([^"]*)"') { $Matches[1] } else { "" }
-        $ci = if ($content -match '(?m)\s+configuration_item:\s*"([^"]*)"') { $Matches[1] } else { "" }
+        $ci = if ($content -match '(?m)\s+configuration_items:\s*"([^"]*)"') { $Matches[1] } else { "" }
         # Extract ServiceNow assignment group for incident routing
         $assignGroup = if ($content -match '(?m)\s+assignment_group:\s*"([^"]*)"') { $Matches[1] } else { "" }
         # Extract full app description (collapsed to single line for table format)

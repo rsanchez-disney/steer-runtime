@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: ""
+  configuration_items:
+    - ""
   assignment_group: "app-global-Digital Itinerary"
   business_service: ""
 

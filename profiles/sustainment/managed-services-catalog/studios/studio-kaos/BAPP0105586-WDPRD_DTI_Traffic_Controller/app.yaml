@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD DTI Traffic Controller"
+  configuration_items:
+    - "WDPRD DTI Traffic Controller"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

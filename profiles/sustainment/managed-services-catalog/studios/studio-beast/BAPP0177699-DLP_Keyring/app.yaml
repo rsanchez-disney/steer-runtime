@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLP Keyring"
+  configuration_items:
+    - "DLP Keyring"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

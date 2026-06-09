@@ -1,6 +1,6 @@
 {
   "name": "gitlab",
-  "description": "GitLab MCP — merge requests, file access, code review, and repository operations",
+  "description": "GitLab MCP — merge requests, file access, code review, CI/CD pipelines, and repository operations",
   "env": {
     "GITLAB_TOKEN": "Personal access token (api scope)",
     "GITLAB_HOST": "GitLab instance hostname (e.g., gitlab.disney.com)"

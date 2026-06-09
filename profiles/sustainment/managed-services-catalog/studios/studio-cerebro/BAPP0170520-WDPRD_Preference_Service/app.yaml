@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Preference Service"
+  configuration_items:
+    - "WDPRD Preference Service"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPRD Preference Service"
 

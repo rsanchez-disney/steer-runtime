@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0245042 - WDPR Ant-Man Ragnarok"
+  configuration_items:
+    - "BAPP0245042 - WDPR Ant-Man Ragnarok"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
 

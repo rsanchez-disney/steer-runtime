@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDW Capacity Managed Events"
+  configuration_items:
+    - "WDW Capacity Managed Events"
   assignment_group: "app-global-cme"
   business_service: ""
 

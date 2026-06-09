@@ -1,0 +1,14 @@
+{
+  "name": "charles-mcp",
+  "description": "Control Charles Proxy via its Web Interface API (start/stop recording, get status)",
+  "env": {
+    "CHARLES_HOST": "Charles Proxy host",
+    "CHARLES_PORT": "Charles Proxy web interface port"
+  },
+  "env_required": [],
+  "env_secret": [],
+  "env_defaults": {
+    "CHARLES_HOST": "localhost",
+    "CHARLES_PORT": "8888"
+  }
+}

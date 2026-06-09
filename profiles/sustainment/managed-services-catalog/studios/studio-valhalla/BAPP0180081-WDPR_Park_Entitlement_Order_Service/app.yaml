@@ -13,7 +13,8 @@ escalation_contacts:
     role: "primary"
     contact: "Christian.A.Orrego.-ND@disney.com"
 servicenow:
-  configuration_item: "WDPR Park Entitlement Order Service"
+  configuration_items:
+    - "WDPR Park Entitlement Order Service"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602159/UC+-+PEOS+WDW+-+Runbook"

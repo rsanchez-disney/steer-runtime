@@ -24,7 +24,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR CME Admin"
+  configuration_items:
+    - "WDPR CME Admin"
   assignment_group: "app-global-cme"
   business_service: ""
 

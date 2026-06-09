@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0089428 - WDPR Ant-Man Services (Longshot)"
+  configuration_items:
+    - "BAPP0089428 - WDPR Ant-Man Services (Longshot)"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

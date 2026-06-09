@@ -1,0 +1,12 @@
+{
+  "name": "logcat-mcp",
+  "description": "Read Android logcat output via adb (filter by tag, priority, package, crash buffer)",
+  "env": {
+    "ADB_PATH": "Path to adb binary"
+  },
+  "env_required": [],
+  "env_secret": [],
+  "env_defaults": {
+    "ADB_PATH": "adb"
+  }
+}

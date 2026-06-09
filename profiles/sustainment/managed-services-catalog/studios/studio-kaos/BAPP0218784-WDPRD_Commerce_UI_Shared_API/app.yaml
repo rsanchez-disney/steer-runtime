@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Commerce UI Shared API"
+  configuration_items:
+    - "WDPRD Commerce UI Shared API"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

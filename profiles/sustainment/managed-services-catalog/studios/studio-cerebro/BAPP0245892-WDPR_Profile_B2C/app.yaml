@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Profile B2C"
+  configuration_items:
+    - "WDPR Profile B2C"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPR Profile B2C"
 

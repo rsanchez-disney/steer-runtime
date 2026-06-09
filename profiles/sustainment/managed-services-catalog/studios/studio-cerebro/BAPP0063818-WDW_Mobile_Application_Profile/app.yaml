@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDW Mobile Application Profile"
+  configuration_items:
+    - "WDW Mobile Application Profile"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

@@ -29,7 +29,8 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "DLR Availability Calendar"
+  configuration_items:
+    - "DLR Availability Calendar"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

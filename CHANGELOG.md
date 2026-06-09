@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+### Added
+- **New Relic MCP server** — 5 read-only tools (run_nrql, list_entities, get_entity_golden_signals, get_alert_violations, get_deployments) via NerdGraph GraphQL API with query validation security
+
+### Changed
+- **MCP_REFERENCE.md** — added newrelic-mcp documentation with prompt examples
+
 ## [0.2.106]
 
 ### Added

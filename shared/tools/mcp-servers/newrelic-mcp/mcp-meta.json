@@ -1,0 +1,14 @@
+{
+  "name": "newrelic",
+  "description": "New Relic observability — NRQL queries, entity search, alerts, deployments via NerdGraph API",
+  "env": {
+    "NEW_RELIC_API_KEY": "New Relic User API key (starts with NRAK-)",
+    "NEW_RELIC_ACCOUNT_ID": "New Relic numeric account ID",
+    "NEW_RELIC_REGION": "API region (US or EU)"
+  },
+  "env_required": ["NEW_RELIC_API_KEY", "NEW_RELIC_ACCOUNT_ID"],
+  "env_secret": ["NEW_RELIC_API_KEY"],
+  "env_defaults": {
+    "NEW_RELIC_REGION": "US"
+  }
+}

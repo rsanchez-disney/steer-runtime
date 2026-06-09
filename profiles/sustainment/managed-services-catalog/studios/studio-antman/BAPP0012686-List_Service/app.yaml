@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0012686"
+  configuration_items:
+    - "BAPP0012686"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

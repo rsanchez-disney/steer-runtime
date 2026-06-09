@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD Profile Node WAM"
+  configuration_items:
+    - "WDPRD Profile Node WAM"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPRD Profile Node WAM"
 

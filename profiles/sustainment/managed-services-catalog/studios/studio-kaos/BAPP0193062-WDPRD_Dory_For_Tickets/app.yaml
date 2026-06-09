@@ -9,7 +9,8 @@ escalation_contacts:
     role: "primary"
     contact: "Gabriela.X.Rossi.-ND@disney.com"
 servicenow:
-  configuration_item: "WDPRD Dory For Tickets"
+  configuration_items:
+    - "WDPRD Dory For Tickets"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"

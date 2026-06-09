@@ -25,7 +25,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "Parks Ticketing Platform"
+  configuration_items:
+    - "Parks Ticketing Platform"
   assignment_group: "Parks Commerce Sustainment"
   business_service: "Parks Digital Commerce"
 

@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "BAPP0242775 - WDPR Ant-Man Sentinel"
+  configuration_items:
+    - "BAPP0242775 - WDPR Ant-Man Sentinel"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
 

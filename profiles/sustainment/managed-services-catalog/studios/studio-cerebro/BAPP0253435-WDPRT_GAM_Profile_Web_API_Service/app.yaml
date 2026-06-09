@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRT GAM Profile Web API Service"
+  configuration_items:
+    - "WDPRT GAM Profile Web API Service"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

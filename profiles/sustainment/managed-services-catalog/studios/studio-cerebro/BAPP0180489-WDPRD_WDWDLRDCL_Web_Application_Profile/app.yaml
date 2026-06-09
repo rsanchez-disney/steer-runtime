@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPRD WDW/DLR/DCL Web Application (Profile) (profile-spa)"
+  configuration_items:
+    - "WDPRD WDW/DLR/DCL Web Application (Profile) (profile-spa)"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

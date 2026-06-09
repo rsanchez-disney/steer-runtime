@@ -14,7 +14,8 @@ escalation_contacts:
     role: "primary"
     contact: "Victor.Ramirez.-ND@disney.com"
 servicenow:
-  configuration_item: "WDPRD Entitlement-View-Assembly-Service"
+  configuration_items:
+    - "WDPRD Entitlement-View-Assembly-Service"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/688921376/WDW+EVAS+Runbook"
