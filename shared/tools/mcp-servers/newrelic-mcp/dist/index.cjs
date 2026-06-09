@@ -26479,6 +26479,9 @@ function validateNrqlQuery(query) {
   }
   return { valid: true };
 }
+function sanitizeNrqlString(value) {
+  return value.replace(/'/g, "").replace(/\\/g, "").replace(/[\r\n]/g, " ");
+}
 
 // src/tools/runNrql.ts
 var runNrqlSchema = {
@@ -26571,16 +26574,17 @@ var listEntitiesSchema = {
 async function handleListEntities(args) {
   const { query, entityType, limit = 25 } = args;
   let searchQuery = "";
-  if (query) searchQuery += `name LIKE '${query}'`;
+  if (query) searchQuery += `name LIKE '${sanitizeNrqlString(query)}'`;
   if (entityType) {
     if (searchQuery) searchQuery += " AND ";
     searchQuery += `type = '${entityType}'`;
   }
+  const effectiveLimit = Math.min(limit, 100);
   const gql = `
-        query($searchQuery: String, $limit: Int) {
+        query($searchQuery: String) {
             actor {
                 entitySearch(query: $searchQuery) {
-                    results(limit: $limit) {
+                    results {
                         entities {
                             guid
                             name
@@ -26600,10 +26604,10 @@ async function handleListEntities(args) {
         }
     `;
   const data = await apiClient.nerdgraph(gql, {
-    searchQuery: searchQuery || null,
-    limit: Math.min(limit, 100)
+    searchQuery: searchQuery || null
   });
-  const entities = data?.actor?.entitySearch?.results?.entities || [];
+  let entities = data?.actor?.entitySearch?.results?.entities || [];
+  entities = entities.slice(0, effectiveLimit);
   const summary = entities.map((e2) => ({
     name: e2.name,
     type: e2.entityType,
@@ -26659,7 +26663,7 @@ async function handleGetEntityGoldenSignals(args) {
             query($name: String) {
                 actor {
                     entitySearch(query: $name) {
-                        results(limit: 1) {
+                        results {
                             entities {
                                 guid
                                 name
@@ -26671,7 +26675,7 @@ async function handleGetEntityGoldenSignals(args) {
             }
         `;
     const searchData = await apiClient.nerdgraph(searchGql, {
-      name: `name = '${entityName}'`
+      name: `name = '${sanitizeNrqlString(entityName)}'`
     });
     const entities = searchData?.actor?.entitySearch?.results?.entities || [];
     if (entities.length === 0) {
@@ -26793,7 +26797,8 @@ async function handleGetAlertViolations(args) {
     conditions.push(`event = 'open'`);
   }
   if (entityName) {
-    conditions.push(`entityName LIKE '%${entityName}%'`);
+    const safeName = sanitizeNrqlString(entityName);
+    conditions.push(`entityName LIKE '%${safeName}%'`);
   }
   if (conditions.length > 0) {
     nrql += ` WHERE ${conditions.join(" AND ")}`;
@@ -26872,7 +26877,7 @@ async function handleGetDeployments(args) {
             query($name: String) {
                 actor {
                     entitySearch(query: $name) {
-                        results(limit: 1) {
+                        results {
                             entities {
                                 guid
                                 name
@@ -26883,7 +26888,7 @@ async function handleGetDeployments(args) {
             }
         `;
     const searchData = await apiClient.nerdgraph(searchGql, {
-      name: `name = '${entityName}'`
+      name: `name = '${sanitizeNrqlString(entityName)}'`
     });
     const entities = searchData?.actor?.entitySearch?.results?.entities || [];
     if (entities.length === 0) {
@@ -26938,7 +26943,7 @@ async function handleGetDeployments(args) {
     };
   } catch (error2) {
     const acctId = parseInt(apiClient.getAccountId(), 10);
-    const nrql = entityName ? `SELECT * FROM Deployment WHERE appName = '${entityName}' SINCE 7 days ago LIMIT ${limit}` : `SELECT * FROM Deployment SINCE 7 days ago LIMIT ${limit}`;
+    const nrql = entityName ? `SELECT * FROM Deployment WHERE appName = '${sanitizeNrqlString(entityName)}' SINCE 7 days ago LIMIT ${limit}` : `SELECT * FROM Deployment SINCE 7 days ago LIMIT ${limit}`;
     const fallbackGql = `
             query($accountId: Int!, $nrqlQuery: Nrql!) {
                 actor {
