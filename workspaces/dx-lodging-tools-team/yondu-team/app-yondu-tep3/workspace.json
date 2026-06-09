@@ -1,5 +1,5 @@
 {
-  "name": "yondu-tep3",
+  "name": "app-yondu-tep3",
   "extends": "yondu-team",
   "description": "TEP3 project \u2014 DLR Pre-Arrival / Post Booking enhancements on Resort Reservation VA, Guest RR SPA/API, and Package Entitlement Service",
   "team": "Studio Yondu \u2014 TEP3",
