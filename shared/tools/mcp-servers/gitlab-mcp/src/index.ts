@@ -29,6 +29,15 @@ import { gitlabGetFileSchema, handleGitlabGetFile } from "./tools/gitlabGetFile.
 import { gitlabGetFilesSchema, handleGitlabGetFiles } from "./tools/gitlabGetFiles.js";
 import { gitlabCreateReviewSchema, handleGitlabCreateReview } from "./tools/gitlabCreateReview.js";
 import { gitlabListRemotesSchema, handleGitlabListRemotes } from "./tools/gitlabListRemotes.js";
+import { gitlabGetProjectTreeSchema, handleGitlabGetProjectTree } from "./tools/gitlabGetProjectTree.js";
+import { gitlabSearchProjectSchema, handleGitlabSearchProject } from "./tools/gitlabSearchProject.js";
+import { gitlabListPipelinesSchema, handleGitlabListPipelines } from "./tools/gitlabListPipelines.js";
+import { gitlabTriggerPipelineSchema, handleGitlabTriggerPipeline } from "./tools/gitlabTriggerPipeline.js";
+import { gitlabGetPipelineSchema, handleGitlabGetPipeline } from "./tools/gitlabGetPipeline.js";
+import { gitlabGetPipelineJobsSchema, handleGitlabGetPipelineJobs } from "./tools/gitlabGetPipelineJobs.js";
+import { gitlabGetPipelineBridgesSchema, handleGitlabGetPipelineBridges } from "./tools/gitlabGetPipelineBridges.js";
+import { gitlabGetJobLogSchema, handleGitlabGetJobLog } from "./tools/gitlabGetJobLog.js";
+import { gitlabPlayJobSchema, handleGitlabPlayJob } from "./tools/gitlabPlayJob.js";
 
 // Load environment variables from .env file in the script's directory
 config({ path: path.join(scriptDir, "..", ".env") });
@@ -46,6 +55,15 @@ const allSchemas = [
     gitlabGetFilesSchema,
     gitlabCreateReviewSchema,
     gitlabListRemotesSchema,
+    gitlabGetProjectTreeSchema,
+    gitlabSearchProjectSchema,
+    gitlabListPipelinesSchema,
+    gitlabTriggerPipelineSchema,
+    gitlabGetPipelineSchema,
+    gitlabGetPipelineJobsSchema,
+    gitlabGetPipelineBridgesSchema,
+    gitlabGetJobLogSchema,
+    gitlabPlayJobSchema,
 ];
 
 // Build schemas with prefixed names
@@ -67,6 +85,15 @@ const baseHandlers: Record<string, (args: any) => Promise<any>> = {
     gitlab_get_files: handleGitlabGetFiles,
     gitlab_create_review: handleGitlabCreateReview,
     gitlab_list_remotes: handleGitlabListRemotes,
+    gitlab_get_project_tree: handleGitlabGetProjectTree,
+    gitlab_search_project: handleGitlabSearchProject,
+    gitlab_list_pipelines: handleGitlabListPipelines,
+    gitlab_trigger_pipeline: handleGitlabTriggerPipeline,
+    gitlab_get_pipeline: handleGitlabGetPipeline,
+    gitlab_get_pipeline_jobs: handleGitlabGetPipelineJobs,
+    gitlab_get_pipeline_bridges: handleGitlabGetPipelineBridges,
+    gitlab_get_job_log: handleGitlabGetJobLog,
+    gitlab_play_job: handleGitlabPlayJob,
 };
 
 // Build handler map with prefixed keys

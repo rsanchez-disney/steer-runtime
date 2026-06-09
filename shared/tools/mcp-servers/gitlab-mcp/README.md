@@ -9,6 +9,8 @@ Model Context Protocol (MCP) server for GitLab API integration. Provides tools f
 - **MR lifecycle** — Create, update, comment, search, and review merge requests
 - **File access** — Read single or multiple files from any branch/ref
 - **Code review** — Post inline discussion threads on MR diffs
+- **CI/CD** — List, trigger, and inspect pipelines, jobs, and bridges
+- **Repository** — Browse project tree and search code
 
 ## Tools
 
@@ -25,6 +27,15 @@ Model Context Protocol (MCP) server for GitLab API integration. Provides tools f
 | `gitlab_get_files` | Read multiple files in a single call |
 | `gitlab_create_review` | Post inline review comments and optionally approve |
 | `gitlab_list_remotes` | Show the configured GitLab instance URL |
+| `gitlab_get_project_tree` | List files and directories in a repository |
+| `gitlab_search_project` | Search for text within project code |
+| `gitlab_list_pipelines` | List recent pipelines for a project |
+| `gitlab_trigger_pipeline` | Trigger a new pipeline |
+| `gitlab_get_pipeline` | Get details of a specific pipeline |
+| `gitlab_get_pipeline_jobs` | List jobs for a pipeline |
+| `gitlab_get_pipeline_bridges` | List bridge jobs (downstream triggers) |
+| `gitlab_get_job_log` | Get log/trace output of a job |
+| `gitlab_play_job` | Trigger a manual job |
 
 ## Configuration
 
@@ -117,6 +128,15 @@ src/
     gitlabGetFiles.ts
     gitlabCreateReview.ts
     gitlabListRemotes.ts
+    gitlabGetProjectTree.ts
+    gitlabSearchProject.ts
+    gitlabListPipelines.ts
+    gitlabTriggerPipeline.ts
+    gitlabGetPipeline.ts
+    gitlabGetPipelineJobs.ts
+    gitlabGetPipelineBridges.ts
+    gitlabGetJobLog.ts
+    gitlabPlayJob.ts
 ```
 
 ## Token Scopes
