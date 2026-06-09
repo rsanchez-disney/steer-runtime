@@ -1,0 +1,28 @@
+{
+  "name": "coverage_analyzer_agent",
+  "description": "Analyzes test coverage by comparing XRay test cases against existing tests and measuring code coverage",
+  "prompt": "coverage_analyzer_agent.md",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "@jira/*"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        ".kiro/specs/qa-coverage-analyzer/**",
+        "test/**",
+        "src/**"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://profiles/dev-core/context/coverage_framework.md",
+    "file://README.md"
+  ]
+}

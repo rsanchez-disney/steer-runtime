@@ -3,9 +3,9 @@
   "skills": [
     "skills/coverage-epic-mode.md",
     "skills/coverage-ticket-mode.md",
-    "skills/coverage-lcov-flutter.md"
+    "skills/coverage-karma-angular.md"
   ],
   "resources": [
-    "file://profiles/dev-mobile/context/flutter_test_patterns.md"
+    "file://profiles/dev-web/context/angular_test_patterns.md"
   ]
 }

@@ -36,14 +36,15 @@ For each OPP: ✅ Maps to AC | ⚠️ Extra coverage | ❌ No matching AC
 
 ## Ticket Step 4: Code Implementation Validation
 
-Search `lib/src/features/` for source files implementing the ticket.
+Search the project's source directory for files implementing the ticket's functionality. The source directory depends on the platform (e.g., `lib/src/features/` for Flutter, `src/app/` for Angular, `internal/` or `cmd/` for Go). Use the directory resolved from Team_Label or platform detection.
+
 Per AC: ✅ Implemented | ⚠️ Partial | ❌ Not found
 
 ---
 
 ## Ticket Step 5: Test Coverage Validation
 
-Search for OPP tag (`group('OPP-XXXX:`) or semantic match.
+Search for OPP tag in test code (`group('OPP-XXXX:` / `describe('OPP-XXXX:` / `// OPP-XXXX`) or semantic match.
 Per OPP: ✅ Test exists | ⚠️ Partial test | ❌ No test
 
 ---

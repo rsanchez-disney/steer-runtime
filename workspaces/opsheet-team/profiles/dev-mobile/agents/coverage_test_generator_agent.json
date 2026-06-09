@@ -1,33 +1,15 @@
 {
   "name": "coverage_test_generator_agent",
-  "description": "Generates missing Flutter tests based on coverage gap reports, processing tickets sequentially with OPP tagging and test validation",
-  "prompt": "coverage_test_generator_agent.md",
-  "tools": [
-    "read",
-    "write",
-    "shell",
-    "@jira/*"
+  "skills": [
+    "skills/coverage-epic-mode.md",
+    "skills/coverage-ticket-mode.md",
+    "skills/coverage-lcov-flutter.md",
+    "skills/coverage-test-rules-flutter.md"
   ],
-  "toolsSettings": {
-    "write": {
-      "allowedPaths": [
-        ".kiro/specs/qa-coverage-analyzer/**",
-        "test/**"
-      ]
-    }
-  },
   "resources": [
+    "file://profiles/dev-mobile/context/flutter_test_patterns.md",
     "file://.kiro/steering/02-tech.md",
     "file://.kiro/steering/05-code-style.md",
-    "file://.kiro/steering/01-structure.md",
-    "file://profiles/dev-mobile/context/flutter_test_patterns.md",
-    "file://README.md"
-  ],
-  "skills": [
-    "skills/coverage-lcov.md",
-    "skills/coverage-test-rules.md"
-  ],
-  "allowedTools": [
-    "@jira/*"
+    "file://.kiro/steering/01-structure.md"
   ]
 }

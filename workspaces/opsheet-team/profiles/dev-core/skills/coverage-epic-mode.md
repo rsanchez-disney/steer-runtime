@@ -1,6 +1,6 @@
 # Skill: Coverage Epic Mode
 
-Use this skill when the user provides an Epic ticket ID for bulk coverage analysis (OPP + lcov).
+Use this skill when the user provides an Epic ticket ID for bulk coverage analysis (OPP + code coverage).
 
 ---
 
@@ -122,23 +122,30 @@ Cache format:
 
 ## Phase 4: Repository Test Scanning
 
+### Step 4.0: Validate Test_Directory
+
+Before scanning, verify the resolved Test_Directory exists in the workspace. If it does not exist:
+> "⚠️ Test directory `{Test_Directory}` not found. Please provide the correct path for this project."
+
+Wait for user input before proceeding.
+
 ### Step 4.1: Find Test Files
 
-Search for all `*_test.dart` files within the configured Test_Directory.
+Search for all test files within the configured Test_Directory using the platform's test file pattern (e.g., `*_test.dart` for Flutter, `*.spec.ts` for Angular, `*_test.go` for Go).
 
 ### Step 4.2: Extract Test Names
 
 **Limit:** If more than 30 test files are found, warn the user:
 > "⚠️ Found {N} test files (limit is 30). I'll read the first 30 sorted alphabetically."
 
-For each test file (up to 30), read the file and extract:
-- `group('...')` — test group names (can be nested)
-- `test('...')` — individual test names
-- `testWidgets('...')` — widget test names
+For each test file (up to 30), read the file and extract test names using the platform's conventions:
+- **Flutter/Dart:** `group('...')`, `test('...')`, `testWidgets('...')`
+- **Angular/TypeScript:** `describe('...')`, `it('...')`
+- **Go:** `func Test...`, `t.Run('...')`
 
 ### Step 4.3: Organize by Feature
 
-Organize by directory structure: `test/src/features/{feature_name}/`
+Organize by directory structure within the Test_Directory.
 
 ### Step 4.4: Handle Empty Results
 
@@ -151,7 +158,7 @@ If no test files found: "No automated test files found in `{Test_Directory}`." C
 ### Step 5.1: OPP Tag Matching (Primary — Deterministic)
 
 Search for explicit OPP ticket references in test code:
-- `group('OPP-XXXX:` or `// OPP-XXXX` or test names containing `OPP-XXXX`
+- `group('OPP-XXXX:` / `describe('OPP-XXXX:` / `t.Run("OPP-XXXX:` or `// OPP-XXXX` or test names containing `OPP-XXXX`
 - If found → ✅ **Covered**
 
 ### Step 5.2: Semantic Matching (Secondary)

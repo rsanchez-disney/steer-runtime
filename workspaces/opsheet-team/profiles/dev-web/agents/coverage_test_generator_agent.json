@@ -1,0 +1,12 @@
+{
+  "name": "coverage_test_generator_agent",
+  "skills": [
+    "skills/coverage-epic-mode.md",
+    "skills/coverage-ticket-mode.md",
+    "skills/coverage-karma-angular.md",
+    "skills/coverage-test-rules-angular.md"
+  ],
+  "resources": [
+    "file://profiles/dev-web/context/angular_test_patterns.md"
+  ]
+}

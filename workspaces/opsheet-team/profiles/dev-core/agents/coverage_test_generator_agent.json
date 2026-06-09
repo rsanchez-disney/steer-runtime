@@ -1,0 +1,28 @@
+{
+  "name": "coverage_test_generator_agent",
+  "description": "Generates missing tests to reach coverage threshold, processing tickets sequentially with OPP tagging and code coverage improvement",
+  "prompt": "coverage_test_generator_agent.md",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "@jira/*"
+  ],
+  "toolsSettings": {
+    "write": {
+      "allowedPaths": [
+        ".kiro/specs/qa-coverage-analyzer/**",
+        "test/**",
+        "src/**"
+      ]
+    }
+  },
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://profiles/dev-core/context/coverage_framework.md",
+    "file://README.md"
+  ]
+}
