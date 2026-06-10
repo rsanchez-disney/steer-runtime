@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Dine Plan Middleware - AWS Latest"
+    - "WDW Dine Plan Middleware - AWS Load"
+    - "WDW Dine Plan Middleware - AWS Production"
+    - "WDW Dine Plan Middleware - AWS Stage"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

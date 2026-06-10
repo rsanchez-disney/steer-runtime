@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Profile JWT service"
+    - "WDPRD Profile JWT service - AWS Latest"
+    - "WDPRD Profile JWT service - AWS Load Test"
+    - "WDPRD Profile JWT service - AWS Production"
+    - "WDPRD Profile JWT service - AWS Stage"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

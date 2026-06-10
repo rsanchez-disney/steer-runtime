@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT Experience Order Service - AWS Latest"
+    - "WDPRT Experience Order Service - AWS Load Test"
+    - "WDPRT Experience Order Service - AWS Production"
+    - "WDPRT Experience Order Service - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

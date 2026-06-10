@@ -31,6 +31,10 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 servicenow:
   configuration_items:
     - "DLR Park Access Hub"
+    - "DLR Park Access Hub - AWS Latest"
+    - "DLR Park Access Hub - AWS Load Test"
+    - "DLR Park Access Hub - AWS Production"
+    - "DLR Park Access Hub - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

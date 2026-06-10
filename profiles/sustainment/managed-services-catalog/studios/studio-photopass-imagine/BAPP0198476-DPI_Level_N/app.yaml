@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Level N - WDW - AWS Latest"
+    - "DPI Level N - WDW - AWS Load Test"
+    - "DPI Level N - WDW - AWS Production"
+    - "DPI Level N - WDW - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

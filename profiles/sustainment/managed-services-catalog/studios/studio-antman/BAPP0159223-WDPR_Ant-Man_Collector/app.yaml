@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0159223 - WDPR Ant-Man Collector"
+    - "WDPR Ant-Man Collector - AWS Latest"
+    - "WDPR Ant-Man Collector - AWS Load Test"
+    - "WDPR Ant-Man Collector - AWS Production"
+    - "WDPR Ant-Man Collector - AWS Staging"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=u_cmdb_ci_business_appl.do?sys_id=1ec5223cdb787f807ee051d7f4961928%26sysparm_view=corporate"
   assignment_group: "app-global-ant-man"
   ticket_atscode_ag: "app-flwdw-TBXLoad"

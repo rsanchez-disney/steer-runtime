@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW FnB Order Service - AWS Latest"
+    - "WDW FnB Order Service - AWS Load Test"
+    - "WDW FnB Order Service - AWS Production"
+    - "WDW FnB Order Service - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

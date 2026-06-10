@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR ElasticSearch SaaS - Latest"
+    - "WDPR ElasticSearch SaaS - Load Test"
+    - "WDPR ElasticSearch SaaS - Observability"
+    - "WDPR ElasticSearch SaaS - Production"
+    - "WDPR ElasticSearch SaaS - Staging"
   assignment_group: "app-global-finder-search"
   business_service: ""
 

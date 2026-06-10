@@ -28,6 +28,11 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "DLP OLCI"
+    - "DLP OLCI - AWS Latest"
+    - "DLP OLCI - AWS Load Test"
+    - "DLP OLCI - AWS Production"
+    - "DLP OLCI - AWS Staging"
+    - "DLP OLCI - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

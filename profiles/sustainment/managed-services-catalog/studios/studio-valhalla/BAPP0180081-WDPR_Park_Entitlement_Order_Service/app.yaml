@@ -15,6 +15,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR Park Entitlement Order Service"
+    - "WDPR Park Entitlement Order Service - AWS Latest"
+    - "WDPR Park Entitlement Order Service - AWS Load Test"
+    - "WDPR Park Entitlement Order Service - AWS Production"
+    - "WDPR Park Entitlement Order Service - AWS Staging"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602159/UC+-+PEOS+WDW+-+Runbook"

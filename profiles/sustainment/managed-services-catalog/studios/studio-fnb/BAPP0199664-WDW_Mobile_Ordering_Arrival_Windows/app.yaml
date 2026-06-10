@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Mobile Ordering Arrival Windows - AWS Latest"
+    - "WDW Mobile Ordering Arrival Windows - AWS Load Test"
+    - "WDW Mobile Ordering Arrival Windows - AWS Production"
+    - "WDW Mobile Ordering Arrival Windows - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

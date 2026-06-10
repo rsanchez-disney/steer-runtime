@@ -11,6 +11,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Dory For Tickets"
+    - "WDPRD Dory For Tickets - AWS Latest"
+    - "WDPRD Dory For Tickets - AWS Load Test"
+    - "WDPRD Dory For Tickets - AWS Production"
+    - "WDPRD Dory For Tickets - AWS Staging"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"

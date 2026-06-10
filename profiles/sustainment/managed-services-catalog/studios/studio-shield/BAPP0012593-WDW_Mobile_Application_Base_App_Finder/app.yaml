@@ -27,7 +27,8 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "MDX Mobile Application (Base App - Finder) - Staging"
+    - "WDW Mobile Application (Base App Finder) - Production"
   assignment_group: "app-global-finderm"
   business_service: ""
 

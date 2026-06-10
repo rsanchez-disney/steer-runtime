@@ -28,6 +28,14 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Profile Node WAM"
+    - "WDPRD Profile Node WAM - AWS Latest"
+    - "WDPRD Profile Node WAM - AWS Load Test"
+    - "WDPRD Profile Node WAM - AWS Production"
+    - "WDPRD Profile Node WAM - AWS Stage"
+    - "WDPRD Profile Node WAM - Latest"
+    - "WDPRD Profile Node WAM - Load Test"
+    - "WDPRD Profile Node WAM - Production"
+    - "WDPRD Profile Node WAM - Stage"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPRD Profile Node WAM"
 

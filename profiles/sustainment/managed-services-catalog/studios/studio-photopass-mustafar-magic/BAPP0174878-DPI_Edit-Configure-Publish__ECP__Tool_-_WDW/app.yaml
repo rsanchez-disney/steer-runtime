@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Edit-Configure-Publish (ECP) Tool - WDW - AWS Latest"
+    - "DPI Edit-Configure-Publish (ECP) Tool - WDW - AWS Load Test"
+    - "DPI Edit-Configure-Publish (ECP) Tool - WDW - AWS Production"
+    - "DPI Edit-Configure-Publish (ECP) Tool - WDW - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

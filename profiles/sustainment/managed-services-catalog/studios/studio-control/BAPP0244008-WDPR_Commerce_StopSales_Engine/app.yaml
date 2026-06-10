@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Commerce StopSales Engine - AWS Latest"
+    - "WDPR Commerce StopSales Engine - AWS Load Test"
+    - "WDPR Commerce StopSales Engine - AWS Production"
+    - "WDPR Commerce StopSales Engine - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

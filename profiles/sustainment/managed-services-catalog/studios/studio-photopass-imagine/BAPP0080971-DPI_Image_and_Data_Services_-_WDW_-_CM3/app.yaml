@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Image and Data Services - WDW - CM3 - AWS Latest"
+    - "DPI Image and Data Services - WDW - CM3 - AWS Load"
+    - "DPI Image and Data Services - WDW - CM3 - AWS Production"
+    - "DPI Image and Data Services - WDW - CM3 - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

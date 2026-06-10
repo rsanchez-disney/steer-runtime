@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT Cart+ SPA - AWS Latest"
+    - "WDPRT Cart+ SPA - AWS Load Test"
+    - "WDPRT Cart+ SPA - AWS Production"
+    - "WDPRT Cart+ SPA - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

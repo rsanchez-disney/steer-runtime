@@ -28,6 +28,8 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDW Mobile Application Profile"
+    - "WDW Mobile Application (Profile) - Production"
+    - "WDW Mobile Application (Profile) - Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

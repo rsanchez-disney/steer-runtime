@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Shuri Lambda Shuri Notification Dash Push - AWS Latest"
+    - "WDPR Shuri Lambda Shuri Notification Dash Push - AWS Load Test"
+    - "WDPR Shuri Lambda Shuri Notification Dash Push - AWS Production"
+    - "WDPR Shuri Lambda Shuri Notification Dash Push - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

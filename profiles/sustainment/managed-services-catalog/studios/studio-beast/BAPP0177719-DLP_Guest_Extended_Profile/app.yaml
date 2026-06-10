@@ -27,7 +27,13 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Guest Extended Profile - AWS Latest"
+    - "DLP Guest Extended Profile - AWS Load Test"
+    - "DLP Guest Extended Profile - AWS Production"
+    - "DLP Guest Extended Profile - AWS Staging"
+    - "DLP Guest Extended Profile - Latest"
+    - "DLP Guest Extended Profile - Production"
+    - "DLP Guest Extended Profile - Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

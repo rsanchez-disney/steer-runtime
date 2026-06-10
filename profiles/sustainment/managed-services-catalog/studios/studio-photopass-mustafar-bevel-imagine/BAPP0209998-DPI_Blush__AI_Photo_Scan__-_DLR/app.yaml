@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Blush (AI Photo Scan) - DLR - AWS Latest"
+    - "DPI Blush (AI Photo Scan) - DLR - AWS Load Test"
+    - "DPI Blush (AI Photo Scan) - DLR - AWS Production"
+    - "DPI Blush (AI Photo Scan) - DLR - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

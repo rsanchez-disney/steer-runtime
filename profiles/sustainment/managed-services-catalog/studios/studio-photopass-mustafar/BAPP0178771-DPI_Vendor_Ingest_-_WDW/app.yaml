@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Vendor Ingest - WDW - AWS Latest"
+    - "DPI Vendor Ingest - WDW - AWS Load Test"
+    - "DPI Vendor Ingest - WDW - AWS Production"
+    - "DPI Vendor Ingest - WDW - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

@@ -31,6 +31,10 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 servicenow:
   configuration_items:
     - "DLR Availability Calendar"
+    - "DLR Availability Calendar - AWS Latest"
+    - "DLR Availability Calendar - AWS Load Test"
+    - "DLR Availability Calendar - AWS Production"
+    - "DLR Availability Calendar - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Media Zip File Creator - WDW AWS - Latest"
+    - "DPI Media Zip File Creator - WDW AWS - Load"
+    - "DPI Media Zip File Creator - WDW AWS - Production"
+    - "DPI Media Zip File Creator - WDW AWS - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

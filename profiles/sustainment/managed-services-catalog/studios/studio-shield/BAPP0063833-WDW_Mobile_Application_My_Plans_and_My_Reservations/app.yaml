@@ -27,7 +27,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Mobile Application (My Plans and My Reservations) - Production"
   assignment_group: "app-global-Digital Itinerary"
   business_service: ""
 

@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD WDW/DLR/DCL Web Application (Profile) (profile-spa)"
+    - "WDPRD WDW/DLR/DCL Web Application (Profile) - AWS Latest"
+    - "WDPRD WDW/DLR/DCL Web Application (Profile) - AWS Load Test"
+    - "WDPRD WDW/DLR/DCL Web Application (Profile) - AWS Production"
+    - "WDPRD WDW/DLR/DCL Web Application (Profile) - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

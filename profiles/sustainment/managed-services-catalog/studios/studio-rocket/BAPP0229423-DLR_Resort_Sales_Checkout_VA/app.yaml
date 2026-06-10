@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Resort Sales Checkout VA - AWS Latest"
+    - "DLR Resort Sales Checkout VA - AWS Load Test"
+    - "DLR Resort Sales Checkout VA - AWS Production"
+    - "DLR Resort Sales Checkout VA - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Dining Menu UI - AWS Latest"
+    - "WDW Dining Menu UI - AWS Load Test"
+    - "WDW Dining Menu UI - AWS Production"
+    - "WDW Dining Menu UI - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Image and Data Services - DLR - Business - AWS Latest"
+    - "DPI Image and Data Services - DLR - Business - AWS Load"
+    - "DPI Image and Data Services - DLR - Business - AWS Production"
+    - "DPI Image and Data Services - DLR - Business - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

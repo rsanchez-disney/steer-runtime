@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Metadata Manager - DLR - AWS Latest"
+    - "DPI Metadata Manager - DLR - AWS Load"
+    - "DPI Metadata Manager - DLR - AWS Production"
+    - "DPI Metadata Manager - DLR - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

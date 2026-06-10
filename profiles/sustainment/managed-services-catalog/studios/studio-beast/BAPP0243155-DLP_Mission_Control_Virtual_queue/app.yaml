@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Virtual Queue - AWS Latest"
+    - "DLP Virtual Queue - AWS Load Test"
+    - "DLP Virtual Queue - AWS Production"
+    - "DLP Virtual Queue - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Payment Service - AWS Latest"
+    - "Payment Service - AWS Load Test"
+    - "Payment Service - AWS Production"
+    - "Payment Service - AWS Stage"
+    - "Payment Service - Retired"
   assignment_group: "web-global-salescart"
   business_service: ""
 

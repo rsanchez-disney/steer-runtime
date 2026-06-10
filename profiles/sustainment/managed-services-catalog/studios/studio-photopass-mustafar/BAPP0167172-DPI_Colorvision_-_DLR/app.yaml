@@ -19,7 +19,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Colorvision - DLR - Production"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

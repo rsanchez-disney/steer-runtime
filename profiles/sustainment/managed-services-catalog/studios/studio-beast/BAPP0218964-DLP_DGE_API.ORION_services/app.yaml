@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.ORION services - AWS Latest"
+    - "DLP DGE API.ORION services - AWS Load Test"
+    - "DLP DGE API.ORION services - AWS Production"
+    - "DLP DGE API.ORION services - AWS Staging"
+    - "DLP DGE API.ORION services - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

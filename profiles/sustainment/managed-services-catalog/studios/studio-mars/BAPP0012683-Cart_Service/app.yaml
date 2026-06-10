@@ -21,6 +21,15 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "Cart Service"
+    - "Cart Service - AWS Development"
+    - "Cart Service - AWS Latest"
+    - "Cart Service - AWS Load Test"
+    - "Cart Service - AWS Production"
+    - "Cart Service - AWS Stage"
+    - "Cart Service - AWS Test"
+    - "Cart Service - Production"
+    - "Cart Service - QA"
+    - "Cart Service - Staging"
   assignment_group: "web-global-salescart"
 
 documentation:

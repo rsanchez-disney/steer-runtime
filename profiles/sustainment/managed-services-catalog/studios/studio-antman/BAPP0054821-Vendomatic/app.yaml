@@ -27,6 +27,11 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "Vendomatic"
+    - "Vendomatic - AWS Latest"
+    - "Vendomatic - AWS Load"
+    - "Vendomatic - AWS Production"
+    - "Vendomatic - AWS Stage"
+    - "Vendomatic - Retired"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

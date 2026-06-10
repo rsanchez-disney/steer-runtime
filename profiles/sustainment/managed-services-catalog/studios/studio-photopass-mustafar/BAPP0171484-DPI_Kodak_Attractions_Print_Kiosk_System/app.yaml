@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Kodak Attraction Photos System - Latest"
+    - "DPI Kodak Attraction Photos System - Load Test"
+    - "DPI Kodak Attraction Photos System - Production"
+    - "DPI Kodak Attraction Photos System - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

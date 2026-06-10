@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRT GAM Profile Web API Service"
+    - "WDPRT GAM Profile Web API Service - AWS Latest"
+    - "WDPRT GAM Profile Web API Service - AWS Load Test"
+    - "WDPRT GAM Profile Web API Service - AWS Production"
+    - "WDPRT GAM Profile Web API Service - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

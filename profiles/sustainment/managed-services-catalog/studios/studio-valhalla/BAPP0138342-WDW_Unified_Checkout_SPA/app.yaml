@@ -16,6 +16,11 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDW Unified Checkout SPA"
+    - "WDW Unified Checkout SPA - AWS Latest"
+    - "WDW Unified Checkout SPA - AWS Load Test"
+    - "WDW Unified Checkout SPA - AWS Production"
+    - "WDW Unified Checkout SPA - AWS Staging"
+    - "WDW Unified Checkout SPA - Production"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/497948019/Operational+Readiness+Review+-+Unified+Checkout"

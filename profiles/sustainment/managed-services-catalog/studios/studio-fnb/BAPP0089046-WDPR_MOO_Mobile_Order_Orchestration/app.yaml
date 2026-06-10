@@ -27,7 +27,14 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR MOO Mobile Order Orchestration - AWS DLR Latest"
+    - "WDPR MOO Mobile Order Orchestration - AWS DLR Load Test"
+    - "WDPR MOO Mobile Order Orchestration - AWS DLR Production"
+    - "WDPR MOO Mobile Order Orchestration - AWS DLR Stage"
+    - "WDPR MOO Mobile Order Orchestration - AWS WDW Latest"
+    - "WDPR MOO Mobile Order Orchestration - AWS WDW Load Test"
+    - "WDPR MOO Mobile Order Orchestration - AWS WDW Production"
+    - "WDPR MOO Mobile Order Orchestration - AWS WDW Stage"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

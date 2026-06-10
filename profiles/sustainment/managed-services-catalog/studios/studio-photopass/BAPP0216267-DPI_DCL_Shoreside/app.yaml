@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI DCL Shoreside - Latest"
+    - "DPI DCL Shoreside - Load Test"
+    - "DPI DCL Shoreside - Production"
+    - "DPI DCL Shoreside - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

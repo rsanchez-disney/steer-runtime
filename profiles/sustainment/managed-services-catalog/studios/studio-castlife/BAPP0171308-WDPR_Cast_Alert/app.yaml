@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Cast Alert - GCP Latest"
+    - "WDPR Cast Alert - GCP Production"
+    - "WDPR Cast Alert - GCP Staging"
+    - "WDPR Cast Alert -GCP  Load Test"
   assignment_group: "app-global-castlife"
   business_service: ""
 

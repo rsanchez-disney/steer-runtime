@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Guest CRM Event Publisher - AWS Latest"
+    - "DLP Guest CRM Event Publisher - AWS Load Test"
+    - "DLP Guest CRM Event Publisher - AWS Production"
+    - "DLP Guest CRM Event Publisher - AWS Staging"
+    - "DLP Guest CRM Event Publisher - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

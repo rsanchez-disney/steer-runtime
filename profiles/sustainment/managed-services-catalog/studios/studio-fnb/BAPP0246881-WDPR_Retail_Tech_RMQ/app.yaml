@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Retail Tech RMQ - AWS Latest"
+    - "WDPR Retail Tech RMQ - AWS Load Test"
+    - "WDPR Retail Tech RMQ - AWS Production"
+    - "WDPR Retail Tech RMQ - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

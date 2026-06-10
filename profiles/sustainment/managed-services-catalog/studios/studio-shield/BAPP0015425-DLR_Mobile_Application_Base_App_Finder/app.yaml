@@ -27,7 +27,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Mobile Application (Base App Finder) - Production"
   assignment_group: "app-global-finderm"
   business_service: ""
 

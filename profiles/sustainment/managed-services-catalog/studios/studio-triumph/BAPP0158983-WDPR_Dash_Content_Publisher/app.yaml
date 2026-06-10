@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Dash Content Publisher - AWS Latest"
+    - "WDPR Dash Content Publisher - AWS Load Test"
+    - "WDPR Dash Content Publisher - AWS Production"
+    - "WDPR Dash Content Publisher - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

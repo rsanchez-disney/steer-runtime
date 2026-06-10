@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.Guest Activity Block - Latest"
+    - "DLP DGE API.Guest Activity Block - Load Test"
+    - "DLP DGE API.Guest Activity Block - Production"
+    - "DLP DGE API.Guest Activity Block - Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

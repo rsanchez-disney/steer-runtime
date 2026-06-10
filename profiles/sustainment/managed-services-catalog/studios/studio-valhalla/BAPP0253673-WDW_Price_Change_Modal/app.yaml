@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Price Change Modal - AWS Latest"
+    - "WDW Price Change Modal - AWS Load Test"
+    - "WDW Price Change Modal - AWS Production"
+    - "WDW Price Change Modal - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

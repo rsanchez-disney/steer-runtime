@@ -27,7 +27,19 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Lexicon View Assembler Service - AWS Latest"
+    - "WDPRD Lexicon View Assembler Service - DLR AWS Latest"
+    - "WDPRD Lexicon View Assembler Service - DLR AWS Load Test"
+    - "WDPRD Lexicon View Assembler Service - DLR AWS Production"
+    - "WDPRD Lexicon View Assembler Service - DLR AWS Stage"
+    - "WDPRD Lexicon View Assembler Service - Latest"
+    - "WDPRD Lexicon View Assembler Service - Latest (DUPLICATE)"
+    - "WDPRD Lexicon View Assembler Service - Production"
+    - "WDPRD Lexicon View Assembler Service - Staging"
+    - "WDPRD Lexicon View Assembler Service - WDW AWS Latest"
+    - "WDPRD Lexicon View Assembler Service - WDW AWS Load Test"
+    - "WDPRD Lexicon View Assembler Service - WDW AWS Production"
+    - "WDPRD Lexicon View Assembler Service - WDW AWS Stage"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

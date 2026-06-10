@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0250606 - WDPR Ant-Man Lambda Bundle"
+    - "WDPR Ant-Man Lambda Bundle - AWS Latest"
+    - "WDPR Ant-Man Lambda Bundle - AWS Load Test"
+    - "WDPR Ant-Man Lambda Bundle - AWS Production"
+    - "WDPR Ant-Man Lambda Bundle - AWS Staging"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=cmdb_ci_business_app.do?sys_id=8059dbf2c3b80a54afefd0f4e401312d%26sysparm_view=default"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0159179 - GCX Site Builder Cast SPA"
+    - "WDPR GCX Site Builder - Cast SPA -  AWS Latest"
+    - "WDPR GCX Site Builder - Cast SPA - AWS Load Test"
+    - "WDPR GCX Site Builder - Cast SPA - AWS Production"
+    - "WDPR GCX Site Builder - Cast SPA - AWS Staging"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
   access_request_form: "https://disney.service-now.com/now/nav/ui/classic/params/target/com.glideapp.servicecatalog_cat_item_guide_view.do%3Fv%3D1%26sysparm_initial%3Dtrue%26sysparm_guide%3Debcf5d57db1427c0d3839696db961953%26sysparm_link_parent%3D07706001db0a0300c536f3f7bf96199d%26sysparm_catalog%3De0d08b13c3330100c8b837659bba8fb4%26sysparm_catalog_view%3Dcatalog_default%26sysparm_view%3Dtext_search"

@@ -27,7 +27,14 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Commerce Configuration Manager - AWS Latest"
+    - "WDPR Commerce Configuration Manager - AWS Load Test"
+    - "WDPR Commerce Configuration Manager - AWS Production"
+    - "WDPR Commerce Configuration Manager - AWS Staging"
+    - "WDPR Commerce Configuration Manager WDW - AWS Latest"
+    - "WDPR Commerce Configuration Manager WDW - AWS Load Test"
+    - "WDPR Commerce Configuration Manager WDW - AWS Production"
+    - "WDPR Commerce Configuration Manager WDW - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

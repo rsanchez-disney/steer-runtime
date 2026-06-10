@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Guest Resort Reservation WebAPI - AWS Latest"
+    - "DLR Guest Resort Reservation WebAPI - AWS Load Test"
+    - "DLR Guest Resort Reservation WebAPI - AWS Production"
+    - "DLR Guest Resort Reservation WebAPI - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

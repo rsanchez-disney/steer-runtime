@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Dash Secure Couchbase Server - AWS Latest"
+    - "WDPRD Dash Secure Couchbase Server - AWS Load Test"
+    - "WDPRD Dash Secure Couchbase Server - AWS Production"
+    - "WDPRD Dash Secure Couchbase Server - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

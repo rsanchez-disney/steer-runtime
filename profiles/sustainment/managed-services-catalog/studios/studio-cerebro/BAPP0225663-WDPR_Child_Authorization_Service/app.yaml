@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR Child Authorization Service"
+    - "WDPR Child Authorization Service - AWS Latest"
+    - "WDPR Child Authorization Service - AWS Load Test"
+    - "WDPR Child Authorization Service - AWS Production"
+    - "WDPR Child Authorization Service - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPR Child Authorization Service"
 

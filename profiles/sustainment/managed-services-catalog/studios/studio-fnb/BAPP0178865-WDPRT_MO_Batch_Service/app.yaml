@@ -27,7 +27,14 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT MO Batch Service - DLR - AWS Latest"
+    - "WDPRT MO Batch Service - DLR - AWS Load Test"
+    - "WDPRT MO Batch Service - DLR - AWS Production"
+    - "WDPRT MO Batch Service - DLR - AWS Staging"
+    - "WDPRT MO Batch Service - WDW  - AWS Production"
+    - "WDPRT MO Batch Service - WDW - AWS Latest"
+    - "WDPRT MO Batch Service - WDW - AWS Load Test"
+    - "WDPRT MO Batch Service - WDW - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

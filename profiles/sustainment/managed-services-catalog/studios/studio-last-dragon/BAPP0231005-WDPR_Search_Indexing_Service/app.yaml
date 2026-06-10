@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Search Indexing Service - AWS Latest"
+    - "WDPR Search Indexing Service - AWS Load Test"
+    - "WDPR Search Indexing Service - AWS Production"
+    - "WDPR Search Indexing Service - AWS Staging"
   assignment_group: "app-global-finder-search"
   business_service: ""
 

@@ -27,7 +27,8 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW VenueNext - Production"
+    - "WDW VenueNext - Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

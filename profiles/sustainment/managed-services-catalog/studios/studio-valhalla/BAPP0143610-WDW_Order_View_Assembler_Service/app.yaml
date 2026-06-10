@@ -16,6 +16,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDW Order View Assembler Service"
+    - "WDW Order View Assembler Service - AWS Latest"
+    - "WDW Order View Assembler Service - AWS Load Test"
+    - "WDW Order View Assembler Service - AWS Production"
+    - "WDW Order View Assembler Service - AWS Staging"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691602155/UC+-+OrderVAS+WDW+Runbook"

@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Ticket Sales SPA - AWS Latest"
+    - "WDPR Ticket Sales SPA - AWS Load Test"
+    - "WDPR Ticket Sales SPA - AWS Production"
+    - "WDPR Ticket Sales SPA - AWS Staging"
+    - "WDPR Ticket Sales SPA - Production"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

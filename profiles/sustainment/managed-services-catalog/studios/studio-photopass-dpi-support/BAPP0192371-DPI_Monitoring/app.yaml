@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Monitoring - Latest"
+    - "DPI Monitoring - Load Test"
+    - "DPI Monitoring - Production"
+    - "DPI Monitoring - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

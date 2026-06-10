@@ -27,7 +27,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Show Ready - AWS Latest"
+    - "WDW Show Ready - AWS Production"
+    - "WDW Show Ready - AWS Staging"
   assignment_group: "app-global-ShowReady"
   business_service: ""
 

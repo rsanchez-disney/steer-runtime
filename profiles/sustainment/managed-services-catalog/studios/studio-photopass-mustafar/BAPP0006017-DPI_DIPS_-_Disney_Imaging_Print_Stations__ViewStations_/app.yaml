@@ -19,7 +19,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI DIPS - Disney Imaging Print Stations (ViewStations) - Production"
+    - "DPI DIPS - Disney Imaging Print Stations (ViewStations) - Production failover"
+    - "DPI DIPS - Disney Imaging Print Stations (ViewStations) - QA"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

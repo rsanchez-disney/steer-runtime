@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Dinetime Reservation Sync - AWS Latest"
+    - "WDPR Dinetime Reservation Sync - AWS Load Test"
+    - "WDPR Dinetime Reservation Sync - AWS Production"
+    - "WDPR Dinetime Reservation Sync - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

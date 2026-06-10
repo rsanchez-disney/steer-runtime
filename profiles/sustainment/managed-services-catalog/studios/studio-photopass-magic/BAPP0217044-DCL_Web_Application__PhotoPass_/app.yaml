@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DCL Web Application (PhotoPass) - AWS Latest"
+    - "DCL Web Application (PhotoPass) - AWS Load"
+    - "DCL Web Application (PhotoPass) - AWS Production"
+    - "DCL Web Application (PhotoPass) - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

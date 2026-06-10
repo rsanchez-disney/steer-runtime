@@ -23,6 +23,12 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "Booking Service"
+    - "Booking Service - AWS Latest"
+    - "Booking Service - AWS Load"
+    - "Booking Service - AWS Production"
+    - "Booking Service - AWS Stage"
+    - "Booking Service - QA"
+    - "Booking Service - Retired"
   assignment_group: "web-global-salescart"
 
 documentation:

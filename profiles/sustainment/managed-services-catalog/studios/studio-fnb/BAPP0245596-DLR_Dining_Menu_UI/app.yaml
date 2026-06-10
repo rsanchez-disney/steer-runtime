@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Dining Menu UI - AWS Latest"
+    - "DLR Dining Menu UI - AWS Load Test"
+    - "DLR Dining Menu UI - AWS Production"
+    - "DLR Dining Menu UI - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

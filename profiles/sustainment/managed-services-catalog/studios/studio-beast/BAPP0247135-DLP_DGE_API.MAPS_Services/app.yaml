@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.MAPS Services - AWS Latest"
+    - "DLP DGE API.MAPS Services - AWS Load Test"
+    - "DLP DGE API.MAPS Services - AWS Production"
+    - "DLP DGE API.MAPS Services - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

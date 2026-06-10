@@ -31,6 +31,10 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 servicenow:
   configuration_items:
     - "DLR Entitlement Sales App"
+    - "DLR Entitlement Sales App - AWS Latest"
+    - "DLR Entitlement Sales App - AWS Load Test"
+    - "DLR Entitlement Sales App - AWS Production"
+    - "DLR Entitlement Sales App - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

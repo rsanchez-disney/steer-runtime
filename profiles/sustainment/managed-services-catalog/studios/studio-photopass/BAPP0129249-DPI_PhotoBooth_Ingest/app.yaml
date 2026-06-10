@@ -19,7 +19,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI PhotoBooth Ingest - AWS Latest"
+    - "DPI PhotoBooth Ingest - AWS Load"
+    - "DPI PhotoBooth Ingest - AWS Production"
+    - "DPI PhotoBooth Ingest - AWS Stage"
+    - "DPI PhotoBooth Ingest - Production"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

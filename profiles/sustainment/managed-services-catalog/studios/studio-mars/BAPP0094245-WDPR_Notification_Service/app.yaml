@@ -17,6 +17,14 @@ escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fa
 servicenow:
   configuration_items:
     - "WDPR Notification Service"
+    - "WDPR Notification Service - AWS Latest DLR"
+    - "WDPR Notification Service - AWS Latest WDW"
+    - "WDPR Notification Service - AWS Load Test DLR"
+    - "WDPR Notification Service - AWS Load Test WDW"
+    - "WDPR Notification Service - AWS Production DLR"
+    - "WDPR Notification Service - AWS Production WDW"
+    - "WDPR Notification Service - AWS Stage DLR"
+    - "WDPR Notification Service - AWS Stage WDW"
   assignment_group: "web-global-salescart"
 
 documentation:

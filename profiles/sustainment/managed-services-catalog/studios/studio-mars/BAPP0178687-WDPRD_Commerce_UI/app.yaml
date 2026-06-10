@@ -21,6 +21,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Commerce UI"
+    - "WDPRD Commerce UI - AWS Latest"
+    - "WDPRD Commerce UI - AWS Load Test"
+    - "WDPRD Commerce UI - AWS Production"
+    - "WDPRD Commerce UI - AWS Staging"
   assignment_group: "web-global-salescart"
 
 documentation:

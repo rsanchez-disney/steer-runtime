@@ -28,6 +28,8 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "DLR Mobile Application Profile"
+    - "DLR Mobile Application (Profile) - Production"
+    - "DLR Mobile Application (Profile) - Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

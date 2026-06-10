@@ -27,7 +27,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR PACS API - AWS Latest"
+    - "WDPR PACS API - AWS Production"
+    - "WDPR PACS API - AWS Staging"
   assignment_group: "app-flwdw-pacs"
   business_service: ""
 

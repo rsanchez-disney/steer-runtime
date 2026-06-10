@@ -27,6 +27,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0089428 - WDPR Ant-Man Services (Longshot)"
+    - "WDPR Ant-Man Services -  AWS Latest"
+    - "WDPR Ant-Man Services - AWS Load Test"
+    - "WDPR Ant-Man Services - AWS Production"
+    - "WDPR Ant-Man Services - AWS Staging"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Availability Calendar - AWS Latest"
+    - "WDW Availability Calendar - AWS Load Test"
+    - "WDW Availability Calendar - AWS Production"
+    - "WDW Availability Calendar - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

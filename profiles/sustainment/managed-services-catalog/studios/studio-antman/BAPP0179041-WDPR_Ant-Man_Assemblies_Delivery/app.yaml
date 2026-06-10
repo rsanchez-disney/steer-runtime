@@ -27,6 +27,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0179041"
+    - "WDPR Ant-Man Assemblies Delivery - Latest"
+    - "WDPR Ant-Man Assemblies Delivery - Load Test"
+    - "WDPR Ant-Man Assemblies Delivery - Production"
+    - "WDPR Ant-Man Assemblies Delivery - Staging"
   assignment_group: "app-global-ant-man"
   tier_1: "ops-global-peeti-oenoc"
   tier_2: "ops-global-parks-se-guestexp"

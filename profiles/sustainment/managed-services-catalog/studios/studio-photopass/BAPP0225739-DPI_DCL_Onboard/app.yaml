@@ -19,7 +19,17 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI DCL Onboard - Adventure Production"
+    - "DPI DCL Onboard - Destiny Production"
+    - "DPI DCL Onboard - Dream Production"
+    - "DPI DCL Onboard - Fantasy Production"
+    - "DPI DCL Onboard - Latest"
+    - "DPI DCL Onboard - Load"
+    - "DPI DCL Onboard - Magic Production"
+    - "DPI DCL Onboard - Staging"
+    - "DPI DCL Onboard - Treasure Production"
+    - "DPI DCL Onboard - Wish Production"
+    - "DPI DCL Onboard - Wonder Production"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

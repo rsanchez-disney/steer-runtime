@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Retail & Restaurant Payment Service - AWS Latest"
+    - "DLR Retail & Restaurant Payment Service - AWS Load Test"
+    - "DLR Retail & Restaurant Payment Service - AWS Production"
+    - "DLR Retail & Restaurant Payment Service - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

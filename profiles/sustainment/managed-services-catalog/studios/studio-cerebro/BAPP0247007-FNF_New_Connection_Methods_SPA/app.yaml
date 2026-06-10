@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR FnF New Connection Methods SPA"
+    - "WDPR FnF New Connection Methods SPA - AWS Latest"
+    - "WDPR FnF New Connection Methods SPA - AWS Load Test"
+    - "WDPR FnF New Connection Methods SPA - AWS Production"
+    - "WDPR FnF New Connection Methods SPA - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

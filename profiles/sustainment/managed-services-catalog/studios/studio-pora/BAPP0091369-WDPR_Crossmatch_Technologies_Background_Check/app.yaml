@@ -27,7 +27,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Crossmatch Technologies Background Check - Azure Latest"
+    - "WDPR Crossmatch Technologies Background Check - Azure Production"
+    - "WDPR Crossmatch Technologies Background Check - Azure Staging"
   assignment_group: "app-global-crossmatch"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT trade-retrieve-webapi - AWS Latest"
+    - "WDPRT trade-retrieve-webapi - AWS Load Test"
+    - "WDPRT trade-retrieve-webapi - AWS Production"
+    - "WDPRT trade-retrieve-webapi - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

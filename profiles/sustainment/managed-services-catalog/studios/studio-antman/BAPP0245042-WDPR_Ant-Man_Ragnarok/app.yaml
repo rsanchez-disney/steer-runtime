@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0245042 - WDPR Ant-Man Ragnarok"
+    - "WDPR Ant-Man Ragnarok - AWS Latest"
+    - "WDPR Ant-Man Ragnarok - AWS Load Test"
+    - "WDPR Ant-Man Ragnarok - AWS Production"
+    - "WDPR Ant-Man Ragnarok - AWS Staging"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
 

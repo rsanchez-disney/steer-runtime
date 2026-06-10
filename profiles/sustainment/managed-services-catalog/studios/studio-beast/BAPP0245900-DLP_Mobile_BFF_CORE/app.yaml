@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Mobile BFF CORE - AWS Latest"
+    - "DLP Mobile BFF CORE - AWS Load Test"
+    - "DLP Mobile BFF CORE - AWS Production"
+    - "DLP Mobile BFF CORE - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

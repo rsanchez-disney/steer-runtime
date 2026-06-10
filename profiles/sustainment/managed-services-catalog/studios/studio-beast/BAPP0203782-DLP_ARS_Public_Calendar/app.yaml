@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP ARS Public Calendar - AWS Latest"
+    - "DLP ARS Public Calendar - AWS Load Test"
+    - "DLP ARS Public Calendar - AWS Production"
+    - "DLP ARS Public Calendar - AWS Stage"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

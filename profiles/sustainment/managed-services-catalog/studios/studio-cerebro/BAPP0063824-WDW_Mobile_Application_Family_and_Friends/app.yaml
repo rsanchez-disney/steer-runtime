@@ -27,7 +27,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Mobile Application (Family and Friends) - Production"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

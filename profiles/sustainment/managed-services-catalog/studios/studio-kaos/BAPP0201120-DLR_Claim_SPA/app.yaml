@@ -31,6 +31,10 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 servicenow:
   configuration_items:
     - "DLR Claim SPA"
+    - "DLR Claim SPA - AWS Latest"
+    - "DLR Claim SPA - AWS Load Test"
+    - "DLR Claim SPA - AWS Production"
+    - "DLR Claim SPA - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

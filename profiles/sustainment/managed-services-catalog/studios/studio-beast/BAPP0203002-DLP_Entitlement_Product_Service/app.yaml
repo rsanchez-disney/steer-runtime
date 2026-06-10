@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Entitlement Product Service - AWS Latest"
+    - "DLP Entitlement Product Service - AWS Load Test"
+    - "DLP Entitlement Product Service - AWS Production"
+    - "DLP Entitlement Product Service - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

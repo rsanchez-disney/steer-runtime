@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "HKDL Dash Secure Authentication Service - AWS Latest"
+    - "HKDL Dash Secure Authentication Service - AWS Load Test"
+    - "HKDL Dash Secure Authentication Service - AWS Production"
+    - "HKDL Dash Secure Authentication Service - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

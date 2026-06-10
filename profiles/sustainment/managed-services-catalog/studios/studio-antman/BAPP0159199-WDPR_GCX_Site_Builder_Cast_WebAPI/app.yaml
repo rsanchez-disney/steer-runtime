@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0159199 - GCX Site Builder Cast WebAPI"
+    - "WDPR GCX Site Builder - Cast WebAPI -  AWS Staging"
+    - "WDPR GCX Site Builder - Cast WebAPI - AWS Latest"
+    - "WDPR GCX Site Builder - Cast WebAPI - AWS Load Test"
+    - "WDPR GCX Site Builder - Cast WebAPI - AWS Production"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=u_cmdb_ci_business_appl.do?sys_id=4755e238db787f807ee051d7f4961960%26sysparm_view=corporate"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

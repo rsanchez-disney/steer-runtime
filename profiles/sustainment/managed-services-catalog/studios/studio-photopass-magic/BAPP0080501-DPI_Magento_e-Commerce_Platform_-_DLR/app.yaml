@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Magento e-Commerce Platform - DLR - AWS Latest"
+    - "DPI Magento e-Commerce Platform - DLR - AWS Load"
+    - "DPI Magento e-Commerce Platform - DLR - AWS Production"
+    - "DPI Magento e-Commerce Platform - DLR - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Ingest - DLR - AWS Latest"
+    - "DPI Ingest - DLR - AWS Load"
+    - "DPI Ingest - DLR - AWS Production"
+    - "DPI Ingest - DLR - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

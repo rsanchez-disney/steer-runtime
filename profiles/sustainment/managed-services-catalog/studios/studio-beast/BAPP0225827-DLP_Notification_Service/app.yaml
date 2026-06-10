@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Notification Service - Latest"
+    - "DLP Notification Service - Load"
+    - "DLP Notification Service - Production"
+    - "DLP Notification Service - Stage"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

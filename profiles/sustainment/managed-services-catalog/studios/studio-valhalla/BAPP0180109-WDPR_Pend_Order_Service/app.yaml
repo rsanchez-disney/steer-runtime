@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Pend Order Service - AWS Latest"
+    - "WDW Pend Order Service - AWS Load Test"
+    - "WDW Pend Order Service - AWS Production"
+    - "WDW Pend Order Service - AWS Staging"
+    - "WDW Pend Order Service - Production"
   assignment_group: "web-global-salescart"
   business_service: ""
 
