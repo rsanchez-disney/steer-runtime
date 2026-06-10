@@ -28,55 +28,13 @@ Each CPC domain includes:
 - **Project Manager (PM)** — delivery coordination, intake, reporting
 - **Tech Manager (TM)** — technical oversight, architecture decisions
 - **Lead Engineer (TL)** — hands-on technical leadership
-- **Developer PODs** — dedicated delivery teams (2–9 FTEs per engagement)
-
-## Billing Models
-
-- **EFM** (Effort-Based Financial Model) — primary model; scoped by duration, FTEs, and deliverables
-- **PSOW** (Professional Statement of Work) — fixed-price for defined scope
+- **Developer PODs** — dedicated delivery teams
 
 ## Cross-Vertical Interface
 
 CPC interacts with partner verticals (Lodging, Payments, Commerce, etc.) through:
 - **Delivery Manager**: Daniel Deternoz
 - **Delivery Director**: Gino Caverzan
-
-## Active Workstreams
-
-### Web Global Components
-- TxP Navigation UI for WDW and DLR
-- Studio Groot — Web perf, security, backlog reduction
-- Finder accessibility improvements
-- Salesforce Web chat enhancements
-- Help Center Content Migration
-- Global Nav Search Autocomplete Analytics
-- Nav DVC OneId v5 library
-
-### Finders
-- Guest Context Service
-- Capella migration extension
-- Discovery Service (TxP) Phase 4
-- Export resort data to JedAI via Explorer Service
-- Search backlog reduction
-
-### Mobile Parks Apps
-- Enhancements for HKDL
-- Backlog Reduction
-- Localization
-- Vista Development
-- DXT Mobile Release Management Services (PSOW)
-
-### GAC / Profile
-- GAM Services
-- Profile Web Angular
-- Profile Mobile Android
-- TXP Party Profile Delivery (PSOW)
-- TXP Party R1.0 Mobile
-- TXP Party R1.1
-
-### Connected Products
-- Big Belly Show Ready Integration
-- TxP Native Wallet Web Integration
 
 ## Team Roster (by Domain)
 
