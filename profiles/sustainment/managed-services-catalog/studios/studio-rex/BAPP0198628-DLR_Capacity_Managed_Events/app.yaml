@@ -27,6 +27,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "DLR Capacity Managed Events"
+    - "DLR Capacity Managed Events - AWS Latest"
+    - "DLR Capacity Managed Events - AWS Load Test"
+    - "DLR Capacity Managed Events - AWS PRODUCTION"
+    - "DLR Capacity Managed Events - AWS Staging"
   assignment_group: "app-global-cme"
   business_service: ""
 

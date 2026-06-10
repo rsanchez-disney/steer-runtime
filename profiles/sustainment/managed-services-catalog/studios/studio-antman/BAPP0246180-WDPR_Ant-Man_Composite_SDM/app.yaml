@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0246180 - WDPR Ant-Man Composite SDM"
+    - "WDPR Ant-Man Composite SDM - AWS Latest"
+    - "WDPR Ant-Man Composite SDM - AWS Load Test"
+    - "WDPR Ant-Man Composite SDM - AWS Production"
+    - "WDPR Ant-Man Composite SDM - AWS Staging"
   ci_link: "https://disney.service-now.com/nav_to.do?uri=%2Fcmdb_ci_business_app.do%3Fsys_id%3D4ab7586187d0e1502e2fbaa8cebb35bb%26sysparm_stack%3D%26sysparm_view%3Ddefault%26sysparm_view_forced%3Dtrue"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

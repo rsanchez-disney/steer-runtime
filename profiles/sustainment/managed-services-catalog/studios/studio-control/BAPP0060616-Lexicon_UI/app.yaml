@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Lexicon UI - AWS Latest"
+    - "Lexicon UI - AWS Load Test"
+    - "Lexicon UI - AWS Production"
+    - "Lexicon UI - AWS Stage"
+    - "Lexicon UI - Retired"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

@@ -15,6 +15,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDW Order Service"
+    - "WDW Order Service - AWS Latest"
+    - "WDW Order Service - AWS Load Test"
+    - "WDW Order Service - AWS Production"
+    - "WDW Order Service - AWS Staging"
   assignment_group: "web-global-salescart"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/691604358/UC+-+Order+Service+WDW+Runbook"

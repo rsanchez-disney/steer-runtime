@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Schedules Publisher - AWS Latest"
+    - "WDPRD Schedules Publisher - AWS Load Test"
+    - "WDPRD Schedules Publisher - AWS Production"
+    - "WDPRD Schedules Publisher - AWS Stage"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

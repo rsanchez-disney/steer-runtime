@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Level N API Gateway - WDW - AWS Latest"
+    - "DPI Level N API Gateway - WDW - AWS Load"
+    - "DPI Level N API Gateway - WDW - AWS Production"
+    - "DPI Level N API Gateway - WDW - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

@@ -1,0 +1,19 @@
+{
+  "name": "vn_inventory_report_agent",
+  "description": "Generates VenueNext menu item inventory and demand reports for DLR/WDW quick-service restaurants — inventory sellability, limited-availability patterns, guest ordering volume, and platform adoption",
+  "prompt": "vn_inventory_report_agent.md",
+  "tools": [
+    "@compass/*",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo"
+  ],
+  "allowedTools": [
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [],
+  "welcomeMessage": "👋 VN Inventory Report Agent ready!\n\nI generate inventory and demand reports for VenueNext restaurants.\n\nProvide me with:\n • Park (WDW or DLR)\n • Date range\n • Optionally: specific restaurant or category filter\n\nI'll analyze inventory sellability, availability patterns, and guest demand."
+}

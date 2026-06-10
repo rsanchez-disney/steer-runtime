@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Authentication Service - AWS Latest"
+    - "Authentication Service - AWS Load Test"
+    - "Authentication Service - AWS Production"
+    - "Authentication Service - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

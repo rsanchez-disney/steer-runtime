@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Facility Status Publisher - AWS Latest"
+    - "WDPRD Facility Status Publisher - AWS Load Test"
+    - "WDPRD Facility Status Publisher - AWS Production"
+    - "WDPRD Facility Status Publisher - AWS Stage"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

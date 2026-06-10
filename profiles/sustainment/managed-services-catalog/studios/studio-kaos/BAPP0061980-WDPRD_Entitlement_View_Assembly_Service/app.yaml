@@ -16,6 +16,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Entitlement-View-Assembly-Service"
+    - "WDPRD Entitlement-View-Assembly-Service - AWS Latest"
+    - "WDPRD Entitlement-View-Assembly-Service - AWS Load Test"
+    - "WDPRD Entitlement-View-Assembly-Service - AWS Production"
+    - "WDPRD Entitlement-View-Assembly-Service - AWS Stage"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/688921351/DLR+EVAS+Runbook"

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Shuri Lambda Shuri Notification Batch Intake - AWS Latest"
+    - "WDPR Shuri Lambda Shuri Notification Batch Intake - AWS Load Test"
+    - "WDPR Shuri Lambda Shuri Notification Batch Intake - AWS Production"
+    - "WDPR Shuri Lambda Shuri Notification Batch Intake - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

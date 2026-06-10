@@ -27,7 +27,14 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR TTC LexVAS  WDW - AWS Latest"
+    - "WDPR TTC LexVAS  WDW - AWS Load Test"
+    - "WDPR TTC LexVAS DLR - AWS Latest"
+    - "WDPR TTC LexVAS DLR - AWS Load Test"
+    - "WDPR TTC LexVAS DLR - AWS Production"
+    - "WDPR TTC LexVAS DLR - AWS Staging"
+    - "WDPR TTC LexVAS WDW - AWS Production"
+    - "WDPR TTC LexVAS WDW - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

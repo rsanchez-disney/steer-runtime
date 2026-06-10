@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards)"
+    - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards) - AWS Latest"
+    - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards) - AWS Load Test"
+    - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards) - AWS Production"
+    - "WDPRD WDW/DLR/DCL Web Application (Magic Bands + Cards) - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

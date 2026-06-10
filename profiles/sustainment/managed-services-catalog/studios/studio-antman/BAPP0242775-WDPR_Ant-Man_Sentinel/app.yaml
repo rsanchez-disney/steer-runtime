@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0242775 - WDPR Ant-Man Sentinel"
+    - "WDPR Ant-Man Sentinel - AWS Latest"
+    - "WDPR Ant-Man Sentinel - AWS Load Test"
+    - "WDPR Ant-Man Sentinel - AWS Production"
+    - "WDPR Ant-Man Sentinel - AWS Staging"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
 

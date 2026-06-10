@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Automated Guest Media Capture - WDW - AWS Latest"
+    - "DPI Automated Guest Media Capture - WDW - AWS Load Test"
+    - "DPI Automated Guest Media Capture - WDW - AWS Production"
+    - "DPI Automated Guest Media Capture - WDW - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

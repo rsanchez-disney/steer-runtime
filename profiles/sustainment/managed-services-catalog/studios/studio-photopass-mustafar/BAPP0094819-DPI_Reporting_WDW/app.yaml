@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Reporting WDW - AWS Latest"
+    - "DPI Reporting WDW - AWS Load"
+    - "DPI Reporting WDW - AWS Production"
+    - "DPI Reporting WDW - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

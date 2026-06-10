@@ -19,7 +19,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Mobile Application (PhotoPass) - Production"
+    - "WDW Mobile Application (PhotoPass) - Staging"
+    - "WDW Mobile Application (PhotoPass) - Test"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

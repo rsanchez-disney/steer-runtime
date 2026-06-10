@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP ARS Cast Tools - AWS Latest"
+    - "DLP ARS Cast Tools - AWS Load"
+    - "DLP ARS Cast Tools - AWS Production"
+    - "DLP ARS Cast Tools - AWS Stage"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

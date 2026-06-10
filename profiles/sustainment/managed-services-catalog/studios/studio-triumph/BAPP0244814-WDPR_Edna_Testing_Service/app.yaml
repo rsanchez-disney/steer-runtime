@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Edna Testing Service - AWS Latest"
+    - "WDPR Edna Testing Service - AWS Load Test"
+    - "WDPR Edna Testing Service - AWS Production"
+    - "WDPR Edna Testing Service - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

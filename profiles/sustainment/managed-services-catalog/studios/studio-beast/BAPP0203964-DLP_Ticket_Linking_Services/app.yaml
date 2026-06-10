@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Ticket Linking Services - AWS Latest"
+    - "DLP Ticket Linking Services - AWS Load Test"
+    - "DLP Ticket Linking Services - AWS Production"
+    - "DLP Ticket Linking Services - AWS Staging"
+    - "DLP Ticket Linking Services - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

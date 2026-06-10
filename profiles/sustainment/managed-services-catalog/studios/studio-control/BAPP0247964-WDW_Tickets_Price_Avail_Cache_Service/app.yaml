@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Tickets Price Avail Cache Service - AWS Latest"
+    - "WDW Tickets Price Avail Cache Service - AWS Load Test"
+    - "WDW Tickets Price Avail Cache Service - AWS Production"
+    - "WDW Tickets Price Avail Cache Service - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

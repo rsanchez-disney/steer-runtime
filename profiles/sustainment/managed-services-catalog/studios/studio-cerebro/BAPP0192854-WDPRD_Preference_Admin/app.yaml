@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Preference Admin - AWS Latest"
+    - "WDPRD Preference Admin - AWS Load Test"
+    - "WDPRD Preference Admin - AWS Production"
+    - "WDPRD Preference Admin - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

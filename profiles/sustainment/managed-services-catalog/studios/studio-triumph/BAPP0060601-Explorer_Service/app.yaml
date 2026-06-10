@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Explorer Service - AWS Latest"
+    - "Explorer Service - AWS Load Test"
+    - "Explorer Service - AWS Production"
+    - "Explorer Service - AWS Staging"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

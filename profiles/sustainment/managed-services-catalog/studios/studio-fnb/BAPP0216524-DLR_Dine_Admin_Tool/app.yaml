@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Dine Admin Tool - AWS Latest"
+    - "DLR Dine Admin Tool - AWS Load Test"
+    - "DLR Dine Admin Tool - AWS Production"
+    - "DLR Dine Admin Tool - AWS Stage"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

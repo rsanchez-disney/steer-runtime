@@ -19,7 +19,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Central Moderation Tool (CMT) - DLR - AWS Load Test"
+    - "DPI Central Moderation Tool (CMT) - DLR - AWS Production"
+    - "DPI Central Moderation Tool (CMT) - DLR - AWS Production failover"
+    - "DPI Central Moderation Tool (CMT) - DLR - Latest"
+    - "DPI Central Moderation Tool (CMT) - DLR - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

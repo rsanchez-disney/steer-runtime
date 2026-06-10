@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI WDW Ingest Business Logic Service - AWS Latest"
+    - "DPI WDW Ingest Business Logic Service - AWS Load"
+    - "DPI WDW Ingest Business Logic Service - AWS Production"
+    - "DPI WDW Ingest Business Logic Service - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

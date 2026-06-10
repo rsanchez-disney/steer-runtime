@@ -19,7 +19,13 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Video Rendering - WDW - AWS Latest"
+    - "DPI Video Rendering - WDW - AWS Load"
+    - "DPI Video Rendering - WDW - AWS Production"
+    - "DPI Video Rendering - WDW - AWS Staging"
+    - "DPI Video Rendering - WDW - Development"
+    - "DPI Video Rendering - WDW - Latest"
+    - "DPI Video Rendering - WDW - Production"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

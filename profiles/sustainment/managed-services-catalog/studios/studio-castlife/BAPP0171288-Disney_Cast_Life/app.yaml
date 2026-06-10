@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Disney Cast Life - GCP Latest"
+    - "Disney Cast Life - GCP Load Test"
+    - "Disney Cast Life - GCP Production"
+    - "Disney Cast Life - GCP Staging"
   assignment_group: "app-global-castlife"
   business_service: ""
 

@@ -27,6 +27,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0135882 - WDPR Ant-Man Schedules (Kronos)"
+    - "WDPR Ant-Man Schedules - AWS Latest"
+    - "WDPR Ant-Man Schedules - AWS Load Test"
+    - "WDPR Ant-Man Schedules - AWS Production"
+    - "WDPR Ant-Man Schedules - AWS Staging"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

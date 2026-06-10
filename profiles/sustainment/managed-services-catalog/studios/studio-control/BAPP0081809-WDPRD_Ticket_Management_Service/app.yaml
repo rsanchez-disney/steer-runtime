@@ -16,6 +16,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Ticket Management Service"
+    - "WDPRD Ticket Management Service - AWS Latest"
+    - "WDPRD Ticket Management Service - AWS Load Test"
+    - "WDPRD Ticket Management Service - AWS Production"
+    - "WDPRD Ticket Management Service - AWS Stage"
   assignment_group: "web-global-salestickets"
 documentation:
   runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681701804/WDW+TMS+Runbook"

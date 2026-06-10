@@ -27,6 +27,11 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0012686"
+    - "List Service -  AWS Prod"
+    - "List Service - AWS Latest"
+    - "List Service - AWS Load"
+    - "List Service - AWS Stage"
+    - "List Service - Retired"
   assignment_group: "app-global-ant-man"
 
 # --- Documentation ---

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP CME Yield Management - AWS Latest"
+    - "DLP CME Yield Management - AWS Load"
+    - "DLP CME Yield Management - AWS Production"
+    - "DLP CME Yield Management - AWS Stage"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

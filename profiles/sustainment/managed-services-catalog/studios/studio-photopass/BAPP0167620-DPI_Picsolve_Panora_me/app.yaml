@@ -19,7 +19,8 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Magic Memories - WDW - Production"
+    - "DPI Magic Memories - WDW - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

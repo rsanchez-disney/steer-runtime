@@ -1,0 +1,22 @@
+{
+  "name": "db_upgrade_analyzer_agent",
+  "description": "Analyzes RDS MariaDB/MySQL major version upgrades — compares before/after performance, detects regressions, audits parameter groups, checks CloudWatch and Splunk logs for errors",
+  "prompt": "db_upgrade_analyzer_agent.md",
+  "tools": [
+    "@compass/*",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo",
+    "grep"
+  ],
+  "allowedTools": [
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/db_upgrade_config.md"
+  ],
+  "welcomeMessage": "👋 DB Upgrade Analyzer ready!\n\nI can analyze RDS MariaDB/MySQL major version upgrades.\n\nProvide me with:\n • A DB instance identifier (e.g., my-service-mariadb-prod)\n • An AWS profile and region\n • Optionally: the old instance identifier or I'll discover it automatically\n • Optionally: a Splunk service/app name to check application-side errors\n\nI'll compare before/after metrics, audit parameter groups, and surface risks."
+}

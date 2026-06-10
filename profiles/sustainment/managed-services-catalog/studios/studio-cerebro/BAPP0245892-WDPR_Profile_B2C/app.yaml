@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR Profile B2C"
+    - "WDPR Profile B2C - AWS Latest"
+    - "WDPR Profile B2C - AWS Load Test"
+    - "WDPR Profile B2C - AWS Production"
+    - "WDPR Profile B2C - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPR Profile B2C"
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Cast Resort Reservation SPA - AWS Latest"
+    - "DLR Cast Resort Reservation SPA - AWS Load Test"
+    - "DLR Cast Resort Reservation SPA - AWS Production"
+    - "DLR Cast Resort Reservation SPA - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

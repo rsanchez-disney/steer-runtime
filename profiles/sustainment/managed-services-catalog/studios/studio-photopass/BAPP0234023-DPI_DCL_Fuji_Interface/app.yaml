@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI DCL Fuji Interface - AWS Latest"
+    - "DPI DCL Fuji Interface - AWS Load Test"
+    - "DPI DCL Fuji Interface - AWS Production"
+    - "DPI DCL Fuji Interface - AWS Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

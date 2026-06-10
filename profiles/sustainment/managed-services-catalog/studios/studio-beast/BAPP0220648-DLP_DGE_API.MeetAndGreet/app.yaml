@@ -28,6 +28,11 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "DLP DGE API.MeetAndGreet"
+    - "DLP DGE API.MeetAndGreet - AWS Latest"
+    - "DLP DGE API.MeetAndGreet - AWS Load Test"
+    - "DLP DGE API.MeetAndGreet - AWS Production"
+    - "DLP DGE API.MeetAndGreet - AWS Staging"
+    - "DLP DGE API.MeetAndGreet - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: "wdpr-dlp-is-sales-srv-meet-and-greet-provider"
 

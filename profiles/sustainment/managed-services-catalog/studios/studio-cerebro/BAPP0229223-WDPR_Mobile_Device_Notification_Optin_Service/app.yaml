@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR Mobile Device Notification Optin Service"
+    - "WDPR Mobile Device Notification Optin Service - AWS Latest"
+    - "WDPR Mobile Device Notification Optin Service - AWS Load Test"
+    - "WDPR Mobile Device Notification Optin Service - AWS Production"
+    - "WDPR Mobile Device Notification Optin Service - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

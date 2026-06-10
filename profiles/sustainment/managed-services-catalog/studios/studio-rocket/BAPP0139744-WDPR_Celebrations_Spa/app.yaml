@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Celebrations Spa - AWS Latest"
+    - "WDPR Celebrations Spa - AWS Load Test"
+    - "WDPR Celebrations Spa - AWS Production"
+    - "WDPR Celebrations Spa - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

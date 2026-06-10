@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Dine Self Check-In Service - AWS Latest"
+    - "WDW Dine Self Check-In Service - AWS Load Test"
+    - "WDW Dine Self Check-In Service - AWS Production"
+    - "WDW Dine Self Check-In Service - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

@@ -27,7 +27,8 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Mobile App - Production"
+    - "DLP Mobile App - QA"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

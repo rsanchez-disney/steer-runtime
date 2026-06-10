@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Latest"
+    - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Load Test"
+    - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Production"
+    - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Characters Publisher - AWS Latest"
+    - "WDPRD Characters Publisher - AWS Load Test"
+    - "WDPRD Characters Publisher - AWS Production"
+    - "WDPRD Characters Publisher - AWS Stage"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

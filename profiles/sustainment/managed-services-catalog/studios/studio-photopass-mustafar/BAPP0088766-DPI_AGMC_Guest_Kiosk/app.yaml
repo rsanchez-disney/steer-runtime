@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI AGMC Guest Kiosk - Latest"
+    - "DPI AGMC Guest Kiosk - Perf/Stress"
+    - "DPI AGMC Guest Kiosk - Production"
+    - "DPI AGMC Guest Kiosk - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

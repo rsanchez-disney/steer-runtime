@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Package Entitlement Service - AWS Latest"
+    - "DLR Package Entitlement Service - AWS Load Test"
+    - "DLR Package Entitlement Service - AWS Production"
+    - "DLR Package Entitlement Service - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

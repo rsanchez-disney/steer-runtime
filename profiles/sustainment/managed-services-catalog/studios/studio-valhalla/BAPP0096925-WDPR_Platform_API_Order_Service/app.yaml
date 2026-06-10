@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Order Service - AWS Latest"
+    - "WDW Order Service - AWS Load Test"
+    - "WDW Order Service - AWS Production"
+    - "WDW Order Service - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

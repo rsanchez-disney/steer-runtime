@@ -27,7 +27,12 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Health Monitor Service - AWS Latest"
+    - "Health Monitor Service - AWS Load Test"
+    - "Health Monitor Service - AWS Production"
+    - "Health Monitor Service - AWS Stage"
+    - "Health Monitor Service - Production"
+    - "Health Monitor Service - Retired"
   assignment_group: "web-global-salescart"
   business_service: ""
 

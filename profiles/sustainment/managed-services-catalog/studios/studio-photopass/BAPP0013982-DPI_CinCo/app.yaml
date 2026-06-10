@@ -19,7 +19,8 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Asset Tracking System - Production"
+    - "DPI Asset Tracking System - QA"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

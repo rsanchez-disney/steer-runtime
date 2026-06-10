@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Buzz Ride Takeaway Generation - AWS Latest"
+    - "DPI Buzz Ride Takeaway Generation - AWS Load Test"
+    - "DPI Buzz Ride Takeaway Generation - AWS Production"
+    - "DPI Buzz Ride Takeaway Generation - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

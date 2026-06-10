@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Decorating Support PPE - Development"
+    - "WDPR Decorating Support PPE - Load Test"
+    - "WDPR Decorating Support PPE - Production"
+    - "WDPR Decorating Support PPE - Stage"
+    - "WDPR Decorating Support PPE - UAT"
   assignment_group: "app-flwdw-DECSUP"
   business_service: ""
 

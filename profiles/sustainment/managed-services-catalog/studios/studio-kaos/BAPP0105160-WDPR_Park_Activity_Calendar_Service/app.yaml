@@ -31,6 +31,10 @@ jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
 servicenow:
   configuration_items:
     - "WDPR Park Activity Calendar Service"
+    - "WDPR Park Activity Calendar Service - AWS Latest"
+    - "WDPR Park Activity Calendar Service - AWS Load Test"
+    - "WDPR Park Activity Calendar Service - AWS Production"
+    - "WDPR Park Activity Calendar Service - AWS Stage"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

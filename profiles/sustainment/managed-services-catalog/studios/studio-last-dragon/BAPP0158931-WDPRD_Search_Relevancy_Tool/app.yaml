@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT Corpus Runner - AWS Latest"
+    - "WDPRT Corpus Runner - AWS Load Test"
+    - "WDPRT Corpus Runner - AWS Production"
+    - "WDPRT Corpus Runner - AWS Staging"
   assignment_group: "app-global-finder-search"
   business_service: ""
 

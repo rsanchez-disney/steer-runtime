@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR Profile View Assembly Service"
+    - "WDPR Profile View Assembly Service - AWS Latest"
+    - "WDPR Profile View Assembly Service - AWS Load Test"
+    - "WDPR Profile View Assembly Service - AWS Production"
+    - "WDPR Profile View Assembly Service - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: "WDPR Profile View Assembly Service"
 

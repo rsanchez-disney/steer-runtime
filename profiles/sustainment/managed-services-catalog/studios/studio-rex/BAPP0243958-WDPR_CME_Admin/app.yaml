@@ -26,6 +26,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR CME Admin"
+    - "WDPR CME Admin - AWS Latest"
+    - "WDPR CME Admin - AWS Load Test"
+    - "WDPR CME Admin - AWS Production"
+    - "WDPR CME Admin - AWS Staging"
   assignment_group: "app-global-cme"
   business_service: ""
 

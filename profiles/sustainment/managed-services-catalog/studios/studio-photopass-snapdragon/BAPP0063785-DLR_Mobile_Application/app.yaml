@@ -19,7 +19,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Mobile Application (PhotoPass) - Production"
+    - "DLR Mobile Application (PhotoPass) - Staging"
+    - "DLR Mobile Application (PhotoPass) - Test"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

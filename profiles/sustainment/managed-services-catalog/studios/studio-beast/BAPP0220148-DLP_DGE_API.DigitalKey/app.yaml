@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.DigitalKey - AWS Latest"
+    - "DLP DGE API.DigitalKey - AWS Load Test"
+    - "DLP DGE API.DigitalKey - AWS Production"
+    - "DLP DGE API.DigitalKey - AWS Staging"
+    - "DLP DGE API.DigitalKey - Production"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Dine Admin Tool - AWS Latest"
+    - "WDW Dine Admin Tool - AWS Load Test"
+    - "WDW Dine Admin Tool - AWS Production"
+    - "WDW Dine Admin Tool - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

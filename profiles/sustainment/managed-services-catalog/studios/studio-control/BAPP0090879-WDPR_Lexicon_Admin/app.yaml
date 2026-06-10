@@ -27,7 +27,12 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Lexicon Admin - AWS Latest"
+    - "WDPR Lexicon Admin - AWS Load Test"
+    - "WDPR Lexicon Admin - AWS Production"
+    - "WDPR Lexicon Admin - AWS Stage"
+    - "WDPR Lexicon Admin - Production"
+    - "WDPR Lexicon Admin - Retired"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

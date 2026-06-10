@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPR AuthenticatorJS"
+    - "WDPR AuthenticatorJS - AWS Latest"
+    - "WDPR AuthenticatorJS - AWS Load Test"
+    - "WDPR AuthenticatorJS - AWS Production"
+    - "WDPR AuthenticatorJS - AWS Staging"
   assignment_group: "web-global-Digital Profile"
   business_service: ""
 

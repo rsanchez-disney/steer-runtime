@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Image and Guest Data repo WDW - AWS Latest"
+    - "DPI Image and Guest Data repo WDW - AWS Load"
+    - "DPI Image and Guest Data repo WDW - AWS Production"
+    - "DPI Image and Guest Data repo WDW - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

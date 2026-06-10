@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Comms and Rover Services - WDW - AWS Latest"
+    - "DPI Comms and Rover Services - WDW - AWS Load"
+    - "DPI Comms and Rover Services - WDW - AWS Production"
+    - "DPI Comms and Rover Services - WDW - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

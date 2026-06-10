@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Capacity Managed Events - AWS Latest"
+    - "DLP Capacity Managed Events - AWS Load"
+    - "DLP Capacity Managed Events - AWS Production"
+    - "DLP Capacity Managed Events - AWS Stage"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

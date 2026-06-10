@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Retail Tech Cloud Config Service - AWS Latest"
+    - "WDPR Retail Tech Cloud Config Service - AWS Load Test"
+    - "WDPR Retail Tech Cloud Config Service - AWS Production"
+    - "WDPR Retail Tech Cloud Config Service - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

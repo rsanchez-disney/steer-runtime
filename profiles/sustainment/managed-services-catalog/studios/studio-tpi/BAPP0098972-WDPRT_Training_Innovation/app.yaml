@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRT Training Innovation - AWS Latest"
+    - "WDPRT Training Innovation - Load Test"
+    - "WDPRT Training Innovation - Production"
+    - "WDPRT Training Innovation - Stage"
   assignment_group: "app-global-OPSTraining"
   business_service: ""
 

@@ -27,7 +27,7 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR CBlite Performance Testing - AWS Load Test"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Disney Premier Access Ultimate - AWS Latest"
+    - "DLP Disney Premier Access Ultimate - AWS Load Test"
+    - "DLP Disney Premier Access Ultimate - AWS Production"
+    - "DLP Disney Premier Access Ultimate - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

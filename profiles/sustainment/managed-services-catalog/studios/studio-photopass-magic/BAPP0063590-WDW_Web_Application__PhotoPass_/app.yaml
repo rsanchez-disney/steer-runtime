@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Web Application (PhotoPass) - AWS Latest"
+    - "WDW Web Application (PhotoPass) - AWS Load"
+    - "WDW Web Application (PhotoPass) - AWS Production"
+    - "WDW Web Application (PhotoPass) - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

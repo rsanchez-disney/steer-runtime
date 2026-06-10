@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Ingest - WDW Storytelling Video - AWS Latest"
+    - "DPI Ingest - WDW Storytelling Video - AWS Load"
+    - "DPI Ingest - WDW Storytelling Video - AWS Production"
+    - "DPI Ingest - WDW Storytelling Video - AWS Stage"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

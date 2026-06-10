@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR FNB Stats Publisher Services - AWS Latest"
+    - "WDPR FNB Stats Publisher Services - AWS Load Test"
+    - "WDPR FNB Stats Publisher Services - AWS Production"
+    - "WDPR FNB Stats Publisher Services - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

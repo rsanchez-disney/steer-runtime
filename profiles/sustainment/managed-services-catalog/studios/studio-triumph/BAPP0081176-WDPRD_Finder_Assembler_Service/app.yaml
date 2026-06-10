@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPRD Finder Assembler Service - AWS Latest"
+    - "WDPRD Finder Assembler Service - AWS Load Test"
+    - "WDPRD Finder Assembler Service - AWS Production"
+    - "WDPRD Finder Assembler Service - AWS Stage"
   assignment_group: "app-global-finder-services"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Mobile Ordering Arrival Windows - AWS Latest"
+    - "DLR Mobile Ordering Arrival Windows - AWS Load Test"
+    - "DLR Mobile Ordering Arrival Windows - AWS Production"
+    - "DLR Mobile Ordering Arrival Windows - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

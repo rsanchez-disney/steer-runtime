@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Resort Reservation View Assembly - AWS Latest"
+    - "DLR Resort Reservation View Assembly - AWS Load Test"
+    - "DLR Resort Reservation View Assembly - AWS Production"
+    - "DLR Resort Reservation View Assembly - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

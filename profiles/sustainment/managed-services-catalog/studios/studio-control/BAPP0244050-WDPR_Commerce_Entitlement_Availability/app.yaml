@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Commerce Entitlement Availability - AWS Latest"
+    - "WDPR Commerce Entitlement Availability - AWS Load Test"
+    - "WDPR Commerce Entitlement Availability - AWS Production"
+    - "WDPR Commerce Entitlement Availability - AWS Staging"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

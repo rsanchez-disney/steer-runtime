@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI Attraction Photo Association - WDW - Latest"
+    - "DPI Attraction Photo Association - WDW - Load Test"
+    - "DPI Attraction Photo Association - WDW - Production"
+    - "DPI Attraction Photo Association - WDW - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

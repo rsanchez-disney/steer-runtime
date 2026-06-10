@@ -27,7 +27,9 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Aulani/DVC Offsite Resort Experience Mobile - AWS Latest"
+    - "Aulani/DVC Offsite Resort Experience Mobile - AWS Production"
+    - "Aulani/DVC Offsite Resort Experience Mobile - AWS Staging"
   assignment_group: "web-global-aulani"
   business_service: ""
 

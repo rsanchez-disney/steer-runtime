@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR FNB Barcode Generator Service - AWS Latest"
+    - "WDPR FNB Barcode Generator Service - AWS Load Test"
+    - "WDPR FNB Barcode Generator Service - AWS Production"
+    - "WDPR FNB Barcode Generator Service - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

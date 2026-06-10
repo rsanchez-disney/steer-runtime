@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Price Change Modal - AWS Latest"
+    - "WDPR Price Change Modal - AWS Load Test"
+    - "WDPR Price Change Modal - AWS Production"
+    - "WDPR Price Change Modal - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

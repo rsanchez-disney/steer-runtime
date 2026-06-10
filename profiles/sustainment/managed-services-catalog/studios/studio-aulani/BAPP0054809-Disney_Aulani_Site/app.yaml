@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Disney Aulani Site - AWS Latest"
+    - "Disney Aulani Site - AWS Load"
+    - "Disney Aulani Site - AWS Production"
+    - "Disney Aulani Site - AWS Stage"
+    - "Disney Aulani Site - Retired"
   assignment_group: "web-global-aulani"
   business_service: ""
 

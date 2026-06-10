@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP DGE API.MobileOrder - AWS Latest"
+    - "DLP DGE API.MobileOrder - AWS Load Test"
+    - "DLP DGE API.MobileOrder - AWS Production"
+    - "DLP DGE API.MobileOrder - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

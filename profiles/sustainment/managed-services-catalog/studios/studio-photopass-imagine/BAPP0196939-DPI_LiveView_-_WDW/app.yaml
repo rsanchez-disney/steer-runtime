@@ -19,7 +19,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DPI LiveView - WDW - Latest"
+    - "DPI LiveView - WDW - Load Test"
+    - "DPI LiveView - WDW - Production"
+    - "DPI LiveView - WDW - Staging"
   assignment_group: "app-flwdw-dpi"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR Lodging Pinned Offer WebAPI - AWS Latest"
+    - "WDPR Lodging Pinned Offer WebAPI - AWS Load Test"
+    - "WDPR Lodging Pinned Offer WebAPI - AWS Production"
+    - "WDPR Lodging Pinned Offer WebAPI - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

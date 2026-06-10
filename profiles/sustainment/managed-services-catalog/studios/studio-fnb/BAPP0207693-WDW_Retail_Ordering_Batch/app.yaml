@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDW Retail Ordering Batch - AWS Latest"
+    - "WDW Retail Ordering Batch - AWS Load Test"
+    - "WDW Retail Ordering Batch - AWS Production"
+    - "WDW Retail Ordering Batch - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

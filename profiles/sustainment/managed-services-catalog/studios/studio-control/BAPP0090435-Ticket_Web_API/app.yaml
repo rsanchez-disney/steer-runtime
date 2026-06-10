@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "Ticket Web API - AWS Latest"
+    - "Ticket Web API - AWS Load Test"
+    - "Ticket Web API - AWS Production"
+    - "Ticket Web API - AWS Stage"
   assignment_group: "web-global-salestickets"
   business_service: ""
 

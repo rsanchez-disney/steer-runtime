@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Guest Membership Provider - AWS Latest"
+    - "DLP Guest Membership Provider - AWS Load Test"
+    - "DLP Guest Membership Provider - AWS Production"
+    - "DLP Guest Membership Provider - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

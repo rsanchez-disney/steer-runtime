@@ -27,7 +27,11 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLP Mobile API Gateway - AWS Production"
+    - "DLP Mobile API Gateway - Latest"
+    - "DLP Mobile API Gateway - Load Test"
+    - "DLP Mobile API Gateway - Production"
+    - "DLP Mobile API Gateway - Staging"
   assignment_group: "app-frdlp-digital-ext-support"
   business_service: ""
 

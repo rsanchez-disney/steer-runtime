@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Retail Ordering Orchestration - AWS Latest"
+    - "DLR Retail Ordering Orchestration - AWS Load Test"
+    - "DLR Retail Ordering Orchestration - AWS Production"
+    - "DLR Retail Ordering Orchestration - AWS Staging"
   assignment_group: "prd-global-fnb"
   business_service: ""
 

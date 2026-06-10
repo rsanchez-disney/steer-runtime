@@ -1,0 +1,23 @@
+{
+  "name": "loadtest_agent",
+  "description": "Orchestrates load testing per project and siteId (WDW/DLR): Schedule pre-validations, GitLab pipeline execution, Splunk result verification, and failure report generation. One project+siteId at a time, load environment only.",
+  "prompt": "loadtest_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "grep",
+    "thinking",
+    "todo",
+    "@gitlab/*",
+    "@compass/*"
+  ],
+  "allowedTools": [
+    "@gitlab/*",
+    "@compass/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://.kiro/context/loadtest_config.md"
+  ],
+  "welcomeMessage": "👋 Load Test Agent ready!\n\nI can help you:\n • Pre-Validation: Verify Schedules (Arrival Windows, MOO), Setup Dining Reservations (DISCO)\n • Find and Execute Load Test Jobs\n • Verify Results in Splunk: Find executed load test jobs, Validate KPIs, Error analysis\n • Create Wiki for results\n\nProvide me with an application name, site (WDW/DLR), and load level (1x/2x/3x)."
+}

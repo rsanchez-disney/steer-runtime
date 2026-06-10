@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0089443 - WDPR Ant-Man Assembler"
+    - "WDPR Ant-Man Assembler - AWS Latest"
+    - "WDPR Ant-Man Assembler - AWS Load Test"
+    - "WDPR Ant-Man Assembler - AWS Production"
+    - "WDPR Ant-Man Assembler - AWS Staging"
   ci_link: "https://disney.service-now.com/now/nav/ui/classic/params/target/cmdb_ci_business_app.do%3Fsys_id%3D4efc8b601b5a78d048b7da01dd4bcb18%26sysparm_stack%3D%26sysparm_view%3Ddefault%26sysparm_view_forced%3Dtrue"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"

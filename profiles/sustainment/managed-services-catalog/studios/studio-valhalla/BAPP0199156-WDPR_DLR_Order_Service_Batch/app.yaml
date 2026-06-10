@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "WDPR DLR Order Service Batch - AWS Latest"
+    - "WDPR DLR Order Service Batch - AWS Load Test"
+    - "WDPR DLR Order Service Batch - AWS Production"
+    - "WDPR DLR Order Service Batch - AWS Staging"
   assignment_group: "web-global-salescart"
   business_service: ""
 

@@ -27,7 +27,10 @@ escalation_contacts:
 # --- ServiceNow ---
 servicenow:
   configuration_items:
-    - ""
+    - "DLR Ticket and Voucher Batch - AWS Latest"
+    - "DLR Ticket and Voucher Batch - AWS Load Test"
+    - "DLR Ticket and Voucher Batch - AWS Production"
+    - "DLR Ticket and Voucher Batch - AWS Staging"
   assignment_group: "web-global-rocket"
   business_service: ""
 

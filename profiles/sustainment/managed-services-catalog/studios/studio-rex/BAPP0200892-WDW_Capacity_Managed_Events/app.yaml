@@ -27,6 +27,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDW Capacity Managed Events"
+    - "WDW Capacity Managed Events - AWS Latest"
+    - "WDW Capacity Managed Events - AWS Load Test"
+    - "WDW Capacity Managed Events - AWS Production"
+    - "WDW Capacity Managed Events - AWS Staging"
   assignment_group: "app-global-cme"
   business_service: ""
 

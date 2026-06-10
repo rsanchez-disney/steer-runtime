@@ -28,6 +28,10 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "BAPP0250000 - WDPR Shuri Incognito SNS Messenger"
+    - "WDPR Shuri Incognito SNS Messenger - AWS Latest"
+    - "WDPR Shuri Incognito SNS Messenger - AWS Load Test"
+    - "WDPR Shuri Incognito SNS Messenger - AWS Production"
+    - "WDPR Shuri Incognito SNS Messenger - AWS Staging"
   ci_link: "https://disney.service-now.com/now/nav/ui/classic/params/target/cmdb_ci_business_app.do?sys_id=ca9a8305874d4298fd37da483cbb3578&sysparm_stack=&sysparm_view=default&sysparm_view_forced=true"
   assignment_group: "app-global-ant-man"
   business_service: "D-Scribe Content Management"
