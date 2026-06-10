@@ -7,6 +7,7 @@ this team is also responsible for feature integrations, 3rd party version contro
 
 **Jira Prefix**: AEXP-, IEXP-, COREEXP-
 **ServiceNow Assignment Group**: app-global-finderm
+**Studio (Jira field)**: CoreIS - Experience | Jain
 
 ## Applications supported
 
