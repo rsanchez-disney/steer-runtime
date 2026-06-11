@@ -91,6 +91,20 @@ Team workspaces pre-configure profiles, rules, and memory banks:
 
 Jira, Confluence, GitHub (Disney Enterprise), Mermaid diagrams, Bruno API testing. Tokens configured via `koda configure`.
 
+### Jira MCP — Recent Enhancements
+
+**Fix Versions support** (`jira_update_issue`):
+- `fixVersions`: replaces all fix versions (e.g., `["Hong Kong CPO"]`)
+- `addFixVersions`: adds versions without removing existing ones
+- `removeFixVersions`: removes specific versions
+
+**XRay Test Repository folder management** (Server-only):
+- `xray_list_repository_folders`: list project folder hierarchy
+- `xray_create_repository_folder`: create folder under a parent
+- `xray_get_folder_tests`: list tests in a folder (paginated)
+- `xray_move_tests_to_folder`: add/remove tests from a folder
+- `xray_delete_repository_folder`: delete a folder
+
 ## Reporting Issues
 
 When reporting a bug, include: OS, kiro-cli version (`kiro-cli --version`), koda version (`koda version`), error message, and steps to reproduce.

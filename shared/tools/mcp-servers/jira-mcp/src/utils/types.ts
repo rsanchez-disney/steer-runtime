@@ -16,7 +16,7 @@ export interface JiraTicket {
         parent?: { key: string; fields?: { summary?: string } };
         subtasks?: Array<{ key: string; fields?: { summary?: string; status?: { name: string } } }>;
         issuelinks?: Array<{
-            type?: { outward?: string; inward?: string };
+            type?: { name?: string; outward?: string; inward?: string };
             outwardIssue?: { key: string; fields?: { summary?: string; status?: { name: string } } };
             inwardIssue?: { key: string; fields?: { summary?: string; status?: { name: string } } };
         }>;
