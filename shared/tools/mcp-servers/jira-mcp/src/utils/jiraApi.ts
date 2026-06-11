@@ -141,14 +141,8 @@ export class JiraApiClient {
                 "Updating JIRA ticket with update ops:",
                 JSON.stringify(updateOps, null, 2),
             );
-        }
-
-        const body: any = {};
-        if (Object.keys(updates).length > 0) {
-            body.fields = updates;
-        }
-        if (updateOps && Object.keys(updateOps).length > 0) {
-            body.update = updateOps;
+            if (!body.update) body.update = {};
+            Object.assign(body.update, updateOps);
         }
 
         const response = await this.fetch(
