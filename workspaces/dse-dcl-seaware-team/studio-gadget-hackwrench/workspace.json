@@ -1,0 +1,9 @@
+{
+  "name": "studio-gadget-hackwrench",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Gadget Hackwrench — Java 21 / Spring Boot 3 microservice rebuild for PCeC (Personal Cruise Experience Cloud). Migrating .NET services to reactive Java.",
+  "default_agent": "orchestrator",
+  "rules": [
+    "general-java-development"
+  ]
+}

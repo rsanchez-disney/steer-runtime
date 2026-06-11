@@ -26,26 +26,11 @@ This steering file consolidates all development patterns, workflow conventions, 
 - **CRITICAL**: When starting work on a new Jira ticket / user story, ALWAYS check the current branch first. If the current branch belongs to a different ticket, switch to the correct branch (or create a new one from `develop`) BEFORE making any code changes. Never commit changes for one ticket onto another ticket's branch.
 - Push before creating PRs
 
-### Git Operations
-- **ALWAYS use the GitHub MCP** (`mcp_github_*`) for all GitHub operations: creating PRs, creating branches, pushing files, listing PRs, managing reviews, etc.
-- NEVER use `git` CLI commands for operations that the GitHub MCP can handle (e.g., creating PRs, managing branches on remote)
-- Use `git` CLI only for local operations: checkout, commit, stash, diff, log, push
 
-### Pull Requests
-- Always use the PR template from the repo root: #[[file:PULL_REQUEST_TEMPLATE.md]]
-- Fill every section thoroughly     Description, Squash Commit Title, Evidence, Unit Test Evidence, Notes for Reviewers
-- No emojis in PRs
-- End with `@Resolves RSDLP-XXXX` when the PR fixes a Jira ticket     this auto-lists the PR in the Confluence release table when merged
-- **ALWAYS** use the GitHub MCP (`mcp_github_*`) to create PRs, request reviewers, and manage branches     never use `git` CLI or manual GitHub UI for PR creation
-- Target branch is `develop` unless specified otherwise
 
 ### Commits
 - Format: `RSDLP-XXXX: Short description of change`
-- Keep commits atomic     one logical change per commit
-
-## MCP Environment
-
-Full setup details, tokens, and troubleshooting: #[[file:.kiro/skills/mcp-environment.md]]
+- Keep commits atomic one logical change per commit
 
 ## Development Patterns
 

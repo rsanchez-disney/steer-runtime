@@ -1,0 +1,6 @@
+{
+  "name": "studio-atlantis",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Atlantis — Platform Engineering, Security, Change Management, and Versonix vendor application ownership for DCL and ABD Seaware.",
+  "default_agent": "orchestrator"
+}

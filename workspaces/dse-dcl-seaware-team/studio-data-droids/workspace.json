@@ -1,0 +1,6 @@
+{
+  "name": "studio-data-droids",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Data Droids — Reporting and Insights via MicroStrategy for shoreside (ABD/DCL Seaware) and shipboard applications.",
+  "default_agent": "orchestrator"
+}
