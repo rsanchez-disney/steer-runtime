@@ -1,5 +1,5 @@
 {
-  "name": "phoenix",
+  "name": "app-phoenix",
   "extends": "ra-team",
   "description": "Phoenix sub-team",
   "profiles": [

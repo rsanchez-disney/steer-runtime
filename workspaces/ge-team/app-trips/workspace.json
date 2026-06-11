@@ -1,5 +1,5 @@
 {
-  "name": "trips",
+  "name": "app-trips",
   "extends": "ge-team",
   "description": "Trips sub-team",
   "profiles": [
