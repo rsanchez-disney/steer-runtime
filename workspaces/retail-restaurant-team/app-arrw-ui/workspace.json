@@ -1,6 +1,6 @@
 {
   "name": "app-arrw-ui",
-  "extends": "retail-restaurant",
+  "extends": "retail-restaurant-team",
   "description": "Arrival Windows APP — SPA/Lambda",
   "profiles": [
     "dev-core",
