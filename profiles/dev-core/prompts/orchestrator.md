@@ -80,6 +80,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "estimation", "story points"                                  | `estimation_agent`             |
 | "send email", "notify"                                        | `email_agent`                  |
 | "Splunk interactive", "splunk dashboard", "splunk search"     | `splunk_query_agent`           |
+| "inspect page", "browser recording", "screen record", "check UI" | `ui_inspector_agent`       |
 | "Splunk", "splunk logs", "check logs", "log errors"           | `log_analyzer_agent`           |
 | "ServiceNow", "incident", "INC", "CHG"                       | `log_analyzer_agent`           |
 | "flaky test", "test stability"                                | `flaky_test_fixer_agent`       |
