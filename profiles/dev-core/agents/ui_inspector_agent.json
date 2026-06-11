@@ -13,6 +13,7 @@
   "prompt": "ui_inspector_agent.md",
   "tools": [
     "@chrome-devtools/*",
+    "@chrome/*",
     "thinking"
   ],
   "resources": []

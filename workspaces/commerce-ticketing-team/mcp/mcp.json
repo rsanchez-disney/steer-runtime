@@ -1,0 +1,86 @@
+{
+  "mcpServers": {
+    "appdynamics-preprod": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/appdynamics-mcp/dist/index.cjs"],
+      "env": {
+        "APPD_CONTROLLER_URL": "${APPD_PREPROD_CONTROLLER_URL}",
+        "APPD_CLIENT_ID": "${APPD_PREPROD_CLIENT_ID}",
+        "APPD_CLIENT_SECRET": "${APPD_PREPROD_CLIENT_SECRET}"
+      }
+    },
+    "appdynamics-prod": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/appdynamics-mcp/dist/index.cjs"],
+      "env": {
+        "APPD_CONTROLLER_URL": "${APPD_PROD_CONTROLLER_URL}",
+        "APPD_CLIENT_ID": "${APPD_PROD_CLIENT_ID}",
+        "APPD_CLIENT_SECRET": "${APPD_PROD_CLIENT_SECRET}"
+      }
+    },
+    "splunk-preprod": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/splunk-mcp/dist/index.cjs"],
+      "env": {
+        "SPLUNK_BASE_URL": "${SPLUNK_PREPROD_BASE_URL}",
+        "SPLUNK_API_USERNAME": "${SPLUNK_PREPROD_API_USERNAME}",
+        "SPLUNK_API_PASSWORD": "${SPLUNK_PREPROD_API_PASSWORD}"
+      }
+    },
+    "splunk-prod": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/splunk-mcp/dist/index.cjs"],
+      "env": {
+        "SPLUNK_BASE_URL": "${SPLUNK_PROD_BASE_URL}",
+        "SPLUNK_API_USERNAME": "${SPLUNK_PROD_API_USERNAME}",
+        "SPLUNK_API_PASSWORD": "${SPLUNK_PROD_API_PASSWORD}"
+      }
+    }
+  },
+  "variables": {
+    "APPD_PREPROD_CONTROLLER_URL": {
+      "description": "AppDynamics pre-prod controller URL",
+      "default": "https://disney-preprod.saas.appdynamics.com"
+    },
+    "APPD_PREPROD_CLIENT_ID": {
+      "description": "AppDynamics pre-prod OAuth client ID (format: client@account)"
+    },
+    "APPD_PREPROD_CLIENT_SECRET": {
+      "description": "AppDynamics pre-prod OAuth client secret",
+      "secret": true
+    },
+    "APPD_PROD_CONTROLLER_URL": {
+      "description": "AppDynamics prod controller URL",
+      "default": "https://disney-prod.saas.appdynamics.com"
+    },
+    "APPD_PROD_CLIENT_ID": {
+      "description": "AppDynamics prod OAuth client ID (format: client@account)"
+    },
+    "APPD_PROD_CLIENT_SECRET": {
+      "description": "AppDynamics prod OAuth client secret",
+      "secret": true
+    },
+    "SPLUNK_PREPROD_BASE_URL": {
+      "description": "Splunk pre-prod base URL",
+      "default": "https://stage.splunk.api.wdprapps.disney.com"
+    },
+    "SPLUNK_PREPROD_API_USERNAME": {
+      "description": "Splunk pre-prod API username"
+    },
+    "SPLUNK_PREPROD_API_PASSWORD": {
+      "description": "Splunk pre-prod API password",
+      "secret": true
+    },
+    "SPLUNK_PROD_BASE_URL": {
+      "description": "Splunk prod base URL",
+      "default": "https://splunk.api.wdprapps.disney.com"
+    },
+    "SPLUNK_PROD_API_USERNAME": {
+      "description": "Splunk prod API username"
+    },
+    "SPLUNK_PROD_API_PASSWORD": {
+      "description": "Splunk prod OAuth API password",
+      "secret": true
+    }
+  }
+}

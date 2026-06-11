@@ -11,6 +11,8 @@ import { getTextSchema, handleGetText } from "./tools/getText.js";
 import { getDomSchema, handleGetDom } from "./tools/getDom.js";
 import { evaluateSchema, handleEvaluate } from "./tools/evaluate.js";
 import { waitForSelectorSchema, handleWaitForSelector } from "./tools/waitForSelector.js";
+import { startRecordingSchema, handleStartRecording } from "./tools/startRecording.js";
+import { stopRecordingSchema, handleStopRecording } from "./tools/stopRecording.js";
 import { closeBrowser } from "./utils/browser.js";
 
 const tools = [
@@ -22,6 +24,8 @@ const tools = [
     { schema: getDomSchema, handler: handleGetDom },
     { schema: evaluateSchema, handler: handleEvaluate },
     { schema: waitForSelectorSchema, handler: handleWaitForSelector },
+    { schema: startRecordingSchema, handler: handleStartRecording },
+    { schema: stopRecordingSchema, handler: handleStopRecording },
 ];
 
 class ChromeMCPServer {

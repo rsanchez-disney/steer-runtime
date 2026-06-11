@@ -1,0 +1,41 @@
+{
+  "name": "app-arrw-ui",
+  "extends": "retail-restaurant-team",
+  "description": "Arrival Windows APP — SPA/Lambda",
+  "profiles": [
+    "dev-core",
+    "dev-infra",
+    "dev-web",
+    "dev-mobile"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "arrwui-spa",
+      "path": "arrwui-spa",
+      "repo": "cgs-wdw/arrwui/arrwui-spa",
+      "host": "gitlab.disney.com",
+      "description": "Arrival Windows UI (Flutter/Dart SPA)",
+      "studio": "lumiere"
+    },
+    {
+      "name": "arrwui-lambda",
+      "path": "arrwui-lambda",
+      "repo": "cgs-wdw/arrwui/arrwui-lambda",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "arrwui-lambda-terraform",
+      "path": "arrwui-lambda-terraform",
+      "repo": "cgs-wdw/arrwui/arrwui-lambda-terraform",
+      "host": "gitlab.disney.com"
+    }
+  ],
+  "rules": [
+    "jira-commit-format",
+    "general-api-design",
+    "general-node-development"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "FNB-"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "studio-triton",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Triton \u2014 Finance and Back Office middleware interfacing between shoreside Seaware and financial systems (CAP, Refunds, DICE, Executor, GraphQL).",
+  "default_agent": "orchestrator"
+}

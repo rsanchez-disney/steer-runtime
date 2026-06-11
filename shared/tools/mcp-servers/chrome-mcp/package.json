@@ -1,7 +1,7 @@
 {
   "name": "chrome-mcp",
   "version": "0.1.0",
-  "description": "Chrome MCP server for browser automation \u2014 navigate, screenshot, click, type, extract DOM",
+  "description": "Chrome MCP server for browser automation — navigate, screenshot, click, type, extract DOM",
   "private": true,
   "type": "module",
   "bin": {
@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.6.0",
+    "ffmpeg-static": "5.2.0",
     "puppeteer": "24.8.0"
   },
   "devDependencies": {

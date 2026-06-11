@@ -1,0 +1,10 @@
+{
+  "name": "app-trips",
+  "extends": "ge-team",
+  "description": "Trips sub-team",
+  "profiles": [
+    "dev-core"
+  ],
+  "projects": [],
+  "default_agent": "orchestrator"
+}

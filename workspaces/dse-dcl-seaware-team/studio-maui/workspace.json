@@ -1,0 +1,6 @@
+{
+  "name": "studio-maui",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Maui \u2014 Revenue Management services including Insurance (AON), Scuttle bulk uploaders, Zazu eventing, and Room Assignment Operations.",
+  "default_agent": "orchestrator"
+}

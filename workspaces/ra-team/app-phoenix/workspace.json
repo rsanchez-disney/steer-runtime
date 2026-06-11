@@ -1,0 +1,10 @@
+{
+  "name": "app-phoenix",
+  "extends": "ra-team",
+  "description": "Phoenix sub-team",
+  "profiles": [
+    "dev-core"
+  ],
+  "projects": [],
+  "default_agent": "orchestrator"
+}

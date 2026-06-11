@@ -1,0 +1,201 @@
+{
+  "name": "dse-dcl-seaware-team",
+  "description": "SEAS \u2014 Seaware Engineering & Application Solutions. 6 studios supporting Disney Cruise Line (DCL) and Adventures by Disney (ABD) through Versonix Seaware Reservation System middleware, APIs, applications, scheduled jobs, and reporting.",
+  "team": "SEAS",
+  "profiles": [
+    "dev-core",
+    "qa",
+    "dev-web",
+    "dev-ui",
+    "pm",
+    "ba",
+    "sustainment"
+  ],
+  "default_agent": "orchestrator",
+  "jira_prefix": "SEAS-",
+  "jira_custom_fields": {
+    "myjira": "customfield_10003"
+  },
+  "rules": [
+    "conventional_commit",
+    "general-docker",
+    "general-performance-optimization",
+    "general-testing-strategies",
+    "general-sql-database"
+  ],
+  "enable_tools": true,
+  "projects": [
+    {
+      "name": "seas-datanavigator",
+      "repo": "dcl/seas-datanavigator",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-reservation-list",
+      "repo": "dcl/seas-reservation-list",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-reservation-details",
+      "repo": "dcl/seas-reservation-details",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-client-service",
+      "repo": "dcl/seas-client-service",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-lookup-service",
+      "repo": "dcl/seas-lookup-service",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-activity-availability",
+      "repo": "dcl/seas-activity-availability",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "seas-rtf",
+      "repo": "dcl/seas-rtf",
+      "host": "github.disney.com",
+      "studio": "gadget-hackwrench"
+    },
+    {
+      "name": "scuttle",
+      "repo": "dcl/scuttle",
+      "host": "github.disney.com",
+      "studio": "maui"
+    },
+    {
+      "name": "dcl-seaware-genesys-screenpop",
+      "repo": "dcl/dcl-seaware-genesys-screenpop",
+      "host": "github.disney.com",
+      "studio": "triton"
+    },
+    {
+      "name": "seaware-graphql",
+      "repo": "dse/container-applications/seaware/seaware-graphql",
+      "host": "gitlab.disney.com",
+      "studio": "triton"
+    },
+    {
+      "name": "seaware-inventory",
+      "repo": "dse/container-applications/seaware/seaware-inventory",
+      "host": "gitlab.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "seaware-jease",
+      "repo": "dse/container-applications/seaware/seaware-jease",
+      "host": "gitlab.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "seawarefull-ansible",
+      "repo": "dse/ansible-playbooks/seawarefull",
+      "host": "gitlab.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "amadeus-service",
+      "repo": "dse/container-applications/seaware/amadeus_service",
+      "host": "gitlab.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "activemq",
+      "repo": "dse/container-applications/seaware/activemq",
+      "host": "gitlab.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "dcl-apps-dclseawarefull-analytics",
+      "repo": "dcl-applications/dcl-apps-dclseawarefull-analytics",
+      "host": "github.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "dcl-apps-dclseawarefull-ccui",
+      "repo": "dcl-applications/dcl-apps-dclseawarefull-ccui",
+      "host": "github.disney.com",
+      "studio": "atlantis"
+    },
+    {
+      "name": "dcl-apps-dclseawarefull-otaapi",
+      "repo": "dcl-applications/dcl-apps-dclseawarefull-otaapi",
+      "host": "github.disney.com",
+      "studio": "atlantis"
+    }
+  ],
+  "services": [
+    "seas-reservation-list-service",
+    "seas-reservation-details-service",
+    "seas-booking-service",
+    "seas-activity-availability-service",
+    "seas-client-service",
+    "seas-lookup-service",
+    "seas-datanavigator-service",
+    "seas-right-to-forget-service",
+    "dcl-zazu-eventing-service",
+    "dcl-scuttle",
+    "dcl-insurance-service",
+    "dcl-booking-api",
+    "dcl-reservation-api",
+    "dcl-client-api",
+    "dcl-lookup-api",
+    "dcl-cache-avail-api",
+    "dcl-collateral-services",
+    "dcl-cap-services",
+    "dcl-refund-services",
+    "dcl-executor",
+    "seaware-graphql"
+  ],
+  "teams": [
+    {
+      "name": "Studio Atlantis",
+      "tech_lead": "Ken Sias",
+      "focus": "Platform Engineering, Security, Change Management, Versonix vendor"
+    },
+    {
+      "name": "Studio Crush",
+      "tech_lead": "John Madrid",
+      "focus": ".NET services for Web/App integration with Seaware"
+    },
+    {
+      "name": "Studio Gadget Hackwrench",
+      "tech_lead": "Ric Alvarez",
+      "focus": "Java microservice rebuild for PCeC (replacing .NET services)"
+    },
+    {
+      "name": "Studio Triton",
+      "tech_lead": "Dominic Foti",
+      "focus": "Finance and Back Office middleware"
+    },
+    {
+      "name": "Studio Maui",
+      "tech_lead": "Marcelo Castro",
+      "focus": "Revenue Management services"
+    },
+    {
+      "name": "Studio Data Droids",
+      "tech_lead": "Cory Marshall",
+      "focus": "Reporting and Insights (MicroStrategy)"
+    }
+  ],
+  "managed_studios": [
+    "studio-atlantis",
+    "studio-crush",
+    "studio-gadget-hackwrench",
+    "studio-triton",
+    "studio-maui",
+    "studio-data-droids"
+  ],
+  "workspace_path": "${WORKSPACE_ROOT}/DCL-Seaware"
+}

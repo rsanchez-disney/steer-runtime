@@ -1,0 +1,8 @@
+{
+  "name": "chrome",
+  "description": "Chrome browser automation MCP — navigate, click, type, screenshot, and screen recording via Puppeteer",
+  "env": {},
+  "env_required": [],
+  "env_secret": [],
+  "env_defaults": {}
+}

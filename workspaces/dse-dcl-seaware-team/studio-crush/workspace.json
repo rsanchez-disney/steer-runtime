@@ -1,0 +1,9 @@
+{
+  "name": "studio-crush",
+  "extends": "dse-dcl-seaware-team",
+  "description": "Studio Crush \u2014 .NET services for Digital interfaces (Web/App) integrating with DCL and ABD Seaware. Booking, Availability, Collateral, Guest Lookup, GTB.",
+  "default_agent": "orchestrator",
+  "profiles": [
+    "dev-dotnet"
+  ]
+}
