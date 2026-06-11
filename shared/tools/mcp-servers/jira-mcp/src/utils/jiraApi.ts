@@ -1234,7 +1234,7 @@ export class JiraApiClient {
     async getXrayRepositoryFolders(projectKey: string): Promise<any> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders`,
             {
                 method: "GET",
@@ -1266,7 +1266,7 @@ export class JiraApiClient {
     ): Promise<any> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${parentFolderId}`,
             {
                 method: "POST",
@@ -1306,7 +1306,7 @@ export class JiraApiClient {
 
         const query = params.toString() ? `?${params.toString()}` : "";
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests${query}`,
             {
                 method: "GET",
@@ -1343,7 +1343,7 @@ export class JiraApiClient {
         if (add && add.length > 0) body.add = add;
         if (remove && remove.length > 0) body.remove = remove;
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests`,
             {
                 method: "PUT",
@@ -1373,7 +1373,7 @@ export class JiraApiClient {
     ): Promise<void> {
         this.assertXRayServer();
 
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}`,
             {
                 method: "DELETE",
@@ -1426,7 +1426,7 @@ export class JiraApiClient {
     // ==========================================
 
     async getIssueProperty(issueKey: string, propertyKey: string): Promise<any> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 headers: {
@@ -1444,7 +1444,7 @@ export class JiraApiClient {
     }
 
     async setIssueProperty(issueKey: string, propertyKey: string, value: unknown): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 method: "PUT",
@@ -1462,7 +1462,7 @@ export class JiraApiClient {
     }
 
     async deleteIssueProperty(issueKey: string, propertyKey: string): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 method: "DELETE",
