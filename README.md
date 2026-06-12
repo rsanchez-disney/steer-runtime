@@ -172,7 +172,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | Full command reference and architecture | [Reference](docs/reference/REFERENCE.md) |
 | MCP servers, tokens, env vars | [MCP Setup](docs/reference/MCP_SETUP.md) |
 | MCP tools, capabilities, prompt examples | [MCP Reference](docs/reference/MCP_REFERENCE.md) |
-| Team workspaces | [Workspaces](docs/reference/TEAM_WORKSPACES.md) |
+| Team workspaces | [Workspaces](docs/reference/TEAM_WORKSPACES.md) · [Video: Creating a workspace](https://drive.google.com/file/d/17XUdzLArI3NXftQA1C_KMbkipv7WuSCb/view?usp=drive_link) |
 | Windows setup details | [Windows](docs/getting-started/WINDOWS_SETUP.md) |
 | macOS/Linux setup details | [Setup](docs/getting-started/SETUP.md) |
 | Prompt guides | [Dev](docs/profiles/dev/PROMPT_GUIDE.md) · [BA](docs/profiles/ba/BA_PROMPT_GUIDE.md) · [QA](docs/profiles/qa/QA_PROMPT_GUIDE.md) · [Ops](docs/profiles/ops/OPS_PROMPT_GUIDE.md) · [PM](docs/profiles/pm/PM_PROMPT_GUIDE.md) |
