@@ -58,6 +58,12 @@
       "repo": "ZAPAJ024/delivery-command-center",
       "path": "delivery-command-center",
       "host": "github.disney.com"
+    },
+    {
+      "name": "KodaSDK",
+      "repo": "SANCR225/KodaSDK",
+      "path": "KodaSDK",
+      "host": "github.disney.com"
     }
   ],
   "rules": [
