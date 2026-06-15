@@ -37,6 +37,7 @@
     "dlp-sbc": "dlp-sbc-team",
     "retail-restaurant": "retail-restaurant-team",
     "trips": "app-trips",
-    "phoenix": "app-phoenix"
+    "phoenix": "app-phoenix",
+    "app-team": "adaptive-payments-team"
   }
 }
