@@ -120,7 +120,7 @@ export class JiraApiClient {
         return result;
     }
 
-    async updateJiraTicket(ticketId: string, updates: any): Promise<void> {
+    async updateJiraTicket(ticketId: string, updates: any, updateOps?: any): Promise<void> {
 
         // Separate native fields that require the update section (bypasses screen scheme)
         const { fixVersions, duedate, ...fields } = updates;
@@ -136,6 +136,14 @@ export class JiraApiClient {
             "Updating JIRA ticket:",
             JSON.stringify(body, null, 2),
         );
+        if (updateOps && Object.keys(updateOps).length > 0) {
+            console.error(
+                "Updating JIRA ticket with update ops:",
+                JSON.stringify(updateOps, null, 2),
+            );
+            if (!body.update) body.update = {};
+            Object.assign(body.update, updateOps);
+        }
 
         const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`,
@@ -1215,6 +1223,175 @@ export class JiraApiClient {
         }
     }
 
+    // ==========================================
+    // XRay Test Repository Methods (Server-only)
+    // ==========================================
+
+    /**
+     * List all Test Repository folders for a project.
+     * GET /rest/raven/1.0/api/testrepository/{projectKey}/folders
+     */
+    async getXrayRepositoryFolders(projectKey: string): Promise<any> {
+        this.assertXRayServer();
+
+        const response = await this.fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to get repository folders for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Create a new folder in the XRay Test Repository under a parent folder.
+     * POST /rest/raven/1.0/api/testrepository/{projectKey}/folders/{parentFolderId}
+     */
+    async createXrayRepositoryFolder(
+        projectKey: string,
+        parentFolderId: string,
+        name: string,
+    ): Promise<any> {
+        this.assertXRayServer();
+
+        const response = await this.fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${parentFolderId}`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name }),
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to create repository folder in ${projectKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * List all tests in a specific Test Repository folder.
+     * GET /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}/tests
+     */
+    async getXrayFolderTests(
+        projectKey: string,
+        folderId: string,
+        page?: number,
+        limit?: number,
+    ): Promise<any> {
+        this.assertXRayServer();
+
+        const params = new URLSearchParams();
+        if (page !== undefined) params.set("page", String(page));
+        if (limit !== undefined) params.set("limit", String(limit));
+
+        const query = params.toString() ? `?${params.toString()}` : "";
+
+        const response = await this.fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests${query}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to get tests in folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Add or remove test cases from a Test Repository folder.
+     * PUT /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}/tests
+     */
+    async moveTestsToXrayFolder(
+        projectKey: string,
+        folderId: string,
+        add?: string[],
+        remove?: string[],
+    ): Promise<void> {
+        this.assertXRayServer();
+
+        const body: any = {};
+        if (add && add.length > 0) body.add = add;
+        if (remove && remove.length > 0) body.remove = remove;
+
+        const response = await this.fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests`,
+            {
+                method: "PUT",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body),
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to move tests in folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+    }
+
+    /**
+     * Delete a folder from the XRay Test Repository.
+     * DELETE /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}
+     */
+    async deleteXrayRepositoryFolder(
+        projectKey: string,
+        folderId: string,
+    ): Promise<void> {
+        this.assertXRayServer();
+
+        const response = await this.fetch(
+            `${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: await this.auth.getAuthHeader(),
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(
+                `Failed to delete repository folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`,
+            );
+        }
+    }
+
     /**
      * Assign issues to an Epic using the Agile API.
      * This bypasses screen scheme restrictions that block customfield_10014 via REST API.
@@ -1249,7 +1426,7 @@ export class JiraApiClient {
     // ==========================================
 
     async getIssueProperty(issueKey: string, propertyKey: string): Promise<any> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 headers: {
@@ -1267,7 +1444,7 @@ export class JiraApiClient {
     }
 
     async setIssueProperty(issueKey: string, propertyKey: string, value: unknown): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 method: "PUT",
@@ -1285,7 +1462,7 @@ export class JiraApiClient {
     }
 
     async deleteIssueProperty(issueKey: string, propertyKey: string): Promise<void> {
-        const response = await fetch(
+        const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`,
             {
                 method: "DELETE",

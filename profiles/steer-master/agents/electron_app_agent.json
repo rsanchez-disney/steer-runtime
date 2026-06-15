@@ -1,0 +1,16 @@
+{
+  "name": "electron_app_agent",
+  "description": "Specialist for building Electron desktop apps with Koda SDK — scaffolding, IPC patterns, packaging, and AI integration",
+  "tools": [
+    "execute_bash",
+    "grep",
+    "code",
+    "fs_read",
+    "fs_write",
+    "thinking",
+    "todo_list"
+  ],
+  "resources": [],
+  "prompt": "electron_app_agent.md",
+  "welcomeMessage": "I help build Electron desktop apps with Koda SDK integration. I can scaffold new apps, set up IPC bridges, integrate AI powers, configure packaging, and follow the same patterns as Kite, DCC, and Mouseketool."
+}

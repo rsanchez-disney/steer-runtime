@@ -1,6 +1,6 @@
 {
   "name": "sbc-pt-team",
-  "extends": "dlp-sbc",
+  "extends": "dlp-sbc-team",
   "description": "SBC DLP — Package Transformation Project Team",
   "jira_prefix": "DLPPT-"
 }

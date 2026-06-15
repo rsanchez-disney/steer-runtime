@@ -145,6 +145,27 @@ import {
     jiraSmartChecklistDeleteSchema,
     handleJiraSmartChecklistDelete,
 } from "./tools/jiraSmartChecklist.js";
+// XRay Test Repository folder management
+import {
+    xrayListRepositoryFoldersSchema,
+    handleXrayListRepositoryFolders,
+} from "./tools/xrayListRepositoryFolders.js";
+import {
+    xrayCreateRepositoryFolderSchema,
+    handleXrayCreateRepositoryFolder,
+} from "./tools/xrayCreateRepositoryFolder.js";
+import {
+    xrayGetFolderTestsSchema,
+    handleXrayGetFolderTests,
+} from "./tools/xrayGetFolderTests.js";
+import {
+    xrayMoveTestsToFolderSchema,
+    handleXrayMoveTestsToFolder,
+} from "./tools/xrayMoveTestsToFolder.js";
+import {
+    xrayDeleteRepositoryFolderSchema,
+    handleXrayDeleteRepositoryFolder,
+} from "./tools/xrayDeleteRepositoryFolder.js";
 
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
@@ -195,6 +216,12 @@ const tools = [
     { schema: prefixed(jiraSmartChecklistAddItemSchema), handler: handleJiraSmartChecklistAddItem },
     { schema: prefixed(jiraSmartChecklistCheckItemSchema), handler: handleJiraSmartChecklistCheckItem },
     { schema: prefixed(jiraSmartChecklistDeleteSchema), handler: handleJiraSmartChecklistDelete },
+    // XRay Test Repository folder management
+    { schema: prefixed(xrayListRepositoryFoldersSchema), handler: handleXrayListRepositoryFolders },
+    { schema: prefixed(xrayCreateRepositoryFolderSchema), handler: handleXrayCreateRepositoryFolder },
+    { schema: prefixed(xrayGetFolderTestsSchema), handler: handleXrayGetFolderTests },
+    { schema: prefixed(xrayMoveTestsToFolderSchema), handler: handleXrayMoveTestsToFolder },
+    { schema: prefixed(xrayDeleteRepositoryFolderSchema), handler: handleXrayDeleteRepositoryFolder },
 ];
 
 class JiraMCPServer {

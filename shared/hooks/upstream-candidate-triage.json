@@ -1,0 +1,13 @@
+{
+  "name": "Upstream Candidate Triage",
+  "version": "1.0.0",
+  "description": "After creating a PR to a steer-runtime repo (upstream or any fork), analyze the diff to determine if it qualifies as an upstream candidate and apply the label or ask the user.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [".*create_pr.*", ".*github_create_pr.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "#[[file:upstream-candidate-triage.md]]"
+  }
+}

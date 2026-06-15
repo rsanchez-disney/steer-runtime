@@ -6204,7 +6204,7 @@ var JiraApiClient = class _JiraApiClient {
     console.error("Fetched ticket fields:", Object.keys(result.fields || {}));
     return result;
   }
-  async updateJiraTicket(ticketId, updates) {
+  async updateJiraTicket(ticketId, updates, updateOps) {
     const { fixVersions, duedate, ...fields } = updates;
     const updateSection = {};
     if (fixVersions !== void 0)
@@ -6217,6 +6217,12 @@ var JiraApiClient = class _JiraApiClient {
     if (Object.keys(updateSection).length > 0)
       body.update = updateSection;
     console.error("Updating JIRA ticket:", JSON.stringify(body, null, 2));
+    if (updateOps && Object.keys(updateOps).length > 0) {
+      console.error("Updating JIRA ticket with update ops:", JSON.stringify(updateOps, null, 2));
+      if (!body.update)
+        body.update = {};
+      Object.assign(body.update, updateOps);
+    }
     const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}`, {
       method: "PUT",
       headers: {
@@ -6921,6 +6927,115 @@ var JiraApiClient = class _JiraApiClient {
       throw new Error(`Failed to add tests to Test Execution ${testExecKey}: ${response.status} ${response.statusText} - ${errText}`);
     }
   }
+  // ==========================================
+  // XRay Test Repository Methods (Server-only)
+  // ==========================================
+  /**
+   * List all Test Repository folders for a project.
+   * GET /rest/raven/1.0/api/testrepository/{projectKey}/folders
+   */
+  async getXrayRepositoryFolders(projectKey) {
+    this.assertXRayServer();
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders`, {
+      method: "GET",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to get repository folders for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Create a new folder in the XRay Test Repository under a parent folder.
+   * POST /rest/raven/1.0/api/testrepository/{projectKey}/folders/{parentFolderId}
+   */
+  async createXrayRepositoryFolder(projectKey, parentFolderId, name) {
+    this.assertXRayServer();
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${parentFolderId}`, {
+      method: "POST",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name })
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to create repository folder in ${projectKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * List all tests in a specific Test Repository folder.
+   * GET /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}/tests
+   */
+  async getXrayFolderTests(projectKey, folderId, page, limit) {
+    this.assertXRayServer();
+    const params = new URLSearchParams();
+    if (page !== void 0)
+      params.set("page", String(page));
+    if (limit !== void 0)
+      params.set("limit", String(limit));
+    const query = params.toString() ? `?${params.toString()}` : "";
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests${query}`, {
+      method: "GET",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to get tests in folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+    return await response.json();
+  }
+  /**
+   * Add or remove test cases from a Test Repository folder.
+   * PUT /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}/tests
+   */
+  async moveTestsToXrayFolder(projectKey, folderId, add, remove) {
+    this.assertXRayServer();
+    const body = {};
+    if (add && add.length > 0)
+      body.add = add;
+    if (remove && remove.length > 0)
+      body.remove = remove;
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}/tests`, {
+      method: "PUT",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to move tests in folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+  }
+  /**
+   * Delete a folder from the XRay Test Repository.
+   * DELETE /rest/raven/1.0/api/testrepository/{projectKey}/folders/{folderId}
+   */
+  async deleteXrayRepositoryFolder(projectKey, folderId) {
+    this.assertXRayServer();
+    const response = await this.fetch(`${this.baseUrl}/rest/raven/1.0/api/testrepository/${projectKey}/folders/${folderId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: await this.auth.getAuthHeader(),
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Failed to delete repository folder ${folderId} for ${projectKey}: ${response.status} ${response.statusText} - ${errText}`);
+    }
+  }
   /**
    * Assign issues to an Epic using the Agile API.
    * This bypasses screen scheme restrictions that block customfield_10014 via REST API.
@@ -6944,7 +7059,7 @@ var JiraApiClient = class _JiraApiClient {
   // Issue Properties API
   // ==========================================
   async getIssueProperty(issueKey, propertyKey) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -6959,7 +7074,7 @@ var JiraApiClient = class _JiraApiClient {
     return await response.json();
   }
   async setIssueProperty(issueKey, propertyKey, value) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
       method: "PUT",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
@@ -6973,7 +7088,7 @@ var JiraApiClient = class _JiraApiClient {
     }
   }
   async deleteIssueProperty(issueKey, propertyKey) {
-    const response = await fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${issueKey}/properties/${propertyKey}`, {
       method: "DELETE",
       headers: {
         Authorization: await this.auth.getAuthHeader()
@@ -7061,10 +7176,18 @@ function buildFormattedSummary(ticket, requestedFields) {
     summary.push("", `**Issue Links (${ticket.fields.issuelinks.length}):**`);
     ticket.fields.issuelinks.forEach((link) => {
       if (link.outwardIssue) {
-        summary.push(`- ${link.type?.outward || "relates to"}: ${link.outwardIssue.key} - ${link.outwardIssue.fields?.summary || "Unknown"}`);
+        const label = link.type?.outward || "relates to";
+        const key = link.outwardIssue.key;
+        const status = link.outwardIssue.fields?.status?.name || "Unknown";
+        const linkSummary = link.outwardIssue.fields?.summary || "Unknown";
+        summary.push(`- ${label} ${key} (${status}) \u2014 ${linkSummary}`);
       }
       if (link.inwardIssue) {
-        summary.push(`- ${link.type?.inward || "relates to"}: ${link.inwardIssue.key} - ${link.inwardIssue.fields?.summary || "Unknown"}`);
+        const label = link.type?.inward || "relates to";
+        const key = link.inwardIssue.key;
+        const status = link.inwardIssue.fields?.status?.name || "Unknown";
+        const linkSummary = link.inwardIssue.fields?.summary || "Unknown";
+        summary.push(`- ${label} ${key} (${status}) \u2014 ${linkSummary}`);
       }
     });
   }
@@ -7210,7 +7333,7 @@ function sprintBoard(sprint, issues) {
 init_customFields();
 var jiraGetIssueSchema = {
   name: "jira_get_issue",
-  description: "Fetch a JIRA ticket by ID with support for custom fields. Optionally save to output directory.",
+  description: "Fetch a JIRA ticket by ID with support for custom fields. Issue links (e.g., blocks, split from, depends on) are included by default. Optionally save to output directory.",
   inputSchema: {
     type: "object",
     properties: {
@@ -7238,6 +7361,7 @@ var jiraGetIssueSchema = {
             "comment",
             "labels",
             "components",
+            "issuelinks",
             "storyPoints",
             "customfield_10003"
           ]
@@ -7265,6 +7389,7 @@ async function handleJiraGetIssue(args) {
       "created",
       "description",
       "comment",
+      "issuelinks",
       "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
@@ -7385,6 +7510,21 @@ var jiraUpdateIssueSchema = {
         type: "number",
         description: "Story points estimate"
       },
+      fixVersions: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Array of fix version names (e.g., ["Hong Kong CPO", "v2.0"]). Replaces existing fix versions.'
+      },
+      addFixVersions: {
+        type: "array",
+        items: { type: "string" },
+        description: "Array of fix version names to ADD (keeps existing versions)"
+      },
+      removeFixVersions: {
+        type: "array",
+        items: { type: "string" },
+        description: "Array of fix version names to REMOVE"
+      },
       customFields: {
         type: "object",
         description: `Custom fields as key-value pairs. Use field IDs or aliases. Example: {"studio": "ROS - BANG | Ruth", "storyPoints": 8}`
@@ -7395,7 +7535,7 @@ var jiraUpdateIssueSchema = {
 };
 async function handleJiraUpdateIssue(args) {
   try {
-    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, reporter, storyPoints, customFields } = args;
+    const { ticketId, outputDir, summary, description, assignee, epicLink, components, labels, priority, reporter, storyPoints, fixVersions, addFixVersions, removeFixVersions, customFields } = args;
     const apiClient = new JiraApiClient();
     const updates = {};
     if (summary)
@@ -7443,6 +7583,22 @@ async function handleJiraUpdateIssue(args) {
         }
       }
     }
+    const updateOps = {};
+    if (fixVersions && fixVersions.length > 0) {
+      updateOps.fixVersions = [{ set: fixVersions.map((name) => ({ name })) }];
+    } else if (addFixVersions || removeFixVersions) {
+      updateOps.fixVersions = [];
+      if (addFixVersions) {
+        addFixVersions.forEach((name) => {
+          updateOps.fixVersions.push({ add: { name } });
+        });
+      }
+      if (removeFixVersions) {
+        removeFixVersions.forEach((name) => {
+          updateOps.fixVersions.push({ remove: { name } });
+        });
+      }
+    }
     if (epicLink) {
       const epicFieldIds = [
         "customfield_10014",
@@ -7458,7 +7614,7 @@ async function handleJiraUpdateIssue(args) {
             [fieldId]: epicLink
           };
           console.error(`Trying Epic Link field ID: ${fieldId}`);
-          await apiClient.updateJiraTicket(ticketId, testUpdates);
+          await apiClient.updateJiraTicket(ticketId, testUpdates, updateOps);
           console.error(`Success! Epic Link field ID is: ${fieldId}`);
           epicSet = true;
           break;
@@ -7478,12 +7634,12 @@ async function handleJiraUpdateIssue(args) {
       }
       if (!epicSet) {
         console.error("All Epic Link methods failed, proceeding without Epic Link");
-      }
-      if (Object.keys(updates).length > 0) {
-        await apiClient.updateJiraTicket(ticketId, updates);
+        if (Object.keys(updates).length > 0 || Object.keys(updateOps).length > 0) {
+          await apiClient.updateJiraTicket(ticketId, updates, updateOps);
+        }
       }
     } else {
-      await apiClient.updateJiraTicket(ticketId, updates);
+      await apiClient.updateJiraTicket(ticketId, updates, updateOps);
     }
     const ticket = await apiClient.fetchJiraTicket(ticketId);
     const summaryText = `**${ticket.key}: ${ticket.fields.summary}**
@@ -9991,6 +10147,307 @@ async function handleJiraSmartChecklistDelete(args) {
   }
 }
 
+// build/tools/xrayListRepositoryFolders.js
+var xrayListRepositoryFoldersSchema = {
+  name: "xray_list_repository_folders",
+  description: "List all Test Repository folders for a project, including full hierarchy",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "The JIRA project key (e.g., DPAY)"
+      }
+    },
+    required: ["projectKey"]
+  }
+};
+function formatFolderHierarchy(folders, indent = 0) {
+  let text = "";
+  for (const folder of folders) {
+    const prefix = "  ".repeat(indent);
+    text += `${prefix}- ${folder.name} (id: ${folder.id})
+`;
+    if (folder.folders && folder.folders.length > 0) {
+      text += formatFolderHierarchy(folder.folders, indent + 1);
+    }
+  }
+  return text;
+}
+async function handleXrayListRepositoryFolders(args) {
+  try {
+    const { projectKey } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayRepositoryFolders(projectKey);
+    const folders = result?.folders || result || [];
+    if (!Array.isArray(folders) || folders.length === 0) {
+      return {
+        content: [{ type: "text", text: `No Test Repository folders found for project ${projectKey}.` }]
+      };
+    }
+    let text = `**Test Repository Folders for ${projectKey}**
+
+`;
+    text += formatFolderHierarchy(folders);
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error listing repository folders: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayCreateRepositoryFolder.js
+var xrayCreateRepositoryFolderSchema = {
+  name: "xray_create_repository_folder",
+  description: "Create a new folder in the XRay Test Repository under a parent folder",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "The JIRA project key (e.g., DPAY)"
+      },
+      parentFolderId: {
+        type: "string",
+        description: "The ID of the parent folder to create under"
+      },
+      name: {
+        type: "string",
+        description: "The name of the new folder"
+      }
+    },
+    required: ["projectKey", "parentFolderId", "name"]
+  }
+};
+async function handleXrayCreateRepositoryFolder(args) {
+  try {
+    const { projectKey, parentFolderId, name } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.createXrayRepositoryFolder(projectKey, parentFolderId, name);
+    let text = `**Folder Created in ${projectKey}**
+
+`;
+    text += `- Name: ${name}
+`;
+    text += `- Parent Folder ID: ${parentFolderId}
+`;
+    if (result?.id) {
+      text += `- New Folder ID: ${result.id}
+`;
+    }
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error creating repository folder: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayGetFolderTests.js
+var xrayGetFolderTestsSchema = {
+  name: "xray_get_folder_tests",
+  description: "List all tests in a specific Test Repository folder",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "The JIRA project key (e.g., DPAY)"
+      },
+      folderId: {
+        type: "string",
+        description: "The ID of the folder to list tests from"
+      },
+      page: {
+        type: "number",
+        description: "Page number for pagination (starts at 1)"
+      },
+      limit: {
+        type: "number",
+        description: "Number of results per page"
+      }
+    },
+    required: ["projectKey", "folderId"]
+  }
+};
+async function handleXrayGetFolderTests(args) {
+  try {
+    const { projectKey, folderId, page, limit } = args;
+    const apiClient = new JiraApiClient();
+    const result = await apiClient.getXrayFolderTests(projectKey, folderId, page, limit);
+    const tests = result?.tests || result || [];
+    if (!Array.isArray(tests) || tests.length === 0) {
+      return {
+        content: [{ type: "text", text: `No tests found in folder ${folderId} for project ${projectKey}.` }]
+      };
+    }
+    let text = `**Tests in Folder ${folderId} (${projectKey})**
+
+`;
+    text += `Found ${tests.length} test(s):
+
+`;
+    for (const test of tests) {
+      const key = test.key || test.testKey || "unknown";
+      const summary = test.summary || test.name || "";
+      text += `- ${key}${summary ? `: ${summary}` : ""}
+`;
+    }
+    if (result?.totalCount !== void 0) {
+      text += `
+Total: ${result.totalCount}`;
+      if (page)
+        text += ` | Page: ${page}`;
+      if (limit)
+        text += ` | Limit: ${limit}`;
+      text += "\n";
+    }
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error getting folder tests: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayMoveTestsToFolder.js
+var xrayMoveTestsToFolderSchema = {
+  name: "xray_move_tests_to_folder",
+  description: "Add or remove test cases from a Test Repository folder",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "The JIRA project key (e.g., DPAY)"
+      },
+      folderId: {
+        type: "string",
+        description: "The ID of the target folder"
+      },
+      add: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Array of Test issue keys to add to the folder (e.g., ["DPAY-101", "DPAY-102"])'
+      },
+      remove: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Array of Test issue keys to remove from the folder (e.g., ["DPAY-103"])'
+      }
+    },
+    required: ["projectKey", "folderId"]
+  }
+};
+async function handleXrayMoveTestsToFolder(args) {
+  try {
+    const { projectKey, folderId, add: rawAdd, remove: rawRemove } = args;
+    const add = typeof rawAdd === "string" ? JSON.parse(rawAdd) : rawAdd;
+    const remove = typeof rawRemove === "string" ? JSON.parse(rawRemove) : rawRemove;
+    if ((!add || add.length === 0) && (!remove || remove.length === 0)) {
+      return {
+        content: [{ type: "text", text: "No test keys provided to add or remove." }]
+      };
+    }
+    const apiClient = new JiraApiClient();
+    await apiClient.moveTestsToXrayFolder(projectKey, folderId, add, remove);
+    let text = `**Tests Updated in Folder ${folderId} (${projectKey})**
+
+`;
+    if (add && add.length > 0) {
+      text += `Added ${add.length} test(s): ${add.join(", ")}
+`;
+    }
+    if (remove && remove.length > 0) {
+      text += `Removed ${remove.length} test(s): ${remove.join(", ")}
+`;
+    }
+    return {
+      content: [{ type: "text", text }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error moving tests to folder: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayDeleteRepositoryFolder.js
+var xrayDeleteRepositoryFolderSchema = {
+  name: "xray_delete_repository_folder",
+  description: "Delete a folder from the XRay Test Repository",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "The JIRA project key (e.g., DPAY)"
+      },
+      folderId: {
+        type: "string",
+        description: "The ID of the folder to delete"
+      }
+    },
+    required: ["projectKey", "folderId"]
+  }
+};
+async function handleXrayDeleteRepositoryFolder(args) {
+  try {
+    const { projectKey, folderId } = args;
+    const apiClient = new JiraApiClient();
+    await apiClient.deleteXrayRepositoryFolder(projectKey, folderId);
+    return {
+      content: [{
+        type: "text",
+        text: `**Folder Deleted**
+
+Successfully deleted folder ${folderId} from project ${projectKey}.`
+      }]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error deleting repository folder: ${error instanceof Error ? error.message : "Unknown error"}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -10037,7 +10494,13 @@ var tools = [
   { schema: prefixed(jiraSmartChecklistSetSchema), handler: handleJiraSmartChecklistSet },
   { schema: prefixed(jiraSmartChecklistAddItemSchema), handler: handleJiraSmartChecklistAddItem },
   { schema: prefixed(jiraSmartChecklistCheckItemSchema), handler: handleJiraSmartChecklistCheckItem },
-  { schema: prefixed(jiraSmartChecklistDeleteSchema), handler: handleJiraSmartChecklistDelete }
+  { schema: prefixed(jiraSmartChecklistDeleteSchema), handler: handleJiraSmartChecklistDelete },
+  // XRay Test Repository folder management
+  { schema: prefixed(xrayListRepositoryFoldersSchema), handler: handleXrayListRepositoryFolders },
+  { schema: prefixed(xrayCreateRepositoryFolderSchema), handler: handleXrayCreateRepositoryFolder },
+  { schema: prefixed(xrayGetFolderTestsSchema), handler: handleXrayGetFolderTests },
+  { schema: prefixed(xrayMoveTestsToFolderSchema), handler: handleXrayMoveTestsToFolder },
+  { schema: prefixed(xrayDeleteRepositoryFolderSchema), handler: handleXrayDeleteRepositoryFolder }
 ];
 var JiraMCPServer = class {
   server;

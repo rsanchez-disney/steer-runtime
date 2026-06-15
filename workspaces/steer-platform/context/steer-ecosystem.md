@@ -11,6 +11,7 @@
 | **Kite** | Electron, TypeScript, React | Desktop GUI over kiro-cli — chat, agents, scoring, sessions |
 | **Mouseketool** | Electron, TypeScript, React | Config Studio desktop app |
 | **prompt-score** | Python, FastAPI | Prompt quality scoring API (6 dimensions, token estimation) |
+| **delivery-command-center** | Electron, Angular, TypeScript | Sprint health dashboard — Jira metrics, burndown, velocity, traffic lights |
 
 ## How They Connect
 
@@ -52,6 +53,14 @@ prompt-score (scoring API)
   ├── POST /score → evaluates prompt across 6 dimensions
   ├── Returns: total score (0-100), estimated tokens, per-dimension breakdown
   └── Consumed by Kite (Ctrl+Space pre-check, auto-score on send)
+
+delivery-command-center (sprint dashboard)
+  ├── Angular frontend + Express backend + Electron shell
+  ├── Pulls Jira sprint data → burndown charts, velocity, traffic lights
+  ├── Team-configurable via backend settings
+  ├── Private repo: github.disney.com/ZAPAJ024/delivery-command-center
+  ├── Public releases: github.com/rsanchez-disney/delivery-command-center
+  └── Deployed via Koda: koda apps start dcc
 ```
 
 ## Cross-Repo Impact Rules
@@ -77,6 +86,7 @@ prompt-score (scoring API)
 | IntelliJ plugin | Kotlin |
 | Desktop GUI (Kite) | Electron 35 + React 19 + Vite 7 + TypeScript |
 | Desktop GUI (Mouseketool) | Electron + React + TypeScript |
+| Sprint Dashboard (DCC) | Electron 35 + Angular 19 + Express + TypeScript |
 | Scoring API | Python + FastAPI |
 | Autopilot | Go (planned) |
 
@@ -88,6 +98,7 @@ prompt-score (scoring API)
 | Koda | v0.4.x (rsanchez-disney/Koda) | same |
 | Kite | v0.1.x (rsanchez-disney/kite) | SANCR225/Kite |
 | Mouseketool | v0.1.x (rsanchez-disney/mouseketool) | SANCR225/mouseketool |
+| DCC | v1.1.x (rsanchez-disney/delivery-command-center) | ZAPAJ024/delivery-command-center |
 
 Release workflow: `make publish-all` in Koda handles cross-compilation, artifact encryption, and GitHub release creation for all repos.
 
@@ -99,4 +110,4 @@ Apps managed by `koda apps`:
 - `koda apps start <name>` — launch app
 - `koda apps update <name>` — update to latest
 
-Current apps: Kite, Mouseketool. KiteStream retired (replaced by Kite).
+Current apps: Kite, Mouseketool, DCC. KiteStream retired (replaced by Kite).
