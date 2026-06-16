@@ -83,9 +83,9 @@ def run_delegation_tests(dry_run=False) -> dict:
 
     if not dry_run:
         summary_file.unlink(missing_ok=True)
-        runner = DELEGATION_DIR / "runner.sh"
+        runner = DELEGATION_DIR / "delegation_runner.py"
         print("   → Running 16 delegation scenarios (may take several minutes)...")
-        subprocess.run([str(runner), "--all"], cwd=DELEGATION_DIR)
+        subprocess.run([sys.executable, str(runner), "--all"], cwd=DELEGATION_DIR)
 
     if summary_file.exists():
         return json.loads(summary_file.read_text())
@@ -133,10 +133,12 @@ def compute_certification(delegation: dict, evals: list[dict]) -> CertResult:
             cert.structural_total += 1
             if r.get("structural_pass", False):
                 cert.structural_passed += 1
+            failed_checks = [c["name"] for c in r.get("checks", []) if not c.get("passed", True)]
             cert.structural_details.append({
                 "target": ev.get("target", "?"),
                 "fixture": r.get("name", "?"),
                 "passed": r.get("structural_pass", False),
+                "failed_checks": failed_checks,
             })
 
     structural_rate = (cert.structural_passed / cert.structural_total * 100) if cert.structural_total > 0 else 0
@@ -185,11 +187,12 @@ def generate_report(cert: CertResult, version: str) -> str:
     s_rate = (cert.structural_passed / cert.structural_total * 100) if cert.structural_total > 0 else 0
     lines.append(f"## Structural ({int(W_STRUCTURAL*100)}%) — {cert.structural_passed}/{cert.structural_total} passed ({s_rate:.0f}%)\n")
     if cert.structural_details:
-        lines.append("| Target | Fixture | Status |")
-        lines.append("|--------|---------|--------|")
+        lines.append("| Target | Fixture | Status | Failed Checks |")
+        lines.append("|--------|---------|--------|---------------|")
         for d in cert.structural_details:
             status = "✓" if d["passed"] else "✗"
-            lines.append(f"| {d['target']} | {d['fixture']} | {status} |")
+            failed = ", ".join(d.get("failed_checks", [])) if not d["passed"] else ""
+            lines.append(f"| {d['target']} | {d['fixture']} | {status} | {failed} |")
         lines.append("")
 
     # Quality

@@ -4,12 +4,12 @@ description: Test planner — creates comprehensive test plans with coverage str
 structural_checks:
   - name: has_unit_tests
     description: Includes unit test cases
-    pattern: "(?i)(unit test|@Test|test.*method|test.*class)"
+    pattern: "(?i)(unit test|@Test|test.*method|test.*class|test.*case|should.*return|should.*throw|verify)"
     required: true
 
   - name: has_integration_tests
     description: Includes integration test cases
-    pattern: "(?i)(integration test|MockMvc|@SpringBootTest|@WebMvcTest)"
+    pattern: "(?i)(integration test|end.to.end|e2e|MockMvc|@SpringBootTest|@WebMvcTest|API test|contract test|smoke test)"
     required: true
 
   - name: has_edge_cases

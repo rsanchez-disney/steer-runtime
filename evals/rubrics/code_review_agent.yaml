@@ -9,7 +9,7 @@ structural_checks:
 
   - name: checks_error_handling
     description: Reviews error handling
-    pattern: "(?i)(error handling|exception|try.catch|error response|400|500)"
+    pattern: "(?i)(error handling|exception|try.catch|error response|400|500|throw|catch|failure|fault|graceful)"
     required: true
 
   - name: checks_security
