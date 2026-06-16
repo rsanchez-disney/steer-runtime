@@ -55,9 +55,12 @@ except: pass
   if echo "$agent_file" | grep -qi "orchestrator"; then
     ALLOWED_ORCH_TOOLS="subagent thinking todo_list @yax/*"
     bad_tools=$(python3 -c "
-import json
+import json, os
 d = json.load(open('$agent_file'))
 allowed = {'subagent', 'thinking', 'todo_list', '@yax/*'}
+# sustainment_orchestrator may have fs_read for catalog lookups
+if 'sustainment' in os.path.basename('$agent_file'):
+    allowed.add('fs_read')
 tools = set(d.get('tools', []))
 bad = tools - allowed
 if bad: print(', '.join(sorted(bad)))
@@ -65,7 +68,7 @@ if bad: print(', '.join(sorted(bad)))
     if [ -n "$bad_tools" ]; then
       echo "⚠  $agent_file — orchestrator has non-routing tools: $bad_tools"
       echo "   Orchestrators should only have: subagent, thinking, todo_list, @yax/*"
-      echo "   Direct tools belong on specialist agents (delegation pattern)"
+      echo "   Exception: sustainment_orchestrator may have fs_read (catalog lookups)"
       warnings=$((warnings + 1))
     fi
   fi

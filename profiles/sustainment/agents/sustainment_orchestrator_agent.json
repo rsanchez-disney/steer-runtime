@@ -6,7 +6,8 @@
     "subagent",
     "thinking",
     "todo_list",
-    "@yax/*"
+    "@yax/*",
+    "fs_read"
   ],
   "allowedTools": [
     "@yax/*"
