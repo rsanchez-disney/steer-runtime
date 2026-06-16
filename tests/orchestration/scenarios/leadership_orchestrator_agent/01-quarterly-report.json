@@ -1,0 +1,12 @@
+{
+  "name": "leadership-quarterly-report",
+  "description": "Leadership orchestrator should delegate reporting to quarterly_reporter_agent or portfolio_analyst_agent",
+  "agent": "leadership_orchestrator_agent",
+  "prompt": "Generate the Q2 quarterly report for the Payments vertical covering velocity, delivery health, and AI adoption metrics",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["quarterly_reporter_agent", "portfolio_analyst_agent", "executive_briefing_agent"],
+    "forbidden_tools": ["jira_search_issues", "get_confluence_page"]
+  },
+  "timeout_seconds": 90
+}

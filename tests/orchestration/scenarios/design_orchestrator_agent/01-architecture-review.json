@@ -1,0 +1,12 @@
+{
+  "name": "design-architecture-review",
+  "description": "Design orchestrator should delegate architecture work to architecture_agent",
+  "agent": "design_orchestrator_agent",
+  "prompt": "Review the proposed microservice split for the payment gateway. Should we use event sourcing or CQRS?",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["architecture_agent", "architecture_spec_agent", "adr_writer_agent"],
+    "forbidden_tools": ["write_file", "read_file"]
+  },
+  "timeout_seconds": 60
+}

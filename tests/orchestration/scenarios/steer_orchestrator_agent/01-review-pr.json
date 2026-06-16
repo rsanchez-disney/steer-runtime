@@ -1,0 +1,12 @@
+{
+  "name": "steer-review-pr",
+  "description": "Steer orchestrator should delegate PR review to steer_reviewer_agent or code_review_agent",
+  "agent": "steer_orchestrator_agent",
+  "prompt": "Review PR #230 in the Koda repository for breaking changes and schema violations",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["steer_reviewer_agent", "code_review_agent", "compatibility_agent"],
+    "forbidden_tools": ["github_get_pr", "read_file"]
+  },
+  "timeout_seconds": 60
+}

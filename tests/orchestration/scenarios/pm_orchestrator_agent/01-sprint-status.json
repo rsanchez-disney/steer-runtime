@@ -1,0 +1,12 @@
+{
+  "name": "pm-sprint-status",
+  "description": "PM orchestrator should delegate sprint tracking to sprint_manager_agent or standup_agent",
+  "agent": "pm_orchestrator_agent",
+  "prompt": "Give me the current sprint status for the Bolt team. How many stories are in progress vs done?",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["sprint_manager_agent", "standup_agent", "story_analyzer_agent"],
+    "forbidden_tools": ["jira_search_issues", "jira_get_board"]
+  },
+  "timeout_seconds": 60
+}

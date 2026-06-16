@@ -1,0 +1,12 @@
+{
+  "name": "ops-check-deployment",
+  "description": "Ops orchestrator should delegate deployment status to deployment_agent or infra_check_agent",
+  "agent": "ops_orchestrator_agent",
+  "prompt": "Check the deployment status of payment-controls-api in the stage environment. Was the last deploy successful?",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["deployment_agent", "infra_check_agent"],
+    "forbidden_tools": ["harness_get_deployment", "aws_ecs_describe"]
+  },
+  "timeout_seconds": 60
+}
