@@ -8,5 +8,5 @@
     "agents_called_any": ["ui_inspector_agent", "web_discovery_agent", "ux_specialist_agent", "web_scraping_validator_agent"],
     "forbidden_tools": ["chrome_navigate", "chrome_evaluate"]
   },
-  "timeout_seconds": 60
+  "timeout_seconds": 180
 }

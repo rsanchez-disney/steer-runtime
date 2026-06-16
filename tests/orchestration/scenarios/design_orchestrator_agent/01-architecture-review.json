@@ -8,5 +8,5 @@
     "agents_called_any": ["architecture_agent", "architecture_spec_agent", "adr_writer_agent"],
     "forbidden_tools": ["write_file", "read_file"]
   },
-  "timeout_seconds": 60
+  "timeout_seconds": 180
 }

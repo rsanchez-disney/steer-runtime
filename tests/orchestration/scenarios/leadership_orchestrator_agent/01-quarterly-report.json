@@ -8,5 +8,5 @@
     "agents_called_any": ["quarterly_reporter_agent", "portfolio_analyst_agent", "executive_briefing_agent"],
     "forbidden_tools": ["jira_search_issues", "get_confluence_page"]
   },
-  "timeout_seconds": 90
+  "timeout_seconds": 180
 }

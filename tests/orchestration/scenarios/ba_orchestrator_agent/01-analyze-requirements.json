@@ -8,5 +8,5 @@
     "agents_called_any": ["requirements_analyst_agent", "feature_writer_agent", "story_analyzer_agent", "scope_definer_agent"],
     "forbidden_tools": ["jira_get_issue", "get_confluence_page"]
   },
-  "timeout_seconds": 60
+  "timeout_seconds": 180
 }

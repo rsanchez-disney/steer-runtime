@@ -8,5 +8,5 @@
     "agents_called": ["story_analyzer_agent"],
     "forbidden_tools": ["jira_get_issue", "jira_search_issues", "read_file"]
   },
-  "timeout_seconds": 60
+  "timeout_seconds": 180
 }

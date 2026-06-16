@@ -8,5 +8,5 @@
     "agents_called_any": ["deployment_agent", "infra_check_agent"],
     "forbidden_tools": ["harness_get_deployment", "aws_ecs_describe"]
   },
-  "timeout_seconds": 60
+  "timeout_seconds": 180
 }

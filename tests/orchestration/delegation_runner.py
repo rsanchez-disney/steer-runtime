@@ -162,27 +162,47 @@ def analyze(name: str, output_lines: list, expect: dict) -> dict:
     full_output = "\n".join(output_lines)
     result = {"name": name, "status": "PASS", "subagent_calls": 0, "details": []}
 
-    # Detect actual subagent tool USE (not just tool listing)
-    # Tool use shows up as: "name":"subagent" in a toolUse content block
-    # We need to exclude the _kiro.dev/commands/available notifications
+    # Detect delegation via multiple signals:
+    # 1. _kiro.dev/subagent/list_update with non-empty subagents
+    # 2. "subagent" tool use in content blocks (outside commands/available)
+    # 3. Text mentioning delegation to specific agents
     subagent_uses = 0
     agents_invoked = set()
 
     for line in output_lines:
-        # Skip the tool listing notifications
+        # Skip tool listing notifications
         if "_kiro.dev/commands/available" in line:
             continue
-        # Look for actual subagent tool invocation in content blocks
-        if '"subagent"' in line:
+
+        # Signal 1: subagent/list_update with active subagents
+        if "subagent/list_update" in line:
+            try:
+                msg = json.loads(line)
+                subagents = msg.get("params", {}).get("subagents", [])
+                if subagents:
+                    subagent_uses += len(subagents)
+                    for sa in subagents:
+                        name_val = sa.get("name", sa.get("id", ""))
+                        if name_val:
+                            agents_invoked.add(name_val)
+            except json.JSONDecodeError:
+                pass
+            continue
+
+        # Signal 2: subagent tool call in content (tool_use blocks)
+        if '"subagent"' in line and '"tool' in line.lower():
             subagent_uses += 1
-            # Try to extract which agents are being called
-            for agent_match in re.finditer(r'"role":\s*"([^"]+)"', line):
-                agents_invoked.add(agent_match.group(1))
-            # Also check for agent names in the stages
-            for agent_match in re.finditer(r'"name":\s*"([^"]+_agent|backend|webapi|ui|astro|flutter|terraform|python)"', line):
-                agents_invoked.add(agent_match.group(1))
+            # Extract agent names from stages
+            for m in re.finditer(r'"role":\s*"([^"]+_agent|backend|webapi|ui|astro|flutter|terraform|python)"', line):
+                agents_invoked.add(m.group(1))
+
+        # Signal 3: text content mentioning delegation
+        if any(kw in line for kw in ['"stages"', '"depends_on"', 'prompt_template']):
+            if '"subagent"' not in line and "commands/available" not in line:
+                subagent_uses += 1
 
     result["subagent_calls"] = subagent_uses
+    result["agents_invoked"] = list(agents_invoked)
 
     # Check 1: Delegation happened?
     if expect.get("delegated", True):

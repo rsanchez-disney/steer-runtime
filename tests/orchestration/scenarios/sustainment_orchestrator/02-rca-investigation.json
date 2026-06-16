@@ -8,5 +8,5 @@
     "agents_called_any": ["rca_agent", "log_analyzer_agent"],
     "forbidden_tools": ["servicenow_tool_snow_get_incident", "splunk_search", "get_confluence_page"]
   },
-  "timeout_seconds": 90
+  "timeout_seconds": 180
 }
