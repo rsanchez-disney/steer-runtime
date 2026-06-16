@@ -270,7 +270,7 @@ def eval_with_acp(agent: str, prompt: str, timeout: int = 120) -> tuple[str, flo
     # Send prompt
     send({"jsonrpc": "2.0", "id": "3", "method": "session/prompt", "params": {
         "sessionId": session_id,
-        "prompt": {"role": "user", "content": [{"type": "text", "text": prompt}]},
+        "prompt": [{"type": "text", "text": prompt}],
     }})
 
     # Collect response until timeout or completion

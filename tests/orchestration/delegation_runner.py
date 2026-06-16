@@ -122,7 +122,7 @@ def run_scenario(scenario_path: Path, dry_run=False) -> dict:
         # Send prompt
         send({"jsonrpc": "2.0", "id": "3", "method": "session/prompt", "params": {
             "sessionId": session_id,
-            "prompt": {"role": "user", "content": [{"type": "text", "text": prompt}]},
+            "prompt": [{"type": "text", "text": prompt}],
         }})
 
         # Wait for response — look for id:3 result or tool use notifications
@@ -214,13 +214,19 @@ def analyze(name: str, output_lines: list, expect: dict) -> dict:
             result["status"] = "FAIL"
             result["details"].append({"check": "delegated", "passed": False, "reason": "subagent tool not called"})
 
-    # Check 2: Expected agents
+    # Check 2: Expected agents (only in actual response content, not tool listings)
     expected_all = expect.get("agents_called", [])
     expected_any = expect.get("agents_called_any", [])
 
+    # Build response-only output (exclude commands/available and mcp notifications)
+    response_output = "\n".join(
+        l for l in output_lines
+        if "_kiro.dev/commands" not in l and "_kiro.dev/mcp" not in l
+    )
+
     if expected_all:
         for agent in expected_all:
-            if agent in full_output:
+            if agent in response_output:
                 pass_msg(f"Agent referenced: {agent}")
             else:
                 fail_msg(f"Agent NOT referenced: {agent}")
@@ -228,7 +234,7 @@ def analyze(name: str, output_lines: list, expect: dict) -> dict:
                 result["details"].append({"check": "agent_missing", "agent": agent, "passed": False})
 
     if expected_any:
-        found = [a for a in expected_any if a in full_output]
+        found = [a for a in expected_any if a in response_output]
         if found:
             pass_msg(f"Expected agent(s) found: {', '.join(found)}")
         else:
