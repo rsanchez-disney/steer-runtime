@@ -26,7 +26,7 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDW Show Ready"
+  configuration_items: "WDW Show Ready"
   assignment_group: "app-global-ShowReady"
   business_service: ""
 
@@ -92,35 +92,6 @@ components:
         |rex field=Msg "ResponseTime : (?<ResponseTime>[^\"]+)" 
         | stats avg(ResponseTime) as avg_rt p95(ResponseTime) as p95_rt by EndPoint
 
-    # # -- AppDynamics --
-    # appdynamics:
-    #   app_name: ""
-    #   app_id: ""
-    #   tier: ""
-    #   dashboard_url: ""
-
-    # # -- NewRelic --
-    # newrelic:
-    #   app_id: ""
-    #   account_id: ""
-    #   dashboard_url: ""
-
-    # # -- Datadog --
-    # datadog:
-    #   service: ""
-    #   env: ""
-    #   dashboard_url: ""
-
-    # # -- Grafana --
-    # grafana:
-    #   dashboard_uid: ""
-    #   dashboard_url: ""
-    #   datasource: ""
-
-    # # -- Archer --
-    # archer:
-    #   record_id: ""
-
     # -- Cloud Infrastructure & Native Observability --
     cloud:
       provider: "AWS"                   # AWS | GCP | Azure | on-prem
@@ -129,19 +100,6 @@ components:
       infra_type: "ECS"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
       cluster_id: "wdw-ticketing-S0016057-use1-prd" 
       service_name: "smartpark-castops-prod-live"
-
-      # cloudwatch:
-      #   log_group: ""
-      #   namespace: ""
-      #   alarm_prefix: ""
-
-      # loginsights:
-      #   log_group: ""
-      #   saved_query: ""
-
-      # gcp:
-      #   project_id: ""
-      #   log_filter: ""
 
       services:
         - type: "sns"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
@@ -162,17 +120,6 @@ components:
         cloud:
           region: "us-east-1"
           service_name: "smartpark-castops-stage-live"
-
-      # load:
-      #   health_check:
-      #     url: ""
-      #   splunk:
-      #     index: ""
-      #     base_spl: >-
-      #       index=myindex_load sourcetype=mysource
-      #   cloud:
-      #     region: ""
-      #     service_name: ""
 
       latest:
         health_check:
@@ -233,35 +180,6 @@ components:
         |rex field=Msg "ResponseTime : (?<ResponseTime>[^\"]+)" 
         | stats  avg(ResponseTime) as avg_rt p95(ResponseTime) as p95_rt by EndPoint
 
-    # # -- AppDynamics --
-    # appdynamics:
-    #   app_name: ""
-    #   app_id: ""
-    #   tier: ""
-    #   dashboard_url: ""
-
-    # # -- NewRelic --
-    # newrelic:
-    #   app_id: ""
-    #   account_id: ""
-    #   dashboard_url: ""
-
-    # # -- Datadog --
-    # datadog:
-    #   service: ""
-    #   env: ""
-    #   dashboard_url: ""
-
-    # # -- Grafana --
-    # grafana:
-    #   dashboard_uid: ""
-    #   dashboard_url: ""
-    #   datasource: ""
-
-    # # -- Archer --
-    # archer:
-    #   record_id: ""
-
     # -- Cloud Infrastructure & Native Observability --
     cloud:
       provider: "AWS"                   # AWS | GCP | Azure | on-prem
@@ -273,24 +191,7 @@ components:
 
       cloudwatch:
         log_group: "wdw-ticketing-S0016057-use1-smartpark-castops-prd"
-      #  namespace: "" TODO
         alarm_prefix: "smartpark-castops-"
-
-      # loginsights:
-      #   log_group: ""
-      #   saved_query: ""
-
-      # gcp:
-      #   project_id: ""
-      #   log_filter: ""
-
-      # services:
-      #   - type: "sns"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-      #     name: "wdw-ticketing-S0016057-use1-stg-smartpark-apns"
-      #   - type: "sns"
-      #     name: "wdw-ticketing-S0016057-use1-stg-smartpark-fcm"
-      #   - type: dynamodb
-      #     name:   TODO request info
 
     # -- Other Environments (only fields that differ from production) --
     other_environments:
@@ -301,21 +202,10 @@ components:
         splunk:
           index: "smartpark_svcs"
           base_spl: >-
-            index=smartpark_svcs sourcetype=kinesis:cloudwatchlogs source="*castops*Stg*"
+            index=smartpark_svcs sourcetype=kinesis:cloudwatchlogs source="*admin*Stg*"
         cloud:
           region: "us-east-1"
           service_name: "smartpark-admin-stage-live"
-
-      # load:
-      #   health_check:
-      #     url: ""
-      #   splunk:
-      #     index: ""
-      #     base_spl: >-
-      #       index=myindex_load sourcetype=mysource
-      #   cloud:
-      #     region: ""
-      #     service_name: ""
 
       latest:
         health_check:
@@ -332,9 +222,6 @@ components:
   - component_name: "Show-Ready-App"
     component_type: "mobile"               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
     description: "Flutter application used by final user"
-    # health_check:
-    #   url: "https://smartpark.wdprapps.disney.com/smartpark-castops/healthcheck"
-    #   expected_status: 200
 
     # -- Component-specific docs --
     docs:
@@ -357,118 +244,8 @@ components:
       pipeline_url: "https://client-jenkins.disney.network/job/DClean_Reimagine/job/smart-park-platform-flutter"
       deploy_target: ".ipa"
 
-    # -- Health Check --
-    # health_check:
-    #   url: ""
-    #   expected_status: 200
-
-    # -- Splunk --
-    # splunk:
-    #   index: "smartpark_svcs"
-    #   source: "*castops*prd*"
-    #   base_spl: >-
-    #     index=smartpark_svcs  source="*castops*prd*"
-    #   error_spl: >-
-    #     index=smartpark_svcs source="*castops*prd*" level=ERROR
-    #   latency_spl: >-
-    #     index=smartpark_svcs source="*castops*prd*" "Outgoing Response"
-    #     |rex field=Msg "URL : https://smartpark-ext.wdprapps.disney.com/smartpark-castops/api/v1/smartpark-castoperations-svc/*/(?<EndPoint>\S+)"
-    #     |rex field=Msg "ResponseTime : (?<ResponseTime>[^\"]+)" 
-    #     | stats avg(ResponseTime) as avg_rt p95(ResponseTime) as p95_rt by EndPoint
-
-    # # -- AppDynamics --
-    # appdynamics:
-    #   app_name: ""
-    #   app_id: ""
-    #   tier: ""
-    #   dashboard_url: ""
-
-    # # -- NewRelic --
+    # -- NewRelic --
     newrelic:
       app_id: "Show Ready"
       account_id: "786801"
       dashboard_url: "https://one.newrelic.com/dashboards/detail/Nzg2ODAxfFZJWnxEQVNIQk9BUkR8ZGE6MTAyMTE0NTU?state=a23c4dee-a565-d13c-f197-b276b69005b2"
-
-    # # -- Datadog --
-    # datadog:
-    #   service: ""
-    #   env: ""
-    #   dashboard_url: ""
-
-    # # -- Grafana --
-    # grafana:
-    #   dashboard_uid: ""
-    #   dashboard_url: ""
-    #   datasource: ""
-
-    # # -- Archer --
-    # archer:
-    #   record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
-    # cloud:
-    #   provider: "AWS"                   # AWS | GCP | Azure | on-prem
-    #   region: "us-east-1"
-    #   account_id: "708687297489"
-    #   infra_type: "ECS"                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-    #   cluster_id: "wdw-ticketing-S0002157-use1-prd"
-    #   service_name: "smartpark-castops-prod-live"
-
-      # cloudwatch:
-      #   log_group: ""
-      #   namespace: ""
-      #   alarm_prefix: ""
-
-      # loginsights:
-      #   log_group: ""
-      #   saved_query: ""
-
-      # gcp:
-      #   project_id: ""
-      #   log_filter: ""
-
-      services:
-        # - type: "sns"                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-        #   name: "wdw-ticketing-S0016057-use1-stg-smartpark-apns"
-        # - type: "sns"
-        #   name: "wdw-ticketing-S0016057-use1-stg-smartpark-fcm"
-        # - type: dynamodb
-        #   name:   TODO request info
-
-    # -- Other Environments (only fields that differ from production) --
-    # other_environments:
-
-    #   stage:
-    #     health_check:
-    #       url: "https://stage.smartpark.wdprapps.disney.com/smartpark-castops/healthcheck"
-    #     splunk:
-    #       index: "smartpark_svcs"
-    #       base_spl: >-
-    #         index=smartpark_svcs sourcetype=kinesis:cloudwatchlogs source="*castops*Stg*"
-    #     cloud:
-    #       region: "us-east-1"
-    #       service_name: "smartpark-castops-stage-live"
-
-    #   # load:
-    #   #   health_check:
-    #   #     url: ""
-    #   #   splunk:
-    #   #     index: ""
-    #   #     base_spl: >-
-    #   #       index=myindex_load sourcetype=mysource
-    #   #   cloud:
-    #   #     region: ""
-    #   #     service_name: ""
-
-    #   latest:
-    #     health_check:
-    #       url: "https://latest.smartpark.wdprapps.disney.com/smartpark-castops/healthcheck"
-    #     splunk:
-    #       index: "smartpark_svcs"
-    #       base_spl: >-
-    #         index=smartpark_svcs sourcetype=kinesis:cloudwatchlogs source="*castops*lst*"
-    #     cloud:
-    #       region: "us-east-1"
-    #       service_name: "smartpark-castops-latest-live"
-    
-          
