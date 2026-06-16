@@ -4,11 +4,32 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.122] — 2026-06-16
+
 ### Added
-- **New Relic MCP server** — 5 read-only tools (run_nrql, list_entities, get_entity_golden_signals, get_alert_violations, get_deployments) via NerdGraph GraphQL API with query validation security
+- **steer-certify** — trust score and certification report (`make certify`)
+- **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators
+- **Unified eval runner** — auto-discovers 187 agents + skills (`make eval-scan`, `make eval-all`)
+- **Certification pipeline** — sync + delegation + evals + trust score in one command
+- **validate-agents guardrail** — flags orchestrators with non-routing tools
+- **Harness testing and certification guide** — `docs/testing/HARNESS_TESTING_AND_CERTIFICATION.md`
+- **STEER_HOME env var** — kiro-cli isolation (in Koda, translates to KIRO_HOME)
+- **Skill materializer** — Koda flattens directory skills (SKILL.md + references/) for kiro-cli
+- **koda check** — enhanced with MCP, skills, orchestrator validation, trust score
+- **koda setup --home** — configures STEER_HOME in shell profile
 
 ### Changed
-- **MCP_REFERENCE.md** — added newrelic-mcp documentation with prompt examples
+- **Orchestrator tools** — all 12 restricted to routing-only: `subagent, thinking, todo_list, @yax/*`
+- **sustainment_orchestrator** — retains `fs_read` for service catalog lookups (Option C hybrid)
+- **Dev specialist agents** — backend, webapi, ui, flutter, etc. now include `code` + `grep`
+- **Orchestrator prompt** — strengthened anti-patterns for coding delegation
+- **Workspace naming** — `sustainment-uad` → `sustainment/sustainment-uad`, `app-team` → `adaptive-payments-team`
+
+### Fixed
+- **ACP prompt format** — corrected for delegation runner + eval runner
+- **Delegation runner** — rewritten in Python (reliable JSON, 180s timeout, subagent/list_update detection)
+- **False positive agent detection** — excluded `_kiro.dev/commands/available` from analysis
+- **Delegation scenarios** — use workspace-specific context (DPAY keys, real URLs)
 
 ## [0.2.106]
 
