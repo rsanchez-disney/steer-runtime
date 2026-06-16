@@ -78,14 +78,14 @@ def get_version():
 
 
 def run_delegation_tests(dry_run=False) -> dict:
-    """Run delegation tests and return summary."""
+    """Run all delegation tests (16 scenarios across 12 orchestrators)."""
     summary_file = DELEGATION_DIR / "results" / "summary.json"
 
     if not dry_run:
-        # Clean previous
         summary_file.unlink(missing_ok=True)
         runner = DELEGATION_DIR / "runner.sh"
-        subprocess.run([str(runner), "--all"], cwd=DELEGATION_DIR, capture_output=True)
+        print("   → Running 16 delegation scenarios (may take several minutes)...")
+        subprocess.run([str(runner), "--all"], cwd=DELEGATION_DIR)
 
     if summary_file.exists():
         return json.loads(summary_file.read_text())
@@ -93,19 +93,22 @@ def run_delegation_tests(dry_run=False) -> dict:
 
 
 def run_evals(dry_run=False) -> list[dict]:
-    """Run evals and return per-target results."""
+    """Run structural + quality evals for all targets with rubrics."""
     results = []
     results_dir = EVALS_DIR / "results"
 
     if not dry_run:
+        print("   → Running structural + quality eval suite...")
         subprocess.run(
             [sys.executable, str(EVALS_DIR / "runner.py"), "run-all"],
-            cwd=EVALS_DIR, capture_output=True
+            cwd=EVALS_DIR
         )
 
     # Read all result files
     if results_dir.exists():
         for f in results_dir.glob("*.json"):
+            if f.name in ("certification.json",):
+                continue
             try:
                 results.append(json.loads(f.read_text()))
             except json.JSONDecodeError:
