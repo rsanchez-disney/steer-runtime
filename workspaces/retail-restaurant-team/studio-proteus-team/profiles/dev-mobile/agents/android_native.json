@@ -1,5 +1,9 @@
 {
   "name": "android_native",
+  "resources": [
+    "file://.kiro/skills/android_cli_setup.md",
+    "file://.kiro/skills/android_skills_setup.md"
+  ],
   "hooks": {
     "postToolUse": [
       {
