@@ -107,3 +107,12 @@ eval-all: ## Run all evaluations (targets with rubrics + fixtures)
 
 eval-dry: ## Dry-run all evaluations
 	python3 evals/runner.py run-all --dry-run
+
+certify: ## Run full certification (delegation + evals → trust score)
+	python3 evals/certify.py
+
+certify-report: ## Generate report from existing results (no re-run)
+	python3 evals/certify.py --from-results
+
+certify-dry: ## Preview certification without running tests
+	python3 evals/certify.py --dry-run
