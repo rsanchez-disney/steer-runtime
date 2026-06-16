@@ -50,6 +50,25 @@ except: pass
     echo "⚠  $agent_file — missing 'name' field"
     warnings=$((warnings + 1))
   fi
+
+  # Orchestrator tools guardrail: orchestrators should only have routing tools
+  if echo "$agent_file" | grep -qi "orchestrator"; then
+    ALLOWED_ORCH_TOOLS="subagent thinking todo_list @yax/*"
+    bad_tools=$(python3 -c "
+import json
+d = json.load(open('$agent_file'))
+allowed = {'subagent', 'thinking', 'todo_list', '@yax/*'}
+tools = set(d.get('tools', []))
+bad = tools - allowed
+if bad: print(', '.join(sorted(bad)))
+" 2>/dev/null)
+    if [ -n "$bad_tools" ]; then
+      echo "⚠  $agent_file — orchestrator has non-routing tools: $bad_tools"
+      echo "   Orchestrators should only have: subagent, thinking, todo_list, @yax/*"
+      echo "   Direct tools belong on specialist agents (delegation pattern)"
+      warnings=$((warnings + 1))
+    fi
+  fi
 done < <(find "$ROOT/profiles" "$ROOT/workspaces" -path "*/agents/*.json" -type f 2>/dev/null)
 
 echo ""
