@@ -94,3 +94,16 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
 .DEFAULT_GOAL := help
+
+eval-scan: ## Discover all evaluable agents and skills
+	python3 evals/runner.py scan -v
+
+eval-run: ## Run eval for a target (make eval-run TARGET=orchestrator)
+	@test -n "$(TARGET)" || { echo "Usage: make eval-run TARGET=orchestrator"; exit 1; }
+	python3 evals/runner.py run $(TARGET)
+
+eval-all: ## Run all evaluations (targets with rubrics + fixtures)
+	python3 evals/runner.py run-all
+
+eval-dry: ## Dry-run all evaluations
+	python3 evals/runner.py run-all --dry-run
