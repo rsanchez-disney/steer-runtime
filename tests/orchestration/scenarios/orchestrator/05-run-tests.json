@@ -1,0 +1,12 @@
+{
+  "name": "run-tests",
+  "description": "Orchestrator should delegate test execution to test_runner_agent or devops_runner_agent",
+  "agent": "orchestrator",
+  "prompt": "Run the unit tests for wdpr-payment-controls-api and show me which ones are failing",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["test_runner_agent", "devops_runner_agent"],
+    "forbidden_tools": ["execute_bash", "shell"]
+  },
+  "timeout_seconds": 180
+}
