@@ -6,7 +6,9 @@
     "fs_read",
     "fs_write",
     "execute_bash",
-    "@bruno/*"
+    "@bruno/*",
+    "code",
+    "grep"
   ],
   "toolsSettings": {
     "fs_write": {

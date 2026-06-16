@@ -1,6 +1,6 @@
 {
   "name": "ui_legacy",
-  "description": "Angular legacy & uplift specialist (v12–v18+) for Config Studio pre-sales applications",
+  "description": "Angular legacy & uplift specialist (v12\u2013v18+) for Config Studio pre-sales applications",
   "prompt": "ui_legacy.md",
   "tools": [
     "fs_read",
@@ -8,7 +8,9 @@
     "execute_bash",
     "@confluence/*",
     "@mywiki/*",
-    "@compass/*"
+    "@compass/*",
+    "code",
+    "grep"
   ],
   "allowedTools": [
     "@confluence/*",

@@ -5,7 +5,9 @@
   "tools": [
     "fs_read",
     "fs_write",
-    "execute_bash"
+    "execute_bash",
+    "code",
+    "grep"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md",

@@ -8,7 +8,9 @@
     "execute_bash",
     "@confluence/*",
     "@mywiki/*",
-    "@compass/*"
+    "@compass/*",
+    "code",
+    "grep"
   ],
   "allowedTools": [
     "@confluence/*",
