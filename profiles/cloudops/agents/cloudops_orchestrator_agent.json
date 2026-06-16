@@ -6,17 +6,10 @@
     "subagent",
     "thinking",
     "todo_list",
-    "code",
-    "fs_read",
-    "grep",
-    "execute_bash",
-    "@confluence/*",
-    "@jira/*"
+    "@yax/*"
   ],
   "allowedTools": [
-    "@confluence/*",
-    "@jira/*",
-    "@harness/*"
+    "@yax/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
@@ -25,7 +18,7 @@
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 CloudOps orchestrator ready!\n\nI can help you:\n  • Plan infrastructure and size environments\n  • Define configuration management strategies\n  • Write RCA/post-mortem documents\n  • Design CI/CD pipelines and DevOps strategy\n\nTry: \"Assess infrastructure impact of adding Redis caching\"",
+  "welcomeMessage": "\ud83d\udc4b CloudOps orchestrator ready!\n\nI can help you:\n  \u2022 Plan infrastructure and size environments\n  \u2022 Define configuration management strategies\n  \u2022 Write RCA/post-mortem documents\n  \u2022 Design CI/CD pipelines and DevOps strategy\n\nTry: \"Assess infrastructure impact of adding Redis caching\"",
   "hooks": {
     "agentSpawn": [
       {

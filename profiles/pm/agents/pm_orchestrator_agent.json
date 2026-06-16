@@ -3,15 +3,6 @@
   "description": "Coordinates PM/Scrum Master workflows and delegates to specialized agents for sprint management, standups, retros, risk tracking, and delivery reporting",
   "prompt": "pm_orchestrator_agent.md",
   "tools": [
-    "@jira/*",
-    "@confluence/*",
-    "@mywiki/*",
-    "@github/*",
-    "@gitlab/*",
-    "code",
-    "execute_bash",
-    "fs_read",
-    "grep",
     "subagent",
     "thinking",
     "todo_list",
@@ -25,15 +16,10 @@
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "allowedTools": [
-    "@jira/*",
-    "@confluence/*",
-    "@github/*",
-    "@gitlab/*",
-    "@compass/*",
     "@yax/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 PM/Scrum Master orchestrator ready!\n\nI can help you:\n  • Manage sprint planning and capacity\n  • Generate standup summaries from Jira\n  • Facilitate retrospectives with metrics\n  • Track blockers, risks, and dependencies\n  • Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",
+  "welcomeMessage": "\ud83d\udc4b PM/Scrum Master orchestrator ready!\n\nI can help you:\n  \u2022 Manage sprint planning and capacity\n  \u2022 Generate standup summaries from Jira\n  \u2022 Facilitate retrospectives with metrics\n  \u2022 Track blockers, risks, and dependencies\n  \u2022 Generate velocity and delivery reports\n\nTry: \"Analyze current sprint health\"",
   "hooks": {
     "agentSpawn": [
       {

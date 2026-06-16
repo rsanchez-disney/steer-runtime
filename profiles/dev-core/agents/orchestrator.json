@@ -4,14 +4,9 @@
   "prompt": "orchestrator.md",
   "tools": [
     "subagent",
-    "execute_bash",
-    "grep",
-    "code",
-    "fs_read",
     "thinking",
     "todo_list",
-    "@yax/*",
-    "@bruno/*"
+    "@yax/*"
   ],
   "resources": [
     "file://AGENTS.md",

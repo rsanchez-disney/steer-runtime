@@ -4,14 +4,8 @@
   "prompt": "prompts/steer_orchestrator_agent.md",
   "tools": [
     "subagent",
-    "execute_bash",
-    "grep",
-    "code",
-    "fs_read",
-    "fs_write",
     "thinking",
     "todo_list",
-    "@gitlab/*",
     "@yax/*"
   ],
   "resources": [
@@ -34,7 +28,7 @@
     "file://.kiro/context/sdlc-workflow.md",
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
-  "welcomeMessage": "🛠️ Steer-master orchestrator ready!\n\nI can help you:\n  • Implement features for steer-runtime and Koda\n  • Review PRs for breaking changes and consistency\n  • Validate schemas and cross-repo compatibility\n  • Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
+  "welcomeMessage": "\ud83d\udee0\ufe0f Steer-master orchestrator ready!\n\nI can help you:\n  \u2022 Implement features for steer-runtime and Koda\n  \u2022 Review PRs for breaking changes and consistency\n  \u2022 Validate schemas and cross-repo compatibility\n  \u2022 Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
   "hooks": {
     "agentSpawn": [
       {
@@ -81,10 +75,6 @@
     ]
   },
   "allowedTools": [
-    "@github/*",
-    "@gitlab/*",
-    "@jira/*",
-    "@compass/*",
     "@yax/*"
   ],
   "includeMcpJson": true
