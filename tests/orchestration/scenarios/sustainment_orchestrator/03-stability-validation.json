@@ -1,0 +1,12 @@
+{
+  "name": "stability-validation",
+  "description": "Sustainment orchestrator should delegate stability check to stability_validator_agent",
+  "agent": "sustainment_orchestrator_agent",
+  "prompt": "Validate that the lodging booking flow is stable after the hotfix deployed 2 hours ago. Check error rates and response times.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["stability_validator_agent", "log_analyzer_agent", "infra_check_agent"],
+    "forbidden_tools": ["splunk_search", "compass_get_metrics"]
+  },
+  "timeout_seconds": 60
+}

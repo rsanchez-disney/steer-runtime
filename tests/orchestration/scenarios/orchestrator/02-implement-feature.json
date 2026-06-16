@@ -1,0 +1,12 @@
+{
+  "name": "implement-feature",
+  "description": "Orchestrator should delegate implementation to a specialist (backend/ui/webapi)",
+  "agent": "orchestrator",
+  "prompt": "Implement a new REST endpoint /api/v1/health that returns service status. The project uses Node.js with Express.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["backend", "webapi", "planner_agent"],
+    "forbidden_tools": ["write_file", "create_file", "fs_write"]
+  },
+  "timeout_seconds": 90
+}

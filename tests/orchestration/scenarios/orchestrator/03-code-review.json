@@ -1,0 +1,12 @@
+{
+  "name": "code-review",
+  "description": "Orchestrator should delegate code review to code_review_agent",
+  "agent": "orchestrator",
+  "prompt": "Review the changes in PR #42 of the payments-core repository for security issues and code quality",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["code_review_agent", "security_scanner_agent"],
+    "forbidden_tools": ["github_get_pr", "read_file"]
+  },
+  "timeout_seconds": 60
+}
