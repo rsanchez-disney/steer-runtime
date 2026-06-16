@@ -2,7 +2,11 @@
   "name": "android_native",
   "resources": [
     "file://.kiro/skills/android_cli_setup.md",
-    "file://.kiro/skills/android_skills_setup.md"
+    "file://.kiro/skills/android_skills_setup.md",
+    "file://.kiro/skills/get_ddp_user.md",
+    "file://.kiro/skills/clean_gradle_cache_for_library.md",
+    "file://.kiro/skills/create_park_app_build.md",
+    "file://.kiro/skills/mergeback_workflow_skill.md"
   ],
   "hooks": {
     "postToolUse": [
