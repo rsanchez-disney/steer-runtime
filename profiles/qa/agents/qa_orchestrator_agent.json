@@ -3,32 +3,12 @@
   "description": "Orchestrates QA tasks and coordinates specialized testing agents for test planning, automation, defect analysis, API testing, performance testing, and coverage analysis",
   "prompt": "qa_orchestrator_agent.md",
   "tools": [
-    "@confluence/*",
-    "@mywiki/*",
-    "@github/*",
-    "@gitlab/*",
-    "@jira/*",
-    "code",
-    "execute_bash",
-    "fs_read",
-    "fs_write",
-    "grep",
     "subagent",
     "thinking",
     "todo_list",
-    "@bruno/*",
-    "@qtest/*",
     "@yax/*"
   ],
   "allowedTools": [
-    "@confluence/*",
-    "@mywiki/*",
-    "@github/*",
-    "@gitlab/*",
-    "@jira/*",
-    "@bruno/*",
-    "@compass/*",
-    "@qtest/*",
     "@yax/*"
   ],
   "resources": [
@@ -41,7 +21,7 @@
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 QA orchestrator ready!\n\nI can help you:\n  • Create test plans from Jira stories\n  • Generate automated test scripts\n  • Analyze defects and find root causes\n  • Run API and performance tests\n\nTry: \"Create test plan for <JIRA-ID>\"",
+  "welcomeMessage": "\ud83d\udc4b QA orchestrator ready!\n\nI can help you:\n  \u2022 Create test plans from Jira stories\n  \u2022 Generate automated test scripts\n  \u2022 Analyze defects and find root causes\n  \u2022 Run API and performance tests\n\nTry: \"Create test plan for <JIRA-ID>\"",
   "hooks": {
     "agentSpawn": [
       {

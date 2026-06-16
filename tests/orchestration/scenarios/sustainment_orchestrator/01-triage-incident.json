@@ -1,0 +1,12 @@
+{
+  "name": "triage-incident",
+  "description": "Sustainment orchestrator should delegate incident triage to incident_triage_agent or rca_agent",
+  "agent": "sustainment_orchestrator_agent",
+  "prompt": "Triage incident INC0012345 — the checkout service is returning 500 errors in production",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["incident_triage_agent", "rca_agent", "log_analyzer_agent"],
+    "forbidden_tools": ["servicenow_tool_snow_get_incident", "splunk_search"]
+  },
+  "timeout_seconds": 180
+}

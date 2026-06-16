@@ -4,18 +4,11 @@
   "prompt": "leadership_orchestrator_agent.md",
   "tools": [
     "subagent",
-    "@jira/*",
-    "@confluence/*",
-    "@mywiki/*",
     "thinking",
     "todo_list",
     "@yax/*"
   ],
   "allowedTools": [
-    "@jira/*",
-    "@confluence/*",
-    "@mywiki/*",
-    "@compass/*",
     "@yax/*"
   ],
   "includeMcpJson": true,
@@ -27,7 +20,7 @@
     "file://.kiro/context/orchestrator_rules.md",
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
-  "welcomeMessage": "👋 Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n • Cross-team velocity and delivery health\n • Quarterly reports for Disney directors\n • Dependency tracking and risk assessment\n • Executive briefings tailored by audience\n\nWhat would you like to review?",
+  "welcomeMessage": "\ud83d\udc4b Leadership Orchestrator ready!\n\nI coordinate cross-team insights for your vertical.\n\n \u2022 Cross-team velocity and delivery health\n \u2022 Quarterly reports for Disney directors\n \u2022 Dependency tracking and risk assessment\n \u2022 Executive briefings tailored by audience\n\nWhat would you like to review?",
   "hooks": {
     "agentSpawn": [
       {

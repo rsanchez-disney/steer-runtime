@@ -1,0 +1,12 @@
+{
+  "name": "qa-plan-testing",
+  "description": "QA orchestrator should delegate test planning to test_planner_agent",
+  "agent": "qa_orchestrator_agent",
+  "prompt": "Create a test plan for the new payment validation endpoint. It's a POST /api/v1/refunds/validate in a Spring Boot service.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["test_planner_agent", "test_automation_agent", "e2e_test_generator_agent", "api_tester_agent"],
+    "forbidden_tools": ["write_file", "create_file"]
+  },
+  "timeout_seconds": 180
+}

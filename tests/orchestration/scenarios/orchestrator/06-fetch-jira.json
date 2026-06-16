@@ -1,0 +1,12 @@
+{
+  "name": "fetch-jira",
+  "description": "Orchestrator should delegate Jira fetching to story_analyzer_agent",
+  "agent": "orchestrator",
+  "prompt": "Fetch the details of https://jira.disney.com/browse/DPAY-15001 including acceptance criteria and linked PRs",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["story_analyzer_agent"],
+    "forbidden_tools": ["jira_get_issue", "jira_search_issues"]
+  },
+  "timeout_seconds": 180
+}

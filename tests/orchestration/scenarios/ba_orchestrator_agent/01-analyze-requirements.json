@@ -1,0 +1,12 @@
+{
+  "name": "ba-analyze-requirements",
+  "description": "BA orchestrator should delegate requirements analysis to requirements_analyst_agent or feature_writer_agent",
+  "agent": "ba_orchestrator_agent",
+  "prompt": "Analyze the requirements for epic DPAY-500 'Self-service refund portal' and identify gaps in the acceptance criteria",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["requirements_analyst_agent", "feature_writer_agent", "story_analyzer_agent", "scope_definer_agent"],
+    "forbidden_tools": ["jira_get_issue", "get_confluence_page"]
+  },
+  "timeout_seconds": 180
+}

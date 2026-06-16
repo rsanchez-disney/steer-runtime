@@ -1,0 +1,12 @@
+{
+  "name": "qa-analyze-defect",
+  "description": "QA orchestrator should delegate defect analysis to defect_analyst_agent",
+  "agent": "qa_orchestrator_agent",
+  "prompt": "Analyze bug DPAY-14500 — the refund validation is returning 200 instead of 400 for amounts exceeding the original charge. Find the root cause.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["defect_analyst_agent", "story_analyzer_agent", "codebase_explorer_agent"],
+    "forbidden_tools": ["jira_get_issue", "fs_read", "code"]
+  },
+  "timeout_seconds": 180
+}

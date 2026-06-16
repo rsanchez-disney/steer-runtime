@@ -1,0 +1,12 @@
+{
+  "name": "steer-release",
+  "description": "Steer orchestrator should delegate release management to steer_release_manager_agent",
+  "agent": "steer_orchestrator_agent",
+  "prompt": "Prepare the next release of steer-runtime. Bump version, update CHANGELOG, and create a GitHub release.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["steer_release_manager_agent", "release_manager_agent", "devops_runner_agent"],
+    "forbidden_tools": ["execute_bash", "fs_write", "github_create_release"]
+  },
+  "timeout_seconds": 180
+}

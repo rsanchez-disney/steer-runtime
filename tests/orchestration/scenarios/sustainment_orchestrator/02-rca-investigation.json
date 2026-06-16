@@ -1,0 +1,12 @@
+{
+  "name": "rca-investigation",
+  "description": "Sustainment orchestrator should delegate RCA to rca_agent",
+  "agent": "sustainment_orchestrator_agent",
+  "prompt": "Perform root cause analysis on INC0067890. The payment gateway started timing out after yesterday's deployment.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["rca_agent", "log_analyzer_agent"],
+    "forbidden_tools": ["servicenow_tool_snow_get_incident", "splunk_search", "get_confluence_page"]
+  },
+  "timeout_seconds": 180
+}

@@ -1,6 +1,6 @@
 {
-  "name": "app-team",
-  "description": "Adaptive Payment Platform — shared foundation for all APP sub-teams",
+  "name": "adaptive-payments-team",
+  "description": "Adaptive Payment Platform \u2014 shared foundation for all APP sub-teams",
   "team": "Disney Payments & Commerce",
   "profiles": [
     "dev-core",

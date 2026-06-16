@@ -1,0 +1,12 @@
+{
+  "name": "gsm-report",
+  "description": "Sustainment orchestrator should delegate GSM reporting to gsm_analyst_agent",
+  "agent": "sustainment_orchestrator_agent",
+  "prompt": "Generate this week's GSM impact summary for the payment-controls service. Include SLA compliance and incident count.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["gsm_analyst_agent", "log_analyzer_agent"],
+    "forbidden_tools": ["splunk_search", "servicenow_tool_snow_get_incident"]
+  },
+  "timeout_seconds": 180
+}

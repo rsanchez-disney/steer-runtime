@@ -1,0 +1,12 @@
+{
+  "name": "pm-run-retro",
+  "description": "PM orchestrator should delegate retrospective to retro_agent",
+  "agent": "pm_orchestrator_agent",
+  "prompt": "Facilitate the sprint retrospective for the DPAY team. Pull velocity data and identify patterns from the last 3 sprints.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["retro_agent", "sprint_manager_agent", "standup_agent"],
+    "forbidden_tools": ["jira_search_issues", "jira_get_board"]
+  },
+  "timeout_seconds": 180
+}

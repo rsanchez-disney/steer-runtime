@@ -1,0 +1,12 @@
+{
+  "name": "inspector-inspect-app",
+  "description": "Inspector orchestrator should delegate UI inspection to ui_inspector_agent",
+  "agent": "inspector_orchestrator",
+  "prompt": "Navigate to http://localhost:3000/checkout and inspect the payment form for accessibility issues. Check ARIA labels, focus order, and color contrast.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["ui_inspector_agent", "web_discovery_agent", "ux_specialist_agent", "web_scraping_validator_agent"],
+    "forbidden_tools": ["chrome_navigate", "chrome_evaluate"]
+  },
+  "timeout_seconds": 180
+}

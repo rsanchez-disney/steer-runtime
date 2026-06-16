@@ -6,15 +6,10 @@
     "subagent",
     "thinking",
     "todo_list",
-    "code",
-    "fs_read",
-    "grep",
-    "@confluence/*",
-    "@jira/*"
+    "@yax/*"
   ],
   "allowedTools": [
-    "@confluence/*",
-    "@jira/*"
+    "@yax/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
@@ -23,7 +18,7 @@
     "file://.kiro/context/_dynamic/delegation-map.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 Design orchestrator ready!\n\nI can help you:\n  • Run competitive analysis and design discovery\n  • Plan user research and create personas/journey maps\n  • Design usability test protocols\n  • Generate design prompts for Figma/v0\n\nTry: \"Run competitive analysis for our checkout flow\"",
+  "welcomeMessage": "\ud83d\udc4b Design orchestrator ready!\n\nI can help you:\n  \u2022 Run competitive analysis and design discovery\n  \u2022 Plan user research and create personas/journey maps\n  \u2022 Design usability test protocols\n  \u2022 Generate design prompts for Figma/v0\n\nTry: \"Run competitive analysis for our checkout flow\"",
   "hooks": {
     "agentSpawn": [
       {

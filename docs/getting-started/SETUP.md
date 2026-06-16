@@ -159,6 +159,25 @@ koda mcp-install        # Installs the available mcp servers
 koda                    # Opens the interactive TUI dashboard
 ```
 
+### Custom Home Directory (optional)
+
+By default, Koda writes to `~/.kiro`. If you use kiro-cli for other purposes (IDE, personal configs)
+and want to keep Steer isolated, set `STEER_HOME`:
+
+```bash
+# Add to ~/.zshrc (or ~/.bashrc)
+export STEER_HOME=~/.steer
+```
+
+This tells Koda to use `~/.steer/` instead of `~/.kiro/` for all agents, skills, MCP configs, and workspaces. Your vanilla kiro-cli installation at `~/.kiro/` remains untouched.
+
+| Variable | Who sets it | Purpose |
+|----------|-------------|---------|
+| `STEER_HOME` | User (in shell profile) | Custom directory for all Steer files |
+| `KIRO_HOME` | Koda (internally) | Passed to kiro-cli subprocess — never set this manually |
+
+> **Existing users**: No action needed. If `STEER_HOME` is not set, everything continues using `~/.kiro`.
+
 ---
 
 ## Quick Reference

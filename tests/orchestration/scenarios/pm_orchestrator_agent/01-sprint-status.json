@@ -1,0 +1,12 @@
+{
+  "name": "pm-sprint-status",
+  "description": "PM orchestrator should delegate sprint tracking to sprint_manager_agent or standup_agent",
+  "agent": "pm_orchestrator_agent",
+  "prompt": "Generate the daily standup summary for the DPAY team from Jira. Show what was completed yesterday and what's in progress today.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["sprint_manager_agent", "standup_agent", "story_analyzer_agent"],
+    "forbidden_tools": ["jira_search_issues", "jira_get_board"]
+  },
+  "timeout_seconds": 180
+}
