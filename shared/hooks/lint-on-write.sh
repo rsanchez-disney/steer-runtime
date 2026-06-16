@@ -12,5 +12,7 @@ case "$FILE" in
     command -v ruff >/dev/null && ruff format "$FILE" 2>/dev/null && echo "✓ Formatted $FILE" || true ;;
   *.dart)
     command -v dart >/dev/null && dart format "$FILE" 2>/dev/null && echo "✓ Formatted $FILE" || true ;;
+  *.kt|*.kts)
+    command -v ktlint >/dev/null && ktlint --format "$FILE" 2>/dev/null && echo "✓ Formatted $FILE" || true ;;
 esac
 exit 0

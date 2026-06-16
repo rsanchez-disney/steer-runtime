@@ -1,0 +1,12 @@
+{
+  "name": "android_native",
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-format Kotlin/Java files after write"
+      }
+    ]
+  }
+}
