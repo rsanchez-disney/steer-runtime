@@ -2,7 +2,7 @@
   "name": "design-architecture-review",
   "description": "Design orchestrator should delegate architecture work to architecture_agent",
   "agent": "design_orchestrator_agent",
-  "prompt": "Review the proposed microservice split for the payment gateway. Should we use event sourcing or CQRS?",
+  "prompt": "Design the target architecture for splitting wdpr-payment-controls-api into separate refund and validation microservices. Include component diagrams and integration patterns.",
   "expect": {
     "delegated": true,
     "agents_called_any": ["architecture_agent", "architecture_spec_agent", "adr_writer_agent"],

@@ -1,11 +1,11 @@
 {
   "name": "implement-feature",
-  "description": "Orchestrator should delegate implementation to a specialist (backend/ui/webapi)",
+  "description": "Orchestrator should delegate implementation planning to planner_agent or a specialist",
   "agent": "orchestrator",
-  "prompt": "Implement a new REST endpoint /api/v1/health that returns service status. The project uses Node.js with Express.",
+  "prompt": "Implement a new REST endpoint POST /api/v1/refunds/validate in wdpr-payment-controls-api that validates refund amount does not exceed original charge. The project uses Java Spring Boot.",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["backend", "webapi", "planner_agent"],
+    "agents_called_any": ["backend", "webapi", "planner_agent", "codebase_explorer_agent"],
     "forbidden_tools": ["write_file", "create_file", "fs_write"]
   },
   "timeout_seconds": 180

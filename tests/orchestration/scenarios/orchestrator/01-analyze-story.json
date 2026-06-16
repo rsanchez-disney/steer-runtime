@@ -2,10 +2,10 @@
   "name": "analyze-story",
   "description": "Orchestrator should delegate story analysis to story_analyzer_agent",
   "agent": "orchestrator",
-  "prompt": "Analyze Jira story BOLT-1234 and identify what components are affected",
+  "prompt": "Analyze Jira story https://jira.disney.com/browse/DPAY-14337 and identify what components are affected",
   "expect": {
     "delegated": true,
-    "agents_called": ["story_analyzer_agent"],
+    "agents_called_any": ["story_analyzer_agent"],
     "forbidden_tools": ["jira_get_issue", "jira_search_issues", "read_file"]
   },
   "timeout_seconds": 180

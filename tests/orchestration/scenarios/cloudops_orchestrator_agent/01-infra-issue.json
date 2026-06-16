@@ -2,7 +2,7 @@
   "name": "cloudops-infra-issue",
   "description": "CloudOps orchestrator should delegate infrastructure investigation",
   "agent": "cloudops_orchestrator_agent",
-  "prompt": "The ECS tasks for lodging-booking-api keep getting OOMKilled. Investigate and propose a fix.",
+  "prompt": "The ECS tasks for wdpr-payment-controls-api in us-east-1 keep getting OOMKilled. Check CloudWatch metrics and ECS task status, then propose a memory limit increase.",
   "expect": {
     "delegated": true,
     "agents_called_any": ["infra_check_agent", "log_analyzer_agent", "network_diagnostics_agent"],

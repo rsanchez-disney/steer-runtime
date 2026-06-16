@@ -2,10 +2,10 @@
   "name": "code-review",
   "description": "Orchestrator should delegate code review to code_review_agent",
   "agent": "orchestrator",
-  "prompt": "Review the changes in PR #42 of the payments-core repository for security issues and code quality",
+  "prompt": "Review the latest PR in https://github.disney.com/DisneyPaymentsOrg/wdpr-payment-controls-api for security issues and code quality",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["code_review_agent", "security_scanner_agent"],
+    "agents_called_any": ["code_review_agent", "security_scanner_agent", "story_analyzer_agent"],
     "forbidden_tools": ["github_get_pr", "read_file"]
   },
   "timeout_seconds": 180

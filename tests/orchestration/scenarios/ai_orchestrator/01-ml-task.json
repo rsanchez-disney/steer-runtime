@@ -2,7 +2,7 @@
   "name": "ai-route-ml-task",
   "description": "AI orchestrator should delegate ML tasks to ml_engineer or data_scientist",
   "agent": "ai_orchestrator",
-  "prompt": "Fine-tune a text classification model for ticket categorization using our labeled Jira dataset",
+  "prompt": "Train a text classification model to categorize DPAY Jira tickets into bug, feature, and tech-debt using our labeled dataset at ~/data/dpay-tickets.csv",
   "expect": {
     "delegated": true,
     "agents_called_any": ["ml_engineer", "data_scientist", "llm_engineer"],
