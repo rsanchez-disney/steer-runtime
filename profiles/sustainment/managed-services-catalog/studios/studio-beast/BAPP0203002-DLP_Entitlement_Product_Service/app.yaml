@@ -1,44 +1,48 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0203002"
 app_name: "dlp-entitlement-product-service"
 full_name: "DLP Entitlement Product Service"
-description: ""
+description: "Entitlement Product Service (EPS) exposes product information to TMS. It is a Node.js Lambda that exposes a single endpoint (product finder) to retrieve PLU/Product information using SKU as parameter. Returns product category, product name, guest access type, etc."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Entitlement Product Service"
     - "DLP Entitlement Product Service - AWS Latest"
     - "DLP Entitlement Product Service - AWS Load Test"
     - "DLP Entitlement Product Service - AWS Production"
     - "DLP Entitlement Product Service - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP Entitlement Product Service"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090176/DLP+Entitlement+Product+Service+BAPP0203002"
+  architecture_diagram: "https://confluence.disney.com/pages/viewpage.action?pageId=1356008915"
+  tridion: "https://confluence.disney.com/display/DLPFORKY/CME+-+Surqual"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -46,138 +50,72 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Node.js"
+  - name: "AWS Lambda"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "cme-eps-product-finder"
+    component_type: "api"
+    description: "Node.js Lambda exposing a single product finder endpoint. Retrieves PLU/Product information using SKU parameter. Triggered by API Gateway."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://gitlab.disney.com/cgs-wdw/capacity-managed-events/cme-eps"
+      branch: "develop"
+      path: "/"
 
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+    endpoints:
+      prod: "https://cme-eps-dlp.wdprapps.disney.com/api/product-finder"
+      stage: "https://stage.cme-eps-dlp.wdprapps.disney.com/api/product-finder"
+      load: "https://load.cme-eps-dlp.wdprapps.disney.com/api/product-finder"
+      latest: "https://latest.cme-eps-dlp.wdprapps.disney.com/api/product-finder"
 
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "Lambda"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
+    lambda_functions:
+      prod:
+        name: "epsdlp-euw1-prd-cme-eps-product-finder"
+        account_id: "725065748993"
+        role: "dlp-apps-prod"
+        trigger: "API Gateway"
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        name: "epsdlp-euw1-stg-cme-eps-product-finder"
+        account_id: "564479547993"
+        role: "dlp-apps-test"
+        trigger: "API Gateway"
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        name: "epsdlp-euw1-lod-cme-eps-product-finder"
+        account_id: "564479547993"
+        role: "dlp-apps-test"
+        trigger: "API Gateway"
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+        name: "epsdlp-euw1-lst-cme-eps-product-finder"
+        account_id: "301080195839"
+        role: "dlp-apps-dev"
+        trigger: "API Gateway"
+
+    splunk:
+      index: "wdpr_dlp_cme"
+      queries:
+        prod: 'index=wdpr_dlp_cme source="eu-west-1:/aws/lambda/epsdlp-euw1-prd-cme-eps-product-finder:*"'
+        stage: 'index=wdpr_dlp_cme source="eu-west-1:/aws/lambda/epsdlp-euw1-stg-cme-eps-product-finder:*"'
+        load: 'index=wdpr_dlp_cme source="eu-west-1:/aws/lambda/epsdlp-euw1-lod-cme-eps-product-finder:*"'
+        latest: 'index=wdpr_dlp_cme source="eu-west-1:/aws/lambda/epsdlp-euw1-lst-cme-eps-product-finder:*"'
+
+    postman: "See GET PLU DETAILS endpoint"
+
+# --- Guest Impact ---
+guest_impact:
+  description: "If EPS fails, guests may lose access to essential product information, disrupting the identification and association of products with tickets, as well as degrading the overall user experience."
+
+# --- Related BAPPs ---
+related_bapps:
+  - bapp_id: "BAPP0201208"
+    name: "DLP Ticket Management Service"
+    relationship: "Consumer — TMS uses EPS for product information"

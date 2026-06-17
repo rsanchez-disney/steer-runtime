@@ -1,44 +1,50 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0215510"
-app_name: "dlp-dge-apibio-services"
+app_name: "dlp-dge-api-bio-services"
 full_name: "DLP DGE API.BIO Services"
-description: ""
+description: "BIO Services is a set of 3 applications that manage schedules, wait times and downtime for both Disneyland Park and Walt Disney Studios Park. All three services are hosted on-premise in the DLP Genie Data Center."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP DGE API.BIO Services"
     - "DLP DGE API.BIO Services - AWS Latest"
     - "DLP DGE API.BIO Services - AWS Load Test"
     - "DLP DGE API.BIO Services - AWS Production"
     - "DLP DGE API.BIO Services - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP DGE API.BIO Services"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://mywiki.disney.com/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
+  architecture_diagram: "https://confluence.disney.com/x/NjFrRQ"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/990319193/KI+DLP+DGE+API.BIO+Services+BAPP0215510"
+  healthcheck_manager: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-devops-mobileapp-healthcheck-manager/health-ui"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -46,138 +52,233 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "Spring Boot"
+    version: "3.4+"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "bio-schedules-park-provider"
+    component_type: "api"
+    description: "Manages and exposes the opening schedules of activities across both Disneyland Park and Walt Disney Studios Park. Informs guests about when an activity will be available."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-schedules-park-provider"
+      branch: "develop"
+      path: "/"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_DGE_API_BIO_Services/overview"
+      deploy_target: "on-prem (DLP Genie Datacenter)"
 
-    # -- Health Check --
     health_check:
       url: ""
       expected_status: 200
+      deep_health_check: ""
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlpis"
       base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlpis host IN (vl-frmv-rhe734,vl-frmv-rhe735,vl-frmv-rhe775) "Identifiers.App-Name"=wdpr-dlp-is-operations-bio-*
+      dashboards:
+        - "wdpr-dlp-is-operations-bio-schedules-park-provider"
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "operations_bio_schedules_park_provider"
+      dashboards:
+        - "PROD_DLP_PAAP_wdpr-dlp-is-operations-bio-schedules-park-provider"
+        - "operations_bio_schedules_park_provider (Application Dashboard)"
+        - "DLP_PROD_BIO_GENIE (Application Database)"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
+      dashboards:
+        - "DLP Digital - PROD - Mobile Back-End API Gateway Global Dashboard"
 
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
+      provider: "on-prem"
       region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      infra_type: "DLP Genie Datacenter"
 
       cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+        dashboards:
+          - "dlp-apps-B0215510-euw1-prd-schedules-provider"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+    vault:
+      non_secret: "/non_secret/apps/is/eu-west-1/{env}/operations/bio-schedules-park-provider/1.0.0"
+      secret: "/secret/apps/is/eu-west-1/{env}/operations/bio-schedules-park-provider/1.0.0/secret"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
+    swagger: "https://dlp-microservice-stage.emea.wdpr.disney.com:8443/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-schedules-park-provider/swagger-ui/index.html#/"
 
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+    postman: "DGE Workspace: wdpr-dlp-is-operations-bio-schedules-park-provider"
 
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
-
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        appdynamics:
+          dashboards:
+            - "STAGE_DLP_PAAP_wdpr-dlp-is-operations-bio-schedules-park-provider"
+            - "operations_bio_schedules_park_provider (Application Dashboard)"
+        cloudwatch:
+          dashboards:
+            - "dlp-apps-B0215510-euw1-stg-schedules-provider"
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+        appdynamics:
+          dashboards:
+            - "LOAD_DLP_PAAP_wdpr-dlp-is-operations-bio-schedules-park-provider"
+            - "operations_bio_schedules_park_provider (Application Dashboard)"
+        cloudwatch:
+          dashboards:
+            - "dlp-apps-B0215510-euw1-lod-schedules-provider"
 
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+  - component_name: "bio-wait-times-provider"
+    component_type: "api"
+    description: "Calculates and publishes estimated waiting times for attractions in both parks. V1 provides standard wait times; V2 provides preferential wait times for Disney Premiere Access (DPA) guests."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-wait-times-provider"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_DGE_API_BIO_Services/overview"
+      deploy_target: "on-prem (DLP Genie Datacenter)"
+
+    health_check:
+      url: ""
+      expected_status: 200
+      deep_health_check: ""
+
+    splunk:
+      index: "wdpr_dlpis"
+      base_spl: >-
+        index=wdpr_dlpis host IN (vl-frmv-rhe734,vl-frmv-rhe735,vl-frmv-rhe775) "Identifiers.App-Name"=wdpr-dlp-is-operations-bio-*
+      dashboards:
+        - "wdpr-dlp-is-operations-bio-wait-times-provider"
+
+    appdynamics:
+      app_name: "operations_bio_wait_times_provider"
+      dashboards:
+        - "PROD_DLP_PAAP_wdpr-dlp-is-operations-bio-wait-times-provider"
+        - "operations_bio_wait_times_provider (Application Dashboard)"
+        - "DLP_PROD_BIO_GENIE (Application Database)"
+
+    grafana:
+      dashboards:
+        - "DLP Digital - PROD - Mobile Back-End API Gateway Global Dashboard"
+
+    cloud:
+      provider: "on-prem"
+      region: ""
+      infra_type: "DLP Genie Datacenter"
+
+      cloudwatch:
+        dashboards:
+          - "dlp-apps-B090262-euw1-prd-waitime"
+
+    vault:
+      non_secret: "/non_secret/apps/is/eu-west-1/{env}/operations/bio-wait-times-provider/1.0.0/tech/app"
+      secret: "/secret/apps/is/eu-west-1/{env}/operations/bio-wait-times-provider/1.0.0/secret"
+
+    swagger: "https://dlp-microservice-stage.emea.wdpr.disney.com:8443/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-wait-times-provider/swagger-ui/index.html#/"
+
+    postman: "DGE Workspace: wdpr-dlp-is-operations-bio-wait-times-provider"
+
+    other_environments:
+      stage:
+        appdynamics:
+          dashboards:
+            - "STAGE_DLP_PAAP_wdpr-dlp-is-operations-bio-wait-times-provider"
+            - "operations_bio_wait_times_provider (Application Dashboard)"
+        cloudwatch:
+          dashboards:
+            - "dlp-apps-B090262-euw1-stg-waitime"
+      load:
+        appdynamics:
+          dashboards:
+            - "LOAD_DLP_PAAP_wdpr-dlp-is-operations-bio-wait-times-provider"
+            - "operations_bio_wait_times_provider (Application Dashboard)"
+        cloudwatch:
+          dashboards:
+            - "dlp-apps-B090262-euw1-lod-waitime"
+
+  - component_name: "bio-attractions-downtime-publisher"
+    component_type: "worker"
+    description: "Tracks and communicates downtime periods of attractions (refurbishment, maintenance, temporary closures). Uses a cron job to pull events. Organizationally part of DPA ONE BAPP. Depends on EA System (from Orion Services)."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-attractions-downtime-publisher"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_DGE_API_BIO_Services/overview"
+      deploy_target: "on-prem (DLP Genie Datacenter)"
+
+    health_check:
+      url: "https://dlp-microservice-stage.emea.wdpr.disney.com:8443/WDPR-DLP-IS/wdpr-dlp-is-operations-bio-attractions-downtime-publisher/healthcheck/deep"
+      expected_status: 200
+
+    splunk:
+      index: "wdpr_dlpis"
+      base_spl: >-
+        index=wdpr_dlpis host IN (vl-frmv-rhe734,vl-frmv-rhe735,vl-frmv-rhe775) "Identifiers.App-Name"=wdpr-dlp-is-operations-bio-*
+      dashboards:
+        - "wdpr-dlp-is-operations-bio-attractions-downtime-publisher"
+
+    appdynamics:
+      app_name: "operations_bio-attractions-downtime-publisher"
+      dashboards:
+        - "PROD_DLP_PAAP_wdpr-dlp-is-operations-bio-attractions-downtime-publisher"
+        - "operations_bio-attractions-downtime-publisher (Application Dashboard)"
+        - "DLP_PROD_BIO_GENIE (Application Database)"
+
+    cloud:
+      provider: "on-prem"
+      region: ""
+      infra_type: "DLP Genie Datacenter"
+
+    vault:
+      non_secret: "/non_secret/apps/is/eu-west-1/prod/operations/bio-attractions-downtime-publisher/1.0.0/"
+      secret: "/secret/apps/is/eu-west-1/{env}/operations/bio-wait-times-provider/1.0.0/secret"
+
+    other_environments:
+      stage:
+        appdynamics:
+          dashboards:
+            - "STAGE_DLP_PAAP_wdpr-dlp-is-operations-bio-attractions-downtime-publisher"
+            - "operations_bio-attractions-downtime-publisher (Application Dashboard)"
+      load:
+        appdynamics:
+          dashboards:
+            - "LOAD_DLP_PAAP_wdpr-dlp-is-operations-bio-attractions-downtime-publisher"
+            - "operations_bio-attractions-downtime-publisher (Application Dashboard)"
+
+  - component_name: "BIO Database"
+    component_type: "database"
+    description: "External database component shared by all BIO Services. Known issue: occasional connectivity intermittence."
+    external: true
+
+  - component_name: "BIO GUI Admin"
+    component_type: "frontend"
+    description: "External admin GUI for managing BIO data (schedules, wait times, downtime)."
+    external: true
+
+# --- Guest Impact ---
+guest_impact:
+  bio_schedules: "Guests might not visualize accurate opening hours for parks and activities, neither availability for attractions, shows, shops, book dine restaurants, and Meet & Greet experiences (except for HTC experience)."
+  bio_wait_times: "Guests wouldn't get accurate wait time to access attractions, causing inconvenience and frustration."
+  bio_downtime: "Guests might want to attend an attraction that's unavailable, which is translated into loss of time and a negative park experience."
+
+# --- Notes ---
+notes:
+  - "All three BIO Services are hosted on-premises in the DLP Genie Data Center (NOT ECS)"
+  - "Wait Time Provider API has two versions: V1 (standard guests) and V2 (DPA guests with preferential wait times)"
+  - "BIO Attractions Downtime Publisher is organizationally part of DPA ONE BAPP"
+  - "BIO Downtime depends on EA System (from Orion Services)"
+  - "Health check currently failing in Latest because service is intentionally disabled"

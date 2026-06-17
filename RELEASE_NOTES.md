@@ -4,6 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.123
+
+- **Studio Beast service catalog** — complete managed services catalog with Splunk indexes, base_spl queries, escalation contacts per squad, Java 21 + Spring Boot 3.4+ stack, DLP ITOC assignment group
+- **fix:** schema compliance — `configuration_item` → `configuration_items` (plural) across catalog entries
+- **fix:** 3 delegation scenarios adjusted for less ambiguity (BA → PRD generation, leadership → director report format, implement-feature → Jira URL + fetch-then-plan flow)
+<!-- END LATEST -->
+
 ## v0.2.122
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate

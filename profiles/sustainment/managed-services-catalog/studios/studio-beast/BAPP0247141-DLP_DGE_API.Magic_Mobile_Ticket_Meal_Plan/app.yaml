@@ -1,44 +1,36 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
+# BAPP0247141 — DLP DGE API.Magic Mobile Ticket Meal Plan
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0247141"
-app_name: "dlp-dge-apimagic-mobile-ticket-meal-plan"
+app_name: "dlp-dge-api-magic-mobile-ticket-meal-plan"
 full_name: "DLP DGE API.Magic Mobile Ticket Meal Plan"
-description: ""
+description: "Allows guests with hotel reservations to benefit from direct-to-park and direct-to-room experience via digital MagicPass. Provides meal plan digital card with QR code for restaurant access and park/parking entry."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
-escalation_contacts:
-  - name: ""
-    role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
+escalation_channel: "DLP ITOC"
+escalation_contacts: []
 
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP DGE API.Magic Mobile Ticket Meal Plan"
     - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Latest"
     - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Load Test"
     - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Production"
     - "DLP DGE API.Magic Mobile Ticket Meal Plan - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP DGE API.Magic Mobile Ticket Meal Plan"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "runbook.md"
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090178/DLP+DGE+API.Magic+Mobile+Ticket+Meal+Plan+BAPP0247141"
+  swagger: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-bma-magic-mobile-provider/swagger-ui.html"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -49,135 +41,87 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "bma-magic-mobile-provider"
+    component_type: "api"
+    description: "Java 17 API providing MagicPass and Meal Plan digital card features. Handles hotel reservation data, QR code generation for park/parking/restaurant access."
 
-    # -- Component-specific docs --
     docs:
-      troubleshooting: ""
-      runbook: ""
+      troubleshooting: "troubleshooting.md"
+      runbook: "runbook.md"
 
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-bma-magic-mobile-provider"
+      branch: "main"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
       url: ""
+      deep_url: ""
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlp_digital"
       base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-bma-magic-mobile-provider
+      dashboards:
+        prod:
+          - "wdpr-dlp-is-lodging-bma-magic-mobile-provider"
+          - "DLP_MAGIC_MOBILE_FUNCTIONAL"
+        stage:
+          - "Global Technical Dashboard"
+          - "Functional Dashboard"
+      indexes:
+        prod: >-
+          index=wdpr_dlp_digital source=eu-west-1:dlp-apps-S0001481-euw1-prd-applogs:bma01a-prod/bma-magic-mobile-provider/* "Identifiers.App-Name"=wdpr-dlp-is-lodging-bma-magic-mobile-provider
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
+      app_name: "lodging-bma-magic-mobile-provider"
       app_id: ""
       tier: ""
       dashboard_url: ""
+      environments:
+        prod: "lodging-bma-magic-mobile-provider (Dashboard)"
+        load: "lodging-bma-magic-mobile-provider (Dashboard)"
+        stage: "lodging-bma-magic-mobile-provider (Dashboard)"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
+      provider: "AWS"
+      region: "eu-west-1"
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1-prd"
+      service_name: "bma-magic-mobile-provider-prod-live"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "dlp-apps-S0001481-euw1-stg"
+          service_name: "bma-magic-mobile-provider-stage-live"
+          account: "dlp-apps-test"
 
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "dlp-apps-S0001481-euw1-lod"
+          service_name: "bma-magic-mobile-provider-load-live"
+          account: "dlp-apps-test"
 
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "dlp-apps-S0001481-euw1-lst"
+          service_name: "bma-magic-mobile-provider-latest-live"
+          account: "dlp-apps-dev"
+
+# --- External Dependencies ---
+external_dependencies:
+  - name: "Opera (Hotel PMS)"
+    description: "Hotel property management system — MagicPass status (block/unblock) controlled via Opera"
+  - name: "BMACS"
+    description: "Booking management — hotel reservation data"
+  - name: "NRT Team"
+    description: "Required for hotel change and guest add/remove/update test scenarios"

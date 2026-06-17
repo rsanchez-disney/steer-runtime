@@ -1,44 +1,47 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0201208"
 app_name: "dlp-ticket-management-service"
 full_name: "DLP Ticket Management Service"
-description: ""
+description: "Ticket management system service that acts as a Galaxy proxy. Manages entitlements portfolio, Galaxy caching, daily ticket pre-loading, and ticket linking/unlinking. Made up of 3 technical components: TMS Service Provider, Entitlement Product Service (EPS), and Ticket Preloader Batch."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Ticket Management Service"
     - "DLP Ticket Management Service - AWS Latest"
     - "DLP Ticket Management Service - AWS Load Test"
     - "DLP Ticket Management Service - AWS Production"
     - "DLP Ticket Management Service - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP Ticket Management Service"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090164/DLP+Ticket+Management+Service+BAPP0201208"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/1014928564/KI+DLP+Ticket+Management+Service+BAPP0201208"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -46,138 +49,157 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "tms-ticket-management-service-provider"
+    component_type: "api"
+    description: "Main TMS service. Manages entitlements portfolio, acts as Galaxy cache, pre-loads daily tickets, and handles ticket linking/unlinking. Operations: Link Entitlements, Get Guest Tickets, Get Tickets, Unlike Entitlements."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-tms-ticket-management-service-provider"
+      branch: "develop"
+      path: "/"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
-      url: ""
-      expected_status: 200
+      prod: "https://tms-int-dlp.wdprapps.disney.com/ticket-management-service/health/deep"
+      stage: "https://stage.tms-int-dlp.wdprapps.disney.com/ticket-management-service/health/deep"
+      load: "https://load.tms-int-dlp.wdprapps.disney.com/ticket-management-service/health/deep"
+      latest: "https://latest.tms-int-dlp.wdprapps.disney.com/ticket-management-service/health/deep"
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlp_cme"
       base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_cme "Identifiers.App-Name"=wdpr-dlp-is-guest-tms-ticket-management-service-provider
+      dashboards:
+        - "wdpr-dlp-is-guest-tms-ticket-management-service-provider"
+        - "DLP - Tickets Management Service Provider"
+        - "DLP-TMS-STANDBY-PASS"
+        - "DLP_TMS_EGALAXY"
+        - "VM Galaxy TMS"
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+    swagger:
+      prod: "https://tms-int-dlp.wdprapps.disney.com/ticket-management-service/docs/index.html"
+      stage: "https://stage.tms-int-dlp.wdprapps.disney.com/ticket-management-service/docs/index.html"
+      load: "https://load.tms-int-dlp.wdprapps.disney.com/ticket-management-service/docs/index.html"
+      latest: "https://latest.tms-int-dlp.wdprapps.disney.com/ticket-management-service/docs/index.html"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
+    sonarqube: "https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.dlpis%3Aticket-management-service"
 
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001479-euw1"
+      service_name: "tms-ticket-management-service-provider-prod-live"
+      account_id: "725065748993"
+      tasks_running: 10
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "rds"
+          name: "dlp-tms-mariadb-prod"
+          console_url: "https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1#database:id=dlp-tms-mariadb-prod;is-cluster=false"
+        - type: "kinesis"
+          name: "dlp-apps-S0001479-euw1-tmsint-tmsint-prod"
+          arn: "arn:aws:kinesis:eu-west-1:725065748993:stream/dlp-apps-S0001479-euw1-tmsint-tmsint-prod"
+          shards: 1
 
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
-
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "dlp-apps-S0001479-euw1-stg"
+          service_name: "tms-ticket-management-service-provider-stage-live"
+          account_id: "564479547993"
+          tasks_running: 2
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "dlp-apps-S0001479-euw1-lod"
+          service_name: "tms-ticket-management-service-provider-load-live"
+          account_id: "564479547993"
+          tasks_running: 5
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "dlp-apps-S0001479-euw1-lst"
+          service_name: "tms-ticket-management-service-provider-latest-live"
+          account_id: "301080195839"
+          tasks_running: 2
+
+  - component_name: "entitlement-product-service"
+    component_type: "api"
+    description: "Responsible for sending PLU information. Exposes a single endpoint (product finder) to retrieve PLU/Product information using SKU as parameter."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-tms-ticket-management-service-provider"
+      branch: "develop"
+      path: "/"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001479-euw1"
+
+  - component_name: "tms-tickets-preloader"
+    component_type: "batch"
+    description: "Preloads tickets eligible for the park for the current day. Deployed ON-PREM (not AWS). Runs daily at 6:00 AM. Retrieves tickets by invoking stored procedure DLRP_ListeTickets from eGalaxy database, then sends POST to TMS endpoint /ticket-management-service/v2/entitlements/{visualId}/notification."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-gxc-tms-tickets-preloader"
+      branch: "develop"
+      path: "/"
+
+    cloud:
+      provider: "on-prem"
+      infra_type: "On-premises batch"
+
+  - component_name: "eGalaxy Database"
+    component_type: "database"
+    description: "Galaxy database (on-prem) — TMS acts as a Galaxy proxy/cache. Dedicated Galaxy servers for TMS."
+    external: true
+
+    galaxy_urls:
+      prod: "https://as-wa-tms-lb.emea.wdpr.disney.com/"
+      stage: "https://as-wa-tms-lb-stage.emea.wdpr.disney.com/"
+      load: "https://as-wa-tms-lb-load.emea.wdpr.disney.com/"
+      latest: "https://as-wa-tms-lb-stage.emea.wdpr.disney.com/"
+
+    appdynamics:
+      servers:
+        - name: "DLP_PROD_GALAXY_SQL51_GENIE"
+          description: "Primary SQL DB (write rights)"
+        - name: "DLP_PROD_GALAXY_SQL53_GENIE"
+          description: "Secondary server (READ only, failover)"
+
+  - component_name: "MariaDB (TMS)"
+    component_type: "database"
+    description: "RDS MariaDB instance for TMS data."
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "RDS"
+      service_name: "dlp-tms-mariadb-prod"
+      console_url: "https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1#database:id=dlp-tms-mariadb-prod;is-cluster=false"
+
+# --- Guest Impact ---
+guest_impact:
+  tms_provider: "Ticket display failure and/or inability to link tickets. Operations impacted: Link Entitlements, Get Guest Tickets, Get Tickets, Unlike Entitlements."
+  eps: "Guests may lose access to essential product information, disrupting identification and association of products with tickets."
+  preloader: "Guests will not receive notifications regarding changes to their entitlements for the day. Confusion and access issues for guests expecting specific privileges."
+
+# --- Notes ---
+notes:
+  - "TMS can be impacted by the Galaxy Database"
+  - "Ticket Preloader is deployed ON-PREM, not on AWS"
+  - "Ticket Preloader runs daily at 6:00 AM"
+  - "Galaxy has dedicated servers for TMS (SQL51 primary write, SQL53 secondary read/failover)"
+  - "Splunk useful query: get Conversation IDs for eGalaxy responses >30 secs"
+  - "Galaxy index: index=wdpr_egalaxy_dlp"

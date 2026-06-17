@@ -293,5 +293,6 @@
     "general-java-development"
   ],
   "enable_tools": true,
-  "jira_prefix": "APP-"
+  "jira_prefix": "APP-",
+  "workspace_path": "${WORKSPACE_ROOT}"
 }

@@ -1,12 +1,12 @@
 {
   "name": "implement-feature",
-  "description": "Orchestrator should delegate implementation planning to planner_agent or a specialist",
+  "description": "Orchestrator should delegate implementation to a specialist",
   "agent": "orchestrator",
-  "prompt": "Implement a new REST endpoint POST /api/v1/refunds/validate in wdpr-payment-controls-api that validates refund amount does not exceed original charge. The project uses Java Spring Boot.",
+  "prompt": "Implement ticket https://jira.disney.com/browse/DPAY-14337 — add a POST /api/v1/refunds/validate endpoint to wdpr-payment-controls-api. Start by fetching the ticket details and creating a plan.",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["backend", "webapi", "planner_agent", "codebase_explorer_agent"],
-    "forbidden_tools": ["write_file", "create_file", "fs_write"]
+    "agents_called_any": ["story_analyzer_agent", "planner_agent", "backend", "webapi", "codebase_explorer_agent"],
+    "forbidden_tools": ["fs_write", "fs_read", "execute_bash"]
   },
   "timeout_seconds": 180
 }
