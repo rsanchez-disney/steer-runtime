@@ -1,0 +1,19 @@
+graph LR
+    subgraph "Phase 1: Gateway + Monolith"
+        GW1[Gateway] -->|all traffic| MONO[Existing Monolith]
+    end
+
+    subgraph "Phase 2: Validation extracted"
+        GW2[Gateway] -->|/api/validations| VS[Validation Service]
+        GW2 -->|everything else| MONO2[Monolith]
+    end
+
+    subgraph "Phase 3: Refund extracted"
+        GW3[Gateway] -->|/api/validations| VS2[Validation Service]
+        GW3 -->|/api/refunds, /api/exports| RS[Refund Service]
+    end
+
+    subgraph "Phase 4: Monolith retired"
+        GW4[Gateway] -->|/api/validations| VS3[Validation Service]
+        GW4 -->|/api/refunds, /api/exports| RS2[Refund Service]
+    end
