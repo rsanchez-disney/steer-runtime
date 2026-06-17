@@ -1,0 +1,51 @@
+{
+  "name": "studio-proteus-team",
+  "description": "Studio Proteus — Android Mobile Order, Mobile Merchandise Checkout, Dine Check-In, and FnB Commons libraries",
+  "team": "Studio Proteus",
+  "extends": "retail-restaurant-team",
+  "profiles": [
+    "dev-core",
+    "dev-mobile"
+  ],
+  "default_agent": "android_native",
+  "projects": [
+    {
+      "name": "opp-dine-ui-lib",
+      "path": "opp-dine-ui-lib",
+      "repo": "studio-proteus/opp-dine-ui-lib",
+      "host": "github.disney.com",
+      "description": "Mobile Order UI library — restaurant selection, menu ordering, order management (module :opp-dine-ui, v9.0.0-SNAPSHOT)"
+    },
+    {
+      "name": "scan-and-go-lib",
+      "path": "scan-and-go-lib",
+      "repo": "studio-proteus/scan-and-go-lib",
+      "host": "github.disney.com",
+      "description": "Mobile Merchandise Checkout (Scan & Go) library (module :scan-and-go-lib, v9.0.0-SNAPSHOT)"
+    },
+    {
+      "name": "dine-check-in-android",
+      "path": "dine-check-in-android",
+      "repo": "studio-proteus/dine-check-in-android",
+      "host": "github.disney.com",
+      "description": "Dine Check-In and Walk-Up List Android library (module :dinecheckin, v8.23.0-SNAPSHOT)"
+    },
+    {
+      "name": "android-fnb-commons-lib",
+      "path": "android-fnb-commons-lib",
+      "repo": "studio-proteus/android-fnb-commons-lib",
+      "host": "github.disney.com",
+      "description": "Shared FnB Android components — UI, utilities, analytics, location validation (module :android-fnb-commons, v9.0.0-SNAPSHOT)"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": [
+    "FNB-",
+    "MERCH-"
+  ],
+  "jira_host": "myjira.disney.com",
+  "workspace_path": "${HOME}/dev"
+}

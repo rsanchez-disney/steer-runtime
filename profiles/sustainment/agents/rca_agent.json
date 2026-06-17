@@ -18,6 +18,14 @@
     "@mywiki/*"
   ],
   "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/catalog-index.sh",
+        "description": "Generate managed services catalog index for scoped applications"
+      }
+    ]
+  },
   "resources": [
     "file://.kiro/context/_dynamic/catalog-index.md",
     "file://.kiro/context/sustainment_guidelines.md",
