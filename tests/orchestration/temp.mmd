@@ -1,19 +1,49 @@
-graph LR
-    subgraph "Phase 1: Gateway + Monolith"
-        GW1[Gateway] -->|all traffic| MONO[Existing Monolith]
+flowchart TB
+    subgraph Client["Frontend"]
+        angular["wdpr-payment-controls-client<br/>(Angular)"]
     end
 
-    subgraph "Phase 2: Validation extracted"
-        GW2[Gateway] -->|/api/validations| VS[Validation Service]
-        GW2 -->|everything else| MONO2[Monolith]
+    subgraph Infra["Infrastructure Layer"]
+        dns["Route 53 DNS"]
+        alb["ALB<br/>(Path-based routing, TLS)"]
+        auth["Auth Provider<br/>(OAuth2/OIDC)"]
     end
 
-    subgraph "Phase 3: Refund extracted"
-        GW3[Gateway] -->|/api/validations| VS2[Validation Service]
-        GW3 -->|/api/refunds, /api/exports| RS[Refund Service]
+    subgraph Platform["Payment Controls Platform"]
+        gateway["payment-controls-gateway<br/>(Node.js/Restify)<br/>Slim adapter — v1 routes"]
+        refund["refund-service<br/>(Node.js)<br/>Refund config domain"]
+        validation["validation-service<br/>(Node.js)<br/>Validation rule domain"]
     end
 
-    subgraph "Phase 4: Monolith retired"
-        GW4[Gateway] -->|/api/validations| VS3[Validation Service]
-        GW4 -->|/api/refunds, /api/exports| RS2[Refund Service]
+    subgraph Messaging["Async Messaging"]
+        sns_refund["SNS: refund-events"]
+        sns_validation["SNS: validation-events"]
+        sqs_val["SQS: validation-svc-refund-events"]
+        sqs_ref["SQS: refund-svc-validation-events"]
     end
+
+    subgraph Backend["Backend Services"]
+        config["wdpr-config-services<br/>(Java/Spring)<br/>DynamoDB / MariaDB / S3"]
+    end
+
+    angular -->|HTTPS| dns
+    dns --> alb
+    alb -->|"/v1/*"| gateway
+    alb -->|"/v2/refunds/*"| refund
+    alb -->|"/v2/validations/*"| validation
+
+    gateway -->|proxy| refund
+    gateway -->|proxy| validation
+    gateway -.->|token verify| auth
+
+    refund -->|REST| config
+    validation -->|REST| config
+    refund -.->|token verify| auth
+    validation -.->|token verify| auth
+
+    refund -->|publish| sns_refund
+    validation -->|publish| sns_validation
+    sns_refund -->|subscribe| sqs_val
+    sns_validation -->|subscribe| sqs_ref
+    sqs_val -->|consume| validation
+    sqs_ref -->|consume| refund
