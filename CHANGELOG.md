@@ -4,6 +4,15 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.123] — 2026-06-16
+
+### Added
+- **Studio Beast service catalog** — complete catalog with Splunk indexes, base_spl, escalation contacts, Java 21/Spring Boot 3.4+ stack, DLP ITOC assignment group (#459)
+
+### Fixed
+- **Schema compliance** — `configuration_item` → `configuration_items` (plural) across catalog entries
+- **Delegation scenarios** — adjusted 3 failing scenarios for less ambiguity: BA (PRD generation), leadership (director report format), implement-feature (Jira URL + fetch-then-plan flow)
+
 ## [0.2.122] — 2026-06-16
 
 ### Added
