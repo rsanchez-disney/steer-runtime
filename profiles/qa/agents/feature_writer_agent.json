@@ -5,7 +5,6 @@
   "tools": ["fs_read", "fs_write", "shell"],
   "allowedTools": ["fs_read", "fs_write", "shell"],
   "resources": [
-    "file://.kiro/context/gherkin_best_practices.md",
     "file://profiles/qa/context/feature_generation_guidelines.md"
   ],
   "includeMcpJson": false
