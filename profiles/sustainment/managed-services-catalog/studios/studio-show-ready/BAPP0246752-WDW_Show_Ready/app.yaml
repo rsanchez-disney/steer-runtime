@@ -26,7 +26,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_items: "WDW Show Ready"
+  configuration_items: 
+    - "WDW Show Ready"
   assignment_group: "app-global-ShowReady"
   business_service: ""
 
