@@ -29,7 +29,7 @@ escalation_contacts:
     contact: ""
 # --- ServiceNow ---
 servicenow:
-  configuration_item:
+  configuration_items:
     - "DLP Virtual Queue"
     - "DLP Virtual Queue - AWS Latest"
     - "DLP Virtual Queue - AWS Load Test"
