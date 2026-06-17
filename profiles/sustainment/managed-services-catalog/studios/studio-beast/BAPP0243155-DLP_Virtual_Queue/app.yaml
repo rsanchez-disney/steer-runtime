@@ -1,0 +1,129 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0243155"
+app_name: "dlp-virtual-queue"
+full_name: "DLP Mission Control Virtual Queue"
+description: "Virtual Queue (VQ) allows guests to join the queue to participate in the Hero Training Center (HTC) activity in the Meet and Greet funnel. Guests select a character (queue), pick a time slot (wave), and VQ creates a booking linked to their park entry ticket."
+
+# --- Ownership ---
+support_studio: "Beast"
+escalation_channel: "DLP ITOC"
+escalation_contacts:
+  - name: "Benoit Dupard"
+    role: "APM"
+    contact: ""
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
+    contact: ""
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
+    contact: ""
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
+# --- ServiceNow ---
+servicenow:
+  configuration_item:
+    - "DLP Virtual Queue"
+    - "DLP Virtual Queue - AWS Latest"
+    - "DLP Virtual Queue - AWS Load Test"
+    - "DLP Virtual Queue - AWS Production"
+    - "DLP Virtual Queue - AWS Staging"
+  assignment_group: "app-frdlp-digital-ext-support"
+  business_service: "DLP Virtual Queue"
+
+# --- Documentation ---
+documentation:
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235684/DLP+Virtual+Queue+BAPP0243155"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/984223070/KI+DLP+Virtual+Queue+BAPP0243155"
+  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/974693861/BF+Virtual+Queue"
+  architecture_diagram: "https://confluence.disney.com/x/z8bBLQ"
+
+# --- Companion Docs (Markdown) ---
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "Spring Boot"
+    version: "3.4+"
+
+# --- Components ---
+components:
+
+  - component_name: "virtual-queue-provider"
+    component_type: "api"
+    description: "VQ Provider — checks business rules compliance (queue availability, guest eligibility, pass combinability). Manages bookings for HTC activity."
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-virtual-queue-provider"
+      branch: "develop"
+      path: "/"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Mission_Control/overview"
+      deploy_target: "ECS"
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "virtual-queue-provider-prod-live"
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-operations-virtual-queue-provider
+      dashboards:
+        - "wdpr-dlp-is-operations-virtual-queue-provider"
+        - "wdpr-dlp-is-operations-virtual-queue-provider_ERRORS"
+        - "wdpr-dlp-is-operations-virtual-queue-provider_BOOKING_ERRORS"
+        - "DLP Virtual Queue - Command Center"
+        - "DLP Virtual Queue Functional Dashboard"
+        - "DLP_Virtual_Queue_IE_KPI"
+    appdynamics:
+      dashboards:
+        - "PROD_DLP_PAAP_wdpr-dlp-is-operations-virtual-queue-provider"
+        - "operations-virtual-queue-provider (Application Dashboard)"
+    grafana:
+      dashboards:
+        - "DLP Digital - PROD - Mobile Back-End API Gateway Global Dashboard"
+        - "DLP Digital - PROD - Mobile Back-End Services - Nodes/Memory/CPU"
+        - "AWS Digital Cluster Metrics"
+        - "DLP Digital - PROD - Mobile Back-End Databases"
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/operations/virtual-queue-provider/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/operations/virtual-queue-provider/1.0.0/secret"
+    swagger: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-virtual-queue-provider/swagger-ui/index.html#/"
+    postman: "DGE Workspace: wdpr-dlp-is-operations-virtual-queue-provider"
+
+  - component_name: "Lineberty"
+    component_type: "api"
+    description: "External SAAS that issues and manages passes for virtual queues."
+    external: true
+    contact: "support@lineberty.com / (+33) 09.73.72.33.06"
+
+  - component_name: "Airship"
+    component_type: "gateway"
+    description: "External SAAS for sending VQ notifications to guests."
+    external: true
+
+# --- Guest Impact ---
+guest_impact:
+  description: "Guests won't be able to access the HTC activity. Impact is limited to this activity only."
+
+# --- Notes ---
+notes:
+  - "Known issue: Lineberty fails to communicate with VQ /notifications endpoint due to invalid TLS certificate — request rejected by AWS API Gateway"
+  - "Only available in Mobile App"
+  - "Max 5 reservations per day with the same ticket"
+  - "Guest must have ticket with inPark status to join VQ"
+  - "Each booking is linked to guest's entry-park ticket"

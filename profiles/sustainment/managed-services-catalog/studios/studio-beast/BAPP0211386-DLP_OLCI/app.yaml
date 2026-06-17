@@ -12,18 +12,23 @@ description: "Online Check-In service for Disneyland Paris hotels. Allows guests
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: "#dlp-hotels-ohip"
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: "Nicolas Rameaux"
-    role: "primary"
+  - name: "William Nguyen"
+    role: "APM"
     contact: ""
-  - name: ""
+  - name: "Nicolas Miel"
+    role: "TL Back"
+    contact: ""
+  - name: "Alexandre Bessa"
+    role: "TL Front"
+    contact: ""
+  - name: "Yoann Leon"
     role: "PO"
     contact: ""
-  - name: ""
-    role: "QA"
+  - name: "Yuliia Soury"
+    role: "PO"
     contact: ""
-
 # --- ServiceNow ---
 servicenow:
   configuration_items:
@@ -34,7 +39,7 @@ servicenow:
     - "DLP OLCI - AWS Staging"
     - "DLP OLCI - Production"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP OLCI"
 
 # --- Documentation ---
 documentation:
@@ -54,7 +59,7 @@ docs:
 # --- Technologies ---
 technologies:
   - name: "Java"
-    version: "17"
+    version: "21"
 
 # --- Components ---
 components:

@@ -12,18 +12,23 @@ description: "Guest digital identity platform for Disneyland Paris. Manages gues
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:

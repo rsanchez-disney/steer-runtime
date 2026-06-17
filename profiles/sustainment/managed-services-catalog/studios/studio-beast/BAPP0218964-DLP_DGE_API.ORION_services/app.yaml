@@ -1,45 +1,49 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0218964"
-app_name: "dlp-dge-apiorion-services"
+app_name: "dlp-dge-api-orion-services"
 full_name: "DLP DGE API.ORION services"
-description: ""
+description: "Disney Premier Access (DPA) One — allows guests to skip standard ticket lines and access popular attractions more quickly. Guests purchase DPA One passes on-site via the mobile app and receive a QR code. Includes PEA Attraction Provider, PSP Payment Methods, Guest Itinerary, and Push Notification services."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP DGE API.ORION services"
     - "DLP DGE API.ORION services - AWS Latest"
     - "DLP DGE API.ORION services - AWS Load Test"
     - "DLP DGE API.ORION services - AWS Production"
     - "DLP DGE API.ORION services - AWS Staging"
     - "DLP DGE API.ORION services - Production"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP DGE API.ORION services"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235682/DLP+DGE+API.ORION+services+BAPP0218964"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/1020008251/KI+DLP+DGE+API.ORION+services+BAPP0218964"
+  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/1000703320/BF+DPA+Orion"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -47,138 +51,112 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "Spring Boot"
+    version: "3.4+"
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+  - component_name: "pea-attraction-provider-v2"
+    component_type: "api"
+    description: "PEA Attraction Provider V2 — main DPA One service. Handles attraction availability, pass purchase, and QR code generation."
     repository:
-      url: ""
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-operations-pea-attraction-provider"
+      branch: "develop"
+      path: "/"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "pea-attraction-provider-v2"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+  - component_name: "psp-payment-methods-provider"
+    component_type: "api"
+    description: "PSP Payment Methods Provider — handles payment processing via Worldpay for DPA purchases."
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-psp-payment-methods-provider"
+      branch: "develop"
+      path: "/"
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "psp-payment-methods-provider"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+  - component_name: "guest-itinerary-provider"
+    component_type: "api"
+    description: "Guest Itinerary Provider — manages guest itinerary/plans including DPA passes."
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-itinerary-provider"
+      branch: "develop"
+      path: "/"
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "guest-itinerary-provider"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
+  - component_name: "push-notification-publisher"
+    component_type: "worker"
+    description: "Push Notification Publisher — sends push notifications for DPA pass status, expiring timeslots, autorecovery."
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-push-notification-publisher"
+      branch: "develop"
+      path: "/"
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "push-notification-publisher"
 
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+  - component_name: "Redis (ElastiCache)"
+    component_type: "cache"
+    description: "ElastiCache Redis for PEA pass data caching."
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ElastiCache"
+      service_name: "peapass-prod"
+      console_url: "https://eu-west-1.console.aws.amazon.com/elasticache/home?region=eu-west-1#/redis/peapass-prod"
 
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
+  - component_name: "Core API Order Service"
+    component_type: "api"
+    description: "External — handles order creation for DPA purchases."
+    external: true
+    escalation_group: "app-frdlp-coreapi"
 
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+  - component_name: "Core API Payment Reference Service"
+    component_type: "api"
+    description: "External — handles payment references for DPA purchases."
+    external: true
+    escalation_group: "app-frdlp-coreapi"
 
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+  - component_name: "Worldpay"
+    component_type: "gateway"
+    description: "External payment gateway for DPA purchases."
+    external: true
 
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+# --- Guest Impact ---
+guest_impact:
+  pea_attraction_provider: "Guests unable to buy Disney Premier Access — long wait times, cannot plan day effectively, no real-time availability."
+  psp_payment: "Guests cannot complete DPA payment."
+  itinerary: "Guests cannot view their DPA passes in itinerary/plans."
+  push_notification: "Guests won't receive timeslot expiry or autorecovery notifications."
+
+# --- Notes ---
+notes:
+  - "No known issues for the application"
+  - "17 attractions available in production (FY 2025)"
+  - "Booking must be done in-park (not available off-site like DPA Ultimate)"
+  - "Guest must have valid Park Ticket, Annual Pass, or Hotel+Tickets package"
+  - "Ticket must be marked 'In Park'"
+  - "DPA One cannot be cancelled once purchased"
+  - "Max 3 DPA One per attraction per guest per day, max 12 per same attraction/timeslot"
+  - "Guests without smartphone can purchase at City Hall or Studios Services"

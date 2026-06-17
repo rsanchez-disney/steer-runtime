@@ -1,44 +1,46 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0201228"
 app_name: "dlp-ticket-management-service-database"
 full_name: "DLP - Ticket Management Service Database"
-description: ""
+description: "Amazon RDS MariaDB fully managed relational database service used by the Ticket Management Service (BAPP0201208) for storing and managing ticket-related data."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Ticket Management Service Database"
     - "DLP Ticket Management Service Database - AWS Latest"
     - "DLP Ticket Management Service Database - AWS Load Test"
     - "DLP Ticket Management Service Database - AWS Production"
     - "DLP Ticket Management Service Database - AWS Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP - Ticket Management Service Database"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090169/DLP+Ticket+Management+Service+Database+BAPP0201228"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -49,135 +51,39 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "dlp-tms-mariadb"
+    component_type: "database"
+    description: "Amazon RDS MariaDB instance for TMS ticket data storage."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
-    repository:
-      url: ""
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "RDS"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
+    instances:
+      prod:
+        name: "dlp-tms-mariadb-prod"
+        account_id: "725065748993"
+        role: "dlp-apps-prod"
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        name: "dlp-tms-mariadb-stage"
+        account_id: "564479547993"
+        role: "dlp-apps-test"
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
+        name: "dlp-tms-mariadb-load"
+        account_id: "564479547993"
+        role: "dlp-apps-test"
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+        name: "dlp-tms-mariadb-latest"
+        account_id: "301080195839"
+        role: "dlp-apps-dev"
+
+# --- Guest Impact ---
+guest_impact:
+  description: "If the database fails, guests may be unable to retrieve or update ticket information, leading to delays, access issues, and negatively impacting their experience."
+
+# --- Related BAPPs ---
+related_bapps:
+  - bapp_id: "BAPP0201208"
+    name: "DLP Ticket Management Service"
+    relationship: "Consumer — TMS Provider uses this database"

@@ -1,45 +1,48 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0177763"
 app_name: "dlp-mobile-api-gateway"
 full_name: "DLP Mobile API Gateway"
-description: ""
+description: "The DLP AWS API Gateway provides a centralized entry point for clients to access various APIs and services. Handles request routing, load balancing, authentication/authorization, rate limiting, caching, and protocol translation. Acts as a single point of entry for clients to access functionalities and resources while providing management and security features."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "William Nguyen"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Nicolas Miel"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Alexandre Bessa"
+    role: "TL Front"
+    contact: ""
+  - name: "Yoann Leon"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
     contact: ""
 
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Mobile API Gateway"
     - "DLP Mobile API Gateway - AWS Production"
     - "DLP Mobile API Gateway - Latest"
     - "DLP Mobile API Gateway - Load Test"
     - "DLP Mobile API Gateway - Production"
     - "DLP Mobile API Gateway - Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP Mobile API Gateway"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090183/DLP+Mobile+API+Gateway+BAPP0177763"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -50,135 +53,21 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "DLP AWS API Gateway"
+    component_type: "gateway"
+    description: "AWS API Gateway providing centralized entry point for all DLP mobile microservices. Handles routing, auth, rate limiting, caching, and protocol translation."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
-    repository:
-      url: ""
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "API Gateway"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+# --- Guest Impact ---
+guest_impact:
+  description: "If the API Gateway does not work, the service will be interrupted and clients will not be able to access the microservices that depend on it. Causes authentication/authorization errors, security issues. Guests unable to access reservation information, leading to lack of information and negative guest experience."
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+# --- Notes ---
+notes:
+  - "As support/dev we don't touch the infrastructure"
+  - "All infrastructure management is handled by Cloud OPS (ops-frdlp-cloudops)"
+  - "This is a shared infrastructure component — impacts all downstream microservices"

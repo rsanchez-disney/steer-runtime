@@ -12,18 +12,23 @@ description: "Allows guests to book Meet and Greet experiences with characters i
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: "Nicolas Rameaux"
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
+    contact: ""
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
+    contact: ""
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
   - name: "Alejandra Arevalo"
     role: "PO"
     contact: ""
   - name: "Yuliia Soury"
-    role: "PO-backup"
+    role: "PO"
     contact: ""
-
 # --- ServiceNow ---
 servicenow:
   configuration_items:
@@ -49,6 +54,12 @@ docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
+
+  # --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "Spring Boot"
 
 # --- Components ---
 components:

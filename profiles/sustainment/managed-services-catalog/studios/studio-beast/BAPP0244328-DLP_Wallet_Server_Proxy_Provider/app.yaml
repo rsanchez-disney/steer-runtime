@@ -1,32 +1,38 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
+# BAPP0244328 — DLP Wallet Server Proxy Provider
 # ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0244328"
 app_name: "dlp-wallet-server-proxy-provider"
 full_name: "DLP Wallet Server Proxy Provider"
-description: ""
+description: "Generates, installs and updates native passes on guest devices. Consists of two components: Wallet Server Proxy Provider (API) and Wallet Pass Purge Processor (batch)."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Wallet Server Proxy Provider"
     - "DLP Wallet Server Proxy Provider - AWS Latest"
     - "DLP Wallet Server Proxy Provider - AWS Load Test"
     - "DLP Wallet Server Proxy Provider - AWS Production"
@@ -36,8 +42,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "runbook.md"
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -46,138 +52,157 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+  # --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "Spring Boot"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "wallet-server-proxy-provider"
+    component_type: "api"
+    description: "Exposes an API used to generate and install native passes on guest devices and ensures synchronization between the native pass and the DLP data source."
 
-    # -- Component-specific docs --
     docs:
-      troubleshooting: ""
-      runbook: ""
+      troubleshooting: "troubleshooting.md"
+      runbook: "runbook.md"
 
-    # -- Component-specific documentation links --
     documentation:
-      wiki: ""
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
       architecture_diagram: ""
 
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider"
+      branch: "main"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
+      platform: "harness"
       pipeline_url: ""
-      deploy_target: ""
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider/healthcheck"
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
+      index: "wdpr_dlp_digital"
       source: ""
       base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-wallet-server-proxy-provider
+      dashboards:
+        prod:
+          technical: "Global Technical Dashboard"
+          functional: "Global Functional Dashboard"
+        load:
+          technical: "Global Technical Dashboard"
+          functional: "Global Functional Dashboard"
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
+      app_name: "prod_dlp-is_wallet-server-proxy-provider"
+      app_id: "1390"
       tier: ""
-      dashboard_url: ""
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=1390&dashboardMode=force"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
+      provider: "AWS"
+      region: "eu-west-1"
       account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1-prd"
+      service_name: "wallet-server-proxy-provider-prod-live"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
     other_environments:
 
       stage:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
+          url: "https://dlpis-digital-stage.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider/healthcheck"
+        appdynamics:
+          app_name: "stage_dlp-is_wallet-server-proxy-provider"
+          app_id: "5974"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=5974&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1-stg"
+          service_name: "wallet-server-proxy-provider-stage-live"
 
       load:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
+          url: "https://dlpis-digital-load.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider/healthcheck"
+        appdynamics:
+          app_name: "load_dlp-is_wallet-server-proxy-provider"
+          app_id: "6007"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=6007&dashboardMode=force"
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1-lod"
+          service_name: "wallet-server-proxy-provider-load-live"
 
       latest:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
+          url: "https://dlpis-digital-latest.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-server-proxy-provider/healthcheck"
         cloud:
-          region: ""
-          service_name: ""
+          region: "eu-west-1"
+          cluster_id: "dlp-apps-S0001481-euw1-lst"
+          service_name: "wallet-server-proxy-provider-latest-live"
+
+  - component_name: "wallet-pass-purge-processor"
+    component_type: "batch"
+    description: "Batch process that runs daily at 6:00 AM to purge Airship data related to passes deleted by guest, expired, or cancelled by DLP."
+
+    docs:
+      troubleshooting: "troubleshooting.md"
+      runbook: "runbook.md"
+
+    documentation:
+      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073050/Wallet+Pass+Purge+Processor"
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-wallet-pass-purge-processor"
+      branch: "main"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: ""
+      deploy_target: ""
+
+    splunk:
+      index: ""
+      source: ""
+      dashboards:
+        prod: "DLP Guest Profile Batchs Executions"
+        load: "Link"
+        stage: "Link"
+        latest: "Link"
+
+    appdynamics:
+      app_name: "prod_dlp-is_wallet-pass-purge-processor"
+      app_id: "1616"
+      tier: ""
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=1616&dashboardMode=force"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      account_id: ""
+      infra_type: "ECS"
+      cluster_id: ""
+      service_name: ""
+
+    other_environments:
+
+      stage:
+        appdynamics:
+          app_name: "stage_dlp-is_wallet-pass-purge-processor"
+          app_id: "6733"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=6733&dashboardMode=force"
+
+      load:
+        appdynamics:
+          app_name: "load_dlp-is_wallet-pass-purge-processor"
+          app_id: "6793"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=6793&dashboardMode=force"

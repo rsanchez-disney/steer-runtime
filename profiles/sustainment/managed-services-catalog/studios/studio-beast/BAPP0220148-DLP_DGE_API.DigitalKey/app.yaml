@@ -1,45 +1,49 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0220148"
-app_name: "dlp-dge-apidigitalkey"
+app_name: "dlp-dge-api-digitalkey"
 full_name: "DLP DGE API.DigitalKey"
-description: ""
+description: "Digital Key service allowing orchestration of services for opening room doors. Allows users with a reservation to access their rooms and public areas via Bluetooth interaction with CISA electronic locks. Validates identity and reservation in Opera Cloud system."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "William Nguyen"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Nicolas Miel"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Alexandre Bessa"
+    role: "TL Front"
     contact: ""
-
+  - name: "Yoann Leon"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP DGE API.DigitalKey"
     - "DLP DGE API.DigitalKey - AWS Latest"
     - "DLP DGE API.DigitalKey - AWS Load Test"
     - "DLP DGE API.DigitalKey - AWS Production"
     - "DLP DGE API.DigitalKey - AWS Staging"
     - "DLP DGE API.DigitalKey - Production"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP DGE API.DigitalKey"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090149/DLP+DGE+API.DigitalKey+BAPP0220148"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/980389053/KI+DLP+Digital+Key+BAPP0220148"
+  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/898076543/BF+Digital+Key"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -47,138 +51,55 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+  - component_name: "digital-key-provider"
+    component_type: "api"
+    description: "Digital Key Provider — orchestrates Bluetooth room access. Validates identity/reservation in Opera Cloud, interacts with CISA electronic locks."
     repository:
-      url: ""
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
-    splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-srv-digital-key-provider"
+      branch: "develop"
+      path: "/"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+    cloudwatch:
+      dashboards:
+        - "DLP Mobile App Dashboard"
+    postman: "DGE Workspace: wdpr-dlp-is-sales-srv-digital-key-provider"
 
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
+  - component_name: "CISA Electronic Locks"
+    component_type: "gateway"
+    description: "External — CISA e-servers managing electronic locks on hotel doors. Three servers: DCR, NY, DL."
+    external: true
+    cisa_servers:
+      dcr: "https://dlp-cisa-e-server-dcr.emea.wdpr.disney.com/"
+      ny: "https://dlp-cisa-e-server-ny.emea.wdpr.disney.com/"
+      dl: "https://dlp-cisa-e-server-dl.emea.wdpr.disney.com/"
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+  - component_name: "Opera Cloud"
+    component_type: "api"
+    description: "External — Oracle Hospitality Opera Cloud PMS. Validates reservation status, room assignment, and Magic Mobile feature flag."
+    external: true
+    opera_url: "https://dlpce2ua.oraclehospitality.eu-frankfurt-1.ocs.oraclecloud.com/DLPFR2/operacloud/faces/opera-cloud-index/OperaCloud"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
+# --- Guest Impact ---
+guest_impact:
+  description: "If Digital Key fails: inconvenience and delays accessing rooms, loss of time waiting for resolution, security concerns about belongings, potential exposure to wrong room access if validation fails."
 
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+# --- Notes ---
+notes:
+  - "Known issue: If CISA servers are down, Digital Key Provider impacted (especially eligible rooms retrieval)"
+  - "Available only at Disney Hotel New York – The Art of Marvel and Disneyland Hotel"
+  - "Mobile Check-in (OLCI) required before Digital Key activation"
+  - "Bookings made 3 days or less before arrival require front desk check-in"
+  - "Technical requirements: Bluetooth enabled, Location enabled (Android), OLCI completed, Magic Mobile ON in Opera"
+  - "Push notification sent on arrival day morning (~10:00 AM)"

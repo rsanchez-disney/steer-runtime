@@ -1,47 +1,49 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0177719"
 app_name: "dlp-guest-extended-profile"
 full_name: "DLP Guest Extended Profile"
-description: ""
+description: "The Guest Extended Profile Provider stores, updates, and publishes guest-specific data not managed by OneID Identity and Access Management. It also exposes a public API through AWS API Gateway. Includes batch jobs for consent extraction, consent cleanup, and account purging."
 
 # --- Ownership ---
 support_studio: "Beast"
-escalation_channel: ""
+escalation_channel: "DLP ITOC"
 escalation_contacts:
-  - name: ""
-    role: "primary"
+  - name: "Benoit Dupard"
+    role: "APM"
     contact: ""
-  - name: ""
-    role: "secondary"
+  - name: "Rigobert Ngaha"
+    role: "TL Back"
     contact: ""
-  - name: ""
-    role: "SME"
+  - name: "Guislain Duthieuw"
+    role: "TL Front"
     contact: ""
-
+  - name: "Alejandra Arevalo"
+    role: "PO"
+    contact: ""
+  - name: "Yuliia Soury"
+    role: "PO"
+    contact: ""
 # --- ServiceNow ---
 servicenow:
   configuration_items:
+    - "DLP Guest Extended Profile"
     - "DLP Guest Extended Profile - AWS Latest"
     - "DLP Guest Extended Profile - AWS Load Test"
     - "DLP Guest Extended Profile - AWS Production"
     - "DLP Guest Extended Profile - AWS Staging"
     - "DLP Guest Extended Profile - Latest"
-    - "DLP Guest Extended Profile - Production"
-    - "DLP Guest Extended Profile - Staging"
   assignment_group: "app-frdlp-digital-ext-support"
-  business_service: ""
+  business_service: "DLP Guest Extended Profile"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
+  runbook: "https://mywiki.disney.com/spaces/SBH/pages/943235654/DLP+Guest+Extended+Profile+BAPP0177719"
+  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235654/DLP+Guest+Extended+Profile+BAPP0177719"
+  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/966465446/KI+DLP+Guest+Extended+Profile+BAPP0177719"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -49,138 +51,289 @@ docs:
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Technologies ---
+technologies:
+  - name: "Java"
+    version: "21"
+  - name: "RabbitMQ"
+  - name: "MariaDB"
+
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "extended-profile-provider"
+    component_type: "api"
+    description: "Main ECS service that stores, updates, and publishes guest-specific data. Exposes External IDs, Liberty ID, Golden Question, Consent API, and Avatar API."
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
-      path: ""
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-extended-profile-provider"
+      branch: "develop"
+      path: "/"
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Guest_Extended_Profile/pipelines"
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
       url: ""
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_dlp_digital"
       base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-extended-profile-provider
+      dashboards:
+        - "wdpr-dlp-is-guest-extended-profile-provider"
+        - "DLP Guest Profile Batches executions"
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "epevent_guest-extended-profile-provider"
+      dashboards:
+        - "PROD_DLP_BAPP0177719_wdpr-dlp-is-guest-extended-profile-provider"
+        - "PROD_DLP_PAAP_wdpr-dlp-is-guest-extended-profile-provider"
+        - "epevent_guest-extended-profile-provider (Application Dashboard)"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
     grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
+      dashboards:
+        - "DLP Digital - PROD - Mobile Back-End API Gateway Global Dashboard"
+        - "DLP Digital - PROD - Mobile Back-End Services - Nodes/Memory/CPU"
+        - "AWS Digital Cluster Metrics"
 
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "extended-profile-provider-prod-live"
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+        - type: "rds"
+          name: "dlp-profile-mariadb-prod"
 
-    # -- Other Environments (only fields that differ from production) --
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/guest/extended-profile-provider/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/guest/extended-profile-provider/1.0.0/secret"
+
+    swagger: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-extended-profile-provider/swagger-ui/index.html"
+
+    rundeck:
+      url: "https://rundeck.wdprapps.disney.com/project/wdpr-dlp-is-guest-extended-profile-provider_aws/activity"
+
+    sonarqube: "https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.dlpis%3Awdpr-dlp-is-guest-extended-profile-provider"
+
+    postman: "DGE Workspace: wdpr-dlp-is-guest-extended-profile-provider"
+
     other_environments:
-
       stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "dlp-apps-S0001481-euw1-stg"
+          service_name: "extended-profile-provider-stage-live"
       load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
-
+          cluster_id: "dlp-apps-S0001481-euw1-lod"
+          service_name: "extended-profile-provider-load-live"
+        appdynamics:
+          dashboards:
+            - "LOAD_DLP_BAPP01777719_wdpr-dlp-is-guest-extended-profile-provider"
+            - "epevent_guest-extended-profile-provider (Application Dashboard)"
       latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
         cloud:
-          region: ""
-          service_name: ""
+          cluster_id: "dlp-apps-S0001481-euw1-lst"
+          service_name: "extended-profile-provider-latest-live"
+
+  - component_name: "ci-consent-extractor"
+    component_type: "batch"
+    description: "Batch jobs that extract OLCI opt-ins and deleted OneID accounts, publishing them to an S3 bucket. Depends on MariaDB and S3."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-ci-consent-extractor"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Guest_Extended_Profile/pipelines/wdprdlpisguestciconsentextractor/pipeline-studio/"
+      deploy_target: "batch"
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-extended-profile-provider
+      dashboards:
+        - "CI Consent Extractor"
+        - "DLP Guest Profile Batchs executions"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      services:
+        - type: "s3"
+          name: "Consent export bucket"
+        - type: "rds"
+          name: "dlp-profile-mariadb-prod"
+
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/guest/ci-consent-extractor/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/guest/ci-consent-extractor/1.0.0/secret"
+
+    rundeck:
+      url: "https://rundeck.wdprapps.disney.com/project/wdpr-dlp-is-guest-ci-consent-extractor_aws/activity"
+
+  - component_name: "gep-consentcleaner"
+    component_type: "batch"
+    description: "Scheduled AWS Lambda that triggers daily purge of already exported consents by calling the Extended Profile API. URL invoker lambda with no business logic."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/dlp-apps-bapp0177719-guest-gep-consentcleaner"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Guest_Extended_Profile/pipelines/dlpappsbapp0177719guestgepconsentcleaner/pipeline-studio/"
+      deploy_target: "Lambda"
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-extended-profile-provider
+      dashboards:
+        - "GEP Consent Cleaner"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "Lambda"
+      service_name: "dlp-apps-B0177719-euw1-prd-guest-gep-consentcleaner-f0"
+
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/guest/gep-consentcleaner/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/guest/gep-consentcleaner/1.0.0/secret"
+
+    rundeck:
+      url: "https://rundeck.wdprapps.disney.com/project/dlp-apps-bapp0177719-guest-gep-consentcleaner_aws/activity"
+
+    other_environments:
+      stage:
+        cloud:
+          service_name: "dlp-apps-B0177719-euw1-stg-guest-gep-consentcleaner-f0"
+      load:
+        cloud:
+          service_name: "dlp-apps-B0177719-euw1-lod-guest-gep-consentcleaner-f0"
+      latest:
+        cloud:
+          service_name: "dlp-apps-B0177719-euw1-lst-guest-gep-consentcleaner-f0"
+
+  - component_name: "purge-extractor"
+    component_type: "batch"
+    description: "Batch job that identifies OneID accounts inactive for more than 2 years and marks them for deletion by the Purge Processor."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-purge-extractor"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Guest_Extended_Profile/pipelines/wdprdlpisguestpurgeextractor/pipeline-studio/"
+      deploy_target: "batch"
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-extended-profile-provider
+      dashboards:
+        - "Purge Extractor"
+        - "DLP Guest Profile Batchs executions"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/guest/purge-extractor/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/guest/purge-extractor/1.0.0/secret"
+
+    rundeck:
+      url: "https://rundeck.wdprapps.disney.com/project/wdpr-dlp-is-guest-purge-extractor_aws/activity"
+
+  - component_name: "oid-purge-processor"
+    component_type: "api"
+    description: "Internal ECS API that deletes all data of a OneID account from DLP databases, triggered by Purge Extractor or CNS events. Uses RabbitMQ."
+
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor"
+      branch: "develop"
+      path: "/"
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_Guest_Extended_Profile/pipelines/wdprdlpisguestoidpurgeprocessor/pipeline-studio/"
+      deploy_target: "ECS"
+
+    health_check:
+      prod: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor/healthcheck/deep"
+      stage: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor/healthcheck/deep"
+      load: "https://load.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor/healthcheck/deep"
+      latest: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor/healthcheck/deep"
+
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-guest-extended-profile-provider
+      dashboards:
+        - "Guest Purge Processor"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1"
+      service_name: "oid-purge-processor-prod-live"
+
+    vault:
+      non_secret: "non_secret/apps/is/eu-west-1/{env}/guest/oid-purge-processor/1.0.0"
+      secret: "secret/apps/is/eu-west-1/{env}/guest/oid-purge-processor/1.0.0/secret"
+
+    swagger: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-oid-purge-processor/swagger-ui/index.html"
+
+    rundeck:
+      url: "https://rundeck.wdprapps.disney.com/project/wdpr-dlp-is-guest-oid-purge-processor_aws/activity"
+
+    other_environments:
+      stage:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-stg"
+          service_name: "oid-purge-processor-stage-live"
+      load:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-lod"
+          service_name: "oid-purge-processor-load-live"
+      latest:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-lst"
+          service_name: "oid-purge-processor-latest-live"
+
+  - component_name: "MariaDB"
+    component_type: "database"
+    description: "RDS MariaDB instance shared by GEP components."
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "RDS"
+      service_name: "dlp-profile-mariadb-prod"
+      console_url: "https://eu-west-1.console.aws.amazon.com/rds/home?region=eu-west-1#database:id=dlp-profile-mariadb-prod;is-cluster=false"
+
+  - component_name: "RabbitMQ"
+    component_type: "queue"
+    description: "Message broker used by the Extended Profile Provider and Purge Processor for event-driven processing."
+    external: true
+
+# --- Guest Impact ---
+guest_impact:
+  extended_profile_provider: "External IDs, Liberty ID (P2), Golden Question, Consent API, Avatar API unavailable"
+  ci_consent_extractor: "OLCI consent and other consents not exported"
+  gep_consent_cleaner: "OLCI consent and other consents not cleaned up"
+  purge_extractor: "Inactive accounts won't be purged (GDPR compliance risk)"
+  purge_processor: "Inactive accounts won't be purged (GDPR compliance risk)"
