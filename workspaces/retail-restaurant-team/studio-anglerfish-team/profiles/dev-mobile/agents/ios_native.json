@@ -1,7 +1,6 @@
 {
   "name": "ios_native",
-  "description": "iOS native specialist for Swift/Objective-C — Studio Anglerfish",
-  "prompt": "ios_native.md",
+  "description": "iOS native specialist for Swift/Objective-C \u2014 Studio Anglerfish",
   "tools": [
     "fs_read",
     "fs_write",

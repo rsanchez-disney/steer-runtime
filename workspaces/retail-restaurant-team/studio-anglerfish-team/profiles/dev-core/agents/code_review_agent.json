@@ -1,7 +1,6 @@
 {
   "name": "code_review_agent",
   "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
-  "prompt": "code_review_agent.md",
   "tools": [
     "@github/*",
     "@gitlab/*",

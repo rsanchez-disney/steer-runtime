@@ -1,7 +1,6 @@
 {
   "name": "codebase_explorer_agent",
   "description": "Explores codebase to find relevant files, patterns, and dependencies for implementation",
-  "prompt": "codebase_explorer_agent.md",
   "tools": [
     "code",
     "grep",
