@@ -1,49 +1,25 @@
-flowchart TB
-    subgraph Client["Frontend"]
-        angular["wdpr-payment-controls-client<br/>(Angular)"]
-    end
+sequenceDiagram
+    participant UI as Angular SPA
+    participant GW as API Gateway
+    participant RS as Refund/Export Service
+    participant CS as config-services
+    participant SNS as SNS Topic
+    participant SQS as SQS Queue
 
-    subgraph Infra["Infrastructure Layer"]
-        dns["Route 53 DNS"]
-        alb["ALB<br/>(Path-based routing, TLS)"]
-        auth["Auth Provider<br/>(OAuth2/OIDC)"]
-    end
+    UI->>GW: POST /v1/exports/full
+    GW->>RS: POST /exports/full (X-Correlation-ID)
+    RS-->>GW: 202 {jobId: "abc-123"}
+    GW-->>UI: 202 {jobId: "abc-123"}
 
-    subgraph Platform["Payment Controls Platform"]
-        gateway["payment-controls-gateway<br/>(Node.js/Restify)<br/>Slim adapter — v1 routes"]
-        refund["refund-service<br/>(Node.js)<br/>Refund config domain"]
-        validation["validation-service<br/>(Node.js)<br/>Validation rule domain"]
-    end
+    RS->>CS: GET /clients?bulk=true (paginated)
+    CS-->>RS: Client batch
+    RS->>RS: Transform + stream to buffer
+    RS->>CS: PUT /exports/abc-123.csv (S3)
+    RS->>SNS: Publish export.completed {jobId, s3Key}
 
-    subgraph Messaging["Async Messaging"]
-        sns_refund["SNS: refund-events"]
-        sns_validation["SNS: validation-events"]
-        sqs_val["SQS: validation-svc-refund-events"]
-        sqs_ref["SQS: refund-svc-validation-events"]
-    end
+    Note over UI,SQS: Polling or websocket notification
 
-    subgraph Backend["Backend Services"]
-        config["wdpr-config-services<br/>(Java/Spring)<br/>DynamoDB / MariaDB / S3"]
-    end
-
-    angular -->|HTTPS| dns
-    dns --> alb
-    alb -->|"/v1/*"| gateway
-    alb -->|"/v2/refunds/*"| refund
-    alb -->|"/v2/validations/*"| validation
-
-    gateway -->|proxy| refund
-    gateway -->|proxy| validation
-    gateway -.->|token verify| auth
-
-    refund -->|REST| config
-    validation -->|REST| config
-    refund -.->|token verify| auth
-    validation -.->|token verify| auth
-
-    refund -->|publish| sns_refund
-    validation -->|publish| sns_validation
-    sns_refund -->|subscribe| sqs_val
-    sns_validation -->|subscribe| sqs_ref
-    sqs_val -->|consume| validation
-    sqs_ref -->|consume| refund
+    UI->>GW: GET /v1/exports/abc-123/status
+    GW->>RS: GET /exports/abc-123/status
+    RS-->>GW: 200 {status: "completed", downloadUrl: "..."}
+    GW-->>UI: 200

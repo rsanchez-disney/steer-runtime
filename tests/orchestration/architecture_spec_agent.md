@@ -1,319 +1,480 @@
-# Target architecture: payment controls service decomposition
+# Architecture specification: wdpr-payment-controls-api decomposition
 
 ## Executive summary
 
-This document defines the target architecture for splitting `wdpr-payment-controls-api` into three independent services: a slim backward-compatibility gateway, a refund configuration service, and a validation rule service. The migration follows a strangler fig pattern over ~22 weeks, using SNS+SQS for async coordination and path-based ALB routing to shift traffic incrementally.
+This document defines the target architecture for decomposing `wdpr-payment-controls-api` (the Config Studio WebAPI monolith) into three independently deployable services: an API gateway, a validation service, and a refund/export service.
+
+### Motivation
+
+| Problem | Impact | Resolution |
+|---------|--------|------------|
+| OOM kills in ECS (us-east-1) | Service restarts, dropped requests during peak export operations | Isolate memory-heavy export workloads into dedicated 2GB tasks |
+| Coupled scaling | Validation latency degrades when exports consume memory | Independent scaling policies per domain |
+| Blast radius | Single deployment affects all capabilities | Independent CI/CD and failure isolation |
+| Resource waste | Over-provisioning validation tasks to accommodate export spikes | Right-sized containers per workload profile |
+
+The current monolith runs at ~512MiB and is routinely OOMKilled when concurrent export operations spike memory usage. Splitting by domain allows each service to scale on its natural dimension (request count vs. memory pressure).
 
 ---
 
-## 1. Component diagram
+## Target architecture overview
 
 ```mermaid
 C4Context
-    title Payment controls — target state component diagram
+    title Config Studio - Target service topology
 
-    Person(user, "Config Studio User", "Disney payment ops")
-
-    System_Boundary(frontend, "Frontend") {
-        Container(angular, "wdpr-payment-controls-client", "Angular", "Config Studio UI")
-    }
+    Person(user, "Config Studio user", "Angular SPA")
 
     System_Boundary(platform, "Payment Controls Platform") {
-        Container(gateway, "payment-controls-gateway", "Node.js/Restify", "Slim adapter — v1 route compatibility, auth middleware, traffic routing")
-        Container(refund_svc, "refund-service", "Node.js", "Refund configuration domain — CRUD, export, streaming")
-        Container(validation_svc, "validation-service", "Node.js", "Validation rule domain — CRUD, rule evaluation")
+        System(gateway, "API Gateway", "Node.js - thin routing, auth, circuit breakers")
+        System(validation, "Validation Service", "Node.js - config validation, comparison, search")
+        System(refund, "Refund/Export Service", "Node.js - report generation, streaming exports")
     }
 
-    System_Boundary(backend, "Backend Services") {
-        Container(config_svc, "wdpr-config-services", "Java/Spring", "Persistence layer — DynamoDB, MariaDB, S3")
-    }
+    System_Ext(config_svc, "config-services", "Java - DynamoDB/MariaDB/S3")
+    System_Ext(sns, "SNS/SQS", "Async event bus")
 
-    System_Boundary(infra, "Infrastructure") {
-        Container(alb, "ALB", "AWS ALB", "Path-based routing, TLS termination")
-        Container(auth, "Auth Provider", "OAuth2/OIDC", "Token validation, scopes")
-        Container(sns, "SNS Topics", "AWS SNS", "Event fan-out")
-        Container(sqs, "SQS Queues", "AWS SQS", "Per-service event consumption")
-    }
-
-    Rel(user, angular, "Uses", "HTTPS")
-    Rel(angular, alb, "API calls", "HTTPS")
-    Rel(alb, gateway, "/v1/* routes", "HTTP")
-    Rel(alb, refund_svc, "/v2/refunds/*", "HTTP")
-    Rel(alb, validation_svc, "/v2/validations/*", "HTTP")
-    Rel(gateway, refund_svc, "Proxies refund routes", "HTTP")
-    Rel(gateway, validation_svc, "Proxies validation routes", "HTTP")
-    Rel(refund_svc, config_svc, "CRUD operations", "HTTP/REST")
-    Rel(validation_svc, config_svc, "CRUD operations", "HTTP/REST")
-    Rel(refund_svc, sns, "Publishes events", "AWS SDK")
-    Rel(validation_svc, sns, "Publishes events", "AWS SDK")
-    Rel(sns, sqs, "Fan-out", "Subscription")
-    Rel(sqs, refund_svc, "Consumes events", "Polling")
-    Rel(sqs, validation_svc, "Consumes events", "Polling")
-    Rel(gateway, auth, "Token validation", "HTTPS")
-    Rel(refund_svc, auth, "Token validation", "HTTPS")
-    Rel(validation_svc, auth, "Token validation", "HTTPS")
+    Rel(user, gateway, "HTTPS", "v1 REST API")
+    Rel(gateway, validation, "HTTP", "Sync - low latency")
+    Rel(gateway, refund, "HTTP", "Sync - long-running")
+    Rel(validation, config_svc, "HTTP", "Domain queries")
+    Rel(refund, config_svc, "HTTP", "Bulk reads, S3 writes")
+    Rel(refund, sns, "Publish", "export.completed, export.failed")
+    Rel(gateway, sns, "Subscribe via SQS", "Status polling bypass")
 ```
 
 ---
 
-## 2. Integration patterns
+## Component diagrams
 
-### 2.1 Synchronous patterns
+### Service boundary decomposition
 
-#### HTTP routing strategy
+```mermaid
+graph TB
+    subgraph "API Gateway (existing DNS)"
+        GW_AUTH[Auth middleware]
+        GW_ROUTER[Route dispatcher]
+        GW_CB[Circuit breakers - opossum]
+        GW_CORS[CORS / rate limiting]
+        GW_ADAPTER[v1 route adapter]
+    end
 
-| Layer   | Mechanism              | Behavior                                                                 |
-|---------|------------------------|--------------------------------------------------------------------------|
-| ALB     | Path-based rules       | Routes `/v2/refunds/*` → refund TG, `/v2/validations/*` → validation TG |
-| ALB     | Default rule           | Routes `/v1/*` and unmatched → gateway TG                               |
-| Gateway | Internal reverse proxy | Forwards to downstream services by path prefix                          |
+    subgraph "Validation Service"
+        VS_SEARCH[Client search/browse]
+        VS_COMPARE[Client comparison]
+        VS_VALIDATE[Configuration validation]
+        VS_PREVIEW[Promotion preview]
+        VS_HEALTH[Health + readiness]
+    end
 
-#### API gateway behavior (slim gateway)
+    subgraph "Refund/Export Service"
+        RS_FULL[Full export]
+        RS_FINANCE[Finance export]
+        RS_CUSTOM[Custom export]
+        RS_STREAM[Stream manager]
+        RS_QUEUE[Job queue - in-memory]
+        RS_HEALTH[Health + readiness]
+    end
 
-The gateway acts as a thin adapter during migration:
+    subgraph "config-services (Java backend)"
+        CS_DYNAMO[(DynamoDB)]
+        CS_MARIA[(MariaDB)]
+        CS_S3[(S3)]
+    end
 
-1. Accepts legacy `/v1` requests from the Angular client
-2. Validates auth token (JWT verification, scope check)
-3. Maps `/v1` request shape to the appropriate downstream `/v2` endpoint
-4. Forwards request with original auth token in `Authorization` header
-5. Maps `/v2` response back to `/v1` response shape if needed
-6. Returns to client — no business logic
+    GW_ROUTER --> VS_SEARCH
+    GW_ROUTER --> VS_COMPARE
+    GW_ROUTER --> VS_VALIDATE
+    GW_ROUTER --> RS_FULL
+    GW_ROUTER --> RS_FINANCE
+    GW_ROUTER --> RS_CUSTOM
 
-#### Request flow (during migration)
+    VS_SEARCH --> CS_DYNAMO
+    VS_COMPARE --> CS_DYNAMO
+    VS_VALIDATE --> CS_MARIA
+    VS_PREVIEW --> CS_MARIA
+
+    RS_FULL --> CS_DYNAMO
+    RS_FULL --> CS_S3
+    RS_FINANCE --> CS_MARIA
+    RS_FINANCE --> CS_S3
+    RS_STREAM --> CS_S3
+```
+
+### Request flow - synchronous validation
+
+```mermaid
+sequenceDiagram
+    participant UI as Angular SPA
+    participant GW as API Gateway
+    participant VS as Validation Service
+    participant CS as config-services
+
+    UI->>GW: POST /v1/clients/{id}/validate
+    GW->>GW: Auth + correlation ID
+    GW->>VS: POST /validate (X-Correlation-ID)
+    VS->>CS: GET /configurations/{id}
+    CS-->>VS: Configuration data
+    VS->>VS: Run validation rules
+    VS-->>GW: 200 {valid: true, warnings: [...]}
+    GW-->>UI: 200 (original v1 shape)
+```
+
+### Request flow - async export
+
+```mermaid
+sequenceDiagram
+    participant UI as Angular SPA
+    participant GW as API Gateway
+    participant RS as Refund/Export Service
+    participant CS as config-services
+    participant SNS as SNS Topic
+    participant SQS as SQS Queue
+
+    UI->>GW: POST /v1/exports/full
+    GW->>RS: POST /exports/full (X-Correlation-ID)
+    RS-->>GW: 202 {jobId: "abc-123"}
+    GW-->>UI: 202 {jobId: "abc-123"}
+
+    RS->>CS: GET /clients?bulk=true (paginated)
+    CS-->>RS: Client batch
+    RS->>RS: Transform + stream to buffer
+    RS->>CS: PUT /exports/abc-123.csv (S3)
+    RS->>SNS: Publish export.completed {jobId, s3Key}
+
+    Note over UI,SQS: Polling or websocket notification
+
+    UI->>GW: GET /v1/exports/abc-123/status
+    GW->>RS: GET /exports/abc-123/status
+    RS-->>GW: 200 {status: "completed", downloadUrl: "..."}
+    GW-->>UI: 200
+```
+
+---
+
+## Integration patterns
+
+### Synchronous (HTTP)
+
+| Pattern | Usage | Details |
+|---------|-------|---------|
+| Request/response | Gateway → validation-service | Low-latency calls (<200ms p99 target) |
+| Request/response | Gateway → refund-service | Initiate exports, poll status |
+| Request/response | Both services → config-services | Domain data access |
+
+- Gateway uses [opossum][opossum] circuit breakers for all downstream calls
+- Timeout: 5s for validation, 30s for export initiation
+- Retry: 1 retry with exponential backoff for 5xx (not for 4xx)
+
+### Asynchronous (SNS/SQS)
+
+| Topic | Publisher | Subscribers | Payload |
+|-------|-----------|-------------|---------|
+| `config-studio-export-events` | refund-service | gateway (optional SSE push) | `{eventType, jobId, s3Key, timestamp, correlationId}` |
+| `config-studio-validation-events` | validation-service | refund-service (cache invalidation) | `{eventType, clientId, timestamp}` |
+| `config-studio-promotion-events` | config-services | validation-service, refund-service | `{eventType, environment, clientId}` |
+
+- Each subscriber gets a dedicated SQS queue with DLQ (maxReceiveCount: 3)
+- Message retention: 4 days on main queue, 14 days on DLQ
+- Visibility timeout: 60s (export events), 10s (validation events)
+
+### Service mesh headers
+
+All inter-service calls carry:
 
 ```
-Angular → ALB → Gateway (/v1/refunds/config) → Refund Service (/v2/refunds/config) → config-services
+X-Correlation-ID: <uuid> (generated at gateway if absent)
+X-Request-Source: <service-name>
+X-Amzn-Trace-Id: <xray-trace-id>
 ```
 
-#### Request flow (post-migration)
+---
 
+## Service specifications
+
+### API gateway
+
+| Property | Value |
+|----------|-------|
+| Runtime | Node.js 20 LTS |
+| Memory | 512MiB |
+| CPU | 0.25 vCPU |
+| Scaling | 2–6 tasks, target: 60% CPU |
+| DNS | `payment-controls-api-{env}.wdprapps.disney.com` (existing) |
+| Health | `GET /health` → 200 `{status, uptime, version}` |
+| Readiness | `GET /ready` → checks downstream circuit states |
+
+### Validation service
+
+| Property | Value |
+|----------|-------|
+| Runtime | Node.js 20 LTS |
+| Memory | 1GiB |
+| CPU | 0.5 vCPU |
+| Scaling | 3–12 tasks, target: request count (500 req/min/task) |
+| DNS | `validation-service-{env}.wdprapps.disney.com` |
+| Health | `GET /health` → 200 `{status, uptime, version}` |
+| Readiness | `GET /ready` → checks config-services connectivity |
+
+### Refund/export service
+
+| Property | Value |
+|----------|-------|
+| Runtime | Node.js 20 LTS |
+| Memory | 2GiB |
+| CPU | 1 vCPU |
+| Scaling | 2–8 tasks, target: 70% memory utilization |
+| DNS | `refund-service-{env}.wdprapps.disney.com` |
+| Health | `GET /health` → 200 `{status, uptime, activeJobs, version}` |
+| Readiness | `GET /ready` → checks config-services + S3 connectivity |
+
+---
+
+## Migration strategy: strangler fig
+
+```mermaid
+gantt
+    title Migration phases (~6 sprints)
+    dateFormat YYYY-MM-DD
+    axisFormat %b %d
+
+    section Phase 1 - Gateway
+    Deploy gateway as pass-through       :p1, 2026-07-01, 14d
+    Validate zero-diff responses         :p1v, after p1, 5d
+
+    section Phase 2 - Validation extraction
+    Extract validation routes            :p2, after p1v, 14d
+    Shadow traffic comparison            :p2s, after p2, 7d
+    Cut over validation traffic          :p2c, after p2s, 3d
+
+    section Phase 3 - Refund extraction
+    Extract export/refund routes         :p3, after p2c, 14d
+    Load test exports (2GB headroom)     :p3l, after p3, 5d
+    Cut over export traffic              :p3c, after p3l, 3d
+
+    section Phase 4 - Decommission
+    Remove monolith routes from gateway  :p4, after p3c, 7d
+    Retire monolith ECS service          :p4r, after p4, 3d
 ```
-Angular → ALB → Refund Service (/v2/refunds/config) → config-services
+
+### Phase details
+
+#### Phase 1: Gateway deployment (sprint 1)
+
+- Deploy gateway to existing DNS via weighted ALB target group (canary 5% → 50% → 100%)
+- Gateway proxies all requests to existing monolith (pass-through)
+- Add correlation ID injection and X-Ray tracing
+- Validate: response parity via shadow comparison logs
+- Rollback: revert ALB target group weight to monolith
+
+#### Phase 2: Validation extraction (sprints 2–3)
+
+- Deploy validation-service with internal ALB
+- Gateway routes validation paths to new service
+- Shadow mode: gateway calls both monolith and validation-service, compares responses, logs diffs
+- Cut over when diff rate < 0.1% for 48 hours
+- Routes extracted: `/clients/search`, `/clients/{id}/compare`, `/configurations/validate`, `/promotions/preview`
+
+#### Phase 3: Refund/export extraction (sprints 4–5)
+
+- Deploy refund-service with internal ALB
+- Gateway routes export paths to new service
+- Load test: simulate 50 concurrent full exports (target: zero OOM, p99 < 45s)
+- Routes extracted: `/exports/full`, `/exports/finance`, `/exports/custom`, `/exports/{id}/status`, `/exports/{id}/download`
+
+#### Phase 4: Monolith decommission (sprint 6)
+
+- Remove monolith from ALB target groups
+- Scale monolith to 0 tasks (keep task definition 30 days for rollback)
+- Delete monolith ECS service after 30-day bake period
+- Archive monolith repository
+
+---
+
+## Deployment topology
+
+```mermaid
+graph TB
+    subgraph "us-east-1"
+        subgraph "Public subnet"
+            ALB[Application Load Balancer<br/>existing DNS]
+        end
+
+        subgraph "Private subnet - ECS Fargate"
+            GW[API Gateway<br/>512MiB × 2-6 tasks]
+            VS[Validation Service<br/>1GiB × 3-12 tasks]
+            RS[Refund Service<br/>2GiB × 2-8 tasks]
+        end
+
+        subgraph "Private subnet - Internal ALB"
+            IALB_VS[Internal ALB - validation]
+            IALB_RS[Internal ALB - refund]
+        end
+
+        subgraph "Messaging"
+            SNS_TOPIC[SNS Topics]
+            SQS_GW[SQS - gateway queue]
+            SQS_VS[SQS - validation queue]
+            SQS_RS[SQS - refund queue]
+            DLQ[Dead letter queues]
+        end
+
+        subgraph "Shared services"
+            CS[config-services<br/>Java backend]
+            XRAY[AWS X-Ray]
+            CW[CloudWatch]
+        end
+    end
+
+    ALB --> GW
+    GW --> IALB_VS --> VS
+    GW --> IALB_RS --> RS
+    VS --> CS
+    RS --> CS
+    RS --> SNS_TOPIC
+    SNS_TOPIC --> SQS_GW
+    SNS_TOPIC --> SQS_VS
+    SNS_TOPIC --> SQS_RS
+    SQS_GW --> DLQ
+    SQS_VS --> DLQ
+    SQS_RS --> DLQ
+    GW --> XRAY
+    VS --> XRAY
+    RS --> XRAY
+    GW --> CW
+    VS --> CW
+    RS --> CW
 ```
 
-### 2.2 Asynchronous patterns (SNS+SQS event topology)
+### DNS mapping
 
-#### Topics
+| Service | DNS pattern | Example (stage) |
+|---------|-------------|-----------------|
+| Gateway | `payment-controls-api-{env}.wdprapps.disney.com` | `payment-controls-api-stage.wdprapps.disney.com` |
+| Validation | `validation-service-{env}.wdprapps.disney.com` | `validation-service-stage.wdprapps.disney.com` |
+| Refund | `refund-service-{env}.wdprapps.disney.com` | `refund-service-stage.wdprapps.disney.com` |
 
-| SNS Topic                               | Publisher          | Purpose                                        |
-|-----------------------------------------|--------------------|------------------------------------------------|
-| `payment-controls-refund-events`        | Refund service     | Refund config created/updated/deleted          |
-| `payment-controls-validation-events`    | Validation service | Validation rule created/updated/activated      |
+---
 
-#### Queues
+## Observability and resilience patterns
 
-| SQS Queue                                        | Subscriber         | Subscribed Topic                            |
-|--------------------------------------------------|--------------------|--------------------------------------------|
-| `validation-svc-refund-events`                   | Validation service | `payment-controls-refund-events`           |
-| `refund-svc-validation-events`                   | Refund service     | `payment-controls-validation-events`       |
+### Observability
 
-#### Event schema
+```mermaid
+graph LR
+    subgraph "Instrumentation"
+        TRACE[X-Ray traces]
+        METRICS[CloudWatch metrics]
+        LOGS[Structured JSON logs]
+    end
+
+    subgraph "Dashboards"
+        SVC_DASH[Service dashboard]
+        BIZ_DASH[Business metrics]
+        ALERT[CloudWatch alarms]
+    end
+
+    TRACE --> SVC_DASH
+    METRICS --> SVC_DASH
+    METRICS --> ALERT
+    LOGS --> BIZ_DASH
+```
+
+| Layer | Tool | Key metrics |
+|-------|------|-------------|
+| Tracing | AWS X-Ray | Latency per segment, error rates, trace maps |
+| Metrics | CloudWatch | Request count, p50/p95/p99 latency, memory %, active jobs |
+| Logging | CloudWatch Logs (JSON) | Correlation ID, request path, duration, error stack |
+| Alerting | CloudWatch Alarms → SNS → PagerDuty | OOM events, 5xx spike >5%, circuit open, DLQ depth >0 |
+
+### Structured log format
 
 ```json
 {
-  "eventId": "uuid",
-  "eventType": "refund.config.updated",
-  "version": "1.0",
-  "timestamp": "ISO-8601",
-  "source": "refund-service",
-  "payload": { "configId": "...", "delta": {} },
-  "correlationId": "uuid"
+  "timestamp": "2026-07-15T10:30:00.000Z",
+  "level": "info",
+  "service": "refund-service",
+  "correlationId": "abc-123-def-456",
+  "traceId": "1-abc-def",
+  "message": "Export completed",
+  "duration": 12340,
+  "jobId": "export-789",
+  "clientCount": 1250
 }
 ```
 
-#### Guarantees
+### Resilience patterns
 
-- At-least-once delivery (SQS standard queues)
-- Idempotent consumers (dedup on `eventId`)
-- DLQ after 3 failed processing attempts
-- Message retention: 14 days on DLQ
+| Pattern | Implementation | Configuration |
+|---------|---------------|---------------|
+| Circuit breaker | [opossum][opossum] at gateway | Open after 5 failures in 30s, half-open after 15s |
+| Timeout | Per-route at gateway | Validation: 5s, Export initiation: 30s, Status poll: 3s |
+| Retry | Exponential backoff | Max 1 retry, only on 5xx/network errors, jitter ±200ms |
+| Bulkhead | Separate connection pools per downstream | Validation: 20 connections, Refund: 10 connections |
+| Graceful degradation | Gateway returns cached/partial responses | When validation-service circuit open, return last-known-good |
+| Health checks | ECS health check + ALB target health | Interval: 10s, unhealthy threshold: 3, deregistration delay: 30s |
+| Graceful shutdown | SIGTERM handler drains in-flight requests | Drain timeout: 30s, stop accepting new requests immediately |
 
-### 2.3 Strangler fig routing strategy
+### Backpressure (refund-service)
 
-Traffic shifts are controlled at the ALB rule level using weighted target groups and path-based rules:
-
-| Phase | `/v1/validations/*`         | `/v1/refunds/*`            | `/v2/validations/*`   | `/v2/refunds/*`       |
-|-------|-----------------------------|-----------------------------|------------------------|-----------------------|
-| 0     | Gateway (100%)              | Gateway (100%)              | —                      | —                     |
-| 1     | Gateway → Validation (proxy)| Gateway (100%)              | Validation svc (100%) | —                     |
-| 2     | Gateway → Refund (proxy)    | Gateway → Refund (proxy)    | Validation svc (100%) | Refund svc (100%)     |
-| 3     | ALB → Validation svc direct | ALB → Refund svc direct     | Validation svc (100%) | Refund svc (100%)     |
-| 4     | Deprecated (410 Gone)       | Deprecated (410 Gone)       | Validation svc (100%) | Refund svc (100%)     |
-
-Canary rollout per route group: 10% → 50% → 100% with automated rollback on 5xx spike.
-
-### 2.4 Auth propagation pattern
-
-```
-┌─────────┐     ┌─────┐     ┌─────────┐     ┌─────────────┐
-│  Client  │────▶│ ALB │────▶│ Gateway │────▶│ Domain Svc  │
-└─────────┘     └─────┘     └─────────┘     └─────────────┘
-     │                            │                  │
-     │  Authorization: Bearer T   │  Authorization:  │  Authorization:
-     │                            │  Bearer T        │  Bearer T
-     │                            │  X-Request-Id: R │  X-Request-Id: R
-     │                            │                  │  X-Forwarded-For
-```
-
-- Token passthrough: Original JWT forwarded unchanged to downstream services
-- Each service independently validates the token (shared JWKS endpoint)
-- Gateway adds `X-Request-Id` for distributed tracing if absent
-- Post-migration: ALB routes directly to domain services; each service validates its own token
-- Scopes: `refund:read`, `refund:write`, `validation:read`, `validation:write`
-
-### 2.5 Error handling and circuit breaker strategy
-
-| Concern            | Pattern                     | Implementation                                    |
-|--------------------|-----------------------------|---------------------------------------------------|
-| Downstream failure | Circuit breaker             | `opossum` (Node.js) — 50% failure threshold, 30s reset |
-| Timeout            | Aggressive timeouts         | 5s for API calls, 60s for streaming exports       |
-| Retry              | Exponential backoff         | 3 retries, jitter, idempotent operations only     |
-| Fallback           | Graceful degradation        | Cache last-known-good config for read paths       |
-| Bulkhead           | Connection pool isolation   | Separate HTTP agents per downstream               |
-| Observability      | Structured error responses  | RFC 7807 problem details, correlation IDs         |
-
-Circuit breaker states propagated via health check endpoints (`/health/ready`) so ALB can shift traffic on degradation.
+- In-memory job queue limited to 20 concurrent exports per task
+- Returns `429 Too Many Requests` with `Retry-After` header when at capacity
+- Gateway circuit breaker opens on sustained 429s (prevents cascade)
 
 ---
 
-## 3. Deployment topology
+## Risks and mitigations
 
-```mermaid
-flowchart TB
-    subgraph DNS["DNS (Route 53)"]
-        dns_gw["payment-controls-{env}.wdprapps.disney.com"]
-        dns_refund["refund-{env}.wdprapps.disney.com"]
-        dns_validation["validation-{env}.wdprapps.disney.com"]
-    end
-
-    subgraph ALB_Layer["ALB (HTTPS :443)"]
-        alb["Application Load Balancer"]
-        rule_v1["/v1/* → Gateway TG"]
-        rule_refund["/v2/refunds/* → Refund TG"]
-        rule_validation["/v2/validations/* → Validation TG"]
-    end
-
-    subgraph ECS["ECS Fargate Cluster"]
-        subgraph GW_SVC["payment-controls-gateway"]
-            gw_task["Fargate Task<br/>512 MB / 0.25 vCPU<br/>Min: 2, Max: 4"]
-        end
-        subgraph REF_SVC["refund-service"]
-            ref_task["Fargate Task<br/>1024 MB / 0.5 vCPU<br/>Min: 2, Max: 6"]
-        end
-        subgraph VAL_SVC["validation-service"]
-            val_task["Fargate Task<br/>512 MB / 0.25 vCPU<br/>Min: 2, Max: 6"]
-        end
-    end
-
-    subgraph Messaging["SNS + SQS"]
-        topic_refund["SNS: payment-controls-refund-events"]
-        topic_validation["SNS: payment-controls-validation-events"]
-        queue_val_refund["SQS: validation-svc-refund-events"]
-        queue_ref_validation["SQS: refund-svc-validation-events"]
-        dlq_val["SQS DLQ: validation-svc-refund-events-dlq"]
-        dlq_ref["SQS DLQ: refund-svc-validation-events-dlq"]
-    end
-
-    subgraph Backend["Backend"]
-        config_svc["wdpr-config-services<br/>(Java / DynamoDB / MariaDB / S3)"]
-    end
-
-    dns_gw --> alb
-    dns_refund --> alb
-    dns_validation --> alb
-    alb --> rule_v1 --> gw_task
-    alb --> rule_refund --> ref_task
-    alb --> rule_validation --> val_task
-
-    gw_task -->|proxy| ref_task
-    gw_task -->|proxy| val_task
-    ref_task -->|REST| config_svc
-    val_task -->|REST| config_svc
-
-    ref_task -->|publish| topic_refund
-    val_task -->|publish| topic_validation
-    topic_refund -->|subscribe| queue_val_refund --> val_task
-    topic_validation -->|subscribe| queue_ref_validation --> ref_task
-    queue_val_refund -.->|DLQ| dlq_val
-    queue_ref_validation -.->|DLQ| dlq_ref
-```
-
-### Resource allocation rationale
-
-| Service              | Memory  | CPU      | Justification                                               |
-|----------------------|---------|----------|-------------------------------------------------------------|
-| Gateway              | 512 MB  | 0.25 vCPU | Thin proxy, no business logic, no streaming                |
-| Refund service       | 1024 MB | 0.5 vCPU  | Streaming export paths require higher memory ceiling       |
-| Validation service   | 512 MB  | 0.25 vCPU | Request/response only, no streaming                        |
+| # | Risk | Likelihood | Impact | Mitigation |
+|---|------|-----------|--------|------------|
+| 1 | Network latency between gateway and downstream services adds overhead | Medium | Low | Internal ALBs in same AZ; target <5ms added latency. Monitor with X-Ray segment timing. |
+| 2 | config-services becomes bottleneck with increased connection count | Medium | High | Connection pooling with limits. Coordinate with config-services team on capacity. Add caching at validation-service for frequently accessed configs (TTL 60s). |
+| 3 | Data inconsistency during shadow traffic phase | Low | Medium | Shadow mode is read-only comparison; no writes are duplicated. Diff logging catches divergence before cut-over. |
+| 4 | Export jobs in-flight during deployment | Medium | Medium | Graceful shutdown with 30s drain. ECS rolling deployment with minimum healthy 50%. Job state persisted to allow resume on new task. |
+| 5 | Operational complexity of 3 services vs. 1 | High | Low | Shared CDK constructs for infra. Unified dashboard. Runbook per service. Single on-call rotation covers all three. |
+| 6 | SNS/SQS message ordering for export status | Low | Low | Use jobId for idempotency. Status is derived from latest message timestamp, not ordering. |
+| 7 | Gateway becomes single point of failure | Low | High | Multi-AZ deployment (2+ tasks minimum). ALB health checks with fast failover. If gateway is entirely down, ALB returns 503 (same as current monolith behavior). |
+| 8 | Memory leak in refund-service under sustained load | Medium | High | Memory-based autoscaling detects pressure early. CloudWatch alarm at 80% memory. Implement streaming (not buffering) for exports where possible. |
 
 ---
 
-## 4. Migration phases
+## Decision log
 
-### Phase 1: Extract and deploy validation service (weeks 1–8)
-
-| Week  | Activity                                                         | Rollback mechanism              |
-|-------|------------------------------------------------------------------|---------------------------------|
-| 1–2   | Scaffold validation-service repo, CI/CD, infra-as-code          | N/A                             |
-| 3–4   | Implement `/v2/validations/*` endpoints, unit + integration tests| N/A (not yet receiving traffic) |
-| 5     | Deploy to staging; gateway proxies `/v1/validations/*` to it    | Revert gateway proxy config     |
-| 6     | Canary in production: 10% of validation traffic via gateway     | Feature flag off → 0%          |
-| 7     | Ramp to 100% through gateway proxy                              | Feature flag off → 0%          |
-| 8     | ALB rule routes `/v2/validations/*` directly; UI migrates calls | Remove ALB rule → fall to gateway |
-
-### Phase 2: Extract and deploy refund service (weeks 9–16)
-
-| Week  | Activity                                                         | Rollback mechanism              |
-|-------|------------------------------------------------------------------|---------------------------------|
-| 9–10  | Scaffold refund-service repo, CI/CD, infra-as-code              | N/A                             |
-| 11–12 | Implement `/v2/refunds/*` endpoints including streaming export  | N/A (not yet receiving traffic) |
-| 13    | Deploy to staging; gateway proxies `/v1/refunds/*` to it        | Revert gateway proxy config     |
-| 14    | Canary in production: 10% of refund traffic via gateway         | Feature flag off → 0%          |
-| 15    | Ramp to 100% through gateway proxy                              | Feature flag off → 0%          |
-| 16    | ALB rule routes `/v2/refunds/*` directly; UI migrates calls     | Remove ALB rule → fall to gateway |
-
-### Phase 3: Direct routing and gateway decommission (weeks 17–22)
-
-| Week  | Activity                                                         | Rollback mechanism              |
-|-------|------------------------------------------------------------------|---------------------------------|
-| 17–18 | Angular client updated to call `/v2` endpoints directly         | Feature flag toggles base URL   |
-| 19    | Gateway `/v1` routes return deprecation headers                 | Remove headers                  |
-| 20    | Monitor: confirm zero traffic on gateway for 7 days             | Extend monitoring window        |
-| 21    | Gateway returns 410 Gone for all `/v1` routes                   | Redeploy with proxy logic       |
-| 22    | Decommission gateway service, remove ALB default rule           | Redeploy from last-known image  |
+| Decision | Rationale | Alternatives considered |
+|----------|-----------|------------------------|
+| Thin gateway, not API Gateway (AWS) | Need streaming support for exports, custom circuit breaker logic, WebSocket potential | AWS API Gateway (lacks streaming), direct service-to-service (no single entry point) |
+| SNS/SQS over EventBridge | Simpler model for point-to-point events, team familiarity | EventBridge (more complex rules engine not needed), direct HTTP callbacks |
+| No direct DB ownership | config-services already owns persistence; duplicating would require data sync | Separate read replicas (operational overhead), CQRS (over-engineering for current scale) |
+| Opossum for circuit breaking | Lightweight Node.js library, team already using in other services | Istio service mesh (infrastructure overhead), custom implementation (maintenance burden) |
+| ECS Fargate over EKS | Team expertise, simpler operations, sufficient for service count | EKS (operational complexity not justified for 3 services), Lambda (cold starts unacceptable for validation) |
 
 ---
 
-## 5. Key constraints and risks
+## Appendix: route mapping
 
-### Constraints
-
-| #  | Constraint                                        | Impact                                                    |
-|----|---------------------------------------------------|-----------------------------------------------------------|
-| C1 | No direct DB ownership                            | Both services depend on config-services availability      |
-| C2 | Angular client is the sole consumer               | v1 deprecation only requires one client migration         |
-| C3 | Streaming exports must not OOM                    | Refund service needs 1024 MB minimum; backpressure required|
-| C4 | Auth tokens are short-lived JWTs                  | No token exchange needed — passthrough is sufficient      |
-| C5 | No breaking changes to existing v1 contract       | Gateway must map responses faithfully during coexistence  |
-
-### Risks and mitigations
-
-| #  | Risk                                              | Likelihood | Impact | Mitigation                                                |
-|----|---------------------------------------------------|------------|--------|-----------------------------------------------------------|
-| R1 | config-services becomes single point of failure   | Medium     | High   | Circuit breakers, cached reads, health-check gating       |
-| R2 | Event ordering issues between services            | Low        | Medium | Idempotent consumers, event versioning, timestamp-based dedup |
-| R3 | Gateway proxy adds latency during migration       | High       | Low    | Keep gateway co-located (same AZ), connection pooling     |
-| R4 | Streaming export OOM in refund service            | Medium     | High   | Backpressure (Node.js streams), memory alarms, auto-scaling |
-| R5 | Angular client migration incomplete at decomm     | Low        | High   | Feature flags, extended deprecation window, traffic monitoring |
-| R6 | Scope creep extends 22-week timeline              | Medium     | Medium | Strict phase gates, weekly architecture review            |
-| R7 | SNS/SQS message loss during publish failures      | Low        | Medium | Transactional outbox pattern if volume justifies complexity |
+| v1 route (gateway) | Target service | Method |
+|---------------------|---------------|--------|
+| `/v1/clients/search` | validation-service | GET |
+| `/v1/clients/{id}` | validation-service | GET |
+| `/v1/clients/{id}/compare` | validation-service | POST |
+| `/v1/configurations/validate` | validation-service | POST |
+| `/v1/promotions/preview` | validation-service | POST |
+| `/v1/promotions/execute` | validation-service | POST |
+| `/v1/exports/full` | refund-service | POST |
+| `/v1/exports/finance` | refund-service | POST |
+| `/v1/exports/custom` | refund-service | POST |
+| `/v1/exports/{id}/status` | refund-service | GET |
+| `/v1/exports/{id}/download` | refund-service | GET |
+| `/v1/health` | gateway (local) | GET |
 
 ---
 
-## Appendix: DNS and endpoint mapping
+## References
 
-| Environment | Gateway                                        | Refund service                           | Validation service                          |
-|-------------|------------------------------------------------|------------------------------------------|---------------------------------------------|
-| dev         | payment-controls-dev.wdprapps.disney.com       | refund-dev.wdprapps.disney.com           | validation-dev.wdprapps.disney.com          |
-| stage       | payment-controls-stage.wdprapps.disney.com     | refund-stage.wdprapps.disney.com         | validation-stage.wdprapps.disney.com        |
-| prod        | payment-controls-prod.wdprapps.disney.com      | refund-prod.wdprapps.disney.com          | validation-prod.wdprapps.disney.com         |
+- [opossum]: https://github.com/nodeshift/opossum — Node.js circuit breaker
+- [strangler-fig]: https://martinfowler.com/bliki/StranglerFigApplication.html — Migration pattern
+- [xray-sdk]: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs.html — AWS X-Ray SDK for Node.js
+
+[opossum]: https://github.com/nodeshift/opossum
+[strangler-fig]: https://martinfowler.com/bliki/StranglerFigApplication.html
+[xray-sdk]: https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs.html
