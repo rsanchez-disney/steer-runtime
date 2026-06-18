@@ -14,7 +14,10 @@
     "general-angular-development"
   ],
   "enable_tools": true,
-  "jira_prefix": "DPAY-",
+  "jira_prefix": [
+    "DPAY-",
+    "GCP-"
+  ],
   "jira_custom_fields": {
     "myjira": "customfield_10003",
     "jira": "customfield_10106"
