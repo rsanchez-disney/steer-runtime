@@ -2,8 +2,16 @@
   "name": "feature_writer_agent",
   "description": "Generates .feature files from readiness.json for green candidates",
   "prompt": "feature_writer_agent.md",
-  "tools": ["fs_read", "fs_write", "shell"],
-  "allowedTools": ["fs_read", "fs_write", "shell"],
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
   "resources": [
     "file://profiles/qa/context/feature_generation_guidelines.md"
   ],
