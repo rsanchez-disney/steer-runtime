@@ -4,6 +4,30 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.124] — 2026-06-18
+
+### Added
+- **Studio Anglerfish workspace (iOS)** (#465)
+- **Studio Proteus subworkspace** — added to retail-restaurant-team
+- **Android native profile** — expanded resources in android_native profile
+- **Android CLI and Skills setup documentation**
+- **Show ready sustainment profile** — added custom data
+- **Read tool** — added to other sustainment agents (#463)
+
+### Fixed
+- **app.yaml issues** — resolved configuration errors
+- **configuration_items** — set as list instead of string
+
+### Changed
+- **GCP- jira prefix** — added to adaptive-payments-team workspace
+
+### Docs
+- **Graphify reference** — code knowledge graph generation
+
+### Chore
+- Rebuild MCP bundles
+- Update certification report
+
 ## [0.2.123] — 2026-06-16
 
 ### Added
