@@ -1,0 +1,60 @@
+{
+  "name": "studio-anglerfish-team",
+  "extends": "retail-restaurant-team",
+  "description": "Studio Anglerfish \u2014 iOS apps for Mobile Order (MO), Dine Mobile Check-in (DMC), and Merchandise Mobile Checkout (MMC)",
+  "team": "Studio Anglerfish (iOS)",
+  "profiles": [
+    "dev-core",
+    "dev-mobile"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "Mobile Order",
+      "path": "wdpr-dine-opp",
+      "repo": "studio-anglerfish/wdpr-dine-opp",
+      "host": "github.disney.com",
+      "alias": "MO",
+      "description": "Mobile Order iOS app (FNB-)"
+    },
+    {
+      "name": "Dine Mobile Check-in",
+      "path": "wdpr-dine-checkin",
+      "repo": "studio-anglerfish/wdpr-dine-checkin",
+      "host": "github.disney.com",
+      "alias": "DMC",
+      "description": "Dine Check-in & Walk-up Lists (FNB-)"
+    },
+    {
+      "name": "Merchandise Mobile Checkout",
+      "path": "Scan-and-Go",
+      "repo": "studio-anglerfish/Scan-and-Go",
+      "host": "github.disney.com",
+      "alias": "MMC",
+      "description": "Scan and Go iOS app (MERCH-)"
+    },
+    {
+      "name": "wdpr-bolton",
+      "path": "wdpr-bolton",
+      "repo": "studio-anglerfish/wdpr-bolton",
+      "host": "github.disney.com",
+      "description": "Bolton iOS app"
+    },
+    {
+      "name": "fnb-shared",
+      "path": "fnb-shared",
+      "repo": "studio-anglerfish/fnb-shared",
+      "host": "github.disney.com",
+      "description": "Shared FNB code across Mobile Order, Checkin, Checkout"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": [
+    "FNB-",
+    "MERCH-"
+  ],
+  "jira_host": "myjira.disney.com"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews code for security, quality, performance, and testing issues before PR creation",
+  "prompt": "code_review_agent.md",
+  "tools": [
+    "@github/*",
+    "@gitlab/*",
+    "@azure-devops/*",
+    "@jira/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/repo-wdpr-dine-opp.md",
+    "file://.kiro/context/repo-wdpr-dine-checkin.md",
+    "file://.kiro/context/repo-scan-and-go.md",
+    "file://.kiro/context/repo-fnb-shared.md"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@gitlab/*",
+    "@azure-devops/*",
+    "@jira/*"
+  ],
+  "includeMcpJson": true
+}

@@ -187,5 +187,5 @@
     "MERCH-"
   ],
   "jira_host": "myjira.disney.com",
-  "workspace_path": "${WORKSPACE_ROOT}/Disney"
+  "workspace_path": "${WORKSPACE_ROOT}/retail-restaurant-team"
 }

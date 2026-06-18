@@ -1,0 +1,18 @@
+{
+  "name": "codebase_explorer_agent",
+  "description": "Explores codebase to find relevant files, patterns, and dependencies for implementation",
+  "prompt": "codebase_explorer_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "glob"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/context/repo-wdpr-dine-opp.md",
+    "file://.kiro/context/repo-wdpr-dine-checkin.md",
+    "file://.kiro/context/repo-scan-and-go.md",
+    "file://.kiro/context/repo-fnb-shared.md"
+  ]
+}
