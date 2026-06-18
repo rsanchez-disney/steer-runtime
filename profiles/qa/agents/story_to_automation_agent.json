@@ -1,0 +1,55 @@
+{
+  "name": "story_to_automation_agent",
+  "description": "Takes user stories, suggests test cases, creates in Jira, assesses readiness, generates .feature files",
+  "tools": [
+    "@jira/*",
+    "@xray/*",
+    "jira_get_myself",
+    "jira_get_issue",
+    "jira_search_issues",
+    "jira_create_issue",
+    "jira_link_issues",
+    "xray_get_test_steps",
+    "xray_get_test_case_full",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@xray/*",
+    "jira_get_myself",
+    "jira_get_issue",
+    "jira_search_issues",
+    "jira_create_issue",
+    "jira_link_issues",
+    "xray_get_test_steps",
+    "xray_get_test_case_full",
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "resources": [
+    "file://profiles/qa/prompts/story_to_automation_agent.md",
+    "file://profiles/qa/context/test_creation_logic.md",
+    "file://profiles/qa/context/readiness_assessment.md",
+    "file://profiles/qa/context/repo_scanning_instructions.md",
+    "file://profiles/qa/context/feature_generation_guidelines.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-feature-only.sh",
+        "description": "Only allow writing .feature files"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ]
+  },
+  "includeMcpJson": true,
+  "welcomeMessage": "🤖 Story to Automation Agent\n\nCommands:\n  @analyze_story — Read a story, suggest test cases, check duplicates\n  @create_tests — Create approved TCs in Jira\n  @check_readiness — Assess automation readiness against repo\n  @write_scenario — Generate .feature files or suggest missing steps\n\nStart with: @analyze_story"
+}

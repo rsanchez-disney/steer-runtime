@@ -1,0 +1,9 @@
+{
+  "name": "repo_scanner_agent",
+  "description": "Scans Behave repo for step definitions and outputs step_catalog.json",
+  "prompt": "repo_scanner_agent.md",
+  "tools": ["grep", "fs_read", "fs_write"],
+  "allowedTools": ["grep", "fs_read", "fs_write"],
+  "resources": ["file://profiles/qa/context/repo_scanning_instructions.md"],
+  "includeMcpJson": false
+}

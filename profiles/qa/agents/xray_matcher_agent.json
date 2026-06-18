@@ -1,0 +1,12 @@
+{
+  "name": "xray_matcher_agent",
+  "description": "Fetches XRay candidates, matches against step catalog, outputs readiness.json",
+  "prompt": "xray_matcher_agent.md",
+  "tools": ["jira_get_myself", "jira_search_issues", "@xray/*", "fs_read", "fs_write", "grep"],
+  "allowedTools": ["jira_get_myself", "jira_search_issues", "@xray/*", "fs_read", "fs_write", "grep"],
+  "resources": [
+    "file://profiles/qa/context/xray_fetching_instructions.md",
+    "file://profiles/qa/context/xray_classification_logic.md"
+  ],
+  "includeMcpJson": true
+}
