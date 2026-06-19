@@ -1,0 +1,25 @@
+{
+  "name": "ios_native",
+  "description": "iOS native specialist for Swift/Objective-C \u2014 Studio Anglerfish",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md",
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/build_commands.md",
+    "file://.kiro/context/swift_concurrency.md",
+    "file://.kiro/context/swiftui_conventions.md",
+    "file://.kiro/context/testing_conventions.md",
+    "file://.kiro/context/git_branching.md",
+    "file://.kiro/context/repo-wdpr-dine-opp.md",
+    "file://.kiro/context/repo-wdpr-dine-checkin.md",
+    "file://.kiro/context/repo-scan-and-go.md",
+    "file://.kiro/context/repo-fnb-shared.md"
+  ],
+  "includeMcpJson": true
+}

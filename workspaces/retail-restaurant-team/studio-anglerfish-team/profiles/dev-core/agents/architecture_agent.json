@@ -1,0 +1,23 @@
+{
+  "name": "architecture_agent",
+  "description": "Provides architecture guidance, design patterns, and technical decisions for implementation",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "knowledge",
+    "@mermaid/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/context/repo-wdpr-dine-opp.md",
+    "file://.kiro/context/repo-wdpr-dine-checkin.md",
+    "file://.kiro/context/repo-scan-and-go.md",
+    "file://.kiro/context/repo-fnb-shared.md"
+  ],
+  "includeMcpJson": true
+}
