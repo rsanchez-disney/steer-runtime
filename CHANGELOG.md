@@ -4,6 +4,35 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.125] — 2026-06-20
+
+### Added
+- **Sustainment photopass workspace** — add sustainment-photopass for AG app-flwdw-dpi (#471)
+- **QA backlog_to_gherkin_agent** — command-driven approach with gated pipeline, step_catalog.json support, manual steps via customfield_20104 (#464)
+- **QA parameter validation** — grep repo for verified combinations, skip untested
+- **QA feature generation guidelines** — dry run mandatory, prerequisite detection, no invented steps
+- **QA context optimization** — read catalog by domain, batch jira fetch for steps
+- **QA story_to_automation_agent** — prompt-as-resource workaround for both agents
+- **QA guard-feature-only.ps1** — Windows compatibility for guard script
+- **RCA minimal delegation scenario** — content assertions for RCA
+- **BA orchestrator delegation scenario** — Figma URL delegation test
+
+### Fixed
+- **QA resource paths** — fix resource paths and match action+result in readiness assessment
+- **QA prompt field removal** — use only resources for consistent behavior across kiro-cli versions
+- **QA backlog_to_gherkin_agent runtime issues** — resolved agent runtime errors
+- **QA prompt-as-resource workaround** — kiro-cli 2.5.1 not injecting prompt field
+- **QA secret-scan hook** — fix trailing newlines, replace shell with execute_bash
+- **Anglerfish agent overrides** — remove prompt field from anglerfish agent overrides
+- **QA feature_writer_agent** — remove broken resource path
+
+### Refactored
+- **QA agent rename** — new_backlog_to_gherkin_agent → backlog_to_gherkin_agent
+
+### Chore
+- Rebuild MCP bundles
+- Update certification report
+
 ## [0.2.124] — 2026-06-18
 
 ### Added
