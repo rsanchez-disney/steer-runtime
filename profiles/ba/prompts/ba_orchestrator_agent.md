@@ -108,6 +108,7 @@ subagent(
 | Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
 | Validate translations, localization review, i18n quality | `translation_validator_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*`, `github_*` |
 | Send email | `email_agent` | `compass` |
+| Analyze Figma designs, extract UI flows, design discovery | `design_orchestrator_agent` | `@figma/*` |
 
 ### 🔒 Protected Files
 

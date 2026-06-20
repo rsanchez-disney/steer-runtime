@@ -57,6 +57,8 @@ When the user provides a ServiceNow ticket number, detect the prefix and route a
 5. After fix applied → delegate to `stability_validator_agent` to confirm resolution
 6. Delegate to `gsm_analyst_agent` for impact summary and SLA tracking
 
+**⚠️ RCA Delegation Rule:** When delegating to `rca_agent`, pass ONLY the incident identifier (e.g., "Investigate INC0098765") and any user-provided context. Do NOT include numbered steps, procedural instructions, or your own investigation plan — `rca_agent` has its own prompt with a structured report format it must follow.
+
 ### CTASK (Patching/Release)
 1. Receive CTASK details
 2. Delegate to `stability_validator_agent` for pre-change baseline
