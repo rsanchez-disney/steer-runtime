@@ -1,0 +1,14 @@
+{
+  "name": "rca-minimal-delegation",
+  "description": "Sustainment orchestrator should delegate to rca_agent with ONLY the incident identifier, not step-by-step instructions. The rca_agent has its own prompt with report structure — orchestrator must not override it.",
+  "agent": "sustainment_orchestrator_agent",
+  "prompt": "Investigate incident INC0098765 for the commerce-ticketing-team. Give me the full RCA report.",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": ["rca_agent"],
+    "forbidden_tools": ["servicenow_tool_snow_get_incident", "splunk_search"],
+    "delegation_content_must_not_contain": ["1.", "2.", "3.", "Step 1", "Step 2", "First,", "Then,", "Finally,"],
+    "delegation_content_should_contain_any": ["INC0098765"]
+  },
+  "timeout_seconds": 180
+}
