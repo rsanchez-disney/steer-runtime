@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.126] — 2026-06-20
+
+### Fixed
+- **Delegation test failures** — ba/qa/sustainment orchestrator prompts: add design_orchestrator_agent to BA delegation mapping for Figma URLs, strengthen QA delegation mandate, add RCA delegation rule to sustainment orchestrator
+
 ## [0.2.125] — 2026-06-20
 
 ### Added
