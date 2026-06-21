@@ -4,6 +4,13 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.129] — 2026-06-21
+
+### Tests
+- **Architecture spec agent** — revised test scenario: Config Studio service decomposition (strangler fig migration)
+- **PRD generator agent** — new test scenario: Self-Service Refund Portal requirements document
+- **Quarterly report agent** — new test scenario: Q3 FY2026 quarterly business report generation
+
 ## [0.2.128] — 2026-06-20
 
 ### Tests
