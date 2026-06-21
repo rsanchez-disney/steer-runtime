@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.128] — 2026-06-20
+
+### Tests
+- **Add retries for flaky delegation tests** — add allow_fail for simple tasks to improve CI stability
+
 ## [0.2.127] — 2026-06-20
 
 ### Fixed
