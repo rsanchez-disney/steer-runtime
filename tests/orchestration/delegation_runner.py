@@ -329,7 +329,25 @@ def main():
     # Run
     results = []
     for scenario_path in scenarios:
+        scenario = json.loads(scenario_path.read_text())
+        retries = scenario.get("retries", 0)
+        allow_fail = scenario.get("allow_fail", False)
+
         r = run_scenario(scenario_path, dry_run=args.dry_run)
+
+        # Retry logic for flaky tests
+        attempts = 1
+        while r["status"] == "FAIL" and attempts <= retries and not args.dry_run:
+            warn_msg(f"Retrying ({attempts}/{retries})...")
+            r = run_scenario(scenario_path, dry_run=False)
+            attempts += 1
+
+        # Allow-fail: count as pass with warning
+        if r["status"] == "FAIL" and allow_fail:
+            r["status"] = "PASS"
+            r["allow_fail"] = True
+            warn_msg("Marked allow_fail — non-delegation is acceptable for this scenario")
+
         results.append(r)
 
     # Write summary

@@ -1,25 +1,43 @@
-sequenceDiagram
-    participant UI as Angular SPA
-    participant GW as API Gateway
-    participant RS as Refund/Export Service
-    participant CS as config-services
-    participant SNS as SNS Topic
-    participant SQS as SQS Queue
+graph TB
+    subgraph "Route 53 DNS"
+        DNS1[payment-controls-api-env.wdprapps.disney.com]
+        DNS2[validation-service-env.wdprapps.disney.com]
+        DNS3[refund-service-env.wdprapps.disney.com]
+    end
 
-    UI->>GW: POST /v1/exports/full
-    GW->>RS: POST /exports/full (X-Correlation-ID)
-    RS-->>GW: 202 {jobId: "abc-123"}
-    GW-->>UI: 202 {jobId: "abc-123"}
+    subgraph "Application Load Balancers"
+        ALB_PUB[Public ALB\nExternal-facing]
+        ALB_INT[Internal ALB\nService-to-service]
+    end
 
-    RS->>CS: GET /clients?bulk=true (paginated)
-    CS-->>RS: Client batch
-    RS->>RS: Transform + stream to buffer
-    RS->>CS: PUT /exports/abc-123.csv (S3)
-    RS->>SNS: Publish export.completed {jobId, s3Key}
+    subgraph "ECS Cluster: payment-controls"
+        subgraph "Gateway Service"
+            GW1[Task 1\n512MB / 0.25 vCPU]
+            GW2[Task 2\n512MB / 0.25 vCPU]
+        end
 
-    Note over UI,SQS: Polling or websocket notification
+        subgraph "Validation Service"
+            VS1[Task 1\n1GB / 0.5 vCPU]
+            VS2[Task 2\n1GB / 0.5 vCPU]
+            VS3[Task 3\n1GB / 0.5 vCPU]
+            VSN[... up to 12]
+        end
 
-    UI->>GW: GET /v1/exports/abc-123/status
-    GW->>RS: GET /exports/abc-123/status
-    RS-->>GW: 200 {status: "completed", downloadUrl: "..."}
-    GW-->>UI: 200
+        subgraph "Refund Service"
+            RS1[Task 1\n2GB / 1 vCPU]
+            RS2[Task 2\n2GB / 1 vCPU]
+            RSN[... up to 8]
+        end
+    end
+
+    DNS1 --> ALB_PUB
+    DNS2 --> ALB_INT
+    DNS3 --> ALB_INT
+
+    ALB_PUB -->|all traffic| GW1
+    ALB_PUB -->|all traffic| GW2
+    ALB_INT -->|/validations| VS1
+    ALB_INT -->|/validations| VS2
+    ALB_INT -->|/validations| VS3
+    ALB_INT -->|/exports /refunds| RS1
+    ALB_INT -->|/exports /refunds| RS2
