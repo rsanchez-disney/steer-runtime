@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.127] — 2026-06-20
+
+### Fixed
+- **Strengthen delegation mandates for 4 orchestrators** — ops_orchestrator: NEVER check deployments/infra yourself; ba_orchestrator: ALWAYS delegate + explicit Figma/design rule; qa_orchestrator: explicit defect rule — never investigate bugs yourself; sustainment_orchestrator: stronger RCA rule with explicit banned phrases
+
 ## [0.2.126] — 2026-06-20
 
 ### Fixed
