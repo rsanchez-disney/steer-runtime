@@ -107,7 +107,7 @@ You have access to Compass tools via MCP:
 
 ## Critical Rules
 
-1. Always delegate — do not attempt ops tasks directly
+1. **ALWAYS delegate via `subagent` tool** — NEVER check deployments, infrastructure, metrics, or logs yourself. Even for "simple" status checks, delegate to the appropriate agent.
 2. Present consolidated results clearly
 3. Flag any errors from sub-agents
 
