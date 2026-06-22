@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.133] — 2026-06-22
+
+### Changed
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.132] — 2026-06-22
 
 ### Changed
