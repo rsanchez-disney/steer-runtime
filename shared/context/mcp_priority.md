@@ -21,6 +21,7 @@ The MCP config uses multi-instance naming. Here's how server names map to tool p
 | `confluence-mywiki` | `@mywiki/*` | mywiki.disney.com |
 | `jira-jira` | `@jira/*` (prefix: `jira_`) | jira.disney.com |
 | `jira-myjira` | `@jira/*` (prefix: `myjira_`) | myjira.disney.com |
+| `jira-cloud` | `@jira/*` (prefix: `cloud_`) | disneyexperiences.atlassian.net |
 | `github-disney` | `@github/*` | github.disney.com |
 | `github-public` | `@github/*` | github.com |
 

@@ -47,7 +47,7 @@ export function ticketCard(ticket: {
     <div class="actions">
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_transition_issue',params:{ticketId:'${ticket.key}'}}},'*')">Transition</button>
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_comment_on_issue',params:{ticketId:'${ticket.key}'}}},'*')">Comment</button>
-      <button class="btn" onclick="window.parent.postMessage({type:'open-link',payload:{url:'https://myjira.disney.com/browse/${ticket.key}'}}},'*')">Open in Jira ↗</button>
+      <button class="btn" onclick="window.parent.postMessage({type:'open-link',payload:{url:'https://disneyexperiences.atlassian.net/browse/${ticket.key}'}}},'*')">Open in Jira ↗</button>
     </div>
   </body></html>`;
 }

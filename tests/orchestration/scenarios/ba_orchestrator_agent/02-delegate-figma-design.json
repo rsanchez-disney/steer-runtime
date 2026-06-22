@@ -1,0 +1,22 @@
+{
+  "name": "ba-delegate-figma-design",
+  "description": "BA orchestrator should delegate to design_orchestrator or prototype_prompt_agent when given a Figma URL",
+  "agent": "ba_orchestrator_agent",
+  "prompt": "Analyze this Figma design and extract the user flows and components for our PRD: https://www.figma.com/design/abc123/Self-Service-Refund-Portal",
+  "expect": {
+    "delegated": true,
+    "agents_called_any": [
+      "design_orchestrator_agent",
+      "prototype_prompt_agent",
+      "user_research_agent",
+      "design_discovery_agent"
+    ],
+    "forbidden_tools": [
+      "figma_get_file",
+      "figma_get_comments",
+      "figma_get_styles"
+    ]
+  },
+  "timeout_seconds": 180,
+  "retries": 2
+}

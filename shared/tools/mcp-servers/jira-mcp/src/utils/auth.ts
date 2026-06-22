@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
-const DEFAULT_JIRA_URL = "https://myjira.disney.com";
+const DEFAULT_JIRA_URL = "https://disneyexperiences.atlassian.net";
 
 export class JiraAuth {
     private jiraPat: string | null = null;

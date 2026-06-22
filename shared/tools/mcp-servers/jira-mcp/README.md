@@ -32,7 +32,7 @@ For example:
 - If you run `q chat --agent my-agent` from `/Users/yourname/my-project/`
 - The MCP server will look for `.env` in `/Users/yourname/path/to/jira-mcp/.env`
 
-To create a JIRA Personal Access Token, visit: https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
+To create a JIRA Personal Access Token, visit: https://disneyexperiences.atlassian.net/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens
 
 3. Build the server:
 

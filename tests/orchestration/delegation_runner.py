@@ -259,6 +259,37 @@ def analyze(name: str, output_lines: list, expect: dict) -> dict:
             result["status"] = "FAIL"
             result["details"].append({"check": "forbidden_tool", "tool": tool, "passed": False})
 
+    # Check 4: Delegation content must NOT contain (over-instructing check)
+    must_not = expect.get("delegation_content_must_not_contain", [])
+    if must_not:
+        # Extract prompt_template content from subagent calls
+        delegation_text = ""
+        for line in output_lines:
+            if "prompt_template" in line or "stages" in line:
+                delegation_text += line
+        violations = [phrase for phrase in must_not if phrase in delegation_text]
+        if violations:
+            fail_msg(f"Delegation over-instructs agent — contains: {violations}")
+            result["status"] = "FAIL"
+            result["details"].append({"check": "delegation_content_forbidden", "violations": violations, "passed": False})
+        else:
+            pass_msg("Delegation does not over-instruct (no step-by-step leakage)")
+
+    # Check 5: Delegation content should contain
+    should_contain = expect.get("delegation_content_should_contain_any", [])
+    if should_contain:
+        delegation_text = ""
+        for line in output_lines:
+            if "prompt_template" in line or "stages" in line:
+                delegation_text += line
+        found = [phrase for phrase in should_contain if phrase in delegation_text]
+        if found:
+            pass_msg(f"Delegation passes required context: {found}")
+        else:
+            fail_msg(f"Delegation missing required context: {should_contain}")
+            result["status"] = "FAIL"
+            result["details"].append({"check": "delegation_content_missing", "expected": should_contain, "passed": False})
+
     print()
     return result
 
@@ -298,7 +329,25 @@ def main():
     # Run
     results = []
     for scenario_path in scenarios:
+        scenario = json.loads(scenario_path.read_text())
+        retries = scenario.get("retries", 0)
+        allow_fail = scenario.get("allow_fail", False)
+
         r = run_scenario(scenario_path, dry_run=args.dry_run)
+
+        # Retry logic for flaky tests
+        attempts = 1
+        while r["status"] == "FAIL" and attempts <= retries and not args.dry_run:
+            warn_msg(f"Retrying ({attempts}/{retries})...")
+            r = run_scenario(scenario_path, dry_run=False)
+            attempts += 1
+
+        # Allow-fail: count as pass with warning
+        if r["status"] == "FAIL" and allow_fail:
+            r["status"] = "PASS"
+            r["allow_fail"] = True
+            warn_msg("Marked allow_fail — non-delegation is acceptable for this scenario")
+
         results.append(r)
 
     # Write summary

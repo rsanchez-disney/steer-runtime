@@ -1,0 +1,15 @@
+{
+  "name": "sustainment-photopass",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Studio PhotoPass (DPI) — incident response for AGMC cameras, photo pipeline, PP+ entitlements, and Memory Finder. AG: app-flwdw-dpi.",
+  "team": "Studio PhotoPass",
+  "profiles": [
+    "sustainment"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-photopass"
+  ],
+  "rules": ["photopass-incident-response"],
+  "enable_tools": true
+}

@@ -46,6 +46,6 @@
     "FNB-",
     "MERCH-"
   ],
-  "jira_host": "myjira.disney.com",
+  "jira_host": "disneyexperiences.atlassian.net",
   "workspace_path": "${HOME}/dev"
 }

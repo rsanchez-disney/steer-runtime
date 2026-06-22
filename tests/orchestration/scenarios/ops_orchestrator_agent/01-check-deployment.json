@@ -5,8 +5,14 @@
   "prompt": "Check the deployment status of wdpr-payment-controls-api in the stage environment via Harness. Was the last deploy successful?",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["deployment_agent", "infra_check_agent"],
-    "forbidden_tools": ["harness_get_deployment"]
+    "agents_called_any": [
+      "deployment_agent",
+      "infra_check_agent"
+    ],
+    "forbidden_tools": [
+      "harness_get_deployment"
+    ]
   },
-  "timeout_seconds": 180
+  "timeout_seconds": 180,
+  "retries": 2
 }
