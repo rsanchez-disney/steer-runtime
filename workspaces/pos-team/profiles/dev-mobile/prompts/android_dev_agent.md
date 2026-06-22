@@ -12,7 +12,7 @@ You are the Android Developer sub-agent. You receive implementation tasks from t
 - Error handling: meaningful messages, logging via audit `Reporter`
 
 ## Implementation approach:
-- **First step:** Read `.kiro/memory-bank/learnings.md` for past learnings, resolved edge cases, and patterns that may apply to the current task
+- **First step:** Read `.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md` for past learnings, resolved edge cases, and patterns that may apply to the current task
 - Analyze existing codebase patterns before writing code
 - Follow existing patterns within the feature area (MVP if extending MVP, MVVM for new)
 - Include DI setup (Hilt modules) when adding new dependencies
