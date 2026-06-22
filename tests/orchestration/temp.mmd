@@ -1,24 +1,33 @@
-flowchart TD
-    User[Config Studio User] --> ALB[ALB / DNS endpoint]
-    ALB --> GW[API Gateway<br/>512MB / 0.5 vCPU<br/>Route adapter + Auth + Circuit Breakers]
-    
-    GW -->|sync HTTP| VS[Validation Service<br/>1GB / 0.5 vCPU<br/>Validate, Compare, Search, Promote]
-    GW -->|sync HTTP| RS[Refund Service<br/>2GB / 1 vCPU<br/>Export orchestration + Streaming]
-    
-    VS -->|HTTP| CS[wdpr-config-services<br/>Java persistence layer]
-    RS -->|HTTP| CS
-    
-    VS -->|publish events| SNS[payment-controls-events<br/>SNS Topic]
-    RS -->|publish events| SNS
-    
-    SNS -->|filter: export.*| SQS1[validation-events-queue<br/>SQS]
-    SNS -->|filter: config.*| SQS2[refund-events-queue<br/>SQS]
-    
-    SQS1 -->|poll| VS
-    SQS2 -->|poll| RS
+graph TB
+    subgraph "Client Layer"
+        UI[Payment Controls Client<br/>Angular SPA]
+    end
 
-    style GW fill:#4a9eff,color:#fff
-    style VS fill:#28a745,color:#fff
-    style RS fill:#fd7e14,color:#fff
-    style CS fill:#6c757d,color:#fff
-    style SNS fill:#ff6b9d,color:#fff
+    subgraph "Gateway Layer"
+        GW[payment-controls-gateway<br/>Node.js / Express<br/>512MB RAM]
+    end
+
+    subgraph "Domain Services"
+        VS[validation-service<br/>Node.js / Express<br/>1GB RAM]
+        RS[refund-service<br/>Node.js / Express<br/>2GB RAM]
+    end
+
+    subgraph "Backend Layer"
+        CS[Config Services<br/>Java / Spring Boot]
+    end
+
+    subgraph "Async Infrastructure"
+        SNS[SNS Topics]
+        SQS_V[SQS — Validation Events]
+        SQS_R[SQS — Refund Events]
+    end
+
+    UI -->|HTTPS| GW
+    GW -->|REST + Circuit Breaker| VS
+    GW -->|REST + Circuit Breaker| RS
+    VS -->|REST| CS
+    RS -->|REST| CS
+    VS -.->|Publish| SNS
+    RS -.->|Publish| SNS
+    SNS -.->|Subscribe| SQS_V
+    SNS -.->|Subscribe| SQS_R
