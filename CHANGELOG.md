@@ -4,6 +4,15 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.134] — 2026-06-22
+
+### Added
+- **Jira Cloud instance routing** — multi-instance Jira support with automatic URL routing based on workspace configuration (#473)
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.133] — 2026-06-22
 
 ### Changed
