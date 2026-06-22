@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.130] — 2026-06-22
+
+### Changed
+- **Migrate Jira MCP default URL to Atlassian Cloud** — DEFAULT_JIRA_URL changed from myjira.disney.com to disneyexperiences.atlassian.net; updated src, dist, build, .env.example, README, workspace jira_host fields (retail-restaurant, anglerfish, proteus), and UI widget links
+
 ## [0.2.129] — 2026-06-21
 
 ### Tests
