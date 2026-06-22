@@ -1,43 +1,24 @@
-graph TB
-    subgraph "Route 53 DNS"
-        DNS1[payment-controls-api-env.wdprapps.disney.com]
-        DNS2[validation-service-env.wdprapps.disney.com]
-        DNS3[refund-service-env.wdprapps.disney.com]
-    end
+flowchart TD
+    User[Config Studio User] --> ALB[ALB / DNS endpoint]
+    ALB --> GW[API Gateway<br/>512MB / 0.5 vCPU<br/>Route adapter + Auth + Circuit Breakers]
+    
+    GW -->|sync HTTP| VS[Validation Service<br/>1GB / 0.5 vCPU<br/>Validate, Compare, Search, Promote]
+    GW -->|sync HTTP| RS[Refund Service<br/>2GB / 1 vCPU<br/>Export orchestration + Streaming]
+    
+    VS -->|HTTP| CS[wdpr-config-services<br/>Java persistence layer]
+    RS -->|HTTP| CS
+    
+    VS -->|publish events| SNS[payment-controls-events<br/>SNS Topic]
+    RS -->|publish events| SNS
+    
+    SNS -->|filter: export.*| SQS1[validation-events-queue<br/>SQS]
+    SNS -->|filter: config.*| SQS2[refund-events-queue<br/>SQS]
+    
+    SQS1 -->|poll| VS
+    SQS2 -->|poll| RS
 
-    subgraph "Application Load Balancers"
-        ALB_PUB[Public ALB\nExternal-facing]
-        ALB_INT[Internal ALB\nService-to-service]
-    end
-
-    subgraph "ECS Cluster: payment-controls"
-        subgraph "Gateway Service"
-            GW1[Task 1\n512MB / 0.25 vCPU]
-            GW2[Task 2\n512MB / 0.25 vCPU]
-        end
-
-        subgraph "Validation Service"
-            VS1[Task 1\n1GB / 0.5 vCPU]
-            VS2[Task 2\n1GB / 0.5 vCPU]
-            VS3[Task 3\n1GB / 0.5 vCPU]
-            VSN[... up to 12]
-        end
-
-        subgraph "Refund Service"
-            RS1[Task 1\n2GB / 1 vCPU]
-            RS2[Task 2\n2GB / 1 vCPU]
-            RSN[... up to 8]
-        end
-    end
-
-    DNS1 --> ALB_PUB
-    DNS2 --> ALB_INT
-    DNS3 --> ALB_INT
-
-    ALB_PUB -->|all traffic| GW1
-    ALB_PUB -->|all traffic| GW2
-    ALB_INT -->|/validations| VS1
-    ALB_INT -->|/validations| VS2
-    ALB_INT -->|/validations| VS3
-    ALB_INT -->|/exports /refunds| RS1
-    ALB_INT -->|/exports /refunds| RS2
+    style GW fill:#4a9eff,color:#fff
+    style VS fill:#28a745,color:#fff
+    style RS fill:#fd7e14,color:#fff
+    style CS fill:#6c757d,color:#fff
+    style SNS fill:#ff6b9d,color:#fff

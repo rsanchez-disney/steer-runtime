@@ -6052,7 +6052,7 @@ var StdioServerTransport = class {
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
-var DEFAULT_JIRA_URL = "https://myjira.disney.com";
+var DEFAULT_JIRA_URL = "https://disneyexperiences.atlassian.net";
 var JiraAuth = class {
   jiraPat = null;
   jiraUrl = null;
@@ -7266,7 +7266,7 @@ function ticketCard(ticket) {
     <div class="actions">
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_transition_issue',params:{ticketId:'${ticket.key}'}}},'*')">Transition</button>
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_comment_on_issue',params:{ticketId:'${ticket.key}'}}},'*')">Comment</button>
-      <button class="btn" onclick="window.parent.postMessage({type:'open-link',payload:{url:'https://myjira.disney.com/browse/${ticket.key}'}}},'*')">Open in Jira \u2197</button>
+      <button class="btn" onclick="window.parent.postMessage({type:'open-link',payload:{url:'https://disneyexperiences.atlassian.net/browse/${ticket.key}'}}},'*')">Open in Jira \u2197</button>
     </div>
   </body></html>`;
 }

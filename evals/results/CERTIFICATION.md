@@ -1,25 +1,25 @@
-# Steer Runtime v0.2.127-1-g6128e156 — Certification Report
+# Steer Runtime v0.2.128 — Certification Report
 
-🟢 **Trust Score: 94/100** (Certified)
+🟢 **Trust Score: 92/100** (Certified)
 
-Generated: 2026-06-20T23:55:55
+Generated: 2026-06-21T09:59:33
 
 ---
 
-## Delegation (40%) — 22/26 passed (85%)
+## Delegation (40%) — 21/26 passed (81%)
 
 | Scenario | Status | Subagent Calls |
 |----------|--------|----------------|
-| ai-route-ml-task | ✓ | 8 |
+| ai-route-ml-task | ✗ | 0 |
 | ba-analyze-requirements | ✓ | 42 |
 | ba-delegate-figma-design | ✗ | 0 |
-| cloudops-infra-issue | ✓ | 5 |
+| cloudops-infra-issue | ✓ | 8 |
 | design-architecture-review | ✓ | 8 |
-| inspector-inspect-app | ✓ | 6 |
-| leadership-quarterly-report | ✓ | 8 |
+| inspector-inspect-app | ✓ | 15 |
+| leadership-quarterly-report | ✗ | 0 |
 | ops-check-deployment | ✗ | 0 |
-| analyze-story | ✓ | 8 |
-| implement-feature | ✓ | 30 |
+| analyze-story | ✓ | 5 |
+| implement-feature | ✓ | 25 |
 | code-review | ✓ | 8 |
 | write-code | ✓ | 0 |
 | run-tests | ✓ | 0 |
@@ -29,9 +29,9 @@ Generated: 2026-06-20T23:55:55
 | pm-run-retro | ✓ | 8 |
 | qa-plan-testing | ✓ | 8 |
 | qa-analyze-defect | ✓ | 49 |
-| steer-review-pr | ✗ | 0 |
+| steer-review-pr | ✓ | 8 |
 | steer-release | ✓ | 8 |
-| triage-incident | ✓ | 30 |
+| triage-incident | ✓ | 49 |
 | rca-investigation | ✓ | 8 |
 | stability-validation | ✓ | 8 |
 | gsm-report | ✓ | 8 |
