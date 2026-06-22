@@ -97,6 +97,7 @@ When the user provides a URL or mentions a wiki/Jira:
 - `mywiki.disney.com` → delegate with `@mywiki/*` tools
 - `jira.disney.com` → delegate with `@jira/*` tools (prefix: `jira_`)
 - `myjira.disney.com` → delegate with `@jira/*` tools (prefix: `myjira_`)
+- `disneyexperiences.atlassian.net` → delegate with `@jira/*` tools (prefix: `cloud_`)
 - If unclear which instance, ask the user
 
 Email: always confirm with the user before sending (show draft with recipients, subject, body).

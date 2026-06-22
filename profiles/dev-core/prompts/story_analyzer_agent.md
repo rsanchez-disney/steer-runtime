@@ -20,6 +20,7 @@ You have four MCP servers. Each has its own **prefix**. Both Confluence instance
 | Source | Prefix | URL | Available tools |
 |--------|--------|-----|----------------|
 | **Jira** | `jira_` | myjira.disney.com | `jira_get_issue`, `jira_search_issues`, etc. |
+| **Jira Cloud** | `cloud_` | disneyexperiences.atlassian.net | `cloud_get_issue`, `cloud_search_issues`, etc. |
 | **Confluence** | `confluence_` | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages`, `confluence_get_confluence_space` |
 | **MyWiki** | `mywiki_` | mywiki.disney.com | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages`, `mywiki_get_confluence_space` |
 | **GitHub** | `@github/` | github.disney.com | `@github/github_get_pr`, `@github/github_list_repos`, etc. |
@@ -44,12 +45,21 @@ If the user doesn't specify which instance, **ask them**.
 
 ## Jira Workflows
 
+### Instance Routing
+
+| URL contains | Prefix | Example tool |
+|-------------|--------|--------------|
+| `myjira.disney.com` | `jira_` | `jira_get_issue` |
+| `jira.disney.com` | `jira_` | `jira_get_issue` |
+| `disneyexperiences.atlassian.net` | `cloud_` | `cloud_get_issue` |
+
 ### Fetching a Jira Story
 
 From URL `https://myjira.disney.com/browse/DPAY-14337`, extract key: `DPAY-14337`
+From URL `https://disneyexperiences.atlassian.net/browse/DPAY-15726`, extract key: `DPAY-15726`
 
-Use `@jira/*` tools to fetch the issue. Look for tools like:
-- `jira_get_issue` or similar with the issue key
+Match the URL to the correct prefix above, then use that prefix's tools:
+- `jira_get_issue` or `cloud_get_issue` with the issue key
 
 ### Analysis Output
 
