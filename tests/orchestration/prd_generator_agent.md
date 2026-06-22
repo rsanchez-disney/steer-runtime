@@ -1,713 +1,658 @@
 # Product Requirements Document: Self-Service Refund Portal
 
 **Document Version:** 1.0  
-**Date:** June 20, 2026  
-**Author:** Product Team  
-**Status:** Draft — Pending Stakeholder Review  
-**Last Updated:** 2026-06-20  
-
----
-
-## Table of Contents
-
-1. [Executive Summary](#1-executive-summary)
-2. [User Stories](#2-user-stories)
-3. [Acceptance Criteria](#3-acceptance-criteria)
-4. [Non-Functional Requirements](#4-non-functional-requirements)
-5. [Technical Considerations](#5-technical-considerations)
-6. [UI/UX Requirements](#6-uiux-requirements)
-7. [Dependencies](#7-dependencies)
-8. [Release Strategy](#8-release-strategy)
-9. [Metrics & Success Criteria](#9-metrics--success-criteria)
+**Date:** June 22, 2026  
+**Author:** Disney Payments Organization  
+**Status:** Draft  
+**Business Application:** Payment Service (BAPP0012692)
 
 ---
 
 ## 1. Executive Summary
 
-### 1.1 Problem Statement
+The Self-Service Refund Portal is a customer-facing digital experience that enables Disney customers to initiate, track, and manage refund requests independently—without contacting customer support. This feature addresses the growing volume of refund-related inquiries handled by customer service agents by providing a streamlined, automated interface integrated with the existing Payment Controls services (BAPP0012692).
 
-Currently, customers must contact customer service via phone, email, or live chat to request refunds for orders or individual items. This creates several pain points:
+Today, all refund requests require agent involvement, resulting in long wait times, increased operational cost, and suboptimal customer satisfaction. The Self-Service Refund Portal will empower customers with direct visibility into their refund eligibility, real-time status tracking, and multi-payment-method support (credit cards, debit cards, gift cards, and digital wallets).
 
-- **High customer effort:** Average refund resolution time is 3–5 business days with a required human interaction.
-- **Operational cost:** Each agent-assisted refund costs approximately $8–$12 in labor and overhead.
-- **Volume strain:** Refund requests account for ~35% of all customer service contacts, contributing to long wait times (avg. 12 min) across all support channels.
-- **Customer dissatisfaction:** Post-interaction NPS for refund-related contacts averages 22, significantly below the company-wide target of 45+.
-
-### 1.2 Proposed Solution
-
-A **Self-Service Refund Portal** integrated into the existing customer account experience that allows authenticated customers to:
-
-- View eligible orders and items for refund
-- Select items and specify refund reasons
-- Choose their preferred refund method (original payment, store credit, or exchange)
-- Generate prepaid return shipping labels when physical returns are required
-- Track refund status in real time
-
-The system will enforce business rules for eligibility, apply fraud detection heuristics, and escalate edge cases to human agents automatically.
-
-### 1.3 Business Value
-
-| Metric | Current State | Target State (6 months post-launch) |
-|--------|--------------|--------------------------------------|
-| Refund-related support contacts | ~42,000/month | Reduction of 60% (~16,800/month) |
-| Average refund resolution time | 3–5 business days | < 24 hours (auto-approved) |
-| Cost per refund interaction | $8–$12 | < $1.50 (self-service) |
-| Customer satisfaction (refund NPS) | 22 | 50+ |
-| Annualized cost savings | — | ~$2.5M |
+The primary business objective is to reduce customer service call volume for refund inquiries by 60% within 12 months of full launch, while maintaining or improving customer satisfaction scores.
 
 ---
 
-## 2. User Stories
+## 2. Problem Statement
 
-### US-01: Customer Initiating a Refund
+### Current State
+- All refund requests are processed manually by customer service agents via phone, chat, or email.
+- Customers lack visibility into refund eligibility, processing timelines, and status updates.
+- Average handle time (AHT) for refund calls is 12–15 minutes per interaction.
+- Refund-related inquiries account for approximately 35% of total customer service call volume.
+- Inconsistent refund decisions across agents lead to policy enforcement gaps and customer frustration.
 
-**As a** logged-in customer,  
-**I want to** select an order and request a refund for one or more items,  
-**So that** I can get my money back without waiting to speak to a support agent.
+### Pain Points
+| Stakeholder | Pain Point |
+|-------------|-----------|
+| Customer | Long wait times, no self-service option, lack of transparency on refund status |
+| Customer Service Agent | Repetitive manual work, high volume of refund calls, limited tooling |
+| Business Operations | High operational cost, inconsistent policy application, limited analytics |
 
-**Priority:** P0  
-**Effort:** L  
-
----
-
-### US-02: Customer Tracking Refund Status
-
-**As a** customer who has submitted a refund request,  
-**I want to** view the real-time status of my refund (submitted, approved, processing, completed),  
-**So that** I know when to expect my money back and don't need to contact support for updates.
-
-**Priority:** P0  
-**Effort:** M  
+### Desired Future State
+A fully automated self-service portal where customers can determine refund eligibility, submit requests, select refund destinations, and track processing status in real time—with agent involvement limited to exception cases and escalations.
 
 ---
 
-### US-03: Customer Selecting Refund Method
+## 3. Goals & Success Metrics (KPIs)
 
-**As a** customer requesting a refund,  
-**I want to** choose how I receive my refund (original payment method, store credit, or exchange),  
-**So that** I can select the option that best meets my needs.
+### Primary Goals
+1. Reduce customer service call volume for refund inquiries by 60%
+2. Improve customer satisfaction (CSAT) for refund experiences by 20%
+3. Decrease average refund processing time from 7–10 business days to 3–5 business days
+4. Achieve 80%+ self-service completion rate (customers who start and finish without agent intervention)
 
-**Priority:** P0  
-**Effort:** M  
+### Key Performance Indicators
 
----
-
-### US-04: Partial Refund for Multi-Item Orders
-
-**As a** customer with a multi-item order,  
-**I want to** request a refund for only specific items within that order,  
-**So that** I can keep the items I want and only return the ones I don't.
-
-**Priority:** P0  
-**Effort:** L  
-
----
-
-### US-05: Ineligible Refund Handling
-
-**As a** customer attempting to refund an ineligible item (past return window, final sale, digital goods after consumption),  
-**I want to** receive a clear explanation of why my refund request cannot be processed and what alternatives are available,  
-**So that** I understand the decision and can take next steps (e.g., contact support for exceptions).
-
-**Priority:** P0  
-**Effort:** M  
+| KPI | Baseline | Target | Measurement Method |
+|-----|----------|--------|-------------------|
+| CS Call Volume (Refund) | ~35% of total volume | ≤14% of total volume | Contact center reporting |
+| Self-Service Completion Rate | N/A (0%) | ≥80% | Portal analytics |
+| Average Refund Processing Time | 7–10 business days | 3–5 business days | Payment system logs |
+| CSAT (Refund Experience) | 3.2/5.0 | ≥3.8/5.0 | Post-interaction survey |
+| Portal Adoption Rate | N/A | ≥70% of eligible refund requests | Portal analytics |
+| Error/Escalation Rate | N/A | ≤10% of portal submissions | Escalation tracking |
+| Average Time to Submit Request | N/A | ≤3 minutes | Session analytics |
 
 ---
 
-### US-06: Admin/Support Override Capabilities
+## 4. Target Users / Personas
 
-**As a** customer support agent or manager,  
-**I want to** override system-denied refund requests based on customer history, escalation context, or business judgment,  
-**So that** edge cases and high-value customers can be accommodated outside standard policy.
+### Persona 1: Sarah — The Busy Parent
+- **Age:** 35–45
+- **Tech Comfort:** Moderate
+- **Context:** Booked a Disney vacation package but needs to cancel one activity. Wants a quick refund without spending 30 minutes on hold.
+- **Needs:** Simple interface, clear eligibility messaging, fast resolution
+- **Frustrations:** Long hold times, unclear refund policies, lack of status updates
 
-**Priority:** P1  
-**Effort:** M  
+### Persona 2: Marcus — The Frequent Guest
+- **Age:** 28–38
+- **Tech Comfort:** High
+- **Context:** Annual passholder who makes multiple purchases. Occasionally needs partial refunds for merchandise or dining experiences. Prefers digital interactions over phone calls.
+- **Needs:** Transaction history access, partial refund capability, real-time tracking
+- **Frustrations:** Repeating information to agents, inconsistent refund outcomes
+
+### Persona 3: Linda — The Gift Card User
+- **Age:** 55–65
+- **Tech Comfort:** Low to Moderate
+- **Context:** Received a Disney gift card and made a purchase that didn't meet expectations. Needs a refund returned to the gift card balance.
+- **Needs:** Clear instructions, accessibility features, confirmation of refund destination
+- **Frustrations:** Confusing interfaces, lack of confirmation, difficulty finding help
+
+### Persona 4: Alex — The Customer Service Manager (Internal)
+- **Age:** 30–50
+- **Tech Comfort:** High
+- **Context:** Manages a team of CS agents. Needs visibility into portal-submitted refunds, ability to override automated decisions, and analytics on self-service adoption.
+- **Needs:** Admin dashboard, override capabilities, reporting, escalation queue management
+- **Frustrations:** Lack of data, inconsistent agent decisions, high call volume
 
 ---
 
-### US-07: Fraud Detection Triggers
+## 5. User Stories & Acceptance Criteria
 
-**As a** risk/fraud operations team member,  
-**I want** the system to automatically flag and hold refund requests that match fraud patterns (excessive frequency, high-value clusters, account age anomalies),  
-**So that** fraudulent refunds are prevented before funds are disbursed.
-
-**Priority:** P0  
-**Effort:** L  
-
----
-
-### US-08: Notification Preferences
+### US-01: Initiate a Refund Request
 
 **As a** customer,  
-**I want to** choose how I'm notified about refund status updates (email, SMS, push notification, or in-app),  
-**So that** I receive updates through my preferred communication channel.
+**I want to** initiate a refund request from my order history,  
+**So that** I can get my money back without calling customer support.
 
-**Priority:** P2  
-**Effort:** S  
+**Acceptance Criteria:**
 
----
+```gherkin
+Given I am an authenticated customer on the refund portal
+  And I have at least one eligible transaction in my order history
+When I select a transaction and click "Request Refund"
+Then I am presented with a refund request form pre-populated with transaction details
+  And I can see the eligible refund amount
+  And I can submit the request with a reason for the refund
 
-### US-09: Multi-Item Order Refund (Bulk Selection)
-
-**As a** customer with a large order (5+ items),  
-**I want to** use "select all" and bulk actions to request refunds for multiple items at once,  
-**So that** the process is efficient and I don't have to repeat steps for each item.
-
-**Priority:** P1  
-**Effort:** M  
-
----
-
-### US-10: Return Shipping Label Generation
-
-**As a** customer whose refund requires returning a physical item,  
-**I want to** generate and download a prepaid return shipping label directly from the portal,  
-**So that** I can ship the item back without additional cost or effort to find a label.
+Given I am an authenticated customer with no eligible transactions
+When I navigate to the refund portal
+Then I see a message indicating no refund-eligible transactions are available
+  And I am offered a link to contact customer support for assistance
+```
 
 **Priority:** P0  
-**Effort:** M  
+**Sprint Target:** Phase 1
 
 ---
 
-### US-11: Refund Reason Categorization
+### US-02: Track Refund Status
 
-**As a** customer submitting a refund request,  
-**I want to** select from predefined refund reasons and optionally add details,  
-**So that** the company can process my request accurately and improve product quality.
+**As a** customer,  
+**I want to** view the real-time status of my refund requests,  
+**So that** I know when to expect my money back and don't need to call support for updates.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I have submitted one or more refund requests
+When I navigate to the "My Refunds" section of the portal
+Then I see a list of all my refund requests with current status
+  And each request displays: request date, amount, payment method, and status (Submitted, In Review, Approved, Processing, Completed, Denied)
+  And I can click into any request to see detailed timeline events
+
+Given my refund status changes from one state to another
+When I view the refund detail page
+Then I see the updated status with a timestamp
+  And I see the estimated completion date (if applicable)
+```
+
+**Priority:** P0  
+**Sprint Target:** Phase 1
+
+---
+
+### US-03: Eligibility Validation
+
+**As a** customer,  
+**I want to** immediately know whether my transaction is eligible for a refund,  
+**So that** I don't waste time submitting a request that will be denied.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I select a transaction to request a refund
+When the system evaluates the transaction against refund policies
+Then I receive an immediate eligibility determination (Eligible, Partially Eligible, Not Eligible)
+  And if not eligible, I see a clear explanation of why (e.g., "This transaction is past the 30-day refund window")
+  And if partially eligible, I see which items/amounts qualify
+
+Given a transaction was made more than 90 days ago
+When I attempt to request a refund
+Then the system displays "Not Eligible — Transaction exceeds the refund policy window"
+  And I am offered the option to submit an exception request for manual review
+
+Given a transaction has already been fully refunded
+When I attempt to request a refund
+Then the system displays "Not Eligible — This transaction has already been refunded"
+  And I see the date and amount of the previous refund
+```
+
+**Priority:** P0  
+**Sprint Target:** Phase 1
+
+---
+
+### US-04: Partial Refunds
+
+**As a** customer,  
+**I want to** request a refund for specific items within a multi-item transaction,  
+**So that** I can keep the items I'm satisfied with and only return what I don't want.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I have a multi-item transaction that is refund-eligible
+When I initiate a refund request for that transaction
+Then I am presented with a line-item breakdown of the order
+  And I can select individual items to refund
+  And the refund amount updates dynamically based on my selections
+  And applicable taxes and fees are prorated accordingly
+
+Given I select some but not all items for a refund
+When I submit the partial refund request
+Then the system processes only the selected items for refund
+  And the remaining items retain their original transaction status
+  And the confirmation shows the exact partial refund amount
+
+Given a transaction contains items with different refund eligibility windows
+When I view the line items
+Then each item shows its individual eligibility status
+  And I can only select items that are currently eligible
+```
 
 **Priority:** P1  
-**Effort:** S  
+**Sprint Target:** Phase 2
 
 ---
 
-### US-12: Store Credit Bonus Incentive
+### US-05: Refund to Original Payment Method
 
-**As a** customer choosing between refund methods,  
-**I want to** see if a store credit bonus is offered (e.g., 10% extra as store credit),  
-**So that** I can make an informed choice that may benefit me financially.
+**As a** customer,  
+**I want** my refund to be returned to the original payment method used for the purchase,  
+**So that** the money goes back to the correct account without additional steps.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I submit a refund request for a transaction paid with a credit card
+When the refund is approved
+Then the refund is processed back to the same credit card (last 4 digits displayed for confirmation)
+  And I see the estimated processing time for credit card refunds (5–10 business days)
+
+Given I submit a refund request for a transaction paid with a gift card
+When the refund is approved
+Then the refund amount is credited back to the gift card balance
+  And the updated balance is reflected immediately in my account
+
+Given I submit a refund request for a transaction paid with multiple payment methods (split tender)
+When the refund is approved
+Then the system proportionally distributes the refund across the original payment methods
+  And I see a breakdown of how much is returned to each method
+
+Given the original payment method is no longer valid (e.g., expired card, closed account)
+When the refund is approved
+Then the system notifies me that the original method is unavailable
+  And I am offered alternative refund options (e.g., gift card credit, updated card on file)
+  And the selection requires my explicit confirmation before processing
+```
+
+**Priority:** P0  
+**Sprint Target:** Phase 1
+
+---
+
+### US-06: Refund History
+
+**As a** customer,  
+**I want to** view a complete history of all my past refund requests,  
+**So that** I can reference previous refunds and have documentation for my records.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I am an authenticated customer
+When I navigate to "Refund History" in the portal
+Then I see a chronological list of all refund requests (last 24 months)
+  And each entry shows: date, original transaction reference, amount, status, and payment method
+  And I can filter by status (Completed, Denied, In Progress)
+  And I can filter by date range
+  And I can search by order number or transaction ID
+
+Given I click on a completed refund in my history
+When the detail view loads
+Then I see the full timeline from request to completion
+  And I see the refund method and confirmation number
+  And I can download a refund receipt as PDF
+```
+
+**Priority:** P1  
+**Sprint Target:** Phase 2
+
+---
+
+### US-07: Notifications
+
+**As a** customer,  
+**I want to** receive notifications when my refund status changes,  
+**So that** I stay informed without having to repeatedly check the portal.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I have submitted a refund request
+When my refund status changes (e.g., Approved, Processing, Completed, Denied)
+Then I receive an email notification with the updated status and relevant details
+  And I receive an in-app notification (if logged into the portal)
+  And the notification includes a deep link to the refund detail page
+
+Given I have opted into SMS notifications in my communication preferences
+When my refund status changes
+Then I also receive an SMS notification with a brief status update and link
+
+Given my refund has been denied
+When I receive the denial notification
+Then the notification includes the specific reason for denial
+  And it provides instructions on how to appeal or contact support
+
+Given my refund has been completed
+When I receive the completion notification
+Then the notification includes the refund amount, destination, and expected arrival date
+```
+
+**Priority:** P1  
+**Sprint Target:** Phase 2
+
+---
+
+### US-08: Admin Override Capabilities
+
+**As a** customer service manager,  
+**I want to** override automated refund decisions in the portal,  
+**So that** I can handle edge cases and exceptions that fall outside standard policy.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I am an authenticated admin user with override permissions
+When I access the admin dashboard
+Then I see a queue of refund requests flagged for manual review
+  And I see requests that customers have escalated after denial
+  And each entry shows customer details, transaction history, and the automated decision rationale
+
+Given I select a denied refund request
+When I choose to override the decision
+Then I must provide a justification reason (from a predefined list or free text)
+  And I can set the approved refund amount (full or custom)
+  And I can select the refund destination
+  And the override is logged with my user ID, timestamp, and justification
+
+Given I approve an override
+When the override is saved
+Then the customer is notified of the approval
+  And the refund is queued for processing
+  And the action appears in the audit trail
+
+Given I am a standard CS agent without override permissions
+When I attempt to access the override function
+Then I am denied access with a message to escalate to a manager
+```
+
+**Priority:** P1  
+**Sprint Target:** Phase 2
+
+---
+
+### US-09: Refund Reason Selection and Feedback
+
+**As a** customer,  
+**I want to** provide a reason for my refund request,  
+**So that** Disney understands my experience and can improve their offerings.
+
+**Acceptance Criteria:**
+
+```gherkin
+Given I am submitting a refund request
+When I reach the reason selection step
+Then I see a list of predefined refund reasons (e.g., "Changed plans," "Product not as described," "Duplicate charge," "Service issue," "Other")
+  And I can optionally provide additional comments (free text, max 500 characters)
+  And a reason selection is required to proceed with submission
+
+Given I select "Other" as my reason
+When I proceed
+Then a free text field becomes required (minimum 10 characters)
+  And the system does not reject the request based on the reason alone
+```
 
 **Priority:** P2  
-**Effort:** S  
+**Sprint Target:** Phase 2
 
 ---
 
----
+### US-10: Cancel a Pending Refund Request
 
-## 3. Acceptance Criteria
+**As a** customer,  
+**I want to** cancel a refund request that has not yet been processed,  
+**So that** I can change my mind before the refund is finalized.
 
-### AC for US-01: Customer Initiating a Refund
-
-```gherkin
-Given a logged-in customer with at least one delivered order within the return window
-When they navigate to "My Orders" and select "Request Refund" on an eligible order
-Then the system displays all refundable items in that order with item details (name, image, price, quantity)
-
-Given the customer has selected one or more items and a refund reason
-When they submit the refund request
-Then the system creates a refund case, displays a confirmation with case ID, and sends a confirmation notification
-
-Given the customer has no eligible orders
-When they navigate to "My Orders"
-Then no "Request Refund" option is displayed, and a message explains eligibility criteria
-```
-
-### AC for US-02: Customer Tracking Refund Status
+**Acceptance Criteria:**
 
 ```gherkin
-Given a customer has submitted one or more refund requests
-When they navigate to "My Refunds" or "Refund Status"
-Then a list of all refund requests is displayed with: case ID, date submitted, items, current status, and estimated completion date
+Given I have a refund request in "Submitted" or "In Review" status
+When I view the refund detail page
+Then I see a "Cancel Request" button
+  And clicking it prompts a confirmation dialog
 
-Given a refund status changes (e.g., approved, processing, completed)
-When the status update occurs in the backend
-Then the customer-facing status updates within 60 seconds and a notification is triggered per preferences
+Given I confirm the cancellation
+When the cancellation is processed
+Then the refund request status changes to "Cancelled"
+  And no refund is processed
+  And I receive a confirmation notification of the cancellation
 
-Given a refund is completed
-When the customer views the refund details
-Then the disbursement method, amount, and transaction reference are displayed
+Given my refund request is in "Approved" or "Processing" status
+When I view the refund detail page
+Then the "Cancel Request" button is not available
+  And I see a message: "This refund can no longer be cancelled. Please contact support for assistance."
 ```
 
-### AC for US-03: Customer Selecting Refund Method
-
-```gherkin
-Given a customer is on the refund submission flow
-When they reach the "Refund Method" step
-Then they are presented with all available options: original payment method, store credit, and exchange (if applicable)
-
-Given the original payment method is expired or removed
-When the customer selects "Original Payment Method"
-Then the system displays a message requesting updated payment information or suggests store credit
-
-Given the customer selects store credit
-When a store credit incentive bonus is active
-Then the bonus amount is clearly displayed before confirmation (e.g., "$50 refund + $5 bonus = $55 store credit")
-```
-
-### AC for US-04: Partial Refund for Multi-Item Orders
-
-```gherkin
-Given a customer has an order with multiple items
-When they initiate a refund
-Then each item is individually selectable with its own checkbox and quantity selector
-
-Given the customer selects 2 of 5 items for refund
-When they proceed to the summary step
-Then only the selected items and their prorated costs (including tax and shipping if applicable) are shown
-
-Given a partial refund is approved
-When the refund is processed
-Then only the refunded items' amounts are disbursed and the remaining order stays active
-```
-
-### AC for US-05: Ineligible Refund Handling
-
-```gherkin
-Given a customer's order is past the 30-day return window
-When they attempt to request a refund
-Then the system displays: "This order is not eligible for self-service refund. Return window closed on [date]." with a link to contact support
-
-Given an item is marked as "Final Sale"
-When the customer views refund options for that item
-Then the item is grayed out with a tooltip: "Final sale items are not eligible for refund"
-
-Given a digital item has been downloaded/consumed
-When the customer tries to refund it
-Then the system displays the digital goods refund policy and offers to connect them with support
-```
-
-### AC for US-06: Admin/Support Override Capabilities
-
-```gherkin
-Given a support agent is reviewing a denied refund case
-When they select "Override" and provide a justification reason
-Then the refund is re-processed, the override is logged with agent ID, timestamp, and reason
-
-Given a manager reviews override activity
-When they access the override audit log
-Then all overrides are listed with: agent, customer, case ID, original denial reason, override reason, and amount
-
-Given an override exceeds the agent's authority limit ($200)
-When the agent attempts the override
-Then the system requires manager approval before processing
-```
-
-### AC for US-07: Fraud Detection Triggers
-
-```gherkin
-Given a customer submits more than 3 refund requests within a 30-day period
-When the 4th request is submitted
-Then the request is placed in "Pending Review" status and flagged for fraud team review
-
-Given a refund request exceeds $500 from an account less than 60 days old
-When the request is submitted
-Then the system holds the request, notifies the fraud team, and informs the customer of additional verification requirements
-
-Given the fraud team clears a flagged request
-When they mark it as "Verified"
-Then normal refund processing resumes and the customer is notified of approval
-```
-
-### AC for US-08: Notification Preferences
-
-```gherkin
-Given a customer is in their account notification settings
-When they select preferred channels for "Refund Updates"
-Then they can toggle: email, SMS, push notification, and in-app messages independently
-
-Given a customer has selected SMS and email notifications
-When their refund status changes
-Then both an SMS and email are sent within 5 minutes of the status change
-
-Given a customer has disabled all refund notifications
-When their refund status changes
-Then no outbound notification is sent, but the status is still visible in-app
-```
-
-### AC for US-09: Multi-Item Order Refund (Bulk Selection)
-
-```gherkin
-Given a customer has an order with 5+ items
-When they initiate a refund
-Then a "Select All" checkbox is available at the top of the item list
-
-Given the customer uses "Select All" then deselects 1 item
-When they view the refund summary
-Then only the selected items (total minus 1) are included in the request
-
-Given the customer selects multiple items with different refund reasons
-When they proceed
-Then they can assign a reason per item or apply one reason to all selected items
-```
-
-### AC for US-10: Return Shipping Label Generation
-
-```gherkin
-Given a refund is approved for a physical item requiring return
-When the customer views the refund confirmation
-Then a "Generate Return Label" button is prominently displayed
-
-Given the customer clicks "Generate Return Label"
-When the system processes the request
-Then a prepaid shipping label (PDF) is generated within 10 seconds and available for download and email delivery
-
-Given the return label has been generated
-When the customer views the refund detail page
-Then the label is available for re-download, and a QR code version is displayed for mobile drop-off
-```
-
-### AC for US-11: Refund Reason Categorization
-
-```gherkin
-Given a customer is selecting a refund reason
-When the reason dropdown is displayed
-Then at least the following options are available: "Damaged/Defective," "Wrong item received," "Item not as described," "Changed my mind," "Arrived too late," "Other"
-
-Given the customer selects "Other"
-When they proceed
-Then a free-text field (max 500 characters) is required before submission
-```
-
-### AC for US-12: Store Credit Bonus Incentive
-
-```gherkin
-Given a store credit bonus promotion is active (e.g., 10% bonus)
-When the customer views refund method options
-Then the store credit option displays the bonus value (e.g., "Store Credit: $55.00 (includes $5.00 bonus)")
-
-Given no bonus promotion is active
-When the customer views refund method options
-Then store credit shows the base refund amount only with no bonus messaging
-```
+**Priority:** P2  
+**Sprint Target:** Phase 3
 
 ---
 
-## 4. Non-Functional Requirements
+### US-11: Accessibility and Multi-Language Support
 
-### 4.1 Performance
+**As a** customer with accessibility needs or language preferences,  
+**I want** the refund portal to be fully accessible and available in my preferred language,  
+**So that** I can complete the refund process independently.
 
+**Acceptance Criteria:**
+
+```gherkin
+Given I am using a screen reader
+When I navigate the refund portal
+Then all interactive elements have appropriate ARIA labels
+  And focus order is logical and consistent
+  And status changes are announced to assistive technology
+
+Given I have my language preference set to Spanish
+When I access the refund portal
+Then all UI text, labels, and system messages display in Spanish
+  And email notifications are sent in Spanish
+  And refund policy explanations are localized
+```
+
+**Priority:** P1  
+**Sprint Target:** Phase 2
+
+---
+
+## 6. Functional Requirements
+
+### FR-01: Authentication & Authorization
+- Users must authenticate via existing Disney account (MyDisneyExperience / Disney Account SSO).
+- Role-based access: Customer, CS Agent, CS Manager/Admin.
+- Session timeout after 15 minutes of inactivity.
+
+### FR-02: Transaction Retrieval
+- Portal retrieves transaction history from Payment Service (BAPP0012692) via REST API.
+- Displays transactions from the last 24 months.
+- Supports filtering and searching by date, amount, order number, and payment method.
+
+### FR-03: Eligibility Engine
+- Real-time evaluation of refund eligibility based on configurable business rules.
+- Rules include: time window (30/60/90 day policies), transaction type, product category, prior refund history, and fraud indicators.
+- Returns eligibility status with human-readable explanation.
+
+### FR-04: Refund Processing
+- Submits approved refunds to BAPP0012692 for processing.
+- Supports full and partial refund amounts.
+- Routes refunds to original payment method by default.
+- Handles split-tender transactions proportionally.
+- Provides fallback options when original payment method is invalid.
+
+### FR-05: Status Management
+- Refund lifecycle states: Submitted → In Review → Approved → Processing → Completed (or Denied/Cancelled at applicable stages).
+- Real-time status updates via event-driven architecture.
+- Status changes trigger notification dispatches.
+
+### FR-06: Notification Service
+- Email notifications for all status changes (mandatory).
+- In-app notifications via portal UI.
+- SMS notifications (opt-in via communication preferences).
+- Push notifications for mobile app (future phase).
+
+### FR-07: Admin Dashboard
+- Queue management for manual review items.
+- Override capability with audit logging.
+- Reporting on refund volume, self-service rates, and processing times.
+- Ability to configure eligibility rules (phase 3).
+
+### FR-08: Audit & Compliance
+- All refund actions logged with user ID, timestamp, and action detail.
+- Override justifications recorded and reportable.
+- Data retention per Disney data governance policies.
+- PCI-DSS compliance for all payment data handling.
+
+---
+
+## 7. Non-Functional Requirements
+
+### Performance
 | Requirement | Target |
 |-------------|--------|
-| Page load time (refund portal) | < 2 seconds (P95) |
-| Refund submission API response | < 3 seconds (P99) |
-| Label generation time | < 10 seconds |
-| Status update propagation | < 60 seconds |
+| Page load time | ≤2 seconds (P95) |
+| Eligibility check response time | ≤1 second (P95) |
+| Refund submission acknowledgment | ≤3 seconds (P95) |
+| Transaction history retrieval | ≤3 seconds for up to 100 transactions |
 | Concurrent users supported | 10,000+ simultaneous sessions |
-| System uptime | 99.9% availability |
+| System availability | 99.9% uptime (excluding planned maintenance) |
 
-### 4.2 Security
+### Security
+- All data in transit encrypted via TLS 1.3.
+- All payment data at rest encrypted (AES-256).
+- PCI-DSS Level 1 compliance maintained.
+- No full card numbers displayed (masked with last 4 digits only).
+- CSRF protection on all form submissions.
+- Rate limiting on API endpoints (100 requests/minute per user).
+- Fraud detection integration for anomalous refund patterns.
+- Admin actions require MFA.
 
-- All refund transactions require authenticated sessions (OAuth 2.0 / OIDC).
-- Sensitive payment data is never displayed in full; masked card numbers only (PCI-DSS compliance).
-- All API calls use TLS 1.3 encryption in transit.
-- Refund data at rest encrypted with AES-256.
-- Rate limiting: Max 10 refund submissions per user per hour; max 50 API calls per minute per session.
-- CSRF protection on all state-changing operations.
-- Audit logging for all refund actions (create, approve, deny, override) with immutable records.
-- Session timeout after 15 minutes of inactivity with re-authentication required for submission.
+### Accessibility
+- WCAG 2.1 AA compliance minimum.
+- Screen reader compatible (ARIA labels, semantic HTML).
+- Keyboard-navigable (all interactions achievable without a mouse).
+- Color contrast ratios meeting AA standards (4.5:1 for normal text).
+- Support for browser zoom up to 200% without loss of functionality.
+- Focus indicators visible on all interactive elements.
 
-### 4.3 Scalability
+### Scalability
+- Horizontal scaling for stateless application tier.
+- Database read replicas for transaction history queries.
+- CDN delivery for static assets.
+- Queue-based processing for refund submissions (handles burst traffic).
+- Designed to support 5x current transaction volume without re-architecture.
 
-- Horizontal scaling for refund processing workers (target: handle 10x baseline during peak events like post-holiday returns).
-- Database read replicas for status queries.
-- Async processing for label generation and payment provider communication.
-- Queue-based architecture for refund processing to handle burst traffic.
-
-### 4.4 Accessibility (WCAG 2.1 AA)
-
-- All interactive elements keyboard-navigable.
-- Screen reader compatible with ARIA labels on all form controls, status indicators, and dynamic content.
-- Color contrast ratio minimum 4.5:1 for text, 3:1 for UI components.
-- Focus management during multi-step flows.
-- Error messages associated programmatically with form fields.
-- Support for 200% text zoom without loss of functionality.
-- Motion/animation respects `prefers-reduced-motion`.
-
-### 4.5 Internationalization
-
-- Support for all currently supported locales (EN, ES, FR, DE, JA, ZH).
-- Currency formatting per locale.
-- RTL layout support for future Arabic locale expansion.
+### Reliability
+- Circuit breaker pattern for downstream service calls (BAPP0012692).
+- Graceful degradation if eligibility engine is unavailable (queue for async processing).
+- Retry logic with exponential backoff for transient failures.
+- Automated alerting for error rates exceeding 1%.
 
 ---
 
-## 5. Technical Considerations
+## 8. Technical Constraints & Dependencies
 
-### 5.1 System Architecture
+### Dependencies
+| Dependency | Type | Owner | Risk Level |
+|-----------|------|-------|------------|
+| Payment Service (BAPP0012692) | API Integration | Disney Payments | High — core dependency for transaction data and refund processing |
+| Disney Account SSO | Authentication | Identity Platform | Medium — required for user authentication |
+| Notification Service | Email/SMS Dispatch | Platform Services | Medium — required for status notifications |
+| Data Warehouse | Analytics/Reporting | Data Engineering | Low — reporting and analytics |
+| Fraud Detection Service | Risk Assessment | Trust & Safety | Medium — anomalous refund pattern detection |
 
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│  Frontend   │────▶│  API Gateway │────▶│  Refund Service  │
-│  (React)    │     │  (rate limit,│     │  (business logic,│
-│             │     │   auth)      │     │   eligibility)   │
-└─────────────┘     └──────────────┘     └────────┬────────┘
-                                                   │
-                    ┌──────────────────────────────┼──────────────────┐
-                    │                              │                  │
-              ┌─────▼──────┐  ┌───────────────┐  ┌▼──────────────┐  ┌▼─────────────┐
-              │  Payment   │  │  Shipping/     │  │  Fraud        │  │ Notification │
-              │  Service   │  │  Label Service │  │  Detection    │  │ Service      │
-              └────────────┘  └───────────────┘  └───────────────┘  └──────────────┘
-```
-
-### 5.2 Key API Contracts
-
-#### POST /api/v1/refunds
-
-Request:
-```json
-{
-  "orderId": "ORD-12345678",
-  "items": [
-    {
-      "itemId": "ITEM-001",
-      "quantity": 1,
-      "reason": "damaged",
-      "details": "Screen cracked on arrival"
-    }
-  ],
-  "refundMethod": "original_payment",
-  "notificationPreferences": ["email", "push"]
-}
-```
-
-Response (201 Created):
-```json
-{
-  "refundId": "REF-98765432",
-  "status": "submitted",
-  "estimatedCompletionDate": "2026-06-25",
-  "items": [...],
-  "amount": {
-    "subtotal": 49.99,
-    "tax": 4.25,
-    "shipping": 0.00,
-    "total": 54.24
-  },
-  "requiresReturn": true,
-  "createdAt": "2026-06-20T23:00:00Z"
-}
-```
-
-#### GET /api/v1/refunds/{refundId}
-
-Response (200 OK):
-```json
-{
-  "refundId": "REF-98765432",
-  "status": "approved",
-  "statusHistory": [
-    {"status": "submitted", "timestamp": "2026-06-20T23:00:00Z"},
-    {"status": "approved", "timestamp": "2026-06-20T23:05:00Z"}
-  ],
-  "refundMethod": "original_payment",
-  "amount": {"total": 54.24},
-  "returnLabel": {
-    "url": "https://labels.example.com/REF-98765432.pdf",
-    "qrCode": "https://labels.example.com/REF-98765432/qr",
-    "carrier": "UPS",
-    "trackingNumber": "1Z999AA10123456784"
-  },
-  "estimatedCompletionDate": "2026-06-25"
-}
-```
-
-#### GET /api/v1/orders/{orderId}/refund-eligibility
-
-Response (200 OK):
-```json
-{
-  "orderId": "ORD-12345678",
-  "eligible": true,
-  "returnWindowCloses": "2026-07-15",
-  "items": [
-    {"itemId": "ITEM-001", "eligible": true, "reason": null},
-    {"itemId": "ITEM-002", "eligible": false, "reason": "final_sale"}
-  ]
-}
-```
-
-#### POST /api/v1/refunds/{refundId}/label
-
-Response (201 Created):
-```json
-{
-  "labelUrl": "https://labels.example.com/REF-98765432.pdf",
-  "qrCodeUrl": "https://labels.example.com/REF-98765432/qr",
-  "carrier": "UPS",
-  "trackingNumber": "1Z999AA10123456784",
-  "expiresAt": "2026-07-05T00:00:00Z"
-}
-```
-
-### 5.3 Data Flow
-
-1. **Eligibility Check** → Order Service validates return window, item type, and order status.
-2. **Fraud Scoring** → Fraud Detection service scores the request based on account history, request patterns, and amount.
-3. **Auto-Approval** → Requests below $100 with no fraud flags and a reason of "damaged/defective" are auto-approved.
-4. **Payment Processing** → Approved refunds are dispatched to the Payment Service for disbursement.
-5. **Label Generation** → For physical returns, the Shipping Service generates a prepaid label via carrier API.
-6. **Notification** → Status changes trigger events consumed by the Notification Service for multi-channel delivery.
-
-### 5.4 Event-Driven Architecture
-
-Key domain events:
-- `refund.requested`
-- `refund.approved`
-- `refund.denied`
-- `refund.fraud_flagged`
-- `refund.processing`
-- `refund.completed`
-- `refund.label_generated`
-- `refund.override_applied`
+### Technical Constraints
+- Must use existing Disney Payments API contracts (no breaking changes to BAPP0012692).
+- Payment card data must never be stored in the portal database (tokenized references only).
+- Must deploy within Disney's existing cloud infrastructure (AWS).
+- Must integrate with existing CI/CD pipelines and monitoring (Datadog, Splunk).
+- Mobile-responsive design (not a native mobile app in initial release).
+- API rate limits imposed by BAPP0012692 (500 req/sec) must not be exceeded.
+- Must comply with Disney's Design System (DLS) for UI components.
 
 ---
 
-## 6. UI/UX Requirements
+## 9. Out of Scope
 
-### 6.1 Key Screens
+The following items are explicitly excluded from this initiative:
 
-| Screen | Description |
-|--------|-------------|
-| **Order History** | Enhanced with "Request Refund" CTA on eligible orders |
-| **Item Selection** | Checklist of order items with select all, quantity pickers, and eligibility indicators |
-| **Reason Selection** | Dropdown with optional detail text field |
-| **Refund Method** | Card-style selector showing options with amounts (including any bonus) |
-| **Review & Submit** | Summary of selections with edit capability before final submission |
-| **Confirmation** | Case ID, estimated timeline, return label (if applicable), and next steps |
-| **Refund Status Dashboard** | List of all refund requests with status badges and detail drill-down |
-| **Return Label** | Downloadable PDF, QR code, carrier info, and drop-off instructions |
-
-### 6.2 User Flow
-
-```
-Order History → Select Order → Select Items → Choose Reason →
-Select Refund Method → Review Summary → Submit →
-Confirmation (+ Label if needed) → Track Status
-```
-
-### 6.3 Design Principles
-
-- **Progressive disclosure:** Only show complexity as needed (e.g., partial quantity selection appears only for multi-quantity items).
-- **Error prevention:** Grayed-out ineligible items with clear explanations instead of allowing selection and rejection.
-- **Mobile-first:** All flows optimized for mobile screens; QR code label for in-store drop-off.
-- **Status transparency:** Clear visual progress indicators using step-based and status-badge patterns.
-
-### 6.4 Accessibility Standards (WCAG 2.1 AA)
-
-- Semantic HTML structure (`<form>`, `<fieldset>`, `<legend>`, `<label>`).
-- ARIA live regions for dynamic status updates.
-- Skip navigation links.
-- Logical tab order through multi-step form.
-- Visible focus indicators (min 2px, high contrast).
-- Touch targets minimum 44x44px on mobile.
-- Form validation errors announced to screen readers immediately.
-- Alternative text for all images, icons, and status indicators.
+1. **Native mobile application** — Portal is web-responsive only; native apps are a future consideration.
+2. **Automated refunds without customer initiation** — System will not proactively issue refunds.
+3. **Refund policy changes** — This project implements existing policies digitally; policy revisions are a separate workstream.
+4. **Chargebacks / dispute resolution** — Bank-initiated chargebacks remain a separate process.
+5. **Third-party marketplace refunds** — Only first-party Disney transactions are in scope.
+6. **Real-time chat integration** — Live agent chat within the portal is deferred to a future phase.
+7. **Loyalty points refunds** — Disney Rewards point reversals are handled by the Loyalty team.
+8. **International payment method support beyond US market** — Initial launch is US-only; international expansion in Phase 4+.
+9. **Refund method changes post-approval** — Once a refund is approved and in processing, customers cannot change the destination.
+10. **Bulk/batch refund processing for customers** — Admin bulk processing is out of scope for initial release.
 
 ---
 
-## 7. Dependencies
+## 10. Assumptions & Risks
 
-### 7.1 Internal Systems
+### Assumptions
+1. BAPP0012692 APIs can support the expected increase in programmatic refund submissions without significant modification.
+2. Existing refund policies are documented and can be translated into configurable business rules.
+3. Disney Account SSO will provide the necessary user identity context for transaction matching.
+4. Customers will have access to the email associated with their Disney account for notifications.
+5. Current transaction data in BAPP0012692 contains sufficient detail for line-item eligibility evaluation.
+6. Customer service leadership supports the shift to self-service and will assist with change management.
 
-| System | Dependency Type | Description |
-|--------|----------------|-------------|
-| Order Management Service | Read | Order details, item data, delivery status |
-| Payment Service | Read/Write | Original payment method data, refund disbursement |
-| Customer Account Service | Read | Authentication, profile, notification preferences |
-| Inventory Service | Write | Restock notifications upon return receipt |
-| Fraud Detection Platform | Read | Risk scoring, account behavior patterns |
-| Notification Service | Write | Email, SMS, push delivery |
-| Analytics Platform | Write | Event tracking, funnel metrics |
-| Admin/Agent Portal | Read/Write | Override capabilities, case management |
+### Risks
 
-### 7.2 Third-Party Services
-
-| Service | Purpose | SLA Required |
-|---------|---------|--------------|
-| Payment Processor (Stripe/Adyen) | Refund disbursement to original payment | 99.95% uptime |
-| Shipping Carrier APIs (UPS, FedEx, USPS) | Return label generation and tracking | 99.9% uptime |
-| SMS Provider (Twilio) | SMS notifications | 99.95% uptime |
-| Email Delivery (SendGrid) | Transactional email | 99.9% uptime |
-| Fraud/Risk Vendor (Sift/Riskified) | Behavioral fraud scoring | 99.9% uptime |
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|-----------|
+| BAPP0012692 API performance degradation under increased load | Medium | High | Load testing prior to launch; circuit breakers; phased rollout |
+| Fraud exploitation via automated refund requests | Medium | High | Rate limiting; fraud detection integration; anomalous pattern alerts; dollar thresholds for auto-approval |
+| Low customer adoption of self-service portal | Low | Medium | In-call IVR deflection; email campaigns; agent-assisted onboarding during transition |
+| Eligibility rules not covering all edge cases | High | Medium | Manual review queue for edge cases; iterative rule refinement; admin override capability |
+| Downstream payment processor delays | Medium | Medium | Set accurate customer expectations on timelines; provide tracking updates; SLA monitoring |
+| Accessibility compliance gaps discovered post-launch | Low | High | Accessibility audit during QA; screen reader testing; VPAT documentation |
+| Regulatory/compliance issues with automated refund processing | Low | High | Legal review during design phase; audit trail compliance; PCI-DSS assessment |
 
 ---
 
-## 8. Release Strategy
+## 11. Release Strategy (Phased Approach)
 
-### Phase 1: Foundation (Weeks 1–6)
+### Phase 1: Foundation (Months 1–3)
+**Objective:** Core self-service refund flow for simple, full-refund transactions.
 
-- Core refund flow: single-item, auto-approval for low-risk requests
-- Original payment method refund only
-- Email notifications only
-- Basic eligibility engine (return window, order status)
-- **Rollout:** 5% of customers (internal beta + loyal customer segment)
+**Scope:**
+- Customer authentication and transaction retrieval
+- Eligibility validation (basic rules: time window, transaction type)
+- Full refund request submission
+- Refund to original payment method (single tender only)
+- Basic status tracking (Submitted, Processing, Completed, Denied)
+- Email notifications for status changes
+- Internal soft launch with Disney Cast Members (dogfooding)
 
-### Phase 2: Expanded Capabilities (Weeks 7–12)
-
-- Multi-item and partial refund support
-- Store credit option with bonus incentive
-- Return shipping label generation
-- Fraud detection integration (basic rules)
-- SMS and push notifications
-- **Rollout:** 25% of customers
-
-### Phase 3: Full Feature Set (Weeks 13–18)
-
-- Admin override portal for support agents
-- Advanced fraud detection (ML-based scoring)
-- Exchange option
-- Notification preference management
-- Bulk selection for large orders
-- **Rollout:** 100% of customers
-
-### Phase 4: Optimization (Weeks 19–24)
-
-- A/B testing refund method presentation (store credit uptake optimization)
-- Predictive eligibility (proactive refund offers for known issues)
-- Self-service returns tracking (carrier integration)
-- International expansion (multi-currency, localized policies)
-
-### Rollback Plan
-
-- Feature flags control all portal access at user-segment level.
-- Instant kill-switch available to revert users to agent-assisted flow.
-- Database migrations are backward-compatible; no destructive schema changes.
+**Success Gate:** ≥90% of test users complete refund flow without assistance; system handles 1,000 concurrent sessions.
 
 ---
 
-## 9. Metrics & Success Criteria
+### Phase 2: Enhanced Experience (Months 4–6)
+**Objective:** Partial refunds, split tender, admin tools, and richer notifications.
 
-### 9.1 Primary KPIs
+**Scope:**
+- Partial refund (line-item selection)
+- Split-tender refund support
+- Refund history (24 months) with search and filter
+- SMS and in-app notifications
+- Admin dashboard with override capability
+- Manual review queue and escalation workflow
+- Multi-language support (English, Spanish)
+- Accessibility audit and remediation
 
-| Metric | Baseline | Target (6 months) | Measurement |
-|--------|----------|-------------------|-------------|
-| Self-service adoption rate | 0% | 70% of eligible refunds | % refunds via portal vs. agent |
-| Refund-related support contact volume | 42,000/mo | 16,800/mo (−60%) | Contact center tickets tagged "refund" |
-| Average resolution time | 3–5 days | < 24 hours | Time from request to disbursement |
-| Customer satisfaction (refund NPS) | 22 | 50+ | Post-refund survey |
-| Cost per refund | $8–$12 | < $1.50 | Total refund ops cost / volume |
+**Success Gate:** Self-service completion rate ≥70%; CS call volume reduction ≥30%.
 
-### 9.2 Secondary KPIs
+---
 
-| Metric | Target |
-|--------|--------|
-| Refund portal task completion rate | > 90% |
-| Drop-off rate at each funnel step | < 10% per step |
-| Store credit selection rate | > 30% (when bonus active) |
-| Fraud detection false positive rate | < 5% |
-| Return label generation success rate | > 99% |
-| Average time-on-task (full refund flow) | < 3 minutes |
-| Accessibility audit score | 100% WCAG 2.1 AA compliance |
-| System uptime | 99.9% |
+### Phase 3: Optimization & Scale (Months 7–9)
+**Objective:** Advanced features, analytics, and operational excellence.
 
-### 9.3 Guardrail Metrics (Monitor for Regression)
+**Scope:**
+- Cancellation of pending requests
+- Advanced eligibility rules (customer lifetime value, purchase history, fraud scoring)
+- Configurable rules engine (admin-managed)
+- Detailed analytics and reporting dashboard
+- Performance optimization based on production metrics
+- Customer feedback integration (post-refund survey)
+- Invalid payment method fallback flows
+- PDF receipt generation
 
-| Metric | Threshold |
-|--------|-----------|
-| Refund fraud rate | Must not increase > 0.5% from baseline |
-| Customer escalation rate (portal → agent) | < 15% |
-| Refund amount accuracy | 100% (no over/under-payments) |
-| Return rate increase | Must not increase > 2% (indicating moral hazard) |
+**Success Gate:** Self-service completion rate ≥80%; CS call volume reduction ≥60%; CSAT ≥3.8/5.
+
+---
+
+### Phase 4: Future Expansion (Months 10–12+)
+**Objective:** Scale to additional markets and channels.
+
+**Scope (Planned):**
+- International market expansion (EU, APAC)
+- Additional payment method support (region-specific)
+- Native mobile app integration
+- Live chat escalation within portal
+- AI-powered refund recommendation engine
+- Proactive refund suggestions (service disruptions)
+- Push notifications (mobile)
 
 ---
 
@@ -715,22 +660,27 @@ Confirmation (+ Label if needed) → Track Status
 
 | Term | Definition |
 |------|-----------|
-| Return Window | The number of days after delivery during which a refund is eligible (default: 30 days) |
-| Auto-Approval | Refund requests that meet all criteria and are approved without human review |
-| Override | Agent action to approve a system-denied refund with documented justification |
-| Fraud Flag | A system-generated hold on a request due to risk indicators |
-| Store Credit Bonus | An incentive offering additional value when a customer chooses store credit over cash refund |
+| BAPP0012692 | Disney Payment Service business application identifier |
+| Split Tender | A transaction paid using multiple payment methods |
+| Eligibility Engine | Rules-based service that determines if a transaction qualifies for refund |
+| Override | Manual approval of a refund that was automatically denied |
+| AHT | Average Handle Time — average duration of a customer service interaction |
+| CSAT | Customer Satisfaction Score |
+| PCI-DSS | Payment Card Industry Data Security Standard |
 
 ---
 
-## Appendix B: Open Questions
+## Appendix B: Approval & Sign-Off
 
-1. Should digital goods (downloads, streaming purchases) be included in Phase 1 or deferred?
-2. What is the maximum override authority limit per agent tier?
-3. Should the store credit bonus percentage be configurable by product category?
-4. Do we require photo upload for damage claims, and if so, at what threshold?
-5. What is the SLA for fraud team review of flagged requests?
+| Role | Name | Date | Signature |
+|------|------|------|-----------|
+| Product Owner | | | |
+| Engineering Lead | | | |
+| Design Lead | | | |
+| Security/Compliance | | | |
+| Customer Service Lead | | | |
+| Finance/Business Ops | | | |
 
 ---
 
-*Document prepared for stakeholder review. Please direct feedback to the Product Team.*
+*End of Document*

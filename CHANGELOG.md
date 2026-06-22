@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.132] — 2026-06-22
+
+### Changed
+- **Refresh orchestration test outputs** — regenerated architecture_spec_agent and prd_generator_agent evaluation results
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.131] — 2026-06-22
 
 ### Changed
