@@ -1,19 +1,9 @@
-sequenceDiagram
-    participant UI as Config Studio UI
-    participant GW as API Gateway
-    participant CB as Circuit Breaker
-    participant VS as Validation Service
-    participant CS as Config Services Java
-
-    UI->>GW: POST /v1/validate/config<br/>Authorization: Bearer token<br/>X-Correlation-Id: abc-123
-    GW->>GW: Validate token, attach correlation ID
-    GW->>CB: Route to validation-service
-    CB->>VS: POST /validate/config (circuit CLOSED)
-    VS->>CS: GET /configs/:clientId<br/>X-Correlation-Id: abc-123
-    CS-->>VS: 200 OK config data
-    VS->>VS: Evaluate validation rules
-    VS-->>CB: 200 OK validation result
-    CB-->>GW: Forward response
-    GW-->>UI: 200 OK valid true rules [...]
-
-    Note over UI,CS: Total target latency p99 less than 200ms
+graph TB
+    UI_C["Angular UI Client"]
+    MONO["wdpr-payment-controls-api (Monolith BFF)<br/>Validation + Refund + Orchestration + Export"]
+    CS_C["wdpr-config-services (Java Backend)"]
+    DB_C["DynamoDB / MariaDB / S3"]
+    
+    UI_C -->|REST| MONO
+    MONO -->|REST| CS_C
+    CS_C --> DB_C
