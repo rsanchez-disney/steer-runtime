@@ -12,9 +12,9 @@
     "@jira/*"
   ],
   "resources": [
-    "file://.kiro/context/team_context.md",
-    "file://.kiro/context/testing_conventions.md",
-    "file://.kiro/context/memory-bank/learnings.md"
+    "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
+    "file://.kiro/steer-runtime/workspaces/pos-team/context/testing_conventions.md",
+    "file://.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md"
   ],
   "hooks": {
     "preToolUse": [

@@ -1,5 +1,6 @@
 import { JiraApiClient } from "../utils/jiraApi.js";
 import { saveTicketData } from "../utils/fileUtils.js";
+import { adfToText } from "../utils/adfToText.js";
 
 export const jiraAssignIssueSchema = {
     name: "jira_assign_issue",
@@ -45,7 +46,7 @@ export async function handleJiraAssignIssue(args: any): Promise<any> {
 **Priority:** ${ticket.fields.priority?.name || "Unknown"}
 
 **Description:**
-${ticket.fields.description || "No description available"}`;
+${adfToText(ticket.fields.description) || "No description available"}`;
 
         const savedPath = await saveTicketData(
             outputDir,

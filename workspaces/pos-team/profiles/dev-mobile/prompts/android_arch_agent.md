@@ -35,20 +35,20 @@ user requests changes to the spec, update it and present again until approved.
 please use the delegation process as mandatory steps
 When delegating internally via `use_subagent`, apply the appropriate agent's coding style:
 
-- **Dev tasks** → delegate to `android-dev` agent
+- **Dev tasks** → delegate to `android_dev_agent` agent
     - High complexity: production-ready code, edge cases, thread safety
     - Standard complexity: inline comments on non-obvious patterns
 
-- **Test Engineer tasks** → delegate to `android-test` agent
+- **Test Engineer tasks** → delegate to `android_test_agent` agent
     - ALWAYS delegate AFTER implementation is complete
     - Provide: source files, summary of what was implemented, edge cases to cover
 
-- **Quality Engineer tasks** → delegate to `android-quality` agent
+- **Quality Engineer tasks** → delegate to `android_quality_agent` agent
     - ALWAYS delegate AFTER both implementation AND tests are complete
     - Reviews ALL code produced by Dev agent AND Test Engineer
     - NEVER deliver to user without Quality Engineer APPROVED verdict
 
-- **PR tasks** → delegate to `android-PR` agent
+- **PR tasks** → delegate to `android_pr_agent` agent
         - ALWAYS delegate AFTER previous was implemented Dev, Test and Quality
         - Reviews ALL code produced by Dev agent AND Test Engineer
         - create a content of MR to copy and paste
@@ -63,9 +63,9 @@ When delegating internally via `use_subagent`, apply the appropriate agent's cod
 
 ```
 Phase 0: SPEC APPROVAL (BLOCKING GATE) — requires user approval
-Phase 1: IMPLEMENT — delegate to android-dev agent back-to-back
-Phase 2: TEST — delegate to android-test-engineer agent
-Phase 3: REVIEW — delegate to android-quality agent
+Phase 1: IMPLEMENT — delegate to android_dev_agent agent back-to-back
+Phase 2: TEST — delegate to android_test_agent agent
+Phase 3: REVIEW — delegate to android_quality_agent agent
 Phase 4: FIX — apply fixes, re-review until APPROVED
 Phase 5: DELIVER — present unified result to user
 ```
@@ -123,11 +123,11 @@ Before ANY code is written, present a spec:
 
 ### 11. To solve Bugs (MANDATORY)
 1. Analyze story with ba_orchestrator_agent
-2. Get architecture guidance from android-arch agent
-3. Implement the fix with android-dev agent
-4. Review the code with android-quality agent
-5. Write tests with android-test agent
-6. Create PR with android-pr agent on docs/jira-solution-ai/PRs/
+2. Get architecture guidance from android_arch_agent agent
+3. Implement the fix with android_dev_agent agent
+4. Review the code with android_quality_agent agent
+5. Write tests with android_test_agent agent
+6. Create PR with android_pr_agent agent on docs/jira-solution-ai/PRs/
 
 ## Architectural Knowledge
 

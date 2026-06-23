@@ -3,6 +3,8 @@
  * These produce self-contained HTML that renders in Kite's ToolUIRenderer.
  */
 
+import { adfToText } from "./adfToText.js";
+
 export function ticketCard(ticket: {
   key: string; summary: string; status: string; assignee?: string;
   priority?: string; type?: string; description?: string; labels?: string[];
@@ -43,7 +45,7 @@ export function ticketCard(ticket: {
       ${ticket.updated ? `<div class="meta-item"><span class="meta-label">Updated</span>${ticket.updated}</div>` : ''}
     </div>
     ${ticket.labels?.length ? `<div class="labels">${ticket.labels.map(l => `<span class="label">${l}</span>`).join('')}</div>` : ''}
-    ${ticket.description ? `<div class="desc">${ticket.description.slice(0, 500).replace(/</g, '&lt;')}</div>` : ''}
+    ${ticket.description ? `<div class="desc">${adfToText(ticket.description).slice(0, 500).replace(/</g, '&lt;')}</div>` : ''}
     <div class="actions">
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_transition_issue',params:{ticketId:'${ticket.key}'}}},'*')">Transition</button>
       <button class="btn" onclick="window.parent.postMessage({type:'tool',payload:{toolName:'jira_comment_on_issue',params:{ticketId:'${ticket.key}'}}},'*')">Comment</button>

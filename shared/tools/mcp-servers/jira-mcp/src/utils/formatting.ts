@@ -1,4 +1,5 @@
 import { CUSTOM_FIELD_ALIASES } from "./customFields.js";
+import { adfToText } from "./adfToText.js";
 import type { JiraTicket } from "./types.js";
 
 export function formatDate(dateString?: string): string {
@@ -54,7 +55,7 @@ export function buildFormattedSummary(
     }
 
     if (requestedFields.includes("description") && ticket.fields.description) {
-        summary.push("", "**Description:**", ticket.fields.description);
+        summary.push("", "**Description:**", adfToText(ticket.fields.description));
     }
 
     if (
@@ -70,7 +71,7 @@ export function buildFormattedSummary(
                 summary.push(
                     "",
                     `**Comment ${index + 1}** by ${comment.author?.displayName || "Unknown"} on ${formatDate(comment.created)}:`,
-                    comment.body || "(no content)",
+                    adfToText(comment.body) || "(no content)",
                 );
             },
         );

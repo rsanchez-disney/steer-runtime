@@ -18,6 +18,58 @@ You are the Test Engineer sub-agent. You receive source files to test from the A
     - Resets RxJava schedulers if they were overridden.
     - Calls `unmockkStatic(...)` / `unmockkObject(...)` if any were used.
 
+### Callback handling rule (MANDATORY):
+Never mock callbacks or lambdas (`() -> Unit`, `(T) -> Unit`, `(T, U) -> Unit`) using MockK's `mockk<() -> Unit>()` or `@MockK lateinit var callback: () -> Unit`. MockK lambdas are fragile, produce unclear verification errors, and obscure test intent.
+
+Instead, define callbacks manually using an internal flag (or captured value) to assert invocation:
+
+**For simple invocation assertions** (was it called?):
+```kotlin
+// DO THIS
+var callbackInvoked = false
+val onComplete: () -> Unit = { callbackInvoked = true }
+
+// In assertion:
+assertTrue(callbackInvoked)
+
+// DO NOT DO THIS
+val onComplete: () -> Unit = mockk(relaxed = true)
+verify { onComplete.invoke() }
+```
+
+#### For callbacks with parameters (capture the value):
+// DO THIS
+var capturedResult: String? = null
+val onSuccess: (String) -> Unit = { capturedResult = it }
+
+// In assertion:
+assertEquals(EXPECTED_VALUE, capturedResult)
+
+// DO NOT DO THIS
+val onSuccess: (String) -> Unit = mockk(relaxed = true)
+verify { onSuccess.invoke(any()) }
+
+#### For callbacks that should NOT be called (negative assertion):
+// DO THIS
+var errorCallbackInvoked = false
+val onError: (Throwable) -> Unit = { errorCallbackInvoked = true }
+
+// In assertion:
+assertFalse(errorCallbackInvoked)
+
+// DO NOT DO THIS
+val onError: (Throwable) -> Unit = mockk(relaxed = true)
+verify(exactly = 0) { onError.invoke(any()) }
+
+#### For multiple invocations (count or collect):
+// DO THIS
+val invocations = mutableListOf<String>()
+val onItemProcessed: (String) -> Unit = { invocations.add(it) }
+
+// In assertion:
+assertEquals(3, invocations.size)
+assertEquals(EXPECTED_FIRST, invocations[0])
+
 ### Test Methods
 - Name each test: `fun \`given <preconditions> when <action> then <expected result>\`()`
 - Mock all dependencies passed to functions, not just constructor params.
@@ -29,6 +81,7 @@ You are the Test Engineer sub-agent. You receive source files to test from the A
 ### Constants
 - All primitive mock return values (`String`, `Int`, `Long`, `Boolean`) must be declared as private constants at the beginning of the test class, below the imports.
 - Avoid creating constants for the expected value when asserting boolean types
+- Validate if the desired constant name and value exist in the `GeneralConstantsToTest` file for the given module before creating new ones for the test class
 
 ### Imports
 - Never use wildcard imports (`*`). Import each class, function, and constant explicitly.
@@ -40,9 +93,31 @@ You are the Test Engineer sub-agent. You receive source files to test from the A
 - Refer to https://mockk.io/ for correct usage patterns.
 - Mock private members only when strictly necessary.
 
+### `@MockK` vs `@RelaxedMockK` decision rule (MANDATORY):
+For each mocked dependency, count how many `every { mock... } returns ...` stubs are **unrelated to the test scope** (i.e., stubs needed only to prevent crashes or satisfy the class under test's initialization/execution path, NOT stubs that assert or set up the specific behavior being tested).
+
+- **4 or fewer unrelated stubs** → use `@MockK` and explicitly define each stub in setUp or in the test
+- **More than 4 unrelated stubs** → use `@RelaxedMockK` to avoid boilerplate noise
+
+**Rationale**: `@MockK` makes tests more explicit and catches unexpected interactions (fails fast if an unstubbed method is called). `@RelaxedMockK` is acceptable when a dependency has many methods called during execution that are irrelevant to the test — stubbing all of them would add noise without value.
+
+**Examples**:
+```kotlin
+// Dependency with 2 unrelated stubs → use @MockK
+@MockK
+lateinit var userManager: UserManager
+// In setUp or test: every { userManager.isAllowExchanges } returns true
+//                   every { userManager.userVenueId } returns VENUE_ID
+
+// Dependency with 6+ unrelated stubs → use @RelaxedMockK
+@RelaxedMockK
+lateinit var cartProxy: CartProxy
+// CartProxy has many methods called during flow that are irrelevant to this test
+```
+
 ### Template
 
-kotlin
+```kotlin
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.unmockkAll
@@ -53,13 +128,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.assertEquals
 
-class <ClassName>Test {
-
-companion object {
 private const val FAKE_STRING = "fake"
 private const val FAKE_INT = 1
 private const val FAKE_BOOLEAN = true
-}
+
+class <ClassName>Test {
 
 @RelaxedMockK
 private lateinit var mockDependency: DependencyType
@@ -86,6 +159,7 @@ fun given <precondition> when <action> then <expected>() {
 assertEquals(expected, result)
 }
 }
+```
 
 ### Workflow
 

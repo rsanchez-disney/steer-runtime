@@ -4,6 +4,29 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.136] — 2026-06-23
+
+### Fixed
+- **docs** — improve conf verification command (#482)
+
+## [0.2.135] — 2026-06-23
+
+### Fixed
+- **ai-metrics-tracker** — strengthen prompt for subagent reliability and update form options (#476)
+- **jira-mcp** — handle ADF description/comment from Jira Cloud API v3 (#477)
+
+### Added
+- **Jira Cloud instance routing** — multi-instance routing support (#479)
+
+## [0.2.134] — 2026-06-22
+
+### Added
+- **Jira Cloud instance routing** — multi-instance Jira support with automatic URL routing based on workspace configuration (#473)
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.133] — 2026-06-22
 
 ### Changed
