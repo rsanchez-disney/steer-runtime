@@ -8,7 +8,7 @@ function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
 }
 
 /** Wrap plain text in Atlassian Document Format (required by Jira Cloud API v3). */
-function toADF(text: string): object {
+export function toADF(text: string): object {
     return {
         type: "doc",
         version: 1,

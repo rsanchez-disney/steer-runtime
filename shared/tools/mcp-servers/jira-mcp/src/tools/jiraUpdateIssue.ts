@@ -1,8 +1,9 @@
-import { JiraApiClient } from "../utils/jiraApi.js";
+import { JiraApiClient, toADF } from "../utils/jiraApi.js";
 import { saveTicketData } from "../utils/fileUtils.js";
 import {
     resolveCustomFieldIds,
 } from "../utils/customFields.js";
+import { adfToText } from "../utils/adfToText.js";
 
 export const jiraUpdateIssueSchema = {
     name: "jira_update_issue",
@@ -127,8 +128,8 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
         const apiClient = new JiraApiClient();
         const updates: any = {};
         if (summary) updates.summary = summary;
-        if (description) updates.description = description;
-        if (assignee) updates.assignee = { name: assignee };
+        if (description) updates.description = apiClient.auth.isCloud() ? toADF(description) : description;
+        if (assignee) updates.assignee = apiClient.auth.isCloud() ? { accountId: assignee } : { name: assignee };
 
         if (components && components.length > 0) {
             updates.components = components.map((name) => ({
@@ -261,7 +262,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
 **Story Points:** ${(ticket.fields as any)[resolveCustomFieldIds(["storyPoints"])[0]] ?? "Not set"}
 
 **Description:**
-${ticket.fields.description || "No description available"}`;
+${adfToText(ticket.fields.description) || "No description available"}`;
 
         const savedPath = await saveTicketData(
             outputDir,
