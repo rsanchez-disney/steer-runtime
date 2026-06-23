@@ -4,6 +4,11 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.136] — 2026-06-23
+
+### Fixed
+- **docs** — improve conf verification command (#482)
+
 ## [0.2.135] — 2026-06-23
 
 ### Fixed
