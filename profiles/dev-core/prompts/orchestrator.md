@@ -106,6 +106,35 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 
 If intent doesn't match any category, ask ONE clarifying question.
 
+### Cross-domain orchestrator delegation
+
+When a task requires sustained coordination across multiple agents in a domain you don't specialize in, delegate to the domain orchestrator instead of managing the sub-agents yourself. Domain orchestrators have deeper context, domain-specific workflows, and their own specialist routing.
+
+**How to identify them:** Look for agents ending in `_orchestrator_agent` or `orchestrator` in the Delegation Map injected at spawn. Each is listed under its profile.
+
+**When to delegate to a domain orchestrator:**
+
+- The task requires **multiple steps in that domain** (not a one-shot query)
+- You'd need to coordinate **3+ specialists** in that domain
+- The domain has its own **workflow or gates** (e.g., QA has test strategy → automation → coverage analysis)
+
+**When NOT to delegate (handle directly):**
+
+- Single-agent tasks (e.g., "run standup" → `standup_agent` directly)
+- Tasks already in your routing table above
+- Simple information retrieval from a domain specialist
+
+**Delegation pattern:**
+
+```
+subagent → domain_orchestrator_agent
+  prompt_template: "<full context of what the user needs>"
+```
+
+The domain orchestrator will manage its own sub-agents and return consolidated results. You present those results to the user.
+
+**Anti-pattern:** Never delegate to an orchestrator that would delegate back to you (circular). You are the hub — domain orchestrators are spokes. They delegate down to their specialists, never up.
+
 ---
 
 ## SDLC workflow
