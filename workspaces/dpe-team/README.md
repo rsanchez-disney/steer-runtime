@@ -85,10 +85,10 @@ All repos resolved from `workspace_path` in `workspace.json`. Set this to your l
 | `ops` | 8 | Deployments, infra, log analysis, releases |
 | `pm` | 6 | Sprints, standups, retros, delivery reports |
 
-## Jira & Wiki
+## Jira & Confluence
 
-- **Jira**: `PPODPE-` — https://myjira.disney.com/projects/PPODPE
-- **Wiki**: MyWiki space `DPE` — use `@mywiki/*` tools, not `@confluence/*`
+- **Jira cloud**: `PPODPE-` — https://disneyexperiences.atlassian.net/jira/software/c/projects/PPODPE/summary
+- **Confluence**: Confluence space `DPE` — use `@confluence/*` tools, not `@mywiki/*`
 - **GitHub**: `WDPR-SPS` on github.disney.com
 
 ## Environment Setup (Data Agent)

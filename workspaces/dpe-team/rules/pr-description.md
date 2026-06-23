@@ -22,7 +22,7 @@ Generate pull request descriptions following the DPE PULL_REQUEST_TEMPLATE.md fo
 4. **Generate PR description** with:
    - **Title**: Conventional Commits format: `<type>[scope]: [PPODPE-XXXX] <description>`
    - **Description**: What changed, why, and motivation. Include BEFORE/AFTER for behavioral changes.
-   - **Related Issues**: Jira ticket links (`https://myjira.disney.com/browse/PPODPE-XXXX`)
+   - **Related Issues**: Jira ticket links (`https://disneyexperiences.atlassian.net/browse/PPODPE-XXXX`)
    - **Execution**: Confirm `mvn clean verify` status
    - **Checklist**: Mark relevant items based on changes
    - **Cross-Impact Integration Tests**: Identify indirect consumers of the changed behavior using the `integration-test-cross-impact` rule. Fill the impact table if the change touches shared components (calculators, data loaders, cache, DTOs, schema). Mark N/A if the change is isolated.
@@ -66,7 +66,7 @@ Generate pull request descriptions following the DPE PULL_REQUEST_TEMPLATE.md fo
 
 ## 🔗 Related Issues
 
-- [ ] https://myjira.disney.com/browse/PPODPE-XXXX
+- [ ] https://disneyexperiences.atlassian.net/browse/PPODPE-XXXX
 - [ ] No Jira tickets are associated with this PR.
 
 ---

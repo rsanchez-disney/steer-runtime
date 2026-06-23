@@ -348,14 +348,14 @@ DPE is a cross-functional team with multiple sub-teams:
 ## Jira
 
 - Project: **PPODPE** (Parks Pricing Operations DPE)
-- URL: https://myjira.disney.com/projects/PPODPE
+- URL: https://disneyexperiences.atlassian.net/jira/software/c/projects/PPODPE/summary
 - Prefix: `PPODPE-`
 - Board: PPODPE Kanban/Sprint board
 
-## Wiki
+## Confluence
 
-- Home: https://mywiki.disney.com/spaces/DPE/pages/681902331/Dynamic+Pricing+Engine+Home
-- Instance: MyWiki (`mywiki.disney.com`) — use `@mywiki/*` MCP tools, not `@confluence/*`
+- Home: https://disneyexperiences.atlassian.net/wiki/spaces/DPE/overview?homepageId=220921858
+- Instance: Confluence Cloud (`disneyexperiences.atlassian.net/wiki`) — use `@confluence/*` MCP tools
 - Contains: architecture docs, onboarding guides, design specs, runbooks, calculator specifications
 
 ## GitHub

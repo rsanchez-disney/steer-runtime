@@ -3,7 +3,7 @@
 ## Release Tracking
 
 DPE releases are tracked on MyWiki:
-- **Release Calendar (root page):** https://mywiki.disney.com/spaces/DPE/pages/945293861/DPE+Release+Calendar
+- **Release Calendar (root page):** https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220921895/DPE+Release+Calendar
 - Child pages contain per-environment deployment details, versions, and schema requirements
 
 ## Incident Investigation Protocol
