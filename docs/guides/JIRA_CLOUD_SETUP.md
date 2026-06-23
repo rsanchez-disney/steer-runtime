@@ -2,6 +2,8 @@
 
 How to configure your steer environment to work with Jira Cloud (`disneyexperiences.atlassian.net`).
 
+> 🎬 **Video demo:** [jira-cloud-setup-demo.mov](./jira-cloud-setup-demo.mov) — walkthrough of the full setup via TUI.
+
 ## Prerequisites
 
 - Koda **v0.4.120+** (includes Jira Cloud TUI fix for Tab field persistence)
