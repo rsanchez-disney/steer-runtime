@@ -62,7 +62,7 @@ The **Email** field is what tells Koda to use Jira Cloud authentication (Basic A
 After saving, check that `mcp.json` was generated correctly:
 
 ```bash
-cat ~/.kiro/settings/mcp.json | jq '.mcpServers["jira-cloud"].env'
+cat ~/.kiro/settings/mcp.json | jq '.mcpServers | to_entries[] | select(.key | startswith("jira")) | {server: .key, env: .value.env}'
 ```
 
 Expected output:
