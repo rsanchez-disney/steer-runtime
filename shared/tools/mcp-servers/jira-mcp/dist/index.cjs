@@ -6353,14 +6353,22 @@ var JiraApiClient = class _JiraApiClient {
     }
     console.error("JIRA update successful");
   }
-  async transitionJiraTicket(ticketId, transitionId) {
+  async transitionJiraTicket(ticketId, transitionId, opts) {
+    const body = { transition: { id: transitionId } };
+    if (opts?.resolution) {
+      body.fields = { resolution: { name: opts.resolution } };
+    }
+    if (opts?.comment) {
+      const commentBody = this.auth.isCloud() ? { body: { type: "doc", version: 1, content: [{ type: "paragraph", content: [{ type: "text", text: opts.comment }] }] } } : { body: opts.comment };
+      body.update = { comment: [{ add: commentBody }] };
+    }
     const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`, {
       method: "POST",
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ transition: { id: transitionId } })
+      body: JSON.stringify(body)
     });
     if (!response.ok) {
       const errorText = await response.text();
@@ -7780,6 +7788,9 @@ async function handleJiraUpdateIssue(args) {
       if (spResolved.length > 0) {
         updates[spResolved[0]] = storyPoints;
       }
+      if (apiClient.auth.isCloud()) {
+        updates["story_points"] = storyPoints;
+      }
     }
     if (customFields) {
       const NATIVE_FIELDS = {
@@ -7911,6 +7922,14 @@ var jiraTransitionIssueSchema = {
         type: "string",
         description: 'Target status name (e.g., "In Progress", "Done")'
       },
+      resolution: {
+        type: "string",
+        description: `Resolution name for terminal statuses (e.g., "Done", "Won't Do", "Duplicate"). Required by some workflows when closing.`
+      },
+      comment: {
+        type: "string",
+        description: "Optional comment to add during the transition"
+      },
       outputDir: {
         type: ["string", "boolean", "null"],
         description: "Directory to save the updated ticket data (optional)"
@@ -7921,7 +7940,7 @@ var jiraTransitionIssueSchema = {
 };
 async function handleJiraTransitionIssue(args) {
   try {
-    const { ticketId, status, outputDir } = args;
+    const { ticketId, status, resolution, comment, outputDir } = args;
     const apiClient = new JiraApiClient();
     const transitions = await apiClient.getJiraTransitions(ticketId);
     const targetTransition = transitions.transitions.find((t) => t.name.toLowerCase() === status.toLowerCase());
@@ -7929,7 +7948,7 @@ async function handleJiraTransitionIssue(args) {
       const availableStatuses = transitions.transitions.map((t) => t.name).join(", ");
       throw new Error(`Status "${status}" not available. Available transitions: ${availableStatuses}`);
     }
-    await apiClient.transitionJiraTicket(ticketId, targetTransition.id);
+    await apiClient.transitionJiraTicket(ticketId, targetTransition.id, { resolution, comment });
     const ticket = await apiClient.fetchJiraTicket(ticketId);
     const summaryText = `**${ticket.key}: ${ticket.fields.summary}**
 

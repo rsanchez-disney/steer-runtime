@@ -322,7 +322,19 @@ export class JiraApiClient {
     async transitionJiraTicket(
         ticketId: string,
         transitionId: string,
+        opts?: { resolution?: string; comment?: string },
     ): Promise<void> {
+
+        const body: any = { transition: { id: transitionId } };
+        if (opts?.resolution) {
+            body.fields = { resolution: { name: opts.resolution } };
+        }
+        if (opts?.comment) {
+            const commentBody = this.auth.isCloud()
+                ? { body: { type: "doc", version: 1, content: [{ type: "paragraph", content: [{ type: "text", text: opts.comment }] }] } }
+                : { body: opts.comment };
+            body.update = { comment: [{ add: commentBody }] };
+        }
 
         const response = await this.fetch(
             `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}/transitions`,
@@ -332,7 +344,7 @@ export class JiraApiClient {
                     Authorization: await this.auth.getAuthHeader(),
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ transition: { id: transitionId } }),
+                body: JSON.stringify(body),
             },
         );
 

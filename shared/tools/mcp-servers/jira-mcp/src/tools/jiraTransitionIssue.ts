@@ -15,6 +15,14 @@ export const jiraTransitionIssueSchema = {
                 type: "string",
                 description: 'Target status name (e.g., "In Progress", "Done")',
             },
+            resolution: {
+                type: "string",
+                description: 'Resolution name for terminal statuses (e.g., "Done", "Won\'t Do", "Duplicate"). Required by some workflows when closing.',
+            },
+            comment: {
+                type: "string",
+                description: "Optional comment to add during the transition",
+            },
             outputDir: {
                 type: ["string", "boolean", "null"],
                 description:
@@ -27,9 +35,11 @@ export const jiraTransitionIssueSchema = {
 
 export async function handleJiraTransitionIssue(args: any): Promise<any> {
     try {
-        const { ticketId, status, outputDir } = args as {
+        const { ticketId, status, resolution, comment, outputDir } = args as {
             ticketId: string;
             status: string;
+            resolution?: string;
+            comment?: string;
             outputDir?: string;
         };
 
@@ -50,7 +60,7 @@ export async function handleJiraTransitionIssue(args: any): Promise<any> {
             );
         }
 
-        await apiClient.transitionJiraTicket(ticketId, targetTransition.id);
+        await apiClient.transitionJiraTicket(ticketId, targetTransition.id, { resolution, comment });
         const ticket = await apiClient.fetchJiraTicket(ticketId);
 
         const summaryText = `**${ticket.key}: ${ticket.fields.summary}**

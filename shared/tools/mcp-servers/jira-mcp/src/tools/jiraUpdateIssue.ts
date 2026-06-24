@@ -154,6 +154,10 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             if (spResolved.length > 0) {
                 updates[spResolved[0]] = storyPoints;
             }
+            // Cloud instances may use the native story_points field instead
+            if (apiClient.auth.isCloud()) {
+                updates["story_points"] = storyPoints;
+            }
         }
 
         // Resolve custom field aliases and merge into updates
