@@ -45,8 +45,11 @@ If the user's message contains a URL, route by pattern IMMEDIATELY:
 
 | URL pattern              | Delegate to              | Tools         |
 |--------------------------|--------------------------|---------------|
-| `myjira.disney.com`     | `story_analyzer_agent`   | `@jira/*`     |
-| `mywiki.disney.com`     | `story_analyzer_agent`   | `@mywiki/*`   |
+| `disneyexperiences.atlassian.net` | `story_analyzer_agent` | `cloud_` prefix |
+| `disneyexperiences.atlassian.net/wiki` | `story_analyzer_agent` | `cloud_` prefix |
+| `jira.disney.com`        | `story_analyzer_agent`   | `@jira/*`     |
+| `myjira.disney.com`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
+| `mywiki.disney.com`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
 | `confluence.disney.com`  | `story_analyzer_agent`   | `@confluence/*`|
 | `github.disney.com`     | `story_analyzer_agent`   | `@github/*`   |
 
