@@ -54,8 +54,10 @@ Coordinate efficiently and provide clear, actionable results.
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
-- If unclear, **ask the user** which instance.
+- **mywiki.disney.com** → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
+- **disneyexperiences.atlassian.net/wiki** → use `cloud_` prefix tools
+- **Fallback**: Any other URL → delegate to `story_analyzer_agent`. Never refuse a URL.
+- If unclear which instance, **ask the user**.
 
 
 ## Estimation

@@ -127,7 +127,9 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **mywiki.disney.com** → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
+- **disneyexperiences.atlassian.net/wiki** → use `cloud_` prefix tools
+- **Fallback**: Any other URL → delegate to `story_analyzer_agent`. Never refuse a URL.
 - If unclear, **ask the user** which instance.
 
 
