@@ -7,13 +7,164 @@ function dedup<T>(existing: T[], incoming: T[], key: (t: T) => string): T[] {
     return [...existing, ...incoming.filter(i => !seen.has(key(i)))];
 }
 
-/** Wrap plain text in Atlassian Document Format (required by Jira Cloud API v3). */
-export function toADF(text: string): object {
-    return {
-        type: "doc",
-        version: 1,
-        content: [{ type: "paragraph", content: [{ type: "text", text }] }],
-    };
+/**
+ * Convert input to Atlassian Document Format (required by Jira Cloud API v3).
+ * Supports:
+ * - ADF pass-through: if input is already a valid ADF object or JSON string
+ * - Markdown-to-ADF: converts headings, lists, code blocks, bold, italic, links
+ * - Plain text fallback: wraps in paragraphs split by double newlines
+ */
+export function toADF(input: string | object): object {
+    // Already an ADF object (passed directly)
+    if (typeof input === 'object' && input !== null) {
+        const obj = input as any;
+        if (obj.type === 'doc' && obj.content) return obj;
+        // Wrap non-ADF objects as JSON code block
+        return { type: "doc", version: 1, content: [{ type: "codeBlock", attrs: { language: "json" }, content: [{ type: "text", text: JSON.stringify(input, null, 2) }] }] };
+    }
+
+    const text = input as string;
+
+    // ADF JSON string pass-through
+    if (text.trimStart().startsWith('{')) {
+        try {
+            const parsed = JSON.parse(text);
+            if (parsed.type === 'doc' && parsed.content) return parsed;
+        } catch { /* not valid ADF JSON, continue to markdown */ }
+    }
+
+    // Markdown to ADF conversion
+    return markdownToADF(text);
+}
+
+function markdownToADF(md: string): object {
+    const content: any[] = [];
+    const lines = md.split('\n');
+    let i = 0;
+
+    while (i < lines.length) {
+        const line = lines[i];
+
+        // Code block (fenced)
+        if (line.startsWith('```')) {
+            const lang = line.slice(3).trim() || undefined;
+            const codeLines: string[] = [];
+            i++;
+            while (i < lines.length && !lines[i].startsWith('```')) {
+                codeLines.push(lines[i]);
+                i++;
+            }
+            i++; // skip closing ```
+            content.push({ type: "codeBlock", attrs: lang ? { language: lang } : {}, content: [{ type: "text", text: codeLines.join('\n') }] });
+            continue;
+        }
+
+        // Heading
+        const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+            content.push({ type: "heading", attrs: { level: headingMatch[1].length }, content: parseInline(headingMatch[2]) });
+            i++;
+            continue;
+        }
+
+        // Horizontal rule
+        if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
+            content.push({ type: "rule" });
+            i++;
+            continue;
+        }
+
+        // Unordered list
+        if (/^[\s]*[-*+]\s/.test(line)) {
+            const items: any[] = [];
+            while (i < lines.length && /^[\s]*[-*+]\s/.test(lines[i])) {
+                const text = lines[i].replace(/^[\s]*[-*+]\s/, '');
+                items.push({ type: "listItem", content: [{ type: "paragraph", content: parseInline(text) }] });
+                i++;
+            }
+            content.push({ type: "bulletList", content: items });
+            continue;
+        }
+
+        // Ordered list
+        if (/^[\s]*\d+\.\s/.test(line)) {
+            const items: any[] = [];
+            while (i < lines.length && /^[\s]*\d+\.\s/.test(lines[i])) {
+                const text = lines[i].replace(/^[\s]*\d+\.\s/, '');
+                items.push({ type: "listItem", content: [{ type: "paragraph", content: parseInline(text) }] });
+                i++;
+            }
+            content.push({ type: "orderedList", content: items });
+            continue;
+        }
+
+        // Blockquote
+        if (line.startsWith('> ')) {
+            const quoteLines: string[] = [];
+            while (i < lines.length && lines[i].startsWith('> ')) {
+                quoteLines.push(lines[i].slice(2));
+                i++;
+            }
+            content.push({ type: "blockquote", content: [{ type: "paragraph", content: parseInline(quoteLines.join(' ')) }] });
+            continue;
+        }
+
+        // Empty line (skip)
+        if (line.trim() === '') {
+            i++;
+            continue;
+        }
+
+        // Regular paragraph (consume contiguous non-empty, non-special lines)
+        const paraLines: string[] = [];
+        while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#') && !lines[i].startsWith('```') && !/^[\s]*[-*+]\s/.test(lines[i]) && !/^[\s]*\d+\.\s/.test(lines[i]) && !lines[i].startsWith('> ') && !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim())) {
+            paraLines.push(lines[i]);
+            i++;
+        }
+        if (paraLines.length > 0) {
+            content.push({ type: "paragraph", content: parseInline(paraLines.join(' ')) });
+        }
+    }
+
+    if (content.length === 0) {
+        content.push({ type: "paragraph", content: [{ type: "text", text: md || " " }] });
+    }
+
+    return { type: "doc", version: 1, content };
+}
+
+function parseInline(text: string): any[] {
+    const nodes: any[] = [];
+    // Regex: bold, italic, inline code, links
+    const re = /(\*\*(.+?)\*\*|__(.+?)__|\*(.+?)\*|_(.+?)_|`(.+?)`|\[(.+?)\]\((.+?)\))/g;
+    let last = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = re.exec(text)) !== null) {
+        if (match.index > last) {
+            nodes.push({ type: "text", text: text.slice(last, match.index) });
+        }
+        if (match[2] || match[3]) {
+            // Bold
+            nodes.push({ type: "text", text: match[2] || match[3], marks: [{ type: "strong" }] });
+        } else if (match[4] || match[5]) {
+            // Italic
+            nodes.push({ type: "text", text: match[4] || match[5], marks: [{ type: "em" }] });
+        } else if (match[6]) {
+            // Inline code
+            nodes.push({ type: "text", text: match[6], marks: [{ type: "code" }] });
+        } else if (match[7] && match[8]) {
+            // Link
+            nodes.push({ type: "text", text: match[7], marks: [{ type: "link", attrs: { href: match[8] } }] });
+        }
+        last = match.index + match[0].length;
+    }
+
+    if (last < text.length) {
+        nodes.push({ type: "text", text: text.slice(last) });
+    }
+
+    return nodes.length > 0 ? nodes : [{ type: "text", text: text || " " }];
 }
 
 export class JiraApiClient {
@@ -290,7 +441,7 @@ export class JiraApiClient {
         projectKey: string;
         summary: string;
         issueType: string;
-        description?: string;
+        description?: string | object;
         assignee?: string;
         reporter?: string;
         epicLink?: string;

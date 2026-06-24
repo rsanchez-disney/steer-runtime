@@ -29,8 +29,8 @@ export const jiraCreateIssueSchema = {
                 description: 'Parent issue key for sub-tasks (e.g., "GRPS-1534"). Required when issueType is "Sub-task".',
             },
             description: {
-                type: "string",
-                description: "Issue description (optional)",
+                type: ["string", "object"],
+                description: "Issue description (optional). Accepts: plain text, markdown (auto-converted to ADF), ADF JSON string, or ADF object.",
             },
             assignee: {
                 type: "string",
@@ -102,7 +102,7 @@ export async function handleJiraCreateIssue(args: any): Promise<any> {
             summary: string;
             issueType: string;
             parent?: string;
-            description?: string;
+            description?: string | object;
             assignee?: string;
             reporter?: string;
             epicLink?: string;

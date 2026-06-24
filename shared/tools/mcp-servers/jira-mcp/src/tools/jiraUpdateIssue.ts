@@ -26,8 +26,8 @@ export const jiraUpdateIssueSchema = {
                 description: "New ticket summary",
             },
             description: {
-                type: "string",
-                description: "New ticket description",
+                type: ["string", "object"],
+                description: "New ticket description. Accepts: plain text, markdown (auto-converted to ADF), ADF JSON string, or ADF object.",
             },
             assignee: {
                 type: "string",
@@ -111,7 +111,7 @@ export async function handleJiraUpdateIssue(args: any): Promise<any> {
             ticketId: string;
             outputDir?: string;
             summary?: string;
-            description?: string;
+            description?: string | object;
             assignee?: string;
             epicLink?: string;
             components?: string[];

@@ -4,6 +4,13 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.138] — 2026-06-24
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+- **Refresh orchestration test outputs** — updated architecture_spec_agent evaluation results
+
 ## [0.2.137] — 2026-06-24
 
 ### Added

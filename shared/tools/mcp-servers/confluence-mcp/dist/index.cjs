@@ -5660,7 +5660,7 @@ var StdioServerTransport = class {
   }
 };
 
-// src/utils/toolPrefix.ts
+// build/utils/toolPrefix.js
 var CONFLUENCE_INSTANCE_PREFIX = process.env.CONFLUENCE_INSTANCE_PREFIX || "";
 function prefixToolName(name) {
   return CONFLUENCE_INSTANCE_PREFIX ? `${CONFLUENCE_INSTANCE_PREFIX}${name}` : name;
@@ -5669,7 +5669,7 @@ function getServerName() {
   return CONFLUENCE_INSTANCE_PREFIX ? `confluence-${CONFLUENCE_INSTANCE_PREFIX.replace(/_$/, "")}` : "confluence-mcp";
 }
 
-// src/utils/apiClient.ts
+// build/utils/apiClient.js
 var import_dotenv = __toESM(require_main(), 1);
 var import_path = require("path");
 var import_url = require("url");
@@ -5682,7 +5682,8 @@ var ConfluenceApiClient = class {
   confluenceEmail = null;
   loaded = false;
   loadEnv() {
-    if (this.loaded) return;
+    if (this.loaded)
+      return;
     this.loaded = true;
     this.confluenceUrl = process.env.CONFLUENCE_URL || null;
     this.confluencePat = process.env.CONFLUENCE_PAT || null;
@@ -5710,10 +5711,9 @@ var ConfluenceApiClient = class {
   }
   getPat() {
     this.loadEnv();
-    if (this.confluencePat) return this.confluencePat;
-    throw new Error(
-      "CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file."
-    );
+    if (this.confluencePat)
+      return this.confluencePat;
+    throw new Error("CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file.");
   }
   isCloud() {
     this.loadEnv();
@@ -5744,9 +5744,7 @@ var ConfluenceApiClient = class {
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `Confluence API error: ${response.status} ${response.statusText} - ${errorText}`
-        );
+        throw new Error(`Confluence API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
       return response.json();
     } finally {
@@ -5765,17 +5763,19 @@ function stripHtmlToText(html) {
   return html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/?(p|div|tr|li|h[1-6])[^>]*>/gi, "\n").replace(/<\/?[^>]+(>|$)/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\n{3,}/g, "\n\n").trim();
 }
 function truncateText(text, maxLength) {
-  if (text.length <= maxLength) return text;
+  if (text.length <= maxLength)
+    return text;
   return text.slice(0, maxLength) + `
 
 [... truncated at ${maxLength} chars \u2014 use outputDir to get full content]`;
 }
 
-// src/utils/fileUtils.ts
+// build/utils/fileUtils.js
 var import_promises = require("fs/promises");
 var import_path2 = require("path");
 async function saveToFile(data, outputDir, filename) {
-  if (outputDir === false || outputDir === null) return null;
+  if (outputDir === false || outputDir === null)
+    return null;
   const saveDir = typeof outputDir === "string" ? outputDir : "/tmp/confluence-mcp";
   await (0, import_promises.mkdir)(saveDir, { recursive: true });
   const filePath = (0, import_path2.join)(saveDir, filename);
@@ -5783,7 +5783,7 @@ async function saveToFile(data, outputDir, filename) {
   return filePath;
 }
 
-// src/tools/getConfluencePage.ts
+// build/tools/getConfluencePage.js
 var DEFAULT_MAX_LENGTH = 5e4;
 var getConfluencePageSchema = {
   name: "get_confluence_page",
@@ -5821,14 +5821,7 @@ var getConfluencePageSchema = {
   }
 };
 async function handleGetConfluencePage(args) {
-  const {
-    pageId,
-    spaceKey,
-    title,
-    expand = "body.storage,version,space",
-    maxLength = DEFAULT_MAX_LENGTH,
-    outputDir
-  } = args;
+  const { pageId, spaceKey, title, expand = "body.storage,version,space", maxLength = DEFAULT_MAX_LENGTH, outputDir } = args;
   let data;
   let filename;
   if (pageId) {
@@ -5841,9 +5834,7 @@ async function handleGetConfluencePage(args) {
     data = result.results?.[0] || {};
     filename = `page-${spaceKey}-${title.replace(/[^a-zA-Z0-9]/g, "_")}.json`;
   } else {
-    throw new Error(
-      "Either pageId or both spaceKey and title must be provided"
-    );
+    throw new Error("Either pageId or both spaceKey and title must be provided");
   }
   const filePath = await saveToFile(data, outputDir, filename);
   const savedInfo = filePath ? `
@@ -5868,7 +5859,7 @@ ${content}${savedInfo}`
   };
 }
 
-// src/tools/searchConfluencePages.ts
+// build/tools/searchConfluencePages.js
 var searchConfluencePagesSchema = {
   name: "search_confluence_pages",
   description: "Search Confluence pages using CQL (Confluence Query Language)",
@@ -5903,13 +5894,7 @@ var searchConfluencePagesSchema = {
   }
 };
 async function handleSearchConfluencePages(args) {
-  const {
-    cql,
-    start = 0,
-    limit = 25,
-    expand = "version,space",
-    outputDir
-  } = args;
+  const { cql, start = 0, limit = 25, expand = "version,space", outputDir } = args;
   const params = new URLSearchParams({
     cql,
     start: start.toString(),
@@ -5940,7 +5925,7 @@ ${lines.join("\n")}` : "\n  (no results)";
   };
 }
 
-// src/tools/getConfluenceSpace.ts
+// build/tools/getConfluenceSpace.js
 var getConfluenceSpaceSchema = {
   name: "get_confluence_space",
   description: "Get information about a Confluence space",
@@ -5981,7 +5966,7 @@ async function handleGetConfluenceSpace(args) {
   };
 }
 
-// src/tools/listConfluenceSpaces.ts
+// build/tools/listConfluenceSpaces.js
 var listConfluenceSpacesSchema = {
   name: "list_confluence_spaces",
   description: "List all Confluence spaces",
@@ -6012,12 +5997,7 @@ var listConfluenceSpacesSchema = {
   }
 };
 async function handleListConfluenceSpaces(args) {
-  const {
-    start = 0,
-    limit = 25,
-    expand = "description.plain",
-    outputDir
-  } = args;
+  const { start = 0, limit = 25, expand = "description.plain", outputDir } = args;
   const params = new URLSearchParams({
     start: start.toString(),
     limit: limit.toString(),
@@ -6037,7 +6017,7 @@ async function handleListConfluenceSpaces(args) {
   };
 }
 
-// src/tools/createConfluencePage.ts
+// build/tools/createConfluencePage.js
 var createConfluencePageSchema = {
   name: "create_confluence_page",
   description: "Create a new Confluence page",
@@ -6101,7 +6081,7 @@ async function handleCreateConfluencePage(args) {
   };
 }
 
-// src/tools/updateConfluencePage.ts
+// build/tools/updateConfluencePage.js
 var updateConfluencePageSchema = {
   name: "update_confluence_page",
   description: "Update an existing Confluence page",
@@ -6162,7 +6142,7 @@ async function handleUpdateConfluencePage(args) {
   };
 }
 
-// src/tools/commentOnConfluencePage.ts
+// build/tools/commentOnConfluencePage.js
 var commentOnConfluencePageSchema = {
   name: "comment_on_confluence_page",
   description: "Add a comment to a Confluence page",
@@ -6217,7 +6197,7 @@ async function handleCommentOnConfluencePage(args) {
   };
 }
 
-// src/tools/uploadAttachment.ts
+// build/tools/uploadAttachment.js
 var import_promises2 = require("fs/promises");
 var uploadAttachmentSchema = {
   name: "upload_attachment",
@@ -6250,23 +6230,18 @@ async function handleUploadAttachment(args) {
     const blob = new Blob([new Uint8Array(fileBuffer)]);
     formData.append("file", blob, fileName);
     formData.append("comment", "Uploaded via Confluence MCP");
-    const response = await fetch(
-      `${apiClient.getConfluenceUrl()}/rest/api/content/${pageId}/child/attachment`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: apiClient.getAuthHeader(),
-          "X-Atlassian-Token": "no-check",
-          "User-Agent": USER_AGENT
-        },
-        body: formData
-      }
-    );
+    const response = await fetch(`${apiClient.getConfluenceUrl()}/rest/api/content/${pageId}/child/attachment`, {
+      method: "POST",
+      headers: {
+        Authorization: apiClient.getAuthHeader(),
+        "X-Atlassian-Token": "no-check",
+        "User-Agent": USER_AGENT
+      },
+      body: formData
+    });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Confluence API error: ${response.status} - ${errorText}`
-      );
+      throw new Error(`Confluence API error: ${response.status} - ${errorText}`);
     }
     const data = await response.json();
     const filename = `attachment-${data.results[0].id}-on-page-${pageId}.json`;
@@ -6281,13 +6256,11 @@ async function handleUploadAttachment(args) {
       ]
     };
   } catch (error) {
-    throw new Error(
-      `Failed to upload attachment: ${error instanceof Error ? error.message : String(error)}`
-    );
+    throw new Error(`Failed to upload attachment: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
 
-// src/index.ts
+// build/index.js
 var tools = [
   { schema: getConfluencePageSchema, handler: handleGetConfluencePage },
   {
@@ -6311,45 +6284,39 @@ var prefixedTools = tools.map((t) => ({
 var ConfluenceMCPServer = class {
   server;
   constructor() {
-    this.server = new Server(
-      {
-        name: getServerName(),
-        version: "0.1.0"
-      },
-      {
-        capabilities: {
-          tools: {}
-        }
+    this.server = new Server({
+      name: getServerName(),
+      version: "0.1.0"
+    }, {
+      capabilities: {
+        tools: {}
       }
-    );
+    });
     this.setupToolHandlers();
   }
   setupToolHandlers() {
     this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: prefixedTools.map((t) => t.schema)
     }));
-    this.server.setRequestHandler(
-      CallToolRequestSchema,
-      async (request) => {
-        const { name, arguments: args } = request.params;
-        try {
-          const tool = prefixedTools.find((t) => t.schema.name === name);
-          if (!tool) {
-            throw new Error(`Unknown tool: ${name}`);
-          }
-          return await tool.handler(args);
-        } catch (error) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Error: ${error instanceof Error ? error.message : String(error)}`
-              }
-            ]
-          };
+    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+      const { name, arguments: args } = request.params;
+      try {
+        const tool = prefixedTools.find((t) => t.schema.name === name);
+        if (!tool) {
+          throw new Error(`Unknown tool: ${name}`);
         }
+        return await tool.handler(args);
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : String(error)}`
+            }
+          ]
+        };
       }
-    );
+    });
   }
   async run() {
     const transport = new StdioServerTransport();

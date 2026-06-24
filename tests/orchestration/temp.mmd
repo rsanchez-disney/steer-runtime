@@ -1,9 +1,26 @@
 graph TB
-    UI_C["Angular UI Client"]
-    MONO["wdpr-payment-controls-api (Monolith BFF)<br/>Validation + Refund + Orchestration + Export"]
-    CS_C["wdpr-config-services (Java Backend)"]
-    DB_C["DynamoDB / MariaDB / S3"]
-    
-    UI_C -->|REST| MONO
-    MONO -->|REST| CS_C
-    CS_C --> DB_C
+    UI[wdpr-payment-controls-client Angular App]
+    GW[API Gateway / ALB Path-Based Routing]
+    RS[Refund Service Node.js TypeScript Port 3001]
+    VS[Validation Service Node.js TypeScript Port 3002]
+    AUTH[Auth Provider OAuth2 JWT]
+    MQ[Message Queue SNS SQS]
+    CS[wdpr-config-services Java Spring Boot]
+    DDB[(DynamoDB)]
+    MDB[(MariaDB)]
+    S3[(S3)]
+
+    UI --> GW
+    GW --> RS
+    GW --> VS
+    RS --> CS
+    VS --> CS
+    RS --> S3
+    CS --> DDB
+    CS --> MDB
+    CS --> S3
+    RS --> AUTH
+    VS --> AUTH
+    RS --> MQ
+    VS --> MQ
+    RS --> VS

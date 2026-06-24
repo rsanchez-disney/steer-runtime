@@ -1,447 +1,459 @@
-# Architecture Specification: Config Studio BFF Decomposition
+# Architecture Design: Splitting wdpr-payment-controls-api
 
-**Document Version:** 1.0  
-**Date:** 2026-06-22  
-**Status:** Proposed  
-**Author:** Architecture Team  
+## Executive Summary
 
----
+Split the monolithic `wdpr-payment-controls-api` Node.js BFF into two independently deployable microservices:
 
-## 1. Executive Summary
+- **Refund Service** — Owns refund processing, orchestration, streaming exports, and response mapping for refund-related operations
+- **Validation Service** — Owns configuration validation, promotion previews, client comparison logic, and rule evaluation
 
-The `wdpr-payment-controls-api` Node.js BFF is being decomposed from a single 512 MiB ECS monolith into three purpose-built microservices to resolve recurring OOMKilled failures caused by unbounded memory buffering during export/refund operations.
-
-**Target State:** A thin API Gateway fronts two domain-specific services—a Validation Service (low-latency, high-throughput) and a Refund Service (memory-intensive, export-oriented). The gateway retains existing DNS and route structure, ensuring zero changes to the Angular UI (`wdpr-payment-controls-client`). Both downstream services remain stateless, delegating persistence to the existing Java backend (`wdpr-config-services`).
-
-**Key Outcomes:**
-- Eliminates OOM failures by isolating memory-heavy export operations in a dedicated 2 GB service
-- Enables independent scaling: validation scales on request count, refund scales on memory utilization
-- Maintains backward compatibility—no UI or API contract changes during migration
-- Introduces observability (X-Ray, correlation IDs) and resilience (circuit breakers) patterns
-- Delivered incrementally via strangler fig over ~6 sprints with zero-downtime cutover
+An **API Gateway / Router** layer sits in front to preserve existing URL contracts for the Angular UI.
 
 ---
 
-## 2. Component Architecture
+## 1. Component Diagram
 
 ```mermaid
-flowchart TB
+graph TB
     subgraph "Client Tier"
-        UI["wdpr-payment-controls-client<br/>(Angular SPA)"]
+        UI[wdpr-payment-controls-client<br/>Angular App]
     end
 
     subgraph "Gateway Tier"
-        GW["API Gateway Service<br/>Node.js · 512 MiB<br/>Route dispatch + Circuit Breakers"]
+        GW[API Gateway / Router<br/>Kong / AWS ALB Path-Based Routing]
     end
 
-    subgraph "Domain Services"
-        VS["Validation Service<br/>Node.js · 1 GB<br/>Search, Browse, Compare, Promote"]
-        RS["Refund Service<br/>Node.js · 2 GB<br/>Export Reports, Refund Processing"]
+    subgraph "Service Tier"
+        RS[Refund Service<br/>Node.js / TypeScript<br/>Port 3001]
+        VS[Validation Service<br/>Node.js / TypeScript<br/>Port 3002]
     end
 
-    subgraph "Event Bus"
-        SNS["SNS Topics<br/>config-events<br/>refund-events"]
-        SQS_V["SQS: validation-queue"]
-        SQS_R["SQS: refund-queue"]
+    subgraph "Shared Infrastructure"
+        AUTH[Auth Provider<br/>OAuth2 / JWT]
+        LOG[Centralized Logging<br/>Splunk / ELK]
+        TRACE[Distributed Tracing<br/>OpenTelemetry / Jaeger]
+        REG[Service Registry<br/>Consul / AWS Cloud Map]
+        CONTRACTS[Shared Contract Library<br/>npm private package]
     end
 
     subgraph "Backend Tier"
-        BE["wdpr-config-services<br/>Java · DynamoDB / MariaDB / S3"]
+        CS[wdpr-config-services<br/>Java / Spring Boot]
+        DDB[(DynamoDB)]
+        MDB[(MariaDB)]
+        S3[(S3)]
     end
 
-    UI -->|"HTTPS"| GW
-    GW -->|"HTTP (sync)"| VS
-    GW -->|"HTTP (sync)"| RS
-    VS -->|"HTTP (sync)"| BE
-    RS -->|"HTTP (sync)"| BE
-    RS -->|"Stream to S3"| BE
+    UI -->|HTTPS| GW
+    GW -->|/api/v1/refunds/**| RS
+    GW -->|/api/v1/validations/**| VS
+    GW -->|/api/v1/exports/**| RS
+    GW -->|/api/v1/clients/**| VS
+    GW -->|/api/v1/configs/**| VS
 
-    VS -->|"Publish"| SNS
-    RS -->|"Publish"| SNS
-    SNS -->|"Subscribe"| SQS_V
-    SNS -->|"Subscribe"| SQS_R
-    SQS_V -->|"Poll"| VS
-    SQS_R -->|"Poll"| RS
+    RS -->|HTTP/gRPC| CS
+    VS -->|HTTP/gRPC| CS
+    RS -->|Stream| S3
+    CS --> DDB
+    CS --> MDB
+    CS --> S3
+
+    RS -.->|JWT verify| AUTH
+    VS -.->|JWT verify| AUTH
+    RS -.-> LOG
+    VS -.-> LOG
+    RS -.-> TRACE
+    VS -.-> TRACE
+    RS -.->|publish events| MQ[Message Queue<br/>SQS / SNS]
+    VS -.->|subscribe events| MQ
 ```
-
-### Service Responsibilities
-
-| Service | Responsibility | Memory | Scaling Strategy |
-|---------|---------------|--------|-----------------|
-| API Gateway | Route dispatch, auth passthrough, circuit breaking, correlation ID injection | 512 MiB | 2–6 tasks, request count |
-| Validation Service | Config search, browse, compare, promote orchestration, rule validation | 1 GB | 3–12 tasks, request count |
-| Refund Service | Export report generation, refund calculations, bulk CSV/PDF streaming | 2 GB | 2–8 tasks, memory utilization |
 
 ---
 
-## 3. Integration Patterns
+## 2. Integration Patterns
 
-### 3.1 Synchronous (HTTP) Patterns
+### 2.1 Synchronous Communication (Primary)
 
-```mermaid
-sequenceDiagram
-    participant UI as Angular Client
-    participant GW as API Gateway
-    participant VS as Validation Service
-    participant RS as Refund Service
-    participant BE as wdpr-config-services
+| Pattern | Usage | Technology |
+|---------|-------|------------|
+| REST/JSON over HTTPS | UI → Gateway → Service | Express.js with OpenAPI 3.x contracts |
+| Streaming HTTP (NDJSON/chunked) | Large exports (refund reports) | Node.js `pipeline()` + `Transform` streams |
+| Internal service-to-service | Validation Service called by Refund Service pre-processing | HTTP with circuit breaker (opossum) |
 
-    Note over GW: Injects X-Correlation-ID header
+### 2.2 Asynchronous Communication (Secondary)
 
-    UI->>GW: GET /api/configs/search?q=...
-    GW->>VS: GET /internal/configs/search?q=...
-    VS->>BE: GET /v2/configurations?q=...
-    BE-->>VS: 200 OK (results)
-    VS-->>GW: 200 OK (transformed)
-    GW-->>UI: 200 OK
+| Pattern | Usage | Technology |
+|---------|-------|------------|
+| Event-driven | Refund completed → notify Validation cache invalidation | AWS SNS/SQS |
+| Config promotion events | Validation publishes "config promoted" → Refund reloads rules | AWS SNS fanout |
 
-    UI->>GW: POST /api/exports/generate
-    GW->>RS: POST /internal/exports/generate
-    RS->>BE: GET /v2/configurations/bulk (streamed)
-    BE-->>RS: 200 OK (chunked)
-    RS-->>GW: 202 Accepted (job ID)
-    GW-->>UI: 202 Accepted
-```
-
-**HTTP Conventions:**
-- Gateway → Service: Internal ALB, path prefix `/internal/*`, timeout 30s (validation) / 120s (refund)
-- Service → Backend: Service discovery via environment config, timeout 10s, retry 2x with exponential backoff
-- All requests carry: `X-Correlation-ID`, `X-Request-Start`, `Authorization` (passthrough)
-
-### 3.2 Asynchronous (SNS/SQS) Event Patterns
+### 2.3 API Gateway Routing
 
 ```mermaid
 flowchart LR
-    subgraph "Publishers"
-        VS_P["Validation Service"]
-        RS_P["Refund Service"]
+    subgraph "Path-Based Routing Rules"
+        R1["/api/v1/refunds/*"] --> RS[Refund Service]
+        R2["/api/v1/exports/*"] --> RS
+        R3["/api/v1/validations/*"] --> VS[Validation Service]
+        R4["/api/v1/clients/*"] --> VS
+        R5["/api/v1/configs/*"] --> VS
+        R6["/api/v1/compare/*"] --> VS
+        R7["/api/v1/promote/*"] --> VS
     end
-
-    subgraph "SNS Topics"
-        T1["config-promotion-completed"]
-        T2["export-generation-completed"]
-        T3["refund-status-changed"]
-    end
-
-    subgraph "SQS Queues"
-        Q1["refund-on-promotion-queue"]
-        Q2["validation-on-export-queue"]
-        DLQ1["refund-dlq"]
-        DLQ2["validation-dlq"]
-    end
-
-    subgraph "Consumers"
-        VS_C["Validation Service"]
-        RS_C["Refund Service"]
-    end
-
-    VS_P -->|"publish"| T1
-    RS_P -->|"publish"| T2
-    RS_P -->|"publish"| T3
-
-    T1 -->|"fan-out"| Q1
-    T2 -->|"fan-out"| Q2
-
-    Q1 -->|"poll"| RS_C
-    Q2 -->|"poll"| VS_C
-
-    Q1 -.->|"max retries exceeded"| DLQ1
-    Q2 -.->|"max retries exceeded"| DLQ2
 ```
 
-**Event Contracts:**
-- Messages are JSON with envelope: `{ correlationId, timestamp, eventType, version, payload }`
-- SQS visibility timeout: 60s, max receive count: 3, then route to DLQ
-- DLQ alarm triggers after 1+ message for manual investigation
+### 2.4 Shared Contracts
 
-### 3.3 Error Handling & Circuit Breakers
+```
+@wdpr/payment-controls-contracts (private npm package)
+├── src/
+│   ├── schemas/          # JSON Schema / Zod definitions
+│   │   ├── refund.ts
+│   │   ├── validation.ts
+│   │   └── client-config.ts
+│   ├── types/            # TypeScript interfaces
+│   │   ├── api-responses.ts
+│   │   └── api-requests.ts
+│   └── errors/           # Shared error codes & formats
+│       └── error-codes.ts
+```
+
+---
+
+## 3. Data Flow Diagrams
+
+### 3.1 Refund Processing Flow
 
 ```mermaid
-flowchart TD
-    GW["API Gateway"] -->|"request"| CB_VS["Circuit Breaker<br/>(opossum)<br/>Validation"]
-    GW -->|"request"| CB_RS["Circuit Breaker<br/>(opossum)<br/>Refund"]
+sequenceDiagram
+    participant UI as Angular UI
+    participant GW as API Gateway
+    participant RS as Refund Service
+    participant VS as Validation Service
+    participant CS as wdpr-config-services
+    participant S3 as S3
 
-    CB_VS -->|"CLOSED"| VS["Validation Service"]
-    CB_RS -->|"CLOSED"| RS["Refund Service"]
-
-    CB_VS -->|"OPEN"| FB_VS["Fallback:<br/>503 + Retry-After header"]
-    CB_RS -->|"OPEN"| FB_RS["Fallback:<br/>503 + Retry-After header"]
-
-    VS -->|"request"| CB_BE1["Circuit Breaker<br/>→ config-services"]
-    RS -->|"request"| CB_BE2["Circuit Breaker<br/>→ config-services"]
+    UI->>GW: POST /api/v1/refunds/process
+    GW->>RS: Route to Refund Service
+    RS->>VS: POST /internal/v1/validate-refund (sync)
+    VS->>CS: GET /configs/{clientId}/refund-rules
+    CS-->>VS: Refund rules + thresholds
+    VS-->>RS: Validation result (pass/fail + details)
+    
+    alt Validation Passed
+        RS->>CS: POST /refunds/execute
+        CS-->>RS: Refund confirmation
+        RS->>RS: Map response to UI contract
+        RS-->>GW: 200 OK {refund result}
+    else Validation Failed
+        RS-->>GW: 422 {validation errors}
+    end
+    GW-->>UI: Response
 ```
 
-**Circuit Breaker Configuration (opossum):**
+### 3.2 Streaming Export Flow
 
-| Parameter | Gateway → Services | Services → Backend |
-|-----------|-------------------|-------------------|
-| Timeout | 30s / 120s | 10s |
-| Error Threshold | 50% | 50% |
-| Reset Timeout | 30s | 15s |
-| Rolling Window | 10s | 10s |
-| Volume Threshold | 5 requests | 5 requests |
+```mermaid
+sequenceDiagram
+    participant UI as Angular UI
+    participant GW as API Gateway
+    participant RS as Refund Service
+    participant CS as wdpr-config-services
+    participant S3 as S3
 
-**Error Strategy:**
-- 4xx errors: pass through without tripping circuit
-- 5xx / timeouts: count toward circuit threshold
-- Open circuit: return `503 Service Unavailable` with `Retry-After` header
-- All errors logged with correlation ID, emitted to X-Ray as fault annotations
+    UI->>GW: GET /api/v1/exports/refunds?format=csv&clientId=X
+    GW->>RS: Route (streaming enabled)
+    RS->>CS: GET /refunds/search (paginated cursor)
+    
+    loop Stream chunks
+        CS-->>RS: Page N results
+        RS->>RS: Transform → CSV row (backpressure-aware)
+        RS-->>GW: Chunked transfer chunk
+        GW-->>UI: Stream chunk to client
+    end
+    
+    RS-->>GW: End stream
+    GW-->>UI: Stream complete
+```
+
+### 3.3 Validation / Config Promotion Flow
+
+```mermaid
+sequenceDiagram
+    participant UI as Angular UI
+    participant GW as API Gateway
+    participant VS as Validation Service
+    participant CS as wdpr-config-services
+
+    UI->>GW: POST /api/v1/promote/preview
+    GW->>VS: Route to Validation Service
+    VS->>CS: GET /configs/{clientId} (source env)
+    CS-->>VS: Source config
+    VS->>CS: GET /configs/{clientId} (target env)
+    CS-->>VS: Target config
+    VS->>VS: Diff + validate rules
+    VS-->>GW: 200 {diff, warnings, conflicts}
+    GW-->>UI: Preview result
+
+    UI->>GW: POST /api/v1/promote/execute
+    GW->>VS: Route to Validation Service
+    VS->>VS: Re-validate (idempotency check)
+    VS->>CS: PUT /configs/{clientId} (target env)
+    CS-->>VS: Promotion confirmed
+    VS->>MQ: Publish "config-promoted" event
+    VS-->>GW: 200 {promotion result}
+    GW-->>UI: Success
+```
 
 ---
 
 ## 4. Deployment Topology
 
 ```mermaid
+graph TB
+    subgraph "AWS ECS / EKS Cluster"
+        subgraph "Gateway"
+            ALB[Application Load Balancer<br/>Path-based routing]
+        end
+        
+        subgraph "Refund Service (ECS Service)"
+            RS1[Task 1<br/>2 vCPU / 2GB]
+            RS2[Task 2<br/>2 vCPU / 2GB]
+            RS3[Task N<br/>Auto-scaled]
+        end
+        
+        subgraph "Validation Service (ECS Service)"
+            VS1[Task 1<br/>1 vCPU / 1GB]
+            VS2[Task 2<br/>1 vCPU / 1GB]
+            VS3[Task N<br/>Auto-scaled]
+        end
+    end
+
+    ALB --> RS1
+    ALB --> RS2
+    ALB --> VS1
+    ALB --> VS2
+```
+
+### Scaling Strategy
+
+| Service | Scaling Metric | Min | Max | Notes |
+|---------|---------------|-----|-----|-------|
+| Refund Service | CPU > 60%, Request count | 2 | 10 | Higher memory for streaming |
+| Validation Service | CPU > 70%, Request latency p95 | 2 | 8 | Stateless, fast scale |
+
+### Deployment Specifications
+
+| Concern | Refund Service | Validation Service |
+|---------|---------------|-------------------|
+| Container | Node.js 20 Alpine | Node.js 20 Alpine |
+| Memory | 2 GB (streaming buffers) | 1 GB |
+| CPU | 2 vCPU | 1 vCPU |
+| Health check | GET /health | GET /health |
+| Readiness | GET /ready (checks CS connectivity) | GET /ready |
+| Deploy strategy | Rolling update (25% at a time) | Rolling update |
+| Circuit breaker | On CS calls, on VS calls | On CS calls |
+
+---
+
+## 5. Migration Strategy (Strangler Fig Pattern)
+
+### Phase 1: Parallel Deploy (Weeks 1–3)
+
+```mermaid
 flowchart TB
-    subgraph "Route 53"
-        DNS["config-studio-api.wdpr.disney.com<br/>(existing DNS — unchanged)"]
-    end
-
-    subgraph "us-east-1"
-        subgraph "Public Subnet"
-            ALB_EXT["External ALB<br/>TLS termination<br/>Path-based routing"]
-        end
-
-        subgraph "Private Subnet - Gateway"
-            TG_GW["Target Group: gateway"]
-            ECS_GW["ECS Fargate Service<br/>api-gateway<br/>512 MiB · 0.25 vCPU<br/>Min: 2 · Max: 6<br/>Scale: RequestCount > 1000/min"]
-        end
-
-        subgraph "Private Subnet - Validation"
-            ALB_INT1["Internal ALB<br/>validation"]
-            ECS_VS["ECS Fargate Service<br/>validation-service<br/>1 GB · 0.5 vCPU<br/>Min: 3 · Max: 12<br/>Scale: RequestCount > 500/min"]
-        end
-
-        subgraph "Private Subnet - Refund"
-            ALB_INT2["Internal ALB<br/>refund"]
-            ECS_RS["ECS Fargate Service<br/>refund-service<br/>2 GB · 1 vCPU<br/>Min: 2 · Max: 8<br/>Scale: MemoryUtilization > 70%"]
-        end
-
-        subgraph "Backend"
-            BE["wdpr-config-services<br/>(existing — unchanged)"]
-        end
-    end
-
-    DNS --> ALB_EXT
-    ALB_EXT --> TG_GW --> ECS_GW
-    ECS_GW --> ALB_INT1 --> ECS_VS
-    ECS_GW --> ALB_INT2 --> ECS_RS
-    ECS_VS --> BE
-    ECS_RS --> BE
+    UI[Angular UI] --> GW[API Gateway]
+    GW -->|100% traffic| MONO[wdpr-payment-controls-api<br/>Monolith - EXISTING]
+    GW -.->|shadow/mirror| RS[Refund Service - NEW]
+    GW -.->|shadow/mirror| VS[Validation Service - NEW]
+    MONO --> CS[wdpr-config-services]
+    RS --> CS
+    VS --> CS
 ```
 
-**Scaling Policies:**
+- Deploy new services alongside monolith
+- Shadow traffic to new services (read-only comparison)
+- Log response diffs for verification
+- No UI changes
 
-| Service | Metric | Target | Cooldown | Min/Max Tasks |
-|---------|--------|--------|----------|---------------|
-| API Gateway | ALBRequestCountPerTarget | 1000/min | 120s | 2 / 6 |
-| Validation | ALBRequestCountPerTarget | 500/min | 60s | 3 / 12 |
-| Refund | ECSServiceAverageMemoryUtilization | 70% | 180s | 2 / 8 |
-
----
-
-## 5. Data Flow Diagrams
-
-### 5.1 Validation Request Flow (Search/Compare)
+### Phase 2: Canary Routing (Weeks 4–6)
 
 ```mermaid
-sequenceDiagram
-    participant Client as Angular UI
-    participant GW as API Gateway
-    participant CB as Circuit Breaker
-    participant VS as Validation Service
-    participant Cache as Local Cache (LRU)
-    participant BE as wdpr-config-services
+flowchart TB
+    UI[Angular UI] --> GW[API Gateway]
+    GW -->|"refund paths: 10% → 50% → 100%"| RS[Refund Service]
+    GW -->|"validation paths: 10% → 50% → 100%"| VS[Validation Service]
+    GW -->|"remaining/fallback"| MONO[Monolith - Degrading]
+    RS --> CS[wdpr-config-services]
+    VS --> CS
+    MONO --> CS
+```
 
-    Client->>GW: GET /api/configs/search?client=resort&env=prod
-    GW->>GW: Inject X-Correlation-ID
-    GW->>CB: Route to Validation
-    CB->>VS: GET /internal/configs/search
-    VS->>Cache: Check LRU cache (TTL 30s)
-    alt Cache Hit
-        Cache-->>VS: Cached result
-    else Cache Miss
-        VS->>BE: GET /v2/configurations?client=resort&env=prod
-        BE-->>VS: 200 OK
-        VS->>Cache: Store result
+- Route by path prefix, incrementally shift traffic
+- Feature flags control which service handles each route
+- Automated rollback on error rate spike (>1% 5xx)
+- UI remains unchanged — same API contract
+
+### Phase 3: Monolith Decommission (Weeks 7–8)
+
+- 100% traffic to new services
+- Monolith kept on standby (zero-traffic, not terminated)
+- After 2 weeks of stable operation → decommission monolith
+- Remove gateway fallback rules
+
+### Migration Rules
+
+1. **No breaking changes** — Response shapes are identical
+2. **Additive only** — New fields can be added, never removed
+3. **Feature flags** — `X-Service-Version` header for A/B testing
+4. **Dual-write validation** — Both monolith and new service process, compare results in shadow mode
+
+---
+
+## 6. Shared Concerns
+
+### 6.1 Authentication & Authorization
+
+```typescript
+// Shared middleware from @wdpr/payment-controls-contracts
+export const authMiddleware = (requiredScopes: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const decoded = await verifyJWT(token, { issuer: AUTH_ISSUER });
+    req.user = decoded;
+    if (!hasScopes(decoded, requiredScopes)) {
+      return res.status(403).json({ error: 'INSUFFICIENT_SCOPE' });
+    }
+    next();
+  };
+};
+```
+
+- JWT validation at each service (no shared session)
+- Scopes: `refund:read`, `refund:write`, `config:read`, `config:write`, `export:read`
+- Internal service-to-service: mTLS + service account tokens
+
+### 6.2 Logging
+
+- Structured JSON logs (pino)
+- Correlation ID propagated via `X-Correlation-Id` header
+- Log levels: `info` for requests, `warn` for retries, `error` for failures
+- Ship to Splunk/ELK via Fluentd sidecar
+
+### 6.3 Distributed Tracing
+
+- OpenTelemetry SDK (Node.js auto-instrumentation)
+- W3C Trace Context headers (`traceparent`, `tracestate`)
+- Spans: HTTP in/out, DB calls, stream lifecycle
+- Export to Jaeger/X-Ray
+
+### 6.4 Error Handling
+
+```typescript
+// Shared error format from contracts package
+interface ApiError {
+  code: string;          // e.g. "REFUND_LIMIT_EXCEEDED"
+  message: string;       // Human-readable
+  details?: unknown[];   // Validation errors array
+  traceId: string;       // For support correlation
+  timestamp: string;     // ISO 8601
+}
+```
+
+- Consistent error shape across both services
+- Circuit breaker (opossum) on downstream calls — open after 5 failures in 30s
+- Retry with exponential backoff for transient failures (503, ECONNRESET)
+- Graceful degradation: if Validation Service is down, Refund Service returns 503 (not silent failure)
+
+### 6.5 Shared Middleware Stack
+
+```
+@wdpr/payment-controls-contracts
+├── middleware/
+│   ├── auth.ts              # JWT verification
+│   ├── correlation-id.ts    # Propagate/generate correlation ID
+│   ├── request-logger.ts    # Structured request/response logging
+│   ├── error-handler.ts     # Global error → ApiError mapping
+│   ├── rate-limiter.ts      # Per-client rate limiting
+│   └── stream-helpers.ts    # Backpressure-aware streaming utilities
+```
+
+---
+
+## 7. API Contract Strategy
+
+### 7.1 Versioning Scheme
+
+- **URL-based major versions**: `/api/v1/`, `/api/v2/`
+- **Header-based minor negotiation**: `Accept-Version: 1.2`
+- **Default behavior**: Latest minor within the major version
+
+### 7.2 Backward Compatibility Rules
+
+| Rule | Example |
+|------|---------|
+| Never remove fields | `clientName` stays even if `clientDisplayName` is added |
+| Never change field types | `amount: number` cannot become `amount: string` |
+| New fields are optional | Consumers ignore unknown fields |
+| Deprecate before removal | `X-Deprecated-Fields: oldField` header for 2 releases |
+| Enum values only grow | New status values are additive |
+
+### 7.3 Contract Testing
+
+```mermaid
+flowchart LR
+    subgraph "CI Pipeline"
+        CT[Contract Tests<br/>Pact / json-schema-diff]
+        CT -->|Provider verify| RS[Refund Service]
+        CT -->|Provider verify| VS[Validation Service]
+        CT -->|Consumer verify| UI[Angular UI mocks]
     end
-    VS-->>GW: 200 OK (formatted response)
-    GW-->>Client: 200 OK
 ```
 
-### 5.2 Refund/Export Generation Flow
+- **Pact** consumer-driven contract tests
+- UI publishes expected request/response shapes
+- Services verify they satisfy the contract in CI
+- Breaking change detection blocks merge
 
-```mermaid
-sequenceDiagram
-    participant Client as Angular UI
-    participant GW as API Gateway
-    participant RS as Refund Service
-    participant BE as wdpr-config-services
-    participant S3 as S3 Bucket
-    participant SNS as SNS Topic
+### 7.4 OpenAPI Specification
 
-    Client->>GW: POST /api/exports/generate {filters, format: "csv"}
-    GW->>RS: POST /internal/exports/generate
-    RS->>RS: Create job record (in-memory)
-    RS-->>GW: 202 Accepted {jobId: "abc-123"}
-    GW-->>Client: 202 Accepted {jobId}
+Each service publishes its OpenAPI 3.1 spec:
 
-    Note over RS: Async processing begins
-    RS->>BE: GET /v2/configurations/bulk (streamed, paginated)
-    loop Stream chunks (1000 records/page)
-        BE-->>RS: Chunk N
-        RS->>RS: Transform to CSV (streaming write)
-    end
-    RS->>S3: PUT export-abc-123.csv (multipart upload)
-    S3-->>RS: Upload complete
+- `GET /api/v1/openapi.json` — machine-readable
+- Schemas shared via `$ref` to contracts package
+- Automated SDK generation for UI client (openapi-typescript)
 
-    RS->>SNS: Publish export-generation-completed {jobId, s3Key}
+### 7.5 Endpoint Mapping (Monolith → Split)
 
-    Client->>GW: GET /api/exports/abc-123/status
-    GW->>RS: GET /internal/exports/abc-123/status
-    RS-->>GW: 200 {status: "complete", downloadUrl: "..."}
-    GW-->>Client: 200 OK
-```
+| Current Monolith Route | New Owner | New Route |
+|------------------------|-----------|-----------|
+| `POST /api/v1/refunds` | Refund Service | `POST /api/v1/refunds` (unchanged) |
+| `GET /api/v1/refunds/search` | Refund Service | `GET /api/v1/refunds/search` |
+| `GET /api/v1/exports/refunds` | Refund Service | `GET /api/v1/exports/refunds` |
+| `POST /api/v1/validate` | Validation Service | `POST /api/v1/validations/evaluate` |
+| `GET /api/v1/clients` | Validation Service | `GET /api/v1/clients` |
+| `GET /api/v1/configs/:id` | Validation Service | `GET /api/v1/configs/:id` |
+| `POST /api/v1/compare` | Validation Service | `POST /api/v1/compare` |
+| `POST /api/v1/promote` | Validation Service | `POST /api/v1/promote` |
 
-**Key Design:** Streaming pagination + S3 multipart upload eliminates unbounded memory buffering (root cause of OOM).
-
-### 5.3 Configuration Promotion Flow
-
-```mermaid
-sequenceDiagram
-    participant Client as Angular UI
-    participant GW as API Gateway
-    participant VS as Validation Service
-    participant BE as wdpr-config-services
-    participant SNS as SNS Topic
-    participant SQS as refund-on-promotion-queue
-    participant RS as Refund Service
-
-    Client->>GW: POST /api/configs/promote {configId, fromEnv, toEnv}
-    GW->>VS: POST /internal/configs/promote
-    VS->>VS: Validate promotion rules (env hierarchy, conflicts)
-    VS->>BE: POST /v2/configurations/promote
-    BE-->>VS: 200 OK {promotionId}
-    VS->>SNS: Publish config-promotion-completed {configId, toEnv, promotionId}
-    VS-->>GW: 200 OK {promotionId}
-    GW-->>Client: 200 OK
-
-    Note over SNS,RS: Async side-effect
-    SNS->>SQS: Deliver message
-    SQS->>RS: Poll message
-    RS->>RS: Invalidate cached export data for affected config
-    RS->>RS: ACK message
-```
+The gateway maps old paths 1:1 — **UI sees no change**.
 
 ---
 
-## 6. Migration Strategy (Strangler Fig)
+## Technology Summary
 
-### Phase Overview
-
-| Phase | Sprint | Scope | Risk | Rollback |
-|-------|--------|-------|------|----------|
-| 1: Gateway Deploy | Sprint 1–2 | Deploy gateway as pass-through proxy to monolith | Low | Remove gateway, DNS points back to monolith |
-| 2: Validation Extract | Sprint 2–3 | Extract search/browse/compare/promote to Validation Service | Medium | Gateway routes back to monolith for validation paths |
-| 3: Refund Extract | Sprint 4–5 | Extract export/refund to Refund Service with streaming | High | Gateway routes back to monolith for refund paths |
-| 4: Monolith Retire | Sprint 6 | Decommission monolith, remove proxy routes | Low | Re-deploy monolith if needed |
-
-### Timeline Diagram
-
-```mermaid
-gantt
-    title Migration Timeline — Strangler Fig Phases
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %d
-
-    section Phase 1: Gateway
-    Deploy Gateway as pass-through       :p1a, 2026-06-29, 7d
-    Shadow traffic + validation          :p1b, after p1a, 5d
-    Cut DNS to Gateway                   :milestone, m1, after p1b, 0d
-
-    section Phase 2: Validation
-    Extract validation routes            :p2a, after m1, 7d
-    Deploy Validation Service            :p2b, after p2a, 3d
-    Canary 10% → 50% → 100%            :p2c, after p2b, 5d
-    Validation fully extracted           :milestone, m2, after p2c, 0d
-
-    section Phase 3: Refund
-    Implement streaming export           :p3a, after m2, 7d
-    Deploy Refund Service                :p3b, after p3a, 3d
-    Canary 10% → 50% → 100%            :p3c, after p3b, 5d
-    Refund fully extracted               :milestone, m3, after p3c, 0d
-
-    section Phase 4: Retire
-    Remove monolith proxy routes         :p4a, after m3, 3d
-    Decommission monolith ECS service    :p4b, after p4a, 4d
-    Migration complete                   :milestone, m4, after p4b, 0d
-```
-
-### Cutover Strategy (per phase)
-
-1. **Canary Deployment:** Weighted target group routing (10% → 50% → 100%)
-2. **Feature Flags:** LaunchDarkly flags per route group to enable instant rollback
-3. **Dual-Write Verification:** During canary, both monolith and new service process requests; responses compared in shadow mode
-4. **Rollback Trigger:** p99 latency > 2x baseline OR error rate > 1% → automatic rollback via feature flag
-
----
-
-## 7. Key Architectural Decisions & Tradeoffs
-
-| # | Decision | Rationale | Tradeoff |
-|---|----------|-----------|----------|
-| ADR-1 | Thin gateway instead of AWS API Gateway (managed) | Need circuit breaker logic (opossum), custom correlation ID injection, and route-level feature flags. Managed API GW would require Lambda adapters adding latency. | Must maintain a custom service; slightly more ops burden. |
-| ADR-2 | No direct database access from new services | `wdpr-config-services` owns data models and consistency rules. Bypassing it would create dual-write problems and schema coupling. | Higher latency (extra hop); backend becomes a bottleneck risk. |
-| ADR-3 | Streaming + S3 for exports (not in-memory buffering) | Root cause of OOM. Streaming pagination + multipart S3 upload caps memory at ~50 MB per export regardless of dataset size. | Slightly higher export latency; requires polling/webhook for completion. |
-| ADR-4 | SNS/SQS over direct HTTP for cross-domain events | Temporal decoupling: promotion events shouldn't block on refund cache invalidation. DLQ provides durability. | Eventual consistency; slightly more complex debugging. |
-| ADR-5 | Opossum circuit breakers at gateway AND service level | Gateway breakers protect against downstream service failures; service breakers protect against backend failures. Defense in depth. | Two layers of timeout config to maintain; potential for confusing cascading opens. |
-| ADR-6 | ECS Fargate over EKS | Team already operates ECS. Kubernetes adds operational complexity without proportional benefit for 3 services. | Less scheduling flexibility; no service mesh (Envoy) without App Mesh addon. |
-| ADR-7 | Per-service internal ALBs (not service mesh) | Simplicity. 3 services don't justify service mesh complexity. Internal ALBs provide health checks and load balancing. | If service count grows beyond 5–6, revisit for App Mesh or service connect. |
-
----
-
-## 8. Risks & Mitigations
-
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|------------|------------|
-| Backend (`wdpr-config-services`) becomes bottleneck with 2 additional callers | High | Medium | Coordinate with backend team on capacity; implement request coalescing and caching (LRU 30s TTL) in validation service; circuit breakers prevent cascade. |
-| Increased latency from extra network hop (gateway → service) | Medium | High | Gateway adds ~2–5ms. Acceptable given current p99 of 800ms. Monitor with X-Ray; set alerting at p99 > 1.5s. |
-| Message loss in SNS/SQS during promotion events | Medium | Low | DLQ with CloudWatch alarm; messages are idempotent (cache invalidation is safe to replay). |
-| Deployment complexity during canary phases | Medium | Medium | Feature flags as kill switches; automated rollback on error rate threshold; runbook for each phase. |
-| Team unfamiliarity with distributed tracing | Low | High | X-Ray SDK is lightweight; add correlation ID middleware in sprint 0; provide team workshop. |
-| Export streaming introduces partial-failure scenarios | High | Low | S3 multipart upload with abort-on-failure; job status tracks progress; client can retry failed exports. |
-| DNS cutover to gateway causes brief request failures | High | Low | Use weighted routing (Route 53) for gradual cutover; gateway initially proxies 100% to monolith unchanged. |
-| Circuit breaker flapping during backend deployments | Medium | Medium | Set volume threshold to 5 requests to avoid opening on low traffic; reset timeout of 15–30s allows quick recovery. |
-
----
-
-## Appendix A: Service Contract Summary
-
-### API Gateway Routes
-
-| Method | Path | Target Service |
-|--------|------|---------------|
-| GET | `/api/configs/*` | Validation Service |
-| POST | `/api/configs/promote` | Validation Service |
-| GET | `/api/compare/*` | Validation Service |
-| POST | `/api/exports/*` | Refund Service |
-| GET | `/api/exports/*/status` | Refund Service |
-| POST | `/api/refunds/*` | Refund Service |
-
-### SNS Topic Catalog
-
-| Topic | Publisher | Subscribers |
-|-------|-----------|-------------|
-| `config-promotion-completed` | Validation Service | Refund Service (cache invalidation) |
-| `export-generation-completed` | Refund Service | Validation Service (audit log) |
-| `refund-status-changed` | Refund Service | (future: notification service) |
-
----
-
-## Appendix B: Observability Stack
-
-- **Tracing:** AWS X-Ray with `aws-xray-sdk` — all HTTP calls instrumented
-- **Correlation:** `X-Correlation-ID` header generated at gateway, propagated to all downstream calls and SQS message attributes
-- **Metrics:** CloudWatch custom metrics — request count, error rate, circuit breaker state, export job duration
-- **Logging:** Structured JSON logs (pino) with correlation ID, shipped to CloudWatch Logs → OpenSearch
-- **Alerting:** CloudWatch Alarms on p99 latency, error rate > 1%, OOM events, DLQ message count > 0
+| Concern | Choice | Rationale |
+|---------|--------|-----------|
+| Runtime | Node.js 20 LTS | Matches existing stack |
+| Language | TypeScript 5.x (strict) | Type safety, shared contracts |
+| Framework | Express.js + express-openapi-validator | Lightweight, proven |
+| Streaming | Node.js `stream.pipeline()` + Transform | Backpressure, memory-safe |
+| Validation | Zod (runtime) + TypeScript (compile) | Schema-first, composable |
+| HTTP Client | undici (Node built-in) | Fast, streaming-friendly |
+| Circuit Breaker | opossum | Battle-tested Node.js library |
+| Logging | pino | Fast structured JSON logging |
+| Tracing | @opentelemetry/sdk-node | Vendor-neutral, W3C standard |
+| Testing | Vitest + Pact + Supertest | Fast unit + contract + integration |
+| Container | Docker (node:20-alpine) | Small image, fast deploy |
+| Orchestration | AWS ECS Fargate / EKS | Serverless containers, auto-scale |
+| Gateway | AWS ALB + path rules | No additional infra, native integration |
+| IaC | Terraform / CDK | Matches enterprise patterns |
