@@ -4,9 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.136
+## v0.2.137
 
-- **fix(doc)** — improve conf verification command (#482)
+- **feat(confluence-mcp)** — add Cloud auth + confluence-cloud routing with automatic instance detection (#487)
+- **feat(orchestrator)** — dynamic cross-domain orchestrator delegation for multi-team workflows (#483)
+- **feat(tep3)** — add memory bank context and child workspaces for Standalone and Package teams (#481)
+- **fix(jira-mcp)** — isCloud URL detection, search/jql endpoint routing, XRay imports (#488)
+- **fix(jira-mcp)** — handle ADF description and accountId assignee in updateIssue for Cloud (#484)
+- **chore** — deprecate myjira/mywiki — route legacy URLs to cloud_ prefix (#488)
+- **docs(dpe-workspace)** — migrate Jira and Confluence URLs to Atlassian Cloud (#486)
 <!-- END LATEST -->
 
 ## v0.2.128

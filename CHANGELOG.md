@@ -4,6 +4,23 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.137] — 2026-06-24
+
+### Added
+- **Confluence Cloud MCP** — add Cloud auth + confluence-cloud routing with automatic instance detection (#487)
+- **Cross-domain orchestrator delegation** — dynamic cross-domain orchestrator delegation for multi-team workflows (#483)
+- **TEP3 memory bank** — add memory bank context and child workspaces for Standalone and Package teams (#481)
+
+### Fixed
+- **jira-mcp** — isCloud URL detection, search/jql endpoint routing, XRay imports (#488)
+- **jira-mcp** — handle ADF description and accountId assignee in updateIssue for Cloud (#484)
+
+### Changed
+- **Deprecate myjira/mywiki** — route legacy URLs to cloud_ prefix (#488)
+- **DPE workspace** — migrate Jira and Confluence URLs to Atlassian Cloud (#486)
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.136] — 2026-06-23
 
 ### Fixed
