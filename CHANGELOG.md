@@ -7,6 +7,8 @@ All notable changes to steer-runtime.
 ## [0.2.139] — 2026-06-24
 
 ### Added
+- **Appium MCP server** — new MCP server for mobile automation + API test executor agents (#469)
+- **teams-mcp and servicenow-graph-mcp** — new MCP servers for Microsoft Teams and ServiceNow Graph API (#492)
 - **jira-mcp: XRay Cloud tools** — 6 new tools for XRay Cloud (`xray.cloud.getxray.app`):
   - `xray_cloud_create_test` — create test case with steps
   - `xray_cloud_create_execution` — create test execution linked to plan/tests
@@ -15,15 +17,23 @@ All notable changes to steer-runtime.
   - `xray_cloud_get_test_steps` — read test steps via GraphQL
   - `xray_cloud_get_test_runs` — read execution results via GraphQL
 - **jira-mcp: XRay Cloud auth** — client credentials token management with 50min caching
+- **jira-mcp: resolution support** — add resolution field to transitions + story points Cloud fallback (#500)
+- **TEP3 workspace** — add tep3-ui child workspace with skills, rules, context, and memory banks (#489)
+- **TEP3 code review template** (#478)
 
 ### Fixed
+- **jira-mcp** — address XRay Cloud review feedback (#497)
+- **jira-mcp** — support rich ADF descriptions via markdown-to-ADF conversion (#490)
 - **Orchestrator URL delegation** — added fallback rule so orchestrators never refuse unrecognized URLs
 - **Orchestrator Jira creation** — added 'create ticket' intent routing to `story_analyzer_agent`
-- **story_analyzer_agent** — documented Jira write capabilities (was incorrectly self-reporting as read-only)
+- **Orchestrator security** — add security rules to prevent token exposure
+- **Orchestrator routing** — add Atlassian Cloud URLs to delegation routing table
 
 ### Changed
 - **Deprecate setup.sh/setup.ps1** — replaced with stub that directs users to Koda (-4,172 lines)
 - **QA/BA/ops orchestrators** — updated inline routing with Cloud URLs and fallback rule
+- **Pre-built dist bundles** — add pre-built dist bundles for teams-mcp and servicenow-graph-mcp (#496)
+- **jira-mcp metadata** — add mcp-meta.json to jira-mcp (#499)
 
 ## [0.2.138] — 2026-06-24
 

@@ -6,8 +6,13 @@ Format: version header followed by bullet points. Only the latest version block 
 <!-- LATEST -->
 ## v0.2.139
 
-- **feat(jira-mcp)** — XRay Cloud tools: create tests with steps, create executions, report pass/fail, link tests to stories, read steps and runs via GraphQL
-- **fix(orchestrator)** — add fallback URL delegation rule and Jira ticket creation routing
+- **feat** — Appium MCP server + mobile/API test executor agents
+- **feat** — teams-mcp and servicenow-graph-mcp servers for MS Teams and ServiceNow integration
+- **feat(jira-mcp)** — XRay Cloud tools: create tests, executions, report results, link tests to stories via GraphQL
+- **feat(jira-mcp)** — resolution support in transitions + story points Cloud fallback
+- **feat(jira-mcp)** — rich ADF descriptions via markdown-to-ADF conversion
+- **feat(tep3)** — tep3-ui child workspace with skills, rules, context, and memory banks
+- **fix(orchestrator)** — fallback URL delegation, Jira creation routing, security rules, Cloud URL routing
 - **chore** — deprecate setup.sh and setup.ps1 (replaced by Koda)
 <!-- END LATEST -->
 
