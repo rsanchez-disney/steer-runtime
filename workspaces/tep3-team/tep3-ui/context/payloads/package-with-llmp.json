@@ -1,0 +1,82 @@
+{
+    "businessContext": {
+        "salesFlow": "LODGING",
+        "sourceOfBusiness": "INTC"
+    },
+    "bypassPayment": false,
+    "useAbandonApi": true,
+    "items": [
+        {
+            "type": "LODGING",
+            "productId": { "value": "334223", "type": "resort-id" },
+            "offerId": "ABC123",
+            "offerCollectionId": "ZZZ999",
+            "offerPrice": { "subtotal": "300.00", "currency": "USD", "total": "300.00" },
+            "partyMix": [
+                { "id": "502649692641-1723413-4276276-9312290", "ageGroup": "ADULT", "quantity": 2, "unitPrice": {} },
+                { "id": "502649692641-1723413-4276276-9312290", "ageGroup": "CHILD", "quantity": 1, "age": 9, "unitPrice": {} }
+            ],
+            "quantity": 1,
+            "configuration": {
+                "roomOnly": false,
+                "origin": "cart",
+                "startDate": "2026-07-15",
+                "endDate": "2026-07-16",
+                "packageCode": "6CN6J",
+                "resortCode": "GBLDH",
+                "roomTypeId": "13874758",
+                "roomTypeCode": "SX",
+                "analytics": { "facilityName": "Disneyland Hotel", "facilityTier": "Deluxe", "resortCode": "GBLDH", "roomTypeCode": "SX" },
+                "specialNeedsRequest": true,
+                "offer": {
+                    "type": "offer",
+                    "alternateIdentifiers": [
+                        { "type": "offerId", "value": "20251219184447404" },
+                        { "type": "quoteId", "value": "5264dee1-c6d0-42c6-9cc3-95956cdffb0b" },
+                        { "type": "candidateOfferId", "value": "1" }
+                    ]
+                }
+            },
+            "components": [
+                {
+                    "productId": { "value": "3DPH_A_TKTPKG", "type": "tickets" },
+                    "partyMix": [{ "id": "502649692641-1723413-4276276-9312290", "ageGroup": "ADULT", "quantity": 2 }],
+                    "bundleComponents": [
+                        { "id": "1DPH_DL_A_TCKT", "date": "2026-07-03", "parkName": "Disneyland Park Theme Park", "parkCode": "DL", "componentClassification": "1D_PH", "classification": "THEME_PARK_TICKET" },
+                        { "id": "1DPH_DCA_A_TCKT", "date": "2026-07-04", "parkName": "Disney California Adventure Park", "parkCode": "DCA", "componentClassification": "1D_PH", "classification": "THEME_PARK_TICKET" },
+                        { "id": "1D_LLMP_ADDON", "date": "2026-07-03", "componentClassification": "LLMP_PRODUCT", "classification": "LLMP_PRODUCT", "name": "Lightning Lane Multi Pass \u2013 ALL (1-Day)" },
+                        { "id": "1D_LLMP_ADDON", "date": "2026-07-04", "componentClassification": "LLMP_PRODUCT", "classification": "LLMP_PRODUCT", "name": "Lightning Lane Multi Pass \u2013 ALL (1-Day)" }
+                    ]
+                },
+                {
+                    "productId": { "value": "3DPH_C_TKTPKG", "type": "tickets" },
+                    "partyMix": [{ "id": "502649692641-1723413-4276276-9312290", "ageGroup": "CHILD", "age": 9, "quantity": 1 }],
+                    "bundleComponents": [
+                        { "id": "1DPH_DL_C_TCKT", "date": "2026-07-03", "parkName": "Disneyland Park Theme Park", "parkCode": "DL", "componentClassification": "1D_PH", "classification": "THEME_PARK_TICKET" },
+                        { "id": "1DPH_DCA_C_TCKT", "date": "2026-07-04", "parkName": "Disney California Adventure Park", "parkCode": "DCA", "componentClassification": "1D_PH", "classification": "THEME_PARK_TICKET" },
+                        { "id": "1D_LLMP_ADDON", "date": "2026-07-03", "componentClassification": "LLMP_PRODUCT", "classification": "LLMP_PRODUCT", "name": "Lightning Lane Multi Pass \u2013 ALL (1-Day)" },
+                        { "id": "1D_LLMP_ADDON", "date": "2026-07-04", "componentClassification": "LLMP_PRODUCT", "classification": "LLMP_PRODUCT", "name": "Lightning Lane Multi Pass \u2013 ALL (1-Day)" }
+                    ]
+                }
+            ]
+        }
+    ],
+    "orderConfiguration": { "totalCost": { "price": "1000.00", "subtotal": "1000.00", "total": "1000.00" } },
+    "orderType": "",
+    "originUrl": "/cart",
+    "postProcessApi": "/cart-plus-api/api/v1/mark-booked/dlr/502649684703-3718014-3810995-3654556",
+    "paymentSessionInfo": {},
+    "requestType": "local-storage",
+    "returnToOriginOnError": false,
+    "siteId": "dlr",
+    "errorProcessor": { "type": "api", "method": "POST", "api": "/cart-plus-api/api/v1/storeId/dlr/remove-other-item/502649684703-3718014-3810995-3654556" },
+    "priceChangeResolutionDetails": {
+        "decline": [
+            { "type": "redirect", "url": "/cart" },
+            { "type": "remove-cart", "method": "POST", "url": "/cart-plus-api/api/v1/storeId/dlr/remove-other-item/502649684703-3718014-3810995-3654556" },
+            { "type": "abandon-order", "method": "POST", "url": "/uc/api/v1/order/abandon/" }
+        ],
+        "accept": [{ "type": "update-cart", "url": "/cart-plus-api/api/v1/bulk-update/" }],
+        "cartId": "502649684703-3718014-3810995-3654556"
+    }
+}

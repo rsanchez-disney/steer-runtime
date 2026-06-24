@@ -1,0 +1,46 @@
+{
+  "name": "tep3-ui",
+  "extends": "tep3-team",
+  "description": "TEP3 UI — Angular SPA (checkout/cart), Polymer web components, BFF integration",
+  "team": "TEP3 UI",
+  "profiles": ["dev-web"],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "wdpr-ecommerce-uc-spa",
+      "path": "../wdpr-ecommerce-uc-spa",
+      "memory_bank": "wdpr-ecommerce-uc-spa",
+      "repo": "WDPR-Commerce/wdpr-ecommerce-uc-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "com-uc-ui-components",
+      "path": "../com-uc-ui-components",
+      "memory_bank": "com-uc-ui-components",
+      "repo": "WDPR-Commerce/com-uc-ui-components",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-wdpr-cart-ui",
+      "path": "../wdpr-ecommerce-wdpr-cart-ui",
+      "memory_bank": "wdpr-ecommerce-wdpr-cart-ui",
+      "repo": "WDPR-Commerce/wdpr-ecommerce-wdpr-cart-ui",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-wdpr-cart-api",
+      "path": "../wdpr-ecommerce-wdpr-cart-api",
+      "memory_bank": "wdpr-ecommerce-wdpr-cart-api",
+      "repo": "WDPR-Commerce/wdpr-ecommerce-wdpr-cart-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-uc-api",
+      "path": "../wdpr-ecommerce-uc-api",
+      "memory_bank": "wdpr-ecommerce-uc-api",
+      "repo": "WDPR-Commerce/wdpr-ecommerce-uc-api",
+      "host": "github.disney.com"
+    }
+  ],
+  "jira_prefix": "TEP3-"
+}
