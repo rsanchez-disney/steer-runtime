@@ -6,8 +6,8 @@ Every PR that introduces DB schema changes or Nimbus/env variable changes MUST h
 
 ## Wiki References
 
-- **DB Change Log:** https://mywiki.disney.com/pages/viewpage.action?pageId=1222085222&spaceKey=DPE&title=DB+Change+log
-- **Nimbus Change Log:** https://mywiki.disney.com/spaces/DPE/pages/1222085228/Nimbus+change+log
+- **DB Change Log:** https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220922981/DB+Change+log
+- **Nimbus Change Log:** https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220922983/Nimbus+change+log
 
 ## Detection Patterns
 
@@ -42,8 +42,8 @@ When a change is detected:
 
 ⚠️ This change is NOT documented in the DPE wiki change log.
 Before merging, add an entry to:
-- DB changes → https://mywiki.disney.com/pages/viewpage.action?pageId=1222085222&spaceKey=DPE&title=DB+Change+log
-- Nimbus changes → https://mywiki.disney.com/spaces/DPE/pages/1222085228/Nimbus+change+log
+- DB changes → https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220922981/DB+Change+log
+- Nimbus changes → https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220922983/Nimbus+change+log
 
 Required fields: Sprint, Jira Ticket, DB version/Setting key, Description, Release
 ```
