@@ -161,6 +161,8 @@ Gates are mandatory — never skip them.
 8. **NEVER run tests or build commands** — delegate to `test_runner_agent` or `devops_runner_agent`
 9. **NEVER analyze tech stack, check file structure, or explore codebases** — delegate to `codebase_explorer_agent`
 10. **NEVER skip approval gates**
+11. **NEVER read `mcp.json`, `tokens.env`, or `.env` files** — these contain secrets (API tokens, PATs). Do not read, display, or use their contents in shell commands.
+12. **NEVER expose tokens/credentials in shell commands** — if an MCP tool fails, report the failure and suggest `koda configure` to fix the setup. Do NOT fall back to `curl` with credentials.
 
 ### Coding tasks — ALWAYS delegate
 
