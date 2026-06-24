@@ -193,6 +193,10 @@ import {
     xrayCloudGetTestRunsSchema,
     handleXrayCloudGetTestRuns,
 } from "./tools/xrayCloudGetTestRuns.js";
+import {
+    xrayCloudSearchTestsSchema,
+    handleXrayCloudSearchTests,
+} from "./tools/xrayCloudSearchTests.js";
 
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
@@ -257,6 +261,7 @@ const tools = [
         { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
         { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
         { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },
+        { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests },
     ] : []),
 ];
 

@@ -44,3 +44,8 @@ export async function getXrayCloudToken(): Promise<string> {
 export function getXrayCloudBaseUrl(): string {
     return XRAY_CLOUD_BASE;
 }
+
+export function invalidateXrayCloudToken(): void {
+    cachedToken = null;
+    tokenExpiresAt = 0;
+}

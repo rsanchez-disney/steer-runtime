@@ -20,30 +20,37 @@ export const xrayCloudCreateTestSchema = {
                     },
                     required: ["action", "result"],
                 },
-                description: "Array of test steps",
+                description: "Array of test steps (for Manual/Generic types)",
             },
+            gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type. Used when testType is Cucumber." },
             labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
+            customFields: { type: "object", description: "Custom Jira fields to set (e.g., {\"customfield_13912\": \"EPIC-1\"})" },
         },
-        required: ["projectKey", "summary", "steps"],
+        required: ["projectKey", "summary"],
     },
 };
 
 export async function handleXrayCloudCreateTest(args: any): Promise<any> {
     try {
-        const { projectKey, summary, testType = "Manual", steps, labels } = args;
+        const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
 
         const payload: any = {
             testType,
             fields: {
                 summary,
                 project: { key: projectKey },
+                ...customFields,
             },
-            steps: steps.map((s: any) => ({
+        };
+        if (gherkin && testType === "Cucumber") {
+            payload.xpiDefinition = gherkin;
+        } else if (steps?.length) {
+            payload.steps = steps.map((s: any) => ({
                 action: s.action,
                 data: s.data || "",
                 result: s.result,
-            })),
-        };
+            }));
+        }
         if (labels?.length) payload.fields.labels = labels;
 
         const result = await xrayCloudPost("/api/v2/import/test", payload);

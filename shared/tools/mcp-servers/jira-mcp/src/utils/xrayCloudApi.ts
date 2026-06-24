@@ -2,19 +2,32 @@
  * XRay Cloud API client — REST and GraphQL operations.
  */
 
-import { getXrayCloudToken, getXrayCloudBaseUrl } from "./xrayCloudAuth.js";
+import { getXrayCloudToken, getXrayCloudBaseUrl, invalidateXrayCloudToken } from "./xrayCloudAuth.js";
+
+const ISSUE_KEY_RE = /^[A-Z][A-Z0-9]+-\d+$/;
+
+export function validateIssueKey(key: string, field = "issueKey"): void {
+    if (!ISSUE_KEY_RE.test(key)) {
+        throw new Error(`Invalid ${field}: "${key}" — expected format like PROJ-123`);
+    }
+}
 
 async function headers(): Promise<Record<string, string>> {
     const token = await getXrayCloudToken();
     return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
 }
 
+async function fetchWithRetry(url: string, body: string): Promise<Response> {
+    let res = await fetch(url, { method: "POST", headers: await headers(), body });
+    if (res.status === 401) {
+        invalidateXrayCloudToken();
+        res = await fetch(url, { method: "POST", headers: await headers(), body });
+    }
+    return res;
+}
+
 export async function xrayCloudPost(path: string, body: unknown): Promise<any> {
-    const res = await fetch(`${getXrayCloudBaseUrl()}${path}`, {
-        method: "POST",
-        headers: await headers(),
-        body: JSON.stringify(body),
-    });
+    const res = await fetchWithRetry(`${getXrayCloudBaseUrl()}${path}`, JSON.stringify(body));
     if (!res.ok) {
         const text = await res.text();
         throw new Error(`XRay Cloud POST ${path} failed: ${res.status} — ${text}`);
@@ -24,11 +37,10 @@ export async function xrayCloudPost(path: string, body: unknown): Promise<any> {
 }
 
 export async function xrayCloudGraphQL(query: string, variables?: Record<string, unknown>): Promise<any> {
-    const res = await fetch(`${getXrayCloudBaseUrl()}/api/v2/graphql`, {
-        method: "POST",
-        headers: await headers(),
-        body: JSON.stringify({ query, variables }),
-    });
+    const res = await fetchWithRetry(
+        `${getXrayCloudBaseUrl()}/api/v2/graphql`,
+        JSON.stringify({ query, variables }),
+    );
     if (!res.ok) {
         const text = await res.text();
         throw new Error(`XRay Cloud GraphQL failed: ${res.status} — ${text}`);

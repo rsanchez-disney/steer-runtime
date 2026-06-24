@@ -1,4 +1,4 @@
-import { xrayCloudGraphQL } from "../utils/xrayCloudApi.js";
+import { xrayCloudGraphQL, validateIssueKey } from "../utils/xrayCloudApi.js";
 
 export const xrayCloudLinkTestToStorySchema = {
     name: "xray_cloud_link_test_to_story",
@@ -16,12 +16,14 @@ export const xrayCloudLinkTestToStorySchema = {
 export async function handleXrayCloudLinkTestToStory(args: any): Promise<any> {
     try {
         const { testKey, storyKey } = args;
+        validateIssueKey(testKey, "testKey");
+        validateIssueKey(storyKey, "storyKey");
 
         const mutation = `
-            mutation {
+            mutation($testKeys: [String!]!, $issueKey: String!) {
                 addTestToIssue(
-                    testIssueIds: { issueKey: "${testKey}" }
-                    issueId: { issueKey: "${storyKey}" }
+                    testIssueIds: $testKeys
+                    issueId: $issueKey
                 ) {
                     addedTests
                     warning
@@ -29,7 +31,7 @@ export async function handleXrayCloudLinkTestToStory(args: any): Promise<any> {
             }
         `;
 
-        const result = await xrayCloudGraphQL(mutation);
+        const result = await xrayCloudGraphQL(mutation, { testKeys: [testKey], issueKey: storyKey });
         const added = result?.addTestToIssue?.addedTests ?? 0;
         const warning = result?.addTestToIssue?.warning || "";
 

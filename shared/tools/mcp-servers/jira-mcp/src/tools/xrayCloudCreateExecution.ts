@@ -11,6 +11,7 @@ export const xrayCloudCreateExecutionSchema = {
             testPlanKey: { type: "string", description: "Test Plan issue key to link (optional)" },
             testKeys: { type: "array", items: { type: "string" }, description: "Test issue keys to include (optional)" },
             environment: { type: "string", description: "Test environment name (optional)" },
+            customFields: { type: "object", description: "Custom Jira fields to set (e.g., {\"customfield_10803\": \"sprint-id\"})" },
         },
         required: ["projectKey", "summary"],
     },
@@ -18,9 +19,9 @@ export const xrayCloudCreateExecutionSchema = {
 
 export async function handleXrayCloudCreateExecution(args: any): Promise<any> {
     try {
-        const { projectKey, summary, testPlanKey, testKeys, environment } = args;
+        const { projectKey, summary, testPlanKey, testKeys, environment, customFields } = args;
 
-        const info: any = { summary, project: projectKey };
+        const info: any = { summary, project: projectKey, ...customFields };
         if (testPlanKey) info.testPlanKey = testPlanKey;
         if (environment) info.testEnvironments = [environment];
 

@@ -10698,18 +10698,32 @@ async function getXrayCloudToken() {
 function getXrayCloudBaseUrl() {
   return XRAY_CLOUD_BASE;
 }
+function invalidateXrayCloudToken() {
+  cachedToken = null;
+  tokenExpiresAt = 0;
+}
 
 // build/utils/xrayCloudApi.js
+var ISSUE_KEY_RE = /^[A-Z][A-Z0-9]+-\d+$/;
+function validateIssueKey(key, field = "issueKey") {
+  if (!ISSUE_KEY_RE.test(key)) {
+    throw new Error(`Invalid ${field}: "${key}" \u2014 expected format like PROJ-123`);
+  }
+}
 async function headers() {
   const token = await getXrayCloudToken();
   return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
 }
+async function fetchWithRetry(url, body) {
+  let res = await fetch(url, { method: "POST", headers: await headers(), body });
+  if (res.status === 401) {
+    invalidateXrayCloudToken();
+    res = await fetch(url, { method: "POST", headers: await headers(), body });
+  }
+  return res;
+}
 async function xrayCloudPost(path, body) {
-  const res = await fetch(`${getXrayCloudBaseUrl()}${path}`, {
-    method: "POST",
-    headers: await headers(),
-    body: JSON.stringify(body)
-  });
+  const res = await fetchWithRetry(`${getXrayCloudBaseUrl()}${path}`, JSON.stringify(body));
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`XRay Cloud POST ${path} failed: ${res.status} \u2014 ${text}`);
@@ -10718,11 +10732,7 @@ async function xrayCloudPost(path, body) {
   return contentType.includes("application/json") ? res.json() : res.text();
 }
 async function xrayCloudGraphQL(query, variables) {
-  const res = await fetch(`${getXrayCloudBaseUrl()}/api/v2/graphql`, {
-    method: "POST",
-    headers: await headers(),
-    body: JSON.stringify({ query, variables })
-  });
+  const res = await fetchWithRetry(`${getXrayCloudBaseUrl()}/api/v2/graphql`, JSON.stringify({ query, variables }));
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`XRay Cloud GraphQL failed: ${res.status} \u2014 ${text}`);
@@ -10755,28 +10765,35 @@ var xrayCloudCreateTestSchema = {
           },
           required: ["action", "result"]
         },
-        description: "Array of test steps"
+        description: "Array of test steps (for Manual/Generic types)"
       },
-      labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" }
+      gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type. Used when testType is Cucumber." },
+      labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
+      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_13912": "EPIC-1"})' }
     },
-    required: ["projectKey", "summary", "steps"]
+    required: ["projectKey", "summary"]
   }
 };
 async function handleXrayCloudCreateTest(args) {
   try {
-    const { projectKey, summary, testType = "Manual", steps, labels } = args;
+    const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
     const payload = {
       testType,
       fields: {
         summary,
-        project: { key: projectKey }
-      },
-      steps: steps.map((s) => ({
+        project: { key: projectKey },
+        ...customFields
+      }
+    };
+    if (gherkin && testType === "Cucumber") {
+      payload.xpiDefinition = gherkin;
+    } else if (steps?.length) {
+      payload.steps = steps.map((s) => ({
         action: s.action,
         data: s.data || "",
         result: s.result
-      }))
-    };
+      }));
+    }
     if (labels?.length)
       payload.fields.labels = labels;
     const result = await xrayCloudPost("/api/v2/import/test", payload);
@@ -10804,15 +10821,16 @@ var xrayCloudCreateExecutionSchema = {
       summary: { type: "string", description: "Execution summary/title" },
       testPlanKey: { type: "string", description: "Test Plan issue key to link (optional)" },
       testKeys: { type: "array", items: { type: "string" }, description: "Test issue keys to include (optional)" },
-      environment: { type: "string", description: "Test environment name (optional)" }
+      environment: { type: "string", description: "Test environment name (optional)" },
+      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_10803": "sprint-id"})' }
     },
     required: ["projectKey", "summary"]
   }
 };
 async function handleXrayCloudCreateExecution(args) {
   try {
-    const { projectKey, summary, testPlanKey, testKeys, environment } = args;
-    const info = { summary, project: projectKey };
+    const { projectKey, summary, testPlanKey, testKeys, environment, customFields } = args;
+    const info = { summary, project: projectKey, ...customFields };
     if (testPlanKey)
       info.testPlanKey = testPlanKey;
     if (environment)
@@ -10914,18 +10932,20 @@ var xrayCloudLinkTestToStorySchema = {
 async function handleXrayCloudLinkTestToStory(args) {
   try {
     const { testKey, storyKey } = args;
+    validateIssueKey(testKey, "testKey");
+    validateIssueKey(storyKey, "storyKey");
     const mutation = `
-            mutation {
+            mutation($testKeys: [String!]!, $issueKey: String!) {
                 addTestToIssue(
-                    testIssueIds: { issueKey: "${testKey}" }
-                    issueId: { issueKey: "${storyKey}" }
+                    testIssueIds: $testKeys
+                    issueId: $issueKey
                 ) {
                     addedTests
                     warning
                 }
             }
         `;
-    const result = await xrayCloudGraphQL(mutation);
+    const result = await xrayCloudGraphQL(mutation, { testKeys: [testKey], issueKey: storyKey });
     const added = result?.addTestToIssue?.addedTests ?? 0;
     const warning = result?.addTestToIssue?.warning || "";
     let text = `**Linked:** ${testKey} \u2192 ${storyKey}
@@ -10955,9 +10975,10 @@ var xrayCloudGetTestStepsSchema = {
 async function handleXrayCloudGetTestSteps(args) {
   try {
     const { testKey } = args;
+    validateIssueKey(testKey, "testKey");
     const query = `
-            query {
-                getTests(jql: "key = ${testKey}", limit: 1) {
+            query($jql: String!, $limit: Int) {
+                getTests(jql: $jql, limit: $limit) {
                     results {
                         issueId
                         testType { name }
@@ -10971,7 +10992,7 @@ async function handleXrayCloudGetTestSteps(args) {
                 }
             }
         `;
-    const data = await xrayCloudGraphQL(query);
+    const data = await xrayCloudGraphQL(query, { jql: `key = ${testKey}`, limit: 1 });
     const test = data?.getTests?.results?.[0];
     if (!test)
       return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
@@ -11014,9 +11035,10 @@ var xrayCloudGetTestRunsSchema = {
 async function handleXrayCloudGetTestRuns(args) {
   try {
     const { testKey, limit = 10 } = args;
+    validateIssueKey(testKey, "testKey");
     const query = `
-            query {
-                getTestRuns(testIssueIds: ["${testKey}"], limit: ${limit}) {
+            query($testIssueIds: [String!]!, $limit: Int) {
+                getTestRuns(testIssueIds: $testIssueIds, limit: $limit) {
                     results {
                         id
                         status { name color }
@@ -11033,7 +11055,7 @@ async function handleXrayCloudGetTestRuns(args) {
                 }
             }
         `;
-    const data = await xrayCloudGraphQL(query);
+    const data = await xrayCloudGraphQL(query, { testIssueIds: [testKey], limit });
     const runs = data?.getTestRuns?.results || [];
     if (!runs.length)
       return { content: [{ type: "text", text: `No test runs found for: ${testKey}` }] };
@@ -11060,6 +11082,56 @@ async function handleXrayCloudGetTestRuns(args) {
     return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error getting XRay Cloud test runs: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudSearchTests.js
+var xrayCloudSearchTestsSchema = {
+  name: "xray_cloud_search_tests",
+  description: "Search test cases in XRay Cloud using JQL.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      jql: { type: "string", description: `JQL query (e.g., 'project = DPAY AND summary ~ "login"')` },
+      limit: { type: "number", description: "Max results (default: 20)" }
+    },
+    required: ["jql"]
+  }
+};
+async function handleXrayCloudSearchTests(args) {
+  try {
+    const { jql, limit = 20 } = args;
+    const query = `
+            query($jql: String!, $limit: Int) {
+                getTests(jql: $jql, limit: $limit) {
+                    total
+                    results {
+                        issueId
+                        jira(fields: ["key", "summary", "status", "labels"])
+                        testType { name }
+                    }
+                }
+            }
+        `;
+    const data = await xrayCloudGraphQL(query, { jql, limit });
+    const results = data?.getTests?.results || [];
+    const total = data?.getTests?.total ?? results.length;
+    if (!results.length)
+      return { content: [{ type: "text", text: `No tests found for JQL: ${jql}` }] };
+    let text = `**Test Search Results** (${results.length} of ${total} total)
+**JQL:** ${jql}
+
+`;
+    for (const t of results) {
+      const key = t.jira?.key || t.issueId;
+      const summary = t.jira?.summary || "";
+      const type = t.testType?.name || "?";
+      text += `- **${key}** \u2014 ${summary} [${type}]
+`;
+    }
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error searching XRay Cloud tests: ${error.message}` }], isError: true };
   }
 }
 
@@ -11123,7 +11195,8 @@ var tools = [
     { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
     { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
     { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
-    { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns }
+    { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },
+    { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests }
   ] : []
 ];
 var JiraMCPServer = class {

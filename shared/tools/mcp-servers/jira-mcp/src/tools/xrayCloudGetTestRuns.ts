@@ -1,4 +1,4 @@
-import { xrayCloudGraphQL } from "../utils/xrayCloudApi.js";
+import { xrayCloudGraphQL, validateIssueKey } from "../utils/xrayCloudApi.js";
 
 export const xrayCloudGetTestRunsSchema = {
     name: "xray_cloud_get_test_runs",
@@ -16,10 +16,11 @@ export const xrayCloudGetTestRunsSchema = {
 export async function handleXrayCloudGetTestRuns(args: any): Promise<any> {
     try {
         const { testKey, limit = 10 } = args;
+        validateIssueKey(testKey, "testKey");
 
         const query = `
-            query {
-                getTestRuns(testIssueIds: ["${testKey}"], limit: ${limit}) {
+            query($testIssueIds: [String!]!, $limit: Int) {
+                getTestRuns(testIssueIds: $testIssueIds, limit: $limit) {
                     results {
                         id
                         status { name color }
@@ -37,7 +38,7 @@ export async function handleXrayCloudGetTestRuns(args: any): Promise<any> {
             }
         `;
 
-        const data = await xrayCloudGraphQL(query);
+        const data = await xrayCloudGraphQL(query, { testIssueIds: [testKey], limit });
         const runs = data?.getTestRuns?.results || [];
 
         if (!runs.length) return { content: [{ type: "text", text: `No test runs found for: ${testKey}` }] };
