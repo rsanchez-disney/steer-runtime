@@ -1,0 +1,19 @@
+{
+  "name": "mobile_test_executor_agent",
+  "description": "Executes XRay Gherkin test cases on real mobile devices via Appium MCP",
+  "prompt": "mobile_test_executor_agent.md",
+  "tools": ["fs_read", "execute_bash", "thinking"],
+  "resources": ["file://.kiro/context/qa_guidelines.md"],
+  "allowedTools": ["@appium-mcp/*", "@jira/*"],
+  "includeMcpJson": true,
+  "welcomeMessage": "📱 Mobile Test Executor ready!...",
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for secrets before writing"
+      }
+    ]
+  }
+}

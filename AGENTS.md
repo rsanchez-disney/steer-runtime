@@ -610,7 +610,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-## Profile: qa (14 agents)
+## Profile: qa (16 agents)
 
 Quality Assurance and Test Automation agents for comprehensive testing.
 
@@ -624,11 +624,11 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Hooks:** agentSpawn (git context)  
 **MCP Servers:** jira, confluence, mywiki, github, qtest
 
-**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent
+**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent, mobile_test_executor_agent, api_test_executor_agent
 
 ---
 
-### QA Specialists (10)
+### QA Specialists (15)
 
 #### test_planner_agent
 **File:** `profiles/qa/agents/test_planner_agent.json`  
@@ -706,6 +706,20 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections  
 **Use for:** API collection generation, environment configs, assertion scripts  
 **MCP Servers:** bruno
+
+#### mobile_test_executor_agent
+**File:** `profiles/qa/agents/mobile_test_executor_agent.json`  
+**Purpose:** Executes XRay Gherkin test cases on real mobile devices via Appium MCP  
+**Use for:** Running mobile test scenarios on iOS simulators, Android emulators, or real devices  
+**Tools:** `fs_read`, `execute_bash`, `thinking`  
+**MCP Servers:** appium, jira
+
+#### api_test_executor_agent
+**File:** `profiles/qa/agents/api_test_executor_agent.json`  
+**Purpose:** Executes XRay Gherkin test cases against service APIs via Bruno MCP  
+**Use for:** Running API test scenarios and validating service endpoints  
+**Tools:** `fs_read`, `execute_bash`, `thinking`, `grep`  
+**MCP Servers:** bruno, jira
 
 ---
 

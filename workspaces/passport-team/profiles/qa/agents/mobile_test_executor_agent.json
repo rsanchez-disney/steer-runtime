@@ -1,0 +1,6 @@
+{
+  "name": "mobile_test_executor_agent",
+  "resources": [
+    "file://workspaces/passport-team/context/devices.json"
+  ]
+}

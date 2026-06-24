@@ -1,0 +1,18 @@
+{
+  "name": "passport-team",
+  "description": "Passport Phase 2 QA team — Photo Upload, Management, and Display",
+  "team": "Passport Phase 2",
+  "profiles": ["qa", "dev-mobile"],
+  "default_agent": "qa_orchestrator_agent",
+  "jira_prefix": "PAS2-",
+  "projects": [
+    {
+      "name": "park-apps-monorepo",
+      "repo": "dx-park-apps/park-apps-monorepo",
+      "host": "github.disney.com",
+      "path": "${WORKSPACE_ROOT}/park-apps-monorepo"
+    }
+  ],
+  "rules": ["conventional_commit"],
+  "enable_tools": true
+}
