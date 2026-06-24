@@ -4,11 +4,11 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.138
+## v0.2.139
 
-- **chore** — rebuild MCP bundles (regenerated bundled MCP server artifacts)
-- **chore** — update certification report (refreshed certification metrics)
-- **tests** — refresh orchestration test outputs (architecture_spec_agent evaluation results)
+- **feat(jira-mcp)** — XRay Cloud tools: create tests with steps, create executions, report pass/fail, link tests to stories, read steps and runs via GraphQL
+- **fix(orchestrator)** — add fallback URL delegation rule and Jira ticket creation routing
+- **chore** — deprecate setup.sh and setup.ps1 (replaced by Koda)
 <!-- END LATEST -->
 
 ## v0.2.137

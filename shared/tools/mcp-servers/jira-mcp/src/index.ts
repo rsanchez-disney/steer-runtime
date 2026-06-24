@@ -167,6 +167,33 @@ import {
     handleXrayDeleteRepositoryFolder,
 } from "./tools/xrayDeleteRepositoryFolder.js";
 
+// XRay Cloud tools
+import { isXrayCloudConfigured } from "./utils/xrayCloudAuth.js";
+import {
+    xrayCloudCreateTestSchema,
+    handleXrayCloudCreateTest,
+} from "./tools/xrayCloudCreateTest.js";
+import {
+    xrayCloudCreateExecutionSchema,
+    handleXrayCloudCreateExecution,
+} from "./tools/xrayCloudCreateExecution.js";
+import {
+    xrayCloudUpdateRunSchema,
+    handleXrayCloudUpdateRun,
+} from "./tools/xrayCloudUpdateRun.js";
+import {
+    xrayCloudLinkTestToStorySchema,
+    handleXrayCloudLinkTestToStory,
+} from "./tools/xrayCloudLinkTestToStory.js";
+import {
+    xrayCloudGetTestStepsSchema,
+    handleXrayCloudGetTestSteps,
+} from "./tools/xrayCloudGetTestSteps.js";
+import {
+    xrayCloudGetTestRunsSchema,
+    handleXrayCloudGetTestRuns,
+} from "./tools/xrayCloudGetTestRuns.js";
+
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 
@@ -222,6 +249,15 @@ const tools = [
     { schema: prefixed(xrayGetFolderTestsSchema), handler: handleXrayGetFolderTests },
     { schema: prefixed(xrayMoveTestsToFolderSchema), handler: handleXrayMoveTestsToFolder },
     { schema: prefixed(xrayDeleteRepositoryFolderSchema), handler: handleXrayDeleteRepositoryFolder },
+    // XRay Cloud tools (conditionally available when XRAY_CLOUD_CLIENT_ID is set)
+    ...(isXrayCloudConfigured() ? [
+        { schema: prefixed(xrayCloudCreateTestSchema), handler: handleXrayCloudCreateTest },
+        { schema: prefixed(xrayCloudCreateExecutionSchema), handler: handleXrayCloudCreateExecution },
+        { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
+        { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
+        { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
+        { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },
+    ] : []),
 ];
 
 class JiraMCPServer {

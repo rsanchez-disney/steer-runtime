@@ -6247,8 +6247,8 @@ var JiraApiClient = class _JiraApiClient {
   static fieldCache = null;
   /** Centralized fetch with User-Agent header for Atlassian compliance. */
   async fetch(url, options = {}) {
-    const headers = options.headers || {};
-    return fetch(url, { ...options, headers: { ...headers, "User-Agent": USER_AGENT } });
+    const headers2 = options.headers || {};
+    return fetch(url, { ...options, headers: { ...headers2, "User-Agent": USER_AGENT } });
   }
   /** Resolves custom field names to IDs. Caches the field list on first call. */
   async resolveCustomFields() {
@@ -10665,6 +10665,404 @@ Successfully deleted folder ${folderId} from project ${projectKey}.`
   }
 }
 
+// build/utils/xrayCloudAuth.js
+var XRAY_CLOUD_BASE = "https://xray.cloud.getxray.app";
+var TOKEN_URL = `${XRAY_CLOUD_BASE}/api/v2/authenticate`;
+var cachedToken = null;
+var tokenExpiresAt = 0;
+function isXrayCloudConfigured() {
+  return !!(process.env.XRAY_CLOUD_CLIENT_ID && process.env.XRAY_CLOUD_CLIENT_SECRET);
+}
+async function getXrayCloudToken() {
+  if (cachedToken && Date.now() < tokenExpiresAt)
+    return cachedToken;
+  const clientId = process.env.XRAY_CLOUD_CLIENT_ID;
+  const clientSecret = process.env.XRAY_CLOUD_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error("XRAY_CLOUD_CLIENT_ID and XRAY_CLOUD_CLIENT_SECRET are required for XRay Cloud tools.");
+  }
+  const res = await fetch(TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ client_id: clientId, client_secret: clientSecret })
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`XRay Cloud auth failed: ${res.status} \u2014 ${text}`);
+  }
+  const token = (await res.text()).replace(/^"|"$/g, "");
+  cachedToken = token;
+  tokenExpiresAt = Date.now() + 50 * 60 * 1e3;
+  return token;
+}
+function getXrayCloudBaseUrl() {
+  return XRAY_CLOUD_BASE;
+}
+
+// build/utils/xrayCloudApi.js
+async function headers() {
+  const token = await getXrayCloudToken();
+  return { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
+}
+async function xrayCloudPost(path, body) {
+  const res = await fetch(`${getXrayCloudBaseUrl()}${path}`, {
+    method: "POST",
+    headers: await headers(),
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`XRay Cloud POST ${path} failed: ${res.status} \u2014 ${text}`);
+  }
+  const contentType = res.headers.get("content-type") || "";
+  return contentType.includes("application/json") ? res.json() : res.text();
+}
+async function xrayCloudGraphQL(query, variables) {
+  const res = await fetch(`${getXrayCloudBaseUrl()}/api/v2/graphql`, {
+    method: "POST",
+    headers: await headers(),
+    body: JSON.stringify({ query, variables })
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`XRay Cloud GraphQL failed: ${res.status} \u2014 ${text}`);
+  }
+  const json = await res.json();
+  if (json.errors?.length) {
+    throw new Error(`XRay Cloud GraphQL errors: ${JSON.stringify(json.errors)}`);
+  }
+  return json.data;
+}
+
+// build/tools/xrayCloudCreateTest.js
+var xrayCloudCreateTestSchema = {
+  name: "xray_cloud_create_test",
+  description: "Create a test case with steps in XRay Cloud. Returns the created test issue key.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: { type: "string", description: "Jira project key (e.g., DPAY)" },
+      summary: { type: "string", description: "Test case title/summary" },
+      testType: { type: "string", enum: ["Manual", "Cucumber", "Generic"], description: "Test type (default: Manual)" },
+      steps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            action: { type: "string", description: "Step action/instruction" },
+            data: { type: "string", description: "Test data (optional)" },
+            result: { type: "string", description: "Expected result" }
+          },
+          required: ["action", "result"]
+        },
+        description: "Array of test steps"
+      },
+      labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" }
+    },
+    required: ["projectKey", "summary", "steps"]
+  }
+};
+async function handleXrayCloudCreateTest(args) {
+  try {
+    const { projectKey, summary, testType = "Manual", steps, labels } = args;
+    const payload = {
+      testType,
+      fields: {
+        summary,
+        project: { key: projectKey }
+      },
+      steps: steps.map((s) => ({
+        action: s.action,
+        data: s.data || "",
+        result: s.result
+      }))
+    };
+    if (labels?.length)
+      payload.fields.labels = labels;
+    const result = await xrayCloudPost("/api/v2/import/test", payload);
+    const key = result?.key || result?.testIssueId || JSON.stringify(result);
+    return {
+      content: [{ type: "text", text: `**Test Created:** ${key}
+
+**Summary:** ${summary}
+**Steps:** ${steps.length}
+**Type:** ${testType}` }]
+    };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudCreateExecution.js
+var xrayCloudCreateExecutionSchema = {
+  name: "xray_cloud_create_execution",
+  description: "Create a test execution in XRay Cloud, optionally linked to a test plan and specific tests.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: { type: "string", description: "Jira project key (e.g., DPAY)" },
+      summary: { type: "string", description: "Execution summary/title" },
+      testPlanKey: { type: "string", description: "Test Plan issue key to link (optional)" },
+      testKeys: { type: "array", items: { type: "string" }, description: "Test issue keys to include (optional)" },
+      environment: { type: "string", description: "Test environment name (optional)" }
+    },
+    required: ["projectKey", "summary"]
+  }
+};
+async function handleXrayCloudCreateExecution(args) {
+  try {
+    const { projectKey, summary, testPlanKey, testKeys, environment } = args;
+    const info = { summary, project: projectKey };
+    if (testPlanKey)
+      info.testPlanKey = testPlanKey;
+    if (environment)
+      info.testEnvironments = [environment];
+    const payload = { info };
+    if (testKeys?.length) {
+      payload.tests = testKeys.map((k) => ({ testKey: k }));
+    }
+    const result = await xrayCloudPost("/api/v2/import/execution", payload);
+    const key = result?.key || result?.testExecIssue?.key || JSON.stringify(result);
+    return {
+      content: [{ type: "text", text: `**Test Execution Created:** ${key}
+
+**Summary:** ${summary}
+**Tests:** ${testKeys?.length || 0}
+${testPlanKey ? `**Plan:** ${testPlanKey}
+` : ""}${environment ? `**Environment:** ${environment}` : ""}` }]
+    };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error creating XRay Cloud execution: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudUpdateRun.js
+var xrayCloudUpdateRunSchema = {
+  name: "xray_cloud_update_run",
+  description: "Report pass/fail results for a test run in XRay Cloud. Updates step-level statuses within an existing execution.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testExecutionKey: { type: "string", description: "Existing Test Execution issue key" },
+      tests: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            testKey: { type: "string", description: "Test issue key" },
+            status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"], description: "Overall test status" },
+            comment: { type: "string", description: "Run comment (optional)" },
+            steps: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"] },
+                  actualResult: { type: "string", description: "Actual result observed" }
+                },
+                required: ["status"]
+              },
+              description: "Step-level results (optional)"
+            }
+          },
+          required: ["testKey", "status"]
+        },
+        description: "Array of test results to report"
+      }
+    },
+    required: ["testExecutionKey", "tests"]
+  }
+};
+async function handleXrayCloudUpdateRun(args) {
+  try {
+    const { testExecutionKey, tests } = args;
+    const payload = {
+      testExecutionKey,
+      tests: tests.map((t) => ({
+        testKey: t.testKey,
+        status: t.status,
+        ...t.comment && { comment: t.comment },
+        ...t.steps && { steps: t.steps }
+      }))
+    };
+    const result = await xrayCloudPost("/api/v2/import/execution", payload);
+    const passed = tests.filter((t) => t.status === "PASSED").length;
+    const failed = tests.filter((t) => t.status === "FAILED").length;
+    return {
+      content: [{ type: "text", text: `**Test Run Updated:** ${testExecutionKey}
+
+**Results:** ${passed} passed, ${failed} failed, ${tests.length} total` }]
+    };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error updating XRay Cloud run: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudLinkTestToStory.js
+var xrayCloudLinkTestToStorySchema = {
+  name: "xray_cloud_link_test_to_story",
+  description: "Link a test case to a user story (or any issue) in XRay Cloud via issue link.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., DPAY-100)" },
+      storyKey: { type: "string", description: "Story/requirement issue key to link (e.g., DPAY-50)" }
+    },
+    required: ["testKey", "storyKey"]
+  }
+};
+async function handleXrayCloudLinkTestToStory(args) {
+  try {
+    const { testKey, storyKey } = args;
+    const mutation = `
+            mutation {
+                addTestToIssue(
+                    testIssueIds: { issueKey: "${testKey}" }
+                    issueId: { issueKey: "${storyKey}" }
+                ) {
+                    addedTests
+                    warning
+                }
+            }
+        `;
+    const result = await xrayCloudGraphQL(mutation);
+    const added = result?.addTestToIssue?.addedTests ?? 0;
+    const warning = result?.addTestToIssue?.warning || "";
+    let text = `**Linked:** ${testKey} \u2192 ${storyKey}
+
+**Tests linked:** ${added}`;
+    if (warning)
+      text += `
+**Warning:** ${warning}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error linking test to story: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudGetTestSteps.js
+var xrayCloudGetTestStepsSchema = {
+  name: "xray_cloud_get_test_steps",
+  description: "Get test steps for a test case from XRay Cloud.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., DPAY-100)" }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayCloudGetTestSteps(args) {
+  try {
+    const { testKey } = args;
+    const query = `
+            query {
+                getTests(jql: "key = ${testKey}", limit: 1) {
+                    results {
+                        issueId
+                        testType { name }
+                        steps {
+                            id
+                            action
+                            data
+                            result
+                        }
+                    }
+                }
+            }
+        `;
+    const data = await xrayCloudGraphQL(query);
+    const test = data?.getTests?.results?.[0];
+    if (!test)
+      return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
+    const steps = test.steps || [];
+    let text = `**Test Steps for ${testKey}** (${steps.length} steps)
+**Type:** ${test.testType?.name || "Unknown"}
+
+`;
+    steps.forEach((s, i) => {
+      text += `**Step ${i + 1}:**
+`;
+      text += `  Action: ${s.action}
+`;
+      if (s.data)
+        text += `  Data: ${s.data}
+`;
+      text += `  Expected: ${s.result}
+
+`;
+    });
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error getting XRay Cloud test steps: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudGetTestRuns.js
+var xrayCloudGetTestRunsSchema = {
+  name: "xray_cloud_get_test_runs",
+  description: "Get test run results for a test case from XRay Cloud.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., DPAY-100)" },
+      limit: { type: "number", description: "Max runs to return (default: 10)" }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayCloudGetTestRuns(args) {
+  try {
+    const { testKey, limit = 10 } = args;
+    const query = `
+            query {
+                getTestRuns(testIssueIds: ["${testKey}"], limit: ${limit}) {
+                    results {
+                        id
+                        status { name color }
+                        testExecution { issueId jira(fields: ["key", "summary"]) { key } }
+                        startedOn
+                        finishedOn
+                        executedBy { accountId }
+                        steps {
+                            id
+                            status { name }
+                            actualResult
+                        }
+                    }
+                }
+            }
+        `;
+    const data = await xrayCloudGraphQL(query);
+    const runs = data?.getTestRuns?.results || [];
+    if (!runs.length)
+      return { content: [{ type: "text", text: `No test runs found for: ${testKey}` }] };
+    let text = `**Test Runs for ${testKey}** (${runs.length} runs)
+
+`;
+    runs.forEach((r, i) => {
+      const execKey = r.testExecution?.jira?.key || "Unknown";
+      text += `**Run ${i + 1}:** ${r.status?.name || "?"} \u2014 Execution: ${execKey}
+`;
+      if (r.startedOn)
+        text += `  Started: ${r.startedOn}
+`;
+      if (r.finishedOn)
+        text += `  Finished: ${r.finishedOn}
+`;
+      if (r.steps?.length) {
+        const passed = r.steps.filter((s) => s.status?.name === "PASSED").length;
+        text += `  Steps: ${passed}/${r.steps.length} passed
+`;
+      }
+      text += "\n";
+    });
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error getting XRay Cloud test runs: ${error.message}` }], isError: true };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -10717,7 +11115,16 @@ var tools = [
   { schema: prefixed(xrayCreateRepositoryFolderSchema), handler: handleXrayCreateRepositoryFolder },
   { schema: prefixed(xrayGetFolderTestsSchema), handler: handleXrayGetFolderTests },
   { schema: prefixed(xrayMoveTestsToFolderSchema), handler: handleXrayMoveTestsToFolder },
-  { schema: prefixed(xrayDeleteRepositoryFolderSchema), handler: handleXrayDeleteRepositoryFolder }
+  { schema: prefixed(xrayDeleteRepositoryFolderSchema), handler: handleXrayDeleteRepositoryFolder },
+  // XRay Cloud tools (conditionally available when XRAY_CLOUD_CLIENT_ID is set)
+  ...isXrayCloudConfigured() ? [
+    { schema: prefixed(xrayCloudCreateTestSchema), handler: handleXrayCloudCreateTest },
+    { schema: prefixed(xrayCloudCreateExecutionSchema), handler: handleXrayCloudCreateExecution },
+    { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
+    { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
+    { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
+    { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns }
+  ] : []
 ];
 var JiraMCPServer = class {
   server;

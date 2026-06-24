@@ -4,6 +4,27 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.139] — 2026-06-24
+
+### Added
+- **jira-mcp: XRay Cloud tools** — 6 new tools for XRay Cloud (`xray.cloud.getxray.app`):
+  - `xray_cloud_create_test` — create test case with steps
+  - `xray_cloud_create_execution` — create test execution linked to plan/tests
+  - `xray_cloud_update_run` — report pass/fail per step
+  - `xray_cloud_link_test_to_story` — associate test ↔ user story via GraphQL
+  - `xray_cloud_get_test_steps` — read test steps via GraphQL
+  - `xray_cloud_get_test_runs` — read execution results via GraphQL
+- **jira-mcp: XRay Cloud auth** — client credentials token management with 50min caching
+
+### Fixed
+- **Orchestrator URL delegation** — added fallback rule so orchestrators never refuse unrecognized URLs
+- **Orchestrator Jira creation** — added 'create ticket' intent routing to `story_analyzer_agent`
+- **story_analyzer_agent** — documented Jira write capabilities (was incorrectly self-reporting as read-only)
+
+### Changed
+- **Deprecate setup.sh/setup.ps1** — replaced with stub that directs users to Koda (-4,172 lines)
+- **QA/BA/ops orchestrators** — updated inline routing with Cloud URLs and fallback rule
+
 ## [0.2.138] — 2026-06-24
 
 ### Changed
