@@ -1,0 +1,19 @@
+{
+  "name": "jira",
+  "description": "Jira + XRay integration — issues, sprints, boards, test cases, executions, and results",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "JIRA_PAT": "Jira Personal Access Token (Server) or API Token (Cloud)",
+    "JIRA_URL": "Jira instance base URL",
+    "JIRA_EMAIL": "Atlassian account email (required for Cloud, optional for Server)",
+    "JIRA_CUSTOM_FIELDS": "Comma-separated custom field names or IDs to include in responses",
+    "XRAY_CLOUD_CLIENT_ID": "XRay Cloud API Key client ID (https://xray.cloud.getxray.app)",
+    "XRAY_CLOUD_CLIENT_SECRET": "XRay Cloud API Key client secret"
+  },
+  "env_required": ["JIRA_PAT"],
+  "env_secret": ["JIRA_PAT", "XRAY_CLOUD_CLIENT_SECRET"],
+  "env_defaults": {
+    "JIRA_URL": "https://disneyexperiences.atlassian.net"
+  }
+}
