@@ -1,8 +1,8 @@
-# Steer Runtime v0.2.135-2-g5ff00ba0 — Certification Report
+# Steer Runtime v0.2.136-17-g3a8628b4 — Certification Report
 
 🟢 **Trust Score: 95/100** (Certified)
 
-Generated: 2026-06-23T14:52:55
+Generated: 2026-06-24T01:12:58
 
 ---
 
@@ -10,17 +10,17 @@ Generated: 2026-06-23T14:52:55
 
 | Scenario | Status | Subagent Calls |
 |----------|--------|----------------|
-| ai-route-ml-task | ✓ | 5 |
-| ba-analyze-requirements | ✓ | 27 |
+| ai-route-ml-task | ✓ | 15 |
+| ba-analyze-requirements | ✓ | 95 |
 | ba-delegate-figma-design | ✗ | 0 |
 | cloudops-infra-issue | ✓ | 20 |
-| design-architecture-review | ✓ | 8 |
+| design-architecture-review | ✓ | 5 |
 | inspector-inspect-app | ✓ | 20 |
 | leadership-quarterly-report | ✓ | 8 |
 | ops-check-deployment | ✗ | 0 |
 | analyze-story | ✓ | 8 |
 | implement-feature | ✓ | 30 |
-| code-review | ✓ | 8 |
+| code-review | ✓ | 51 |
 | write-code | ✓ | 0 |
 | run-tests | ✓ | 0 |
 | fetch-jira | ✓ | 8 |
@@ -31,9 +31,9 @@ Generated: 2026-06-23T14:52:55
 | qa-analyze-defect | ✓ | 27 |
 | steer-review-pr | ✓ | 8 |
 | steer-release | ✓ | 8 |
-| triage-incident | ✓ | 30 |
-| rca-investigation | ✓ | 8 |
-| stability-validation | ✓ | 112 |
+| triage-incident | ✓ | 8 |
+| rca-investigation | ✓ | 5 |
+| stability-validation | ✓ | 5 |
 | gsm-report | ✓ | 8 |
 | rca-minimal-delegation | ✗ | 8 |
 
