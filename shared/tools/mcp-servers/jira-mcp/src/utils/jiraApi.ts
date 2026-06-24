@@ -258,8 +258,9 @@ export class JiraApiClient {
         ];
         const fields = [...new Set([...baseFields, ...extraFields])];
 
+        const searchPath = this.auth.isCloud() ? "search/jql" : "search";
         const response = await this.fetch(
-            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/${searchPath}`,
             {
                 method: "POST",
                 headers: {

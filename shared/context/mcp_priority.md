@@ -8,7 +8,7 @@ When multiple MCP servers can handle the same task, follow this priority:
 |------|-----|-------|
 | Jira tickets, sprints, boards | `@jira/*` | jira_get_issue, jira_search_issues, etc. |
 | Confluence pages (confluence.disney.com) | `@confluence/*` | get_confluence_page, search_confluence_pages, etc. |
-| MyWiki pages (mywiki.disney.com) | `@mywiki/*` | get_confluence_page, search_confluence_pages, etc. |
+| MyWiki pages (mywiki.disney.com) | ⚠️ DEPRECATED — use `cloud_` prefix | migrated to disneyexperiences.atlassian.net/wiki |
 | GitHub PRs, repos | `@github/*` | github_get_pr, github_list_repos, etc. |
 
 ## Server-to-Prefix Mapping
@@ -18,17 +18,18 @@ The MCP config uses multi-instance naming. Here's how server names map to tool p
 | mcp.json server name | Tool prefix | Target URL |
 |---------------------|-------------|------------|
 | `confluence-confluence` | `@confluence/*` | confluence.disney.com |
-| `confluence-mywiki` | `@mywiki/*` | mywiki.disney.com |
+| `confluence-mywiki` | `@mywiki/*` | mywiki.disney.com ⚠️ DEPRECATED — migrated to Cloud |
 | `jira-jira` | `@jira/*` (prefix: `jira_`) | jira.disney.com |
-| `jira-myjira` | `@jira/*` (prefix: `myjira_`) | myjira.disney.com |
+| `jira-myjira` | `@jira/*` (prefix: `myjira_`) | myjira.disney.com ⚠️ DEPRECATED — migrated to Cloud |
 | `jira-cloud` | `@jira/*` (prefix: `cloud_`) | disneyexperiences.atlassian.net |
 | `confluence-cloud` | `@confluence/*` (prefix: `cloud_`) | disneyexperiences.atlassian.net/wiki |
 | `github-disney` | `@github/*` | github.disney.com |
 | `github-public` | `@github/*` | github.com |
 
-**Confluence vs MyWiki**: These are two separate Confluence instances sharing the same MCP binary (`confluence-mcp`). Route by URL:
-- `confluence.disney.com` → `@confluence/*`
-- `mywiki.disney.com` → `@mywiki/*`
+**Confluence vs MyWiki**: MyWiki has been migrated to Atlassian Cloud. Route by URL:
+- `confluence.disney.com` → `@confluence/*` (on-prem, still active)
+- `mywiki.disney.com` → ⚠️ Use `cloud_` prefix (migrated to `disneyexperiences.atlassian.net/wiki`)
+- `disneyexperiences.atlassian.net/wiki` → `@confluence/*` (prefix: `cloud_`)
 
 ## Compass MCP (fallback or exclusive)
 

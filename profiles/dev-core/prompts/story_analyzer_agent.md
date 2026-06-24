@@ -19,25 +19,23 @@ You have four MCP servers. Each has its own **prefix**. Both Confluence instance
 
 | Source | Prefix | URL | Available tools |
 |--------|--------|-----|----------------|
-| **Jira** | `jira_` | myjira.disney.com | `jira_get_issue`, `jira_search_issues`, etc. |
+| **Jira (on-prem)** | `jira_` | jira.disney.com | `jira_get_issue`, `jira_search_issues`, etc. |
 | **Jira Cloud** | `cloud_` | disneyexperiences.atlassian.net | `cloud_get_issue`, `cloud_search_issues`, etc. |
-| **Confluence** | `confluence_` | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages`, `confluence_get_confluence_space` |
-| **MyWiki** | `mywiki_` | mywiki.disney.com | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages`, `mywiki_get_confluence_space` |
+| **Confluence (on-prem)** | `confluence_` | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages`, `confluence_get_confluence_space` |
+| **Confluence Cloud** | `cloud_` | disneyexperiences.atlassian.net/wiki | `cloud_get_confluence_page`, `cloud_search_confluence_pages`, `cloud_get_confluence_space` |
 | **GitHub** | `@github/` | github.disney.com | `@github/github_get_pr`, `@github/github_list_repos`, etc. |
 
-### ⚠️ CRITICAL: Confluence vs MyWiki — DIFFERENT SERVERS, DIFFERENT TOOL NAMES
+### ⚠️ DEPRECATED INSTANCES — AUTO-ROUTE TO CLOUD
 
-These are **two separate Confluence instances**. Each has its own prefixed tool names:
+`myjira.disney.com` and `mywiki.disney.com` have been migrated to Atlassian Cloud. If a user provides these URLs, use `cloud_` prefix tools:
 
-| URL in user's request | Tool names to use |
-|-----------------------|-------------------|
-| `confluence.disney.com` | `confluence_get_confluence_page`, `confluence_search_confluence_pages` |
-| `mywiki.disney.com` | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages` |
-
-**WRONG:** Calling `confluence_get_confluence_page` for a `mywiki.disney.com` URL — that hits the wrong server.
-**RIGHT:** Call `mywiki_get_confluence_page` for mywiki URLs, `confluence_get_confluence_page` for confluence URLs.
-
-If the user doesn't specify which instance, **ask them**.
+| URL in user's request | Route to |
+|-----------------------|----------|
+| `myjira.disney.com` | Use `cloud_` prefix (e.g., `cloud_get_issue`) |
+| `mywiki.disney.com` | Use `cloud_` prefix (e.g., `cloud_get_confluence_page`) |
+| `jira.disney.com` | Use `jira_` prefix (on-prem, still active) |
+| `confluence.disney.com` | Use `confluence_` prefix (on-prem, still active) |
+| `disneyexperiences.atlassian.net` | Use `cloud_` prefix |
 
 **ALWAYS use MCP tools first.** Do NOT use web_fetch when MCP tools are available.
 
@@ -49,17 +47,16 @@ If the user doesn't specify which instance, **ask them**.
 
 | URL contains | Prefix | Example tool |
 |-------------|--------|--------------|
-| `myjira.disney.com` | `jira_` | `jira_get_issue` |
+| `myjira.disney.com` | `cloud_` | `cloud_get_issue` (migrated to Cloud) |
 | `jira.disney.com` | `jira_` | `jira_get_issue` |
 | `disneyexperiences.atlassian.net` | `cloud_` | `cloud_get_issue` |
 
 ### Fetching a Jira Story
 
-From URL `https://myjira.disney.com/browse/DPAY-14337`, extract key: `DPAY-14337`
 From URL `https://disneyexperiences.atlassian.net/browse/DPAY-15726`, extract key: `DPAY-15726`
 
 Match the URL to the correct prefix above, then use that prefix's tools:
-- `jira_get_issue` or `cloud_get_issue` with the issue key
+- `cloud_get_issue` for Cloud/myjira URLs, `jira_get_issue` for jira.disney.com
 
 ### Analysis Output
 

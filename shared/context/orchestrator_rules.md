@@ -93,11 +93,11 @@ Exception: trivial fixes (typos, formatting) may be committed directly if the us
 
 When the user provides a URL or mentions a wiki/Jira:
 
-- `confluence.disney.com` → delegate with `@confluence/*` tools
-- `mywiki.disney.com` → delegate with `@mywiki/*` tools
+- `confluence.disney.com` → delegate with `@confluence/*` tools (prefix: `confluence_`)
+- `mywiki.disney.com` → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
 - `disneyexperiences.atlassian.net/wiki` → delegate with `@confluence/*` tools (prefix: `cloud_`)
 - `jira.disney.com` → delegate with `@jira/*` tools (prefix: `jira_`)
-- `myjira.disney.com` → delegate with `@jira/*` tools (prefix: `myjira_`)
+- `myjira.disney.com` → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
 - `disneyexperiences.atlassian.net` → delegate with `@jira/*` tools (prefix: `cloud_`)
 - If unclear which instance, ask the user
 

@@ -46,10 +46,12 @@ export class JiraAuth {
         return (this.jiraUrl || DEFAULT_JIRA_URL).replace(/\/+$/, "");
     }
 
-    /** Returns true if configured for Jira Cloud (JIRA_EMAIL is set). */
+    /** Returns true if configured for Jira Cloud (JIRA_EMAIL is set or URL is *.atlassian.net). */
     isCloud(): boolean {
         this.loadEnv();
-        return !!this.jiraEmail;
+        if (this.jiraEmail) return true;
+        const url = this.jiraUrl || DEFAULT_JIRA_URL;
+        return url.includes(".atlassian.net");
     }
 
     /** Returns the correct API version path: /rest/api/3 for Cloud, /rest/api/2 for Server. */
