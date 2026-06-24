@@ -9,6 +9,7 @@ export const USER_AGENT = `ConfluenceMCP/0.1.0 (${process.env.MCP_USER_AGENT_CON
 export class ConfluenceApiClient {
     private confluenceUrl: string | null = null;
     private confluencePat: string | null = null;
+    private confluenceEmail: string | null = null;
     private loaded = false;
 
     private loadEnv() {
@@ -18,6 +19,7 @@ export class ConfluenceApiClient {
         // First, try reading directly from process.env (set by MCP config)
         this.confluenceUrl = process.env.CONFLUENCE_URL || null;
         this.confluencePat = process.env.CONFLUENCE_PAT || null;
+        this.confluenceEmail = process.env.CONFLUENCE_EMAIL || null;
 
         // Fallback: try loading from .env file if env vars not already set
         if (!this.confluencePat) {
@@ -28,6 +30,7 @@ export class ConfluenceApiClient {
                 config({ path: envPath });
                 this.confluencePat = process.env.CONFLUENCE_PAT || null;
                 this.confluenceUrl = this.confluenceUrl || process.env.CONFLUENCE_URL || null;
+                this.confluenceEmail = this.confluenceEmail || process.env.CONFLUENCE_EMAIL || null;
             } catch (e) {
                 // ignore — .env is optional when env vars are set via MCP config
             }
@@ -51,9 +54,21 @@ export class ConfluenceApiClient {
         );
     }
 
+    isCloud(): boolean {
+        this.loadEnv();
+        return !!this.confluenceEmail;
+    }
+
+    getAuthHeader(): string {
+        const pat = this.getPat();
+        if (this.confluenceEmail) {
+            return "Basic " + Buffer.from(this.confluenceEmail + ":" + pat).toString("base64");
+        }
+        return "Bearer " + pat;
+    }
+
     async makeRequest(endpoint: string, options: RequestInit = {}) {
         const url = `${this.getBaseUrl()}/rest/api/${endpoint}`;
-        const pat = this.getPat();
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
@@ -63,7 +78,7 @@ export class ConfluenceApiClient {
                 ...options,
                 signal: controller.signal,
                 headers: {
-                    Authorization: `Bearer ${pat}`,
+                    Authorization: this.getAuthHeader(),
                     "User-Agent": USER_AGENT,
                     Accept: "application/json",
                     "Content-Type": "application/json",

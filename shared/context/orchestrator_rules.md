@@ -95,6 +95,7 @@ When the user provides a URL or mentions a wiki/Jira:
 
 - `confluence.disney.com` → delegate with `@confluence/*` tools
 - `mywiki.disney.com` → delegate with `@mywiki/*` tools
+- `disneyexperiences.atlassian.net/wiki` → delegate with `@confluence/*` tools (prefix: `cloud_`)
 - `jira.disney.com` → delegate with `@jira/*` tools (prefix: `jira_`)
 - `myjira.disney.com` → delegate with `@jira/*` tools (prefix: `myjira_`)
 - `disneyexperiences.atlassian.net` → delegate with `@jira/*` tools (prefix: `cloud_`)
