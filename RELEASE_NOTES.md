@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.140
+## v0.2.137
 
 - **feat** — koda-doctor.sh standalone diagnostics runner
 - **feat(certify)** — run `make validate-all` as first certification step
