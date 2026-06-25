@@ -4,7 +4,8 @@
   "prompt": "email_agent.md",
   "tools": [
     "@compass/*",
-    "fs_read"
+    "fs_read",
+    "@teams/*"
   ],
   "allowedTools": [
     "@compass/*"

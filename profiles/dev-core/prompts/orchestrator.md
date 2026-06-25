@@ -86,6 +86,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "risk", "blockers", "dependencies"                            | `risk_tracker_agent`           |
 | "estimation", "story points"                                  | `estimation_agent`             |
 | "send email", "notify"                                        | `email_agent`                  |
+| "send teams message", "post to channel", "teams"              | `email_agent`                  |
 | "Splunk interactive", "splunk dashboard", "splunk search"     | `splunk_query_agent`           |
 | "inspect page", "browser recording", "screen record", "check UI" | `ui_inspector_agent`       |
 | "Splunk", "splunk logs", "check logs", "log errors"           | `log_analyzer_agent`           |
