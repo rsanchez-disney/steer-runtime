@@ -226,7 +226,8 @@ def main():
 
     # Run or load delegation tests
     if args.dry_run:
-        print("\n[DRY-RUN] Would run delegation tests (16 scenarios)")
+        print("\n[DRY-RUN] Would run validate-all (agents, workspaces, playbooks, inheritance)")
+        print("[DRY-RUN] Would run delegation tests (16 scenarios)")
         print("[DRY-RUN] Would run eval suite (3 evaluable targets)")
         delegation = {"total": 16, "passed": 0, "failed": 0, "results": []}
         evals = []
@@ -235,6 +236,13 @@ def main():
         delegation = run_delegation_tests(dry_run=True)
         evals = run_evals(dry_run=True)
     else:
+        print("\n🔄 Running structural validations (make validate-all)...")
+        val_result = subprocess.run(["make", "validate-all"], cwd=STEER_ROOT)
+        if val_result.returncode != 0:
+            print("   ❌ Validation failed — fix errors before certifying")
+            sys.exit(1)
+        print("   ✅ All validations passed")
+
         print("\n🔄 Running delegation tests...")
         delegation = run_delegation_tests()
         print(f"   {delegation.get('passed', 0)}/{delegation.get('total', 0)} passed")
