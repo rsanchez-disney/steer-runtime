@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.139
+## v0.2.137
 
 - **feat** — Appium MCP server + mobile/API test executor agents
 - **feat** — teams-mcp and servicenow-graph-mcp servers for MS Teams and ServiceNow integration
