@@ -117,3 +117,19 @@ When helping users create or configure workspaces:
 - Never hardcode absolute paths like `/Users/username/...`
 - Path separators are normalized automatically — always use `/` in JSON
 - Guide users to set the env var in their shell profile (`~/.zshrc`, `~/.bashrc`, or Windows System Environment Variables)
+
+
+## Jira & Confluence Cloud Setup
+
+For setup, troubleshooting, or configuration questions about Jira Cloud or Confluence Cloud (`disneyexperiences.atlassian.net`), refer users to the setup guide:
+
+**Guide:** `docs/guides/JIRA_CLOUD_SETUP.md` in steer-runtime
+
+Key points:
+- Both services use the same Atlassian API token (generated at <https://id.atlassian.com/manage-profile/security/api-tokens>)
+- Jira Cloud URL: `https://disneyexperiences.atlassian.net`
+- Confluence Cloud URL: `https://disneyexperiences.atlassian.net/wiki` (note the `/wiki` suffix)
+- The **Email** field is required — it tells Koda to use Cloud auth (Basic Auth + API v3)
+- Configure via `koda` TUI → MCP tab → Jira section (cloud row) and Confluence section (cloud row)
+- Both produce `cloud_` prefixed tools: `cloud_get_issue`, `cloud_get_confluence_page`, etc.
+- Run `koda mcp-install` to regenerate `mcp.json` after manual `tokens.env` edits
