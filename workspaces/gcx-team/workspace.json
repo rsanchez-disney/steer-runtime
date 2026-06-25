@@ -1,0 +1,11 @@
+{
+  "name": "gcx-team",
+  "description": "GCX Team Core Workspace",
+  "team": "gcx-team",
+  "profiles": ["dev-core", "dev-ui", "dev-web"],
+  "default_agent": "",
+  "projects": null,
+  "rules": ["conventional_commit", "general-angular-development"],
+  "enable_tools": true,
+  "jira_prefix": "GCX-"
+}

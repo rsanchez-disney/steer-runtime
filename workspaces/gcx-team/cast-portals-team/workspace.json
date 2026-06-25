@@ -1,0 +1,28 @@
+{
+  "name": "cast-portals-team",
+  "extends": "gcx-team",
+  "description": "Team related to all Cast Portals (KnowsMore) application.",
+  "team": "CastPortalsTeam",
+  "profiles": null,
+  "default_agent": "",
+  "projects": [
+    {
+      "name": "d-scribe-cast-spa",
+      "path": "~/Disney/gcx/cast-portals/d-scribe-cast-spa",
+      "repo": "WDPR-ECM/cast-portals-spa",
+      "memory_bank": "d-scribe-cast-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "d-scribe-cast-webapi",
+      "path": "~/Disney/gcx/cast-portals/d-scribe-cast-webapi",
+      "repo": "WDPR-ECM/d-scribe-cast-webapi",
+      "memory_bank": "d-scribe-cast-webapi",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": ["conventional_commit"],
+  "enable_tools": true,
+  "jira_prefix": "GCX-",
+  "workspace_path": "~/Disney/gcx/cast-portals"
+}
