@@ -23,8 +23,22 @@ except: pass
 " 2>/dev/null)
 
   if [ -z "$prompt_ref" ]; then
-    echo "⚠  $agent_file — no 'prompt' field"
-    warnings=$((warnings + 1))
+    # Check if agent uses "prompt-as-resource" pattern (prompt .md in resources array)
+    # or is a workspace override (inherits prompt from parent profile)
+    has_prompt_resource=$(python3 -c "
+import json
+d = json.load(open('$agent_file'))
+resources = d.get('resources', [])
+has_prompt_in_res = any('prompts/' in r and r.endswith('.md') for r in resources)
+print('yes' if has_prompt_in_res else 'no')
+" 2>/dev/null)
+    is_workspace_override=$(echo "$agent_file" | grep -q "workspaces/" && echo "yes" || echo "no")
+    if [ "$has_prompt_resource" = "yes" ] || [ "$is_workspace_override" = "yes" ]; then
+      : # Valid — prompt-as-resource or workspace override
+    else
+      echo "⚠  $agent_file — no 'prompt' field"
+      warnings=$((warnings + 1))
+    fi
     continue
   fi
 

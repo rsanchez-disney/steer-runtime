@@ -3,10 +3,8 @@
   "description": "Config Studio & Payment Services \u2014 fullstack web development",
   "team": "Disney Payments Core",
   "profiles": [
-    "dev-core",
-    "dev-web",
-    "qa",
-    "ops"
+    "+dev-web",
+    "+ops"
   ],
   "default_agent": "orchestrator",
   "projects": [
@@ -33,10 +31,8 @@
     }
   ],
   "rules": [
-    "conventional_commit",
-    "general-java-development",
-    "general-node-development",
-    "general-angular-development"
+    "+general-node-development",
+    "+general-angular-development"
   ],
   "enable_tools": true,
   "jira_prefix": "DPAY-",
@@ -45,5 +41,6 @@
   ],
   "channels": [
     "config-studio"
-  ]
+  ],
+  "extends": "payments-dev-base"
 }

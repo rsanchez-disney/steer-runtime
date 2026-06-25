@@ -1,0 +1,29 @@
+name: My Playbook Name
+version: "1.0.0"
+description: Brief description of what this playbook automates
+trigger: manual
+
+inputs:
+  example_input:
+    type: string
+    required: true
+    description: "What the user needs to provide"
+
+steps:
+  - name: Step One
+    agent: story_analyzer_agent
+    instruction: |
+      Your instruction here. Use {{example_input}} for variable interpolation.
+    gate:
+      type: user_approval
+    on_failure: stop
+
+  - name: Step Two
+    agent: backend
+    instruction: |
+      Second step instruction. Reference previous step output via inputs_from.
+    inputs_from: "Step One"
+    gate:
+      type: auto
+    on_failure: stop
+    timeout_seconds: 300

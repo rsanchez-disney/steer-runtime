@@ -1,0 +1,18 @@
+{
+  "name": "onboarding_agent",
+  "description": "Helps new team members understand a project: build commands, architecture, ownership, conventions, and key files.",
+  "prompt": "onboarding_agent.md",
+  "tools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://project.yaml",
+    "file://README.md",
+    "file://.kiro/context/**/*.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "welcomeMessage": "👋 Welcome! I'm your onboarding guide for this project.\n\nAsk me:\n  • How do I build/test/deploy this?\n  • What's the architecture?\n  • Where's the config for X?\n  • Who owns this module?\n  • What conventions should I follow?\n  • Show me the key files for feature Y"
+}

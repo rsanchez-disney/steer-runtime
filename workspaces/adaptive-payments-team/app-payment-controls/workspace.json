@@ -1,6 +1,6 @@
 {
   "name": "app-payment-controls",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "Payment Controls \u2014 Config Studio, GCP Admin, and Inquiry",
   "workspace_path": "${WORKSPACE_ROOT}/Disney/DisneyPaymentsOrg",
   "profiles": [

@@ -1,6 +1,6 @@
 {
   "name": "app-gift-card",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "Gift Card Platform \u2014 products, promotions, client management",
   "profiles": [
     "dev-web"

@@ -13,6 +13,7 @@
     "file://.kiro/context/golden_rules.md",
     "file://.kiro/context/project_mappings.md",
     "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/self_healing_rules.md",
     "file://.kiro/context/sdlc-workflow.md",
     "file://.kiro/steering/**/*.md",
     "file://.kiro/context/mcp_priority.md",

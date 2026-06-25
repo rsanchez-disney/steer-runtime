@@ -1,6 +1,6 @@
 {
   "name": "app-pap-trp",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "PAP & TRP \u2014 batch payment processing and transaction research",
   "profiles": [
     "dev-web"

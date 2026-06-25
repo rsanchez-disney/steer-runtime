@@ -293,6 +293,12 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Code exploration and navigation  
 **Use for:** Finding relevant code, understanding structure
 
+
+#### onboarding_agent
+**File:** `profiles/dev-core/agents/onboarding_agent.json`  
+**Purpose:** Project onboarding guide for new team members  
+**Use for:** Build/test commands, architecture overview, config locations, ownership, conventions
+
 #### code_review_agent
 **File:** `profiles/dev-core/agents/code_review_agent.json`  
 **Purpose:** Code review and quality checks  

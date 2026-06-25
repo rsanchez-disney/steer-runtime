@@ -75,6 +75,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "write code", "add endpoint", "implement", "fix bug", "refactor" | Route via **Implementation routing** table below |
 | "build", "deploy", "git push", "run build"                   | `devops_runner_agent`          |
 | "security scan", "vulnerabilities"                            | `security_scanner_agent`       |
+| "onboarding", "how do I build", "getting started", "new to this", "what conventions" | `onboarding_agent`             |
 | "find where", "explore codebase", "how does X work"           | `codebase_explorer_agent`      |
 | "create PR", "pull request"                                   | `pr_creator_agent`             |
 | "create plan", "break down", "plan implementation"            | `planner_agent`                |
@@ -187,3 +188,37 @@ ANY request involving code (write, fix, refactor, add endpoint, create class, et
 - Emojis: 🔍 analyzing, ✅ done, ⚠️ warning, ❌ error, 🚦 gate
 - Show progress after each delegation
 - Wait for user input ONLY at approval gates
+
+
+## Channel-Aware Context
+
+When delegating work for a Jira ticket:
+1. If the ticket has a component matching `channel-routing.json` → inject that channel's context files
+2. Pass channel files (flows.md, channel-contracts.md, error-handling.md) to the specialist agent
+3. This gives agents domain-specific knowledge about the payment channel being worked on
+
+Channel routing file: `.kiro/context/channel-routing.json`
+
+## Self-Healing Protocol
+
+When a sub-agent delegation fails (timeout, MCP error, tool unavailable):
+
+1. **Classify** the failure (see `self_healing_rules.md` for the full matrix)
+2. **If retryable** (timeout, MCP connection, context overflow):
+   - Attempt ONE retry with a fallback strategy:
+     - Timeout → re-delegate with reduced scope ("focus only on X")
+     - MCP connection → switch to fallback tool source (see fallback chains)
+     - Context overflow → re-delegate with "summarize briefly" instruction
+3. **If NOT retryable** (permission denied, agent not found):
+   - Report clearly to the user with actionable next steps
+4. **Log**: `yax_save(type=discovery, title="Self-heal: {agent} - {error_type}")`
+5. **Never** retry more than once, never retry permission errors, never silently swallow errors
+
+### Fallback Chains (quick reference)
+
+| Primary | Fallback |
+|---------|----------|
+| @jira/* | Compass jira tools |
+| @confluence/* | Compass confluence tools |
+| @github/* | execute_bash + gh CLI (via devops_runner_agent) |
+| mem_* | yax_* |

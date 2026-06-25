@@ -1,18 +1,62 @@
 {
   "name": "payments-vertical",
-  "description": "All Payments & Commerce teams — cross-team visibility for Tech Directors and Delivery Managers",
+  "description": "All Payments & Commerce teams \u2014 cross-team visibility for Tech Directors and Delivery Managers",
   "team": "Disney Payments & Commerce",
-  "profiles": ["leadership"],
+  "profiles": [
+    "leadership"
+  ],
   "default_agent": "leadership_orchestrator_agent",
   "teams": [
-    { "name": "APP Team", "workspace": "app-team", "jira_projects": ["DPAY"], "board_ids": [1234] },
-    { "name": "DPE Team", "workspace": "dpe-team", "jira_projects": ["PPODPE"], "board_ids": [11077] },
-    { "name": "TxP Team", "workspace": "txp-team", "jira_projects": ["ROS"], "board_ids": [] },
-    { "name": "GE Team", "workspace": "ge-team", "jira_projects": [], "board_ids": [] },
-    { "name": "RA Team", "workspace": "ra-team", "jira_projects": [], "board_ids": [] },
-    { "name": "Cart & Checkout", "workspace": "cart-checkout-tep3", "jira_projects": [], "board_ids": [] }
+    {
+      "name": "APP Team",
+      "workspace": "adaptive-payments-team",
+      "jira_projects": [
+        "DPAY"
+      ],
+      "board_ids": [
+        1234
+      ]
+    },
+    {
+      "name": "DPE Team",
+      "workspace": "dpe-team",
+      "jira_projects": [
+        "PPODPE"
+      ],
+      "board_ids": [
+        11077
+      ]
+    },
+    {
+      "name": "TxP Team",
+      "workspace": "txp-team",
+      "jira_projects": [
+        "ROS"
+      ],
+      "board_ids": []
+    },
+    {
+      "name": "GE Team",
+      "workspace": "ge-team",
+      "jira_projects": [],
+      "board_ids": []
+    },
+    {
+      "name": "RA Team",
+      "workspace": "ra-team",
+      "jira_projects": [],
+      "board_ids": []
+    },
+    {
+      "name": "Cart & Checkout",
+      "workspace": "cart-checkout-tep3",
+      "jira_projects": [],
+      "board_ids": []
+    }
   ],
-  "rules": ["conventional_commit"],
+  "rules": [
+    "conventional_commit"
+  ],
   "enable_tools": true,
   "workspace_path": "~/Workspace/Disney"
 }

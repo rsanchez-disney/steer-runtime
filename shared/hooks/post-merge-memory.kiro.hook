@@ -1,0 +1,13 @@
+{
+  "name": "Memory After Merge",
+  "version": "1.0.0",
+  "description": "After a PR merges, auto-save a memory observation with the change summary for project continuity.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": [".*merge.*", ".*pr_merge.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A PR was just merged. Save a memory observation for project continuity:\n\n1. Extract PR title, branch name, and key files changed from the tool result.\n2. Determine the project name from the repository or branch.\n3. Call `mem_save` with:\n   - type: decision\n   - title: PR title (concise)\n   - content: 'What: <summary of changes>\\nWhy: <from PR description>\\nWhere: <key files>\\nLearned: <any pattern or convention established>'\n   - topic_key: PR number or branch name\n4. Report to user in one line: '💾 Memory saved: <title>'\n\nIf the merge failed or was cancelled, do nothing."
+  }
+}

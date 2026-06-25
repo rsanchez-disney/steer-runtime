@@ -1,6 +1,6 @@
 {
   "name": "app-payment-sheet",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "Payment Sheet \u2014 guest-facing payment UI for Disney apps",
   "profiles": [
     "dev-web"
