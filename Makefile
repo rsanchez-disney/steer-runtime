@@ -82,7 +82,7 @@ validate-workspaces: ## Validate all workspace.json files for required fields an
 validate-agents: ## Validate all agent JSONs reference existing prompt files
 	@./scripts/validate-agents.sh
 
-validate-all: validate-workspaces validate-agents validate-catalog validate-playbooks ## Run all validations
+validate-all: validate-workspaces validate-agents validate-catalog validate-playbooks workspace-validate-inherit ## Run all validations
 
 validate-catalog-strict: ## Validate catalog in strict mode (fails on missing required fields)
 	@./scripts/validate-catalog.sh --strict
