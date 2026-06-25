@@ -1,0 +1,9 @@
+{
+    "name": "sustainment_orchestrator_agent",
+    "tools": [
+        "@teams/*"
+    ],
+    "allowedTools": [
+        "@teams/*"
+    ]
+}
