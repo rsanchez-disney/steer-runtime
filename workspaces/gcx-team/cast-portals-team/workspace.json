@@ -3,8 +3,7 @@
   "extends": "gcx-team",
   "description": "Team related to all Cast Portals (KnowsMore) application.",
   "team": "CastPortalsTeam",
-  "profiles": null,
-  "default_agent": "",
+  "default_agent": "orchestrator",
   "projects": [
     {
       "name": "d-scribe-cast-spa",
