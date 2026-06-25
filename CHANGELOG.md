@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.142] — 2026-06-25
+
+### Changed
+- **gitignore** — ignore all quarterly and generated report files
+- **docs** — add Jira & Confluence Cloud setup reference to orchestrator context
+
 ## [0.2.141] — 2026-06-25
 
 ### Changed
