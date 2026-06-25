@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.141] — 2026-06-25
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.140] — 2026-06-25
 
 ### Added

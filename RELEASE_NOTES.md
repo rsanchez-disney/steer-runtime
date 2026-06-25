@@ -4,16 +4,10 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.137
+## v0.2.141
 
-- **feat** — koda-doctor.sh standalone diagnostics runner
-- **feat(certify)** — run `make validate-all` as first certification step
-- **feat(passport-team)** — add Jira/Confluence MCP to QA orchestrator (#502)
-- **feat** — integrate teams-mcp with agents and orchestrators (#498)
-- **fix** — activate venv in docs-deploy Makefile target
-- **docs** — rename NEW_FEATURES.md → DX_REFERENCE.md
-- **chore** — add workspace-validate-inherit to validate-all target
-- **chore** — deprecate setup.sh and setup.ps1 (replaced by Koda)
+- **chore** — rebuild MCP bundles
+- **chore** — update certification report
 <!-- END LATEST -->
 
 ## v0.2.137
