@@ -1,0 +1,30 @@
+{
+  "name": "postman_to_bruno_agent",
+  "description": "Converts Postman collections (v2.0/v2.1) into Bruno collections with interactive fix support for unsupported features",
+  "prompt": "postman_to_bruno_agent.md",
+  "tools": [
+    "code",
+    "execute_bash",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/postman_to_bruno_mapping.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block destructive shell commands targeting node_modules, dist, .git"
+      }
+    ]
+  }
+}

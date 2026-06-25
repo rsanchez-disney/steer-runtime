@@ -97,6 +97,15 @@ Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections.
 
 **Use when:** Creating API test collections with environment configs and assertions
 
+### postman_to_bruno_agent
+Converts Postman collections (v2.0/v2.1) into Bruno collections with interactive fix support.
+
+**Use when:**
+- Migrating API collections from Postman to Bruno
+- Converting pre-request scripts and tests (pm.* ? bru.*)
+- Resolving auth inheritance into explicit per-request auth
+
+
 ### test_recorder_agent
 Records browser interactions via Playwright codegen, captures selectors, produces TypeScript specs.
 
@@ -173,6 +182,15 @@ kiro-cli chat --agent performance_tester_agent
 ```bash
 kiro-cli chat --agent test_coverage_analyzer_agent
 > "Analyze test coverage for epic DPAY-600 and find reusable tests"
+```
+
+---
+
+### Convert Postman to Bruno
+```bash
+kiro-cli chat --agent postman_to_bruno_agent
+> "Convert this Postman collection to Bruno" [paste JSON or file path]
+> "Convert this curl to Bruno: curl -X POST https://api.example.com/login -H ..."
 ```
 
 ---
