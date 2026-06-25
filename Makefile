@@ -88,7 +88,7 @@ validate-catalog-strict: ## Validate catalog in strict mode (fails on missing re
 	@./scripts/validate-catalog.sh --strict
 
 docs-deploy: ## Build and deploy mkdocs to GitHub Pages
-	python3 -m mkdocs gh-deploy --remote-name origin
+	. venv/bin/activate && python3 -m mkdocs gh-deploy --remote-name origin
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
