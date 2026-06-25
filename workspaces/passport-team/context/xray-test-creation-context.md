@@ -30,7 +30,7 @@ For each user story, generate:
 
 | Artifact | Jira Type | Quantity (Mobile/Flutter) | Quantity (Services/BE) |
 |----------|-----------|---------------------------|------------------------|
-| Test Cases | Test (Cucumber) | 1 per testable AC/BR |
+| Test Cases | Test (Manual steps) | 1 per testable AC/BR |
 | Test Executions | Test Execution | 2 (one Android, one iOS) | 1 (no platform split) |
 | QA Metrics Task | Task | 1 per story | 1 per story |
 
@@ -49,37 +49,70 @@ All are linked to the story with `linkType: "Tests"`.
 
 ### Available Tools
 
+#### Jira Cloud (base tools)
+
 | Tool | Purpose |
 |------|---------|
 | `jira_get_issue` | Fetch user story details |
-| `jira_create_issue` | Create Tests, Test Executions, Tasks |
-| `jira_link_issues` | Link issues (test coverage) |
+| `jira_create_issue` | Create Tasks (QA Metrics) |
+| `jira_link_issues` | Link issues — fallback for test coverage |
 | `jira_assign_issue` | Assign issue to a user |
 | `jira_update_issue` | Update fields (sprint, story points) |
-| `xray_add_tests_to_test_exec` | Add tests to a Test Execution |
 | `jira_transition_issue` | Change issue status |
-| `xray_search_test_cases` | Verify coverage with JQL |
-| `jira_get_link_types` | Query available link types |
+
+#### XRay Cloud (new — requires `XRAY_CLOUD_CLIENT_ID` + `XRAY_CLOUD_CLIENT_SECRET`)
+
+| Tool | Purpose | Replaces |
+|------|---------|----------|
+| `xray_cloud_create_test` | Create test (Manual steps OR Cucumber/Gherkin + custom fields) | `jira_create_issue` for Tests |
+| `xray_cloud_create_execution` | Create Test Execution with tests + custom fields in one call | `jira_create_issue` + `xray_add_tests_to_test_exec` |
+| `xray_cloud_link_test_to_story` | Link test → story via XRay GraphQL | `jira_link_issues` with linkType "Tests" |
+| `xray_cloud_search_tests` | Search tests by JQL | `xray_search_test_cases` |
+| `xray_cloud_update_run` | Report PASSED/FAILED results per test/step | (new capability) |
+| `xray_cloud_get_test_runs` | Get execution results for a test | (new capability) |
+| `xray_cloud_get_test_steps` | Read steps from an existing test | (new capability) |
+
+#### Deprecated (XRay Server — no longer works on Jira Cloud)
+
+| Tool | Replacement |
+|------|-------------|
+| `xray_add_tests_to_test_exec` | `xray_cloud_create_execution` (includes testKeys) |
+| `xray_search_test_cases` | `xray_cloud_search_tests` (JQL via GraphQL) |
+| `xray_get_folder_tests` | `xray_cloud_search_tests` (use JQL to filter by label/path) |
+
+### XRay Cloud Configuration
+
+```bash
+# Required env vars for XRay Cloud tools (set in Koda → [e] env vars)
+XRAY_CLOUD_CLIENT_ID=<from XRay Cloud Settings → API Keys>
+XRAY_CLOUD_CLIENT_SECRET=<from XRay Cloud Settings → API Keys>
+```
+
+> Tools are **conditionally loaded** — they only appear when both env vars are set.
+> Auth uses client credentials → bearer token, cached for 50min (tokens expire at ~1h).
 
 ### Link Type for Coverage
 
 > ⚠️ **CRITICAL:** The link type is **"Tests"** (PLURAL). Using "Test" (singular) returns a 404 error.
+> **Post-migration:** Prefer `xray_cloud_link_test_to_story` which handles linking via GraphQL (no linkType needed).
 
 ```yaml
+# Preferred (XRay Cloud):
+xray_cloud_link_test_to_story:
+  testKey: "TEST-KEY"
+  storyKey: "STORY-KEY"
+
+# Fallback (Jira REST):
 jira_link_issues:
   inwardTicketId: "TEST-KEY"      # the test case / test execution / task
   outwardTicketId: "STORY-KEY"    # the user story
   linkType: "Tests"               # ← ALWAYS plural
 ```
 
-### XRay Custom Fields
+### Custom Fields Reference
 
 | Field | Field ID | Values |
 |-------|----------|--------|
-| Test Type | `customfield_20100` | `{"value": "Cucumber"}` \| `{"value": "Manual"}` |
-| Cucumber Test Type | `customfield_20101` | `{"value": "Scenario"}` \| `{"value": "Scenario Outline"}` |
-| Cucumber Scenario | `customfield_20102` | Gherkin text (Given/When/Then) |
-| Datasets | `customfield_22401` | JSON with params and values |
 | Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`) |
 | Epic Link | `customfield_13912` | Epic issue key (e.g., `"PAS2-1"`) |
 | Platforms | `customfield_11500` | Array of objects: `[{"value": "iOS"}, {"value": "Android"}]` |
@@ -92,6 +125,8 @@ jira_link_issues:
 | AI Tools Used | `customfield_27202` | String (default: `"kiro"`) |
 | Story Points | `customfield_10003` | Number |
 | Sprint | `customfield_10803` | Sprint ID (number) |
+
+> **Note:** Custom field IDs may have changed after migration. If `jira_update_issue` returns errors, verify IDs with `jira_get_issue` on an existing test case.
 
 ---
 
@@ -125,30 +160,23 @@ Each test case must be **independent** (not depend on results of another).
 
 ## Step 1.5: Check Existing Tests in the Repository
 
-> ⚠️ **ALWAYS check the XRay Test Repository before creating new test cases.** Reuse existing tests when they cover the same functionality.
-
-### Repository Folder Routing
-
-| Story Type | Repository Folder | Folder ID |
-|------------|-------------------|-----------|
-| Mobile / Flutter / UI | `/Passport - UI` | 54273 |
-| Services / Backend / API | `/Passport - BE` | 54293 |
+> ⚠️ **ALWAYS check for existing tests before creating new test cases.** Reuse existing tests when they cover the same functionality.
 
 ### How to check
 
 ```yaml
-xray_get_folder_tests:
-  projectKey: "PAS2"
-  folderId: "{FOLDER_ID}"   # 54273 for UI, 54293 for BE
-  page: 1
-  limit: 100
-```
-
-Scan the results for tests with similar summaries to the ACs you identified. Also search directly:
-
-```yaml
-xray_search_test_cases:
+# Search by keyword/summary:
+xray_cloud_search_tests:
   jql: 'project = PAS2 AND summary ~ "{keyword}"'
+  limit: 20
+
+# Check steps of a known test by key:
+xray_cloud_get_test_steps:
+  testKey: "{KNOWN_TEST_KEY}"
+
+# Check coverage on a story (verify links):
+xray_cloud_search_tests:
+  jql: 'issue in requirementTests("{STORY_KEY}")'
 ```
 
 ### Decision Criteria
@@ -172,52 +200,90 @@ xray_search_test_cases:
 
 ## Step 2: Create Test Cases
 
-### Create each test:
+> **Post-migration:** Use `xray_cloud_create_test` — supports Manual steps, Cucumber/Gherkin, labels, and custom fields in a single call.
+
+### Create each test (Manual steps):
 
 ```yaml
-jira_create_issue:
+xray_cloud_create_test:
   projectKey: "{PROJECT}"
-  issueType: "Test"
   summary: "{See naming format below}"
-  description: |
-    h2. User Story
-    {Narrative from the story — "As a..., I want..., So that..." if available, otherwise the description text}
-
-    h2. Business Rules
-    {Business rules from the story, if available. Use Jira wiki numbered list format: # rule}
-
-    h2. Test Case
-    *Summary:* {Brief description of what this test validates}
-
-    *Expected Result:* {Clear and verifiable expected outcome}
-
-    *Type:* {Positive / Negative}
+  testType: "Manual"
   labels: ["{PROJECT_LABEL}"]
+  steps:
+    - action: "{precondition or setup step}"
+      data: "{test data if applicable}"
+      result: "{expected state after setup}"
+    - action: "{user action / trigger}"
+      data: "{input data}"
+      result: "{expected result / verification}"
   customFields:
-    customfield_20100: {"value": "Cucumber"}
-    customfield_20101: {"value": "Scenario"}
-    customfield_20102: |
-      Given {precondition}
-      When {user action}
-      Then {expected result}
-    customfield_20111: "{Test Repository Path}"
     customfield_13912: "{EPIC_KEY}"
     customfield_11500: [{"value": "iOS"}, {"value": "Android"}]
+    customfield_20111: "{Test Repository Path}"
     customfield_20125: ["LATEST"]
-    customfield_23001: {"value": "Y"}           # or "N" or "Requires Analysis"
-    customfield_23002: {"value": "Not Started"}  # only if Candidate = Y
+    customfield_23001: {"value": "Y"}
+    customfield_23002: {"value": "Not Started"}
 ```
 
-> **Description format notes:**
-> - Use `h2.` for headings (Jira wiki format, NOT markdown `##`)
-> - Include narrative/user story text from the parent story
-> - Include business rules if the story has them
-> - If the story has no formal narrative, use the description text
-> - The "Business Rules" section is optional — omit if the story has none
+### Create each test (Cucumber/Gherkin — alternative):
+
+```yaml
+xray_cloud_create_test:
+  projectKey: "{PROJECT}"
+  summary: "{See naming format below}"
+  testType: "Cucumber"
+  labels: ["{PROJECT_LABEL}"]
+  gherkin: |
+    Given {precondition}
+    When {user action}
+    Then {expected result}
+  customFields:
+    customfield_13912: "{EPIC_KEY}"
+    customfield_11500: [{"value": "iOS"}, {"value": "Android"}]
+    customfield_20111: "{Test Repository Path}"
+    customfield_20125: ["LATEST"]
+    customfield_23001: {"value": "Y"}
+    customfield_23002: {"value": "Not Started"}
+```
+
+**Example (Manual):**
+```yaml
+xray_cloud_create_test:
+  projectKey: "PAS2"
+  summary: "PAS2-17 | DLR | Mobile | Photo Display | Guest photo displayed when linked"
+  testType: "Manual"
+  labels: ["PAS2_CQE"]
+  steps:
+    - action: "Guest has a photo linked to their entitlement"
+      data: ""
+      result: "Photo is stored and associated with the entitlement"
+    - action: "Guest navigates to Tickets and Passes section"
+      data: ""
+      result: "Entitlement card is displayed"
+    - action: "Verify the photo display area on the entitlement card"
+      data: ""
+      result: "Guest photo is displayed (not placeholder)"
+  customFields:
+    customfield_13912: "PAS2-1"
+    customfield_11500: [{"value": "iOS"}, {"value": "Android"}]
+    customfield_20111: "/Passport - UI"
+    customfield_20125: ["LATEST"]
+    customfield_23001: {"value": "Y"}
+    customfield_23002: {"value": "Not Started"}
+```
 
 ### Link each test to the story:
 
+> **Post-migration:** Use `xray_cloud_link_test_to_story` (preferred) or `jira_link_issues` (fallback).
+
 ```yaml
+# Preferred — XRay Cloud GraphQL
+xray_cloud_link_test_to_story:
+  testKey: "{TEST_KEY}"
+  storyKey: "{STORY_KEY}"
+
+# Fallback — Jira REST (if XRay Cloud env vars not configured)
 jira_link_issues:
   inwardTicketId: "{TEST_KEY}"
   outwardTicketId: "{STORY_KEY}"
@@ -263,65 +329,49 @@ jira_update_issue:
     customfield_23001: {"value": "Y"}
     customfield_23002: {"value": "Not Started"}
 ```
-### Scenario Outline — Grouping Similar Test Cases
-**Before creating individual test cases, look for scenarios that can be grouped** into a single Scenario Outline with an Examples table. This reduces redundancy and improves maintainability.
+### Scenario Outline — Grouping Similar Test Cases (as parameterized steps)
+
+**Before creating individual test cases, look for scenarios that can be grouped** into a single test with parameterized steps. This reduces redundancy and improves maintainability.
 
 **When to group:**
 - Multiple test cases validate the **same flow** with different inputs/conditions
-- The Given/When/Then structure is identical, only the data changes
+- The step structure is identical, only the data changes
 - Examples: different field validations, different states of the same element, different ticket types
 
 **When NOT to group:**
-- Tests have fundamentally different Given conditions or flows
-- Grouping would make the scenario confusing or lose clarity
-- Only 2 rows and the tests are conceptually different
+- Tests have fundamentally different preconditions or flows
+- Grouping would make the test confusing or lose clarity
+- Only 2 variations and the tests are conceptually different
 
-**Examples table formatting rules:**
-- The longest value in each column defines the column width
-- All other values are padded with spaces to align the `|` pipes vertically
-- Exactly 1 space after the longest value before the closing `|`
-- All shorter values are padded to match that same `|` position
-
-**Example (properly aligned):**
-
-```gherkin
-Given the guest views their entitlement in Tickets and Passes
-And the condition is "<condition>"
-When the CTA area is rendered
-Then "<expected>"
-
-Examples:
-| condition                 | expected                              |
-| eligible, no photo linked | Upload Photo CTA present and enabled  |
-| feature toggled OFF       | Upload Photo CTA not present          |
-| entitlement redeemed      | CTA visible but disabled (greyed out) |
-| photo already linked      | Change Photo CTA displayed            |
-```
-
-**When grouping existing test cases:**
-1. Pick one test case as the "survivor" — convert it to Scenario Outline
-2. Add comment to redundant tests: "Merged into {KEY} as a Scenario Outline"
-3. Transition redundant tests to "Reject"
-
-**Custom fields for Scenario Outline:**
+**Example (grouped as one test with data variations in steps):**
 
 ```yaml
-customFields:
-  customfield_20100: {"value": "Cucumber"}
-  customfield_20101: {"value": "Scenario Outline"}
-  customfield_20102: |
-    Given {shared precondition}
-    And the "<paramName>" is "<paramValue>"
-    When {shared action}
-    Then "<expected>"
-
-    Examples:
-    | paramName | paramValue | expected |
-    | value1    | data1      | result1  |
-    | value2    | data2      | result2  |
+xray_cloud_create_test:
+  projectKey: "PAS2"
+  summary: "PAS2-118 | DLR | Mobile | Photo CTA | CTA display based on conditions"
+  testType: "Manual"
+  labels: ["PAS2_CQE"]
+  steps:
+    - action: "Guest views entitlement with condition: eligible, no photo linked"
+      data: "Condition: eligible, no photo linked"
+      result: "Upload Photo CTA present and enabled"
+    - action: "Guest views entitlement with condition: feature toggled OFF"
+      data: "Condition: feature toggled OFF"
+      result: "Upload Photo CTA not present"
+    - action: "Guest views entitlement with condition: entitlement redeemed"
+      data: "Condition: entitlement redeemed"
+      result: "CTA visible but disabled (greyed out)"
+    - action: "Guest views entitlement with condition: photo already linked"
+      data: "Condition: photo already linked"
+      result: "Change Photo CTA displayed"
 ```
 
-> **Note:** Use the Examples table directly in the Gherkin field (`customfield_20102`). Only use the Dataset field (`customfield_22401`) for complex cases with 3+ columns and 6+ rows.
+> **Note:** Each step represents a variation/condition. The `data` field documents the parameterized input.
+
+**When grouping existing test cases:**
+1. Pick one test case as the "survivor" — add all variations as steps
+2. Add comment to redundant tests: "Merged into {KEY} as parameterized test"
+3. Transition redundant tests to "Reject"
 
 
 
@@ -329,14 +379,16 @@ customFields:
 
 > **Rule:** If the story is a **Service/BE story** (title does NOT contain "Mobile" or "Flutter"), create only **1 Test Execution** (no platform split, no platform custom field). If it is a **Mobile/Flutter story**, create **exactly 2** — one for Android, one for iOS.
 
+> **Post-migration:** Use `xray_cloud_create_execution` (preferred) — it creates the execution AND adds tests in one call. Fall back to `jira_create_issue` + `xray_add_tests_to_test_exec` only if XRay Cloud env vars are not configured.
+
 ### Service/BE Story — Single Test Execution:
 
 ```yaml
-jira_create_issue:
+xray_cloud_create_execution:
   projectKey: "{PROJECT}"
-  issueType: "Test Execution"
   summary: "Latest | {STORY-KEY} | {DOMAIN} | {AREA} | {Story Title}"
-  labels: ["{PROJECT_LABEL}"]
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+  environment: "LATEST"
   customFields:
     customfield_11009: [{"value": "Latest"}]
     customfield_10803: {SPRINT_ID}
@@ -349,11 +401,11 @@ Create **exactly 2** Test Executions per story — one for Android, one for iOS.
 ### Create Android Test Execution:
 
 ```yaml
-jira_create_issue:
+xray_cloud_create_execution:
   projectKey: "{PROJECT}"
-  issueType: "Test Execution"
   summary: "Latest | {STORY-KEY} | {DOMAIN} | {AREA} | {Story Title} | Android"
-  labels: ["{PROJECT_LABEL}"]
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+  environment: "LATEST"
   customFields:
     customfield_11500: [{"value": "Android"}]
     customfield_11009: [{"value": "Latest"}]
@@ -363,11 +415,11 @@ jira_create_issue:
 ### Create iOS Test Execution:
 
 ```yaml
-jira_create_issue:
+xray_cloud_create_execution:
   projectKey: "{PROJECT}"
-  issueType: "Test Execution"
   summary: "Latest | {STORY-KEY} | {DOMAIN} | {AREA} | {Story Title} | iOS"
-  labels: ["{PROJECT_LABEL}"]
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+  environment: "LATEST"
   customFields:
     customfield_11500: [{"value": "iOS"}]
     customfield_11009: [{"value": "Latest"}]
@@ -377,27 +429,20 @@ jira_create_issue:
 ### Link both to the story:
 
 ```yaml
+# Preferred — XRay Cloud GraphQL
+xray_cloud_link_test_to_story:
+  testKey: "{TEST_EXEC_ANDROID_KEY}"
+  storyKey: "{STORY_KEY}"
+
+xray_cloud_link_test_to_story:
+  testKey: "{TEST_EXEC_IOS_KEY}"
+  storyKey: "{STORY_KEY}"
+
+# Fallback — Jira REST
 jira_link_issues:
   inwardTicketId: "{TEST_EXEC_ANDROID_KEY}"
   outwardTicketId: "{STORY_KEY}"
   linkType: "Tests"
-
-jira_link_issues:
-  inwardTicketId: "{TEST_EXEC_IOS_KEY}"
-  outwardTicketId: "{STORY_KEY}"
-  linkType: "Tests"
-```
-
-### Add tests to both executions:
-
-```yaml
-xray_add_tests_to_test_exec:
-  testExecKey: "{TEST_EXEC_ANDROID_KEY}"
-  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
-
-xray_add_tests_to_test_exec:
-  testExecKey: "{TEST_EXEC_IOS_KEY}"
-  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
 ```
 
 ### Assign both executions to the story's reporter:
@@ -413,6 +458,29 @@ jira_assign_issue:
 ```
 
 > **Rule:** Always assign Test Executions to the story's **reporter** (not the assignee).
+
+### Legacy approach (fallback if XRay Cloud not configured):
+
+<details>
+<summary>Click to expand jira_create_issue approach</summary>
+
+```yaml
+jira_create_issue:
+  projectKey: "{PROJECT}"
+  issueType: "Test Execution"
+  summary: "Latest | {STORY-KEY} | {DOMAIN} | {AREA} | {Story Title} | Android"
+  labels: ["{PROJECT_LABEL}"]
+  customFields:
+    customfield_11500: [{"value": "Android"}]
+    customfield_11009: [{"value": "Latest"}]
+    customfield_10803: {SPRINT_ID}
+
+xray_add_tests_to_test_exec:
+  testExecKey: "{TEST_EXEC_KEY}"
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+```
+
+</details>
 
 ---
 
@@ -487,16 +555,28 @@ jira_transition_issue:
 
 ## Step 5: Final Verification
 
+### Check test coverage (link verification):
+
 ```yaml
-xray_search_test_cases:
+xray_cloud_search_tests:
   jql: 'issue in requirementTests("{STORY_KEY}")'
 ```
+
+### Check test run status:
+
+```yaml
+xray_cloud_get_test_runs:
+  testKey: "{TEST-1}"
+  limit: 5
+```
+
+> Returns: run status (PASSED/FAILED/TODO), execution key, step-level results.
 
 ### Verification checklist:
 
 - [ ] All test cases appear in the Story's Test Coverage section
 - [ ] Both Test Executions (Android + iOS) linked to the Story
-- [ ] Tests added to both Test Executions
+- [ ] Tests added to both Test Executions (via `xray_cloud_create_execution`)
 - [ ] QA Metrics Task created, linked, assigned, in current sprint, In Progress
 - [ ] Each test case has: type (Positive/Negative), automation evaluation
 - [ ] Summary: X test cases, 2 executions, 1 task
@@ -644,20 +724,55 @@ xray_search_test_cases:
 ## Execution Order (Summary)
 
 ```
-1.  jira_get_issue            → Fetch story + identify assignee + active sprint
-2.  Analyze ACs/BRs           → Define required test cases + classify Positive/Negative
-3.  Check repository          → xray_get_folder_tests (UI: 54273, BE: 54293) + xray_search_test_cases for existing coverage
-4.  Decide reuse vs create    → Reuse existing tests when possible, update if needed
-5.  Group similar scenarios   → Identify tests that can be merged into Scenario Outlines
-6.  jira_create_issue ×N      → Create each NEW Test (Cucumber/Scenario Outline) with all custom fields
-7.  jira_link_issues ×N       → Link each test (new + reused) to story (linkType: "Tests")
-8.  jira_create_issue ×2      → Create Test Execution Android + iOS (with platform, server env, sprint)
-9.  jira_link_issues ×2       → Link both Test Executions to story (linkType: "Tests")
-10. xray_add_tests_to_test_exec ×2 → Add all tests to both executions
-11. jira_create_issue         → Create QA Metrics Task (with AI fields)
-12. jira_link_issues          → Link Task to story (linkType: "Tests")
-13. jira_assign_issue         → Assign Task to story's assignee
-14. jira_update_issue         → Set active sprint + 1 story point on Task
-15. jira_transition_issue     → Move Task to "In Progress"
-16. xray_search_test_cases    → Verify coverage with requirementTests()
+1.  jira_get_issue                       → Fetch story + identify assignee + active sprint
+2.  Analyze ACs/BRs                      → Define required test cases + classify Positive/Negative
+3.  xray_cloud_search_tests              → Check existing coverage (JQL by keyword or requirementTests)
+4.  Decide reuse vs create               → Reuse existing tests when possible, update if needed
+5.  Group similar scenarios              → Identify tests that can be merged into parameterized steps
+6.  xray_cloud_create_test ×N            → Create each NEW Test (Manual/Cucumber + custom fields in one call)
+7.  xray_cloud_link_test_to_story ×N     → Link each test (new + reused) to story
+8.  xray_cloud_create_execution ×2       → Create Test Execution Android + iOS (testKeys + custom fields)
+9.  xray_cloud_link_test_to_story ×2     → Link both executions to story
+10. jira_assign_issue ×2                 → Assign executions to story's reporter
+11. jira_create_issue                    → Create QA Metrics Task (with AI fields)
+12. jira_link_issues                     → Link Task to story (linkType: "Tests")
+13. jira_assign_issue                    → Assign Task to story's assignee
+14. jira_update_issue                    → Set active sprint + 1 story point on Task
+15. jira_transition_issue                → Move Task to "In Progress"
+16. xray_cloud_search_tests              → Verify coverage with requirementTests()
 ```
+
+---
+
+## Migration Notes (Jira Server → Atlassian Cloud)
+
+> **Date:** 2026-06-24  
+> **Status:** In transition — hybrid approach
+
+### What changed
+
+| Area | Before (Jira Server) | After (Jira Cloud) |
+|------|----------------------|---------------------|
+| Jira URL | `myjira.disney.com` | `disneyexperiences.atlassian.net` |
+| XRay API | `/rest/raven/2.0/*` (Server REST) | `xray.cloud.getxray.app` (separate API) |
+| Auth (XRay) | Jira PAT | Client ID + Client Secret (bearer token) |
+| Auth (Jira) | PAT (header) | Email + API Token (Basic auth) |
+
+### Current limitations
+
+| Limitation | Impact | Workaround |
+|-----------|--------|------------|
+| No folder/repository browsing | Cannot browse test repo by folder tree | Use `xray_cloud_search_tests` with JQL |
+| Custom field IDs may have changed | Fields like sprint, epic may have new IDs in Cloud | Verify with `jira_get_issue` including `customFields` |
+
+### Pending verification
+
+- [ ] Confirm `jira_create_issue` works for issue type "Test" with XRay custom fields on Cloud
+- [ ] Confirm `jira_create_issue` works for issue type "Test Execution" on Cloud
+- [ ] Confirm custom field IDs (`customfield_20100`, `20101`, `20102`, etc.) are unchanged
+- [ ] Confirm `jira_link_issues` with linkType "Tests" still works on Cloud
+- [ ] Confirm sprint field ID (`customfield_10803`) is unchanged
+- [ ] Test `xray_cloud_link_test_to_story` with PAS2 project
+- [ ] Test `xray_cloud_create_execution` with PAS2 project
+
+
