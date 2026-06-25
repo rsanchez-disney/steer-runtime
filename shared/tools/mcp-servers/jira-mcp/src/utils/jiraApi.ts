@@ -421,23 +421,45 @@ export class JiraApiClient {
         ];
         const fields = [...new Set([...baseFields, ...extraFields])];
 
-        const searchPath = this.auth.isCloud() ? "search/jql" : "search";
-        const response = await this.fetch(
-            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/${searchPath}`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: await this.auth.getAuthHeader(),
-                    "Content-Type": "application/json",
+        let response: Response;
+
+        if (this.auth.isCloud()) {
+            // Jira Cloud deprecated POST /rest/api/3/search (410 Gone as of 2025).
+            // Use GET /rest/api/3/search/jql with query parameters instead.
+            // Reference: https://developer.atlassian.com/changelog/#CHANGE-2046
+            const params = new URLSearchParams();
+            params.set("jql", jql);
+            params.set("maxResults", String(maxResults));
+            params.set("startAt", String(startAt));
+            params.set("fields", fields.join(","));
+            response = await this.fetch(
+                `${this.baseUrl}/rest/api/3/search/jql?${params.toString()}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Authorization: await this.auth.getAuthHeader(),
+                    },
                 },
-                body: JSON.stringify({
-                    jql,
-                    maxResults,
-                    startAt,
-                    fields,
-                }),
-            },
-        );
+            );
+        } else {
+            // Jira Server/DC still uses POST /rest/api/2/search
+            response = await this.fetch(
+                `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: await this.auth.getAuthHeader(),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        jql,
+                        maxResults,
+                        startAt,
+                        fields,
+                    }),
+                },
+            );
+        }
 
         if (!response.ok) {
             const errorText = await response.text();

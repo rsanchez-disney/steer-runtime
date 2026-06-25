@@ -6415,20 +6415,34 @@ var JiraApiClient = class _JiraApiClient {
       "updated"
     ];
     const fields = [.../* @__PURE__ */ new Set([...baseFields, ...extraFields])];
-    const searchPath = this.auth.isCloud() ? "search/jql" : "search";
-    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/${searchPath}`, {
-      method: "POST",
-      headers: {
-        Authorization: await this.auth.getAuthHeader(),
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        jql,
-        maxResults,
-        startAt,
-        fields
-      })
-    });
+    let response;
+    if (this.auth.isCloud()) {
+      const params = new URLSearchParams();
+      params.set("jql", jql);
+      params.set("maxResults", String(maxResults));
+      params.set("startAt", String(startAt));
+      params.set("fields", fields.join(","));
+      response = await this.fetch(`${this.baseUrl}/rest/api/3/search/jql?${params.toString()}`, {
+        method: "GET",
+        headers: {
+          Authorization: await this.auth.getAuthHeader()
+        }
+      });
+    } else {
+      response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/search`, {
+        method: "POST",
+        headers: {
+          Authorization: await this.auth.getAuthHeader(),
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          jql,
+          maxResults,
+          startAt,
+          fields
+        })
+      });
+    }
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Failed to search JIRA issues: ${response.status} ${response.statusText} - ${errorText}`);
