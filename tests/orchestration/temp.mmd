@@ -1,26 +1,33 @@
-graph TB
-    UI[wdpr-payment-controls-client Angular App]
-    GW[API Gateway / ALB Path-Based Routing]
-    RS[Refund Service Node.js TypeScript Port 3001]
-    VS[Validation Service Node.js TypeScript Port 3002]
-    AUTH[Auth Provider OAuth2 JWT]
-    MQ[Message Queue SNS SQS]
-    CS[wdpr-config-services Java Spring Boot]
-    DDB[(DynamoDB)]
-    MDB[(MariaDB)]
-    S3[(S3)]
+flowchart TB
+    subgraph "Resilience Patterns"
+        direction TB
+        subgraph "Circuit Breaker (opossum)"
+            CB_CLOSED["CLOSED\n(Normal operation)"]
+            CB_OPEN["OPEN\n(Fail fast, 30s timeout)"]
+            CB_HALF["HALF-OPEN\n(Probe with 1 request)"]
+            CB_CLOSED -->|"5 failures in 30s"| CB_OPEN
+            CB_OPEN -->|"30s timeout"| CB_HALF
+            CB_HALF -->|"Success"| CB_CLOSED
+            CB_HALF -->|"Failure"| CB_OPEN
+        end
 
-    UI --> GW
-    GW --> RS
-    GW --> VS
-    RS --> CS
-    VS --> CS
-    RS --> S3
-    CS --> DDB
-    CS --> MDB
-    CS --> S3
-    RS --> AUTH
-    VS --> AUTH
-    RS --> MQ
-    VS --> MQ
-    RS --> VS
+        subgraph "Retry Policy"
+            R1["Attempt 1"]
+            R2["Retry after 200ms"]
+            R3["Retry after 400ms"]
+            R4["Retry after 800ms"]
+            DLQ["Dead Letter Queue"]
+            R1 -->|"5xx / timeout"| R2
+            R2 -->|"5xx / timeout"| R3
+            R3 -->|"5xx / timeout"| R4
+            R4 -->|"Final failure"| DLQ
+        end
+
+        subgraph "Dead Letter Queue"
+            DLQ_SQS["SQS DLQ\n(maxReceiveCount: 3)"]
+            ALARM["CloudWatch Alarm\n(DLQ depth > 0)"]
+            REPLAY["Manual/Auto Replay"]
+            DLQ_SQS --> ALARM
+            DLQ_SQS --> REPLAY
+        end
+    end
