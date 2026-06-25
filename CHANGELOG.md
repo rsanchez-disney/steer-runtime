@@ -4,6 +4,23 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.140] — 2026-06-25
+
+### Added
+- **koda-doctor.sh** — standalone diagnostics runner script for health checks
+- **certify: validate-all step** — run `make validate-all` as first certification step
+- **passport-team** — add Jira/Confluence MCP to QA orchestrator (#502)
+- **teams-mcp integration** — integrate teams-mcp with agents and orchestrators (#498)
+
+### Fixed
+- **docs-deploy** — activate venv in docs-deploy Makefile target
+
+### Changed
+- **docs** — rename NEW_FEATURES.md → DX_REFERENCE.md
+- **validate-all** — add workspace-validate-inherit to validate-all target
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.139] — 2026-06-24
 
 ### Added

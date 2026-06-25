@@ -4,15 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.137
+## v0.2.140
 
-- **feat** — Appium MCP server + mobile/API test executor agents
-- **feat** — teams-mcp and servicenow-graph-mcp servers for MS Teams and ServiceNow integration
-- **feat(jira-mcp)** — XRay Cloud tools: create tests, executions, report results, link tests to stories via GraphQL
-- **feat(jira-mcp)** — resolution support in transitions + story points Cloud fallback
-- **feat(jira-mcp)** — rich ADF descriptions via markdown-to-ADF conversion
-- **feat(tep3)** — tep3-ui child workspace with skills, rules, context, and memory banks
-- **fix(orchestrator)** — fallback URL delegation, Jira creation routing, security rules, Cloud URL routing
+- **feat** — koda-doctor.sh standalone diagnostics runner
+- **feat(certify)** — run `make validate-all` as first certification step
+- **feat(passport-team)** — add Jira/Confluence MCP to QA orchestrator (#502)
+- **feat** — integrate teams-mcp with agents and orchestrators (#498)
+- **fix** — activate venv in docs-deploy Makefile target
+- **docs** — rename NEW_FEATURES.md → DX_REFERENCE.md
+- **chore** — add workspace-validate-inherit to validate-all target
 - **chore** — deprecate setup.sh and setup.ps1 (replaced by Koda)
 <!-- END LATEST -->
 
