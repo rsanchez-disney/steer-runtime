@@ -4,10 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.137
+## v0.2.143
 
-- **chore** — rebuild MCP bundles
-- **chore** — update certification report
+- **feat** — GCX workspace and team for cast portals app efforts (#509)
+- **feat** — postman_to_bruno_agent: Postman to Bruno converter (#507)
+- **feat** — passport-team XRay Cloud integration and cleanup (#504)
+- **fix** — jira-mcp: migrate search to GET /rest/api/3/search/jql for Cloud (#510)
+- **perf** — parallelize certification tests (delegation + evals)
+- **docs** — Windows kiro-cli 2.9.0 troubleshooting guide
+- **chore** — clean up gcx-team workspace config (#511)
 <!-- END LATEST -->
 
 ## v0.2.137

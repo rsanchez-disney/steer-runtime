@@ -4,6 +4,21 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.143] — 2026-06-25
+
+### Added
+- **gcx-team workspace** — new GCX workspace and team for cast portals app efforts (#509)
+- **postman_to_bruno_agent** — Postman to Bruno converter agent for QA (#507)
+- **passport-team** — XRay Cloud integration and cleanup (#504)
+- **docs** — Windows kiro-cli 2.9.0 troubleshooting guide with screenshot
+
+### Fixed
+- **jira-mcp** — migrate search to GET /rest/api/3/search/jql for Cloud (#510)
+
+### Changed
+- **perf** — parallelize certification tests (delegation + evals)
+- **gcx-team** — clean up workspace config (#511)
+
 ## [0.2.142] — 2026-06-25
 
 ### Changed
