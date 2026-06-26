@@ -19,6 +19,7 @@ import os
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -243,13 +244,15 @@ def main():
             sys.exit(1)
         print("   ✅ All validations passed")
 
-        print("\n🔄 Running delegation tests...")
-        delegation = run_delegation_tests()
-        print(f"   {delegation.get('passed', 0)}/{delegation.get('total', 0)} passed")
+        print("\n🔄 Running delegation tests + eval suite in parallel...")
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            fut_delegation = pool.submit(run_delegation_tests)
+            fut_evals = pool.submit(run_evals)
+            delegation = fut_delegation.result()
+            evals = fut_evals.result()
 
-        print("\n🔄 Running eval suite...")
-        evals = run_evals()
-        print(f"   {len(evals)} target(s) evaluated")
+        print(f"   Delegation: {delegation.get('passed', 0)}/{delegation.get('total', 0)} passed")
+        print(f"   Evals: {len(evals)} target(s) evaluated")
 
     # Compute
     cert = compute_certification(delegation, evals)
