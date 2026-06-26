@@ -1,6 +1,6 @@
 {
   "name": "app-config-studio",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "Config Studio \u2014 client configuration management",
   "profiles": [
     "dev-web"

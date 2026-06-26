@@ -1,0 +1,40 @@
+{
+    "orderType": "MOD",
+    "businessContext": { "destinationId": "DLR", "storeId": "dlr", "salesChannel": "Consumer Direct", "distributionChannel": "Internet", "communicationChannel": "Internet", "pointOfOrigin": "WDPRO", "salesFlow": "LODGING", "sourceOfBusiness": "INTC" },
+    "purchaser": { "email": { "value": "wdpr.ta+braxtonholloway13@gmail.com" }, "id": { "value": "{8E7C1655-8ACF-4372-BDDC-05E93727A64E}", "type": "SWID" } },
+    "guests": {
+        "guest01": { "name": { "title": "Mr.", "firstName": "Braxton", "lastName": "Holloway" }, "primary": true, "ageGroup": "ADULT" },
+        "guest02": { "name": { "firstName": "Mickey", "lastName": "Duck" }, "primary": false, "ageGroup": "ADULT" }
+    },
+    "items": [
+        {
+            "type": "LODGING",
+            "productId": { "value": "334223", "type": "resort-id" },
+            "offerId": "ABC123",
+            "offerCollectionId": "ZZZ999",
+            "offerPrice": { "subtotal": "694.00", "currency": "USD", "total": "694.00" },
+            "partyMix": [{ "ageGroup": "ADULT", "quantity": 2, "guestRefs": ["guest01", "guest02"] }],
+            "quantity": 1,
+            "configuration": {
+                "roomOnly": true,
+                "startDate": "2026-07-15",
+                "endDate": "2026-07-16",
+                "packageCode": "0MSTJ",
+                "resortCode": "GBLDH",
+                "roomTypeId": "13874758",
+                "roomTypeCode": "SX",
+                "specialNeedsRequest": true,
+                "existingReservation": { "orderId": "14351996", "sorIdSource": "TBX", "packageItemId": "14351996#PBP#1", "packageCode": "0MSTJ" }
+            },
+            "contactUsPhoneNumber": "(714) 520-5060"
+        }
+    ],
+    "originUrl": "https://latest.disneyland.disney.go.com/resort-modification/reservation/14351996/",
+    "returnToOriginOnError": true,
+    "requestType": "local-storage",
+    "dataStorageName": "UcOrderItemsConfiguration1779373044276",
+    "paymentContext": { "qualifiedDomainName": "https://latest.disneyland.disney.go.com" },
+    "orderConfiguration": { "totalCost": { "price": "694.00", "subtotal": "694.00", "total": "694.00", "tax": "117.98" } },
+    "createOverrideConfig": false,
+    "priceChangeResolutionDetails": { "decline": [{ "type": "redirect", "url": "/resort-modification/reservation/14351996/" }] }
+}

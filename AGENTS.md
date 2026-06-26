@@ -293,6 +293,12 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Code exploration and navigation  
 **Use for:** Finding relevant code, understanding structure
 
+
+#### onboarding_agent
+**File:** `profiles/dev-core/agents/onboarding_agent.json`  
+**Purpose:** Project onboarding guide for new team members  
+**Use for:** Build/test commands, architecture overview, config locations, ownership, conventions
+
 #### code_review_agent
 **File:** `profiles/dev-core/agents/code_review_agent.json`  
 **Purpose:** Code review and quality checks  
@@ -610,7 +616,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 
 ---
 
-## Profile: qa (14 agents)
+## Profile: qa (16 agents)
 
 Quality Assurance and Test Automation agents for comprehensive testing.
 
@@ -624,11 +630,11 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Hooks:** agentSpawn (git context)  
 **MCP Servers:** jira, confluence, mywiki, github, qtest
 
-**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent
+**Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent, mobile_test_executor_agent, api_test_executor_agent
 
 ---
 
-### QA Specialists (10)
+### QA Specialists (15)
 
 #### test_planner_agent
 **File:** `profiles/qa/agents/test_planner_agent.json`  
@@ -660,6 +666,12 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/performance_tester_agent.json`  
 **Purpose:** Creates and executes performance and load tests  
 **Use for:** Load testing, stress testing, performance benchmarks
+
+#### postman_to_bruno_agent
+**File:** `profiles/qa/agents/postman_to_bruno_agent.json`  
+**Purpose:** Converts Postman collections (v2.0/v2.1) into Bruno collections with interactive fix support for unsupported features  
+**Use for:** Migrating Postman collections to Bruno, fixing unsupported Postman features during conversion  
+**Hooks:** preToolUse (guard writes)
 
 #### qe_strategy_agent
 **File:** `profiles/qa/agents/qe_strategy_agent.json`  
@@ -706,6 +718,20 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Converts Gherkin, OpenAPI specs, or test cases into organized Bruno collections  
 **Use for:** API collection generation, environment configs, assertion scripts  
 **MCP Servers:** bruno
+
+#### mobile_test_executor_agent
+**File:** `profiles/qa/agents/mobile_test_executor_agent.json`  
+**Purpose:** Executes XRay Gherkin test cases on real mobile devices via Appium MCP  
+**Use for:** Running mobile test scenarios on iOS simulators, Android emulators, or real devices  
+**Tools:** `fs_read`, `execute_bash`, `thinking`  
+**MCP Servers:** appium, jira
+
+#### api_test_executor_agent
+**File:** `profiles/qa/agents/api_test_executor_agent.json`  
+**Purpose:** Executes XRay Gherkin test cases against service APIs via Bruno MCP  
+**Use for:** Running API test scenarios and validating service endpoints  
+**Tools:** `fs_read`, `execute_bash`, `thinking`, `grep`  
+**MCP Servers:** bruno, jira
 
 ---
 
@@ -1322,6 +1348,7 @@ kiro-cli chat --agent test_coverage_analyzer_agent # Coverage analysis
 kiro-cli chat --agent flaky_test_fixer_agent    # Flaky test diagnosis & fix
 kiro-cli chat --agent test_recorder_agent       # Playwright recording → specs
 kiro-cli chat --agent bruno_collection_agent    # OpenAPI/Gherkin → Bruno collections
+kiro-cli chat --agent postman_to_bruno_agent    # Postman ? Bruno collection converter
 
 # Ops
 kiro-cli chat --agent ops_orchestrator_agent    # Ops orchestrator

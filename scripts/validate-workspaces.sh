@@ -46,8 +46,10 @@ for ws_file in ws_files:
         warnings += 1
     else:
         for p in profiles:
-            if not os.path.isdir(f"profiles/{p}"):
-                print(f"⚠  {rel} — profile '{p}' not found in profiles/")
+            # Strip inheritance prefix operators (+/-)
+            clean_p = p.lstrip("+-")
+            if not os.path.isdir(f"profiles/{clean_p}"):
+                print(f"⚠  {rel} — profile '{clean_p}' not found in profiles/")
                 warnings += 1
 
     # Required: default_agent
@@ -77,6 +79,7 @@ for ws_file in ws_files:
             is_child or
             name.endswith("-team") or
             name.endswith("-vertical") or
+            name.endswith("-base") or
             name.startswith("sustainment-") or
             name.startswith("app-") or
             name == "steer-platform"

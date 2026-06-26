@@ -1,0 +1,97 @@
+{
+  "title": "Steer Runtime Playbook",
+  "description": "Schema for multi-agent workflow playbooks",
+  "type": "object",
+  "required": ["name", "version", "description", "steps"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable playbook name"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version (e.g. 1.0.0)"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this playbook does"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": ["manual", "on_jira_status", "on_alert", "on_pr_create", "scheduled"],
+      "default": "manual"
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Required inputs from user before execution",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "url", "jira_key", "branch", "enum", "number"]
+          },
+          "required": { "type": "boolean", "default": true },
+          "description": { "type": "string" },
+          "default": { "type": "string" },
+          "options": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "agent", "instruction"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable step name"
+          },
+          "agent": {
+            "type": "string",
+            "description": "Agent to delegate this step to"
+          },
+          "instruction": {
+            "type": "string",
+            "description": "Prompt for the agent (supports {{variable}} interpolation)"
+          },
+          "inputs_from": {
+            "type": "string",
+            "description": "Comma-separated step names whose output feeds into this step"
+          },
+          "gate": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["auto", "user_approval", "pass_threshold", "condition"]
+              },
+              "threshold": { "type": "number" },
+              "condition": { "type": "string" }
+            },
+            "required": ["type"]
+          },
+          "on_failure": {
+            "type": "string",
+            "enum": ["stop", "skip", "retry", "fallback"],
+            "default": "stop"
+          },
+          "fallback_agent": {
+            "type": "string",
+            "description": "Agent to use if on_failure=fallback"
+          },
+          "timeout_seconds": {
+            "type": "number",
+            "default": 300
+          }
+        }
+      }
+    }
+  }
+}

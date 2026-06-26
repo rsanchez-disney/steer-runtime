@@ -1,0 +1,88 @@
+name: Incident Response
+version: "1.0.0"
+description: P1/P2 incident workflow — triage, diagnose, communicate, resolve
+trigger: manual
+
+inputs:
+  incident_id:
+    type: string
+    required: true
+    description: "ServiceNow INC number or alert URL"
+  severity:
+    type: enum
+    required: true
+    description: "Incident severity"
+    options: ["P1", "P2", "P3"]
+  service_name:
+    type: string
+    required: false
+    description: "Affected service name (auto-detected if not provided)"
+
+steps:
+  - name: Gather Signals
+    agent: splunk_query_agent
+    instruction: |
+      Query recent errors for {{service_name}} (or detect from {{incident_id}}).
+      Time range: last 2 hours.
+      Look for: error spikes, timeout patterns, 5xx rates, deployment correlations.
+      Output: structured summary of findings with timestamps.
+    gate:
+      type: auto
+    on_failure: skip
+    timeout_seconds: 120
+
+  - name: Check Recent Changes
+    agent: devops_runner_agent
+    instruction: |
+      For the affected service, identify:
+      - Deployments in the last 24 hours (version, time, who)
+      - Code changes merged in the last 48 hours (PR links, authors)
+      - Config changes (feature flags, env vars)
+      Present as a timeline.
+    gate:
+      type: auto
+    on_failure: skip
+    timeout_seconds: 120
+
+  - name: Correlate and Diagnose
+    agent: architecture_agent
+    instruction: |
+      Given the error signals and recent changes:
+      1. Identify the most likely root cause
+      2. Rate confidence: high/medium/low
+      3. List affected components (upstream and downstream)
+      4. Estimate blast radius (users affected, revenue impact if known)
+      5. Suggest immediate mitigation (rollback? feature flag? restart?)
+    inputs_from: "Gather Signals,Check Recent Changes"
+    gate:
+      type: user_approval
+    on_failure: stop
+
+  - name: Communicate Status
+    agent: technical_writer_agent
+    instruction: |
+      Draft an incident status update for stakeholders:
+      - What is happening (1-2 sentences)
+      - Impact (who is affected, what's degraded)
+      - Current status (investigating / mitigating / monitoring)
+      - ETA to resolution (if known)
+      - Next update time
+      Tone: calm, factual, actionable. No blame.
+    inputs_from: "Correlate and Diagnose"
+    gate:
+      type: user_approval
+    on_failure: stop
+
+  - name: Document Resolution
+    agent: technical_writer_agent
+    instruction: |
+      Create incident postmortem draft:
+      - Timeline (detection → diagnosis → mitigation → resolution)
+      - Root cause (technical details)
+      - Impact summary (duration, users affected)
+      - What went well
+      - What could be improved
+      - Action items with owners
+    gate:
+      type: user_approval
+    on_failure: skip

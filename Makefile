@@ -82,13 +82,58 @@ validate-workspaces: ## Validate all workspace.json files for required fields an
 validate-agents: ## Validate all agent JSONs reference existing prompt files
 	@./scripts/validate-agents.sh
 
-validate-all: validate-workspaces validate-agents validate-catalog ## Run all validations
+validate-all: validate-workspaces validate-agents validate-catalog validate-playbooks workspace-validate-inherit ## Run all validations
 
 validate-catalog-strict: ## Validate catalog in strict mode (fails on missing required fields)
 	@./scripts/validate-catalog.sh --strict
 
 docs-deploy: ## Build and deploy mkdocs to GitHub Pages
-	python3 -m mkdocs gh-deploy --remote-name origin
+	. venv/bin/activate && python3 -m mkdocs gh-deploy --remote-name origin
+
+
+
+knowledge-push: ## Push local observations to shared knowledge branch
+	bash scripts/knowledge-push.sh
+
+knowledge-pull: ## Pull team knowledge into local context
+	bash scripts/knowledge-pull.sh
+
+knowledge-materialize: ## Materialize all exports for a workspace (make knowledge-materialize WS=tep3-team)
+	@test -n "$(WS)" || { echo "Usage: make knowledge-materialize WS=<workspace>"; exit 1; }
+	bash scripts/knowledge-materialize.sh --workspace $(WS)
+
+knowledge-materialize-all: ## Materialize all workspaces (runs centrally)
+	bash scripts/knowledge-materialize.sh --all
+
+validate-playbooks: ## Validate playbook YAML files (requires uv or pyyaml)
+	@if command -v uv >/dev/null 2>&1; then \
+		uv run scripts/validate-playbooks.py; \
+	elif python3 -c "import yaml" 2>/dev/null; then \
+		python3 scripts/validate-playbooks.py; \
+	else \
+		echo "⚠  Skipping playbook validation (install uv: curl -LsSf https://astral.sh/uv/install.sh | sh)"; \
+	fi
+
+workspace-resolve: ## Resolve a workspace with inheritance (make workspace-resolve WS=payments-core-team)
+	@test -n "$(WS)" || { echo "Usage: make workspace-resolve WS=payments-core-team"; exit 1; }
+	STEER_WORKSPACES=workspaces python3 scripts/workspace_resolver.py $(WS)
+
+workspace-validate-inherit: ## Validate all workspace inheritance chains
+	STEER_WORKSPACES=workspaces python3 scripts/workspace_resolver.py --validate-all
+
+telemetry: ## Show agent usage telemetry report
+	python3 scripts/telemetry-dashboard.py --days 30
+
+telemetry-json: ## Export telemetry as JSON
+	python3 scripts/telemetry-dashboard.py --format json
+
+share-agent: ## Share a workspace agent (make share-agent WS=dps-team AGENT=demo_generator_agent)
+	@test -n "$(WS)" || { echo "Usage: make share-agent WS=<workspace> AGENT=<agent-name>"; exit 1; }
+	@test -n "$(AGENT)" || { echo "Usage: make share-agent WS=<workspace> AGENT=<agent-name>"; exit 1; }
+	bash scripts/share-agent.sh $(WS) $(AGENT)
+
+workspace-health: ## Run workspace health check
+	bash shared/hooks/workspace-health.sh
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'

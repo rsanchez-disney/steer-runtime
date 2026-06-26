@@ -4,6 +4,112 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.144] — 2026-06-26
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
+- **docs** — update certification report
+
+## [0.2.143] — 2026-06-25
+
+### Added
+- **gcx-team workspace** — new GCX workspace and team for cast portals app efforts (#509)
+- **postman_to_bruno_agent** — Postman to Bruno converter agent for QA (#507)
+- **passport-team** — XRay Cloud integration and cleanup (#504)
+- **docs** — Windows kiro-cli 2.9.0 troubleshooting guide with screenshot
+
+### Fixed
+- **jira-mcp** — migrate search to GET /rest/api/3/search/jql for Cloud (#510)
+
+### Changed
+- **perf** — parallelize certification tests (delegation + evals)
+- **gcx-team** — clean up workspace config (#511)
+
+## [0.2.142] — 2026-06-25
+
+### Changed
+- **gitignore** — ignore all quarterly and generated report files
+- **docs** — add Jira & Confluence Cloud setup reference to orchestrator context
+
+## [0.2.141] — 2026-06-25
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
+## [0.2.140] — 2026-06-25
+
+### Added
+- **koda-doctor.sh** — standalone diagnostics runner script for health checks
+- **certify: validate-all step** — run `make validate-all` as first certification step
+- **passport-team** — add Jira/Confluence MCP to QA orchestrator (#502)
+- **teams-mcp integration** — integrate teams-mcp with agents and orchestrators (#498)
+
+### Fixed
+- **docs-deploy** — activate venv in docs-deploy Makefile target
+
+### Changed
+- **docs** — rename NEW_FEATURES.md → DX_REFERENCE.md
+- **validate-all** — add workspace-validate-inherit to validate-all target
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
+## [0.2.139] — 2026-06-24
+
+### Added
+- **Appium MCP server** — new MCP server for mobile automation + API test executor agents (#469)
+- **teams-mcp and servicenow-graph-mcp** — new MCP servers for Microsoft Teams and ServiceNow Graph API (#492)
+- **jira-mcp: XRay Cloud tools** — 6 new tools for XRay Cloud (`xray.cloud.getxray.app`):
+  - `xray_cloud_create_test` — create test case with steps
+  - `xray_cloud_create_execution` — create test execution linked to plan/tests
+  - `xray_cloud_update_run` — report pass/fail per step
+  - `xray_cloud_link_test_to_story` — associate test ↔ user story via GraphQL
+  - `xray_cloud_get_test_steps` — read test steps via GraphQL
+  - `xray_cloud_get_test_runs` — read execution results via GraphQL
+- **jira-mcp: XRay Cloud auth** — client credentials token management with 50min caching
+- **jira-mcp: resolution support** — add resolution field to transitions + story points Cloud fallback (#500)
+- **TEP3 workspace** — add tep3-ui child workspace with skills, rules, context, and memory banks (#489)
+- **TEP3 code review template** (#478)
+
+### Fixed
+- **jira-mcp** — address XRay Cloud review feedback (#497)
+- **jira-mcp** — support rich ADF descriptions via markdown-to-ADF conversion (#490)
+- **Orchestrator URL delegation** — added fallback rule so orchestrators never refuse unrecognized URLs
+- **Orchestrator Jira creation** — added 'create ticket' intent routing to `story_analyzer_agent`
+- **Orchestrator security** — add security rules to prevent token exposure
+- **Orchestrator routing** — add Atlassian Cloud URLs to delegation routing table
+
+### Changed
+- **Deprecate setup.sh/setup.ps1** — replaced with stub that directs users to Koda (-4,172 lines)
+- **QA/BA/ops orchestrators** — updated inline routing with Cloud URLs and fallback rule
+- **Pre-built dist bundles** — add pre-built dist bundles for teams-mcp and servicenow-graph-mcp (#496)
+- **jira-mcp metadata** — add mcp-meta.json to jira-mcp (#499)
+
+## [0.2.138] — 2026-06-24
+
+### Changed
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+- **Refresh orchestration test outputs** — updated architecture_spec_agent evaluation results
+
+## [0.2.137] — 2026-06-24
+
+### Added
+- **Confluence Cloud MCP** — add Cloud auth + confluence-cloud routing with automatic instance detection (#487)
+- **Cross-domain orchestrator delegation** — dynamic cross-domain orchestrator delegation for multi-team workflows (#483)
+- **TEP3 memory bank** — add memory bank context and child workspaces for Standalone and Package teams (#481)
+
+### Fixed
+- **jira-mcp** — isCloud URL detection, search/jql endpoint routing, XRay imports (#488)
+- **jira-mcp** — handle ADF description and accountId assignee in updateIssue for Cloud (#484)
+
+### Changed
+- **Deprecate myjira/mywiki** — route legacy URLs to cloud_ prefix (#488)
+- **DPE workspace** — migrate Jira and Confluence URLs to Atlassian Cloud (#486)
+- **Rebuild MCP bundles** — regenerated bundled MCP server artifacts
+- **Update certification report** — refreshed certification metrics
+
 ## [0.2.136] — 2026-06-23
 
 ### Fixed

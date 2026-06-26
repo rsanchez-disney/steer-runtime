@@ -85,6 +85,7 @@ You have direct access to `@compass/*` tools (ServiceNow, Splunk, Email, GitLab,
 - Fetch INC/CHG short description, status, assignment group
 - Quick Splunk log search
 - Send an email (confirm with user first)
+- Send a Teams message to a channel (confirm with user first)
 
 **Complex workflows** — delegate to specialists:
 

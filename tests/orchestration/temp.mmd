@@ -1,9 +1,33 @@
-graph TB
-    UI_C["Angular UI Client"]
-    MONO["wdpr-payment-controls-api (Monolith BFF)<br/>Validation + Refund + Orchestration + Export"]
-    CS_C["wdpr-config-services (Java Backend)"]
-    DB_C["DynamoDB / MariaDB / S3"]
-    
-    UI_C -->|REST| MONO
-    MONO -->|REST| CS_C
-    CS_C --> DB_C
+flowchart TB
+    subgraph "Resilience Patterns"
+        direction TB
+        subgraph "Circuit Breaker (opossum)"
+            CB_CLOSED["CLOSED\n(Normal operation)"]
+            CB_OPEN["OPEN\n(Fail fast, 30s timeout)"]
+            CB_HALF["HALF-OPEN\n(Probe with 1 request)"]
+            CB_CLOSED -->|"5 failures in 30s"| CB_OPEN
+            CB_OPEN -->|"30s timeout"| CB_HALF
+            CB_HALF -->|"Success"| CB_CLOSED
+            CB_HALF -->|"Failure"| CB_OPEN
+        end
+
+        subgraph "Retry Policy"
+            R1["Attempt 1"]
+            R2["Retry after 200ms"]
+            R3["Retry after 400ms"]
+            R4["Retry after 800ms"]
+            DLQ["Dead Letter Queue"]
+            R1 -->|"5xx / timeout"| R2
+            R2 -->|"5xx / timeout"| R3
+            R3 -->|"5xx / timeout"| R4
+            R4 -->|"Final failure"| DLQ
+        end
+
+        subgraph "Dead Letter Queue"
+            DLQ_SQS["SQS DLQ\n(maxReceiveCount: 3)"]
+            ALARM["CloudWatch Alarm\n(DLQ depth > 0)"]
+            REPLAY["Manual/Auto Replay"]
+            DLQ_SQS --> ALARM
+            DLQ_SQS --> REPLAY
+        end
+    end

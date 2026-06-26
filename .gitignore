@@ -44,3 +44,7 @@ VERSION
 # Kiro IDE hooks (workspace-level, not committed)
 .kiro/hooks/
 site/
+
+# Generated reports (output of certify.py / eval runs)
+evals/results/CERTIFICATION.md
+tests/orchestration/Q*-Quarterly-Report.md

@@ -1,6 +1,6 @@
 {
   "name": "app-demo",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "Payment Demo \u2014 demo apps, payment sheet, and supporting services for E2E payment flows",
   "default_agent": "orchestrator",
   "jira_prefix": [

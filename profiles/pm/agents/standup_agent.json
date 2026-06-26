@@ -5,7 +5,8 @@
   "tools": [
     "@jira/*",
     "execute_bash",
-    "fs_read"
+    "fs_read",
+    "@teams/*"
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md"

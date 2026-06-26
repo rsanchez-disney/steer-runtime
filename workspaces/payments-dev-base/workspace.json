@@ -1,0 +1,16 @@
+{
+  "name": "payments-dev-base",
+  "description": "Shared baseline for all Payments & Commerce development teams. Extend this with team-specific profiles and projects.",
+  "team": "Disney Payments & Commerce",
+  "profiles": [
+    "dev-core",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-java-development"
+  ],
+  "enable_tools": true,
+  "jira_host": "disneyexperiences.atlassian.net"
+}

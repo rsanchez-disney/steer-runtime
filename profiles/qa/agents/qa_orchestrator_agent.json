@@ -6,10 +6,14 @@
     "subagent",
     "thinking",
     "todo_list",
-    "@yax/*"
+    "@yax/*",
+    "@jira/*",
+    "@confluence/*"
   ],
   "allowedTools": [
-    "@yax/*"
+    "@yax/*",
+    "@jira/*",
+    "@confluence/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

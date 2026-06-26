@@ -74,6 +74,7 @@ You have access to Compass tools via MCP:
 | Sprint report, velocity, delivery metrics | `delivery_reporter_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
 | Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
 | Send email (sprint report, standup summary) | `email_agent` | `compass` |
+| Send Teams message (standup, sprint report to channel) | `email_agent` | `@teams/*` |
 
 ### 🔒 Protected Files
 

@@ -1,0 +1,60 @@
+{
+  "devices": [
+    {
+      "id": "iphone-17-pro-sim",
+      "name": "iPhone 17 Pro Simulator",
+      "platform": "iOS",
+      "default": true,
+      "capabilities": {
+        "platformName": "iOS",
+        "appium:automationName": "XCUITest",
+        "appium:deviceName": "iPhone 17 Pro",
+        "appium:udid": "auto",
+        "appium:bundleId": "com.disney.dlr.rc",
+        "appium:noReset": true
+      }
+    },
+    {
+      "id": "iphone-16-pro",
+      "name": "iPhone 16 Pro Physical",
+      "platform": "iOS",
+      "default": false,
+      "capabilities": {
+        "platformName": "iOS",
+        "appium:automationName": "XCUITest",
+        "appium:deviceName": "iPhone 16 Pro",
+        "appium:udid": "auto",
+        "appium:bundleId": "com.disney.dlr.rc",
+        "appium:noReset": true
+      }
+    },
+    {
+      "id": "pixel-10-emulator",
+      "name": "Pixel 10 Emulator",
+      "platform": "Android",
+      "default": true,
+      "capabilities": {
+        "platformName": "Android",
+        "appium:automationName": "UiAutomator2",
+        "appium:deviceName": "Pixel_10",
+        "appium:appPackage": "com.disney.wdpro.dlr",
+        "appium:appActivity": "com.disney.wdpro.dlr.MainActivity",
+        "appium:noReset": true
+      }
+    },
+    {
+      "id": "samsung-s24",
+      "name": "Samsung Galaxy S24 Physical",
+      "platform": "Android",
+      "default": false,
+      "capabilities": {
+        "platformName": "Android",
+        "appium:automationName": "UiAutomator2",
+        "appium:deviceName": "auto",
+        "appium:appPackage": "com.disney.wdpro.dlr",
+        "appium:appActivity": "com.disney.wdpro.dlr.MainActivity",
+        "appium:noReset": true
+      }
+    }
+  ]
+}

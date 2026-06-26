@@ -12,7 +12,8 @@
     "fs_read",
     "fs_write",
     "grep",
-    "execute_bash"
+    "execute_bash",
+    "@confluence/*"
   ],
   "allowedTools": [
     "@jira/*",
@@ -25,7 +26,8 @@
     "fs_read",
     "fs_write",
     "grep",
-    "execute_bash"
+    "execute_bash",
+    "@confluence/*"
   ],
   "resources": [
     "file://profiles/qa/prompts/backlog_to_gherkin_agent.md",

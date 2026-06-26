@@ -1,0 +1,36 @@
+{
+  "_description": "Maps Jira components and labels to channel context files for auto-injection",
+  "component_map": {
+    "Payment Controls": "config-studio",
+    "Config Studio": "config-studio",
+    "Config Services": "config-studio",
+    "DPS Core": "dps-core",
+    "POS": "payment-controls",
+    "Point of Sale": "payment-controls",
+    "E-Commerce": "config-studio",
+    "Mobile Payments": "payment-controls"
+  },
+  "label_map": {
+    "channel:pos": "payment-controls",
+    "channel:ecomm": "config-studio",
+    "channel:mobile": "payment-controls",
+    "channel:dps": "dps-core"
+  },
+  "channel_files": {
+    "config-studio": [
+      "channels/config-studio/flows.md",
+      "channels/config-studio/channel-contracts.md",
+      "channels/config-studio/error-handling.md"
+    ],
+    "dps-core": [
+      "channels/dps-core/flows.md",
+      "channels/dps-core/channel-contracts.md",
+      "channels/dps-core/error-handling.md"
+    ],
+    "payment-controls": [
+      "channels/payment-controls/flows.md",
+      "channels/payment-controls/channel-contracts.md",
+      "channels/payment-controls/error-handling.md"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "servicenow-graph",
+  "description": "ServiceNow Graph MCP — incidents, change requests, CMDB, users, journal entries with browser-based SSO auth",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "SERVICENOW_INSTANCE_URL": "ServiceNow instance base URL",
+    "SERVICENOW_SESSION_COOKIE": "Session cookie (auto-captured via browser if omitted)",
+    "SERVICENOW_USER_TOKEN": "X-UserToken header value (auto-captured via browser if omitted)"
+  },
+  "env_required": [
+    "SERVICENOW_INSTANCE_URL"
+  ],
+  "env_secret": [
+    "SERVICENOW_SESSION_COOKIE",
+    "SERVICENOW_USER_TOKEN"
+  ],
+  "env_defaults": {
+    "SERVICENOW_INSTANCE_URL": "https://disney.service-now.com"
+  }
+}

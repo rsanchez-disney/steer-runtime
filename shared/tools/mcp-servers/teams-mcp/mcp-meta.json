@@ -1,0 +1,20 @@
+{
+    "name": "teams",
+    "description": "Microsoft Teams — channels, messages, chats, and reactions via Graph API with browser-based auth",
+    "type": "node",
+    "entry": "dist/index.cjs",
+    "env": {
+        "TEAMS_TENANT_ID": "Azure AD Tenant ID",
+        "TEAMS_CLIENT_ID": "Application (client) ID from Azure app registration",
+        "TEAMS_CLIENT_SECRET": "Client secret (only for app/client_credentials mode, optional)"
+    },
+    "env_required": [
+        "TEAMS_CLIENT_ID"
+    ],
+    "env_secret": [
+        "TEAMS_CLIENT_SECRET"
+    ],
+    "env_defaults": {
+        "TEAMS_TENANT_ID": "common"
+    }
+}

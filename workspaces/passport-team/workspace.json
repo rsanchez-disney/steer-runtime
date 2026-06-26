@@ -1,0 +1,16 @@
+{
+  "name": "passport-team",
+  "description": "Passport Phase 2 QA team \u2014 Photo Upload, Management, and Display",
+  "team": "Passport Phase 2",
+  "profiles": [
+    "qa",
+    "dev-mobile"
+  ],
+  "default_agent": "qa_orchestrator_agent",
+  "jira_prefix": "PAS2-",
+  "projects": [],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true
+}

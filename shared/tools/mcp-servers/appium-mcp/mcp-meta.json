@@ -1,0 +1,16 @@
+{
+  "name": "appium",
+  "description": "Appium — mobile test execution on iOS and Android via W3C WebDriver",
+  "env": {
+    "APPIUM_URL": "Appium server URL",
+    "APPIUM_TIMEOUT": "Request timeout in milliseconds (default: 60000)",
+    "SCREENSHOT_DIR": "Directory to save screenshots"
+  },
+  "env_required": ["APPIUM_URL"],
+  "env_secret": [],
+  "env_defaults": {
+    "APPIUM_URL": "http://localhost:4723",
+    "APPIUM_TIMEOUT": "60000",
+    "SCREENSHOT_DIR": "/tmp/appium-screenshots"
+  }
+}

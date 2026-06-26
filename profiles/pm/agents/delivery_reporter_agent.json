@@ -1,6 +1,6 @@
 {
   "name": "delivery_reporter_agent",
-  "description": "Generates sprint reports matching the DPE MyWiki template — 10 sections including sprint goals, flagged items, retrospective, velocity, and releases",
+  "description": "Generates sprint reports matching the DPE MyWiki template \u2014 10 sections including sprint goals, flagged items, retrospective, velocity, and releases",
   "prompt": "delivery_reporter_agent.md",
   "tools": [
     "@jira/*",
@@ -9,7 +9,8 @@
     "execute_bash",
     "fs_read",
     "fs_write",
-    "thinking"
+    "thinking",
+    "@teams/*"
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md"
@@ -20,5 +21,5 @@
     "@mywiki/*"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 Delivery Reporter ready!\n\nI generate sprint reports matching the DPE MyWiki template.\n\nProvide me with:\n • A Jira board link or sprint name\n • The project key (e.g., PPODPE)\n\nI'll generate the full 10-section report and can publish it to MyWiki."
+  "welcomeMessage": "\ud83d\udc4b Delivery Reporter ready!\n\nI generate sprint reports matching the DPE MyWiki template.\n\nProvide me with:\n \u2022 A Jira board link or sprint name\n \u2022 The project key (e.g., PPODPE)\n\nI'll generate the full 10-section report and can publish it to MyWiki."
 }

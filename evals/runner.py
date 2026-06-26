@@ -22,6 +22,7 @@ import subprocess
 import sys
 import time
 import yaml
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -479,10 +480,18 @@ def cmd_run_all(args):
         print("❌ No evaluable targets found (need both rubric + fixture)")
         sys.exit(1)
 
-    print(f"\n🧪 Running {len(evaluable)} evaluations")
-    for item in evaluable:
-        args.target = item.name
-        cmd_run(args)
+    workers = int(os.environ.get("CERT_WORKERS", "4"))
+    print(f"\n🧪 Running {len(evaluable)} evaluations (workers={workers})")
+
+    def run_one(item):
+        """Run a single eval target. Thread-safe (each spawns own subprocess)."""
+        import copy
+        a = copy.copy(args)
+        a.target = item.name
+        cmd_run(a)
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        list(pool.map(run_one, evaluable))
 
 
 def main():

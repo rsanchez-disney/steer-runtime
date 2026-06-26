@@ -1,0 +1,5 @@
+# Script dependencies for steer-runtime Python utilities
+# Install via: uv pip install -r requirements.txt
+# Or run scripts with: uv run --with pyyaml scripts/my_script.py
+
+pyyaml>=6.0

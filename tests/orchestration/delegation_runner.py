@@ -18,6 +18,7 @@ import re
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent
@@ -299,6 +300,8 @@ def main():
     parser.add_argument("scenarios", nargs="*", help="Scenario file(s) to run")
     parser.add_argument("--all", action="store_true", help="Run all scenarios")
     parser.add_argument("--dry-run", action="store_true", help="Preview without executing")
+    parser.add_argument("--workers", type=int, default=int(os.environ.get("CERT_WORKERS", "4")),
+                        help="Max parallel workers (default: $CERT_WORKERS or 4)")
     args = parser.parse_args()
 
     RESULTS_DIR.mkdir(exist_ok=True)
@@ -323,32 +326,36 @@ def main():
 
     print(f"\n{'═' * 50}")
     print(f"  Orchestrator Delegation Test Runner")
-    print(f"  Scenarios: {len(scenarios)} | Mode: {'DRY-RUN' if args.dry_run else 'LIVE'}")
+    print(f"  Scenarios: {len(scenarios)} | Mode: {'DRY-RUN' if args.dry_run else 'LIVE'} | Workers: {args.workers}")
     print(f"{'═' * 50}\n")
 
-    # Run
-    results = []
-    for scenario_path in scenarios:
+    def execute_scenario(scenario_path):
+        """Run a single scenario with retries. Thread-safe."""
         scenario = json.loads(scenario_path.read_text())
         retries = scenario.get("retries", 0)
         allow_fail = scenario.get("allow_fail", False)
 
         r = run_scenario(scenario_path, dry_run=args.dry_run)
 
-        # Retry logic for flaky tests
         attempts = 1
         while r["status"] == "FAIL" and attempts <= retries and not args.dry_run:
             warn_msg(f"Retrying ({attempts}/{retries})...")
             r = run_scenario(scenario_path, dry_run=False)
             attempts += 1
 
-        # Allow-fail: count as pass with warning
         if r["status"] == "FAIL" and allow_fail:
             r["status"] = "PASS"
             r["allow_fail"] = True
             warn_msg("Marked allow_fail — non-delegation is acceptable for this scenario")
 
-        results.append(r)
+        return r
+
+    # Run scenarios in parallel
+    results = []
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(execute_scenario, sp): sp for sp in scenarios}
+        for future in as_completed(futures):
+            results.append(future.result())
 
     # Write summary
     passed = sum(1 for r in results if r["status"] == "PASS")

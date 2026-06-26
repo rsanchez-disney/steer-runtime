@@ -177,6 +177,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | macOS/Linux setup details | [Setup](docs/getting-started/SETUP.md) |
 | Prompt guides | [Dev](docs/profiles/dev/PROMPT_GUIDE.md) · [BA](docs/profiles/ba/BA_PROMPT_GUIDE.md) · [QA](docs/profiles/qa/QA_PROMPT_GUIDE.md) · [Ops](docs/profiles/ops/OPS_PROMPT_GUIDE.md) · [PM](docs/profiles/pm/PM_PROMPT_GUIDE.md) |
 | Kiro IDE / Cursor / Amazon Q | [Cursor](docs/getting-started/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) |
+| DX Reference | [New Features](docs/reference/DX_REFERENCE.md) |
 | Eval framework | [Evals](docs/reference/EVAL_FRAMEWORK.md) |
 | Glossary | [Glossary](docs/reference/GLOSSARY.md) |
 | Roadmap | [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |

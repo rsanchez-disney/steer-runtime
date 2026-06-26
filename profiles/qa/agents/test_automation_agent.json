@@ -9,7 +9,9 @@
     "fs_write",
     "grep",
     "@bruno/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@jira/*",
+    "@confluence/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -41,7 +43,9 @@
   },
   "allowedTools": [
     "@bruno/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@jira/*",
+    "@confluence/*"
   ],
   "includeMcpJson": true
 }

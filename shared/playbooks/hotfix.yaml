@@ -1,0 +1,98 @@
+name: Hotfix Pipeline
+version: "1.0.0"
+description: Emergency fix workflow — from Jira ticket to production-ready PR
+trigger: manual
+
+inputs:
+  jira_key:
+    type: jira_key
+    required: true
+    description: "Jira ticket for the hotfix (e.g., DPAY-14500)"
+  base_branch:
+    type: branch
+    required: false
+    description: "Branch to target (default: main)"
+    default: "main"
+
+steps:
+  - name: Analyze Impact
+    agent: story_analyzer_agent
+    instruction: |
+      Read {{jira_key}} and produce:
+      - Summary of the issue
+      - Affected services/modules
+      - Risk level (low/medium/high)
+      - Acceptance criteria for the fix
+    gate:
+      type: user_approval
+    on_failure: stop
+
+  - name: Plan Implementation
+    agent: planner_agent
+    instruction: |
+      Create a minimal implementation plan for the hotfix.
+      Scope: fix ONLY what's broken — no refactoring, no improvements.
+      Include: files to change, approach, potential side effects.
+    inputs_from: "Analyze Impact"
+    gate:
+      type: user_approval
+    on_failure: stop
+
+  - name: Implement Fix
+    agent: backend
+    instruction: |
+      Implement the fix on branch hotfix/{{jira_key}}.
+      Follow the approved plan. Minimal diff only.
+      Include unit tests for the fix.
+    inputs_from: "Plan Implementation"
+    gate:
+      type: auto
+    on_failure: stop
+
+  - name: Run Tests
+    agent: test_runner_agent
+    instruction: |
+      Run the full test suite. Report:
+      - Pass/fail count
+      - Any new failures (not pre-existing)
+      - Coverage delta
+    gate:
+      type: pass_threshold
+      threshold: 100
+    on_failure: retry
+    timeout_seconds: 600
+
+  - name: Security Scan
+    agent: security_scanner_agent
+    instruction: |
+      Scan the diff for:
+      - Hardcoded secrets or credentials
+      - SQL injection vectors
+      - Dependency vulnerabilities
+      - Input validation gaps
+    gate:
+      type: auto
+    on_failure: stop
+
+  - name: Create PR
+    agent: pr_creator_agent
+    instruction: |
+      Create PR from hotfix/{{jira_key}} to {{base_branch}}.
+      Title: "fix: {{jira_key}} — <summary from step 1>"
+      Body: include impact analysis, test results, and security scan outcome.
+    gate:
+      type: auto
+    on_failure: stop
+
+  - name: Self-Review
+    agent: code_review_agent
+    instruction: |
+      Review the PR against golden rules:
+      - Backward compatibility
+      - Test coverage ≥90%
+      - No secrets in code
+      - Minimal diff
+      - Proper error handling
+    gate:
+      type: user_approval
+    on_failure: stop

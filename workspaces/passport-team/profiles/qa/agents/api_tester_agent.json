@@ -1,0 +1,5 @@
+{
+  "name": "api_tester_agent",
+  "tools": ["@jira/*", "@confluence/*"],
+  "allowedTools": ["@jira/*", "@confluence/*"]
+}

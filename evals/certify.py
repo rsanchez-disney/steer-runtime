@@ -19,6 +19,7 @@ import os
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -226,7 +227,8 @@ def main():
 
     # Run or load delegation tests
     if args.dry_run:
-        print("\n[DRY-RUN] Would run delegation tests (16 scenarios)")
+        print("\n[DRY-RUN] Would run validate-all (agents, workspaces, playbooks, inheritance)")
+        print("[DRY-RUN] Would run delegation tests (16 scenarios)")
         print("[DRY-RUN] Would run eval suite (3 evaluable targets)")
         delegation = {"total": 16, "passed": 0, "failed": 0, "results": []}
         evals = []
@@ -235,13 +237,22 @@ def main():
         delegation = run_delegation_tests(dry_run=True)
         evals = run_evals(dry_run=True)
     else:
-        print("\n🔄 Running delegation tests...")
-        delegation = run_delegation_tests()
-        print(f"   {delegation.get('passed', 0)}/{delegation.get('total', 0)} passed")
+        print("\n🔄 Running structural validations (make validate-all)...")
+        val_result = subprocess.run(["make", "validate-all"], cwd=STEER_ROOT)
+        if val_result.returncode != 0:
+            print("   ❌ Validation failed — fix errors before certifying")
+            sys.exit(1)
+        print("   ✅ All validations passed")
 
-        print("\n🔄 Running eval suite...")
-        evals = run_evals()
-        print(f"   {len(evals)} target(s) evaluated")
+        print("\n🔄 Running delegation tests + eval suite in parallel...")
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            fut_delegation = pool.submit(run_delegation_tests)
+            fut_evals = pool.submit(run_evals)
+            delegation = fut_delegation.result()
+            evals = fut_evals.result()
+
+        print(f"   Delegation: {delegation.get('passed', 0)}/{delegation.get('total', 0)} passed")
+        print(f"   Evals: {len(evals)} target(s) evaluated")
 
     # Compute
     cert = compute_certification(delegation, evals)

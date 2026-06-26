@@ -1,0 +1,9 @@
+{
+  "name": "mobile_test_executor_agent",
+  "tools": ["@jira/*", "@appium-mcp/*", "fs_read", "fs_write", "execute_bash", "grep", "code"],
+  "allowedTools": ["@jira/*", "@appium-mcp/*"],
+  "includeMcpJson": true,
+  "resources": [
+    "file://workspaces/passport-team/context/devices.json"
+  ]
+}

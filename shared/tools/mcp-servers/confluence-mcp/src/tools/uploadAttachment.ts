@@ -43,7 +43,7 @@ export async function handleUploadAttachment(args: any) {
             {
                 method: "POST",
                 headers: {
-                    Authorization: `Bearer ${apiClient.getConfluencePat()}`,
+                    Authorization: apiClient.getAuthHeader(),
                     "X-Atlassian-Token": "no-check",
                     "User-Agent": USER_AGENT,
                 },

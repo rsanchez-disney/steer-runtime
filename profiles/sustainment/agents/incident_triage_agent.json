@@ -1,12 +1,13 @@
 {
   "name": "incident_triage_agent",
-  "description": "Classifies and triages incidents from ServiceNow, Jira, and alerts — determines severity, impact, and routing",
+  "description": "Classifies and triages incidents from ServiceNow, Jira, and alerts \u2014 determines severity, impact, and routing",
   "prompt": "incident_triage_agent.md",
   "tools": [
     "@jira/*",
     "@compass/*",
     "fs_read",
-    "thinking"
+    "thinking",
+    "@teams/*"
   ],
   "allowedTools": [
     "@jira/*",

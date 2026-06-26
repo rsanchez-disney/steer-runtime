@@ -1,6 +1,6 @@
 {
   "name": "app-infra",
-  "extends": "app-team",
+  "extends": "adaptive-payments-team",
   "description": "APP shared libraries, stream handlers, and infrastructure",
   "profiles": [
     "ops"

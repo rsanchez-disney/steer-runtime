@@ -1,0 +1,29 @@
+{
+  "name": "appium-mcp",
+  "version": "1.0.0",
+  "description": "Appium MCP server for mobile test execution on iOS and Android",
+  "type": "module",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "bundle": "esbuild build/index.js --bundle --platform=node --format=cjs --outfile=dist/index.cjs --external:node:* --banner:js='#!/usr/bin/env node' && chmod 755 dist/index.cjs",
+    "prepare": "npm run build && npm run bundle",
+    "typecheck": "tsc --noEmit",
+    "watch": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.1.0"
+  }
+}

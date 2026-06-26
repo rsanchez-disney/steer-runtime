@@ -1,0 +1,57 @@
+{
+    "businessContext": { "salesFlow": "LODGING", "sourceOfBusiness": "INTC" },
+    "bypassPayment": false,
+    "items": [
+        {
+            "type": "LODGING",
+            "productId": { "value": "334223", "type": "resort-id" },
+            "partyMix": [
+                { "id": "507485306456-9737653-9859344-9707756", "ageGroup": "ADULT", "quantity": 2, "unitPrice": {} },
+                { "id": "507485306456-9737653-9859344-9707756", "ageGroup": "CHILD", "quantity": 1, "age": 9, "unitPrice": {} }
+            ],
+            "quantity": 1,
+            "configuration": {
+                "roomOnly": true,
+                "origin": "cart",
+                "startDate": "2026-07-15",
+                "endDate": "2026-07-16",
+                "packageCode": "1KB3J",
+                "resortCode": "GBLDH",
+                "roomTypeId": "13874758",
+                "roomTypeCode": "SX",
+                "analytics": { "facilityName": "Disneyland Hotel", "facilityTier": "Deluxe", "resortCode": "GBLDH", "roomTypeCode": "SX" },
+                "specialNeedsRequest": true,
+                "offer": {
+                    "type": "offer",
+                    "alternateIdentifiers": [
+                        { "type": "offerId" },
+                        { "type": "quoteId" },
+                        { "type": "candidateOfferId" }
+                    ]
+                }
+            },
+            "offerId": "ABC123",
+            "offerCollectionId": "ZZZ999",
+            "offerPrice": { "subtotal": "300.00", "currency": "USD", "total": "300.00" }
+        }
+    ],
+    "orderConfiguration": { "totalCost": { "price": "330.00", "subtotal": "330.00", "tax": "56.10", "total": "386.10" } },
+    "orderType": "",
+    "originUrl": "/cart",
+    "postProcessApi": "/cart-plus-api/api/v1/mark-booked/dlr/507485302350-6180562-2657000-1437249",
+    "paymentSessionInfo": {},
+    "requestType": "local-storage",
+    "returnToOriginOnError": false,
+    "siteId": "dlr",
+    "errorProcessor": { "type": "api", "method": "POST", "api": "/cart-plus-api/api/v1/storeId/dlr/remove-other-item/507485302350-6180562-2657000-1437249" },
+    "useAbandonApi": true,
+    "priceChangeResolutionDetails": {
+        "decline": [
+            { "type": "redirect", "url": "/cart" },
+            { "type": "remove-cart", "method": "POST", "url": "/cart-plus-api/api/v1/storeId/dlr/remove-other-item/507485302350-6180562-2657000-1437249" },
+            { "type": "abandon-order", "method": "POST", "url": "/uc/api/v1/order/abandon/" }
+        ],
+        "accept": [{ "type": "update-cart", "url": "/cart-plus-api/api/v1/bulk-update/" }],
+        "cartId": "507485302350-6180562-2657000-1437249"
+    }
+}

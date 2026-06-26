@@ -5679,6 +5679,7 @@ var USER_AGENT = `ConfluenceMCP/0.1.0 (${process.env.MCP_USER_AGENT_CONTACT || "
 var ConfluenceApiClient = class {
   confluenceUrl = null;
   confluencePat = null;
+  confluenceEmail = null;
   loaded = false;
   loadEnv() {
     if (this.loaded)
@@ -5686,6 +5687,7 @@ var ConfluenceApiClient = class {
     this.loaded = true;
     this.confluenceUrl = process.env.CONFLUENCE_URL || null;
     this.confluencePat = process.env.CONFLUENCE_PAT || null;
+    this.confluenceEmail = process.env.CONFLUENCE_EMAIL || null;
     if (!this.confluencePat) {
       try {
         const __filename = (0, import_url.fileURLToPath)(__import_meta_url);
@@ -5694,6 +5696,7 @@ var ConfluenceApiClient = class {
         (0, import_dotenv.config)({ path: envPath });
         this.confluencePat = process.env.CONFLUENCE_PAT || null;
         this.confluenceUrl = this.confluenceUrl || process.env.CONFLUENCE_URL || null;
+        this.confluenceEmail = this.confluenceEmail || process.env.CONFLUENCE_EMAIL || null;
       } catch (e) {
       }
     }
@@ -5712,9 +5715,19 @@ var ConfluenceApiClient = class {
       return this.confluencePat;
     throw new Error("CONFLUENCE_PAT not found. Set CONFLUENCE_PAT environment variable or add it to .env file.");
   }
+  isCloud() {
+    this.loadEnv();
+    return !!this.confluenceEmail;
+  }
+  getAuthHeader() {
+    const pat = this.getPat();
+    if (this.confluenceEmail) {
+      return "Basic " + Buffer.from(this.confluenceEmail + ":" + pat).toString("base64");
+    }
+    return "Bearer " + pat;
+  }
   async makeRequest(endpoint, options = {}) {
     const url = `${this.getBaseUrl()}/rest/api/${endpoint}`;
-    const pat = this.getPat();
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
     try {
@@ -5722,7 +5735,7 @@ var ConfluenceApiClient = class {
         ...options,
         signal: controller.signal,
         headers: {
-          Authorization: `Bearer ${pat}`,
+          Authorization: this.getAuthHeader(),
           "User-Agent": USER_AGENT,
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -6220,7 +6233,7 @@ async function handleUploadAttachment(args) {
     const response = await fetch(`${apiClient.getConfluenceUrl()}/rest/api/content/${pageId}/child/attachment`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiClient.getConfluencePat()}`,
+        Authorization: apiClient.getAuthHeader(),
         "X-Atlassian-Token": "no-check",
         "User-Agent": USER_AGENT
       },
