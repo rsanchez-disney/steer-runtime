@@ -57,7 +57,7 @@ export async function handleXrayCloudCreateTest(args: any): Promise<any> {
         const key = result?.key || result?.testIssueId || JSON.stringify(result);
 
         return {
-            content: [{ type: "text", text: `**Test Created:** ${key}\n\n**Summary:** ${summary}\n**Steps:** ${steps.length}\n**Type:** ${testType}` }],
+            content: [{ type: "text", text: `**Test Created:** ${key}\n\n**Summary:** ${summary}\n**Steps:** ${steps?.length ?? 0}\n**Type:** ${testType}` }],
         };
     } catch (error: any) {
         return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };

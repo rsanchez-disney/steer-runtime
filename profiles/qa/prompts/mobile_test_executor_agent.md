@@ -36,7 +36,9 @@ Pass the capabilities from the matched device directly to appium_create_session.
 2. **Fetch test cases**:
    - If given a test case key → `jira_get_issue(key)` to get the issue, then `xray_cloud_get_test_steps(key)` to get the steps
    - If given a story key → `jira_search(jql: "issuetype = Test AND issue in linkedIssues(STORY-KEY)")` to find associated tests, then fetch steps for each
-3. **Parse steps**: Read the structured steps from `xray_cloud_get_test_steps()` response. Each step has `action`, `data`, and `expected` fields. If the test uses Gherkin format, interpret Given/When/Then from the action field. If Scenario Outline, parse the Examples table from the data.
+3. **Parse steps**: The response from `xray_cloud_get_test_steps()` varies by test type:
+   - **Manual tests**: Steps are returned as structured objects with `action`, `data`, and `expected` fields. Execute each step sequentially.
+   - **Cucumber tests**: Steps are returned in a `gherkin` field containing the full Gherkin scenario as a code block (Given/When/Then). Parse the Gherkin text to extract steps. If Scenario Outline, parse the Examples table after the `Examples:` keyword.
 4. **Select device**: Read devices.json from context. If user specified a device, match by name/id. Otherwise use the default for the requested platform.
 5. **Create session**: Pass the selected device capabilities to appium_create_session()
 6. **Execute each step**:

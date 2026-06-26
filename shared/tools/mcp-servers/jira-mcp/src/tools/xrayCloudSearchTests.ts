@@ -2,7 +2,7 @@ import { xrayCloudGraphQL } from "../utils/xrayCloudApi.js";
 
 export const xrayCloudSearchTestsSchema = {
     name: "xray_cloud_search_tests",
-    description: "Search test cases in XRay Cloud using JQL.",
+    description: "Search test cases in XRay Cloud using JQL. Returns Gherkin preview for Cucumber tests.",
     inputSchema: {
         type: "object",
         properties: {
@@ -25,6 +25,7 @@ export async function handleXrayCloudSearchTests(args: any): Promise<any> {
                         issueId
                         jira(fields: ["key", "summary", "status", "labels"])
                         testType { name }
+                        gherkin
                     }
                 }
             }
@@ -42,6 +43,10 @@ export async function handleXrayCloudSearchTests(args: any): Promise<any> {
             const summary = t.jira?.summary || "";
             const type = t.testType?.name || "?";
             text += `- **${key}** — ${summary} [${type}]\n`;
+            if (type === "Cucumber" && t.gherkin) {
+                const preview = t.gherkin.split("\n").slice(0, 3).join("\n").slice(0, 200);
+                text += `  \`\`\`gherkin\n  ${preview}\n  \`\`\`\n`;
+            }
         }
 
         return { content: [{ type: "text", text }] };
