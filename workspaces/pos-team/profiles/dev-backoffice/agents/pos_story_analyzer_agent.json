@@ -1,0 +1,20 @@
+{
+  "name": "pos_story_analyzer_agent",
+  "description": "Fetches and analyzes Jira stories for POS platform (POS-*, CONFE-* tickets) from myjira.disney.com",
+  "prompt": "file://../prompts/pos_story_analyzer_agent.md",
+  "tools": [
+    "@jira/*",
+    "fs_read",
+    "grep",
+    "web_fetch",
+    "knowledge"
+  ],
+  "allowedTools": [
+    "@jira/*"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}

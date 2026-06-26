@@ -1,0 +1,19 @@
+{
+  "name": "pos_architecture_agent",
+  "description": "Architecture guidance for POS platform — CodeIgniter monolith, Go/PHP microservices, React SPA, gRPC inter-service communication",
+  "prompt": "file://../prompts/pos_architecture_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "knowledge",
+    "@mermaid/*"
+  ],
+  "resources": [
+    "file://.kiro/context/backoffice_golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}

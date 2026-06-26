@@ -1,0 +1,15 @@
+{
+  "name": "pos_codebase_explorer_agent",
+  "description": "Explores POS platform codebase — Connect PHP monolith, Go/PHP microservices, React SPA",
+  "prompt": "file://../prompts/pos_codebase_explorer_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "glob"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ]
+}
