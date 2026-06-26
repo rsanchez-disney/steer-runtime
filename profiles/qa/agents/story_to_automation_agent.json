@@ -13,7 +13,8 @@
     "xray_get_test_case_full",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "@confluence/*"
   ],
   "allowedTools": [
     "@jira/*",
@@ -27,7 +28,8 @@
     "xray_get_test_case_full",
     "fs_read",
     "fs_write",
-    "grep"
+    "grep",
+    "@confluence/*"
   ],
   "resources": [
     "file://profiles/qa/prompts/story_to_automation_agent.md",

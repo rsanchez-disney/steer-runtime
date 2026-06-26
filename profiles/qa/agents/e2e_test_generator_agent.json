@@ -5,10 +5,12 @@
   "tools": [
     "fs_read",
     "fs_write",
-    "@jira/*"
+    "@jira/*",
+    "@confluence/*"
   ],
   "allowedTools": [
-    "@jira/*"
+    "@jira/*",
+    "@confluence/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

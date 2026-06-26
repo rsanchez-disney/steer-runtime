@@ -1,4 +1,6 @@
 {
   "name": "qa_orchestrator_agent",
-  "allowedTools": ["@jira/*", "@confluence/*"]
+  "tools": ["@jira/*", "@confluence/*", "fs_read", "fs_write", "execute_bash", "grep", "code"],
+  "allowedTools": ["@jira/*", "@confluence/*"],
+  "includeMcpJson": true
 }
