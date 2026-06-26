@@ -8,7 +8,8 @@
     "@jira/*",
     "fs_read",
     "thinking",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@compass/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
@@ -18,7 +19,8 @@
     "@confluence/*",
     "@mywiki/*",
     "@jira/*",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@compass/*"
   ],
   "includeMcpJson": true
 }

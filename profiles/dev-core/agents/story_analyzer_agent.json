@@ -12,7 +12,8 @@
     "fs_read",
     "grep",
     "web_fetch",
-    "knowledge"
+    "knowledge",
+    "@compass/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -20,7 +21,8 @@
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
-    "@jira/*"
+    "@jira/*",
+    "@compass/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

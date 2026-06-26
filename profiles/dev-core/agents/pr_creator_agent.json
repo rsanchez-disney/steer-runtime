@@ -11,7 +11,8 @@
     "@jira/*",
     "execute_bash",
     "fs_read",
-    "fs_write"
+    "fs_write",
+    "@compass/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -19,7 +20,8 @@
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
-    "@jira/*"
+    "@jira/*",
+    "@compass/*"
   ],
   "includeMcpJson": true,
   "resources": [
