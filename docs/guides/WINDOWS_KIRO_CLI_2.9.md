@@ -35,7 +35,15 @@ koda upgrade
 koda kiro-cli install 2.8.0
 ```
 
-### Step 4: Verify
+### Step 4: Regenerate MCP configuration
+
+```bash
+koda mcp-install
+```
+
+This regenerates `mcp.json` with the correct `node.exe` command (without any wrapper).
+
+### Step 5: Verify
 
 ```bash
 koda doctor
