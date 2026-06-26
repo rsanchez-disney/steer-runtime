@@ -667,6 +667,12 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Creates and executes performance and load tests  
 **Use for:** Load testing, stress testing, performance benchmarks
 
+#### postman_to_bruno_agent
+**File:** `profiles/qa/agents/postman_to_bruno_agent.json`  
+**Purpose:** Converts Postman collections (v2.0/v2.1) into Bruno collections with interactive fix support for unsupported features  
+**Use for:** Migrating Postman collections to Bruno, fixing unsupported Postman features during conversion  
+**Hooks:** preToolUse (guard writes)
+
 #### qe_strategy_agent
 **File:** `profiles/qa/agents/qe_strategy_agent.json`  
 **Purpose:** Test strategy documents with scope, approach, and risk assessment  
@@ -1342,6 +1348,7 @@ kiro-cli chat --agent test_coverage_analyzer_agent # Coverage analysis
 kiro-cli chat --agent flaky_test_fixer_agent    # Flaky test diagnosis & fix
 kiro-cli chat --agent test_recorder_agent       # Playwright recording → specs
 kiro-cli chat --agent bruno_collection_agent    # OpenAPI/Gherkin → Bruno collections
+kiro-cli chat --agent postman_to_bruno_agent    # Postman ? Bruno collection converter
 
 # Ops
 kiro-cli chat --agent ops_orchestrator_agent    # Ops orchestrator
