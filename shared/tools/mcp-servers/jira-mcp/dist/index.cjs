@@ -10780,7 +10780,7 @@ async function xrayCloudGraphQL(query, variables) {
 // build/tools/xrayCloudCreateTest.js
 var xrayCloudCreateTestSchema = {
   name: "xray_cloud_create_test",
-  description: "Create a test case with steps in XRay Cloud. Returns the created test issue key.",
+  description: "Create a test case in XRay Cloud via GraphQL. Supports Manual (structured steps), Cucumber (Gherkin), and Generic types.",
   inputSchema: {
     type: "object",
     properties: {
@@ -10800,7 +10800,7 @@ var xrayCloudCreateTestSchema = {
         },
         description: "Array of test steps (for Manual/Generic types)"
       },
-      gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type. Used when testType is Cucumber." },
+      gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type" },
       labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
       customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_13912": "EPIC-1"})' }
     },
@@ -10810,34 +10810,41 @@ var xrayCloudCreateTestSchema = {
 async function handleXrayCloudCreateTest(args) {
   try {
     const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
-    const payload = {
-      testType,
-      fields: {
-        summary,
-        project: { key: projectKey },
-        ...customFields
-      }
+    const mutation = `mutation CreateTest($jira: JSON!, $testType: UpdateTestTypeInput, $steps: [CreateStepInput], $gherkin: String) {
+            createTest(jira: $jira, testType: $testType, steps: $steps, gherkin: $gherkin) {
+                test { issueId jira(fields: ["key"]) testType { name } }
+                warnings
+            }
+        }`;
+    const jiraFields = { summary, project: { key: projectKey }, ...customFields };
+    if (labels?.length)
+      jiraFields.labels = labels;
+    const variables = {
+      jira: { fields: jiraFields },
+      testType: { name: testType }
     };
     if (gherkin && testType === "Cucumber") {
-      payload.xpiDefinition = gherkin;
+      variables.gherkin = gherkin;
     } else if (steps?.length) {
-      payload.steps = steps.map((s) => ({
-        action: s.action,
-        data: s.data || "",
-        result: s.result
-      }));
+      variables.steps = steps.map((s) => ({ action: s.action, data: s.data || "", result: s.result }));
     }
-    if (labels?.length)
-      payload.fields.labels = labels;
-    const result = await xrayCloudPost("/api/v2/import/test", payload);
-    const key = result?.key || result?.testIssueId || JSON.stringify(result);
-    return {
-      content: [{ type: "text", text: `**Test Created:** ${key}
+    const data = await xrayCloudGraphQL(mutation, variables);
+    const key = data?.createTest?.test?.jira?.key || JSON.stringify(data);
+    const warnings = data?.createTest?.warnings;
+    let text = `**Test Created:** ${key}
 
 **Summary:** ${summary}
-**Steps:** ${steps.length}
-**Type:** ${testType}` }]
-    };
+**Type:** ${testType}`;
+    if (steps?.length)
+      text += `
+**Steps:** ${steps.length}`;
+    if (gherkin)
+      text += `
+**Gherkin:** included`;
+    if (warnings?.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };
   }
@@ -10890,7 +10897,7 @@ ${testPlanKey ? `**Plan:** ${testPlanKey}
 // build/tools/xrayCloudUpdateRun.js
 var xrayCloudUpdateRunSchema = {
   name: "xray_cloud_update_run",
-  description: "Report pass/fail results for a test run in XRay Cloud. Updates step-level statuses within an existing execution.",
+  description: "Report pass/fail results for a test run in XRay Cloud. Supports step-level statuses and Scenario Outline iterations.",
   inputSchema: {
     type: "object",
     properties: {
@@ -10913,7 +10920,43 @@ var xrayCloudUpdateRunSchema = {
                 },
                 required: ["status"]
               },
-              description: "Step-level results (optional)"
+              description: "Step-level results for Manual tests (optional)"
+            },
+            iterations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Iteration label (e.g. Iteration 1)" },
+                  status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"] },
+                  parameters: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        value: { type: "string" }
+                      },
+                      required: ["name", "value"]
+                    },
+                    description: "Examples table row values for this iteration"
+                  },
+                  steps: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"] },
+                        actualResult: { type: "string" }
+                      },
+                      required: ["status"]
+                    },
+                    description: "Step results within this iteration"
+                  }
+                },
+                required: ["status"]
+              },
+              description: "Per-iteration results for Scenario Outline tests (optional)"
             }
           },
           required: ["testKey", "status"]
@@ -10933,17 +10976,22 @@ async function handleXrayCloudUpdateRun(args) {
         testKey: t.testKey,
         status: t.status,
         ...t.comment && { comment: t.comment },
-        ...t.steps && { steps: t.steps }
+        ...t.steps && { steps: t.steps },
+        ...t.iterations && { iterations: t.iterations }
       }))
     };
     const result = await xrayCloudPost("/api/v2/import/execution", payload);
     const passed = tests.filter((t) => t.status === "PASSED").length;
     const failed = tests.filter((t) => t.status === "FAILED").length;
-    return {
-      content: [{ type: "text", text: `**Test Run Updated:** ${testExecutionKey}
+    const withIterations = tests.filter((t) => t.iterations?.length).length;
+    let text = `**Test Run Updated:** ${testExecutionKey}
 
-**Results:** ${passed} passed, ${failed} failed, ${tests.length} total` }]
-    };
+**Results:** ${passed} passed, ${failed} failed, ${tests.length} total`;
+    if (withIterations) {
+      text += `
+**Scenario Outlines:** ${withIterations} test(s) with iteration-level results`;
+    }
+    return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error updating XRay Cloud run: ${error.message}` }], isError: true };
   }
@@ -10996,7 +11044,7 @@ async function handleXrayCloudLinkTestToStory(args) {
 // build/tools/xrayCloudGetTestSteps.js
 var xrayCloudGetTestStepsSchema = {
   name: "xray_cloud_get_test_steps",
-  description: "Get test steps for a test case from XRay Cloud.",
+  description: "Get test steps for a test case from XRay Cloud. Supports both Manual and Cucumber test types.",
   inputSchema: {
     type: "object",
     properties: {
@@ -11015,6 +11063,7 @@ async function handleXrayCloudGetTestSteps(args) {
                     results {
                         issueId
                         testType { name }
+                        gherkin
                         steps {
                             id
                             action
@@ -11029,9 +11078,19 @@ async function handleXrayCloudGetTestSteps(args) {
     const test = data?.getTests?.results?.[0];
     if (!test)
       return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
+    const testType = test.testType?.name || "Unknown";
+    if (testType === "Cucumber" && test.gherkin) {
+      const text2 = `**Test Steps for ${testKey}**
+**Type:** Cucumber
+
+\`\`\`gherkin
+${test.gherkin}
+\`\`\``;
+      return { content: [{ type: "text", text: text2 }] };
+    }
     const steps = test.steps || [];
     let text = `**Test Steps for ${testKey}** (${steps.length} steps)
-**Type:** ${test.testType?.name || "Unknown"}
+**Type:** ${testType}
 
 `;
     steps.forEach((s, i) => {
@@ -11121,7 +11180,7 @@ async function handleXrayCloudGetTestRuns(args) {
 // build/tools/xrayCloudSearchTests.js
 var xrayCloudSearchTestsSchema = {
   name: "xray_cloud_search_tests",
-  description: "Search test cases in XRay Cloud using JQL.",
+  description: "Search test cases in XRay Cloud using JQL. Returns Gherkin preview for Cucumber tests.",
   inputSchema: {
     type: "object",
     properties: {
@@ -11142,6 +11201,7 @@ async function handleXrayCloudSearchTests(args) {
                         issueId
                         jira(fields: ["key", "summary", "status", "labels"])
                         testType { name }
+                        gherkin
                     }
                 }
             }
@@ -11161,6 +11221,13 @@ async function handleXrayCloudSearchTests(args) {
       const type = t.testType?.name || "?";
       text += `- **${key}** \u2014 ${summary} [${type}]
 `;
+      if (type === "Cucumber" && t.gherkin) {
+        const preview = t.gherkin.split("\n").slice(0, 3).join("\n").slice(0, 200);
+        text += `  \`\`\`gherkin
+  ${preview}
+  \`\`\`
+`;
+      }
     }
     return { content: [{ type: "text", text }] };
   } catch (error) {
