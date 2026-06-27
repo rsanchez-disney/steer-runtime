@@ -4,6 +4,27 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.145] — 2026-06-27
+
+### Added
+
+- **pos-team** — POS team backoffice SDLC orchestration (#516)
+- **app-payment-controls** — local dev setup steering file (#514)
+
+### Fixed
+
+- **agents** — add @compass/* fallback to key agents for Compass-only users (#519)
+- **jira-mcp** — migrate xray_cloud_create_test from broken REST to GraphQL mutation (#517)
+- **jira-mcp** — add Cucumber/Gherkin support to XRay Cloud tools (#515)
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
+- **docs** — update certification report
+- **docs** — add GCP Backend (Java) to local dev setup steering
+- **docs** — add postman_to_bruno_agent to AGENTS.md (#512)
+- **docs** — add koda mcp-install step to Windows troubleshooting guide
+
 ## [0.2.144] — 2026-06-26
 
 ### Changed

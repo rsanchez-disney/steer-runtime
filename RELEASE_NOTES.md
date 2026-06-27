@@ -4,13 +4,19 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.144
+## v0.2.145
 
-- **chore** — rebuild MCP bundles
-- **chore** — update certification report
+- **feat** — POS team backoffice SDLC orchestration (#516)
+- **feat** — payment-controls local dev setup steering (#514)
+- **fix** — add @compass/* fallback to key agents for Compass-only users (#519)
+- **fix** — migrate xray_cloud_create_test from REST to GraphQL mutation (#517)
+- **fix** — add Cucumber/Gherkin support to XRay Cloud tools (#515)
+- **docs** — add GCP Backend (Java) to local dev setup steering
+- **docs** — add postman_to_bruno_agent to AGENTS.md (#512)
+- **docs** — add koda mcp-install step to Windows troubleshooting guide
 <!-- END LATEST -->
 
-## v0.2.143
+## v0.2.137
 
 ## v0.2.137
 
