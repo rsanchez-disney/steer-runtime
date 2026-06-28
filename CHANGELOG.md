@@ -4,6 +4,19 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.146] — 2026-06-28
+
+### Added
+
+- **tests** — expanded refunds validation test plan with comprehensive scenarios (#521)
+- **tests** — Q3 FY2026 quarterly report update with latest metrics
+- **tests** — GSM weekly impact summary report (June 21–27, 2026)
+
+### Changed
+
+- **docs** — update certification report (trust score 95/100, 23/26 delegation pass)
+- **git** — add .mailmap to map contributor email
+
 ## [0.2.145] — 2026-06-27
 
 ### Added
