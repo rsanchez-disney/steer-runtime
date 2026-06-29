@@ -536,12 +536,12 @@ var init_customFields = __esm({
     init_adfToText();
     CUSTOM_FIELD_ALIASES = {
       // ── Agile / Planning ─────────────────────────────
-      sprint: "customfield_10803",
-      storyPoints: "customfield_10003",
-      epicLink: "customfield_13912",
-      epicName: "customfield_13913",
-      epicStatus: "customfield_13914",
-      epicColour: "customfield_13915",
+      sprint: "customfield_10020",
+      storyPoints: "customfield_10042",
+      epicLink: "customfield_10014",
+      epicName: "customfield_10011",
+      epicStatus: "customfield_10012",
+      epicColour: "customfield_10013",
       epicGroup: "customfield_18701",
       epicTotalStoryPoints: "customfield_19900",
       rank: "customfield_17403",
@@ -880,7 +880,34 @@ var init_customFields = __esm({
       ticketType: "customfield_27002",
       numberBuilt: "customfield_26900",
       discovered: "customfield_21300",
-      ympPiGoal: "customfield_26200"
+      ympPiGoal: "customfield_26200",
+      // ── Jira Cloud field IDs (disneyexperiences.atlassian.net) ──
+      cloudStoryPoints: "customfield_10042",
+      cloudSprint: "customfield_10020",
+      cloudEpicLink: "customfield_10014",
+      cloudEpicName: "customfield_10011",
+      cloudEpicStatus: "customfield_10012",
+      cloudEpicColor: "customfield_10013",
+      cloudRank: "customfield_10019",
+      cloudFlagged: "customfield_10021",
+      cloudTeam: "customfield_10001",
+      cloudStartDate: "customfield_10015",
+      cloudTargetStart: "customfield_10022",
+      cloudTargetEnd: "customfield_10023",
+      cloudStoryPointEstimate: "customfield_10016",
+      cloudParentLink: "customfield_10018",
+      cloudDevelopment: "customfield_10000",
+      cloudStudio: "customfield_10156",
+      cloudCategory: "customfield_10157",
+      cloudSustainmentCategory: "customfield_10158",
+      cloudSeverity: "customfield_10174",
+      cloudPlatforms: "customfield_10176",
+      cloudAutomationCandidate: "customfield_10154",
+      cloudAutomationStatus: "customfield_10190",
+      cloudAutomationOwner: "customfield_10193",
+      cloudAiAssistedEffort: "customfield_10173",
+      cloudAiToolsUsed: "customfield_10191",
+      cloudProgramIncrement: "customfield_10188"
     };
     REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
       fieldId,
@@ -7612,7 +7639,7 @@ var jiraGetIssueSchema = {
             "components",
             "issuelinks",
             "storyPoints",
-            "customfield_10003"
+            "customfield_10042"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
@@ -7642,7 +7669,7 @@ async function handleJiraGetIssue(args) {
       "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
-    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10004" : f);
+    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10042" : f);
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
     const allFields = [.../* @__PURE__ */ new Set([...expandedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
@@ -7686,7 +7713,7 @@ async function handleJiraGetIssue(args) {
               labels: ticket.fields?.labels,
               created: ticket.fields?.created?.slice(0, 10),
               updated: ticket.fields?.updated?.slice(0, 10),
-              storyPoints: ticket.fields?.story_points || ticket.fields?.customfield_10028
+              storyPoints: ticket.fields?.story_points || ticket.fields?.customfield_10042
             })
           }
         }
@@ -8244,7 +8271,7 @@ async function handleJiraSearchIssues(args) {
               status: i.fields?.status?.name || "Unknown",
               assignee: i.fields?.assignee?.displayName,
               priority: i.fields?.priority?.name,
-              storyPoints: i.fields?.story_points || i.fields?.customfield_10028
+              storyPoints: i.fields?.story_points || i.fields?.customfield_10042
             })))
           }
         }

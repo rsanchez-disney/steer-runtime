@@ -14,12 +14,12 @@ import { adfToText } from "./adfToText.js";
 /** alias → customfield_XXXXX */
 export const CUSTOM_FIELD_ALIASES: Record<string, string> = {
     // ── Agile / Planning ─────────────────────────────
-    sprint: "customfield_10803",
-    storyPoints: "customfield_10003",
-    epicLink: "customfield_13912",
-    epicName: "customfield_13913",
-    epicStatus: "customfield_13914",
-    epicColour: "customfield_13915",
+    sprint: "customfield_10020",
+    storyPoints: "customfield_10042",
+    epicLink: "customfield_10014",
+    epicName: "customfield_10011",
+    epicStatus: "customfield_10012",
+    epicColour: "customfield_10013",
     epicGroup: "customfield_18701",
     epicTotalStoryPoints: "customfield_19900",
     rank: "customfield_17403",
@@ -376,7 +376,35 @@ export const CUSTOM_FIELD_ALIASES: Record<string, string> = {
     numberBuilt: "customfield_26900",
     discovered: "customfield_21300",
     ympPiGoal: "customfield_26200",
+// ── Jira Cloud field IDs (disneyexperiences.atlassian.net) ──
+    cloudStoryPoints: "customfield_10042",
+    cloudSprint: "customfield_10020",
+    cloudEpicLink: "customfield_10014",
+    cloudEpicName: "customfield_10011",
+    cloudEpicStatus: "customfield_10012",
+    cloudEpicColor: "customfield_10013",
+    cloudRank: "customfield_10019",
+    cloudFlagged: "customfield_10021",
+    cloudTeam: "customfield_10001",
+    cloudStartDate: "customfield_10015",
+    cloudTargetStart: "customfield_10022",
+    cloudTargetEnd: "customfield_10023",
+    cloudStoryPointEstimate: "customfield_10016",
+    cloudParentLink: "customfield_10018",
+    cloudDevelopment: "customfield_10000",
+    cloudStudio: "customfield_10156",
+    cloudCategory: "customfield_10157",
+    cloudSustainmentCategory: "customfield_10158",
+    cloudSeverity: "customfield_10174",
+    cloudPlatforms: "customfield_10176",
+    cloudAutomationCandidate: "customfield_10154",
+    cloudAutomationStatus: "customfield_10190",
+    cloudAutomationOwner: "customfield_10193",
+    cloudAiAssistedEffort: "customfield_10173",
+    cloudAiToolsUsed: "customfield_10191",
+    cloudProgramIncrement: "customfield_10188",
 };
+
 
 /** Reverse lookup: customfield_XXXXX → alias (for display) */
 const REVERSE_ALIASES: Record<string, string> = Object.fromEntries(

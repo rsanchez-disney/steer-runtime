@@ -132,7 +132,7 @@ export async function handleJiraSearchIssues(args: any): Promise<any> {
                             status: i.fields?.status?.name || 'Unknown',
                             assignee: i.fields?.assignee?.displayName,
                             priority: i.fields?.priority?.name,
-                            storyPoints: i.fields?.story_points || i.fields?.customfield_10028,
+                            storyPoints: i.fields?.story_points || i.fields?.customfield_10042,
                         }))),
                     },
                 },
