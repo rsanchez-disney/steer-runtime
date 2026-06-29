@@ -1,249 +1,188 @@
 # Q3 FY2026 Quarterly Business Report
 
-**Period:** April 1 – June 30, 2026
-**Team:** Digital Payments (DPAY) & AI Platform (steer-runtime / Kiro)
-**Author:** Ricardo Sanchez, Engineering Lead
-**Date:** June 28, 2026
+**Disney Payments (DPAY) + steer-runtime Platform**
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| Quarter          | Q3 FY2026 (April 1 – June 30, 2026) |
+| Report date      | June 29, 2026                      |
+| Team             | Disney Payments (DPAY)             |
+| Overall status   | 🟡 AMBER                           |
+| Prepared for     | Disney Director                    |
 
 ---
 
-## 1. Executive summary
+## Executive summary
 
-Q3 delivered a **+19% throughput improvement** (99→118 SP) and closed the quarter with all services at GREEN/STABLE status after a challenging mid-quarter incident surge. The recurring P1 incident INC0067890 (payment gateway timeouts, 6 recurrences) was the defining event — its root cause is resolved but the **deployment guard to prevent recurrence remains unimplemented** and is the team's #1 risk entering Q4.
+Q3 FY2026 delivered significant platform advancement — 46 steer-runtime releases, a major gcp-admin-services modernization, and a mature AI agent ecosystem of 145 agents — but the quarter closes under an **AMBER** status due to a recurring critical incident (INC0067890) that has degraded payment service stability over the final two weeks.
 
-On the innovation front, steer-runtime shipped 45 releases (v0.2.100→v0.2.145), the DPAY ticket classifier ML model reached production, and the AI agent ecosystem grew to 145 agents across 16 profiles. Delivery accuracy landed at 74.7% — below the 80% target — directly attributable to unplanned incident response consuming ~25% of mid-quarter capacity.
+**What went well:** Sprint velocity grew 19% through the quarter, the lodging booking flow maintained 99.976% reliability, and the architecture blueprint for permanent incident resolution is complete.
 
-**Bottom line:** Strong recovery trajectory, but one unresolved systemic risk (deployment guard) and one live financial risk (DPAY-14500 over-refunds) require director-level decisions before Q4 begins.
+**What needs attention:** INC0067890 has recurred 7 times in 14 days because a deployment process gap overwrites production hotfixes. This cannot be permanently resolved without a deployment guard that requires director approval. Additionally, DPAY-14500 presents an active financial risk (over-refunds) with a designed fix awaiting deployment priority.
 
----
-
-## 2. Key achievements
-
-| #  | Achievement                                      | Business Impact                                                    | Delivery Date |
-|:--:|--------------------------------------------------|--------------------------------------------------------------------|:-------------:|
-| 1  | gcp-admin-services v2.0.0-391 deployed           | Unified admin platform; eliminates legacy UI dependency            |    May 2026   |
-| 2  | Lodging booking flow stabilized (STABLE HIGH)    | Revenue-critical path de-risked; zero booking failures last 4 wks  |    Jun 2026   |
-| 3  | steer-runtime v0.2.145 (45 releases)             | Internal dev velocity multiplier; 145 AI agents operational        |    Ongoing    |
-| 4  | DPAY ticket classifier ML model deployed         | Auto-routing of support tickets; reduces manual triage by ~60%     |    Jun 2026   |
-| 5  | GCP-1933 delivered across 3 repos                | Clean multi-repo delivery; zero rework cycles                      |    May 2026   |
-| 6  | INC0067890 root cause identified and hotfixed    | Payment gateway stabilized; 2 consecutive clean weeks achieved     |    Jun 2026   |
-| 7  | All services GREEN/STABLE                        | First full-green quarter close since Q1 FY2026                     |  Jun 19-28    |
-| 8  | Koda PR #230 approved                            | AI engine enhancement merged; unblocks cross-team adoption         |    Jun 2026   |
+**Bottom line:** The team's delivery capacity is proven, but two urgent decisions are needed by July 1 to prevent continued service degradation and financial exposure entering Q4.
 
 ---
 
-## 3. Velocity and delivery metrics
+## Key achievements
 
-| Metric                  | Q2 FY2026 | Q3 FY2026 | Target  | Status |
-|-------------------------|:---------:|:---------:|:-------:|:------:|
-| Sprint throughput (SP)  |     99    |    118    |   110   |   ✅   |
-| Delivery accuracy       |   ~80%    |   74.7%   |   80%   |   ⚠️   |
-| Incidents (P1/P2)       |     1     |   6 (1 recurring) |    0    |   ❌   |
-| Clean weeks (consecutive)|    0     |     2     |    4    |   ⚠️   |
+| #  | Achievement                                                              | Business Impact                                                                 |
+|:--:|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| 1  | steer-runtime grew from v0.2.100 to v0.2.146 (46 releases)              | Continuous platform improvement; 145 agents across 16 specialized profiles      |
+| 2  | gcp-admin-services v2.0.0-391 major release deployed                     | Payment admin modernization complete                                            |
+| 3  | Lodging booking flow stabilized (99.976% success rate)                   | Guest booking reliability maintained                                            |
+| 4  | Architecture spec completed: payment-controls-api microservice split     | Blueprint for permanent INC0067890 resolution via strangler fig pattern          |
+| 5  | DPAY ticket classifier ML model trained                                  | Automated incident categorization                                               |
+| 6  | ECS OOM investigation completed with memory right-sizing proposal        | Infrastructure cost optimization + stability                                    |
+| 7  | AI agent ecosystem expanded to 145 agents across 16 profiles             | Developer productivity platform reached production maturity                     |
+| 8  | Comprehensive test plans generated for refunds validation                | Quality assurance coverage for financial flows                                  |
 
-### Throughput trend (story points per sprint)
+---
+
+## Velocity and delivery metrics
+
+| Metric               |          Value          | Target     | Status             |
+|----------------------|:-----------------------:|------------|--------------------|
+| Throughput (SP/sprint) | 99 → 118 SP (+19%)   | N/A        | ✅ Growth           |
+| Delivery accuracy    |         74.7%          | ≥ 80%      | ⚠️ Below target     |
+| Carry-over rate      |          ~25%          | ≤ 10%      | ❌ Above target     |
+| Sprint velocity trend |        Upward         | Stable/Up  | ✅ Recovering       |
+
+### Commentary
+
+Delivery accuracy declined from 87.6% (Q2) to 74.7% this quarter. The primary driver was the mid-quarter incident surge: INC0067890 consumed significant unplanned capacity across engineering, SRE, and leadership functions. Post-stabilization sprints (final two weeks of June) showed velocity recovery, indicating the team can return to target in Q4 once the incident is permanently resolved.
+
+---
+
+## Incident and service health
+
+### Current service status
+
+| Service                        | Status                                              |
+|--------------------------------|-----------------------------------------------------|
+| Payment Service (BAPP0012692)  | 🔴 RED — INC0067890 active (7 recurrences / 14 days) |
+| Booking Service (BAPP0012680)  | 🟡 AMBER — impacted by payment cascade              |
+| Lodging Booking Flow           | 🟢 GREEN — 99.976% success rate                     |
+| GCP Admin Services             | 🟢 GREEN — v2.0.0-391 stable                        |
+
+**Service health score:** 2/10 (RED for 2 consecutive weeks as of June 28)
+
+### Critical incident: INC0067890 — payment gateway timeouts
+
+| Attribute        | Detail                                                                                      |
+|------------------|---------------------------------------------------------------------------------------------|
+| First occurrence | ~June 15, 2026                                                                              |
+| Recurrences      | 7 times in 14 days                                                                          |
+| Root cause       | Connection pool/TLS hotfix repeatedly overwritten by deployments (hotfix never merged into deployment artifact) |
+| Why it recurs    | No deployment guard exists to prevent overwriting production hotfixes                        |
+| Impact           | Payment flow degradation, cascading failures to booking services                            |
+| Status           | **UNRESOLVED** — requires deployment guard implementation (director approval needed)        |
+
+### Financial risk: DPAY-14500 — refund validation over-refunds
+
+| Attribute  | Detail                                                                   |
+|------------|--------------------------------------------------------------------------|
+| Severity   | HIGH — financial risk; over-refunds occurring without validation guard    |
+| Status     | Fix designed (fail-closed guard), awaiting deployment priority            |
+| Mitigation | Architecture spec includes isolated refund service with fail-closed default |
+
+### Weekly incident trend (8-week view)
 
 ```text
-Sprint 1 (Apr):  99 SP
-Sprint 2 (May): 105 SP
-Sprint 3 (May): 108 SP
-Sprint 4 (Jun): 112 SP
-Sprint 5 (Jun): 118 SP
-```
-
-### Delivery accuracy analysis
-
-The 74.7% accuracy is directly attributed to:
-
-- **~25% capacity consumed** by INC0067890 response (6 occurrences)
-- **ECS OOMKill investigation** pulled 2 engineers for 3 days
-- **Accuracy excluding incidents: ~82%** — team is performing above target when uninterrupted
-
-**Recommendation:** Approve velocity reset for Q4 baseline to account for stabilized incident load.
-
----
-
-## 4. AI adoption and innovation
-
-### steer-runtime / Kiro platform
-
-| Metric                          | Start of Q3 | End of Q3 | Growth |
-|---------------------------------|:-----------:|:---------:|:------:|
-| steer-runtime version           |   v0.2.100  |  v0.2.145 |  +45   |
-| Active agent profiles           |      12     |     16    |  +33%  |
-| Total agents                    |     ~100    |    145    |  +45%  |
-| Releases this quarter           |      —      |     45    |   —    |
-
-### Key AI initiatives
-
-- **DPAY ticket classifier:** TF-IDF + Logistic Regression model trained with 100% test accuracy. Now auto-routing incoming DPAY tickets, reducing manual triage effort by an estimated 60%.
-- **Koda/Stepwise gap analysis:** Completed comparative analysis identifying 14 proposed features for AI engine enhancement (cross-session memory, live steering, execution hooks, MCP auto-reconnect).
-- **AI adoption framework:** Defined but quantitative adoption metrics (sessions/week, time-saved) pending Jira field mandate (see Director Ask #3).
-- **Koda PR #230:** Approved — enables improved agent coordination patterns.
-
-### Blockers to measurement
-
-Without the mandatory AI field in Jira (Director Ask #3), we cannot quantify:
-
-- Developer hours saved per AI-assisted session
-- AI contribution ratio per ticket
-- ROI of steer-runtime investment
-
----
-
-## 5. Service health and stability
-
-### Current state (as of June 28, 2026)
-
-| Service                  | Status | Confidence | Last Incident |
-|--------------------------|:------:|:----------:|:-------------:|
-| Payment Gateway          |  🟢   |    HIGH    |    Jun 12     |
-| Booking Service          |  🟢   |    HIGH    |    Jun 12     |
-| gcp-admin-services       |  🟢   |    HIGH    |     None      |
-| Lodging Booking Flow     |  🟢   | STABLE HIGH|     None      |
-| Order VAS                |  🟢   |    HIGH    |    Jun 12     |
-| Checkout SPA             |  🟢   |   MEDIUM   |    Jun 12     |
-
-### GSM health trajectory
-
-```text
-Apr:  7/10 GREEN
-May:  3/10 RED (incident surge)
-Jun:  8/10 GREEN (recovered)
-```
-
-### Incident trend (weekly, last 8 weeks)
-
-```text
-Wk1: ██ (2 incidents)
-Wk2: ██ (2 incidents)
-Wk3: ██ (2 incidents)
-Wk4: █  (1 incident)
-Wk5:    (0)
-Wk6:    (0)
-Wk7:    (0)  ← clean
-Wk8:    (0)  ← clean (current)
+Week:      W1  W2  W3  W4  W5  W6  W7  W8
+Incidents:  2   2   0   0   0   0   2   0
 ```
 
 ---
 
-## 6. Risk register
+## AI platform adoption
 
-| #  | Risk                                         | Severity | Likelihood | Impact                              | Mitigation Status         |
-|:--:|----------------------------------------------|:--------:|:----------:|-------------------------------------|---------------------------|
-| 1  | INC0067890 deployment guard NOT implemented  |    P1    |    HIGH    | Will recur on next deployment       | ❌ Pending approval        |
-| 2  | DPAY-14500 over-refunds (live financial)     |    P1    |   MEDIUM   | Direct revenue loss per occurrence  | ⚠️ Escalation needed       |
-| 3  | ECS OOM remediation pending AWS creds        |    P2    |   MEDIUM   | Service degradation under load      | ⚠️ Proposal drafted        |
-| 4  | Delivery accuracy below 80% target           |    P3    |    LOW     | Stakeholder confidence erosion      | Velocity reset proposed   |
-| 5  | AI adoption unmeasured (no Jira field)       |    P3    |    HIGH    | Cannot demonstrate ROI              | Director Ask #3           |
+### steer-runtime metrics
 
-### Risk #1 detail (deployment guard)
+| Metric                | Value                                  |
+|-----------------------|----------------------------------------|
+| Platform version      | v0.2.146                               |
+| Total agents          | 145                                    |
+| Agent profiles (teams)| 16                                     |
+| Quarterly releases    | 46 (v0.2.100 → v0.2.146)              |
+| Platform maturity     | Production-grade                       |
 
-- **What:** The hotfix for INC0067890 (connection pool/TLS config) is applied but lives only in runtime state. Each new deployment overwrites the fix.
-- **Why it matters:** The next deployment WILL reintroduce payment gateway timeouts.
-- **Ask:** Approve 2-sprint allocation (30-40% capacity) to implement deployment guard in CI/CD pipeline.
+### Agent categories
 
----
+ba · cloudops · core · design · dev-ai · dev-core · dev-mobile · dev-ui · dev-web · inspector · leadership · pm · qa · steer-master · sustainment · unknown
 
-## 7. Incident summary
+### New capabilities delivered this quarter
 
-### INC0067890 — Payment gateway timeouts (P1)
+- Quarterly reporting automation
+- GSM (Guest Service Management) analysis
+- Incident triage and classification
+- Stability validation workflows
+- Architecture specification generation
 
-| Attribute            | Detail                                                                 |
-|----------------------|------------------------------------------------------------------------|
-| Severity             | P1                                                                     |
-| Occurrences          | 6 (recurred due to deployment artifact overwrite)                      |
-| Blast radius         | Payment Service → Booking Service → Order VAS → Checkout SPA           |
-| Root cause           | Connection pool/TLS hotfix not persisted in deployment artifacts        |
-| Resolution           | Hotfix applied manually; deployment guard proposed                      |
-| Status               | **Hotfix active, systemic fix NOT implemented**                        |
-| Business impact      | Booking failures during each recurrence (~15-30 min per event)         |
-| Estimated revenue impact | TBD (requires Finance input per outage window)                     |
+### Adoption maturity
 
-### ECS OOMKill events
-
-| Attribute            | Detail                                                |
-|----------------------|-------------------------------------------------------|
-| Severity             | P2                                                    |
-| Status               | Investigation complete, remediation proposal drafted  |
-| Blocker              | AWS credential refresh required                       |
-| Next step            | Apply memory limits + auto-scaling rules post-creds   |
+The platform is used daily across sprint management, incident response, release management, and code review. AI adoption is at the **framework level** — quantitative per-developer metrics (AI-assisted PR percentage, token usage per team) are not yet instrumented. Instrumentation is planned as a Q4 initiative.
 
 ---
 
-## 8. Roadmap — Q4 FY2026 outlook (July – September 2026)
+## Risks and blockers
 
-| Priority | Initiative                                | Target     | Dependencies              |
-|:--------:|-------------------------------------------|:----------:|---------------------------|
-|    P0    | Deployment guard implementation           |   Jul 31   | Director approval         |
-|    P0    | DPAY-14500 over-refund fix                |   Jul 15   | Financial risk escalation |
-|    P1    | ECS OOM remediation                       |   Jul 31   | AWS credential refresh    |
-|    P1    | steer-runtime v0.3.0 (cross-session memory)|  Aug 30   | None                      |
-|    P2    | AI adoption metrics (Jira field)          |   Jul 15   | Director mandate          |
-|    P2    | Observability platform (0.5 FTE)          |   Ongoing  | Headcount approval        |
-|    P3    | Cross-team Kiro onboarding                |   Sep 30   | Director decision         |
-
-### Capacity allocation recommendation (Q4)
-
-```text
-Feature delivery:     50-60%
-Deployment safety:    30-40% (first 2 sprints, then drops to 10%)
-Tech debt/observability: 10%
-```
+| #  | Risk                                                                  | Severity | Mitigation / Ask                                          |
+|:--:|-----------------------------------------------------------------------|:--------:|-----------------------------------------------------------|
+| 1  | INC0067890 will recur indefinitely until deployment guard implemented | CRITICAL | Director approval needed for deployment gate by Jul 1     |
+| 2  | DPAY-14500 financial exposure (over-refunds)                          |   HIGH   | Emergency fix designed, needs deployment priority          |
+| 3  | AWS credentials expired — blocking ECS/CloudWatch investigation       |   HIGH   | Credential renewal in progress                            |
+| 4  | Delivery accuracy below 80% target                                    |  MEDIUM  | Post-incident capacity recovery expected in Q4            |
+| 5  | Jira API auth failures preventing automated metrics                   |  MEDIUM  | Manual tracking as stopgap                                |
+| 6  | VPN connectivity issues blocking Splunk/ServiceNow access             |  MEDIUM  | Network team engaged                                      |
 
 ---
 
-## 9. Director asks / decisions needed
+## Q4 FY2026 roadmap (July – September 2026)
 
-| #  | Ask                                        | Context                                                              | Urgency   | Decision Needed By |
-|:--:|--------------------------------------------|--------------------------------------------------------------------- |:---------:|:------------------:|
-| 1  | Velocity reset approval                    | Baseline should reflect post-incident stabilized state (118 SP)      |   Medium  |      Jul 7         |
-| 2  | 0.5 FTE for observability                  | No dedicated observability resource; reactive-only posture today     |   Medium  |      Jul 14        |
-| 3  | AI field mandate in Jira                   | Cannot measure AI ROI without structured data capture                |   Medium  |      Jul 7         |
-| 4  | Cross-team Kiro onboarding decision        | 3 teams have requested access; need scope/support model decision     |    Low    |      Aug 1         |
-| 5  | **Deployment guard implementation (P1)**   | INC0067890 WILL recur on next deploy without this; 30-40% capacity   | **Critical** |   **Jul 1**     |
-| 6  | **DPAY-14500 financial risk escalation**   | Live over-refund bug; each occurrence = direct revenue loss          | **Critical** |   **Jul 1**     |
+| Priority | Initiative                                                | Effort   | Business Value                               |
+|:--------:|-----------------------------------------------------------|----------|----------------------------------------------|
+|    P0    | Implement deployment guard (prevent hotfix overwrites)    | 1 sprint | Eliminates recurring P1 incidents            |
+|    P0    | Deploy DPAY-14500 over-refund fix                         | 1 sprint | Closes financial risk                        |
+|    P1    | Payment-controls-api microservice split (Phase 1)         | 4 sprints| Architectural isolation and resilience       |
+|    P1    | ECS memory right-sizing implementation                    | 1 sprint | Eliminates OOMKill events                    |
+|    P2    | AI metrics instrumentation (per-developer tracking)       | 2 sprints| Quantitative AI adoption data                |
+|    P2    | Observability investment (0.5 FTE)                        | Ongoing  | Proactive incident detection                 |
+|    P3    | Cross-team steer-runtime onboarding                       | 2 sprints| AI platform adoption beyond DPAY             |
 
-### Recommended priority order
-
-1. **#5 and #6** — unresolved P1 risks with active financial/operational exposure
-2. **#1** — enables accurate Q4 planning
-3. **#3** — unblocks AI ROI measurement
-4. **#2** — prevents next incident from being equally painful
-5. **#4** — strategic but not urgent
+**Capacity recommendation:** Allocate 30–40% of Q4 capacity to deployment safety and architectural resilience work. This investment directly addresses the root causes behind our current AMBER status.
 
 ---
 
-## 10. Appendix
+## Decisions and actions required
 
-### Data sources
+### Urgent — deadline July 1, 2026
 
-| Source                          | Coverage                              |
-|---------------------------------|---------------------------------------|
-| Sprint retrospective (Jun 27)   | Velocity, incidents, team feedback    |
-| steer-runtime release history   | AI platform metrics                   |
-| Service monitoring dashboards   | Health status, GSM scores             |
-| Incident management system      | INC0067890 timeline and recurrence    |
-| AI metrics sessions (koda stats)| AI adoption indicators                |
-| Prior weekly reports            | Trend data, historical context        |
+| #  | Ask                                                                                       | Why                                                                              |
+|:--:|-------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| 1  | **Approve deployment guard implementation**                                               | INC0067890 cannot be permanently resolved without this. 7 recurrences in 14 days. Every deployment without this guard risks another P1. |
+| 2  | **Escalate DPAY-14500 financial risk and approve emergency deployment**                   | Over-refunds are an active compliance concern. Fix is designed and ready.        |
 
-### Methodology
+### Standard — decision needed by mid-July
 
-- **Throughput:** Sum of story points completed per sprint (Jira board)
-- **Delivery accuracy:** (Committed SP delivered / Committed SP planned) × 100
-- **GSM health:** Composite score of service availability, latency P99, error rate, and deployment frequency
-- **Incident trend:** Count of P1/P2 incidents per week from incident management system
-- **AI agent count:** Automated count from steer-runtime agent registry
-
-### Definitions
-
-- **SP:** Story Points
-- **GSM:** Global Service Monitor
-- **FTE:** Full-Time Equivalent
-- **VAS:** Value-Added Services
-- **OOM:** Out of Memory
-- **TLS:** Transport Layer Security
+| #  | Ask                                                                                       | Context                                                     |
+|:--:|-------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| 3  | Approve 0.5 FTE allocation for observability tooling                                      | Enables proactive incident detection vs. reactive response  |
+| 4  | Mandate AI metrics custom field in Jira                                                   | Required for quantitative AI adoption tracking in Q4        |
+| 5  | Define cross-team onboarding scope for steer-runtime                                      | Which teams should onboard to the AI platform in Q4?        |
+| 6  | Approve velocity reset plan (reduce committed SP for 2 sprints to clear tech debt)        | Controlled investment to restore delivery accuracy to ≥80%  |
 
 ---
 
-*Report generated June 28, 2026. Next quarterly report due September 30, 2026 (Q4 FY2026 close).*
+## Appendix: fiscal calendar reference
+
+| Disney Fiscal Quarter | Calendar Dates             |
+|-----------------------|----------------------------|
+| Q1 FY2026             | October 1 – December 31, 2025 |
+| Q2 FY2026             | January 1 – March 31, 2026    |
+| **Q3 FY2026**         | **April 1 – June 30, 2026**   |
+| Q4 FY2026             | July 1 – September 30, 2026   |
+
+---
+
+*Report generated June 29, 2026 — End of Q3 FY2026*

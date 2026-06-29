@@ -1,8 +1,8 @@
-# Steer Runtime v0.2.144-10-g9e6f01bd — Certification Report
+# Steer Runtime v0.2.145-1-g4fb38a6c — Certification Report
 
 🟢 **Trust Score: 95/100** (Certified)
 
-Generated: 2026-06-27T09:17:01
+Generated: 2026-06-28T09:21:23
 
 ---
 
@@ -12,30 +12,30 @@ Generated: 2026-06-27T09:17:01
 |----------|--------|----------------|
 | ba-delegate-figma-design | ✗ | 0 |
 | ai-route-ml-task | ✓ | 8 |
-| ba-analyze-requirements | ✓ | 59 |
-| cloudops-infra-issue | ✓ | 33 |
+| cloudops-infra-issue | ✓ | 20 |
 | inspector-inspect-app | ✓ | 20 |
-| design-architecture-review | ✓ | 5 |
-| analyze-story | ✓ | 16 |
+| ba-analyze-requirements | ✓ | 44 |
+| design-architecture-review | ✓ | 8 |
+| analyze-story | ✓ | 8 |
+| code-review | ✓ | 8 |
+| leadership-quarterly-report | ✓ | 8 |
 | ops-check-deployment | ✓ | 5 |
-| leadership-quarterly-report | ✓ | 5 |
-| implement-feature | ✓ | 31 |
-| code-review | ✓ | 49 |
-| run-tests | ✓ | 8 |
-| create-pr | ✓ | 8 |
+| run-tests | ✓ | 0 |
+| implement-feature | ✓ | 38 |
 | fetch-jira | ✓ | 16 |
-| pm-sprint-status | ✓ | 8 |
-| write-code | ✓ | 9 |
-| pm-run-retro | ✓ | 8 |
-| qa-analyze-defect | ✗ | 0 |
-| qa-plan-testing | ✓ | 5 |
-| steer-release | ✓ | 8 |
+| write-code | ✓ | 0 |
+| pm-sprint-status | ✓ | 57 |
+| create-pr | ✓ | 8 |
+| steer-review-pr | ✗ | 0 |
+| pm-run-retro | ✓ | 28 |
+| qa-plan-testing | ✓ | 8 |
 | triage-incident | ✓ | 30 |
-| steer-review-pr | ✓ | 8 |
-| rca-minimal-delegation | ✗ | 0 |
+| steer-release | ✓ | 8 |
 | rca-investigation | ✓ | 8 |
-| gsm-report | ✓ | 8 |
+| rca-minimal-delegation | ✗ | 0 |
 | stability-validation | ✓ | 8 |
+| gsm-report | ✓ | 8 |
+| qa-analyze-defect | ✓ | 30 |
 
 ## Structural (30%) — 4/4 passed (100%)
 
