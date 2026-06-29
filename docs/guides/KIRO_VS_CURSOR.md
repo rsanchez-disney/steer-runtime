@@ -198,9 +198,23 @@ Cursor additionally supports:
 
 | Command | Kiro | Cursor |
 |---------|------|--------|
-| `koda chat --ws` | ✅ Launches kiro-cli with workspace | ✅ `--target cursor` generates `.cursor/` |
+| `koda chat` | ✅ Launches kiro-cli | ✅ Auto-detects `.cursor/` → launches `agent` CLI |
+| `koda chat --ws` | ✅ kiro-cli with workspace | ✅ `--target cursor` or auto-detect |
 | `koda cursor --ws` | N/A | ✅ Generates project `.cursor/` |
 | `koda workspace apply` | ✅ Materializes to `~/.kiro/` | ✅ Auto-syncs `~/.cursor/` (MCP + agents) |
 | `koda ci run` | ✅ `kiro-cli --print` | ❌ (use `agent -p` directly) |
 | `koda plan` | ✅ kiro_planner agent | ❌ (use `agent --mode=plan` directly) |
 | `koda setup runtime` | Select kiro/cursor/both | — |
+| `koda doctor` | ✅ Kiro health checks | ✅ Cursor CLI + MCP + agents checks |
+
+## Auto-detection
+
+When you `cd` into a project directory:
+
+| Directory contains | `koda chat` behavior |
+|-------------------|---------------------|
+| Nothing | Uses Kiro (default) |
+| `.cursor/` | Uses Cursor agent CLI |
+| `.cursor/.koda-meta.json` | Uses Cursor + infers workspace + default agent |
+
+Explicit `--target kiro` or `--target cursor` always overrides auto-detection.

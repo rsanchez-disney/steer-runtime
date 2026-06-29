@@ -1,73 +1,89 @@
 # Cursor Quick Start Guide
 
-Get started with Cursor using steer-runtime workspaces in 3 steps.
+Get started with Cursor using steer-runtime workspaces.
 
 ## Prerequisites
 
-- Koda installed (`koda version` shows v0.4.205+)
-- Cursor installed (`cursor --version` or download from <https://cursor.com>)
+- Koda v0.4.208+ (`koda upgrade`)
+- Cursor agent CLI (`agent --version` or install from <https://cursor.com>)
 - steer-runtime synced (`koda sync`)
 
-## Step 1: Configure runtime
+## Setup (one time per project)
+
+### 1. Configure runtime
 
 ```bash
 koda setup runtime
 # Select: 2) cursor  or  3) both
 ```
 
-Or let it auto-detect on first upgrade:
+Or skip — Koda auto-detects on `koda upgrade` if Cursor is installed.
 
-```bash
-koda upgrade
-# Output: 🔍 Detected runtimes: kiro + cursor
-```
-
-## Step 2: Apply your workspace
-
-```bash
-koda workspace apply my-team
-```
-
-This automatically syncs to `~/.cursor/`:
-- `~/.cursor/mcp.json` — all MCP tools (Jira, Confluence, GitHub, Compass)
-- `~/.cursor/agents/*.md` — all workspace agents as Cursor subagents
-
-## Step 3: Set up project rules
+### 2. Generate project config
 
 ```bash
 cd ~/projects/my-app
-koda cursor --ws my-team
+koda cursor --ws app-payment-controls
 ```
 
 This generates `.cursor/` in your project:
 - `.cursor/rules/*.mdc` — steering files (auto-attached by glob/description)
+- `.cursor/agents/*.md` — all workspace agents as subagents
 - `.cursor/skills/*/SKILL.md` — reusable workflows
-- `.cursor/mcp.json` — project-level MCP (same as global)
+- `.cursor/mcp.json` — MCP tools (Jira, Confluence, GitHub, Compass)
+- `.cursor/.koda-meta.json` — workspace metadata (for auto-detection)
 
-## Usage
+It also syncs globally to `~/.cursor/`:
+- `~/.cursor/mcp.json` — MCP tools available in all projects
+- `~/.cursor/agents/*.md` — agents available everywhere
 
-Open your project in Cursor — agents, rules, and MCP tools are ready:
+## Daily usage
+
+### Zero-config launch
+
+After initial setup, just:
 
 ```bash
-# Open Cursor directly
-koda cursor --ws my-team --dir ~/projects/my-app --launch
-
-# Or just open Cursor normally (global agents + MCP already synced)
-cursor ~/projects/my-app
+cd ~/projects/my-app
+koda chat
 ```
 
-### Using agents
+Koda auto-detects:
+- `.cursor/` exists → uses Cursor agent CLI (not Kiro)
+- `.koda-meta.json` → infers the workspace
+- Workspace `default_agent` → launches with `@orchestrator`
 
-In Cursor chat, reference agents by name:
+### Explicit flags (when needed)
+
+```bash
+# Force cursor target
+koda chat --target cursor
+
+# Specify agent
+koda chat --target cursor --agent backend
+
+# Pass initial prompt
+koda chat --target cursor "implement DPAY-14555"
+
+# Open Cursor IDE instead of CLI
+koda cursor --ws my-team --launch
+```
+
+### Using agents in Cursor chat
+
+Agents are available as subagents via `@` mentions:
+
 ```
 @orchestrator implement DPAY-14555
 @backend add health check endpoint
-@code_review_agent review the last 3 commits
+@code_review_agent review the last commit
+@planner_agent break down this feature
 ```
 
 ### Using skills
 
-Skills are auto-discovered by Cursor. Invoke via:
+Skills are auto-discovered by Cursor:
+
 ```
 /dlp-create-rest-api
 /dlp-configure-docker
@@ -75,7 +91,8 @@ Skills are auto-discovered by Cursor. Invoke via:
 
 ### Using MCP tools
 
-MCP tools work automatically. Cursor discovers them from `mcp.json`:
+MCP tools work automatically — Cursor discovers them from `mcp.json`:
+
 ```
 Search Jira for my open tickets
 Get the Confluence page about deployment process
@@ -87,18 +104,32 @@ Create a PR for this branch
 When workspaces change (new agents, updated rules):
 
 ```bash
-koda sync              # Pull latest steer-runtime
-koda workspace apply   # Re-materialize → auto-syncs ~/.cursor/
+koda sync                        # Pull latest steer-runtime
+koda workspace apply my-team     # Re-syncs ~/.cursor/ (MCP + agents)
 cd ~/projects/my-app
-koda cursor --ws my-team  # Refresh project-level rules
+koda cursor --ws my-team         # Refresh project-level rules
+```
+
+## Health check
+
+```bash
+koda doctor
+```
+
+Shows Cursor-specific checks:
+```
+✓ cursor-cli       /Users/.../.local/bin/agent
+✓ cursor-mcp       ~/.cursor/mcp.json present
+✓ cursor-agents    145 agents in ~/.cursor/agents/
 ```
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
-| MCP tools not showing | Check `~/.cursor/mcp.json` exists. Run `koda workspace apply` |
-| Agents not in chat | Check `~/.cursor/agents/`. Run `koda workspace apply` |
-| Rules not applying | Verify `.cursor/rules/*.mdc` in project. Run `koda cursor --ws` |
-| "cursor: command not found" | Install: `curl https://cursor.com/install -fsS \| bash` |
-| Want to switch back to Kiro | `koda setup runtime` → select 1) kiro |
+| MCP tools not showing | `koda workspace apply` to sync `~/.cursor/mcp.json` |
+| Agents not in chat | `koda workspace apply` to sync `~/.cursor/agents/` |
+| Rules not applying | `koda cursor --ws` in the project directory |
+| "agent: command not found" | `curl https://cursor.com/install -fsS \| bash` |
+| Want to force Kiro | `koda chat --target kiro` |
+| Agent shows generic greeting | Re-run `koda cursor --ws` to pick up welcomeMessage |
