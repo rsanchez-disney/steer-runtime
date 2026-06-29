@@ -4,13 +4,10 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.146
+## v0.2.147
 
-- **tests** — expanded refunds validation test plan with comprehensive scenarios
-- **tests** — Q3 FY2026 quarterly report update with latest metrics
-- **tests** — GSM weekly impact summary report (June 21–27, 2026)
-- **docs** — update certification report (trust score 95/100, 23/26 delegation pass)
-- **chore** — add .mailmap to map contributor email
+- **docs** — update certification report (trust score 95/100)
+- **tests** — Q3 FY2026 quarterly report final (INC0067890 recurrence #7 incorporated)
 <!-- END LATEST -->
 
 ## v0.2.137

@@ -4,6 +4,13 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.147] — 2026-06-29
+
+### Changed
+
+- **docs** — update certification report (trust score 95/100)
+- **tests** — Q3 FY2026 quarterly report final (INC0067890 recurrence #7 incorporated)
+
 ## [0.2.146] — 2026-06-28
 
 ### Added
