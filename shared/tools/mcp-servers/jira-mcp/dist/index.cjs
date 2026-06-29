@@ -686,7 +686,8 @@ var init_customFields = __esm({
       qTestDefectCode: "customfield_24000",
       // ── Requirements / Stories ────────────────────────
       userStory: "customfield_20000",
-      acceptanceCriteria: "customfield_16400",
+      acceptanceCriteria: "customfield_10166",
+      acceptanceCriteriaOnPrem: "customfield_16400",
       businessRulesApproved: "customfield_21002",
       technicalDesignApproved: "customfield_21003",
       acceptanceCriteriaApproved: "customfield_21004",
