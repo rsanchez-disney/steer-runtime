@@ -371,6 +371,110 @@ var require_main = __commonJS({
   }
 });
 
+// build/utils/adfToText.js
+function adfToText(value) {
+  if (value == null)
+    return "";
+  if (typeof value === "string")
+    return value;
+  if (typeof value !== "object")
+    return String(value);
+  const doc = value;
+  if (doc.type === "doc" && Array.isArray(doc.content)) {
+    return extractTextFromNodes(doc.content).trim();
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return "[complex content]";
+  }
+}
+function extractTextFromNodes(nodes) {
+  const parts = [];
+  for (const node of nodes) {
+    switch (node.type) {
+      case "paragraph":
+        parts.push(extractInlineText(node.content) + "\n");
+        break;
+      case "heading":
+        parts.push(extractInlineText(node.content) + "\n");
+        break;
+      case "bulletList":
+      case "orderedList":
+        if (node.content) {
+          for (const item of node.content) {
+            parts.push("- " + extractInlineText(item.content) + "\n");
+          }
+        }
+        break;
+      case "listItem":
+        parts.push("- " + extractInlineText(node.content) + "\n");
+        break;
+      case "blockquote":
+        parts.push("> " + extractTextFromNodes(node.content || []) + "\n");
+        break;
+      case "codeBlock":
+        parts.push("```\n" + extractInlineText(node.content) + "\n```\n");
+        break;
+      case "table":
+        if (node.content) {
+          for (const row of node.content) {
+            if (row.content) {
+              const cells = row.content.map((cell) => extractInlineText(cell.content));
+              parts.push("| " + cells.join(" | ") + " |\n");
+            }
+          }
+        }
+        break;
+      case "rule":
+        parts.push("---\n");
+        break;
+      case "mediaSingle":
+      case "mediaGroup":
+        parts.push("[media]\n");
+        break;
+      case "panel":
+        parts.push(extractTextFromNodes(node.content || []));
+        break;
+      default:
+        if (node.content) {
+          parts.push(extractTextFromNodes(node.content));
+        } else if (node.text) {
+          parts.push(node.text);
+        }
+        break;
+    }
+  }
+  return parts.join("");
+}
+function extractInlineText(nodes) {
+  if (!nodes)
+    return "";
+  return nodes.map((node) => {
+    switch (node.type) {
+      case "text":
+        return node.text || "";
+      case "hardBreak":
+        return "\n";
+      case "mention":
+        return `@${node.attrs?.text || "user"}`;
+      case "emoji":
+        return node.attrs?.shortName || "\u{1F642}";
+      case "inlineCard":
+        return node.attrs?.url || "[link]";
+      default:
+        if (node.content)
+          return extractInlineText(node.content);
+        return node.text || "";
+    }
+  }).join("");
+}
+var init_adfToText = __esm({
+  "build/utils/adfToText.js"() {
+    "use strict";
+  }
+});
+
 // build/utils/customFields.js
 var customFields_exports = {};
 __export(customFields_exports, {
@@ -409,6 +513,9 @@ function formatCustomFieldValue(value) {
     return String(value);
   if (typeof value === "object" && value !== null) {
     const obj = value;
+    if (obj.type === "doc" && Array.isArray(obj.content)) {
+      return adfToText(value);
+    }
     if (obj.name)
       return String(obj.name);
     if (obj.value)
@@ -426,6 +533,7 @@ var CUSTOM_FIELD_ALIASES, REVERSE_ALIASES;
 var init_customFields = __esm({
   "build/utils/customFields.js"() {
     "use strict";
+    init_adfToText();
     CUSTOM_FIELD_ALIASES = {
       // ── Agile / Planning ─────────────────────────────
       sprint: "customfield_10803",
@@ -7243,107 +7351,7 @@ var JiraApiClient = class _JiraApiClient {
 
 // build/utils/formatting.js
 init_customFields();
-
-// build/utils/adfToText.js
-function adfToText(value) {
-  if (value == null)
-    return "";
-  if (typeof value === "string")
-    return value;
-  if (typeof value !== "object")
-    return String(value);
-  const doc = value;
-  if (doc.type === "doc" && Array.isArray(doc.content)) {
-    return extractTextFromNodes(doc.content).trim();
-  }
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return "[complex content]";
-  }
-}
-function extractTextFromNodes(nodes) {
-  const parts = [];
-  for (const node of nodes) {
-    switch (node.type) {
-      case "paragraph":
-        parts.push(extractInlineText(node.content) + "\n");
-        break;
-      case "heading":
-        parts.push(extractInlineText(node.content) + "\n");
-        break;
-      case "bulletList":
-      case "orderedList":
-        if (node.content) {
-          for (const item of node.content) {
-            parts.push("- " + extractInlineText(item.content) + "\n");
-          }
-        }
-        break;
-      case "listItem":
-        parts.push("- " + extractInlineText(node.content) + "\n");
-        break;
-      case "blockquote":
-        parts.push("> " + extractTextFromNodes(node.content || []) + "\n");
-        break;
-      case "codeBlock":
-        parts.push("```\n" + extractInlineText(node.content) + "\n```\n");
-        break;
-      case "table":
-        if (node.content) {
-          for (const row of node.content) {
-            if (row.content) {
-              const cells = row.content.map((cell) => extractInlineText(cell.content));
-              parts.push("| " + cells.join(" | ") + " |\n");
-            }
-          }
-        }
-        break;
-      case "rule":
-        parts.push("---\n");
-        break;
-      case "mediaSingle":
-      case "mediaGroup":
-        parts.push("[media]\n");
-        break;
-      case "panel":
-        parts.push(extractTextFromNodes(node.content || []));
-        break;
-      default:
-        if (node.content) {
-          parts.push(extractTextFromNodes(node.content));
-        } else if (node.text) {
-          parts.push(node.text);
-        }
-        break;
-    }
-  }
-  return parts.join("");
-}
-function extractInlineText(nodes) {
-  if (!nodes)
-    return "";
-  return nodes.map((node) => {
-    switch (node.type) {
-      case "text":
-        return node.text || "";
-      case "hardBreak":
-        return "\n";
-      case "mention":
-        return `@${node.attrs?.text || "user"}`;
-      case "emoji":
-        return node.attrs?.shortName || "\u{1F642}";
-      case "inlineCard":
-        return node.attrs?.url || "[link]";
-      default:
-        if (node.content)
-          return extractInlineText(node.content);
-        return node.text || "";
-    }
-  }).join("");
-}
-
-// build/utils/formatting.js
+init_adfToText();
 function formatDate(dateString) {
   if (!dateString)
     return "Unknown";
@@ -7468,6 +7476,7 @@ function shouldSaveOutput(outputDir, isGetOperation) {
 }
 
 // build/utils/uiWidgets.js
+init_adfToText();
 function ticketCard(ticket) {
   const statusColor = ticket.status === "Done" || ticket.status === "Closed" ? "#1a7f37" : ticket.status === "In Progress" ? "#1f6feb" : ticket.status === "Blocked" ? "#cf222e" : "#6e7681";
   return `<!DOCTYPE html><html><head><style>
@@ -7697,6 +7706,7 @@ async function handleJiraGetIssue(args) {
 
 // build/tools/jiraUpdateIssue.js
 init_customFields();
+init_adfToText();
 var jiraUpdateIssueSchema = {
   name: "jira_update_issue",
   description: "Update a JIRA ticket with support for custom fields and save the updated data",
@@ -8000,6 +8010,7 @@ ${summaryText}${savedInfo}`
 }
 
 // build/tools/jiraAssignIssue.js
+init_adfToText();
 var jiraAssignIssueSchema = {
   name: "jira_assign_issue",
   description: "Assign a JIRA ticket to a user",

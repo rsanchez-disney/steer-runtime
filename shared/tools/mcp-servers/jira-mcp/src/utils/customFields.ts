@@ -1,3 +1,5 @@
+import { adfToText } from "./adfToText.js";
+
 /**
  * Custom Field Alias Registry
  *
@@ -445,6 +447,12 @@ export function formatCustomFieldValue(value: unknown): string {
     // Object with name (e.g. sprint, status-like objects)
     if (typeof value === "object" && value !== null) {
         const obj = value as Record<string, unknown>;
+
+        // ADF document (Jira Cloud rich text fields)
+        if (obj.type === "doc" && Array.isArray(obj.content)) {
+            return adfToText(value);
+        }
+
         if (obj.name) return String(obj.name);
         if (obj.value) return String(obj.value);
         if (obj.displayName) return String(obj.displayName);
