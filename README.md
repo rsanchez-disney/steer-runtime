@@ -169,6 +169,14 @@ koda sync          # Pull latest agents, prompts, MCP bundles
 koda doctor        # Verify everything
 ```
 
+If using Cursor, `koda sync` automatically refreshes all registered `.cursor/` projects. To manage them:
+
+```bash
+koda cursor list   # Show registered Cursor projects
+koda cursor sync   # Force-refresh all projects
+koda ps            # See running kiro + cursor sessions
+```
+
 ---
 
 ## Profiles
