@@ -4,13 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.137
+## v0.2.148
 
-- **docs** — update certification report (trust score 95/100)
-- **tests** — Q3 FY2026 quarterly report final (INC0067890 recurrence #7 incorporated)
+- **feat** — Cursor integration guide and shared Java steering rules
+- **docs** — Cursor quick start guide, project registry, Kiro vs Cursor comparison
+- **docs** — README Existing Users section with Cursor update steps
+- **jira-mcp** — Jira Cloud custom field IDs and acceptanceCriteria field fix
+- **jira-mcp** — handle ADF (Atlassian Document Format) in custom field values
+- **mcp** — rebuild MCP bundles
 <!-- END LATEST -->
 
-## v0.2.137
+## v0.2.147
 
 ## v0.2.137
 

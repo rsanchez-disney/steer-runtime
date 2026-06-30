@@ -4,6 +4,26 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.148] — 2026-06-30
+
+### Added
+
+- **docs** — add Cursor update steps to README Existing Users section
+- **docs** — add Cursor project registry section to guides
+- **docs** — add Cursor quick start guide and Kiro vs Cursor comparison
+- **feat** — add Cursor integration guide and shared Java steering rules
+
+### Fixed
+
+- **jira-mcp** — update acceptanceCriteria field ID for Jira Cloud
+- **jira-mcp** — handle ADF in custom field values (Cloud rich text fields)
+
+### Changed
+
+- **jira-mcp** — add Jira Cloud custom field IDs
+- **mcp** — rebuild MCP bundles
+- **docs** — update Cursor guides with auto-detection and add README announcement
+
 ## [0.2.147] — 2026-06-29
 
 ### Changed
