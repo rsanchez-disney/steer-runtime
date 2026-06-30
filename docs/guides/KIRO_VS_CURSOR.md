@@ -218,3 +218,14 @@ When you `cd` into a project directory:
 | `.cursor/.koda-meta.json` | Uses Cursor + infers workspace + default agent |
 
 Explicit `--target kiro` or `--target cursor` always overrides auto-detection.
+
+## Project registry and bulk updates
+
+| Aspect | Kiro | Cursor |
+|--------|------|--------|
+| Config tracking | Materialized workspaces in `~/.kiro/workspaces/` | Project registry in `~/.kiro/settings/cursor-projects.json` |
+| Bulk update trigger | `koda sync` updates all materialized workspaces | `koda sync` also refreshes all registered `.cursor/` projects |
+| Add project | Automatic (workspace materialization) | Automatic on `koda cursor --ws` or `koda chat --target cursor` |
+| Remove project | `koda workspace dematerialize` | `koda cursor remove` |
+| List projects | Shown in TUI dashboard | `koda cursor list` |
+| Stale cleanup | Manual | Automatic (deleted dirs removed on sync) |

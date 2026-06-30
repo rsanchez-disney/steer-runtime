@@ -133,3 +133,42 @@ Shows Cursor-specific checks:
 | "agent: command not found" | `curl https://cursor.com/install -fsS \| bash` |
 | Want to force Kiro | `koda chat --target kiro` |
 | Agent shows generic greeting | Re-run `koda cursor --ws` to pick up welcomeMessage |
+
+## Project Registry
+
+Koda tracks all projects where `.cursor/` was generated. This enables bulk updates on `koda sync`.
+
+### View registered projects
+
+```bash
+koda cursor list
+```
+
+Output:
+```
+📂 Registered Cursor projects (3):
+
+  ✓ /Users/me/projects/wdpr-config-services          ws=app-payment-controls
+  ✓ /Users/me/projects/wdpr-payment-controls-client   ws=app-payment-controls
+  ✗ /Users/me/old-project                             ws=old-team (stale)
+```
+
+### Refresh all projects
+
+```bash
+koda cursor sync
+```
+
+Regenerates `.cursor/` for all registered projects. Automatically removes stale entries (deleted directories).
+
+### Remove a project
+
+```bash
+koda cursor remove /path/to/project
+# Or from inside the project:
+cd ~/projects/my-app && koda cursor remove
+```
+
+### Automatic sync
+
+`koda sync` and `koda upgrade` automatically refresh all registered Cursor projects — no manual action needed.
