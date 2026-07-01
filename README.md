@@ -6,7 +6,7 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 📖 **[Full Documentation](https://github.disney.com/pages/SANCR225/steer-runtime/)** · 🏪 **[Disney AI Catalog](https://marketplace.wdprapps.disney.com/ai-catalog/item/2269)**
 
-> Requires an Amazon Q Developer license for Kiro CLI access.
+> Requires [Kiro CLI](https://kiro.dev) (Amazon Q Developer license) or [Cursor](https://cursor.com) (Pro/Business plan).
 
 ---
 
