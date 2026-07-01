@@ -4,19 +4,23 @@
   "prompt": "ai_metrics_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "execute_bash",
     "fs_read"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "includeMcpJson": true,
   "resources": [

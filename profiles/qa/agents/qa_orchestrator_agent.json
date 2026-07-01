@@ -8,12 +8,16 @@
     "todo_list",
     "@yax/*",
     "@jira/*",
-    "@confluence/*"
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "allowedTools": [
     "@yax/*",
     "@jira/*",
-    "@confluence/*"
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

@@ -4,6 +4,7 @@
   "prompt": "incident_triage_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@compass/*",
     "fs_read",
     "thinking",
@@ -11,6 +12,7 @@
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@compass/*"
   ],
   "includeMcpJson": true,

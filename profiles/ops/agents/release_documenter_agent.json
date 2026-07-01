@@ -4,18 +4,22 @@
   "prompt": "release_documenter_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/ops_guidelines.md"

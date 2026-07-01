@@ -4,11 +4,13 @@
   "prompt": "cross_team_coordinator_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "thinking",
     "fs_read"
   ],
   "allowedTools": [
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "includeMcpJson": true,
   "resources": [

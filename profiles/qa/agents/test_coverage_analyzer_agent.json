@@ -4,9 +4,11 @@
   "prompt": "test_coverage_analyzer_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@mywiki/*",
     "fs_read",
     "fs_write",
@@ -16,9 +18,11 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@mywiki/*",
     "@bruno/*",
     "@qtest/*"

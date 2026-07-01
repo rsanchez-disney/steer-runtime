@@ -5,6 +5,7 @@
   "tools": [
     "@newrelic-mcp/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "fs_write",
     "execute_bash",
@@ -12,7 +13,8 @@
   ],
   "allowedTools": [
     "@newrelic-mcp/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "includeMcpJson": true,
   "resources": [

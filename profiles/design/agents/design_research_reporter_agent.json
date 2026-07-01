@@ -2,6 +2,7 @@
   "name": "design_research_reporter_agent",
   "description": "Produces research plans, desktop research reports, and executive summaries from study data",
   "prompt": "design_research_reporter_agent.md",
-  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*"],
+  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*",
+    "@confluence-cloud/*"],
   "resources": ["file://.kiro/context/project_mappings.md"]
 }

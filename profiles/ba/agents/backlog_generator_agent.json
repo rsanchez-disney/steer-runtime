@@ -4,11 +4,13 @@
   "prompt": "backlog_generator_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "fs_write"
   ],
   "allowedTools": [
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",

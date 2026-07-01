@@ -4,10 +4,12 @@
   "prompt": "defect_analyst_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "code",
     "execute_bash",
     "fs_read",
@@ -16,10 +18,12 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@qtest/*"
   ],
   "resources": [

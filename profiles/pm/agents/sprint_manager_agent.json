@@ -4,7 +4,9 @@
   "prompt": "sprint_manager_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "execute_bash",
     "fs_read",
@@ -16,7 +18,9 @@
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*"
   ],
   "includeMcpJson": true
