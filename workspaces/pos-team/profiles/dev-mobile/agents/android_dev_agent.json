@@ -1,6 +1,6 @@
 {
   "name": "android_dev_agent",
-  "description": "Android Developer — implements features and fixes following project conventions. Manages Jira tickets for POS project.",
+  "description": "Android Developer \u2014 implements features and fixes following project conventions. Manages Jira tickets for POS project.",
   "prompt": "prompts/android_dev_agent.md",
   "tools": [
     "fs_read",
@@ -10,7 +10,8 @@
     "glob",
     "execute_bash",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
