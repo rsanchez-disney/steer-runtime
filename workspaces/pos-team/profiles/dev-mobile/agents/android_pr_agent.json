@@ -11,8 +11,8 @@
     "@jira/*"
   ],
   "resources": [
-    "file://.kiro/context/team_context.md",
-    "file://.kiro/context/pr_template.md"
+    "file://../../../context/team_context.md",
+    "file://../../../context/pr_template.md"
   ],
   "includeMcpJson": true
 }
