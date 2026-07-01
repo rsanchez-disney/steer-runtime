@@ -1,6 +1,6 @@
 {
   "name": "android_test_agent",
-  "description": "Test Engineer — generates MockK-based unit tests following project conventions. Manages Jira tickets for POS project.",
+  "description": "Test Engineer \u2014 generates MockK-based unit tests following project conventions. Manages Jira tickets for POS project.",
   "prompt": "prompts/android_test_agent.md",
   "tools": [
     "fs_read",
@@ -9,7 +9,8 @@
     "grep",
     "glob",
     "execute_bash",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
