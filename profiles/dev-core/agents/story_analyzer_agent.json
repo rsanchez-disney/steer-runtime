@@ -9,6 +9,7 @@
     "@gitlab/*",
     "@azure-devops/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "grep",
     "web_fetch",
@@ -22,6 +23,7 @@
     "@gitlab/*",
     "@azure-devops/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@compass/*"
   ],
   "resources": [
