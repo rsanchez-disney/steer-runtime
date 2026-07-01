@@ -4,22 +4,28 @@
   "prompt": "pr_creator_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
     "@jira/*",
+    "@jira-cloud/*",
     "execute_bash",
     "fs_read",
-    "fs_write"
+    "fs_write",
+    "@compass/*"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*",
+    "@compass/*"
   ],
   "includeMcpJson": true,
   "resources": [

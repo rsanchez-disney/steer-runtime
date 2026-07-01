@@ -1,8 +1,8 @@
-import { xrayCloudPost } from "../utils/xrayCloudApi.js";
+import { xrayCloudGraphQL } from "../utils/xrayCloudApi.js";
 
 export const xrayCloudCreateTestSchema = {
     name: "xray_cloud_create_test",
-    description: "Create a test case with steps in XRay Cloud. Returns the created test issue key.",
+    description: "Create a test case in XRay Cloud via GraphQL. Supports Manual (structured steps), Cucumber (Gherkin), and Generic types.",
     inputSchema: {
         type: "object",
         properties: {
@@ -22,7 +22,7 @@ export const xrayCloudCreateTestSchema = {
                 },
                 description: "Array of test steps (for Manual/Generic types)",
             },
-            gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type. Used when testType is Cucumber." },
+            gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type" },
             labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
             customFields: { type: "object", description: "Custom Jira fields to set (e.g., {\"customfield_13912\": \"EPIC-1\"})" },
         },
@@ -34,31 +34,37 @@ export async function handleXrayCloudCreateTest(args: any): Promise<any> {
     try {
         const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
 
-        const payload: any = {
-            testType,
-            fields: {
-                summary,
-                project: { key: projectKey },
-                ...customFields,
-            },
+        const mutation = `mutation CreateTest($jira: JSON!, $testType: UpdateTestTypeInput, $steps: [CreateStepInput], $gherkin: String) {
+            createTest(jira: $jira, testType: $testType, steps: $steps, gherkin: $gherkin) {
+                test { issueId jira(fields: ["key"]) testType { name } }
+                warnings
+            }
+        }`;
+
+        const jiraFields: any = { summary, project: { key: projectKey }, ...customFields };
+        if (labels?.length) jiraFields.labels = labels;
+
+        const variables: any = {
+            jira: { fields: jiraFields },
+            testType: { name: testType },
         };
+
         if (gherkin && testType === "Cucumber") {
-            payload.xpiDefinition = gherkin;
+            variables.gherkin = gherkin;
         } else if (steps?.length) {
-            payload.steps = steps.map((s: any) => ({
-                action: s.action,
-                data: s.data || "",
-                result: s.result,
-            }));
+            variables.steps = steps.map((s: any) => ({ action: s.action, data: s.data || "", result: s.result }));
         }
-        if (labels?.length) payload.fields.labels = labels;
 
-        const result = await xrayCloudPost("/api/v2/import/test", payload);
-        const key = result?.key || result?.testIssueId || JSON.stringify(result);
+        const data = await xrayCloudGraphQL(mutation, variables);
+        const key = data?.createTest?.test?.jira?.key || JSON.stringify(data);
+        const warnings = data?.createTest?.warnings;
 
-        return {
-            content: [{ type: "text", text: `**Test Created:** ${key}\n\n**Summary:** ${summary}\n**Steps:** ${steps?.length ?? 0}\n**Type:** ${testType}` }],
-        };
+        let text = `**Test Created:** ${key}\n\n**Summary:** ${summary}\n**Type:** ${testType}`;
+        if (steps?.length) text += `\n**Steps:** ${steps.length}`;
+        if (gherkin) text += `\n**Gherkin:** included`;
+        if (warnings?.length) text += `\n**Warnings:** ${warnings.join(", ")}`;
+
+        return { content: [{ type: "text", text }] };
     } catch (error: any) {
         return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };
     }

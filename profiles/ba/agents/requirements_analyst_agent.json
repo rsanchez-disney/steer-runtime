@@ -4,10 +4,12 @@
   "prompt": "requirements_analyst_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "grep",
     "knowledge",
@@ -15,10 +17,12 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@sharepoint/*"
   ],
   "resources": [

@@ -1,0 +1,41 @@
+{
+  "name": "pos_go_agent",
+  "description": "Go specialist for POS gRPC microservices, REST APIs, and idiomatic Go development",
+  "prompt": "file://../prompts/pos_go_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/context/backoffice_golden_rules.md",
+    "file://.kiro/context/security_golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to vendor, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "welcomeMessage": "Ready for Go development. Point me to your service or describe the task."
+}

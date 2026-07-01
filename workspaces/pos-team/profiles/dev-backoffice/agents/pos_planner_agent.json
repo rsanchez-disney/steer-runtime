@@ -1,0 +1,22 @@
+{
+  "name": "pos_planner_agent",
+  "description": "Implementation planner for POS platform \u2014 task breakdown, dependencies, and test strategy across PHP, Go, and React",
+  "prompt": "file://../prompts/pos_planner_agent.md",
+  "tools": [
+    "@jira/*",
+    "@jira-cloud/*",
+    "fs_read",
+    "thinking",
+    "code",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/context/backoffice-sdlc-workflow.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@jira-cloud/*"
+  ],
+  "includeMcpJson": true
+}

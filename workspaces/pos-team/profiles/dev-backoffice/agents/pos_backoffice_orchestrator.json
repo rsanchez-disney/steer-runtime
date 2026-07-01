@@ -1,0 +1,44 @@
+{
+  "name": "pos_backoffice_orchestrator",
+  "description": "POS Backoffice SDLC orchestrator — 7-stage workflow for PHP, Go, and React projects",
+  "prompt": "file://../prompts/pos_backoffice_orchestrator.md",
+  "tools": [
+    "subagent",
+    "todo_list"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/context/backoffice-sdlc-workflow.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "welcomeMessage": "👋 POS Backoffice Orchestrator ready!\n\nI drive the full SDLC for PHP, Go, and React projects:\n  Analyze → Explore → Plan → 🚦 → Implement → Test → Review → 🚦 → Document\n\n• Give me a Jira ticket: \"Implement POS-1234\"\n• Or a direct task: \"Add a new endpoint for X in the Go service\"\n\nI'll detect the language and route to the right agents.",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
+      }
+    ],
+    "preToolUse": [],
+    "postToolUse": [],
+    "stop": [
+      {
+        "command": "$HOME/.kiro/hooks/session-summary.sh",
+        "description": "Log session telemetry to JSONL"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/session-to-memory.sh",
+        "description": "Update active-context.md with session summary"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}

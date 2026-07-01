@@ -3,6 +3,7 @@
   "description": "Fetches XRay TCs, classifies candidates, scans repo, generates .feature files with gated approval",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@xray/*",
     "jira_get_myself",
     "jira_search_issues",
@@ -13,10 +14,12 @@
     "fs_write",
     "grep",
     "execute_bash",
-    "@confluence/*"
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@xray/*",
     "jira_get_myself",
     "jira_search_issues",
@@ -27,7 +30,8 @@
     "fs_write",
     "grep",
     "execute_bash",
-    "@confluence/*"
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://profiles/qa/prompts/backlog_to_gherkin_agent.md",

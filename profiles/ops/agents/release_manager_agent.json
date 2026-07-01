@@ -6,6 +6,7 @@
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "fs_write",
     "execute_bash"
@@ -13,7 +14,8 @@
   "allowedTools": [
     "@github/*",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/ops_guidelines.md"

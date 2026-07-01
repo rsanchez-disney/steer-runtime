@@ -1,11 +1,12 @@
 {
   "name": "pos-team",
-  "description": "ActivateX (DSP Go & Check-Sync) \u2014 Disney POS Android application for Merchandise, QSR, and Table Service",
+  "description": "ActivateX (DSP Go & Check-Sync) and DSP Back Office (Connect) — Disney POS platform",
   "team": "POS Team",
   "profiles": [
-    "dev-core", 
-    "dev-mobile", 
-    "ba", 
+    "dev-core",
+    "dev-mobile",
+    "dev-backoffice",
+    "ba",
     "pm"
   ],
   "default_agent": "android_arch_agent",
@@ -15,6 +16,60 @@
       "path": "activatex",
       "repo": "DisneyPaymentsOrg/activatex",
       "host": "github.disney.com"
+    },
+    {
+      "name": "connect",
+      "path": "connect",
+      "repo": "wdpr-point-of-sale/connect-upgrade",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "connect-frontend",
+      "path": "connect-frontend",
+      "repo": "wdpr-point-of-sale/connect-frontend",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "audit",
+      "path": "audit",
+      "repo": "wdpr-point-of-sale/audit",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "reduction",
+      "path": "reduction",
+      "repo": "wdpr-point-of-sale/reduction",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "product_catalog",
+      "path": "product_catalog",
+      "repo": "wdpr-point-of-sale/product_catalog",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "connect_reports",
+      "path": "connect_reports",
+      "repo": "wdpr-point-of-sale/connect_reports",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "connect-fast-api-accounts",
+      "path": "connect-fast-api-accounts",
+      "repo": "wdpr-point-of-sale/connect-fast-api-accounts",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "connect-fast-api-venue",
+      "path": "connect-fast-api-venue",
+      "repo": "wdpr-point-of-sale/connect-fast-api-venue",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "connect-fast-api",
+      "path": "connect-fast-api",
+      "repo": "wdpr-point-of-sale/connect-fast-api",
+      "host": "gitlab.disney.com"
     }
   ],
   "rules": [

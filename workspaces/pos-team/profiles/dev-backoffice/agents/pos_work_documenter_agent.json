@@ -1,0 +1,13 @@
+{
+  "name": "pos_work_documenter_agent",
+  "description": "Documents completed work and generates commit message + PR description for POS platform repos",
+  "prompt": "file://../prompts/pos_work_documenter_agent.md",
+  "tools": [
+    "fs_read",
+    "write",
+    "grep"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ]
+}

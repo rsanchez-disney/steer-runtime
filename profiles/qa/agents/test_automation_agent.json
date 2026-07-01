@@ -11,7 +11,9 @@
     "@bruno/*",
     "@qtest/*",
     "@jira/*",
-    "@confluence/*"
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -45,7 +47,9 @@
     "@bruno/*",
     "@qtest/*",
     "@jira/*",
-    "@confluence/*"
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "includeMcpJson": true
 }

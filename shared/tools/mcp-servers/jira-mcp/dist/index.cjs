@@ -371,6 +371,110 @@ var require_main = __commonJS({
   }
 });
 
+// build/utils/adfToText.js
+function adfToText(value) {
+  if (value == null)
+    return "";
+  if (typeof value === "string")
+    return value;
+  if (typeof value !== "object")
+    return String(value);
+  const doc = value;
+  if (doc.type === "doc" && Array.isArray(doc.content)) {
+    return extractTextFromNodes(doc.content).trim();
+  }
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return "[complex content]";
+  }
+}
+function extractTextFromNodes(nodes) {
+  const parts = [];
+  for (const node of nodes) {
+    switch (node.type) {
+      case "paragraph":
+        parts.push(extractInlineText(node.content) + "\n");
+        break;
+      case "heading":
+        parts.push(extractInlineText(node.content) + "\n");
+        break;
+      case "bulletList":
+      case "orderedList":
+        if (node.content) {
+          for (const item of node.content) {
+            parts.push("- " + extractInlineText(item.content) + "\n");
+          }
+        }
+        break;
+      case "listItem":
+        parts.push("- " + extractInlineText(node.content) + "\n");
+        break;
+      case "blockquote":
+        parts.push("> " + extractTextFromNodes(node.content || []) + "\n");
+        break;
+      case "codeBlock":
+        parts.push("```\n" + extractInlineText(node.content) + "\n```\n");
+        break;
+      case "table":
+        if (node.content) {
+          for (const row of node.content) {
+            if (row.content) {
+              const cells = row.content.map((cell) => extractInlineText(cell.content));
+              parts.push("| " + cells.join(" | ") + " |\n");
+            }
+          }
+        }
+        break;
+      case "rule":
+        parts.push("---\n");
+        break;
+      case "mediaSingle":
+      case "mediaGroup":
+        parts.push("[media]\n");
+        break;
+      case "panel":
+        parts.push(extractTextFromNodes(node.content || []));
+        break;
+      default:
+        if (node.content) {
+          parts.push(extractTextFromNodes(node.content));
+        } else if (node.text) {
+          parts.push(node.text);
+        }
+        break;
+    }
+  }
+  return parts.join("");
+}
+function extractInlineText(nodes) {
+  if (!nodes)
+    return "";
+  return nodes.map((node) => {
+    switch (node.type) {
+      case "text":
+        return node.text || "";
+      case "hardBreak":
+        return "\n";
+      case "mention":
+        return `@${node.attrs?.text || "user"}`;
+      case "emoji":
+        return node.attrs?.shortName || "\u{1F642}";
+      case "inlineCard":
+        return node.attrs?.url || "[link]";
+      default:
+        if (node.content)
+          return extractInlineText(node.content);
+        return node.text || "";
+    }
+  }).join("");
+}
+var init_adfToText = __esm({
+  "build/utils/adfToText.js"() {
+    "use strict";
+  }
+});
+
 // build/utils/customFields.js
 var customFields_exports = {};
 __export(customFields_exports, {
@@ -409,6 +513,9 @@ function formatCustomFieldValue(value) {
     return String(value);
   if (typeof value === "object" && value !== null) {
     const obj = value;
+    if (obj.type === "doc" && Array.isArray(obj.content)) {
+      return adfToText(value);
+    }
     if (obj.name)
       return String(obj.name);
     if (obj.value)
@@ -426,14 +533,15 @@ var CUSTOM_FIELD_ALIASES, REVERSE_ALIASES;
 var init_customFields = __esm({
   "build/utils/customFields.js"() {
     "use strict";
+    init_adfToText();
     CUSTOM_FIELD_ALIASES = {
       // ── Agile / Planning ─────────────────────────────
-      sprint: "customfield_10803",
-      storyPoints: "customfield_10003",
-      epicLink: "customfield_13912",
-      epicName: "customfield_13913",
-      epicStatus: "customfield_13914",
-      epicColour: "customfield_13915",
+      sprint: "customfield_10020",
+      storyPoints: "customfield_10042",
+      epicLink: "customfield_10014",
+      epicName: "customfield_10011",
+      epicStatus: "customfield_10012",
+      epicColour: "customfield_10013",
       epicGroup: "customfield_18701",
       epicTotalStoryPoints: "customfield_19900",
       rank: "customfield_17403",
@@ -578,7 +686,8 @@ var init_customFields = __esm({
       qTestDefectCode: "customfield_24000",
       // ── Requirements / Stories ────────────────────────
       userStory: "customfield_20000",
-      acceptanceCriteria: "customfield_16400",
+      acceptanceCriteria: "customfield_10166",
+      acceptanceCriteriaOnPrem: "customfield_16400",
       businessRulesApproved: "customfield_21002",
       technicalDesignApproved: "customfield_21003",
       acceptanceCriteriaApproved: "customfield_21004",
@@ -771,7 +880,34 @@ var init_customFields = __esm({
       ticketType: "customfield_27002",
       numberBuilt: "customfield_26900",
       discovered: "customfield_21300",
-      ympPiGoal: "customfield_26200"
+      ympPiGoal: "customfield_26200",
+      // ── Jira Cloud field IDs (disneyexperiences.atlassian.net) ──
+      cloudStoryPoints: "customfield_10042",
+      cloudSprint: "customfield_10020",
+      cloudEpicLink: "customfield_10014",
+      cloudEpicName: "customfield_10011",
+      cloudEpicStatus: "customfield_10012",
+      cloudEpicColor: "customfield_10013",
+      cloudRank: "customfield_10019",
+      cloudFlagged: "customfield_10021",
+      cloudTeam: "customfield_10001",
+      cloudStartDate: "customfield_10015",
+      cloudTargetStart: "customfield_10022",
+      cloudTargetEnd: "customfield_10023",
+      cloudStoryPointEstimate: "customfield_10016",
+      cloudParentLink: "customfield_10018",
+      cloudDevelopment: "customfield_10000",
+      cloudStudio: "customfield_10156",
+      cloudCategory: "customfield_10157",
+      cloudSustainmentCategory: "customfield_10158",
+      cloudSeverity: "customfield_10174",
+      cloudPlatforms: "customfield_10176",
+      cloudAutomationCandidate: "customfield_10154",
+      cloudAutomationStatus: "customfield_10190",
+      cloudAutomationOwner: "customfield_10193",
+      cloudAiAssistedEffort: "customfield_10173",
+      cloudAiToolsUsed: "customfield_10191",
+      cloudProgramIncrement: "customfield_10188"
     };
     REVERSE_ALIASES = Object.fromEntries(Object.entries(CUSTOM_FIELD_ALIASES).map(([alias, fieldId]) => [
       fieldId,
@@ -6113,6 +6249,9 @@ var JiraAuth = class {
     if (this.jiraEmail) {
       return "Basic " + Buffer.from(this.jiraEmail + ":" + pat).toString("base64");
     }
+    if (this.isCloud() && !this.jiraEmail) {
+      console.error("WARNING: Jira Cloud detected but JIRA_EMAIL is not set. Cloud requires Basic Auth (email:api-token). Requests will likely fail with 401. Set JIRA_EMAIL in your MCP env configuration.");
+    }
     return "Bearer " + pat;
   }
 };
@@ -7243,107 +7382,7 @@ var JiraApiClient = class _JiraApiClient {
 
 // build/utils/formatting.js
 init_customFields();
-
-// build/utils/adfToText.js
-function adfToText(value) {
-  if (value == null)
-    return "";
-  if (typeof value === "string")
-    return value;
-  if (typeof value !== "object")
-    return String(value);
-  const doc = value;
-  if (doc.type === "doc" && Array.isArray(doc.content)) {
-    return extractTextFromNodes(doc.content).trim();
-  }
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return "[complex content]";
-  }
-}
-function extractTextFromNodes(nodes) {
-  const parts = [];
-  for (const node of nodes) {
-    switch (node.type) {
-      case "paragraph":
-        parts.push(extractInlineText(node.content) + "\n");
-        break;
-      case "heading":
-        parts.push(extractInlineText(node.content) + "\n");
-        break;
-      case "bulletList":
-      case "orderedList":
-        if (node.content) {
-          for (const item of node.content) {
-            parts.push("- " + extractInlineText(item.content) + "\n");
-          }
-        }
-        break;
-      case "listItem":
-        parts.push("- " + extractInlineText(node.content) + "\n");
-        break;
-      case "blockquote":
-        parts.push("> " + extractTextFromNodes(node.content || []) + "\n");
-        break;
-      case "codeBlock":
-        parts.push("```\n" + extractInlineText(node.content) + "\n```\n");
-        break;
-      case "table":
-        if (node.content) {
-          for (const row of node.content) {
-            if (row.content) {
-              const cells = row.content.map((cell) => extractInlineText(cell.content));
-              parts.push("| " + cells.join(" | ") + " |\n");
-            }
-          }
-        }
-        break;
-      case "rule":
-        parts.push("---\n");
-        break;
-      case "mediaSingle":
-      case "mediaGroup":
-        parts.push("[media]\n");
-        break;
-      case "panel":
-        parts.push(extractTextFromNodes(node.content || []));
-        break;
-      default:
-        if (node.content) {
-          parts.push(extractTextFromNodes(node.content));
-        } else if (node.text) {
-          parts.push(node.text);
-        }
-        break;
-    }
-  }
-  return parts.join("");
-}
-function extractInlineText(nodes) {
-  if (!nodes)
-    return "";
-  return nodes.map((node) => {
-    switch (node.type) {
-      case "text":
-        return node.text || "";
-      case "hardBreak":
-        return "\n";
-      case "mention":
-        return `@${node.attrs?.text || "user"}`;
-      case "emoji":
-        return node.attrs?.shortName || "\u{1F642}";
-      case "inlineCard":
-        return node.attrs?.url || "[link]";
-      default:
-        if (node.content)
-          return extractInlineText(node.content);
-        return node.text || "";
-    }
-  }).join("");
-}
-
-// build/utils/formatting.js
+init_adfToText();
 function formatDate(dateString) {
   if (!dateString)
     return "Unknown";
@@ -7468,6 +7507,7 @@ function shouldSaveOutput(outputDir, isGetOperation) {
 }
 
 // build/utils/uiWidgets.js
+init_adfToText();
 function ticketCard(ticket) {
   const statusColor = ticket.status === "Done" || ticket.status === "Closed" ? "#1a7f37" : ticket.status === "In Progress" ? "#1f6feb" : ticket.status === "Blocked" ? "#cf222e" : "#6e7681";
   return `<!DOCTYPE html><html><head><style>
@@ -7602,7 +7642,7 @@ var jiraGetIssueSchema = {
             "components",
             "issuelinks",
             "storyPoints",
-            "customfield_10003"
+            "customfield_10042"
           ]
         },
         description: "Optional: Fields to include in response (default: all current fields)"
@@ -7632,7 +7672,7 @@ async function handleJiraGetIssue(args) {
       "storyPoints"
     ];
     const requestedFields = fields || defaultFields;
-    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10004" : f);
+    const expandedFields = requestedFields.map((f) => f === "storyPoints" ? "customfield_10042" : f);
     const resolvedCustomFields = customFields ? resolveCustomFieldIds(customFields) : [];
     const allFields = [.../* @__PURE__ */ new Set([...expandedFields, ...resolvedCustomFields])];
     const apiClient = new JiraApiClient();
@@ -7676,7 +7716,7 @@ async function handleJiraGetIssue(args) {
               labels: ticket.fields?.labels,
               created: ticket.fields?.created?.slice(0, 10),
               updated: ticket.fields?.updated?.slice(0, 10),
-              storyPoints: ticket.fields?.story_points || ticket.fields?.customfield_10028
+              storyPoints: ticket.fields?.story_points || ticket.fields?.customfield_10042
             })
           }
         }
@@ -7697,6 +7737,7 @@ async function handleJiraGetIssue(args) {
 
 // build/tools/jiraUpdateIssue.js
 init_customFields();
+init_adfToText();
 var jiraUpdateIssueSchema = {
   name: "jira_update_issue",
   description: "Update a JIRA ticket with support for custom fields and save the updated data",
@@ -8000,6 +8041,7 @@ ${summaryText}${savedInfo}`
 }
 
 // build/tools/jiraAssignIssue.js
+init_adfToText();
 var jiraAssignIssueSchema = {
   name: "jira_assign_issue",
   description: "Assign a JIRA ticket to a user",
@@ -8232,7 +8274,7 @@ async function handleJiraSearchIssues(args) {
               status: i.fields?.status?.name || "Unknown",
               assignee: i.fields?.assignee?.displayName,
               priority: i.fields?.priority?.name,
-              storyPoints: i.fields?.story_points || i.fields?.customfield_10028
+              storyPoints: i.fields?.story_points || i.fields?.customfield_10042
             })))
           }
         }
@@ -10780,7 +10822,7 @@ async function xrayCloudGraphQL(query, variables) {
 // build/tools/xrayCloudCreateTest.js
 var xrayCloudCreateTestSchema = {
   name: "xray_cloud_create_test",
-  description: "Create a test case with steps in XRay Cloud. Returns the created test issue key.",
+  description: "Create a test case in XRay Cloud via GraphQL. Supports Manual (structured steps), Cucumber (Gherkin), and Generic types.",
   inputSchema: {
     type: "object",
     properties: {
@@ -10800,7 +10842,7 @@ var xrayCloudCreateTestSchema = {
         },
         description: "Array of test steps (for Manual/Generic types)"
       },
-      gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type. Used when testType is Cucumber." },
+      gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type" },
       labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
       customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_13912": "EPIC-1"})' }
     },
@@ -10810,34 +10852,41 @@ var xrayCloudCreateTestSchema = {
 async function handleXrayCloudCreateTest(args) {
   try {
     const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
-    const payload = {
-      testType,
-      fields: {
-        summary,
-        project: { key: projectKey },
-        ...customFields
-      }
+    const mutation = `mutation CreateTest($jira: JSON!, $testType: UpdateTestTypeInput, $steps: [CreateStepInput], $gherkin: String) {
+            createTest(jira: $jira, testType: $testType, steps: $steps, gherkin: $gherkin) {
+                test { issueId jira(fields: ["key"]) testType { name } }
+                warnings
+            }
+        }`;
+    const jiraFields = { summary, project: { key: projectKey }, ...customFields };
+    if (labels?.length)
+      jiraFields.labels = labels;
+    const variables = {
+      jira: { fields: jiraFields },
+      testType: { name: testType }
     };
     if (gherkin && testType === "Cucumber") {
-      payload.xpiDefinition = gherkin;
+      variables.gherkin = gherkin;
     } else if (steps?.length) {
-      payload.steps = steps.map((s) => ({
-        action: s.action,
-        data: s.data || "",
-        result: s.result
-      }));
+      variables.steps = steps.map((s) => ({ action: s.action, data: s.data || "", result: s.result }));
     }
-    if (labels?.length)
-      payload.fields.labels = labels;
-    const result = await xrayCloudPost("/api/v2/import/test", payload);
-    const key = result?.key || result?.testIssueId || JSON.stringify(result);
-    return {
-      content: [{ type: "text", text: `**Test Created:** ${key}
+    const data = await xrayCloudGraphQL(mutation, variables);
+    const key = data?.createTest?.test?.jira?.key || JSON.stringify(data);
+    const warnings = data?.createTest?.warnings;
+    let text = `**Test Created:** ${key}
 
 **Summary:** ${summary}
-**Steps:** ${steps.length}
-**Type:** ${testType}` }]
-    };
+**Type:** ${testType}`;
+    if (steps?.length)
+      text += `
+**Steps:** ${steps.length}`;
+    if (gherkin)
+      text += `
+**Gherkin:** included`;
+    if (warnings?.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };
   }
@@ -10890,7 +10939,7 @@ ${testPlanKey ? `**Plan:** ${testPlanKey}
 // build/tools/xrayCloudUpdateRun.js
 var xrayCloudUpdateRunSchema = {
   name: "xray_cloud_update_run",
-  description: "Report pass/fail results for a test run in XRay Cloud. Updates step-level statuses within an existing execution.",
+  description: "Report pass/fail results for a test run in XRay Cloud. Supports step-level statuses and Scenario Outline iterations.",
   inputSchema: {
     type: "object",
     properties: {
@@ -10913,7 +10962,43 @@ var xrayCloudUpdateRunSchema = {
                 },
                 required: ["status"]
               },
-              description: "Step-level results (optional)"
+              description: "Step-level results for Manual tests (optional)"
+            },
+            iterations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string", description: "Iteration label (e.g. Iteration 1)" },
+                  status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"] },
+                  parameters: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        name: { type: "string" },
+                        value: { type: "string" }
+                      },
+                      required: ["name", "value"]
+                    },
+                    description: "Examples table row values for this iteration"
+                  },
+                  steps: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        status: { type: "string", enum: ["PASSED", "FAILED", "TODO", "EXECUTING", "ABORTED"] },
+                        actualResult: { type: "string" }
+                      },
+                      required: ["status"]
+                    },
+                    description: "Step results within this iteration"
+                  }
+                },
+                required: ["status"]
+              },
+              description: "Per-iteration results for Scenario Outline tests (optional)"
             }
           },
           required: ["testKey", "status"]
@@ -10933,17 +11018,22 @@ async function handleXrayCloudUpdateRun(args) {
         testKey: t.testKey,
         status: t.status,
         ...t.comment && { comment: t.comment },
-        ...t.steps && { steps: t.steps }
+        ...t.steps && { steps: t.steps },
+        ...t.iterations && { iterations: t.iterations }
       }))
     };
     const result = await xrayCloudPost("/api/v2/import/execution", payload);
     const passed = tests.filter((t) => t.status === "PASSED").length;
     const failed = tests.filter((t) => t.status === "FAILED").length;
-    return {
-      content: [{ type: "text", text: `**Test Run Updated:** ${testExecutionKey}
+    const withIterations = tests.filter((t) => t.iterations?.length).length;
+    let text = `**Test Run Updated:** ${testExecutionKey}
 
-**Results:** ${passed} passed, ${failed} failed, ${tests.length} total` }]
-    };
+**Results:** ${passed} passed, ${failed} failed, ${tests.length} total`;
+    if (withIterations) {
+      text += `
+**Scenario Outlines:** ${withIterations} test(s) with iteration-level results`;
+    }
+    return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error updating XRay Cloud run: ${error.message}` }], isError: true };
   }
@@ -10996,7 +11086,7 @@ async function handleXrayCloudLinkTestToStory(args) {
 // build/tools/xrayCloudGetTestSteps.js
 var xrayCloudGetTestStepsSchema = {
   name: "xray_cloud_get_test_steps",
-  description: "Get test steps for a test case from XRay Cloud.",
+  description: "Get test steps for a test case from XRay Cloud. Supports both Manual and Cucumber test types.",
   inputSchema: {
     type: "object",
     properties: {
@@ -11015,6 +11105,7 @@ async function handleXrayCloudGetTestSteps(args) {
                     results {
                         issueId
                         testType { name }
+                        gherkin
                         steps {
                             id
                             action
@@ -11029,9 +11120,19 @@ async function handleXrayCloudGetTestSteps(args) {
     const test = data?.getTests?.results?.[0];
     if (!test)
       return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
+    const testType = test.testType?.name || "Unknown";
+    if (testType === "Cucumber" && test.gherkin) {
+      const text2 = `**Test Steps for ${testKey}**
+**Type:** Cucumber
+
+\`\`\`gherkin
+${test.gherkin}
+\`\`\``;
+      return { content: [{ type: "text", text: text2 }] };
+    }
     const steps = test.steps || [];
     let text = `**Test Steps for ${testKey}** (${steps.length} steps)
-**Type:** ${test.testType?.name || "Unknown"}
+**Type:** ${testType}
 
 `;
     steps.forEach((s, i) => {
@@ -11121,7 +11222,7 @@ async function handleXrayCloudGetTestRuns(args) {
 // build/tools/xrayCloudSearchTests.js
 var xrayCloudSearchTestsSchema = {
   name: "xray_cloud_search_tests",
-  description: "Search test cases in XRay Cloud using JQL.",
+  description: "Search test cases in XRay Cloud using JQL. Returns Gherkin preview for Cucumber tests.",
   inputSchema: {
     type: "object",
     properties: {
@@ -11142,6 +11243,7 @@ async function handleXrayCloudSearchTests(args) {
                         issueId
                         jira(fields: ["key", "summary", "status", "labels"])
                         testType { name }
+                        gherkin
                     }
                 }
             }
@@ -11161,10 +11263,173 @@ async function handleXrayCloudSearchTests(args) {
       const type = t.testType?.name || "?";
       text += `- **${key}** \u2014 ${summary} [${type}]
 `;
+      if (type === "Cucumber" && t.gherkin) {
+        const preview = t.gherkin.split("\n").slice(0, 3).join("\n").slice(0, 200);
+        text += `  \`\`\`gherkin
+  ${preview}
+  \`\`\`
+`;
+      }
     }
     return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error searching XRay Cloud tests: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudUpdateTestType.js
+var xrayCloudUpdateTestTypeSchema = {
+  name: "xray_cloud_update_test_type",
+  description: "Update the Test Type of an existing test case in XRay Cloud (Manual, Cucumber, Generic). Also supports updating Gherkin definition or manual steps.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., POS-1234)" },
+      testType: { type: "string", enum: ["Manual", "Cucumber", "Generic"], description: "New test type" },
+      gherkin: { type: "string", description: "Gherkin definition (for Cucumber type). Replaces existing definition." },
+      steps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            action: { type: "string", description: "Step action/instruction" },
+            data: { type: "string", description: "Test data (optional)" },
+            result: { type: "string", description: "Expected result" }
+          },
+          required: ["action", "result"]
+        },
+        description: "Replace test steps (for Manual/Generic types)"
+      }
+    },
+    required: ["testKey", "testType"]
+  }
+};
+async function handleXrayCloudUpdateTestType(args) {
+  try {
+    const { testKey, testType, gherkin, steps } = args;
+    validateIssueKey(testKey, "testKey");
+    const typeMutation = `mutation UpdateTestType($issueId: String!, $testType: UpdateTestTypeInput!) {
+            updateTestType(issueId: $issueId, testType: $testType) {
+                warnings
+            }
+        }`;
+    const typeResult = await xrayCloudGraphQL(typeMutation, {
+      issueId: testKey,
+      testType: { name: testType }
+    });
+    const warnings = typeResult?.updateTestType?.warnings || [];
+    let text = `**Updated Test Type:** ${testKey} \u2192 ${testType}`;
+    if (testType === "Cucumber" && gherkin) {
+      const gherkinMutation = `mutation UpdateGherkin($issueId: String!, $gherkin: String!) {
+                updateGherkinDefinition(issueId: $issueId, gherkin: $gherkin) {
+                    warnings
+                }
+            }`;
+      const gherkinResult = await xrayCloudGraphQL(gherkinMutation, {
+        issueId: testKey,
+        gherkin
+      });
+      const gWarnings = gherkinResult?.updateGherkinDefinition?.warnings || [];
+      warnings.push(...gWarnings);
+      text += `
+**Gherkin:** updated`;
+    }
+    if ((testType === "Manual" || testType === "Generic") && steps?.length) {
+      const removeQuery = `query GetSteps($jql: String!, $limit: Int!) {
+                getTests(jql: $jql, limit: $limit) {
+                    results { steps { id } }
+                }
+            }`;
+      const existing = await xrayCloudGraphQL(removeQuery, { jql: `key = ${testKey}`, limit: 1 });
+      const existingSteps = existing?.getTests?.results?.[0]?.steps || [];
+      if (existingSteps.length > 0) {
+        const removeIds = existingSteps.map((s) => s.id);
+        const removeMutation = `mutation RemoveSteps($issueId: String!, $stepIds: [String!]!) {
+                    removeTestSteps(issueId: $issueId, stepIds: $stepIds) {
+                        warnings
+                    }
+                }`;
+        await xrayCloudGraphQL(removeMutation, { issueId: testKey, stepIds: removeIds });
+      }
+      const addMutation = `mutation AddSteps($issueId: String!, $steps: [CreateStepInput!]!) {
+                addTestSteps(issueId: $issueId, steps: $steps) {
+                    warnings
+                }
+            }`;
+      await xrayCloudGraphQL(addMutation, {
+        issueId: testKey,
+        steps: steps.map((s) => ({ action: s.action, data: s.data || "", result: s.result }))
+      });
+      text += `
+**Steps:** ${steps.length} (replaced)`;
+    }
+    if (warnings.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error updating XRay Cloud test type: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudAddPrecondition.js
+var xrayCloudAddPreconditionSchema = {
+  name: "xray_cloud_add_precondition",
+  description: "Create a precondition in XRay Cloud and link it to test cases. Preconditions define setup requirements that must be met before test execution.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: { type: "string", description: "Jira project key (e.g., POS)" },
+      summary: { type: "string", description: "Precondition title/summary" },
+      preconditionType: { type: "string", enum: ["Manual", "Cucumber"], description: "Precondition type (default: Manual)" },
+      definition: { type: "string", description: "Precondition definition text (plain text for Manual, Gherkin Background for Cucumber)" },
+      testKeys: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Test issue keys to link this precondition to (e.g., ["POS-100", "POS-101"])'
+      }
+    },
+    required: ["projectKey", "summary"]
+  }
+};
+async function handleXrayCloudAddPrecondition(args) {
+  try {
+    const { projectKey, summary, preconditionType = "Manual", definition, testKeys } = args;
+    const mutation = `mutation CreatePrecondition($jira: JSON!, $preconditionType: UpdatePreconditionTypeInput, $definition: String, $testIssueIds: [String!]) {
+            createPrecondition(jira: $jira, preconditionType: $preconditionType, definition: $definition, testIssueIds: $testIssueIds) {
+                precondition { issueId jira(fields: ["key"]) preconditionType { name } }
+                warnings
+            }
+        }`;
+    const variables = {
+      jira: { fields: { summary, project: { key: projectKey } } },
+      preconditionType: { name: preconditionType }
+    };
+    if (definition)
+      variables.definition = definition;
+    if (testKeys?.length) {
+      testKeys.forEach((k) => validateIssueKey(k, "testKeys"));
+      variables.testIssueIds = testKeys;
+    }
+    const data = await xrayCloudGraphQL(mutation, variables);
+    const key = data?.createPrecondition?.precondition?.jira?.key || "unknown";
+    const warnings = data?.createPrecondition?.warnings || [];
+    let text = `**Precondition Created:** ${key}
+
+**Summary:** ${summary}
+**Type:** ${preconditionType}`;
+    if (definition)
+      text += `
+**Definition:** included`;
+    if (testKeys?.length)
+      text += `
+**Linked to:** ${testKeys.join(", ")}`;
+    if (warnings.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error creating XRay Cloud precondition: ${error.message}` }], isError: true };
   }
 }
 
@@ -11226,6 +11491,8 @@ var tools = [
     { schema: prefixed(xrayCloudCreateTestSchema), handler: handleXrayCloudCreateTest },
     { schema: prefixed(xrayCloudCreateExecutionSchema), handler: handleXrayCloudCreateExecution },
     { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
+    { schema: prefixed(xrayCloudUpdateTestTypeSchema), handler: handleXrayCloudUpdateTestType },
+    { schema: prefixed(xrayCloudAddPreconditionSchema), handler: handleXrayCloudAddPrecondition },
     { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
     { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
     { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },

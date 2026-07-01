@@ -4,6 +4,7 @@
   "prompt": "dcl_weekly_report_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@compass/*",
     "@newrelic-mobile-mcp/*",
     "fs_read",
@@ -13,6 +14,7 @@
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@compass/*",
     "@newrelic-mobile-mcp/*"
   ],

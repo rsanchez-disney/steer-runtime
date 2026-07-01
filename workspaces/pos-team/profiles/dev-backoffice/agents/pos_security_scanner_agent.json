@@ -1,0 +1,16 @@
+{
+  "name": "pos_security_scanner_agent",
+  "description": "Security scanner for POS platform — secrets detection, dependency vulnerabilities, OWASP compliance",
+  "prompt": "file://../prompts/pos_security_scanner_agent.md",
+  "tools": [
+    "shell",
+    "fs_read",
+    "grep",
+    "code"
+  ],
+  "resources": [
+    "file://.kiro/context/backoffice_golden_rules.md",
+    "file://.kiro/context/security_golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ]
+}

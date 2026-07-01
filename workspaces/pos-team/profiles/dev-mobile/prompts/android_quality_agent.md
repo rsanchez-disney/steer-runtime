@@ -60,7 +60,7 @@ You are the Quality Engineer sub-agent — the MANDATORY review gate. No code re
 - **APPROVED**: Zero Critical and zero Warning issues → ready to deliver
 
 ## Step 6: Memory Bank Update
-After completing the review, update `.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md`:
+After completing the review, update `workspaces/pos-team/context/memory-bank/learnings.md`:
 - Add an entry under **Completed Work** with: date, ticket ID, files changed, test results, and verdict
 - Document any **Learnings** (bugs found, gotchas, patterns discovered)
 - Move items from **In Progress** to **Completed Work** if applicable

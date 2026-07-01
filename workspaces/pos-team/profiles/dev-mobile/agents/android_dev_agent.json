@@ -1,6 +1,6 @@
 {
   "name": "android_dev_agent",
-  "description": "Android Developer — implements features and fixes following project conventions. Manages Jira tickets for POS project.",
+  "description": "Android Developer \u2014 implements features and fixes following project conventions. Manages Jira tickets for POS project.",
   "prompt": "prompts/android_dev_agent.md",
   "tools": [
     "fs_read",
@@ -10,14 +10,15 @@
     "glob",
     "execute_bash",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/testing_conventions.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/golden_rules.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/hilt_guidelines.md"
+    "file://../../../context/team_context.md",
+    "file://../../../context/testing_conventions.md",
+    "file://../../../context/golden_rules.md",
+    "file://../../../context/memory-bank/learnings.md",
+    "file://../../../context/hilt_guidelines.md"
   ],
   "hooks": {
     "preToolUse": [

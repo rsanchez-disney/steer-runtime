@@ -1,0 +1,15 @@
+{
+  "name": "dsp_bug_report_agent",
+  "description": "Generates daily operational Bug reports for POS DSP releases (2.1.1, 2.1.2, 2.1.3) with status summaries, promotions, risks, and throughput insights",
+  "prompt": "prompts/dsp_bug_report_agent.md",
+  "tools": [
+    "@jira/*",
+    "@jira-cloud/*",
+    "fs_read",
+    "fs_write"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://../context/dsp_bug_report_guidelines.md"
+  ]
+}

@@ -4,7 +4,8 @@
   "prompt": "api_test_executor_agent.md",
   "tools": ["fs_read", "execute_bash", "thinking", "grep"],
   "resources": ["file://.kiro/context/qa_guidelines.md"],
-  "allowedTools": ["@bruno-mcp/*", "@jira/*"],
+  "allowedTools": ["@bruno-mcp/*", "@jira/*",
+    "@jira-cloud/*"],
   "includeMcpJson": true,
   "welcomeMessage": "🔌 API Test Executor ready!...",
   "hooks": {

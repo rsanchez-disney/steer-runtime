@@ -38,12 +38,15 @@ The MCP config uses multi-instance naming. Here's how server names map to tool p
 | Email | Compass `sre_toolsets_email_send_email` | Always (Compass only) |
 | Splunk / Log analysis | Compass log tools | Always (Compass only) |
 | ServiceNow (INC, CHG) | Compass `servicenow_tool_snow_*` | Always (Compass only) |
+| GitHub via Compass | Compass GitHub tools | Only if `@github/*` tools are not available |
 | Jira via Compass | Compass Jira tools | Only if `@jira/*` tools are not available |
 | Confluence via Compass | Compass Confluence tools | Only if `@confluence/*` tools are not available |
 
 ## Rule
 
 **Always prefer dedicated MCP servers over Compass for Jira and Confluence.** Dedicated servers have instance-specific auth, richer schemas, and multi-instance support. Use Compass for email, logs, and ServiceNow.
+
+**Fallback**: If `@jira/*`, `@confluence/*`, or `@github/*` tools are unavailable (no dedicated MCP configured), use `@compass/*` tools instead. Key agents (`story_analyzer_agent`, `planner_agent`, `pr_creator_agent`) have `@compass/*` in their allowed tools for this purpose.
 
 ## Workspace-Level and Fork-Level MCPs
 

@@ -4,15 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.144
+## v0.2.139
 
-- **chore** — rebuild MCP bundles
-- **chore** — update certification report
+- **jira-mcp** — `xray_cloud_update_test_type` and `xray_cloud_add_precondition` tools for managing XRay Cloud test types
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (prevents silent 401 failures)
+- **agents** — add `@jira-cloud/*` and `@confluence-cloud/*` to all agents for multi-instance support
+- **pos-team** — add `includeMcpJson` and `@jira-cloud/*` to dev-mobile and dev-backoffice agents
+- **pos-team** — PM profile with DSP bug report agent
+- **fix** — `story_analyzer_agent` now accesses Jira Cloud tools in multi-instance setups
 <!-- END LATEST -->
-
-## v0.2.143
-
-## v0.2.137
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
@@ -30,14 +30,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** delegation runner rewritten in Python with 180s timeout and subagent/list_update detection
 <!-- END LATEST -->
 
-## v0.2.137
+## v0.2.138
 
 - **Catalog-index hook fix** — both `catalog-index.sh` and `catalog-index.ps1` now correctly resolve workspace source from `~/.kiro/steer-runtime` instead of `$KIRO_HOME`, fixing `koda chat --ws` scenarios
 - **Hook validation tests** — `make validate-catalog` now tests both KIRO_HOME scenarios + PowerShell syntax check via `pwsh`
 - **DGE workspace** — DLP Digital Guest Experience team with 6 services (DPAO, DPAU, VQ, TMS, Wallet, Linking), Harness CI/CD, Jira Cloud integration
 - **Demo generator agent** — DPS team agent for generating comprehensive demo documentation from log files and context
 
-## v0.2.137
+## v0.2.138
 
 - **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
 - **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)

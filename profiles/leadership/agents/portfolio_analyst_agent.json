@@ -4,12 +4,14 @@
   "prompt": "portfolio_analyst_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "thinking",
     "fs_read",
     "fs_write"
   ],
   "allowedTools": [
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "includeMcpJson": true,
   "resources": [

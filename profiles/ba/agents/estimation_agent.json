@@ -4,14 +4,18 @@
   "prompt": "estimation_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "fs_read",
     "fs_write",
     "thinking"
   ],
   "allowedTools": [
     "@jira/*",
-    "@confluence/*"
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/ccv-estimation.md",

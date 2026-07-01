@@ -4,23 +4,29 @@
   "prompt": "story_analyzer_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "grep",
     "web_fetch",
-    "knowledge"
+    "knowledge",
+    "@compass/*"
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*",
+    "@compass/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

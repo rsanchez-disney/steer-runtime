@@ -144,6 +144,21 @@ koda chat --agent orchestrator  # Dev orchestrator
 
 Or press `[enter]` on the Koda dashboard.
 
+### 9. Cursor Support (optional)
+
+Koda also supports Cursor as an alternative runtime. Same workspace, same agents, same MCP tools:
+
+```bash
+# Generate .cursor/ for your project
+cd ~/projects/my-app
+koda cursor --ws my-team
+
+# After that, just:
+koda chat                  # Auto-detects .cursor/ → launches Cursor agent CLI
+```
+
+See [Cursor Quick Start](docs/guides/CURSOR_QUICK_START.md) and [Kiro vs Cursor](docs/guides/KIRO_VS_CURSOR.md) for details.
+
 ---
 
 ## Existing Users — Update
@@ -152,6 +167,14 @@ Or press `[enter]` on the Koda dashboard.
 koda upgrade       # Update Koda + yax binaries
 koda sync          # Pull latest agents, prompts, MCP bundles
 koda doctor        # Verify everything
+```
+
+If using Cursor, `koda sync` automatically refreshes all registered `.cursor/` projects. To manage them:
+
+```bash
+koda cursor list   # Show registered Cursor projects
+koda cursor sync   # Force-refresh all projects
+koda ps            # See running kiro + cursor sessions
 ```
 
 ---

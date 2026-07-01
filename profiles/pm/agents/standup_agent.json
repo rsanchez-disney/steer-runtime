@@ -4,6 +4,7 @@
   "prompt": "standup_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "execute_bash",
     "fs_read",
     "@teams/*"
@@ -12,7 +13,8 @@
     "file://.kiro/context/pm_guidelines.md"
   ],
   "allowedTools": [
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "includeMcpJson": true
 }

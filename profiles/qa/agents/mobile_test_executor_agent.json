@@ -4,7 +4,8 @@
   "prompt": "mobile_test_executor_agent.md",
   "tools": ["fs_read", "execute_bash", "thinking"],
   "resources": ["file://.kiro/context/qa_guidelines.md"],
-  "allowedTools": ["@appium-mcp/*", "@jira/*"],
+  "allowedTools": ["@appium-mcp/*", "@jira/*",
+    "@jira-cloud/*"],
   "includeMcpJson": true,
   "welcomeMessage": "📱 Mobile Test Executor ready!...",
   "hooks": {

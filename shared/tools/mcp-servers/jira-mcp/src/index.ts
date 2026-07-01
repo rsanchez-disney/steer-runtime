@@ -197,6 +197,14 @@ import {
     xrayCloudSearchTestsSchema,
     handleXrayCloudSearchTests,
 } from "./tools/xrayCloudSearchTests.js";
+import {
+    xrayCloudUpdateTestTypeSchema,
+    handleXrayCloudUpdateTestType,
+} from "./tools/xrayCloudUpdateTestType.js";
+import {
+    xrayCloudAddPreconditionSchema,
+    handleXrayCloudAddPrecondition,
+} from "./tools/xrayCloudAddPrecondition.js";
 
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
@@ -258,6 +266,8 @@ const tools = [
         { schema: prefixed(xrayCloudCreateTestSchema), handler: handleXrayCloudCreateTest },
         { schema: prefixed(xrayCloudCreateExecutionSchema), handler: handleXrayCloudCreateExecution },
         { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
+        { schema: prefixed(xrayCloudUpdateTestTypeSchema), handler: handleXrayCloudUpdateTestType },
+        { schema: prefixed(xrayCloudAddPreconditionSchema), handler: handleXrayCloudAddPrecondition },
         { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
         { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
         { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },

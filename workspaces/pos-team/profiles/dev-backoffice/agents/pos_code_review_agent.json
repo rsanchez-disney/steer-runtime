@@ -1,0 +1,16 @@
+{
+  "name": "pos_code_review_agent",
+  "description": "Reviews POS platform code for quality, security, and architectural compliance",
+  "prompt": "file://../prompts/pos_code_review_agent.md",
+  "tools": [
+    "code",
+    "fs_read",
+    "grep",
+    "shell"
+  ],
+  "resources": [
+    "file://.kiro/context/backoffice_golden_rules.md",
+    "file://.kiro/context/security_golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ]
+}

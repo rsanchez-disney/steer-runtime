@@ -4,7 +4,9 @@
   "prompt": "gsm_analyst_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@compass/*",
     "fs_read",
@@ -13,7 +15,9 @@
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@compass/*"
   ],

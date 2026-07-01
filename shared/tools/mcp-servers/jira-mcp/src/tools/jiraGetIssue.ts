@@ -43,7 +43,7 @@ export const jiraGetIssueSchema = {
                         "components",
                         "issuelinks",
                         "storyPoints",
-                        "customfield_10003",
+                        "customfield_10042",
                     ],
                 },
                 description:
@@ -84,7 +84,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
 
         // Resolve storyPoints alias in requested fields
         const expandedFields = requestedFields.map(f =>
-            f === "storyPoints" ? "customfield_10004" : f
+            f === "storyPoints" ? "customfield_10042" : f
         );
 
         // Resolve custom field aliases → real IDs and merge into the field list
@@ -146,7 +146,7 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
                             labels: (ticket as any).fields?.labels,
                             created: (ticket as any).fields?.created?.slice(0, 10),
                             updated: (ticket as any).fields?.updated?.slice(0, 10),
-                            storyPoints: (ticket as any).fields?.story_points || (ticket as any).fields?.customfield_10028,
+                            storyPoints: (ticket as any).fields?.story_points || (ticket as any).fields?.customfield_10042,
                         }),
                     },
                 },

@@ -4,6 +4,66 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.139] — 2026-07-01
+
+### Added
+
+- **jira-mcp** — `xray_cloud_update_test_type` tool: update Test Type (Manual/Cucumber/Generic) on existing tests via XRay GraphQL
+- **jira-mcp** — `xray_cloud_add_precondition` tool: create preconditions and link to test cases
+- **pos-team** — PM profile with `dsp_bug_report_agent` for daily DSP bug reports
+- **agents** — `@jira-cloud/*` and `@confluence-cloud/*` patterns added to 52 agent files across all profiles
+
+### Fixed
+
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (root cause of single-instance 401 failures)
+- **pos-team** — `android_arch_agent` missing `includeMcpJson: true` (MCP tools never injected)
+- **agents** — `story_analyzer_agent` couldn't access Jira Cloud tools in multi-instance setups (#521)
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
+
+## [0.2.147] — 2026-06-29
+
+### Changed
+
+- **docs** — update certification report (trust score 95/100)
+- **tests** — Q3 FY2026 quarterly report final (INC0067890 recurrence #7 incorporated)
+
+## [0.2.146] — 2026-06-28
+
+### Added
+
+- **tests** — expanded refunds validation test plan with comprehensive scenarios (#521)
+- **tests** — Q3 FY2026 quarterly report update with latest metrics
+- **tests** — GSM weekly impact summary report (June 21–27, 2026)
+
+### Changed
+
+- **docs** — update certification report (trust score 95/100, 23/26 delegation pass)
+- **git** — add .mailmap to map contributor email
+
+## [0.2.145] — 2026-06-27
+
+### Added
+
+- **pos-team** — POS team backoffice SDLC orchestration (#516)
+- **app-payment-controls** — local dev setup steering file (#514)
+
+### Fixed
+
+- **agents** — add @compass/* fallback to key agents for Compass-only users (#519)
+- **jira-mcp** — migrate xray_cloud_create_test from broken REST to GraphQL mutation (#517)
+- **jira-mcp** — add Cucumber/Gherkin support to XRay Cloud tools (#515)
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
+- **docs** — update certification report
+- **docs** — add GCP Backend (Java) to local dev setup steering
+- **docs** — add postman_to_bruno_agent to AGENTS.md (#512)
+- **docs** — add koda mcp-install step to Windows troubleshooting guide
+
 ## [0.2.144] — 2026-06-26
 
 ### Changed

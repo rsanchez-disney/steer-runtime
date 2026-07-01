@@ -73,6 +73,14 @@ export class JiraAuth {
         if (this.jiraEmail) {
             return "Basic " + Buffer.from(this.jiraEmail + ":" + pat).toString("base64");
         }
+        // Cloud requires Basic Auth (email:token). If URL is Cloud but no email, warn and try Bearer.
+        if (this.isCloud() && !this.jiraEmail) {
+            console.error(
+                "WARNING: Jira Cloud detected but JIRA_EMAIL is not set. " +
+                "Cloud requires Basic Auth (email:api-token). Requests will likely fail with 401. " +
+                "Set JIRA_EMAIL in your MCP env configuration."
+            );
+        }
         return "Bearer " + pat;
     }
 }
