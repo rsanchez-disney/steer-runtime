@@ -4,7 +4,7 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 55+ agents, 9 profiles, one setup. Define your standards once, run them everywhere.
 
-📖 **[Full Documentation](https://github.disney.com/pages/SANCR225/steer-runtime/)**
+📖 **[Full Documentation](https://github.disney.com/pages/SANCR225/steer-runtime/)** · 🏪 **[Disney AI Catalog](https://marketplace.wdprapps.disney.com/ai-catalog/item/2269)**
 
 > Requires an Amazon Q Developer license for Kiro CLI access.
 

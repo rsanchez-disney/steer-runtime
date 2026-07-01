@@ -14,6 +14,16 @@ Shared rules for all orchestrator agents. Domain-specific rules stay in each orc
 - Present consolidated results clearly after delegation
 - Flag any errors from sub-agents to the user
 
+## Subagent failure handling
+
+When a sub-agent returns empty output, errors, or does not respond:
+
+- **Do NOT retry the same agent with the same prompt more than once.** If it failed twice, it will fail again.
+- **Do NOT attempt to debug the sub-agent's code or internals.** You are an orchestrator, not a debugger.
+- **Do NOT invent or fabricate the missing data.** Never present made-up results as if the agent succeeded.
+- **Report the failure clearly to the user** with: which agent failed, what task was attempted, and suggest alternatives (different agent, simpler prompt, or manual action).
+- If a sub-agent times out or returns no content, tell the user: "Agent X did not return results for [task]. This may be a timeout or resource issue. Would you like me to retry with a simpler query, try a different approach, or skip this step?"
+
 ## Yax persistent memory
 
 At the beginning of every task, **before planning or delegating**:
