@@ -4,7 +4,9 @@
   "prompt": "executive_briefing_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "thinking",
     "fs_read",
@@ -12,7 +14,9 @@
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*"
   ],
   "includeMcpJson": true,

@@ -3,6 +3,7 @@
   "description": "Takes user stories, suggests test cases, creates in Jira, assesses readiness, generates .feature files",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@xray/*",
     "jira_get_myself",
     "jira_get_issue",
@@ -14,10 +15,12 @@
     "fs_read",
     "fs_write",
     "grep",
-    "@confluence/*"
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "allowedTools": [
     "@jira/*",
+    "@jira-cloud/*",
     "@xray/*",
     "jira_get_myself",
     "jira_get_issue",
@@ -29,7 +32,8 @@
     "fs_read",
     "fs_write",
     "grep",
-    "@confluence/*"
+    "@confluence/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://profiles/qa/prompts/story_to_automation_agent.md",

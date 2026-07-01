@@ -4,10 +4,12 @@
   "prompt": "translation_validator_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "fs_write",
     "grep",
@@ -16,10 +18,12 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
-    "@jira/*"
+    "@jira/*",
+    "@jira-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

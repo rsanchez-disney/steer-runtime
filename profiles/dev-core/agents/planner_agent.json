@@ -4,8 +4,10 @@
   "prompt": "planner_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "thinking",
     "@mermaid/*",
@@ -17,8 +19,10 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@jira/*",
+    "@jira-cloud/*",
     "@mermaid/*",
     "@compass/*"
   ],

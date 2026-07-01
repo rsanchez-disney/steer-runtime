@@ -4,6 +4,7 @@
   "prompt": "technical_writer_agent.md",
   "tools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@mywiki/*",
     "@github/*",
     "@gitlab/*",
@@ -20,6 +21,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
+    "@confluence-cloud/*",
     "@github/*",
     "@gitlab/*",
     "@azure-devops/*",
