@@ -24,13 +24,15 @@
         "android_dev_agent",
         "android_test_agent",
         "android_quality_agent",
-        "android_pr_agent"
+        "android_pr_agent",
+        "dsp_bug_report_agent"
       ],
       "trustedAgents": [
         "android_dev_agent",
         "android_test_agent",
         "android_quality_agent",
-        "android_pr_agent"
+        "android_pr_agent",
+        "dsp_bug_report_agent"
       ]
     },
     "execute_bash": {
@@ -40,11 +42,11 @@
     }
   },
   "resources": [
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/testing_conventions.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/golden_rules.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/hilt_guidelines.md"
+    "file://../../../context/team_context.md",
+    "file://../../../context/testing_conventions.md",
+    "file://../../../context/golden_rules.md",
+    "file://../../../context/memory-bank/learnings.md",
+    "file://../../../context/hilt_guidelines.md"
   ],
   "hooks": {
     "agentSpawn": [

@@ -13,9 +13,9 @@
     "@jira-cloud/*"
   ],
   "resources": [
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/team_context.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/testing_conventions.md",
-    "file://.kiro/steer-runtime/workspaces/pos-team/context/memory-bank/learnings.md"
+    "file://../../../context/team_context.md",
+    "file://../../../context/testing_conventions.md",
+    "file://../../../context/memory-bank/learnings.md"
   ],
   "hooks": {
     "preToolUse": [
