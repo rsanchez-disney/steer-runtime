@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.139
+## v0.2.138
 
 - **jira-mcp** — `xray_cloud_update_test_type` and `xray_cloud_add_precondition` tools for managing XRay Cloud test types
 - **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (prevents silent 401 failures)
