@@ -7,6 +7,7 @@
     "dev-mobile",
     "dev-backoffice",
     "ba",
+    "qa",
     "pm"
   ],
   "default_agent": "android_arch_agent",

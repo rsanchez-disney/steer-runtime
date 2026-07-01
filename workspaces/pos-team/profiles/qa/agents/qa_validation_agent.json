@@ -1,0 +1,33 @@
+{
+  "name": "qa_validation_agent",
+  "description": "Validates regression test sets against epic requirements, identifying coverage gaps, traceability issues, and risk areas before test execution begins",
+  "prompt": "prompts/qa_validation_agent.md",
+  "tools": [
+    "@jira/*",
+    "@jira-cloud/*",
+    "@confluence/*",
+    "@confluence-cloud/*",
+    "@mywiki/*",
+    "@gitlab/*",
+    "@github/*",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking"
+  ],
+
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../context/testing_conventions.md"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "👋 QA Validation Agent ready!\n\nI validate regression test sets against epic requirements.\n\nTry:\n  • \"Validate POS-19406 against POS-1429\"\n  • \"Check coverage for test set POS-123 vs epic POS-456\"\n  • \"Release coverage report for GLB 2.1.3 epics\"\n\nI'll fetch the epic requirements, test set details, and produce a risk-scored coverage report.",
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ]
+  }
+}
