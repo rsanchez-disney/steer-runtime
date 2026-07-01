@@ -4,25 +4,24 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
-## [0.2.148] — 2026-06-30
+## [0.2.139] — 2026-07-01
 
 ### Added
 
-- **docs** — add Cursor update steps to README Existing Users section
-- **docs** — add Cursor project registry section to guides
-- **docs** — add Cursor quick start guide and Kiro vs Cursor comparison
-- **feat** — add Cursor integration guide and shared Java steering rules
+- **jira-mcp** — `xray_cloud_update_test_type` tool: update Test Type (Manual/Cucumber/Generic) on existing tests via XRay GraphQL
+- **jira-mcp** — `xray_cloud_add_precondition` tool: create preconditions and link to test cases
+- **pos-team** — PM profile with `dsp_bug_report_agent` for daily DSP bug reports
+- **agents** — `@jira-cloud/*` and `@confluence-cloud/*` patterns added to 52 agent files across all profiles
 
 ### Fixed
 
-- **jira-mcp** — update acceptanceCriteria field ID for Jira Cloud
-- **jira-mcp** — handle ADF in custom field values (Cloud rich text fields)
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (root cause of single-instance 401 failures)
+- **pos-team** — `android_arch_agent` missing `includeMcpJson: true` (MCP tools never injected)
+- **agents** — `story_analyzer_agent` couldn't access Jira Cloud tools in multi-instance setups (#521)
 
 ### Changed
 
-- **jira-mcp** — add Jira Cloud custom field IDs
 - **mcp** — rebuild MCP bundles
-- **docs** — update Cursor guides with auto-detection and add README announcement
 
 ## [0.2.147] — 2026-06-29
 

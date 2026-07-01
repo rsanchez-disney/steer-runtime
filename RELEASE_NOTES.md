@@ -4,19 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.138
+## v0.2.139
 
-- **feat** — Cursor integration guide and shared Java steering rules
-- **docs** — Cursor quick start guide, project registry, Kiro vs Cursor comparison
-- **docs** — README Existing Users section with Cursor update steps
-- **jira-mcp** — Jira Cloud custom field IDs and acceptanceCriteria field fix
-- **jira-mcp** — handle ADF (Atlassian Document Format) in custom field values
-- **mcp** — rebuild MCP bundles
+- **jira-mcp** — `xray_cloud_update_test_type` and `xray_cloud_add_precondition` tools for managing XRay Cloud test types
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (prevents silent 401 failures)
+- **agents** — add `@jira-cloud/*` and `@confluence-cloud/*` to all agents for multi-instance support
+- **pos-team** — add `includeMcpJson` and `@jira-cloud/*` to dev-mobile and dev-backoffice agents
+- **pos-team** — PM profile with DSP bug report agent
+- **fix** — `story_analyzer_agent` now accesses Jira Cloud tools in multi-instance setups
 <!-- END LATEST -->
-
-## v0.2.138
-
-## v0.2.138
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
