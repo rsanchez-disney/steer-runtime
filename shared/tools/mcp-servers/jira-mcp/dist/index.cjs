@@ -11277,6 +11277,162 @@ async function handleXrayCloudSearchTests(args) {
   }
 }
 
+// build/tools/xrayCloudUpdateTestType.js
+var xrayCloudUpdateTestTypeSchema = {
+  name: "xray_cloud_update_test_type",
+  description: "Update the Test Type of an existing test case in XRay Cloud (Manual, Cucumber, Generic). Also supports updating Gherkin definition or manual steps.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., POS-1234)" },
+      testType: { type: "string", enum: ["Manual", "Cucumber", "Generic"], description: "New test type" },
+      gherkin: { type: "string", description: "Gherkin definition (for Cucumber type). Replaces existing definition." },
+      steps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            action: { type: "string", description: "Step action/instruction" },
+            data: { type: "string", description: "Test data (optional)" },
+            result: { type: "string", description: "Expected result" }
+          },
+          required: ["action", "result"]
+        },
+        description: "Replace test steps (for Manual/Generic types)"
+      }
+    },
+    required: ["testKey", "testType"]
+  }
+};
+async function handleXrayCloudUpdateTestType(args) {
+  try {
+    const { testKey, testType, gherkin, steps } = args;
+    validateIssueKey(testKey, "testKey");
+    const typeMutation = `mutation UpdateTestType($issueId: String!, $testType: UpdateTestTypeInput!) {
+            updateTestType(issueId: $issueId, testType: $testType) {
+                warnings
+            }
+        }`;
+    const typeResult = await xrayCloudGraphQL(typeMutation, {
+      issueId: testKey,
+      testType: { name: testType }
+    });
+    const warnings = typeResult?.updateTestType?.warnings || [];
+    let text = `**Updated Test Type:** ${testKey} \u2192 ${testType}`;
+    if (testType === "Cucumber" && gherkin) {
+      const gherkinMutation = `mutation UpdateGherkin($issueId: String!, $gherkin: String!) {
+                updateGherkinDefinition(issueId: $issueId, gherkin: $gherkin) {
+                    warnings
+                }
+            }`;
+      const gherkinResult = await xrayCloudGraphQL(gherkinMutation, {
+        issueId: testKey,
+        gherkin
+      });
+      const gWarnings = gherkinResult?.updateGherkinDefinition?.warnings || [];
+      warnings.push(...gWarnings);
+      text += `
+**Gherkin:** updated`;
+    }
+    if ((testType === "Manual" || testType === "Generic") && steps?.length) {
+      const removeQuery = `query GetSteps($jql: String!, $limit: Int!) {
+                getTests(jql: $jql, limit: $limit) {
+                    results { steps { id } }
+                }
+            }`;
+      const existing = await xrayCloudGraphQL(removeQuery, { jql: `key = ${testKey}`, limit: 1 });
+      const existingSteps = existing?.getTests?.results?.[0]?.steps || [];
+      if (existingSteps.length > 0) {
+        const removeIds = existingSteps.map((s) => s.id);
+        const removeMutation = `mutation RemoveSteps($issueId: String!, $stepIds: [String!]!) {
+                    removeTestSteps(issueId: $issueId, stepIds: $stepIds) {
+                        warnings
+                    }
+                }`;
+        await xrayCloudGraphQL(removeMutation, { issueId: testKey, stepIds: removeIds });
+      }
+      const addMutation = `mutation AddSteps($issueId: String!, $steps: [CreateStepInput!]!) {
+                addTestSteps(issueId: $issueId, steps: $steps) {
+                    warnings
+                }
+            }`;
+      await xrayCloudGraphQL(addMutation, {
+        issueId: testKey,
+        steps: steps.map((s) => ({ action: s.action, data: s.data || "", result: s.result }))
+      });
+      text += `
+**Steps:** ${steps.length} (replaced)`;
+    }
+    if (warnings.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error updating XRay Cloud test type: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudAddPrecondition.js
+var xrayCloudAddPreconditionSchema = {
+  name: "xray_cloud_add_precondition",
+  description: "Create a precondition in XRay Cloud and link it to test cases. Preconditions define setup requirements that must be met before test execution.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: { type: "string", description: "Jira project key (e.g., POS)" },
+      summary: { type: "string", description: "Precondition title/summary" },
+      preconditionType: { type: "string", enum: ["Manual", "Cucumber"], description: "Precondition type (default: Manual)" },
+      definition: { type: "string", description: "Precondition definition text (plain text for Manual, Gherkin Background for Cucumber)" },
+      testKeys: {
+        type: "array",
+        items: { type: "string" },
+        description: 'Test issue keys to link this precondition to (e.g., ["POS-100", "POS-101"])'
+      }
+    },
+    required: ["projectKey", "summary"]
+  }
+};
+async function handleXrayCloudAddPrecondition(args) {
+  try {
+    const { projectKey, summary, preconditionType = "Manual", definition, testKeys } = args;
+    const mutation = `mutation CreatePrecondition($jira: JSON!, $preconditionType: UpdatePreconditionTypeInput, $definition: String, $testIssueIds: [String!]) {
+            createPrecondition(jira: $jira, preconditionType: $preconditionType, definition: $definition, testIssueIds: $testIssueIds) {
+                precondition { issueId jira(fields: ["key"]) preconditionType { name } }
+                warnings
+            }
+        }`;
+    const variables = {
+      jira: { fields: { summary, project: { key: projectKey } } },
+      preconditionType: { name: preconditionType }
+    };
+    if (definition)
+      variables.definition = definition;
+    if (testKeys?.length) {
+      testKeys.forEach((k) => validateIssueKey(k, "testKeys"));
+      variables.testIssueIds = testKeys;
+    }
+    const data = await xrayCloudGraphQL(mutation, variables);
+    const key = data?.createPrecondition?.precondition?.jira?.key || "unknown";
+    const warnings = data?.createPrecondition?.warnings || [];
+    let text = `**Precondition Created:** ${key}
+
+**Summary:** ${summary}
+**Type:** ${preconditionType}`;
+    if (definition)
+      text += `
+**Definition:** included`;
+    if (testKeys?.length)
+      text += `
+**Linked to:** ${testKeys.join(", ")}`;
+    if (warnings.length)
+      text += `
+**Warnings:** ${warnings.join(", ")}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error creating XRay Cloud precondition: ${error.message}` }], isError: true };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -11335,6 +11491,8 @@ var tools = [
     { schema: prefixed(xrayCloudCreateTestSchema), handler: handleXrayCloudCreateTest },
     { schema: prefixed(xrayCloudCreateExecutionSchema), handler: handleXrayCloudCreateExecution },
     { schema: prefixed(xrayCloudUpdateRunSchema), handler: handleXrayCloudUpdateRun },
+    { schema: prefixed(xrayCloudUpdateTestTypeSchema), handler: handleXrayCloudUpdateTestType },
+    { schema: prefixed(xrayCloudAddPreconditionSchema), handler: handleXrayCloudAddPrecondition },
     { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
     { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
     { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },

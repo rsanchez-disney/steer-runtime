@@ -1,12 +1,13 @@
 {
   "name": "android_arch_agent",
-  "description": "Android Architect — primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
+  "description": "Android Architect \u2014 primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
   "prompt": "prompts/android_arch_agent.md",
   "tools": [
     "fs_read",
     "fs_write",
     "@gitlab/*",
     "@jira/*",
+    "@jira-cloud/*",
     "execute_bash",
     "grep",
     "glob",
@@ -62,5 +63,6 @@
       }
     ]
   },
-  "welcomeMessage": "Android Architect ready. Describe the feature or task and I'll orchestrate the implementation through Dev, Test, Quality, and PR agents."
+  "welcomeMessage": "Android Architect ready. Describe the feature or task and I'll orchestrate the implementation through Dev, Test, Quality, and PR agents.",
+  "includeMcpJson": true
 }
