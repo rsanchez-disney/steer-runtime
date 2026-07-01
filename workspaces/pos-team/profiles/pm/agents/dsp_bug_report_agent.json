@@ -4,6 +4,7 @@
   "prompt": "prompts/dsp_bug_report_agent.md",
   "tools": [
     "@jira/*",
+    "@jira-cloud/*",
     "fs_read",
     "fs_write"
   ],
