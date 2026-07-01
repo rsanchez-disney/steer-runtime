@@ -14,7 +14,7 @@
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
-    "file://../../../context/memory-bank/learnings.md"
+    "file://../../../context/memory-bank/*"
   ],
   "hooks": {
     "preToolUse": [
