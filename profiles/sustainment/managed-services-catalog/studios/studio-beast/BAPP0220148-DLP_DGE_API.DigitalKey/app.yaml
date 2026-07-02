@@ -56,6 +56,72 @@ technologies:
   - name: "Java"
     version: "21"
 
+# --- Known Issues ---
+known_issues:
+  - id: "KI-DK-001"
+    title: "CISA server outage impacts eligible rooms retrieval"
+    category: "incident-based"
+    severity: "critical"
+    affected_component: "digital-key-provider"
+    source_link: "https://mywiki.disney.com/spaces/SBH/pages/980389053"
+    description: "When CISA e-servers (DCR, NY, DL) are down, Digital Key Provider cannot retrieve eligible rooms. Guests unable to use Digital Key for room access. Documented in app.yaml notes and corroborated by multiple ServiceNow incidents."
+
+  - id: "KI-DK-002"
+    title: "GET eligible rooms errors (DLP_BT_DKEY_GET-ELIGIBLE-ROOMS_ERROR)"
+    category: "alert-based"
+    severity: "high"
+    affected_component: "digital-key-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC25259407"
+    description: "Recurring alert triggered when eligible rooms API returns errors. Multiple incidents (INC25259407, INC25217766) indicate this is a recurring pattern, often correlated with CISA server availability."
+
+  - id: "KI-DK-003"
+    title: "Guests unable to open doors with Digital Key (CISA DL & NY servers)"
+    category: "incident-based"
+    severity: "critical"
+    affected_component: "digital-key-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC25275115"
+    description: "Complete guest-facing outage where rooms cannot be opened via Digital Key at DL and NY CISA servers. Direct guest impact requiring immediate escalation to CISA vendor."
+
+  - id: "KI-DK-004"
+    title: "Business event processor fetch/process errors"
+    category: "alert-based"
+    severity: "medium"
+    affected_component: "dkey-business-event-processor"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC25344127"
+    description: "DLP_BT_DKEY_BUSINESS_EVENT-FETCH-PROCESS-EVENTS_ERROR alert fires when the business event processor fails to fetch or process events. INC25344127 documents this pattern."
+
+  - id: "KI-DK-005"
+    title: "JVM errors on business event processor (DLP_JVM_LODGING-OCC-DKEY)"
+    category: "alert-based"
+    severity: "high"
+    affected_component: "dkey-business-event-processor"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC24798178"
+    description: "JVM-level errors on the lodging OCC dkey business event processor. INC24798178 indicates potential memory or threading issues in the worker service."
+
+  - id: "KI-DK-006"
+    title: "GET reservation status errors (recurring alert pattern)"
+    category: "alert-based"
+    severity: "medium"
+    affected_component: "digital-key-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC25978329"
+    description: "DLP_BT_DKEY_GET-RESERVATION-STATUS_ERROR alert fires when reservation status API fails. Multiple incidents (INC25978329, INC25251838) show recurring pattern, likely related to Opera Cloud connectivity."
+
+  - id: "KI-DK-008"
+    title: "Digital Key Provider service DOWN (complete outage)"
+    category: "incident-based"
+    severity: "critical"
+    affected_component: "digital-key-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC28761947"
+    description: "Service-level outage where digital-key-provider is completely DOWN (INC28761947). Full guest impact — no Digital Key functionality available."
+
+  - id: "KI-DK-009"
+    title: "High response time from TBX impacting Digital Key"
+    category: "performance-degradation"
+    severity: "medium"
+    affected_component: "digital-key-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC27781115"
+    description: "High response times originating from TBX upstream dependency causing degraded Digital Key performance (INC27781115). Latency spikes affecting guest experience."
+
 # --- Components ---
 components:
 
@@ -66,20 +132,98 @@ components:
       url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-srv-digital-key-provider"
       branch: "develop"
       path: "/"
+    cicd:
+      platform: "harness"
+      pipeline_url: ""  # TODO: Discover from Harness (Disneyland_Paris org)
+      deploy_target: "ECS"
     cloud:
       provider: "AWS"
       region: "eu-west-1"
       infra_type: "ECS"
       cluster_id: "dlp-apps-S0001481-euw1"
+      services:
+        - type: "rds"
+          name: "profile-mariadb"
+        - type: "rabbitmq"
+          name: "RabbitMQ (business event consumer)"
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-srv-digital-key-provider
+      error_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-srv-digital-key-provider Level=ERROR
+      latency_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-srv-digital-key-provider Logger=com.disney.dlp.is.foundation.fw.servletfilter.HttpBoundaryLoggingFilter
+        | stats avg(responseTime) as avg_rt p95(responseTime) as p95_rt by requestUrl
+    appdynamics:
+      app_name: "DLP-DIGITAL-KEY"
+      tier: "digital-key-provider"
+      dashboard_url: ""  # TODO: Discover specific dashboard URL from AppDynamics
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-srv-digital-key-provider/healthcheck"
+      expected_status: 200
     cloudwatch:
       dashboards:
         - "DLP Mobile App Dashboard"
     postman: "DGE Workspace: wdpr-dlp-is-sales-srv-digital-key-provider"
 
+  - component_name: "dkey-business-event-processor"
+    component_type: "worker"
+    description: "Processes Digital Key business events from Opera — invalidates current keys when reservation changes affect room access, forcing guests to regenerate valid keys."
+    repository:
+      url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-dkey-business-event-processor"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: ""  # TODO: Discover from Harness (Disneyland_Paris org)
+      deploy_target: "ECS"
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-ooc-dkey-business-event-processor/healthcheck"
+      expected_status: 200
+    splunk:
+      index: "wdpr_dlp_digital"
+      base_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-dkey-business-event-processor
+      error_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-dkey-business-event-processor Level=ERROR
+      latency_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-lodging-ooc-dkey-business-event-processor "timeTakenInMillis" "REST_CLIENT_RESPONSE"
+        | rex field=Msg "\"timeTakenInMillis\":(?<timeTakenInMillis>\d+)"
+        | eval timeTakenInMillis=tonumber(timeTakenInMillis)
+        | timechart span=5m avg(timeTakenInMillis) as avgLatencyMs
+    appdynamics:
+      app_name: "DLP-DIGITAL-KEY"
+      tier: "lodging-ooc-dkey-business-event-processor"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_15_minutes.BEFORE_NOW.-1.-1.15&application=1029&component=360880&dashboardMode=force"
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1-prd"
+      service_name: "ooc-dkey-business-event-processor-prod-live"
+      services:
+        - type: "rds"
+          name: "sales-digitalkey-mariadb-prod"
+    other_environments:
+      stage:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-stg"
+          service_name: "ooc-dkey-business-event-processor-stage-live"
+      load:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-lod"
+          service_name: "ooc-dkey-business-event-processor-load-live"
+      latest:
+        cloud:
+          cluster_id: "dlp-apps-S0001481-euw1-lst"
+          service_name: "ooc-dkey-business-event-processor-latest-live"
+
   - component_name: "CISA Electronic Locks"
     component_type: "gateway"
     description: "External — CISA e-servers managing electronic locks on hotel doors. Three servers: DCR, NY, DL."
     external: true
+    vendor: "CISA"
+    escalation_group: "UNKNOWN"  # TODO: Identify specific ServiceNow assignment group for CISA infrastructure team
     cisa_servers:
       dcr: "https://dlp-cisa-e-server-dcr.emea.wdpr.disney.com/"
       ny: "https://dlp-cisa-e-server-ny.emea.wdpr.disney.com/"
@@ -89,7 +233,15 @@ components:
     component_type: "api"
     description: "External — Oracle Hospitality Opera Cloud PMS. Validates reservation status, room assignment, and Magic Mobile feature flag."
     external: true
+    vendor: "Oracle Hospitality"
+    escalation_group: "UNKNOWN"  # TODO: Identify specific ServiceNow assignment group for Opera support team
     opera_url: "https://dlpce2ua.oraclehospitality.eu-frankfurt-1.ocs.oraclecloud.com/DLPFR2/operacloud/faces/opera-cloud-index/OperaCloud"
+
+  - component_name: "Keyring"
+    component_type: "api"
+    description: "Guest digital identity validation. Digital Key uses Keyring to verify guest identity before authorizing Bluetooth room access."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
 
 # --- Guest Impact ---
 guest_impact:
