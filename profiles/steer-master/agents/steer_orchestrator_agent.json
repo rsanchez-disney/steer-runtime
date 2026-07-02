@@ -6,6 +6,7 @@
     "subagent",
     "thinking",
     "todo_list",
+    "read",
     "@yax/*"
   ],
   "resources": [
@@ -26,7 +27,10 @@
     "file://profiles/steer-master/context/features_guide.md",
     "file://.kiro/context/orchestrator_rules.md",
     "file://.kiro/context/sdlc-workflow.md",
-    "file://.kiro/context/_dynamic/delegation-map.md"
+    "file://.kiro/context/_dynamic/delegation-map.md",
+    "file://profiles/steer-master/context/cursor_integration_guide.md",
+    "file://profiles/steer-master/context/recent_changes.md",
+    "file://docs/experimental/README.md"
   ],
   "welcomeMessage": "\ud83d\udee0\ufe0f Steer-master orchestrator ready!\n\nI can help you:\n  \u2022 Implement features for steer-runtime and Koda\n  \u2022 Review PRs for breaking changes and consistency\n  \u2022 Validate schemas and cross-repo compatibility\n  \u2022 Create new agents, profiles, hooks, and context files\n\nI know the steer-runtime and Koda codebases, schemas, and conventions.",
   "hooks": {
