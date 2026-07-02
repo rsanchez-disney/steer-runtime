@@ -18,7 +18,7 @@ export async function handleXrayCloudSearchTests(args: any): Promise<any> {
         const { jql, limit = 20 } = args;
 
         const query = `
-            query($jql: String!, $limit: Int) {
+            query($jql: String!, $limit: Int!) {
                 getTests(jql: $jql, limit: $limit) {
                     total
                     results {

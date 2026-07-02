@@ -6342,8 +6342,42 @@ function markdownToADF(md) {
       i++;
       continue;
     }
+    if (line.trimStart().startsWith("|") && i + 1 < lines.length && /^\s*\|[\s\-:|]+\|/.test(lines[i + 1])) {
+      const headerCells = line.split("|").slice(1, -1).map((c) => c.trim());
+      i++;
+      i++;
+      const dataRows = [];
+      while (i < lines.length && lines[i].trimStart().startsWith("|")) {
+        const cells = lines[i].split("|").slice(1, -1).map((c) => c.trim());
+        dataRows.push(cells);
+        i++;
+      }
+      const tableContent = [];
+      tableContent.push({
+        type: "tableRow",
+        content: headerCells.map((cell) => ({
+          type: "tableHeader",
+          content: [{ type: "paragraph", content: parseInline(cell) }]
+        }))
+      });
+      for (const row of dataRows) {
+        tableContent.push({
+          type: "tableRow",
+          content: row.map((cell) => ({
+            type: "tableCell",
+            content: [{ type: "paragraph", content: parseInline(cell) }]
+          }))
+        });
+      }
+      content.push({
+        type: "table",
+        attrs: { isNumberColumnEnabled: false, layout: "default" },
+        content: tableContent
+      });
+      continue;
+    }
     const paraLines = [];
-    while (i < lines.length && lines[i].trim() !== "" && !lines[i].startsWith("#") && !lines[i].startsWith("```") && !/^[\s]*[-*+]\s/.test(lines[i]) && !/^[\s]*\d+\.\s/.test(lines[i]) && !lines[i].startsWith("> ") && !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim())) {
+    while (i < lines.length && lines[i].trim() !== "" && !lines[i].startsWith("#") && !lines[i].startsWith("```") && !/^[\s]*[-*+]\s/.test(lines[i]) && !/^[\s]*\d+\.\s/.test(lines[i]) && !lines[i].startsWith("> ") && !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim()) && !lines[i].trimStart().startsWith("|")) {
       paraLines.push(lines[i]);
       i++;
     }
@@ -10904,32 +10938,103 @@ var xrayCloudCreateExecutionSchema = {
       testPlanKey: { type: "string", description: "Test Plan issue key to link (optional)" },
       testKeys: { type: "array", items: { type: "string" }, description: "Test issue keys to include (optional)" },
       environment: { type: "string", description: "Test environment name (optional)" },
-      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_10803": "sprint-id"})' }
+      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"description": "...", "fixVersion": "1.0"})' }
     },
     required: ["projectKey", "summary"]
   }
 };
+async function resolveIssueIds(apiClient, keys) {
+  const ids = [];
+  for (const key of keys) {
+    validateIssueKey(key, "testKey");
+    const issue = await apiClient.fetchJiraTicket(key, ["summary"]);
+    if (!issue?.id) {
+      throw new Error(`Could not resolve Jira ID for ${key}`);
+    }
+    ids.push(issue.id);
+  }
+  return ids;
+}
 async function handleXrayCloudCreateExecution(args) {
   try {
     const { projectKey, summary, testPlanKey, testKeys, environment, customFields } = args;
-    const info = { summary, project: projectKey, ...customFields };
-    if (testPlanKey)
-      info.testPlanKey = testPlanKey;
-    if (environment)
-      info.testEnvironments = [environment];
-    const payload = { info };
-    if (testKeys?.length) {
-      payload.tests = testKeys.map((k) => ({ testKey: k }));
+    if ((!testKeys || testKeys.length === 0) && !testPlanKey) {
+      return {
+        content: [{ type: "text", text: "Error: At least one of `testKeys` or `testPlanKey` must be provided." }],
+        isError: true
+      };
     }
-    const result = await xrayCloudPost("/api/v2/import/execution", payload);
-    const key = result?.key || result?.testExecIssue?.key || JSON.stringify(result);
+    const apiClient = new JiraApiClient();
+    let testIssueIds = [];
+    if (testKeys?.length) {
+      testIssueIds = await resolveIssueIds(apiClient, testKeys);
+    }
+    let testPlanId;
+    if (testPlanKey) {
+      validateIssueKey(testPlanKey, "testPlanKey");
+      const planIssue = await apiClient.fetchJiraTicket(testPlanKey, ["summary"]);
+      if (!planIssue?.id) {
+        throw new Error(`Could not resolve Jira ID for test plan ${testPlanKey}`);
+      }
+      testPlanId = planIssue.id;
+    }
+    const jiraFields = {
+      summary,
+      project: { key: projectKey }
+    };
+    if (customFields && typeof customFields === "object") {
+      const allowed = /* @__PURE__ */ new Set(["description", "fixVersion", "labels", "priority"]);
+      for (const [key2, value] of Object.entries(customFields)) {
+        if (allowed.has(key2)) {
+          jiraFields[key2] = value;
+        }
+      }
+    }
+    const mutation = `
+            mutation CreateTestExecution(
+                $testIssueIds: [String]!
+                $jira: JSON!
+                ${testPlanId ? "$testPlanId: String" : ""}
+                ${environment ? "$testEnvironments: [String]" : ""}
+            ) {
+                createTestExecution(
+                    testIssueIds: $testIssueIds
+                    jira: $jira
+                    ${testPlanId ? "testPlanId: $testPlanId" : ""}
+                    ${environment ? "testEnvironments: $testEnvironments" : ""}
+                ) {
+                    testExecution {
+                        issueId
+                        jira(fields: ["key", "summary"])
+                    }
+                    warnings
+                }
+            }
+        `;
+    const variables = {
+      testIssueIds,
+      jira: { fields: jiraFields }
+    };
+    if (testPlanId)
+      variables.testPlanId = testPlanId;
+    if (environment)
+      variables.testEnvironments = [environment];
+    const data = await xrayCloudGraphQL(mutation, variables);
+    const result = data?.createTestExecution;
+    const key = result?.testExecution?.jira?.key || result?.testExecution?.issueId || "unknown";
+    const warnings = result?.warnings?.length ? `
+**Warnings:** ${result.warnings.join(", ")}` : "";
     return {
-      content: [{ type: "text", text: `**Test Execution Created:** ${key}
+      content: [{
+        type: "text",
+        text: `**Test Execution Created:** ${key}
 
 **Summary:** ${summary}
-**Tests:** ${testKeys?.length || 0}
+**Tests:** ${testKeys?.join(", ") || "none"} (${testIssueIds.length} linked)
 ${testPlanKey ? `**Plan:** ${testPlanKey}
-` : ""}${environment ? `**Environment:** ${environment}` : ""}` }]
+` : ""}${environment ? `**Environment:** ${environment}
+` : ""}${warnings}`
+      }]
     };
   } catch (error) {
     return { content: [{ type: "text", text: `Error creating XRay Cloud execution: ${error.message}` }], isError: true };
@@ -11057,26 +11162,13 @@ async function handleXrayCloudLinkTestToStory(args) {
     const { testKey, storyKey } = args;
     validateIssueKey(testKey, "testKey");
     validateIssueKey(storyKey, "storyKey");
-    const mutation = `
-            mutation($testKeys: [String!]!, $issueKey: String!) {
-                addTestToIssue(
-                    testIssueIds: $testKeys
-                    issueId: $issueKey
-                ) {
-                    addedTests
-                    warning
-                }
-            }
-        `;
-    const result = await xrayCloudGraphQL(mutation, { testKeys: [testKey], issueKey: storyKey });
-    const added = result?.addTestToIssue?.addedTests ?? 0;
-    const warning = result?.addTestToIssue?.warning || "";
-    let text = `**Linked:** ${testKey} \u2192 ${storyKey}
+    const apiClient = new JiraApiClient();
+    await apiClient.linkJiraIssues(storyKey, testKey, "Test");
+    const text = `**Linked:** ${testKey} \u2192 ${storyKey}
 
-**Tests linked:** ${added}`;
-    if (warning)
-      text += `
-**Warning:** ${warning}`;
+**Link Type:** Test
+**Test (outward):** ${testKey} \u2014 tests
+**Story (inward):** ${storyKey} \u2014 is tested by`;
     return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error linking test to story: ${error.message}` }], isError: true };
@@ -11100,7 +11192,7 @@ async function handleXrayCloudGetTestSteps(args) {
     const { testKey } = args;
     validateIssueKey(testKey, "testKey");
     const query = `
-            query($jql: String!, $limit: Int) {
+            query($jql: String!, $limit: Int!) {
                 getTests(jql: $jql, limit: $limit) {
                     results {
                         issueId
@@ -11171,15 +11263,15 @@ async function handleXrayCloudGetTestRuns(args) {
     const { testKey, limit = 10 } = args;
     validateIssueKey(testKey, "testKey");
     const query = `
-            query($testIssueIds: [String!]!, $limit: Int) {
+            query($testIssueIds: [String!]!, $limit: Int!) {
                 getTestRuns(testIssueIds: $testIssueIds, limit: $limit) {
                     results {
                         id
                         status { name color }
-                        testExecution { issueId jira(fields: ["key", "summary"]) { key } }
+                        testExecution { issueId jira(fields: ["key", "summary"]) }
                         startedOn
                         finishedOn
-                        executedBy { accountId }
+                        executedById
                         steps {
                             id
                             status { name }
@@ -11236,7 +11328,7 @@ async function handleXrayCloudSearchTests(args) {
   try {
     const { jql, limit = 20 } = args;
     const query = `
-            query($jql: String!, $limit: Int) {
+            query($jql: String!, $limit: Int!) {
                 getTests(jql: $jql, limit: $limit) {
                     total
                     results {
@@ -11308,58 +11400,56 @@ async function handleXrayCloudUpdateTestType(args) {
   try {
     const { testKey, testType, gherkin, steps } = args;
     validateIssueKey(testKey, "testKey");
-    const typeMutation = `mutation UpdateTestType($issueId: String!, $testType: UpdateTestTypeInput!) {
-            updateTestType(issueId: $issueId, testType: $testType) {
-                warnings
+    const resolveQuery = `query($jql: String!, $limit: Int!) {
+            getTests(jql: $jql, limit: $limit) {
+                results { issueId }
             }
         }`;
-    const typeResult = await xrayCloudGraphQL(typeMutation, {
-      issueId: testKey,
+    const resolveResult = await xrayCloudGraphQL(resolveQuery, { jql: `key = ${testKey}`, limit: 1 });
+    const numericId = resolveResult?.getTests?.results?.[0]?.issueId;
+    if (!numericId) {
+      return { content: [{ type: "text", text: `Error: Could not resolve numeric issueId for ${testKey}. Ensure the test exists in XRay Cloud.` }], isError: true };
+    }
+    const typeMutation = `mutation UpdateTestType($issueId: String!, $testType: UpdateTestTypeInput!) {
+            updateTestType(issueId: $issueId, testType: $testType) {
+                __typename
+            }
+        }`;
+    await xrayCloudGraphQL(typeMutation, {
+      issueId: numericId,
       testType: { name: testType }
     });
-    const warnings = typeResult?.updateTestType?.warnings || [];
+    const warnings = [];
     let text = `**Updated Test Type:** ${testKey} \u2192 ${testType}`;
     if (testType === "Cucumber" && gherkin) {
       const gherkinMutation = `mutation UpdateGherkin($issueId: String!, $gherkin: String!) {
-                updateGherkinDefinition(issueId: $issueId, gherkin: $gherkin) {
-                    warnings
+                updateGherkinTestDefinition(issueId: $issueId, gherkin: $gherkin) {
+                    __typename
                 }
             }`;
-      const gherkinResult = await xrayCloudGraphQL(gherkinMutation, {
-        issueId: testKey,
+      await xrayCloudGraphQL(gherkinMutation, {
+        issueId: numericId,
         gherkin
       });
-      const gWarnings = gherkinResult?.updateGherkinDefinition?.warnings || [];
-      warnings.push(...gWarnings);
       text += `
 **Gherkin:** updated`;
     }
     if ((testType === "Manual" || testType === "Generic") && steps?.length) {
-      const removeQuery = `query GetSteps($jql: String!, $limit: Int!) {
-                getTests(jql: $jql, limit: $limit) {
-                    results { steps { id } }
-                }
+      const removeAllMutation = `mutation RemoveAllSteps($issueId: String!, $versionId: Int) {
+                removeAllTestSteps(issueId: $issueId, versionId: $versionId)
             }`;
-      const existing = await xrayCloudGraphQL(removeQuery, { jql: `key = ${testKey}`, limit: 1 });
-      const existingSteps = existing?.getTests?.results?.[0]?.steps || [];
-      if (existingSteps.length > 0) {
-        const removeIds = existingSteps.map((s) => s.id);
-        const removeMutation = `mutation RemoveSteps($issueId: String!, $stepIds: [String!]!) {
-                    removeTestSteps(issueId: $issueId, stepIds: $stepIds) {
-                        warnings
+      await xrayCloudGraphQL(removeAllMutation, { issueId: numericId, versionId: null });
+      for (const step of steps) {
+        const addMutation = `mutation AddStep($issueId: String!, $step: CreateStepInput!) {
+                    addTestStep(issueId: $issueId, step: $step) {
+                        id
                     }
                 }`;
-        await xrayCloudGraphQL(removeMutation, { issueId: testKey, stepIds: removeIds });
+        await xrayCloudGraphQL(addMutation, {
+          issueId: numericId,
+          step: { action: step.action, data: step.data || "", result: step.result }
+        });
       }
-      const addMutation = `mutation AddSteps($issueId: String!, $steps: [CreateStepInput!]!) {
-                addTestSteps(issueId: $issueId, steps: $steps) {
-                    warnings
-                }
-            }`;
-      await xrayCloudGraphQL(addMutation, {
-        issueId: testKey,
-        steps: steps.map((s) => ({ action: s.action, data: s.data || "", result: s.result }))
-      });
       text += `
 **Steps:** ${steps.length} (replaced)`;
     }
