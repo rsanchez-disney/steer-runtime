@@ -58,6 +58,48 @@ technologies:
   - name: "Spring Boot"
     version: "3.4+"
 
+# --- Known Issues ---
+known_issues:
+  - id: "KI-001"
+    title: "DRS high response time causing booking failures"
+    category: "alert-based"
+    severity: "high"
+    affected_component: "drs-book-dine-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC26813635"
+    description: "AppDynamics alert DLP_BT_BOOKDINE_SALES-DRS-BOOK-DINE-PROVIDER_RESPONSE_TIME_ERROR fires when DRS system experiences degradation. High 500 error rate in Splunk. Guests cannot book/cancel reservations. Escalate to POS team (app-frdlp-support-pos)."
+
+  - id: "KI-002"
+    title: "DRS availability synchronization errors"
+    category: "incident-based"
+    severity: "high"
+    affected_component: "drs-book-dine-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC28094764"
+    description: "Availability shown in app does not match actual restaurant availability due to DRS inventory sync issues or Bio Schedules data mismatch. Multiple P3/P4 incidents in 2025."
+
+  - id: "KI-003"
+    title: "QSLWebBooking.asmx endpoint unavailability"
+    category: "performance-degradation"
+    severity: "critical"
+    affected_component: "drs-book-dine-provider"
+    source_link: ""  # TODO: No specific INC — known from troubleshooting documentation
+    description: "When DRS QSLWebBooking.asmx endpoint is completely down, all booking operations fail. Full DRS infrastructure issue requiring immediate escalation to app-frdlp-support-pos."
+
+  - id: "KI-004"
+    title: "Publisher batch failure — reservation reminder emails not sent"
+    category: "alert-based"
+    severity: "medium"
+    affected_component: "drs-book-dine-publisher"
+    source_link: ""  # TODO: Source link pending — identified from troubleshooting.md
+    description: "Book Dine Publisher batch may fail to send reservation reminder emails. Root causes include publisher batch execution failure, Notification Service being down, or Sparkpost/Airship issues."
+
+  - id: "KI-005"
+    title: "NullReferenceException errors when no availability (expected behavior)"
+    category: "alert-based"
+    severity: "low"
+    affected_component: "drs-book-dine-provider"
+    source_link: "https://mywiki.disney.com/spaces/SBH/pages/962561428"
+    description: "Object reference not set to an instance of an object errors appear when there is no restaurant availability. This is EXPECTED behavior — can be safely ignored. Documented to prevent false escalations."
+
 # --- Components ---
 components:
 
@@ -158,12 +200,30 @@ components:
       pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Disneyland_Paris/projects/DLP_API_DGE_BOOK_DINE/overview"
       deploy_target: "ECS (Task Definition)"
 
+    health_check:
+      url: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-drs-book-dine-provider/healthcheck"
+      expected_status: 200
+
     splunk:
       index: "wdpr_dlp_digital"
       base_spl: >-
-        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-drs-book-dine-provider
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-drs-book-dine-publisher
+      error_spl: >-
+        index=wdpr_dlp_digital "Identifiers.App-Name"=wdpr-dlp-is-sales-drs-book-dine-publisher Level=ERROR
+      latency_spl: ""  # TODO: Publisher is a batch job — latency SPL not applicable
       dashboards:
         - "wdpr-dlp-is-sales-drs-book-dine-publisher"
+
+    cloud:
+      provider: "AWS"
+      region: "eu-west-1"
+      infra_type: "ECS"
+      cluster_id: "dlp-apps-S0001481-euw1-lst"
+      service_name: "wdpr-dlp-is-sales-drs-book-dine-publisher-prod"
+
+      services:
+        - type: "rds"
+          name: "profile-mariadb"
 
     vault:
       non_secret: "non_secret/apps/is/eu-west-1/{env}/sales/drs-book-dine-publisher/1.0.0"
@@ -178,12 +238,37 @@ components:
     component_type: "api"
     description: "System of Record for all restaurant bookings. Handles inventory. External component managed by POS team."
     external: true
+    vendor: "DRS"
     escalation_group: "app-frdlp-support-pos"
 
   - component_name: "Redis"
     component_type: "cache"
-    description: "RateLimiter stored in Redis to limit calls from unexpected clients."
+    description: "RateLimiter stored in Redis (ElastiCache) to limit calls from unexpected clients."
+
+  # --- Beast-scope Dependencies ---
+  - component_name: "Keyring"
+    component_type: "api"
+    description: "Guest digital identity and portfolio management. Provides guest authentication and ticket portfolio for restaurant booking validation."
     external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  - component_name: "Guest Extended Profile"
+    component_type: "api"
+    description: "Stores guest-specific preferences and extended profile data used for personalized restaurant booking experiences."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  - component_name: "Bio Schedules"
+    component_type: "api"
+    description: "Provides restaurant opening hours and activity schedules. Used by Book Dine to display available timeslots for reservations."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  - component_name: "Notification Service"
+    component_type: "api"
+    description: "Handles email notifications for restaurant reservation confirmations and reminders sent to guests."
+    external: true
+    escalation_group: "UNKNOWN"  # TODO: Notification Service escalation group not found in repository — verify with team
 
 # --- Guest Impact ---
 guest_impact:

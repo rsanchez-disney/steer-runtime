@@ -57,10 +57,114 @@ Extract all values from the `facilityId` list/field in the YAML.
 **Path:** `GET /arrival-window-batch/locations/{facilityId}/schedules`
 **Auth:** `Authorization: Bearer {token}`
 
+### Schedule API Response Format
+
+The endpoint returns a **JSON array** (flat list). Each element is a single schedule entry:
+
+```json
+[
+  {
+    "id": 953260,
+    "location": {
+      "parent": { "id": "330339", "name": "Disneyland Park" },
+      "id": "18409951",
+      "name": "Hollywood Lounge"
+    },
+    "mealPeriod": { "id": "18409964", "name": "Snack" },
+    "startTime": "09:30:00",
+    "endTime": "03:00:00",
+    "operatingDate": "2026-06-17",
+    "type": "SYSTEM",
+    "lastModified": "2026-06-08T04:00:00"
+  }
+]
+```
+
+**Parsing rules:**
+- Response is a flat list — NOT a nested `{ "schedules": [...] }` object
+- Empty list `[]` → restaurant has no schedules at all
+- Filter entries by `operatingDate` matching TODAY's date in the site timezone
+- No entries for today → restaurant is closed today
+- Multiple entries for today = multiple meal periods (group by `mealPeriod.name`)
+- `location.name` = restaurant name, `location.parent.name` = park name
+- `mealPeriod.name` = meal period label (e.g., "Breakfast", "Lunch And Dinner", "Snack", "Lounge")
+- `startTime`/`endTime` are in the site's local timezone (ET for WDW, PT for DLR)
+- `endTime` < `startTime` means the restaurant closes after midnight (next day)
+- Restaurant is "active" if current site-local time is between any entry's startTime and endTime (accounting for overnight spans)
+- "Closing soon" = closes within 1 hour from now
+- Gaps between consecutive meal periods (sorted by startTime) should be flagged in output
+
 ### Timezones
 
 - WDW → `America/New_York` (Eastern Time)
 - DLR → `America/Los_Angeles` (Pacific Time)
+
+### Schedule Creation API
+
+When schedules are missing or have gaps, the agent can auto-create schedules to ensure load test readiness.
+
+**Endpoint:**
+
+| Site | URL |
+|------|-----|
+| WDW | `POST https://load.wdwarrw-batch.wdprapps.disney.com/arrival-window-batch/schedules` |
+| DLR | `POST https://load.arrw.batch.dlr.wdprapps.disney.com/arrival-window-batch/schedules` |
+
+**Headers:**
+- `Authorization: Bearer {token}` (same OAuth token as schedule GET)
+- `Content-Type: application/json`
+- `X-Conversation-ID: {conversationID}` (generate a unique ID per request: `ARRW-AUTOCREATE-{timestamp}-{random4}` where `{random4}` is 4 random hex chars to avoid collisions within the same session)
+
+**Request Body:**
+```json
+{
+    "mealPeriod": {
+        "id": "{mealPeriodId}"
+    },
+    "startTime": "{HH:MM:SS}",
+    "endTime": "{HH:MM:SS}",
+    "operatingDate": "{YYYY-MM-DD}",
+    "type": "USER"
+}
+```
+
+**Field descriptions:**
+- `mealPeriod.id` — Obtained from `GET /arrival-window-batch/locations/{facilityId}` → selected from `$.mealPeriods[]` using the meal period selection rules below
+- `startTime` — Schedule start in site-local time (format: `HH:MM:SS`, e.g., `"06:00:00"`)
+- `endTime` — Schedule end in site-local time (format: `HH:MM:SS`, e.g., `"03:00:00"` = 3 AM next day)
+- `operatingDate` — Date in `YYYY-MM-DD` format (site-local date)
+- `type` — Always `"USER"` for manually/agent-created schedules
+
+**Get Location (to obtain mealPeriodId):**
+```
+GET /arrival-window-batch/locations/{facilityId}
+Authorization: Bearer {token}
+```
+Response contains `$.mealPeriods[]` array.
+
+**Meal period selection rules:**
+- If `$.mealPeriods` is **empty or missing** → skip this facility, log: `"No meal periods defined for facility {facilityId} — cannot create schedule"`, and continue with the next facility.
+- If only **one** meal period exists → use its `id`.
+- If **multiple** meal periods exist → select the one whose name best matches the current time-of-day context:
+  - `[00:00, 11:00)` → prefer "Breakfast"
+  - `[11:00, 16:00)` → prefer "Lunch", "Lunch And Dinner"
+  - `[16:00, 24:00)` → prefer "Dinner", "Lunch And Dinner", "Lounge"
+  - If no name match → fall back to `$.mealPeriods[0].id` (first available).
+
+**Expected Response:** `200 OK` with the created schedule object (includes `$.id` = new schedule ID).
+
+**Rules for auto-creation:**
+1. **User confirmation required** — NEVER create schedules without explicit user approval. Present the full plan (facilities, proposed times) and wait for "yes" before executing any POST request.
+2. **Only create for today** — `operatingDate` must be today's date in the site's timezone
+3. **startTime calculation** — round down current site-local time to the hour (e.g., if 14:35, use `"14:00:00"`)
+4. **endTime calculation:**
+   - If the facility has a **future schedule today** → use that schedule's `startTime` as the `endTime` (fill the gap up to the existing schedule, no overlap)
+   - If the facility has **no schedule at all for today** → use `"23:00:00"` (11 PM site-local time)
+5. **One schedule per gap** — only create where there is no schedule covering the needed time window
+6. **Batch cap** — maximum **50 schedule creations per session**. If more are needed, stop at 50, report progress, and ask the user whether to continue with the remaining facilities.
+7. **Rate limiting** — wait 200ms between creation calls. On `429` or `5xx` responses, apply exponential backoff: wait 1s → 2s → 4s → 8s (max) before retrying the same request (max 3 retries per request). On `4xx` (other than `429`), do NOT retry — the error won't self-resolve. Log the error and count it toward the circuit breaker.
+8. **Circuit breaker** — if **3 consecutive** creation calls fail (after retries), stop all further creations immediately. Report which facilities succeeded and which failed, and ask the user how to proceed. A successful creation resets the consecutive-failure counter to 0.
+9. **Error handling** — if a single creation fails (non-consecutive), log the error and continue with the next facility. Report all failures at the end.
 
 ### Output format (MUST follow exactly)
 
@@ -345,47 +449,176 @@ search index=$serviceIndex$ "$conversationId$" earliest="$start$" latest="$end$"
 
 ## 4. Wiki Documentation
 
-Document load test results in Confluence (MyWiki).
+Document load test results in Confluence (Atlassian Cloud).
 
 ### ⛔ Rules for this step
-- **Confirm before creating.** Present a preview showing: page title, parent page, space, Jira ticket, version, and app/site. Always ask for explicit user confirmation before creating the page.
-- **One page per site** — WDW and DLR are separate pages (only for Arrival Windows UI/Batch).
-- **Single page for both sites** — DISCO, MOO, ROO, Dining Menus, Admin UI Config, Find Merch use one page for both WDW+DLR.
+- **Two-step confirmation required.** Creating a wiki page requires TWO separate user confirmations:
+  1. **Confirm jobs first.** Present the discovered 1x/2x/3x job IDs and ask the user to confirm they are correct. Do NOT proceed until the user explicitly confirms.
+  2. **Confirm page creation.** After jobs are confirmed, process the template and present a preview showing: page title, parent page, space, Jira ticket, version, and app/site. Ask for explicit user confirmation before creating the page. Do NOT create the page until the user says yes.
+- **Page strategy per app.** See "Pages" column in Wiki Config table. "One per site" = separate WDW and DLR pages. "Both sites" = single page covering WDW+DLR (provide 6 jobs: 1x/2x/3x for each site, or 2 Jira tickets). "ALL" = single page with 3 jobs for ALL site.
+- **Resolve executions first.** Before creating the page, confirm with the user which 1x/2x/3x job IDs to use. If results were already validated in the session, offer to reuse them. Otherwise ask for the execution date and run Job Discovery.
 - **TBD values are blockers.** If any Wiki Config field for the requested app is `*TBD*`, stop and tell the user: "Wiki config for {app} is not yet defined. Cannot create documentation until the config values are populated in loadtest_config.md."
 
 ### Wiki Config per Application
 
 | App | Connection | Space | Parent Page ID | Template Page ID | Title Format | Pages |
 |-----|------------|-------|----------------|------------------|--------------|-------|
-| Arrival Windows UI/Batch | `mywiki-prod` | `FBT` | `790430555` | `1232412025` | `{site} Arrival Windows UI - Release - v{version}` | One per site |
-| DISCO | `mywiki-prod` | `FBT` | `1230704003` (0.x) / `790430795` (3.x) | `1127710822` | `DiSCO - Release {version}` | Both sites |
-| MOO | `mywiki-prod` | `FBT` | `790430467` | `882386422` | `MOO Release - v{version}` | Both sites |
-| ROO | `mywiki-prod` | `FBT` | `790430403` | `884281052` | `ROO Release - v{version}` | Both sites |
-| Dining Menus | `mywiki-prod` | `FBT` | `790430358` | `1026207044` | `Release - v{version}` | Both sites |
-| Admin UI Config | `mywiki-prod` | `FBT` | `790430683` | `974692879` | `Dine Admin Tool - v{version}` | Both sites |
-| Find Merch | `mywiki-prod` | `FBT` | `1152164630` | `1152164632` | `Find Merch v{version}` | Both sites |
-| Payment Service | `mywiki-prod` | `FBT` | *TBD* | *TBD* | *TBD* | *TBD* |
+| Arrival Windows UI/Batch | `dx-atlassian-cloud-prod` | `FBT` | WDW: `219729687` / DLR: `219728217` | WDW: `219731358` / DLR: `219731384` | `{site} Arrival Windows UI - Release - v{version}` | One per site |
+| DISCO | `dx-atlassian-cloud-prod` | `FBT` | `219730531` (0.x) / `219710952` (3.x) | WDW: `219731206` / DLR: `219731026` | `{site} DiSCO - Release {version}` | One per site |
+| MOO | `dx-atlassian-cloud-prod` | `FBT` | `219730354` | WDW: `428277761` / DLR: `219732201` | `MOO {site} Release - v{version}` | One per site |
+| ROO | `dx-atlassian-cloud-prod` | `FBT` | `219713430` | `219730859` | `ROO Release - v{version}` | Both sites |
+| Dining Menus | `dx-atlassian-cloud-prod` | `FBT` | `219713117` | `219727704` | `Release - v{version}` | Both sites |
+| Admin UI Config | `dx-atlassian-cloud-prod` | `FBT` | `219710732` | `219728813` | `Dine Admin Tool - v{version}` | Both sites |
+| Find Merch | `dx-atlassian-cloud-prod` | `FBT` | `219729651` | `219728601` | `Find Merch v{version}` | Both sites |
+| Payment Service | `dx-atlassian-cloud-prod` | `FBT` | *TBD* | *TBD* | *TBD* | *TBD* |
 
+
+### Example Wiki Pages (for format reference)
+
+| App | Site | Example Page URL |
+|-----|------|-----------------|
+| ARRW | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731358/WDW+Arrival+Windows+Batch+-+Release+-+v0.0.0-67` |
+| ARRW | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731384/DLR+Arrival+Windows+Batch+-+Release+-+v0.0.0-67` |
+| DISCO | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731206/WDW+DiSCO+-+Release+0.0.0-235` |
+| DISCO | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731026/DiSCO+-+Release+v0.0.0-238+-+DLR` |
+| MOO | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/428277761/MOO+WDW+Release+-+v0.0.0-241` |
+| MOO | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219732201/MOO+DLR+Release+-+v0.0.0-241` |
 ### DISCO Parent Page Selection
 
 DISCO uses different parent pages based on major version:
-- Version `0.x.x` → Parent Page ID: `1230704003`
-- Version `3.x.x` → Parent Page ID: `790430795`
+- Version `0.x.x` → Parent Page ID: `219730531`
+- Version `3.x.x` → Parent Page ID: `219710952`
 
 ### Template Modifications
 
 The template page is read from Confluence and modified:
 1. **Jira ticket key** → replaced with the actual ticket from the user
 2. **SPEAR ticket** → kept as-is (user updates later)
-3. **All links** (Splunk, AppDynamics, CloudWatch, any external URL) → replaced with `http://www.example.com`
+3. **All links** → updated with correct dates and job IDs (see URL Update Rules below)
 4. **All screenshot images** → removed, replaced with "Add screenshot here"
-5. **Jira macro serverId:** `fe1ef74e-9748-3791-94b2-744480a01f2b` (MyJira)
+5. **Jira macro serverId:** `415108e9-cd76-3949-a3b0-e0b07cea53f0` (System Jira)
+
+### URL Update Rules
+
+When creating or updating a wiki page, detect ALL monitoring tool URLs and update timestamps/job IDs based on the Splunk job discovery results.
+
+**Required info (from Splunk Job Discovery):**
+- Job IDs for 1x, 2x, 3x
+- Job start times (from `_time` field)
+- Test date (for epoch calculation)
+
+#### Epoch Calculation
+- **Full day (Splunk LTIAB, VenueNext):** `earliest` = midnight UTC of test date, `latest` = midnight UTC next day
+- **Always verify year:** Use `python3 datetime(year, month, day, tzinfo=timezone.utc).timestamp()` to avoid 2025/2026 mistakes
+
+#### Splunk LTIAB Dashboard Links
+- **Params:** `form.timeRange.earliest={epoch}&form.timeRange.latest={epoch}&form.jobId={jobId}&form.ltiabApp={app}`
+
+#### Splunk VenueNext Dashboard Links
+- **Params:** `form.usrTimePicker.earliest={epoch}&form.usrTimePicker.latest={epoch}&form.destination={site_app}&form.jobId={jobId}`
+
+#### AppDynamics Links
+- **Format:** `Custom_Time_Range.BETWEEN_TIMES.{end_ms}.{start_ms}.70`
+- Times in **milliseconds** (epoch × 1000)
+- Calculate: start = job_start_utc − 5 min, end = job_start_utc + 1 hour + 5 min
+- **Note:** end comes FIRST in the URL, then start
+
+#### CloudWatch Links
+- **Format:** `~start~%27{ISO}~end~%27{ISO}`
+- ISO format: `YYYY-MM-DDThh*3amm*3a00.000Z` (colons encoded as `*3a`)
+- Same ±5 min logic as AppDynamics
+- `%27` in storage format is correct (renders as `'` in browser)
+
+### KPI Results Table (Optional Auto-Insert)
+
+After updating links, ask: **"Do you want me to insert the KPI results tables in the Splunk - LTIAB Reports Screenshot cells? (13-column format with 25% KPI column)"**
+
+If yes, insert a table per load level (1x, 2x, 3x) in the corresponding Screenshot cell.
+
+#### ⛔ Rules for KPI Tables
+- **Always use `storage` format** (HTML) when creating pages with KPI results tables. Never use markdown for pages with nested tables.
+- **KPI tables MUST be nested inside the Splunk table cells** — not placed below as separate sections.
+- **Always include `data-table-width` and `data-layout` attributes** on every table element.
+- **Always include explicit `<colgroup>` with pixel widths** for proper column sizing.
+- Every `<td>` and `<th>` content MUST be wrapped in `<p>` tags.
+- Do NOT include `local-id` or `ac:local-id` attributes — Confluence generates these automatically.
+- Column widths should sum to approximately the `data-table-width` value.
+
+#### Splunk Main Table Structure (Outer Table)
+
+```html
+<table data-table-width="1435" data-layout="center">
+  <colgroup>
+    <col style="width: 75.0px;" />
+    <col style="width: 1360.0px;" />
+  </colgroup>
+  <tbody>
+    <tr><th><p>Results</p></th><th><p>Screenshot</p></th></tr>
+    <tr>
+      <td><p><a href="{splunk_link}">1x</a></p></td>
+      <td>
+        <h3>{N}x KPI Results — X/Y under SLA ✅</h3>
+        <!-- KPI table nested here -->
+      </td>
+    </tr>
+    <!-- repeat for 2x, 3x -->
+  </tbody>
+</table>
+```
+
+#### KPI Results Table (Nested Inside Cell)
+
+```html
+<table data-table-width="760" data-layout="default">
+  <colgroup>
+    <col style="width: 327.0px;" />  <!-- KPI name -->
+    <col style="width: 118.0px;" />  <!-- ProjectedVol -->
+    <col style="width: 92.0px;" />   <!-- ActualVol -->
+    <col style="width: 82.0px;" />   <!-- Load -->
+    <col style="width: 77.0px;" />   <!-- Pass -->
+    <col style="width: 71.0px;" />   <!-- Fail -->
+    <col style="width: 92.0px;" />   <!-- errorRate -->
+    <col style="width: 74.0px;" />   <!-- SLA -->
+    <col style="width: 71.0px;" />   <!-- P95 -->
+    <col style="width: 98.0px;" />   <!-- underSLA -->
+    <col style="width: 71.0px;" />   <!-- mins -->
+    <col style="width: 71.0px;" />   <!-- avgs -->
+    <col style="width: 97.0px;" />   <!-- maxs -->
+  </colgroup>
+  <tbody>
+    <tr><th><p>KPI</p></th><th><p>ProjectedVol</p></th><th><p>ActualVol</p></th><th><p>Load</p></th><th><p>Pass</p></th><th><p>Fail</p></th><th><p>errorRate</p></th><th><p>SLA</p></th><th><p>P95</p></th><th><p>underSLA</p></th><th><p>mins</p></th><th><p>avgs</p></th><th><p>maxs</p></th></tr>
+    <tr><td><p>{kpi_name}</p></td><td><p>{value}</p></td>...</tr>
+    <!-- data rows -->
+  </tbody>
+</table>
+```
+
+#### Data formatting rules
+- Headers (exact): `KPI, ProjectedVol, ActualVol, Load, Pass, Fail, errorRate, SLA, P95, underSLA, mins, avgs, maxs`
+- Values: no thousands separators, round avgs to integer
+- If 3x has SLA breaches, add justification paragraph explaining:
+  - P95 is driven by a small % of tail transactions
+  - avg and min remain healthy (within SLA)
+  - This fluctuates near SLA boundary at 3x — previous runs may pass
+  - Not a regression, normal variance under peak stress
+
+#### Result Summary Format (after each KPI table)
+```html
+<p><strong>Result: X/Y KPIs under SLA ✅/⚠️</strong></p>
+```
+
+#### Size Limitation Workaround
+The Confluence MCP tool replaces the entire page body on each update. Each KPI table (~28 rows × 13 columns) adds ~5KB of HTML, so inserting all 3 tables requires sending ~25KB+ in a single call — which may exceed tool payload limits.
+
+**Preferred approach (section-level update):**
+If the Confluence MCP tool supports a section-replace or marker-based insert operation, use it to insert each KPI table independently into its corresponding cell. This avoids re-sending the full page and keeps each payload small (~5KB). Use a placeholder pattern like `<!-- KPI_{factor}_PLACEHOLDER -->` in the initial page write, then replace each marker individually with its KPI table HTML.
+
+**Always applies:**
+- Never use `markdown` format when the page needs nested tables — markdown cannot express table-in-table structures.
+- Always use `storage` (HTML) format for pages with KPI results.
 
 ### Jira Ticket Parsing
 
-Read ticket via MyJira REST API using PAT from `~/.kiro/tokens.env` (`JIRA_PAT_myjira`):
-```
-GET https://myjira.disney.com/rest/api/2/issue/{key}?fields=summary
-Authorization: Bearer {JIRA_PAT_myjira}
-```
-Extract from summary: App name, Site (WDW/DLR), Version.
+Read ticket using the Jira MCP tool (`sre_toolsets_jira_tool_jira_get_ticket`) with connection `jira-prod`:
+- **Issue key:** The ticket key provided by the user (e.g., `FNB-19625`)
+- Extract from summary: App name, Site (WDW/DLR), Version.
