@@ -150,6 +150,64 @@ server.tool(
   }
 );
 
+server.tool(
+  "auth_reset",
+  "Reset Teams authentication by clearing all cached tokens and browser state. Use this when authentication is broken or tokens have expired beyond recovery.",
+  {},
+  async () => {
+    try {
+      await client.resetAuth();
+      process.stderr.write("[mcp-teams] Auth reset: all cached tokens cleared\n");
+
+      const tokens = await authenticateViaBrowser();
+      if (tokens.nativeToken || tokens.chatToken) {
+        if (tokens.nativeToken) {
+          await client.setManualToken(tokens.nativeToken);
+          process.stderr.write("[mcp-teams] Auth reset: native token reloaded via browser\n");
+        }
+        if (tokens.chatToken) {
+          client.setChatTokenFromEnv(tokens.chatToken);
+          process.stderr.write("[mcp-teams] Auth reset: chat token reloaded via browser\n");
+        }
+        return {
+          content: [{
+            type: "text",
+            text: [
+              "✅ Authentication reset complete. Fresh tokens loaded via browser.",
+              "",
+              "You can now use all Teams tools. If you encounter issues again:",
+              "1. Check auth_status to verify connectivity",
+              "2. If still failing, try auth_token with a manually copied token from DevTools",
+            ].join("\n"),
+          }],
+        };
+      } else {
+        return {
+          content: [{
+            type: "text",
+            text: [
+              "⚠️ Tokens cleared but browser authentication did not return new tokens.",
+              "",
+              "Use 'auth_login' to authenticate via device code flow, or 'auth_token' to paste a token manually.",
+            ].join("\n"),
+          }],
+        };
+      }
+    } catch (err: any) {
+      return {
+        content: [{
+          type: "text",
+          text: [
+            "⚠️ Tokens were cleared but browser authentication failed: " + err.message,
+            "",
+            "Use 'auth_login' to authenticate via device code flow, or 'auth_token' to paste a token manually.",
+          ].join("\n"),
+        }],
+      };
+    }
+  }
+);
+
 // --- Teams ---
 server.tool("list_teams", tools.list_teams.description, tools.list_teams.schema.shape, async () => {
   const result = await client.listTeams();
