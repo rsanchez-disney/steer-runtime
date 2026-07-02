@@ -17,10 +17,24 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "file://context/monitoring-guide.md",
-    "file://context/servicenow-reference-ids.md",
-    "file://context/servicenow-config.md",
-    "file://context/teams-channel-map.md",
-    "file://context/team_context.md"
-  ]
+    "file://../../../context/monitoring-guide.md",
+    "file://../../../context/servicenow-reference-ids.md",
+    "file://../../../context/servicenow-config.md",
+    "file://../../../context/teams-channel-map.md",
+    "file://../../../context/team_context.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "@compass/*",
+        "command": "$HOME/.kiro/hooks/splunk-time-window.sh",
+        "description": "Enforce initial Splunk query time window to ±30min"
+      },
+      {
+        "matcher": "@compass/*",
+        "command": "$HOME/.kiro/hooks/splunk-index-check.sh",
+        "description": "Validate Splunk index usage"
+      }
+    ]
+  }
 }
