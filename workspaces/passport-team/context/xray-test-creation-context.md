@@ -69,15 +69,16 @@ All are linked to the story with `linkType: "Test"`.
 
 #### XRay Cloud (requires `XRAY_CLOUD_CLIENT_ID` + `XRAY_CLOUD_CLIENT_SECRET`)
 
-| Tool | Purpose | Replaces |
-|------|---------|----------|
-| `xray_cloud_create_test` | Create test (Manual steps OR Cucumber/Gherkin + custom fields) | `jira_create_issue` for Tests |
-| `xray_cloud_create_execution` | Create Test Execution with tests + custom fields in one call | `jira_create_issue` + `xray_add_tests_to_test_exec` |
-| `xray_cloud_link_test_to_story` | Link test → story via XRay GraphQL | `jira_link_issues` with linkType "Test" |
-| `xray_cloud_search_tests` | Search tests by JQL | `xray_search_test_cases` |
-| `xray_cloud_update_run` | Report PASSED/FAILED results per test/step | (new capability) |
-| `xray_cloud_get_test_runs` | Get execution results for a test | (new capability) |
-| `xray_cloud_get_test_steps` | Read steps from an existing test | (new capability) |
+| Tool                             | Purpose                                       | Status (2026-07-02)  |
+|----------------------------------|-----------------------------------------------|:--------------------:|
+| `xray_cloud_create_test`        | Create test (Manual steps + custom fields)    | ✅ WORKING           |
+| `xray_cloud_update_run`         | Report status / associate tests to TEs        | ✅ WORKING           |
+| `xray_cloud_search_tests`       | Search tests by JQL                           | ✅ FIXED             |
+| `xray_cloud_get_test_steps`     | Read steps from an existing test              | ✅ FIXED             |
+| `xray_cloud_get_test_runs`      | Get execution results for a test              | ✅ FIXED             |
+| `xray_cloud_link_test_to_story` | Link test → story via issue link              | ✅ FIXED             |
+| `xray_cloud_create_execution`   | Create Test Execution with tests              | ✅ FIXED             |
+| `xray_cloud_update_test_type`   | Update test type/steps on existing test       | ✅ FIXED             |
 
 #### ⛔ Removed (XRay Server — do NOT use)
 
@@ -101,19 +102,19 @@ XRAY_CLOUD_CLIENT_SECRET=<from XRay Cloud Settings → API Keys>
 ### Link Type for Coverage
 
 > ⚠️ **CRITICAL:** The link type is **"Test"** (SINGULAR). Using "Tests" (plural) returns a 404 error.
-> **Primary method:** Use `xray_cloud_link_test_to_story` which handles linking via GraphQL (no linkType needed).
+> **Both methods work:**
 
 ```yaml
-# Preferred (XRay Cloud):
-xray_cloud_link_test_to_story:
-  testKey: "TEST-KEY"
-  storyKey: "STORY-KEY"
-
-# Fallback (Jira REST):
+# Method A: Jira REST (always works)
 jira_link_issues:
   inwardTicketId: "TEST-KEY"      # the test case / test execution / task
   outwardTicketId: "STORY-KEY"    # the user story
   linkType: "Test"                # ← ALWAYS singular
+
+# Method B: XRay Cloud tool (✅ FIXED 2026-07-02 — uses jira_link_issues internally)
+xray_cloud_link_test_to_story:
+  testKey: "TEST-KEY"
+  storyKey: "STORY-KEY"
 ```
 
 ### Custom Fields Reference
@@ -155,15 +156,17 @@ jira_link_issues:
 ```yaml
 jira_get_issue:
   ticketId: "{STORY-KEY}"
-  customFields: ["sprint", "storyPoints"]
+  customFields: ["sprint", "storyPoints", "acceptanceCriteria"]
 ```
 
 Identify:
-- Acceptance Criteria (ACs) → positive test cases
+- Acceptance Criteria (ACs) → positive test cases (field: `customfield_10166`)
 - Business Rules (BRs) → validation test cases
 - Negative scenarios → when applicable
 - The story **assignee** (used to assign the QA task)
 - The story **reporter** (used to assign test executions)
+
+> ⚠️ ACs are NOT in the description — they live in the custom field `acceptanceCriteria` (`customfield_10166`). Always fetch with `customFields: ["acceptanceCriteria"]`.
 
 ### Coverage Criteria
 
@@ -185,12 +188,12 @@ Each test case must be **independent** (not depend on results of another).
 ### How to check
 
 ```yaml
-# Search by keyword/summary:
+# Search by keyword/summary (✅ FIXED 2026-07-02):
 xray_cloud_search_tests:
   jql: 'project = PAS2 AND summary ~ "{keyword}"'
   limit: 20
 
-# Check steps of a known test by key:
+# Check steps of a known test by key (✅ FIXED 2026-07-02):
 xray_cloud_get_test_steps:
   testKey: "{KNOWN_TEST_KEY}"
 
@@ -220,13 +223,13 @@ xray_cloud_search_tests:
 
 ## Step 2: Create Test Cases
 
-> ⚠️ **CURRENT STATUS (2026-06-25):** `xray_cloud_create_test` is NOT operational for PAS2 (Xray Cloud API Key connected to wrong Jira instance). Use `jira_create_issue` to create the issue + **manually add steps in Xray Test Details** (or wait for API key fix).
+> ✅ **CURRENT STATUS (2026-07-02):** `xray_cloud_create_test` is OPERATIONAL for PAS2. Production credentials configured and verified.
 
-> **IMPORTANT:** Test steps MUST go in the **Test Details** panel (Xray) as Manual steps or Cucumber/Gherkin — NOT as plain text in the description. The description is for context (objective, type, story reference) only.
+> **IMPORTANT:** Test steps MUST go in the **Test Details** panel (Xray) as Manual steps or Cucumber/Gherkin — NOT as plain text in the description. The description is for context (objective, expected results) only.
 
-### Preferred Method: `xray_cloud_create_test` (when API key is fixed)
+### Primary Method: `xray_cloud_create_test` ✅ WORKING
 
-> This is the correct method — it creates the Test issue AND adds steps to Xray Test Details in one call.
+> This is the correct and preferred method — it creates the Test issue AND adds steps to Xray Test Details in one call.
 
 ```yaml
 xray_cloud_create_test:
@@ -247,42 +250,33 @@ xray_cloud_create_test:
     customfield_10190: {"value": "Not Started"}
 ```
 
-### Current Workaround: `jira_create_issue` + manual step entry
-
-> ⚠️ Steps added this way go in the **description only** — they MUST be added to Xray Test Details manually (or via API when fixed).
+### Then set the description (context only — NO steps in description):
 
 ```yaml
-jira_create_issue:
-  projectKey: "{PROJECT}"
-  issueType: "Test"
-  summary: "{See naming format below}"
-  priority: "3 - Medium"
-  labels: ["{PROJECT_LABEL}"]
+jira_update_issue:
+  ticketId: "{TEST_KEY}"
+  description: |
+    Test Case: {name}
+
+    Type: {Positive|Negative} | Story: {STORY-KEY} - {Story Title}
+
+    Objective:
+    {what this test validates}
+
+    Expected Results:
+    - {expected result 1}
+    - {expected result 2}
+    - {expected result 3}
 ```
 
-Then set the description via API v3 (ADF format) with:
-- Objective
-- Type (Positive/Negative)
-- Story reference
-- Steps table (for reference until they are added to Xray Test Details)
-- Automation candidate info
+> ⚠️ **DO NOT put steps in the description.** Steps live in XRay Test Details only.
+> ⚠️ **DO NOT use markdown tables** in descriptions — API v2 renders them as plain text. Use simple lists instead.
 
-### Description template (ADF — for context only, NOT a substitute for Xray steps):
+### Description content rules:
 
-The description provides context. The **actual test steps** must be in Xray Test Details panel.
-Automation Candidate and Status go in **custom fields** (`customfield_10154`, `customfield_10190`), NOT in the description.
-
-```
-## Test Case: {name}
-Type: Positive | Negative  |  Story: {STORY-KEY}
-
-### Objective
-{what this test validates}
-
-### Steps (reference — pending Xray Test Details)
-| # | Action | Data | Expected Result |
-| 1 | ... | ... | ... |
-```
+- **Include:** Test name, Type (Positive/Negative), Story reference, Objective, Expected Results (as bullet list)
+- **Do NOT include:** Steps table, Automation Candidate info (that goes in custom fields)
+- **Format:** Plain text with simple lists (no markdown headings, no tables)
 
 ### Set custom fields after creation:
 
@@ -297,19 +291,17 @@ jira_update_issue:
 
 ### Link each test to the story:
 
-> Use `xray_cloud_link_test_to_story` (preferred) or `jira_link_issues` (fallback).
-
 ```yaml
-# Preferred — XRay Cloud GraphQL
-xray_cloud_link_test_to_story:
-  testKey: "{TEST_KEY}"
-  storyKey: "{STORY_KEY}"
-
-# Fallback — Jira REST (if XRay Cloud env vars not configured)
+# Option A: Jira REST (always works)
 jira_link_issues:
   inwardTicketId: "{TEST_KEY}"
   outwardTicketId: "{STORY_KEY}"
   linkType: "Test"
+
+# Option B: XRay Cloud tool (fixed 2026-07-02)
+xray_cloud_link_test_to_story:
+  testKey: "{TEST_KEY}"
+  storyKey: "{STORY_KEY}"
 ```
 
 ### Test Case Classification
@@ -329,8 +321,8 @@ Set these **custom fields** on each test case (NOT in the description):
 
 | Field | Field ID | Values |
 |-------|----------|--------|
-| Automation Candidate | `customfield_23001` | `{"value": "Y"}` \| `{"value": "N"}` \| `{"value": "Requires Analysis"}` |
-| Automation Status | `customfield_23002` | `{"value": "Not Started"}` (only if Candidate = Y) |
+| Automation Candidate | `customfield_10154` | `{"value": "Y"}` \| `{"value": "N"}` \| `{"value": "Requires Analysis"}` |
+| Automation Status | `customfield_10190` | `{"value": "Not Started"}` (only if Candidate = Y) |
 
 **Criteria:**
 
@@ -348,8 +340,8 @@ Set these **custom fields** on each test case (NOT in the description):
 jira_update_issue:
   ticketId: "{TEST_KEY}"
   customFields:
-    customfield_23001: {"value": "Y"}
-    customfield_23002: {"value": "Not Started"}
+    customfield_10154: {"value": "Y"}
+    customfield_10190: {"value": "Not Started"}
 ```
 ### Scenario Outline — Grouping Similar Test Cases (as parameterized steps)
 
@@ -401,9 +393,38 @@ xray_cloud_create_test:
 
 > **Rule:** If the story is a **Service/BE story** (title does NOT contain "Mobile" or "Flutter"), create only **1 Test Execution** (no platform split, no platform custom field). If it is a **Mobile/Flutter story**, create **exactly 2** — one for Android, one for iOS.
 
-> ⚠️ **CURRENT STATUS (2026-06-25):** `xray_cloud_create_execution` is NOT operational for PAS2. Use `jira_create_issue` as the primary method.
+### Primary Method: `xray_cloud_create_execution` ✅ WORKING
 
-### Primary Method: Create Test Execution via `jira_create_issue`
+> Creates the Test Execution in XRay Cloud AND associates all specified tests in one call via GraphQL.
+
+```yaml
+xray_cloud_create_execution:
+  projectKey: "{PROJECT}"
+  summary: "Latest | {STORY-KEY} | {DOMAIN} | {AREA} | {Story Title} | {Platform}"
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+  environment: "LATEST"  # optional
+```
+
+> This resolves issue keys to numeric Jira IDs internally, then calls the GraphQL `createTestExecution` mutation.
+
+#### Then link and assign:
+
+```yaml
+jira_link_issues:
+  inwardTicketId: "{TEST_EXEC_KEY}"
+  outwardTicketId: "{STORY_KEY}"
+  linkType: "Test"
+
+jira_assign_issue:
+  ticketId: "{TEST_EXEC_KEY}"
+  assignee: "{STORY_REPORTER_NAME}"
+```
+
+### Fallback Method: `jira_create_issue` + `xray_cloud_update_run`
+
+> Use this if `xray_cloud_create_execution` fails for any reason.
+
+#### Step 1: Create the Test Execution
 
 ```yaml
 jira_create_issue:
@@ -413,17 +434,42 @@ jira_create_issue:
   priority: "3 - Medium"
   labels: ["{PROJECT_LABEL}"]
   description: |
-    ## Test Execution - {Platform}
+    Test Execution - {Platform}
 
-    **Story:** {STORY-KEY}
-    **Platform:** {Platform}
-    **Environment:** LATEST
+    Story: {STORY-KEY} | Platform: {Platform} | Environment: LATEST
 
-    ### Tests Included
-    | # | Test Key | Summary |
-    |---|----------|---------|
-    | 1 | {TEST-1} | {test 1 summary} |
-    | 2 | {TEST-2} | {test 2 summary} |
+    Tests Included:
+    1. {TEST-1} - {test 1 summary}
+    2. {TEST-2} - {test 2 summary}
+```
+
+> ⚠️ **DO NOT use markdown tables** in descriptions — they render as broken text. Use numbered lists instead.
+
+#### Step 2: Add tests to the execution via XRay
+
+```yaml
+xray_cloud_update_run:
+  testExecutionKey: "{TEST_EXEC_KEY}"
+  tests:
+    - testKey: "{TEST-1}"
+      status: "TODO"
+    - testKey: "{TEST-2}"
+      status: "TODO"
+```
+
+> This associates the tests in XRay's internal test run. Without this step, the Test Execution will appear empty in XRay even if tests are listed in the description.
+
+#### Step 3: Link and assign
+
+```yaml
+jira_link_issues:
+  inwardTicketId: "{TEST_EXEC_KEY}"
+  outwardTicketId: "{STORY_KEY}"
+  linkType: "Test"
+
+jira_assign_issue:
+  ticketId: "{TEST_EXEC_KEY}"
+  assignee: "{STORY_REPORTER_NAME}"
 ```
 
 ### Mobile/Flutter Story — Two Test Executions:
@@ -434,38 +480,20 @@ Create **exactly 2** Test Executions per story — one for Android, one for iOS.
 
 Create only **1 Test Execution** (no platform suffix in summary).
 
-### Link both to the story:
-
-```yaml
-jira_link_issues:
-  inwardTicketId: "{TEST_EXEC_ANDROID_KEY}"
-  outwardTicketId: "{STORY_KEY}"
-  linkType: "Test"
-
-jira_link_issues:
-  inwardTicketId: "{TEST_EXEC_IOS_KEY}"
-  outwardTicketId: "{STORY_KEY}"
-  linkType: "Test"
-```
-
-### Assign both executions to the story's reporter:
-
-```yaml
-jira_assign_issue:
-  ticketId: "{TEST_EXEC_ANDROID_KEY}"
-  assignee: "{STORY_REPORTER_ACCOUNT_ID}"
-
-jira_assign_issue:
-  ticketId: "{TEST_EXEC_IOS_KEY}"
-  assignee: "{STORY_REPORTER_ACCOUNT_ID}"
-```
-
 > **Rule:** Always assign Test Executions to the story's **reporter** (not the assignee).
-> **Note:** On Jira Cloud, use `accountId` (not username) for assignments.
 
-### Alternative: `xray_cloud_create_execution` (when API key is fixed)
+### ⛔ Tools that do NOT work for adding tests to executions:
 
-> 🚫 **NOT CURRENTLY WORKING** for PAS2. When fixed, this creates the execution AND adds tests in one call:
+| Tool                             | Why it fails                                                             |
+|----------------------------------|--------------------------------------------------------------------------|
+| `xray_add_tests_to_test_exec`   | XRay Server tool — not supported on Cloud                                |
+
+### ⚠️ Cannot remove tests from a Test Execution via API
+
+There is NO tool to remove individual tests from a Test Execution. If you need to replace tests:
+1. Create a **new** Test Execution with only the correct tests
+2. Reject the old one with a comment explaining supersession
+3. Do NOT mark old tests as ABORTED (they stay visible in the execution forever)
 
 ---
 
@@ -481,25 +509,28 @@ jira_create_issue:
   priority: "3 - Medium"
   labels: ["{PROJECT_LABEL}"]
   description: |
-    ## QA Metrics Evaluation
+    QA Metrics Evaluation
 
     Test case creation for {STORY-KEY} using AI-assisted tooling.
 
-    ### Context
-    | Field | Value |
-    |-------|-------|
-    | Story | {STORY-KEY} |
-    | Test Cases Created | {count} |
-    | Test Executions | {TEST_EXEC_ANDROID} (Android), {TEST_EXEC_IOS} (iOS) |
-    | Automation Candidates | {count Y} / {total} |
+    Context:
+    - Story: {STORY-KEY}
+    - Test Cases Created: {count}
+    - Test Executions: {TEST_EXEC_ANDROID} (Android), {TEST_EXEC_IOS} (iOS)
+    - Automation Candidates: {count Y} / {total}
 
-    ### AI Metrics
-    - **AI Assisted Effort:** 0.5
-    - **AI Usage Level:** Medium
-    - **AI Tools Used:** kiro
+    Test Cases:
+    1. {TEST-1} - {summary} ({Type}, {AC ref})
+    2. {TEST-2} - {summary} ({Type}, {AC ref})
+
+    AI Metrics:
+    - AI Assisted Effort: 0.5
+    - AI Usage Level: Medium
+    - AI Tools Used: kiro
 ```
 
-> **Note:** `priority` is REQUIRED. AI metrics fields are set via `jira_update_issue` after creation (they ARE on the edit screen for Task issue type).
+> ⚠️ Use numbered lists — NOT markdown tables (they render as broken text via API v2).
+> **Note:** `priority` is REQUIRED. AI metrics fields are set via `jira_update_issue` after creation.
 
 ### Link to the story:
 
@@ -547,6 +578,7 @@ jira_transition_issue:
 ### Check test coverage (link verification):
 
 ```yaml
+# ✅ FIXED 2026-07-02:
 xray_cloud_search_tests:
   jql: 'issue in requirementTests("{STORY_KEY}")'
 ```
@@ -554,6 +586,7 @@ xray_cloud_search_tests:
 ### Check test run status:
 
 ```yaml
+# ✅ FIXED 2026-07-02:
 xray_cloud_get_test_runs:
   testKey: "{TEST-1}"
   limit: 5
@@ -700,26 +733,28 @@ xray_search_test_cases:
 
 **Story:** PAS2-286 — "DLR | TnP | Flutter | Photo Upload | Refactor UserPhotoInfo to Remove photoPath and Use fileName Instead"  
 **Domain:** DLR | TnP | Flutter | Photo Upload  
-**Date:** 2026-06-25  
-**Assignee:** Alana Burgess  
+**Date:** 2026-07-02 (final version)  
+**Assignee:** Miriam Cabrera  
 **Reporter:** Angelique Sta Maria  
-**Method:** `jira_create_issue` (Xray Cloud API not operational for PAS2)
+**Method:** `xray_cloud_create_test` (production credentials operational)
 
-### Test Cases Created
+### Test Cases Created (final — with XRay Test Details steps)
 
-| Key | Test Case | Type | Automation |
-|-----|-----------|------|-----------|
-| PAS2-1073 | Photo upload succeeds using fileName identifier | Positive | Y — Not Started |
-| PAS2-1074 | User photo displays correctly using fileName | Positive | Y — Not Started |
-| PAS2-1075 | Upload fails gracefully with invalid fileName | Negative | Y — Not Started |
-| PAS2-1076 | Photo info persists across navigation using fileName | Positive | Y — Not Started |
+| Key | Test Case | Covers | Type | Automation | Steps |
+|-----|-----------|--------|------|-----------|:-----:|
+| PAS2-1141 | Photo upload succeeds using fileName identifier | AC.02 | Positive | Y — Not Started | 4 |
+| PAS2-1143 | User photo displays correctly using fileName | AC.01 | Positive | Y — Not Started | 3 |
+| PAS2-1144 | Upload fails gracefully with invalid fileName | Edge case | Negative | Y — Not Started | 3 |
+| PAS2-1142 | Photo info persists across navigation using fileName | AC.03 | Positive | Y — Not Started | 4 |
+| PAS2-1148 | photoPath fully removed from model with no remaining usages | AC.04 | Positive | Y — Not Started | 3 |
+| PAS2-1147 | Full flow regression - take, upload, review, submit, change, delete | AC.05 | Positive | Y — Not Started | 6 |
 
-### Test Executions
+### Test Executions (final)
 
-| Key | Summary | Platform | Assigned to |
-|-----|---------|----------|-------------|
-| PAS2-1077 | Latest \| PAS2-286 \| DLR \| TnP \| Flutter \| Photo Upload \| Refactor UserPhotoInfo... | Android | Angelique Sta Maria |
-| PAS2-1078 | Latest \| PAS2-286 \| DLR \| TnP \| Flutter \| Photo Upload \| Refactor UserPhotoInfo... | iOS | Angelique Sta Maria |
+| Key | Summary | Platform | Assigned to | Tests |
+|-----|---------|----------|-------------|:-----:|
+| PAS2-1145 | Latest \| PAS2-286 \| DLR \| TnP \| Flutter \| Photo Upload \| Refactor UserPhotoInfo... | Android | Angelique Sta Maria | 6 |
+| PAS2-1146 | Latest \| PAS2-286 \| DLR \| TnP \| Flutter \| Photo Upload \| Refactor UserPhotoInfo... | iOS | Angelique Sta Maria | 6 |
 
 ### QA Metrics Task
 
@@ -727,19 +762,29 @@ xray_search_test_cases:
 |-----|---------|----|-----------|---------:|---------|--------|
 | PAS2-1055 | PAS2-286 \| Refactor UserPhotoInfo... \| QA Metrics Evaluation \| Test Case Creation | 1 | 0.5 | Medium | kiro | In Progress |
 
-### Notes / Lessons Learned
+### Rejected (superseded)
 
-- Story had **no formal ACs/BRs** — test cases derived from description (3 flows: display, upload, navigation)
-- `xray_cloud_create_test` failed — Xray Cloud API Key connected to dev instance, not production
-- Priority field (`"3 - Medium"`, id: `10008`) is **required** for Test and Test Execution creation
-- Old tests (PAS2-1049 to PAS2-1052) and executions (PAS2-1053, PAS2-1054) transitioned to "Rejected"
-- Cannot delete issues (403 permission denied) — reject with comment instead
-- AI fields use new IDs: `customfield_10173` (effort), `customfield_10221` (level), `customfield_10191` (tools)
-- Story Points use `customfield_10042` (not `customfield_10003`)
-- Automation Candidate = `customfield_10154`, Automation Status = `customfield_10190`, Platforms = `customfield_10176`
-- Assignments use `accountId` (not username) on Jira Cloud
-- **API v2 saves markdown as plain text** — must use **API v3 with ADF JSON** for proper rendering
-- ⚠️ **Pending:** Steps need to be added to Xray Test Details (Manual type) — requires correct API Key or manual entry in UI
+| Key | Reason |
+|-----|--------|
+| PAS2-1073, 1074, 1075, 1076 | Replaced by PAS2-1141–1148 (had no XRay steps, only description text) |
+| PAS2-1077, 1078 | Replaced by PAS2-1145, 1146 (had ABORTED tests that couldn't be removed) |
+
+### Lessons Learned (2026-07-02)
+
+- `xray_cloud_create_test` ✅ works with production credentials — creates test + steps in one call
+- `xray_cloud_update_run` with `status: "TODO"` is the way to associate tests to Test Executions
+- `xray_cloud_search_tests` ✅ FIXED — use for JQL searches and coverage verification
+- `xray_cloud_get_test_steps` ✅ FIXED — use to read existing test steps before deciding reuse vs create
+- `xray_cloud_get_test_runs` ✅ FIXED — use to verify test execution status
+- `xray_cloud_link_test_to_story` ✅ FIXED — alternative to `jira_link_issues` for test coverage links
+- `xray_cloud_update_test_type` ✅ FIXED — resolves issueId via `getTests` query; uses `removeAllTestSteps` (returns String) + `addTestStep` (singular, per step); Gherkin uses `updateGherkinTestDefinition`
+- `xray_cloud_create_execution` ✅ FIXED — switched from broken REST `/api/v2/import/execution` to GraphQL `createTestExecution` mutation; resolves issue keys to numeric Jira IDs via `JiraApiClient.fetchJiraTicket`
+- Cannot remove tests from a Test Execution via API — must create new TE and reject old one
+- DO NOT use markdown tables in descriptions — API v2 renders them as broken text. Use bullet/numbered lists
+- DO NOT put steps in the description — they belong ONLY in XRay Test Details
+- Description should contain: objective + expected results (simple list format)
+- Always fetch ACs with `customFields: ["acceptanceCriteria"]` — they live in `customfield_10166`
+- Transition name is "Reject" (not "Rejected") to move to Rejected status
 
 ---
 
@@ -765,33 +810,39 @@ xray_search_test_cases:
 | `issueId provided is not valid` (Xray GraphQL) | PAS2 test doesn't exist in Xray Cloud's connected Jira instance | Cannot use Xray GraphQL for PAS2 until API key is reconfigured |
 | AI fields (`customfield_27200/27201/27202`) cannot be set | Old field IDs from pre-migration | Use new IDs: `customfield_10173` (effort), `customfield_10221` (level), `customfield_10191` (tools) |
 | Description shows raw markdown (## headings, \| tables \| as text) | Used API v2 which saves markdown as plain text | Use **API v3** (`/rest/api/3/issue/{KEY}`) with native ADF JSON format for descriptions |
+| `xray_cloud_update_test_type` returns "warnings" error | GraphQL query includes non-existent field `warnings` on type `Test` | ✅ FIXED (2026-07-02) — field removed from query |
+| `xray_cloud_update_test_type` returns "issueId not valid" | Mutation expects numeric Jira ID, tool passes issue key | ✅ FIXED (2026-07-02) — tool resolves key to numeric ID via `getTests` query |
+| `xray_cloud_link_test_to_story` returns "addTestToIssue" error | GraphQL mutation `addTestToIssue` does not exist in XRay Cloud schema | ✅ FIXED (2026-07-02) — tool now uses `jira_link_issues` internally |
+| `xray_cloud_search_tests` returns $limit type error | GraphQL variable `$limit` declared as `Int` but position expects `Int!` | ✅ FIXED (2026-07-02) — type corrected to `Int!` |
+| `xray_cloud_create_execution` returns "not valid Xray Format" | REST endpoint `/api/v2/import/execution` broken | ✅ FIXED (2026-07-02) — switched to GraphQL `createTestExecution` mutation |
+| Tests added to TE but need to be removed | No API tool exists to remove tests from a Test Execution | Create new TE with correct tests, reject old TE |
+| Description table renders as single line of pipes | Markdown tables not supported via API v2 `jira_update_issue` | Use numbered lists or bullet points instead of tables |
+| Acceptance Criteria not visible in description | ACs stored in separate custom field | Fetch with `customFields: ["acceptanceCriteria"]` — field ID is `customfield_10166` |
 
 ---
 
 ## Execution Order (Summary)
 
-> Updated 2026-06-25 — reflects `jira_create_issue` as primary method (Xray Cloud API not operational for PAS2)
+> Updated 2026-07-02 — ALL XRay Cloud tools operational ✅
 
 ```
-1.  jira_get_issue                       → Fetch story + identify assignee/reporter
+1.  jira_get_issue                       → Fetch story + identify assignee/reporter + ACs (use customFields: ["acceptanceCriteria"])
 2.  Analyze ACs/BRs                      → Define required test cases + classify Positive/Negative
 3.  Check existing tests                 → Search by summary keyword or linked issues
 4.  Decide reuse vs create               → Reuse existing tests when possible, update if needed
 5.  Group similar scenarios              → Identify tests that can be merged into parameterized steps
-6.  jira_create_issue ×N (type: Test)    → Create each NEW Test (priority required, steps in description)
-7.  PUT /rest/api/3/issue/{KEY}          → Set description with ADF (headings + table for steps)
+6.  xray_cloud_create_test ×N            → Create each Test with Manual steps in XRay Test Details
+7.  jira_update_issue ×N                 → Set description (objective + expected results, NO steps, NO tables)
 8.  jira_link_issues ×N                  → Link each test to story (linkType: "Test")
-9.  jira_create_issue ×2 (type: TE)     → Create Test Execution Android + iOS (priority required)
-10. PUT /rest/api/3/issue/{KEY}          → Set description with ADF (test list table)
-11. jira_link_issues ×2                  → Link both executions to story
-12. jira_assign_issue ×2                 → Assign executions to story's reporter (accountId)
-13. jira_create_issue (type: Task)       → Create QA Metrics Task (priority required)
-14. PUT /rest/api/3/issue/{KEY}          → Set description with ADF (context + test case tables)
-15. jira_link_issues                     → Link Task to story (linkType: "Test")
-16. jira_assign_issue                    → Assign Task to story's assignee (accountId)
-17. jira_update_issue                    → Set SP (10042) + AI fields (10173, 10221, 10191)
-18. jira_transition_issue                → Move Task to "In Progress"
-19. Verify links on story                → Confirm all tests, executions, task linked
+9.  xray_cloud_create_execution ×2       → Create Test Execution Android + iOS with tests linked (primary method)
+10. jira_link_issues ×2                  → Link both executions to story
+11. jira_assign_issue ×2                 → Assign executions to story's reporter
+12. jira_create_issue (type: Task)       → Create QA Metrics Task (priority required)
+13. jira_link_issues                     → Link Task to story (linkType: "Test")
+14. jira_assign_issue                    → Assign Task to story's assignee
+15. jira_update_issue                    → Set SP (10042) + AI fields (10173, 10221, 10191)
+16. jira_transition_issue                → Move Task to "In Progress"
+17. Verify links on story                → Confirm all tests, executions, task linked
 ```
 
 ---
@@ -799,7 +850,7 @@ xray_search_test_cases:
 ## Migration Notes (Jira Server → Atlassian Cloud)
 
 > **Date:** 2026-06-24  
-> **Status:** ⚠️ Migration complete — **Jira Cloud operational, XRay Cloud API NOT operational for PAS2**
+> **Status:** ✅ Migration complete — **Jira Cloud operational, XRay Cloud API fully operational** (2026-07-02)
 
 ### What changed
 
@@ -810,32 +861,48 @@ xray_search_test_cases:
 | Auth (XRay) | Jira PAT | Client ID + Client Secret (bearer token) |
 | Auth (Jira) | PAT (header) | Email + API Token (Basic auth) |
 
-### ⚠️ CRITICAL: XRay Cloud API Instance Mismatch
+### XRay Cloud API Status (updated 2026-07-02)
 
-> **Discovered 2026-06-25:** The XRay Cloud API Key (`XRAY_CLOUD_CLIENT_ID`/`SECRET`) is connected to `disneyexperiences-dev.atlassian.net` (dev instance), NOT to `disneyexperiences.atlassian.net` (production where PAS2 lives).
+> Production credentials (`XRAY_CLOUD_CLIENT_ID`/`SECRET`) now point to `disneyexperiences.atlassian.net` ✅
 
-**Impact:**
-- `xray_cloud_create_test` → ❌ FAILS with "issuetype: Specify a valid issue type"
-- `xray_cloud_create_execution` → ❌ FAILS (same error)
-- `xray_cloud_search_tests` → Returns 0 results for PAS2 (tests don't exist in dev)
-- `xray_cloud_link_test_to_story` → ❌ FAILS ("issueId provided is not valid")
-- `xray_cloud_get_test_steps` → Returns null for PAS2 tests
+| Tool                             | Status          | Notes                                                                                                   |
+|----------------------------------|:---------------:|---------------------------------------------------------------------------------------------------------|
+| `xray_cloud_create_test`        | ✅ WORKING      | Creates test + adds Manual steps in one call                                                            |
+| `xray_cloud_update_run`         | ✅ WORKING      | Associates tests to TEs + reports status                                                                |
+| `xray_cloud_search_tests`       | ✅ FIXED        | GraphQL `$limit` type fix applied — returns JQL results correctly                                       |
+| `xray_cloud_get_test_steps`     | ✅ FIXED        | GraphQL `$limit` type fix applied — returns manual steps correctly                                      |
+| `xray_cloud_get_test_runs`      | ✅ FIXED        | GraphQL errors (executedBy, jira, $limit) all fixed — returns run history                               |
+| `xray_cloud_link_test_to_story` | ✅ FIXED        | Mutation replaced — now uses `jira_link_issues` internally with linkType "Test"                         |
+| `xray_cloud_create_execution`   | ✅ FIXED        | Switched from REST to GraphQL `createTestExecution` mutation; resolves keys to numeric IDs              |
+| `xray_cloud_update_test_type`   | ✅ FIXED        | Uses `removeAllTestSteps` + `addTestStep` (singular); `updateGherkinTestDefinition` for Cucumber        |
 
-**Root cause:** The issue type "Test" has ID `10017` in production but `10005` in the dev instance. Xray Cloud tries to create the issue in its connected Jira instance (dev) where the mapping doesn't exist.
+### Working Workflow (2026-07-02)
 
-**Workaround (current):** Use `jira_create_issue` with Jira REST API directly (see Step 2 fallback approach). This IS the primary method until the API key is reconfigured.
+| Step                           | Tool                                         | Works? |
+|--------------------------------|----------------------------------------------|:------:|
+| Create test with steps         | `xray_cloud_create_test`                     | ✅     |
+| Set description                | `jira_update_issue`                          | ✅     |
+| Link test to story             | `jira_link_issues` (linkType: "Test")        | ✅     |
+| Link test to story (XRay)      | `xray_cloud_link_test_to_story`              | ✅     |
+| Create Test Execution          | `xray_cloud_create_execution`                | ✅     |
+| Create Test Execution (alt)    | `jira_create_issue` (type: Test Execution)   | ✅     |
+| Add tests to TE                | `xray_cloud_update_run` (status: TODO)       | ✅     |
+| Link TE to story               | `jira_link_issues` (linkType: "Test")        | ✅     |
+| Assign issues                  | `jira_assign_issue`                          | ✅     |
+| Transition issues              | `jira_transition_issue` (status: "Reject")   | ✅     |
+| Search tests by JQL            | `xray_cloud_search_tests`                    | ✅     |
+| Read test steps                | `xray_cloud_get_test_steps`                  | ✅     |
+| Get test run history           | `xray_cloud_get_test_runs`                   | ✅     |
+| Update test type/steps         | `xray_cloud_update_test_type`                | ✅     |
 
-**To fix:** Request a new XRay Cloud API Key from XRay Cloud Settings → API Keys on the **production** Jira instance (`disneyexperiences.atlassian.net`).
+### Known limitations (updated 2026-07-02)
 
-### Known limitations
-
-| Limitation | Workaround |
-|-----------|------------|
-| XRay Cloud API points to wrong Jira instance | Use `jira_create_issue` for Test/Test Execution creation |
-| No folder/repository browsing via API | Use labels and naming conventions |
-| XRay-specific fields not on edit screen | Include info in description (markdown table format) |
-| Custom fields not settable on Test issue type | Document in description; set manually in UI if needed |
-| Cannot delete issues (403 permission) | Transition to "Rejected" with comment explaining why |
+| Limitation                                                | Workaround                                                                 |
+|-----------------------------------------------------------|----------------------------------------------------------------------------|
+| Cannot remove tests from a Test Execution                 | Create new TE, reject old one                                              |
+| No folder/repository browsing via API                     | Use labels and naming conventions                                          |
+| Description tables render as plain text                   | Use numbered/bullet lists instead of markdown tables                       |
+| Cannot delete issues (403 permission)                     | Transition to "Rejected" with comment explaining why                       |
 
 ### Custom Field IDs — Verified Mapping (2026-06-25)
 
@@ -849,18 +916,23 @@ xray_search_test_cases:
 | Automation Candidate | `customfield_23001` | `customfield_10154` | ✅ Test | editmeta on PAS2-1073 |
 | Automation Status | `customfield_23002` | `customfield_10190` | ✅ Test | editmeta on PAS2-1073 |
 | Platforms | `customfield_11500` | `customfield_10176` | ✅ Test | editmeta on PAS2-1073 |
+| Acceptance Criteria | — | `customfield_10166` | ✅ Story | PAS2-286 |
 
-### Verification (updated 2026-06-25)
+### Verification (updated 2026-07-02)
 
 - [x] `jira_create_issue` works for issue type "Test" (id: 10017) with priority field ✅
 - [x] `jira_create_issue` works for issue type "Test Execution" (id: 10020) ✅
 - [x] `jira_link_issues` with linkType "Test" (singular) works on Cloud ✅
 - [x] `jira_update_issue` works for Story Points (`customfield_10042`) ✅
 - [x] `jira_update_issue` works for AI fields (`customfield_10173`, `10221`, `10191`) ✅
-- [x] `jira_transition_issue` with transition id 131 → Rejected works ✅
-- [ ] `xray_cloud_create_test` ❌ NOT WORKING (wrong Jira instance)
-- [ ] `xray_cloud_create_execution` ❌ NOT WORKING (wrong Jira instance)
-- [ ] `xray_cloud_link_test_to_story` ❌ NOT WORKING (wrong Jira instance)
-- [ ] `xray_cloud_search_tests` ⚠️ WORKS but returns 0 results for PAS2
+- [x] `jira_transition_issue` with status "Reject" → Rejected works ✅
+- [x] `xray_cloud_create_test` ✅ WORKING — creates test + steps in XRay Test Details
+- [x] `xray_cloud_update_run` ✅ WORKING — associates tests to TEs with TODO status
+- [x] `xray_cloud_search_tests` ✅ FIXED — GraphQL $limit type mismatch resolved
+- [x] `xray_cloud_get_test_steps` ✅ FIXED — GraphQL $limit type mismatch resolved
+- [x] `xray_cloud_get_test_runs` ✅ FIXED — multiple GraphQL errors resolved
+- [x] `xray_cloud_link_test_to_story` ✅ FIXED — uses jira_link_issues internally now
+- [x] `xray_cloud_create_execution` ✅ FIXED — switched to GraphQL `createTestExecution` mutation (resolves keys → numeric IDs)
+- [x] `xray_cloud_update_test_type` ✅ FIXED — `removeAllTestSteps` + `addTestStep` (singular) + `updateGherkinTestDefinition`
 
 

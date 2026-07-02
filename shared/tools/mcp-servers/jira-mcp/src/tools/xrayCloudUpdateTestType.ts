@@ -32,72 +32,69 @@ export async function handleXrayCloudUpdateTestType(args: any): Promise<any> {
         const { testKey, testType, gherkin, steps } = args;
         validateIssueKey(testKey, "testKey");
 
+        // Resolve testKey to numeric issueId (required by XRay Cloud GraphQL mutations)
+        const resolveQuery = `query($jql: String!, $limit: Int!) {
+            getTests(jql: $jql, limit: $limit) {
+                results { issueId }
+            }
+        }`;
+        const resolveResult = await xrayCloudGraphQL(resolveQuery, { jql: `key = ${testKey}`, limit: 1 });
+        const numericId = resolveResult?.getTests?.results?.[0]?.issueId;
+        if (!numericId) {
+            return { content: [{ type: "text", text: `Error: Could not resolve numeric issueId for ${testKey}. Ensure the test exists in XRay Cloud.` }], isError: true };
+        }
+
         // Step 1: Update the test type
         const typeMutation = `mutation UpdateTestType($issueId: String!, $testType: UpdateTestTypeInput!) {
             updateTestType(issueId: $issueId, testType: $testType) {
-                warnings
+                __typename
             }
         }`;
 
-        const typeResult = await xrayCloudGraphQL(typeMutation, {
-            issueId: testKey,
+        await xrayCloudGraphQL(typeMutation, {
+            issueId: numericId,
             testType: { name: testType },
         });
 
-        const warnings = typeResult?.updateTestType?.warnings || [];
+        const warnings: string[] = [];
         let text = `**Updated Test Type:** ${testKey} → ${testType}`;
 
         // Step 2: If Cucumber, update gherkin definition
         if (testType === "Cucumber" && gherkin) {
             const gherkinMutation = `mutation UpdateGherkin($issueId: String!, $gherkin: String!) {
-                updateGherkinDefinition(issueId: $issueId, gherkin: $gherkin) {
-                    warnings
+                updateGherkinTestDefinition(issueId: $issueId, gherkin: $gherkin) {
+                    __typename
                 }
             }`;
 
-            const gherkinResult = await xrayCloudGraphQL(gherkinMutation, {
-                issueId: testKey,
+            await xrayCloudGraphQL(gherkinMutation, {
+                issueId: numericId,
                 gherkin,
             });
 
-            const gWarnings = gherkinResult?.updateGherkinDefinition?.warnings || [];
-            warnings.push(...gWarnings);
             text += `\n**Gherkin:** updated`;
         }
 
         // Step 3: If Manual/Generic with steps, replace steps
         if ((testType === "Manual" || testType === "Generic") && steps?.length) {
-            // Remove existing steps first, then add new ones
-            const removeQuery = `query GetSteps($jql: String!, $limit: Int!) {
-                getTests(jql: $jql, limit: $limit) {
-                    results { steps { id } }
-                }
+            // Remove all existing steps first
+            const removeAllMutation = `mutation RemoveAllSteps($issueId: String!, $versionId: Int) {
+                removeAllTestSteps(issueId: $issueId, versionId: $versionId)
             }`;
+            await xrayCloudGraphQL(removeAllMutation, { issueId: numericId, versionId: null });
 
-            const existing = await xrayCloudGraphQL(removeQuery, { jql: `key = ${testKey}`, limit: 1 });
-            const existingSteps = existing?.getTests?.results?.[0]?.steps || [];
-
-            if (existingSteps.length > 0) {
-                const removeIds = existingSteps.map((s: any) => s.id);
-                const removeMutation = `mutation RemoveSteps($issueId: String!, $stepIds: [String!]!) {
-                    removeTestSteps(issueId: $issueId, stepIds: $stepIds) {
-                        warnings
+            // Add new steps one by one (API only supports singular addTestStep)
+            for (const step of steps) {
+                const addMutation = `mutation AddStep($issueId: String!, $step: CreateStepInput!) {
+                    addTestStep(issueId: $issueId, step: $step) {
+                        id
                     }
                 }`;
-                await xrayCloudGraphQL(removeMutation, { issueId: testKey, stepIds: removeIds });
+                await xrayCloudGraphQL(addMutation, {
+                    issueId: numericId,
+                    step: { action: step.action, data: step.data || "", result: step.result },
+                });
             }
-
-            // Add new steps
-            const addMutation = `mutation AddSteps($issueId: String!, $steps: [CreateStepInput!]!) {
-                addTestSteps(issueId: $issueId, steps: $steps) {
-                    warnings
-                }
-            }`;
-
-            await xrayCloudGraphQL(addMutation, {
-                issueId: testKey,
-                steps: steps.map((s: any) => ({ action: s.action, data: s.data || "", result: s.result })),
-            });
 
             text += `\n**Steps:** ${steps.length} (replaced)`;
         }

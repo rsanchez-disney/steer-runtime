@@ -18,7 +18,7 @@ export async function handleXrayCloudGetTestSteps(args: any): Promise<any> {
         validateIssueKey(testKey, "testKey");
 
         const query = `
-            query($jql: String!, $limit: Int) {
+            query($jql: String!, $limit: Int!) {
                 getTests(jql: $jql, limit: $limit) {
                     results {
                         issueId
