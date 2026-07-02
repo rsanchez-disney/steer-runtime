@@ -48,6 +48,31 @@ Verify that the environment is ready before running load tests.
 2. Obtain OAuth token and fetch schedules for each facility ID (see config for endpoints and auth)
 3. Process and display results following the **output format** in `loadtest_config.md` exactly
 
+#### 1b. Auto-Create Schedules (when missing or gaps detected)
+
+**Triggers automatically** after step 1a when any facility has no schedule for today or has gaps before the next schedule.
+
+**Required confirmation:** Before creating, present the plan and ask for user confirmation:
+```
+⚠️ {N} facilities have no schedules for today. {M} facilities have gaps.
+
+I can auto-create schedules for these facilities:
+| Facility ID | Restaurant | Issue | Proposed Schedule |
+|-------------|-----------|-------|-------------------|
+| ...         | ...       | No schedule / Gap until HH:MM | HH:MM → HH:MM |
+
+Do you want me to create these schedules?
+```
+
+**Workflow (after user confirms):**
+1. For each facility, follow the Schedule Creation API rules in `loadtest_config.md` (endpoint, payload, startTime/endTime calculation, rate limiting)
+2. Report results (created/failed) with a summary table
+3. Re-run schedule verification (step 1a) to confirm readiness
+
+Uses the same OAuth token from step 1a.
+
+---
+
 ### 2. Execute Load Test 🚀
 
 **Required parameters** (ALL 3 mandatory — ask for any missing):
@@ -89,14 +114,30 @@ Present all results following the **output format** in `loadtest_config.md` sect
 ### 4. Document Results in Wiki 📝
 
 **Required parameters** (ask for any missing):
-- **Jira ticket** — the load test ticket (e.g., `FNB-19625`)
+- **Jira ticket** — the load test ticket (e.g., `FNB-19625`). Used to extract app, site, and version. For "Both sites" pages, user may provide 2 tickets or 1 (version extracted from either). For "ALL" pages, 1 ticket suffices.
+
+**Auto-resolved parameters** (resolved during this workflow's step 2 below — do NOT ask upfront):
+- **Execution jobs** — reused from Splunk validation if step 3 was already run in this session, otherwise resolved via Job Discovery (see step 3a and `loadtest_config.md` section 3). Depends on page strategy (see Wiki Config "Pages" column):
+  - **One per site:** 3 jobs (1x, 2x, 3x) for the single site
+  - **Both sites:** 6 jobs (1x/2x/3x for WDW + 1x/2x/3x for DLR)
+  - **ALL:** 3 jobs (1x, 2x, 3x for ALL)
 
 **Workflow:**
 1. Read the Jira ticket to extract app name, site, and version (see `loadtest_config.md` section 4 for API details).
-2. Look up the wiki config for the app in `loadtest_config.md` (Wiki Config table).
-3. Read the template page content from Confluence (storage format).
-4. Transform the template following the Template Modifications rules in `loadtest_config.md`.
-5. Present a **preview** (title, parent page, space, Jira ticket, version) and ask for confirmation.
-6. Only after user confirms → create the page.
+2. **Resolve executions to document:**
+   - If the user already validated results in Splunk during this session, ask: "Do you want to use the executions we already validated? (1x: {jobId}, 2x: {jobId}, 3x: {jobId} from {date})"
+   - If no previous validation exists, ask the user for the execution date, then run Job Discovery (step 3a workflow + query defined in `loadtest_config.md` section 3) to find the 1x/2x/3x jobs.
+   - Confirm with the user which executions to document before proceeding.
+3. Look up the wiki config for the app in `loadtest_config.md` (Wiki Config table).
+4. Read the template page content from Confluence (storage format).
+5. Transform the template following the Template Modifications rules in `loadtest_config.md`:
+   - Replace Jira ticket key
+   - **Update ALL monitoring URLs** (Splunk LTIAB, VenueNext, AppDynamics, CloudWatch) with correct dates and job IDs. Follow URL Update Rules in config to calculate epochs and timestamps.
+   - Remove screenshot images
+6. **Ask:** "Do you want me to insert the KPI results tables in the Screenshot cells? (13-column format as defined in `loadtest_config.md` section 4 — KPI Results Table)"
+   - If yes, run KPI Validation queries for all 3 load levels and insert tables following the structure in `loadtest_config.md`.
+   - If 3x has SLA breaches, add justification paragraph (see data formatting rules in config).
+7. Present a **preview** (title, parent page, space, Jira ticket, version, URL dates, site) and ask for confirmation.
+8. Only after user confirms → create the page.
 
 
