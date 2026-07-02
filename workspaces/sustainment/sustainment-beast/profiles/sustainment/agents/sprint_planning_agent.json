@@ -15,9 +15,9 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "file://context/jira-config.md",
-    "file://context/capacity-params.md",
-    "file://context/sprint-analysis-guide.md",
-    "file://context/team_context.md"
+    "file://../../../context/jira-config.md",
+    "file://../../../context/capacity-params.md",
+    "file://../../../context/sprint-analysis-guide.md",
+    "file://../../../context/team_context.md"
   ]
 }

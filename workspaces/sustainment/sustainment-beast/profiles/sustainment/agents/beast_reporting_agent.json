@@ -17,10 +17,10 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "file://context/weekly-highlights-process.md",
-    "file://context/shift-log-format.md",
-    "file://context/monitoring-templates.md",
-    "file://context/teams-channel-map.md",
-    "file://context/systems_context.md"
+    "file://../../../context/weekly-highlights-process.md",
+    "file://../../../context/shift-log-format.md",
+    "file://../../../context/monitoring-templates.md",
+    "file://../../../context/teams-channel-map.md",
+    "file://../../../context/systems_context.md"
   ]
 }

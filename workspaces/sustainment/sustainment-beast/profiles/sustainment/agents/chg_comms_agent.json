@@ -16,9 +16,9 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "file://context/monitoring-templates.md",
-    "file://context/monitoring-guide.md",
-    "file://context/teams-channel-map.md",
-    "file://context/servicenow-reference-ids.md"
+    "file://../../../context/monitoring-templates.md",
+    "file://../../../context/monitoring-guide.md",
+    "file://../../../context/teams-channel-map.md",
+    "file://../../../context/servicenow-reference-ids.md"
   ]
 }
