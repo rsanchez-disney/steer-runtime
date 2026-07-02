@@ -1,0 +1,26 @@
+{
+  "name": "monitoring_ops_agent",
+  "description": "Manages shift operations for DLP Beast team — shift start/end routines, health checks, INC queue monitoring, and RITM processing",
+  "prompt": "monitoring_ops_agent.md",
+  "tools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://context/monitoring-guide.md",
+    "file://context/servicenow-reference-ids.md",
+    "file://context/servicenow-config.md",
+    "file://context/teams-channel-map.md",
+    "file://context/team_context.md"
+  ]
+}

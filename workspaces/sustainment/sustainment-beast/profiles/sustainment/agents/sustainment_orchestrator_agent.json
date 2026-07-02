@@ -1,9 +1,32 @@
 {
     "name": "sustainment_orchestrator_agent",
-    "tools": [
-        "@teams/*"
-    ],
-    "allowedTools": [
-        "@teams/*"
+    "tools": ["@teams/*"],
+    "allowedTools": ["@teams/*"],
+    "resources": [
+        {
+            "path": "file://context/monitoring-guide.md",
+            "when": "task_contains:shift*",
+            "priority": "normal"
+        },
+        {
+            "path": "file://context/servicenow-reference-ids.md",
+            "when": "task_contains:INC*",
+            "priority": "high"
+        },
+        {
+            "path": "file://context/teams-channel-map.md",
+            "when": "task_contains:teams*",
+            "priority": "normal"
+        },
+        {
+            "path": "file://context/alert-runbooks.md",
+            "when": "task_contains:alert*",
+            "priority": "normal"
+        },
+        {
+            "path": "file://context/jira-config.md",
+            "when": "task_contains:sprint*",
+            "priority": "normal"
+        }
     ]
 }
