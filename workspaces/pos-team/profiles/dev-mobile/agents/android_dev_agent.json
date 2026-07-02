@@ -17,7 +17,7 @@
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
-    "file://../../../context/memory-bank/learnings.md",
+    "file://../../../context/memory-bank/*",
     "file://../../../context/hilt_guidelines.md"
   ],
   "hooks": {
