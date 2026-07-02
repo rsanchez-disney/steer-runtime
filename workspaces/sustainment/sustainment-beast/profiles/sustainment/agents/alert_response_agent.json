@@ -1,0 +1,25 @@
+{
+  "name": "alert_response_agent",
+  "description": "Handles real-time alert triage for DLP Beast — ACK, Splunk investigation, known issue matching, priority assessment, and escalation decisions",
+  "prompt": "alert_response_agent.md",
+  "tools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*",
+    "fs_read",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://context/alert-runbooks.md",
+    "file://context/splunk-reference.md",
+    "file://context/servicenow-reference-ids.md",
+    "file://context/monitoring-guide.md",
+    "file://context/systems_context.md"
+  ]
+}
