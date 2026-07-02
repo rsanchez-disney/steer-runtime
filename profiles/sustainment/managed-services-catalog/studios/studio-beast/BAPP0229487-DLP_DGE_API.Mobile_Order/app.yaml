@@ -59,6 +59,89 @@ technologies:
     version: "21"
   - name: "Spring Boot"
 
+# --- Known Issues ---
+known_issues:
+  - id: "KI-005"
+    title: "I Am Here CTA fails with HTTP 409 due to Agilysys server connectivity loss"
+    category: "alert-based"
+    severity: "high"
+    affected_component: "iod-food-order-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=1348458637"
+    description: >-
+      The /iamhere endpoint at Hyperion restaurant returns HTTP 409 errors (too early or too late)
+      from Agilysys OnPrem POS. Caused by recurring connectivity loss between web layer and Agilysys
+      servers (gen100/gen101) which blocks all /iamhere calls while active. Requires manual session
+      termination by infrastructure team (app-frdlp-support-pos) to restore service.
+
+  - id: "KI-006"
+    title: "Fulfillment failure - guests not receiving confirmation email after payment"
+    category: "incident-based"
+    severity: "critical"
+    affected_component: "iod-food-order-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=968789101"
+    description: >-
+      Multiple guests do not receive the email notification after payment is processed by WorldPay.
+      RCA: Agilysys failed to attach payment to order or close the order. Guests cannot request
+      meal at restaurant without confirmation. Mitigation: contact PC OPS team through Click and
+      Collect chat to put DFM on affected restaurants.
+
+  - id: "KI-007"
+    title: "Payment notification delayed due to MPG queue backlog causing cache TTL expiration"
+    category: "alert-based"
+    severity: "medium"
+    affected_component: "iod-food-order-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=1052935220"
+    description: >-
+      After MPG releases or downtime, the notification queue backs up. Payment-notification arrives
+      after Redis cache TTL (20 min) expires, causing "Data not find in cache" errors. Payment-confirmation
+      is unaffected so no guest impact, but triggers DLP_BT_MOBILE_ORDER_V1_PAYMENT_ERROR alert.
+      Related incident: INC29020033.
+
+  - id: "KI-008"
+    title: "Order rejected during pickup for restaurants without timeslot (Casa de Coco)"
+    category: "incident-based"
+    severity: "low"
+    affected_component: "iod-food-order-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=995528727"
+    description: >-
+      For restaurants without timeslot selection (e.g., Casa de Coco), clicking "I'm here" CTA
+      after 4-hour window shows "Order Rejected". Agilysys purges orders past the 4-hour pickup
+      window. By design — restaurant staff can manually validate the order.
+
+  - id: "KI-009"
+    title: "High response times from Agilysys OnDemand causing web view timeouts"
+    category: "performance-degradation"
+    severity: "medium"
+    affected_component: "iod-food-order-provider"
+    source_link: ""  # TODO: pending verification — sourced from troubleshooting.md
+    description: >-
+      Slow page loads in food ordering web views and timeouts on menu/timeslot retrieval.
+      Root cause is Agilysys OnDemand backend performance degradation (external, not owned by DLP).
+      Escalate to Agilysys team (app-frdlp-support-pos). Content issues in Agilysys are out of scope.
+
+  - id: "KI-010"
+    title: "Payment failures due to MPG/WorldPay outage or degradation"
+    category: "incident-based"
+    severity: "high"
+    affected_component: "iod-food-order-provider"
+    source_link: "https://disney.service-now.com/nav_to.do?uri=incident.do?sysparm_query=number=INC29020033"
+    description: >-
+      Guests cannot complete payment; errors on /payment-confirmation/ endpoint when MPG or WorldPay
+      is degraded. Check Splunk dashboard DLP_MOBILE_ORDER_FULFFILMENT_ISSUES_AND_MPG-PAYMENTS.
+      Escalate to MPG team (app-frdlp-spid-monetique). ServiceNow alert:
+      DLP_BT_MOBILE_ORDER_V1_PAYMENT_RESPONSE_TIME_ERROR.
+
+  - id: "KI-011"
+    title: "Cache expiration during checkout after 20-minute TTL"
+    category: "incident-based"
+    severity: "low"
+    affected_component: "iod-food-order-provider"
+    source_link: ""  # TODO: pending verification — sourced from troubleshooting.md (by design)
+    description: >-
+      Guest gets error if ordering flow takes longer than 20 minutes. Cache TTL is 20 min —
+      session data expires if guest exceeds this limit. Guest must restart order. This is by design
+      (business rule). No fix needed; consider documenting in guest-facing FAQ.
+
 # --- Components ---
 components:
 
@@ -187,14 +270,16 @@ components:
 
   - component_name: "Agilysys OnDemand"
     component_type: "gateway"
-    description: "External component (not owned by DLP). Backend handling anonymous food orders, pushing them into the existing sales system. Manages timeslots, menus, and everything displayed in the Agilysys part of the funnel. Includes reverse proxy at KMTC and dedicated IG Web Server."
+    description: "External food ordering backend. Manages timeslots, menus, and order flow. Includes reverse proxy at KMTC and IG Web Server."
     external: true
+    vendor: "Agilysys"
     escalation_group: "app-frdlp-support-pos"
 
   - component_name: "MPG / WorldPay"
     component_type: "gateway"
     description: "Payment gateway communicating with WorldPay to handle payment processing. Migrated from OnPaie to WorldPay in December 2024."
     external: true
+    vendor: "Worldline (MPG) / WorldPay"
     escalation_group: "app-frdlp-spid-monetique"
 
   - component_name: "Redis"
@@ -206,3 +291,16 @@ components:
     description: "HTML/Thymeleaf templates for web views"
     repository:
       url: "https://gitlab.disney.com/DLP/digital/roz-file-repository"
+
+  # --- Beast-scope Dependencies ---
+  - component_name: "Keyring"
+    component_type: "api"
+    description: "Guest digital identity and portfolio management. Mobile Order uses Keyring to authenticate guests before order placement."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  - component_name: "Notification Service"
+    component_type: "api"
+    description: "Sends order confirmation and fulfillment notification emails to guests after payment completion."
+    external: true
+    escalation_group: "UNKNOWN"  # TODO: Notification Service escalation group not found in repository — verify with team
