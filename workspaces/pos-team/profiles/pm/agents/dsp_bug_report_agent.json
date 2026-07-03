@@ -10,6 +10,7 @@
   ],
   "includeMcpJson": true,
   "resources": [
-    "file://../context/dsp_bug_report_guidelines.md"
+    "file://../context/dsp_bug_report_guidelines.md",
+    "file://../../../context/features/*"
   ]
 }

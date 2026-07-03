@@ -4,14 +4,6 @@
   "prompt": "prompts/android_arch_agent.md",
   "tools": [
     "fs_read",
-    "fs_write",
-    "@gitlab/*",
-    "@jira/*",
-    "@jira-cloud/*",
-    "execute_bash",
-    "grep",
-    "glob",
-    "code",
     "thinking",
     "todo_list",
     "subagent"
@@ -46,7 +38,8 @@
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
-    "file://../../../context/hilt_guidelines.md"
+    "file://../../../context/hilt_guidelines.md",
+    "file://../../../context/features/*"
   ],
   "hooks": {
     "agentSpawn": [

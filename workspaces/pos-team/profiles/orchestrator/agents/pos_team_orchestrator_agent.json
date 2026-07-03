@@ -25,7 +25,8 @@
   },
   "resources": [
     "file://../../../context/team_context.md",
-    "file://../../../context/project_mappings.md"
+    "file://../../../context/project_mappings.md",
+    "file://../../../context/features/*"
   ],
   "hooks": {
     "agentSpawn": [
