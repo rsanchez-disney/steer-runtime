@@ -1,0 +1,47 @@
+{
+  "name": "pos_team_orchestrator_agent",
+  "description": "POS Team orchestrator — routes requests to the appropriate domain agent: Android mobile, Backoffice architecture, QA validation, or DSP bug reporting",
+  "prompt": "file://../prompts/pos_team_orchestrator_agent.md",
+  "tools": [
+    "subagent",
+    "todo_list",
+    "thinking"
+  ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "android_arch_agent",
+        "pos_architecture_agent",
+        "qa_validation_agent",
+        "dsp_bug_report_agent"
+      ],
+      "trustedAgents": [
+        "android_arch_agent",
+        "pos_architecture_agent",
+        "qa_validation_agent",
+        "dsp_bug_report_agent"
+      ]
+    }
+  },
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../context/project_mappings.md",
+    "file://../../../context/features/*"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ],
+    "stop": [
+      {
+        "command": "$HOME/.kiro/hooks/session-summary.sh",
+        "description": "Log session telemetry to JSONL"
+      }
+    ]
+  },
+  "welcomeMessage": "👋 POS Team Orchestrator ready!\n\nI route your requests to the right specialist:\n  📱 Android mobile → android_arch_agent\n  🏗️ Backend architecture → pos_architecture_agent\n  ✅ QA validation → qa_validation_agent\n  🐛 DSP bug reports → dsp_bug_report_agent\n\nJust describe what you need and I'll delegate to the right agent.",
+  "includeMcpJson": true
+}

@@ -1,0 +1,64 @@
+{
+  "name": "android_refactor_agent",
+  "description": "Android Refactor Engineer — takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
+  "prompt": "prompts/android_refactor_agent.md",
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../context/testing_conventions.md",
+    "file://../../../context/golden_rules.md",
+    "file://../../../context/hilt_guidelines.md",
+    "file://../../../context/memory-bank/*",
+    "file://../../../context/features/*" 
+  ],
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code",
+    "thinking",
+    "todo_list",
+    "subagent",
+    "@jira/*",
+    "@gitlab/*"
+  ],
+  "toolsSettings": {
+    "execute_bash": {
+      "allowedCommands": [
+        "./gradlew --console=plain assemble*",
+        "./gradlew --console=plain test*"
+      ]
+    },
+    "subagent": {
+      "availableAgents": [
+        "android_dev_agent",
+        "android_test_agent",
+        "android_quality_agent",
+        "android_pr_agent"
+      ],
+      "trustedAgents": [
+        "android_dev_agent",
+        "android_test_agent",
+        "android_quality_agent",
+        "android_pr_agent"
+      ]
+    }
+  },
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "~/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "~/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to build/, .gradle/, .git/"
+      }
+    ]
+  },
+  "welcomeMessage": "Refactor Engineer ready. Give me JIRA ticket numbers (POS-XXXXX) and I'll analyze the bugs, assess the architecture, design a feature-flagged solution, and orchestrate the implementation."
+}
