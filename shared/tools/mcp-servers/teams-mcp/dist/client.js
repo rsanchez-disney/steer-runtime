@@ -5,6 +5,7 @@ import * as os from "os";
 import { authenticateViaBrowser } from "./auth.js";
 const TOKEN_CACHE_DIR = path.join(os.homedir(), ".mcp-teams");
 const TOKEN_CACHE_FILE = path.join(TOKEN_CACHE_DIR, "token-cache.json");
+const BROWSER_STATE_DIR = path.join(TOKEN_CACHE_DIR, "browser-state");
 export class TeamsClient {
     http;
     nativeHttp;
@@ -104,6 +105,44 @@ export class TeamsClient {
     getApiMode() { return this.apiMode; }
     isAuthenticated() {
         return this.accessToken !== null && Date.now() < this.tokenExpiry;
+    }
+    /**
+     * Resets all authentication state by deleting cached tokens and browser state.
+     * Use this when auth is in a broken/stale state and a clean re-auth is needed.
+     */
+    resetAuth() {
+        const result = { tokenCacheDeleted: false, browserStateDeleted: false, memoryCleared: false };
+        // 1. Delete the token cache file
+        try {
+            if (fs.existsSync(TOKEN_CACHE_FILE)) {
+                fs.unlinkSync(TOKEN_CACHE_FILE);
+                result.tokenCacheDeleted = true;
+            }
+        }
+        catch (err) {
+            process.stderr.write(`[mcp-teams] Warning: could not delete token cache: ${err}\n`);
+        }
+        // 2. Delete the browser state directory recursively
+        try {
+            if (fs.existsSync(BROWSER_STATE_DIR)) {
+                fs.rmSync(BROWSER_STATE_DIR, { recursive: true, force: true });
+                result.browserStateDeleted = true;
+            }
+        }
+        catch (err) {
+            process.stderr.write(`[mcp-teams] Warning: could not delete browser state: ${err}\n`);
+        }
+        // 3. Clear all in-memory tokens
+        this.accessToken = null;
+        this.chatToken = null;
+        this.refreshToken = null;
+        this.skypeToken = null;
+        // 4. Reset token expiry timestamps
+        this.tokenExpiry = 0;
+        this.chatTokenExpiry = 0;
+        result.memoryCleared = true;
+        process.stderr.write(`[mcp-teams] Auth reset complete — cache: ${result.tokenCacheDeleted}, browser: ${result.browserStateDeleted}, memory: ${result.memoryCleared}\n`);
+        return result;
     }
     hasChatToken() {
         return this.chatToken !== null && Date.now() < this.chatTokenExpiry;
@@ -276,6 +315,43 @@ export class TeamsClient {
                 if (tokens.chatToken) {
                     this.setChatTokenFromEnv(tokens.chatToken);
                     process.stderr.write("[mcp-teams] Chat token refreshed via browser\n");
+                }
+            }
+            catch (err) {
+                const errMsg = err.message || String(err);
+                const isStaleStateError = errMsg.includes("auth") ||
+                    errMsg.includes("login") ||
+                    errMsg.includes("session") ||
+                    errMsg.includes("401") ||
+                    errMsg.includes("403") ||
+                    errMsg.includes("timeout") ||
+                    errMsg.includes("navigation") ||
+                    errMsg.includes("Target closed") ||
+                    errMsg.includes("browser") ||
+                    errMsg.includes("context");
+                if (isStaleStateError) {
+                    process.stderr.write(`[mcp-teams] Browser auth failed (likely stale state): ${errMsg}\n` +
+                        `[mcp-teams] Resetting auth and retrying with clean state...\n`);
+                    this.resetAuth();
+                    // Retry once with clean state
+                    try {
+                        const tokens = await authenticateViaBrowser();
+                        if (tokens.nativeToken) {
+                            await this.setManualToken(tokens.nativeToken);
+                            process.stderr.write("[mcp-teams] Native token refreshed via browser (retry succeeded)\n");
+                        }
+                        if (tokens.chatToken) {
+                            this.setChatTokenFromEnv(tokens.chatToken);
+                            process.stderr.write("[mcp-teams] Chat token refreshed via browser (retry succeeded)\n");
+                        }
+                    }
+                    catch (retryErr) {
+                        process.stderr.write(`[mcp-teams] Browser auth retry also failed: ${retryErr.message}\n`);
+                        throw retryErr;
+                    }
+                }
+                else {
+                    throw err;
                 }
             }
             finally {

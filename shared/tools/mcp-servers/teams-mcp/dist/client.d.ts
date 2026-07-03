@@ -27,6 +27,15 @@ export declare class TeamsClient {
     private saveCachedToken;
     getApiMode(): ApiMode;
     isAuthenticated(): boolean;
+    /**
+     * Resets all authentication state by deleting cached tokens and browser state.
+     * Use this when auth is in a broken/stale state and a clean re-auth is needed.
+     */
+    resetAuth(): {
+        tokenCacheDeleted: boolean;
+        browserStateDeleted: boolean;
+        memoryCleared: boolean;
+    };
     hasChatToken(): boolean;
     setChatTokenFromEnv(token: string): void;
     private getChatToken;
