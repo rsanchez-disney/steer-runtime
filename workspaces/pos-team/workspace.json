@@ -6,11 +6,12 @@
     "dev-core",
     "dev-mobile",
     "dev-backoffice",
+    "orchestrator",
     "ba",
     "qa",
     "pm"
   ],
-  "default_agent": "android_arch_agent",
+  "default_agent": "pos_team_orchestrator_agent",
   "projects": [
     {
       "name": "activatex",
