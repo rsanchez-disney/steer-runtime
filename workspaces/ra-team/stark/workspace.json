@@ -1,0 +1,166 @@
+{
+  "name": "stark",
+  "extends": "ra-team",
+  "workspace_path": "${WORKSPACE_ROOT}/reference-architecture/stark",
+  "description": "RA Team — Angular shared libraries workspace",
+  "team": "Studio Stark",
+  "jira_prefix": "GEW-",
+  "default_agent": "orchestrator",
+  "enable_tools": true,
+  "projects": [
+    {
+      "name": "wdpr-ra-angular-cdn",
+      "repo": "WDPR-RA/wdpr-ra-angular-cdn",
+      "path": "wdpr-ra-angular-cdn",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-client-encryption",
+      "repo": "WDPR-RA/wdpr-ra-angular-client-encryption",
+      "path": "wdpr-ra-angular-client-encryption",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-correlation",
+      "repo": "WDPR-RA/wdpr-ra-angular-correlation",
+      "path": "wdpr-ra-angular-correlation",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-device-detection",
+      "repo": "WDPR-RA/wdpr-ra-angular-device-detection",
+      "path": "wdpr-ra-angular-device-detection",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-error-handler",
+      "repo": "WDPR-RA/wdpr-ra-angular-error-handler",
+      "path": "wdpr-ra-angular-error-handler",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-geolocation",
+      "repo": "WDPR-RA/wdpr-ra-angular-geolocation",
+      "path": "wdpr-ra-angular-geolocation",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-logger",
+      "repo": "WDPR-RA/wdpr-ra-angular-logger",
+      "path": "wdpr-ra-angular-logger",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-myid-login",
+      "repo": "WDPR-RA/wdpr-ra-angular-myid-login",
+      "path": "wdpr-ra-angular-myid-login",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-page-key",
+      "repo": "WDPR-RA/wdpr-ra-angular-page-key",
+      "path": "wdpr-ra-angular-page-key",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-prerender-injector",
+      "repo": "WDPR-RA/wdpr-ra-angular-prerender-injector",
+      "path": "wdpr-ra-angular-prerender-injector",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-seo-metadata",
+      "repo": "WDPR-RA/wdpr-ra-angular-seo-metadata",
+      "path": "wdpr-ra-angular-seo-metadata",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-schematics-angular-spa",
+      "repo": "WDPR-RA/wdpr-ra-schematics-angular-spa",
+      "path": "wdpr-ra-schematics-angular-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-http-client",
+      "repo": "WDPR-RA/wdpr-ra-ui-http-client",
+      "path": "wdpr-ra-ui-http-client",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-error-handler",
+      "repo": "WDPR-RA/wdpr-ra-ui-error-handler",
+      "path": "wdpr-ra-ui-error-handler",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-correlation",
+      "repo": "WDPR-RA/wdpr-ra-ui-correlation",
+      "path": "wdpr-ra-ui-correlation",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-client-encryption",
+      "repo": "WDPR-RA/wdpr-ra-ui-client-encryption",
+      "path": "wdpr-ra-ui-client-encryption",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-logger",
+      "repo": "WDPR-RA/wdpr-ra-ui-logger",
+      "path": "wdpr-ra-ui-logger",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-myid-login",
+      "repo": "WDPR-RA/wdpr-ra-ui-myid-login",
+      "path": "wdpr-ra-ui-myid-login",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-page-key",
+      "repo": "WDPR-RA/wdpr-ra-ui-page-key",
+      "path": "wdpr-ra-ui-page-key",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-geolocation",
+      "repo": "WDPR-RA/wdpr-ra-ui-geolocation",
+      "path": "wdpr-ra-ui-geolocation",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-device-detection",
+      "repo": "WDPR-RA/wdpr-ra-ui-device-detection",
+      "path": "wdpr-ra-ui-device-detection",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-inject-oneid-auth-token",
+      "repo": "WDPR-RA/wdpr-ra-ui-inject-oneid-auth-token",
+      "path": "wdpr-ra-ui-inject-oneid-auth-token",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-ui-native-bridge",
+      "repo": "wdpr-ra-mobile/wdpr-ra-ui-native-bridge",
+      "path": "wdpr-ra-ui-native-bridge",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-native-bridge",
+      "repo": "wdpr-ra-mobile/wdpr-ra-angular-native-bridge",
+      "path": "wdpr-ra-angular-native-bridge",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-angular-inject-oneid-auth-token",
+      "repo": "WDPR-RA/wdpr-ra-angular-inject-oneid-auth-token",
+      "path": "wdpr-ra-angular-inject-oneid-auth-token",
+      "host": "github.disney.com"
+    }
+  ],
+  "profiles": [
+    "dev-core",
+    "dev-web"
+  ]
+}
