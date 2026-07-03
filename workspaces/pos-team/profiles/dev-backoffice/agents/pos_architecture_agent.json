@@ -1,6 +1,6 @@
 {
   "name": "pos_architecture_agent",
-  "description": "Architecture guidance for POS platform — CodeIgniter monolith, Go/PHP microservices, React SPA, gRPC inter-service communication",
+  "description": "POS Backoffice Architect & Orchestrator — architecture guidance and task delegation for PHP, Go, React projects across the POS platform",
   "prompt": "file://../prompts/pos_architecture_agent.md",
   "tools": [
     "code",
@@ -9,11 +9,54 @@
     "execute_bash",
     "thinking",
     "knowledge",
+    "todo_list",
+    "subagent",
     "@mermaid/*"
   ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "pos_codebase_explorer_agent",
+        "pos_go_agent",
+        "pos_php_agent",
+        "pos_react_agent",
+        "pos_test_runner_agent",
+        "pos_planner_agent",
+        "pos_security_scanner_agent",
+        "pos_work_documenter_agent",
+        "pos_code_review_agent",
+        "pos_story_analyzer_agent"
+      ],
+      "trustedAgents": [
+        "pos_codebase_explorer_agent",
+        "pos_go_agent",
+        "pos_php_agent",
+        "pos_react_agent",
+        "pos_test_runner_agent",
+        "pos_planner_agent",
+        "pos_security_scanner_agent",
+        "pos_work_documenter_agent",
+        "pos_code_review_agent",
+        "pos_story_analyzer_agent"
+      ]
+    }
+  },
   "resources": [
     "file://.kiro/context/backoffice_golden_rules.md",
     "file://.kiro/steering/**/*.md"
   ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject available agents registry for dynamic delegation"
+      }
+    ]
+  },
+  "welcomeMessage": "🏗️ POS Architecture Agent ready!\n\nI provide architecture guidance AND orchestrate backoffice development:\n  • Architecture decisions, design reviews, system analysis\n  • Delegate implementation to PHP, Go, or React specialists\n  • Route code reviews, tests, security scans, and planning\n\nDescribe your task or give me a Jira ticket and I'll handle it.",
   "includeMcpJson": true
 }
