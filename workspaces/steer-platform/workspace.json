@@ -36,9 +36,9 @@
       "host": "github.disney.com"
     },
     {
-      "name": "prompt-score",
-      "repo": "SANCR225/prompt-score",
-      "path": "prompt-score",
+      "name": "prompt-scorer",
+      "repo": "SANCR225/prompt-scorer",
+      "path": "prompt-scorer",
       "host": "github.disney.com"
     },
     {
@@ -63,6 +63,12 @@
       "name": "KodaSDK",
       "repo": "SANCR225/KodaSDK",
       "path": "KodaSDK",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "yax",
+      "repo": "SANCR225/yax",
+      "path": "yax",
       "host": "github.disney.com"
     }
   ],
