@@ -61,6 +61,58 @@ technologies:
     version: "21"
   - name: "Spring Boot"
 
+# --- Known Issues ---
+known_issues:
+  - id: "KI-MG-001"
+    title: "Lineberty third-party outages causing Meet & Greet booking unavailability"
+    category: "incident-based"
+    severity: "high"
+    affected_component: "srv-meet-and-greet-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=981337383"
+    description: >-
+      Lineberty (external third-party queue management) experiences periodic outages affecting
+      the entire Meet & Greet booking section in the mobile app. When Lineberty is down, guests
+      cannot view timeslots or register bookings. No action on Disney side — resolution depends
+      on Lineberty vendor. Multiple ServiceNow incidents confirm recurring pattern (INC27069584,
+      INC27679962, INC27985321, INC27710911).
+
+  - id: "KI-MG-002"
+    title: "JWT token generation failure for Lineberty API authentication"
+    category: "alert-based"
+    severity: "high"
+    affected_component: "srv-meet-and-greet-provider"
+    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=943235677"
+    description: >-
+      The Meet & Greet microservice fails to generate JWT tokens needed for Lineberty API
+      authentication. Caused by Vault secret misconfiguration or expiry. Symptoms include
+      mobile app unable to authenticate with Lineberty and ERROR logs in the provider service.
+      Resolution requires verifying Vault secrets and potentially restarting the service via Rundeck.
+
+  - id: "KI-MG-003"
+    title: "DLP_MOBILE_APP_MEET-GREET_ERROR recurring alert pattern"
+    category: "alert-based"
+    severity: "medium"
+    affected_component: "srv-meet-and-greet-provider"
+    source_link: "https://disney.service-now.com/incident.do?sys_id=INC27985321"
+    description: >-
+      Recurring alert pattern DLP_MOBILE_APP_MEET-GREET_ERROR triggers ServiceNow incidents
+      automatically. Multiple occurrences observed (INC27985321 on 2025-12-04, INC27710911 on
+      2025-10-10). These are typically short-lived and self-resolving, often linked to
+      transient Lineberty connectivity issues. Low operational impact as resolution time is
+      usually under 2 hours.
+
+  - id: "KI-MG-004"
+    title: "BAPP0220648 not enrolled in SAST testing (security compliance gap)"
+    category: "incident-based"
+    severity: "low"
+    affected_component: "srv-meet-and-greet-provider"
+    source_link: "https://disney.service-now.com/incident.do?sys_id=INC26383655"
+    description: >-
+      Recurring ServiceNow tickets (INC26383655, INC26120682, INC26166062) flag that
+      BAPP0220648 is not enrolled in SAST testing. This is a security compliance gap
+      rather than a runtime issue. Multiple tickets opened between Dec 2024 and Jan 2025
+      remain in pending state. Does not affect service availability.
+
 # --- Components ---
 components:
 
@@ -218,3 +270,24 @@ components:
           cluster_id: "dlp-apps-S0001481-euw1"
           service_name: "srv-meet-and-greet-provider"
           ecs_url: "https://eu-west-1.console.aws.amazon.com/ecs/v2/clusters/dlp-apps-S0001481-euw1-lst/services/srv-meet-and-greet-provider-latest-live/health?region=eu-west-1"
+
+  # --- Beast-scope Dependencies ---
+  - component_name: "Guest Extended Profile"
+    component_type: "api"
+    description: "Stores guest preferences and extended profile data. Meet & Greet uses it for guest context during character booking experiences."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  - component_name: "Keyring"
+    component_type: "api"
+    description: "Guest digital identity and portfolio management. Provides guest authentication for Meet & Greet booking operations."
+    external: true
+    escalation_group: "app-frdlp-digital-ext-support"
+
+  # --- Third-party Dependencies ---
+  - component_name: "Lineberty"
+    component_type: "api"
+    description: "Third-party queue management system for Meet & Greet character experiences. Mobile app calls Lineberty directly for timeslot availability and booking registration."
+    external: true
+    vendor: "Lineberty"
+    escalation_group: "UNKNOWN"  # Vendor contact: support@lineberty.com / +33 09.73.72.33.06

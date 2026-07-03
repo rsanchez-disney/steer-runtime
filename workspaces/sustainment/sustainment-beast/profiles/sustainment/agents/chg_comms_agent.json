@@ -1,0 +1,24 @@
+{
+  "name": "chg_comms_agent",
+  "description": "Manages change request communications for DLP Beast — generates ITOC notifications, pre/during/after CHG messages, and posts to Teams channels",
+  "prompt": "chg_comms_agent.md",
+  "tools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*",
+    "fs_read",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@servicenow-mcp/*",
+    "@teams/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://../../../context/monitoring-templates.md",
+    "file://../../../context/monitoring-guide.md",
+    "file://../../../context/teams-channel-map.md",
+    "file://../../../context/servicenow-reference-ids.md"
+  ]
+}

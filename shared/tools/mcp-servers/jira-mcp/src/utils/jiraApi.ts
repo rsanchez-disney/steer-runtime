@@ -115,9 +115,55 @@ function markdownToADF(md: string): object {
             continue;
         }
 
+        // Table (detect header row + separator row pattern)
+        if (line.trimStart().startsWith('|') && i + 1 < lines.length && /^\s*\|[\s\-:|]+\|/.test(lines[i + 1])) {
+            // Parse header row
+            const headerCells = line.split('|').slice(1, -1).map((c: string) => c.trim());
+            i++; // skip header row
+            i++; // skip separator row
+
+            // Parse data rows
+            const dataRows: string[][] = [];
+            while (i < lines.length && lines[i].trimStart().startsWith('|')) {
+                const cells = lines[i].split('|').slice(1, -1).map((c: string) => c.trim());
+                dataRows.push(cells);
+                i++;
+            }
+
+            // Build ADF table
+            const tableContent: any[] = [];
+
+            // Header row
+            tableContent.push({
+                type: "tableRow",
+                content: headerCells.map((cell: string) => ({
+                    type: "tableHeader",
+                    content: [{ type: "paragraph", content: parseInline(cell) }],
+                })),
+            });
+
+            // Data rows
+            for (const row of dataRows) {
+                tableContent.push({
+                    type: "tableRow",
+                    content: row.map((cell: string) => ({
+                        type: "tableCell",
+                        content: [{ type: "paragraph", content: parseInline(cell) }],
+                    })),
+                });
+            }
+
+            content.push({
+                type: "table",
+                attrs: { isNumberColumnEnabled: false, layout: "default" },
+                content: tableContent,
+            });
+            continue;
+        }
+
         // Regular paragraph (consume contiguous non-empty, non-special lines)
         const paraLines: string[] = [];
-        while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#') && !lines[i].startsWith('```') && !/^[\s]*[-*+]\s/.test(lines[i]) && !/^[\s]*\d+\.\s/.test(lines[i]) && !lines[i].startsWith('> ') && !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim())) {
+        while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('#') && !lines[i].startsWith('```') && !/^[\s]*[-*+]\s/.test(lines[i]) && !/^[\s]*\d+\.\s/.test(lines[i]) && !lines[i].startsWith('> ') && !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim()) && !lines[i].trimStart().startsWith('|')) {
             paraLines.push(lines[i]);
             i++;
         }

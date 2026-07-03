@@ -4,25 +4,60 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
-## [0.2.148] — 2026-06-30
+## [0.2.149] — 2026-07-03
 
 ### Added
 
-- **docs** — add Cursor update steps to README Existing Users section
-- **docs** — add Cursor project registry section to guides
-- **docs** — add Cursor quick start guide and Kiro vs Cursor comparison
-- **feat** — add Cursor integration guide and shared Java steering rules
+- **stark-ui** — init config for Stark UI team workspace (#520)
+- **sales** — context documentation for 4 Sales BAPPs (APP-49980)
+- **teams-mcp** — `auth_reset` tool and stale-state retry logic (#541)
+- **autopilot** — steering file for autonomous SDLC loop with experimental features docs
+- **sustainment-fnb** — loadtest agent enhanced with schedule auto-creation and Atlassian Cloud wiki
+- **agents** — subagent failure handling rules + Disney AI Catalog link
+- **pos-team** — PM Agent profile and relative path fixes across dev-mobile agents (#522)
+- **jira-mcp** — `xray_cloud_update_test_type` and `xray_cloud_add_precondition` tools
+- **agents** — `@jira-cloud/*` and `@confluence-cloud/*` patterns added to all agents
+- **beast** — AI development context and team configuration updates
+- **docs** — `koda ps` reference with kill filters and process types (#542)
+- **docs** — README updated to mention Cursor support
+- **steer-master** — improved orchestrator context and steer-platform workspace
 
 ### Fixed
 
-- **jira-mcp** — update acceptanceCriteria field ID for Jira Cloud
-- **jira-mcp** — handle ADF in custom field values (Cloud rich text fields)
+- **xray-cloud** — all 8 XRay Cloud MCP tools operational (#536)
+- **workspace** — correct steer-platform project refs and add yax (#539)
+- **sustainment-beast** — fix resource paths, orchestrator JSON, wire Splunk hooks
+- **teams-mcp** — agent override and auth issue fix
+- **pos-team** — add `@jira-cloud/*` to `dsp_bug_report_agent`
+- **pos-team** — add `includeMcpJson` and `@jira-cloud/*` to agents
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL
+- **agents** — `story_analyzer_agent` now accesses Jira Cloud tools (#521)
 
 ### Changed
 
-- **jira-mcp** — add Jira Cloud custom field IDs
+- **workspace** — make default workspace generic (#538)
+- **passport-team** — clean up workspace, xray playbook and setup guide (#540)
+- **beast** — remove forky bapps (out of scope), update team roles and jira configs
 - **mcp** — rebuild MCP bundles
-- **docs** — update Cursor guides with auto-detection and add README announcement
+
+## [0.2.139] — 2026-07-01
+
+### Added
+
+- **jira-mcp** — `xray_cloud_update_test_type` tool: update Test Type (Manual/Cucumber/Generic) on existing tests via XRay GraphQL
+- **jira-mcp** — `xray_cloud_add_precondition` tool: create preconditions and link to test cases
+- **pos-team** — PM profile with `dsp_bug_report_agent` for daily DSP bug reports
+- **agents** — `@jira-cloud/*` and `@confluence-cloud/*` patterns added to 52 agent files across all profiles
+
+### Fixed
+
+- **jira-mcp** — warn when Cloud URL detected without JIRA_EMAIL (root cause of single-instance 401 failures)
+- **pos-team** — `android_arch_agent` missing `includeMcpJson: true` (MCP tools never injected)
+- **agents** — `story_analyzer_agent` couldn't access Jira Cloud tools in multi-instance setups (#521)
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
 
 ## [0.2.147] — 2026-06-29
 

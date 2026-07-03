@@ -1,62 +1,163 @@
 # Passport Team Workspace — Setup
 
-## One-time setup (2 minutes)
+## Prerequisites
 
-### 1. Apply the workspace
+- Koda installed (`koda --version` works)
+- Jira Cloud MCP already configured and working
+- No agent sessions open during setup (close all first)
+
+---
+
+## Step 1: Update Koda and sync
 
 ```bash
-koda workspace apply passport-team
+koda upgrade
+koda sync --update
 ```
 
-### 2. Configure tokens
+---
 
-Add to `~/.kiro/tokens.env`:
+## Step 2: Add XRay credentials to tokens.env
+
+If you already have the Jira MCP working, you only need to add the XRay variables.
+
+Edit `~/.kiro/tokens.env` and add:
+
+```
+XRAY_CLOUD_CLIENT_ID=<your XRay client ID>
+XRAY_CLOUD_CLIENT_SECRET=<your XRay client secret>
+```
+
+Your complete `tokens.env` should look like this:
 
 ```
 JIRA_PAT_cloud=<your Atlassian Cloud API token>
 JIRA_URL_cloud=https://disneyexperiences.atlassian.net
 JIRA_EMAIL_cloud=your.name@disney.com
-CONFLUENCE_PAT_cloud=<same token>
+CONFLUENCE_PAT_cloud=<same token as JIRA_PAT_cloud>
 CONFLUENCE_URL_cloud=https://disneyexperiences.atlassian.net/wiki
 CONFLUENCE_EMAIL_cloud=your.name@disney.com
-XRAY_CLOUD_CLIENT_ID=<when available>
-XRAY_CLOUD_CLIENT_SECRET=<when available>
+XRAY_CLOUD_CLIENT_ID=<your XRay client ID>
+XRAY_CLOUD_CLIENT_SECRET=<your XRay client secret>
 ```
 
-| Token | Generate at |
-|-------|------------|
-| JIRA_PAT_cloud | https://id.atlassian.com/manage-profile/security/api-tokens |
-| XRAY_CLOUD_CLIENT_ID | Jira → Apps → XRay → Settings → API Keys |
-| XRAY_CLOUD_CLIENT_SECRET | Same as above |
+### Where to get tokens
 
-Note: JIRA_PAT and CONFLUENCE_PAT use the same Atlassian API token.
+| Token                    | Generate at                                                    |
+|--------------------------|----------------------------------------------------------------|
+| JIRA_PAT_cloud           | https://id.atlassian.com/manage-profile/security/api-tokens    |
+| CONFLUENCE_PAT_cloud     | Same token as JIRA (they share the same Atlassian API token)   |
+| XRAY_CLOUD_CLIENT_ID     | Jira → Apps → XRay → Settings → API Keys                      |
+| XRAY_CLOUD_CLIENT_SECRET | Same location as above                                         |
 
-### 3. Verify
+---
+
+## Step 3: Regenerate MCP config
+
+Run in terminal (no agents open):
 
 ```bash
-curl -s -w "\nHTTP: %{http_code}" -u "your.name@disney.com:YOUR_TOKEN" \
-  "https://disneyexperiences.atlassian.net/rest/api/3/myself"
+koda mcp-install
+koda sync --update
 ```
 
-Expected: HTTP 200.
+After running these commands, verify that the Jira MCP entry in your `mcp.json` includes the XRay variables:
 
-### 4. Start
+```json
+"jira-cloud": {
+  "_source": "global",
+  "args": [
+    "/Users/$USER/.kiro/tools/mcp-servers/jira-mcp/dist/index.cjs"
+  ],
+  "command": "/opt/homebrew/bin/node",
+  "env": {
+    "JIRA_EMAIL": "your.name@disney.com",
+    "JIRA_INSTANCE_PREFIX": "cloud_",
+    "JIRA_PAT": "<your token>",
+    "JIRA_URL": "https://disneyexperiences.atlassian.net",
+    "XRAY_CLOUD_CLIENT_ID": "<your client ID>",
+    "XRAY_CLOUD_CLIENT_SECRET": "<your client secret>"
+  }
+}
+```
+
+> If XRAY variables are missing from the `env` block, go back to Step 2 and verify your `tokens.env`.
+
+---
+
+## Step 4: Apply the workspace
 
 ```bash
-koda chat
+koda workspace apply passport-team
 ```
+
+After applying, run sync again:
+
+```bash
+koda sync --update
+```
+
+> All of the above steps must be done in terminal with NO agent sessions open.
+
+---
+
+## Step 5: Verify connectivity
+
+Start the QA orchestrator agent:
+
+```bash
+koda chat --agent qa_orchestrator_agent
+```
+
+Load the XRay context:
+
+```
+Load @xray-test-creation-context.md as context
+```
+
+Then ask the agent to test connectivity:
+
+```
+Test connection to Jira, Confluence, and XRay
+```
+
+If all three pass, you are ready to create or read test cases.
+
+---
+
+## Quick Commands After Setup
+
+```bash
+# Read test cases for a user story
+"Analyze PAS2-412 and check test coverage"
+
+# Create test cases for a user story
+"Create test cases for PAS2-XXX"
+
+# Execute tests on a device
+koda chat --agent mobile_test_executor_agent
+"Run PAS2-649 on iOS iPhone 17 Pro"
+```
+
+---
 
 ## Agents
 
-| Agent | Purpose |
-|-------|---------|
-| qa_orchestrator_agent | Routes QA tasks, Jira + Confluence |
-| mobile_test_executor_agent | Executes XRay Gherkin tests via Appium |
+| Agent                        | Purpose                                      |
+|------------------------------|----------------------------------------------|
+| `qa_orchestrator_agent`      | Routes QA tasks, test creation, Jira + XRay  |
+| `mobile_test_executor_agent` | Executes XRay Gherkin tests via Appium       |
+| `api_test_executor_agent`    | Executes API tests via Bruno                 |
+
+---
 
 ## Troubleshooting
 
-| Problem | Fix |
-|---------|-----|
-| 401 Unauthorized | Regenerate token at Atlassian |
-| Variable not found | Check ~/.kiro/tokens.env has all _cloud vars |
-| Tool not found | `koda workspace apply passport-team` |
+| Problem                         | Fix                                                        |
+|---------------------------------|------------------------------------------------------------|
+| 401 Unauthorized                | Regenerate token at Atlassian, update tokens.env           |
+| XRay tools not appearing        | Check XRAY_CLOUD_CLIENT_ID and SECRET in tokens.env        |
+| Variable not found              | Verify ~/.kiro/tokens.env has all _cloud vars              |
+| mcp.json missing XRAY vars      | Run `koda mcp-install` then `koda sync --update`           |
+| Tool not found after workspace  | Run `koda workspace apply passport-team` again             |
+| Agent cannot connect to XRay    | Close agent, re-run steps 3-4, restart agent               |

@@ -10,7 +10,7 @@
 | **steer-plugins** | TypeScript, Kotlin | VS Code + IntelliJ IDE plugins for agent chat |
 | **Kite** | Electron, TypeScript, React | Desktop GUI over kiro-cli — chat, agents, scoring, sessions |
 | **Mouseketool** | Electron, TypeScript, React | Config Studio desktop app |
-| **prompt-score** | Python, FastAPI | Prompt quality scoring API (6 dimensions, token estimation) |
+| **prompt-scorer** | Python, FastAPI | Prompt quality scoring API (6 dimensions, token estimation) |
 | **delivery-command-center** | Electron, Angular, TypeScript | Sprint health dashboard — Jira metrics, burndown, velocity, traffic lights |
 
 ## How They Connect
