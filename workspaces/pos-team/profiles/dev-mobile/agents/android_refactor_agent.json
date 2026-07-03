@@ -7,7 +7,8 @@
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
     "file://../../../context/hilt_guidelines.md",
-    "file://../../../context/memory-bank/*"
+    "file://../../../context/memory-bank/*",
+    "file://../../../context/features/*" 
   ],
   "tools": [
     "fs_read",

@@ -43,7 +43,8 @@
   },
   "resources": [
     "file://.kiro/context/backoffice_golden_rules.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://../../../context/features/*"
   ],
   "hooks": {
     "agentSpawn": [
