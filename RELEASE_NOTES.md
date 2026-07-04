@@ -4,18 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.149
+## v0.2.151
 
-- **stark-ui** — new workspace configuration for Stark UI team
-- **teams-mcp** — `auth_reset` tool with stale-state retry logic for resilient Teams authentication
-- **xray-cloud** — all 8 XRay Cloud MCP tools now fully operational
-- **autopilot** — experimental autonomous SDLC loop steering file
-- **sales** — context documentation for 4 Sales BAPPs (APP-49980)
-- **sustainment-fnb** — loadtest agent enhanced with schedule auto-creation and Atlassian Cloud wiki integration
-- **workspace** — default workspace made generic; steer-platform refs corrected
-- **passport-team** — cleaned up workspace with xray playbook and setup guide
-- **beast** — AI development context, Splunk hooks, and team configuration updates
-- **docs** — `koda ps` reference, Cursor support mention, experimental features section
+- **propose-judge strategy** — new dual-strategy orchestration: Analyze → Propose → Plan → Implement → Judge → Ship with auto-detection and retry loops
+- **propose_agent** (dev-core) — generates 2-4 implementation alternatives with dimensional scoring and recommendation
+- **judge_agent** (dev-core) — two-layer code evaluation with 6 weighted dimensions and PASS/CONDITIONAL/FAIL verdict
+- **docs** — propose-judge quick start guide with full flow walkthrough and standalone usage examples
+- **pos-team** — QA Validation Agent, receipts refactor learnings bank, android refactor agent, orchestration improvements
 <!-- END LATEST -->
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
