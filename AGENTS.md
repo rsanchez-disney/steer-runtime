@@ -12,7 +12,7 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 21 agents"]
+    subgraph DEV_CORE["dev-core · 23 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
         ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
         ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
@@ -214,21 +214,21 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
-koda install dev-core dev-web       # Fullstack web developer (21 agents)
-koda install dev-core dev-python    # Python developer (17 agents)
-koda install dev-core dev-ai        # AI/ML engineer (21 agents)
-koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
-koda install dev-core dev-dotnet    # .NET developer (19 agents)
-koda install dev-core dev-php       # PHP/Zend developer (17 agents)
-koda install dev-core dev-mobile    # Mobile developer (19 agents)
-koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
-koda install dev-core               # Core only — orchestrator + quality (17 agents)
+koda install dev                    # All 44 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev-core dev-web       # Fullstack web developer (23 agents)
+koda install dev-core dev-python    # Python developer (19 agents)
+koda install dev-core dev-ai        # AI/ML engineer (23 agents)
+koda install dev-core dev-infra     # Infra/Terraform developer (19 agents)
+koda install dev-core dev-dotnet    # .NET developer (21 agents)
+koda install dev-core dev-php       # PHP/Zend developer (19 agents)
+koda install dev-core dev-mobile    # Mobile developer (21 agents)
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (11 agents)
+koda install dev-core               # Core only — orchestrator + quality (19 agents)
 ```
 
 ---
 
-### Profile: dev-core (17 agents)
+### Profile: dev-core (19 agents)
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
@@ -357,6 +357,18 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Queries Splunk logs via Chrome MCP browser automation with SSO  
 **Use for:** Searching service logs, executing SPL queries, incident investigation  
 **MCP Servers:** Chrome MCP
+
+#### propose_agent
+**File:** `profiles/dev-core/agents/propose_agent.json`  
+**Purpose:** Generates multiple implementation alternatives, evaluates trade-offs, and recommends the best approach  
+**Use for:** Exploring solution space before committing to an approach, comparing architectures, choosing patterns  
+**Tools:** `thinking`, `knowledge`
+
+#### judge_agent
+**File:** `profiles/dev-core/agents/judge_agent.json`  
+**Purpose:** Evaluates code quality with structured dimensional scoring and quantified verdicts  
+**Use for:** Code quality assessment, tech debt measurement, validating agent output, post-implementation evaluation  
+**Tools:** `thinking`
 
 ---
 
@@ -1293,6 +1305,8 @@ Shared context loaded via agent `resources`:
 kiro-cli chat --agent orchestrator              # Dev orchestrator
 kiro-cli chat --agent code_review_agent         # Code review
 kiro-cli chat --agent technical_writer_agent    # Technical docs
+kiro-cli chat --agent propose_agent              # Propose alternatives
+kiro-cli chat --agent judge_agent                # Code quality judgment
 
 # Dev Web
 kiro-cli chat --agent backend                   # Java backend
@@ -1415,11 +1429,11 @@ kiro-cli chat --agent gsm_analyst_agent               # GSM analysis
 ## Installation
 
 ```bash
-koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 44 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev-core dev-ai        # AI/ML engineer (5 agents)
-koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (11 agents)
 koda install dev ba qa ops pm       # Install all profiles
 koda install design                 # Design discovery & UX research (6 agents)
 koda install cloudops               # Infrastructure strategy & SRE (4 agents)
@@ -1430,5 +1444,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 124 (dev-core: 21, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Total Agents:** 126 (dev-core: 23, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
 **Last Updated:** May 8, 2026

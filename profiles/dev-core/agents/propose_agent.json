@@ -1,0 +1,19 @@
+{
+  "name": "propose_agent",
+  "description": "Generates multiple implementation alternatives, evaluates trade-offs, and recommends the best approach before planning begins",
+  "prompt": "propose_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "knowledge"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}

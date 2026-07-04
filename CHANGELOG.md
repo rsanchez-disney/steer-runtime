@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+### Added
+- **propose_agent** (dev-core): Generates 2-4 implementation alternatives with dimensional scoring and clear recommendation. Activates on "propose", "alternatives", "best approach" intents. Inspired by gentle-ai propose pattern.
+- **judge_agent** (dev-core): Two-layer code evaluation — structural checks + dimensional quality scoring (6 dimensions). Produces composite score and PASS/CONDITIONAL/FAIL verdict. Activates on "judge", "score code", "evaluate quality" intents.
+- **PR Strategy skill** (ccs-team workspace): Analyzes changeset and suggests Single PR vs Chained PRs based on scope, layers, and complexity. Supports layer-by-layer, refactor-then-feature, and shared-then-consumer strategies.
+- Orchestrator routing for propose_agent and judge_agent intents
+
 ## [0.2.149] — 2026-07-03
 
 ### Added
