@@ -148,10 +148,20 @@ The domain orchestrator will manage its own sub-agents and return consolidated r
 
 ## SDLC workflow
 
-For Jira story implementation, follow the workflow in `sdlc-workflow.md` in your context:
-Analyze → Plan → 🚦 Gate → Implement → Quality → 🚦 Gate → Ship
+For Jira story implementation, follow the workflow in `sdlc-workflow.md` in your context.
 
-Gates are mandatory — never skip them.
+### Strategy selection
+
+Choose the strategy BEFORE starting:
+
+- **Standard** (default): Analyze → Plan → 🚦 → Implement → Quality → 🚦 → Ship
+- **Propose-Judge** (complex tasks): Analyze → Propose → 🚦 → Plan → 🚦 → Implement → Judge → 🚦 → Ship
+
+Use **propose-judge** when: multiple approaches exist, new dependencies, 3+ layers touched, irreversible decisions, or user asks for options.
+
+Use **standard** when: single obvious path, bug fix, routine CRUD, or user says "just do it".
+
+Gates are mandatory — never skip them. If Judge returns FAIL, loop back to Implement with feedback (max 1 retry).
 
 ---
 
