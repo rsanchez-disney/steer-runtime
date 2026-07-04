@@ -4,6 +4,17 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.150] — 2026-07-04
+
+### Added
+
+- **tests** — DPAY refund validation test plan with comprehensive scenarios for POST /api/v1/refunds/validate
+- **tests** — refund validation test plan v2 with expanded coverage
+
+### Changed
+
+- **docs** — certification report updated (trust score 97/100, delegation 24/26 passed)
+
 ## [0.2.149] — 2026-07-03
 
 ### Added

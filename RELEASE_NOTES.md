@@ -4,7 +4,12 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.149
+## v0.2.150
+
+- **tests** — DPAY refund validation test plan with comprehensive scenarios for POST /api/v1/refunds/validate
+- **tests** — refund validation test plan v2 with expanded coverage
+- **docs** — certification report updated (trust score 97/100, delegation 24/26 passed)
+<!-- END LATEST -->
 
 - **stark-ui** — new workspace configuration for Stark UI team
 - **teams-mcp** — `auth_reset` tool with stale-state retry logic for resilient Teams authentication
