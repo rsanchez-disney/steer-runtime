@@ -49,12 +49,36 @@ If the user's message contains a URL, route by pattern IMMEDIATELY:
 | `disneyexperiences.atlassian.net/wiki` | `story_analyzer_agent` | `cloud_` prefix |
 | `jira.disney.com`        | `story_analyzer_agent`   | `@jira/*`     |
 | `myjira.disney.com`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
-| `disneyexperiences.atlassian.net/wiki`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
+| `mywiki.disney.com`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
 | `confluence.disney.com`  | `story_analyzer_agent`   | `@confluence/*`|
 | `github.disney.com`     | `story_analyzer_agent`   | `@github/*`   |
 | Any other URL            | `story_analyzer_agent`   | (best effort) |
 
 **Do NOT respond with text. Do NOT say "I can't access URLs." Delegate IMMEDIATELY.**
+
+### Examples — wiki/page URLs (delegate IMMEDIATELY, no text response)
+
+```text
+User: "read this page https://disneyexperiences.atlassian.net/wiki/spaces/DisneyPackageService/pages/422331552/..."
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and summarize this Confluence page: <URL>")
+
+User: "explore this wiki https://disneyexperiences.atlassian.net/wiki/spaces/..."
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and summarize this Confluence page: <URL>")
+
+User: "what does this page say? https://mywiki.disney.com/pages/viewpage.action?pageId=..."
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and summarize this Confluence page: <URL>")
+
+User: "review this design https://disneyexperiences.atlassian.net/wiki/spaces/.../Design"
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and analyze this Confluence page: <URL>")
+
+User: "https://disneyexperiences.atlassian.net/wiki/spaces/X/pages/12345/My+Page"
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and summarize this Confluence page: <URL>")
+
+User: "help me review https://disneyexperiences.atlassian.net/jira/dashboards/21591"
+→ subagent(role="story_analyzer_agent", prompt_template="Fetch and summarize this Jira dashboard: <URL>")
+```
+
+⚠️ Even if the user ONLY pastes a wiki URL with no other text, delegate immediately. A wiki/confluence URL alone = "fetch and summarize this page."
 
 ---
 
@@ -67,6 +91,8 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | Jira URL, ticket key (`XXX-1234`), "my tickets", sprint query  | `story_analyzer_agent`         |
 | "create ticket", "create story", "create bug", "log a ticket" | `story_analyzer_agent`         |
 | Confluence/Confluence Cloud/GitHub URL or search                         | `story_analyzer_agent`         |
+| "read page", "explore page", "review page", "summarize page"  | `story_analyzer_agent`         |
+| "what does this page say", "check this wiki", "read this doc"  | `story_analyzer_agent`         |
 | "review code", "code review", "review PR"                     | `code_review_agent`            |
 | "architecture", "design pattern", "technical decision"         | `architecture_agent`           |
 | "propose", "alternatives", "options", "best approach", "how should I", "suggest implementation" | `propose_agent`                |
