@@ -1,7 +1,7 @@
 {
   "name": "android_test_agent",
   "description": "Test Engineer \u2014 generates MockK-based unit tests following project conventions. Manages Jira tickets for POS project.",
-  "prompt": "prompts/android_test_agent.md",
+  "prompt": "file://../prompts/android_test_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

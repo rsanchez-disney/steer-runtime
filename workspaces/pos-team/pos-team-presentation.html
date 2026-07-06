@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Team Workspace — Kiro Presentation</title>
+    <style>
+        :root {
+            --primary: #006e99;
+            --primary-dark: #004d6e;
+            --accent: #bfd730;
+            --accent-dark: #8fa800;
+            --warning: #f9ab00;
+            --danger: #d32f2f;
+            --disney-blue: #006e99;
+            --disney-dark: #004d6e;
+            --globant-green: #bfd730;
+            --globant-dark: #8fa800;
+            --bg: #f5f7f9;
+            --card-bg: #ffffff;
+            --text: #1a2b3c;
+            --text-light: #4a5f72;
+            --border: #d1dce5;
+            --code-bg: #eef3f7;
+            --shadow: 0 2px 8px rgba(0,78,110,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,78,110,0.12);
+            --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .nav { position: fixed; top: 0; left: 0; right: 0; background: var(--card-bg); border-bottom: 1px solid var(--border); z-index: 1000; padding: 0 2rem; box-shadow: var(--shadow); }
+        .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; height: 64px; gap: 2rem; }
+        .nav-brand { font-size: 1.25rem; font-weight: 700; color: var(--disney-blue); display: flex; align-items: center; gap: 0.5rem; }
+        .nav-links { display: flex; gap: 0.5rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-light); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+        .nav-links a:hover, .nav-links a.active { background: var(--disney-blue); color: white; }
+        .page { display: none; padding: 96px 2rem 4rem; max-width: 1400px; margin: 0 auto; }
+        .page.active { display: block; }
+        .hero { background: linear-gradient(135deg, var(--disney-blue), #0091c8); color: white; padding: 3rem; border-radius: var(--radius); margin-bottom: 2rem; box-shadow: var(--shadow-lg); }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; }
+        .hero-badges { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .badge { background: rgba(255,255,255,0.2); padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; backdrop-filter: blur(4px); }
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--disney-blue); display: flex; align-items: center; gap: 0.5rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .section-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 3px solid var(--disney-blue); }
+        .section-subtitle { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 1rem; color: var(--text); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        thead { background: var(--code-bg); }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { font-weight: 600; color: var(--text-light); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:hover { background: #f8f9ff; }
+        .prompt-anatomy { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .prompt-component { background: var(--card-bg); border-left: 4px solid var(--disney-blue); padding: 1.25rem; border-radius: 0 var(--radius) var(--radius) 0; box-shadow: var(--shadow); }
+        .prompt-component.context { border-left-color: var(--disney-blue); }
+        .prompt-component.task { border-left-color: var(--globant-green); }
+        .prompt-component.restriction { border-left-color: var(--danger); }
+        .prompt-component.format { border-left-color: var(--warning); }
+        .prompt-component.verification { border-left-color: #7b1fa2; }
+        .prompt-component h4 { font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .prompt-component p { font-size: 0.9rem; color: var(--text-light); }
+        .prompt-component code { background: var(--code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+        .prompt-example { background: var(--code-bg); border-radius: 8px; padding: 1.25rem; margin-top: 0.75rem; font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.85rem; white-space: pre-wrap; line-height: 1.5; overflow-x: auto; }
+        .agent-tree { margin: 1rem 0; }
+        .agent-node { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: background 0.2s; }
+        .agent-node:hover { background: var(--code-bg); }
+        .agent-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .agent-icon.orchestrator { background: #e8f0fe; }
+        .agent-icon.mobile { background: #e6f4ea; }
+        .agent-icon.backoffice { background: #fef7e0; }
+        .agent-icon.qa { background: #fce8e6; }
+        .agent-icon.pm { background: #f3e8fd; }
+        .agent-info h5 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .agent-info p { font-size: 0.85rem; color: var(--text-light); }
+        .agent-tools { display: flex; gap: 0.3rem; margin-top: 0.4rem; flex-wrap: wrap; }
+        .tool-tag { background: var(--code-bg); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; color: var(--text-light); }
+        .sub-agents { margin-left: 2.5rem; border-left: 2px solid var(--border); padding-left: 1rem; }
+        .stats-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .stat-box { flex: 1; min-width: 150px; background: var(--card-bg); border-radius: var(--radius); padding: 1.25rem; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .stat-box .number { font-size: 2rem; font-weight: 700; color: var(--disney-blue); }
+        .stat-box .label { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.25rem; }
+        .workflow { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; padding: 1.5rem; background: var(--code-bg); border-radius: var(--radius); margin: 1rem 0; }
+        .workflow-step { background: var(--disney-blue); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 500; }
+        .workflow-step.gate { background: var(--globant-green); color: #1a2b3c; }
+        .workflow-arrow { color: var(--text-light); font-size: 1.2rem; }
+        .skill-card { background: var(--card-bg); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+        .skill-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .skill-card h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--disney-blue); }
+        .skill-card p { font-size: 0.85rem; color: var(--text-light); }
+        .skill-agents { display: flex; gap: 0.3rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .nav-links { display: none; } .hero h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="nav-brand">
+                <span style="color:var(--disney-blue);">Disney</span>
+                <span style="color:var(--text-light); font-weight:400;">×</span>
+                <span style="color:var(--globant-dark);">Globant</span>
+                <span style="color:var(--text-light); font-weight:400; font-size:0.9rem; margin-left:0.5rem;">| POS Team</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('prompts')" class="active" id="nav-prompts">Prompts Guide</a></li>
+                <li><a href="#" onclick="showPage('agents')" id="nav-agents">Agents & Architecture</a></li>
+                <li><a href="#" onclick="showPage('tasks')" id="nav-tasks">Task Creation</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- PAGE 1: Prompts Guide -->
+    <div class="page active" id="page-prompts">
+        <div class="hero">
+            <h1>Anatomy of a Great Prompt</h1>
+            <p>How to communicate effectively with AI agents in the POS Team workspace</p>
+            <div class="hero-badges">
+                <span class="badge">📝 Context</span>
+                <span class="badge">🎯 Task</span>
+                <span class="badge">🚫 Restrictions</span>
+                <span class="badge">📋 Format</span>
+                <span class="badge">✅ Verification</span>
+            </div>
+        </div>
+
+        <h2 class="section-title">The 5 Components of an Effective Prompt</h2>
+
+        <div class="prompt-anatomy">
+            <div class="prompt-component context">
+                <h4>📝 1. Context — What the agent needs to know</h4>
+                <p>Provide background information so the agent understands the situation. Include relevant ticket IDs, business models, affected modules, and current state of the code.</p>
+                <div class="prompt-example">✅ "We're working on the ActivateX POS app, specifically the Table Service business model. 
+The receipt printing feature was recently refactored in POS-19892 and we're seeing 
+duplicate items on printed receipts when tips are added in offline mode."
+
+❌ "Fix the printing bug"</div>
+            </div>
+
+            <div class="prompt-component task">
+                <h4>🎯 2. Task — What you want done</h4>
+                <p>Be specific about the desired outcome. State the action clearly: implement, analyze, review, fix, generate, plan.</p>
+                <div class="prompt-example">✅ "Implement POS-20029 — fix duplicate redeemed items on printed receipts 
+when a DDP offline transaction has a tip added. The receipt should only show 
+each redeemed item once regardless of tip addition."
+
+✅ "Generate a daily bug report for DSP 2.1.1, 2.1.2, and 2.1.3 releases"
+
+✅ "Review the code changes in the current branch for security and quality"</div>
+            </div>
+
+            <div class="prompt-component restriction">
+                <h4>🚫 3. Restrictions — What NOT to do</h4>
+                <p>Set boundaries and constraints. Tell the agent what to avoid, what not to modify, and what rules to follow.</p>
+                <div class="prompt-example">✅ "Do not modify the existing ReceiptBuilder interface — only extend it. 
+Don't change any behavior for Merchandise or QSR business models. 
+Keep backward compatibility with the current gRPC contract."
+
+✅ "Don't add new dependencies. Use only existing libraries in the project."
+
+✅ "Never write code before I approve the spec."</div>
+            </div>
+
+            <div class="prompt-component format">
+                <h4>📋 4. Format — How to present the output</h4>
+                <p>Specify the structure, language, or template you want the response in.</p>
+                <div class="prompt-example">✅ "Present the implementation plan as a table with columns: 
+Task #, Description, Agent, Complexity (S/M/L), Dependencies"
+
+✅ "Generate the PR description using our standard template with 
+Solution Summary, Changes Strategy, and Testing Checklist sections"
+
+✅ "Output the report in markdown with sections matching our daily report format"</div>
+            </div>
+
+            <div class="prompt-component verification">
+                <h4>✅ 5. Verification — How to confirm success</h4>
+                <p>Define acceptance criteria so the agent knows when the task is complete and correct.</p>
+                <div class="prompt-example">✅ "Verify that:
+- Unit tests pass with ≥90% coverage on new code
+- The fix works for all three business models
+- No existing tests are broken
+- Gradle assembleDebug compiles successfully"
+
+✅ "The report is correct if all bug counts match the Jira queries 
+and no fabricated data appears in any section."</div>
+            </div>
+        </div>
+
+        <h2 class="section-subtitle">Complete Prompt Examples for POS Team</h2>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>📱 Android Implementation</h3>
+                <div class="prompt-example">Implement POS-20012.
+
+Context: This is a Table Service bug where combined 
+check-printing is not showing auto-apply gratuity 
+on the receipt. The gratuity is correctly applied 
+in the transaction but missing from print output.
+
+Restrictions:
+- Don't modify the TenderProcessor
+- Keep feature-flagged behind GRATUITY_PRINT_FIX
+- Must work for both online and offline modes
+
+Verification:
+- Unit test for receipt generation with gratuity
+- Test both combined and single check scenarios
+- Gradle build passes</div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Daily Report Generation</h3>
+                <div class="prompt-example">Generate daily DSP reports for all releases.
+
+Context: It's July 3, 2026. We need the daily 
+bug status report for DSP 2.1.1, 2.1.2, and 2.1.3.
+
+Format: Use the standard daily report template 
+with all 5 sections (Status, Critical, Promotions, 
+New Bugs, Risks).
+
+Restrictions:
+- Paginate all Jira queries completely
+- Never fabricate data — show "None" if empty
+- One file per release
+
+Verification: Bug counts must match JQL totals.</div>
+            </div>
+
+            <div class="card">
+                <h3>🏗️ Architecture Decision</h3>
+                <div class="prompt-example">Design an ADR for extracting the reduction 
+service from the Connect monolith.
+
+Context: The reduction calculation is currently 
+in Connect (PHP) but is needed by both the React 
+frontend and the Android app via gRPC. Current 
+approach creates coupling.
+
+Restrictions:
+- Must maintain backward compatibility
+- No shared database access
+- Feature-flagged migration path
+
+Format: Use our ADR template with Mermaid diagrams 
+for the system interaction.</div>
+            </div>
+
+            <div class="card">
+                <h3>✅ QA Coverage Validation</h3>
+                <div class="prompt-example">Validate regression coverage for POS-19406 
+against epic POS-1429.
+
+Context: GLB 2.1.3 release QA phase starting. 
+Need to verify test set completeness before 
+execution begins.
+
+Format: Coverage matrix with requirement mapping, 
+gap analysis with severity scoring, and 
+recommendations.
+
+Verification: Every AC from the epic must map 
+to at least one test case or be flagged as a gap.</div>
+            </div>
+        </div>
+
+        <h2 class="section-subtitle">Pro Tips</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>💡 Use Jira Ticket IDs</h3>
+                <p>Always reference the ticket (POS-XXXXX). The agents can fetch full details automatically via Jira MCP.</p>
+            </div>
+            <div class="card">
+                <h3>💡 Specify the Business Model</h3>
+                <p>POS has 3 modes: Merchandise, QSR, Table Service. Tell the agent which ones are affected to avoid blind spots.</p>
+            </div>
+            <div class="card">
+                <h3>💡 Let the Orchestrator Route</h3>
+                <p>You don't need to pick the right agent — just describe your task and the orchestrator will delegate to the specialist.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: Agents & Architecture -->
+    <div class="page" id="page-agents">
+        <div class="hero">
+            <h1>POS Team Agent Ecosystem</h1>
+            <p>21 specialized AI agents organized in 5 profiles — orchestrated for full SDLC coverage</p>
+            <div class="hero-badges">
+                <span class="badge">🎯 1 Team Orchestrator</span>
+                <span class="badge">📱 6 Mobile Agents</span>
+                <span class="badge">🏗️ 12 Backoffice Agents</span>
+                <span class="badge">✅ 1 QA Agent</span>
+                <span class="badge">📊 1 PM Agent</span>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="number">21</div>
+                <div class="label">Workspace Agents</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">5</div>
+                <div class="label">Active Profiles</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">10</div>
+                <div class="label">Skills</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">10</div>
+                <div class="label">Repositories</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">4</div>
+                <div class="label">Languages</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Agent Hierarchy</h2>
+
+        <!-- Team Orchestrator -->
+        <div class="card">
+            <h3>🎯 Team Orchestrator (Entry Point)</h3>
+            <div class="agent-tree">
+                <div class="agent-node">
+                    <div class="agent-icon orchestrator">🎯</div>
+                    <div class="agent-info">
+                        <h5>pos_team_orchestrator_agent</h5>
+                        <p>POS Team orchestrator — routes requests to the appropriate domain agent: Android mobile, Backoffice architecture, QA validation, or DSP bug reporting</p>
+                        <div class="agent-tools">
+                            <span class="tool-tag">subagent</span>
+                            <span class="tool-tag">todo_list</span>
+                            <span class="tool-tag">thinking</span>
+                        </div>
+                        <div class="agent-tools" style="margin-top:0.3rem;">
+                            <span class="tool-tag" style="background:#fff3e0; color:#e65100;">⚠️ Pure orchestrator — no direct MCP, no code access</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
+                <strong>Delegates to:</strong> android_arch_agent, pos_backoffice_orchestrator, qa_validation_agent, dsp_bug_report_agent
+            </p>
+            <div class="workflow">
+                <span class="workflow-step">Receive Request</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Classify Domain</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Route to Domain Agent</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Return Results</span>
+            </div>
+        </div>
+
+        <!-- Mobile Domain -->
+        <div class="card">
+            <h3>📱 Android Mobile (dev-mobile profile)</h3>
+            <div class="agent-tree">
+                <div class="agent-node">
+                    <div class="agent-icon mobile">📱</div>
+                    <div class="agent-info">
+                        <h5>android_arch_agent</h5>
+                        <p>Android Architect — primary orchestrator for mobile SDLC. Decomposes tasks and delegates to Dev, Test, Quality, PR, and Bug Report agents.</p>
+                        <div class="agent-tools">
+                            <span class="tool-tag">fs_read</span>
+                            <span class="tool-tag">thinking</span>
+                            <span class="tool-tag">todo_list</span>
+                            <span class="tool-tag">subagent</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-agents">
+                    <div class="agent-node">
+                        <div class="agent-icon mobile">⌨️</div>
+                        <div class="agent-info">
+                            <h5>android_dev_agent</h5>
+                            <p>Kotlin implementation, feature development, and Jira ticket management</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">@gitlab/*</span>
+                                <span class="tool-tag">@jira/*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon mobile">🧪</div>
+                        <div class="agent-info">
+                            <h5>android_test_agent</h5>
+                            <p>MockK-based unit test generation following project conventions</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">@jira/*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon mobile">✅</div>
+                        <div class="agent-info">
+                            <h5>android_quality_agent</h5>
+                            <p>Mandatory code/test quality review gate — architecture compliance check</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">glob</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon mobile">📋</div>
+                        <div class="agent-info">
+                            <h5>android_pr_agent</h5>
+                            <p>GitLab MR description generation with solution summary and checklist</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">@gitlab/*</span>
+                                <span class="tool-tag">@jira/*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon mobile">🐛</div>
+                        <div class="agent-info">
+                            <h5>dsp_bug_report_agent</h5>
+                            <p>DSP release bug reporting (shared with pm profile)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
+                <strong>Also references (base agents):</strong> requirements_analyst_agent, sprint_manager_agent
+            </p>
+        </div>
+
+        <!-- Refactor Agent -->
+        <div class="card">
+            <h3>🔧 Android Refactor Engineer (dev-mobile profile — independent orchestrator)</h3>
+            <div class="agent-tree">
+                <div class="agent-node">
+                    <div class="agent-icon mobile">🔧</div>
+                    <div class="agent-info">
+                        <h5>android_refactor_agent</h5>
+                        <p>Takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.</p>
+                        <div class="agent-tools">
+                            <span class="tool-tag">fs_read</span>
+                            <span class="tool-tag">fs_write</span>
+                            <span class="tool-tag">execute_bash</span>
+                            <span class="tool-tag">grep</span>
+                            <span class="tool-tag">code</span>
+                            <span class="tool-tag">thinking</span>
+                            <span class="tool-tag">todo_list</span>
+                            <span class="tool-tag">subagent</span>
+                            <span class="tool-tag">@jira/*</span>
+                            <span class="tool-tag">@gitlab/*</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
+                <strong>Delegates to:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent
+            </p>
+        </div>
+
+        <!-- Backoffice Domain -->
+        <div class="card">
+            <h3>🏗️ Backoffice Platform (dev-backoffice profile)</h3>
+            <div class="agent-tree">
+                <div class="agent-node">
+                    <div class="agent-icon backoffice">🏗️</div>
+                    <div class="agent-info">
+                        <h5>pos_backoffice_orchestrator</h5>
+                        <p>POS Backoffice SDLC orchestrator — routes Jira stories through 7 stages using sub-agents. Pure orchestrator (no direct code work).</p>
+                        <div class="agent-tools">
+                            <span class="tool-tag">code</span>
+                            <span class="tool-tag">grep</span>
+                            <span class="tool-tag">fs_read</span>
+                            <span class="tool-tag">execute_bash</span>
+                            <span class="tool-tag">thinking</span>
+                            <span class="tool-tag">knowledge</span>
+                            <span class="tool-tag">todo_list</span>
+                            <span class="tool-tag">subagent</span>
+                            <span class="tool-tag">@mermaid/*</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-agents">
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🏛️</div>
+                        <div class="agent-info">
+                            <h5>pos_architecture_agent</h5>
+                            <p>Architecture specialist — design decisions, ADRs, impact analysis, gRPC patterns</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">thinking</span>
+                                <span class="tool-tag">knowledge</span>
+                                <span class="tool-tag">@mermaid/*</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🔍</div>
+                        <div class="agent-info">
+                            <h5>pos_story_analyzer_agent</h5>
+                            <p>Jira ticket fetching and analysis (POS-*, CONFE-* from myjira.disney.com)</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">@jira/*</span>
+                                <span class="tool-tag">@jira-cloud/*</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">web_fetch</span>
+                                <span class="tool-tag">knowledge</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">📂</div>
+                        <div class="agent-info">
+                            <h5>pos_codebase_explorer_agent</h5>
+                            <p>Codebase file and pattern discovery across Connect, Go services, and React SPA</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">glob</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">📋</div>
+                        <div class="agent-info">
+                            <h5>pos_planner_agent</h5>
+                            <p>Task breakdown, dependencies, and test strategy across PHP, Go, and React</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">@jira/*</span>
+                                <span class="tool-tag">@jira-cloud/*</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">thinking</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🐘</div>
+                        <div class="agent-info">
+                            <h5>pos_php_agent</h5>
+                            <p>PHP specialist — CodeIgniter monolith (Connect) and Laravel/Lumen microservices</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🔵</div>
+                        <div class="agent-info">
+                            <h5>pos_go_agent</h5>
+                            <p>Go specialist — gRPC microservices, REST APIs, idiomatic Go</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">⚛️</div>
+                        <div class="agent-info">
+                            <h5>pos_react_agent</h5>
+                            <p>React/TypeScript specialist — React 17, Redux/RTK, MUI 5, Jest</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">fs_write</span>
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">grep</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🧪</div>
+                        <div class="agent-info">
+                            <h5>pos_test_runner_agent</h5>
+                            <p>PHPUnit in k8s pods, go test, Jest execution and coverage</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">execute_bash</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">code</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🔎</div>
+                        <div class="agent-info">
+                            <h5>pos_code_review_agent</h5>
+                            <p>Code quality review — golden rules compliance, style, correctness</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">code</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">shell</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">🛡️</div>
+                        <div class="agent-info">
+                            <h5>pos_security_scanner_agent</h5>
+                            <p>OWASP compliance, secrets detection, dependency vulnerabilities</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">shell</span>
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">grep</span>
+                                <span class="tool-tag">code</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="agent-node">
+                        <div class="agent-icon backoffice">📝</div>
+                        <div class="agent-info">
+                            <h5>pos_work_documenter_agent</h5>
+                            <p>Commit messages, PR descriptions, work summaries</p>
+                            <div class="agent-tools">
+                                <span class="tool-tag">fs_read</span>
+                                <span class="tool-tag">write</span>
+                                <span class="tool-tag">grep</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="workflow" style="margin-top:1.5rem;">
+                <span class="workflow-step">Analyze</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Explore</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Plan</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step gate">🚦 Gate 1</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Implement</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Test</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Review</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step gate">🚦 Gate 2</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Document</span>
+            </div>
+        </div>
+
+        <!-- QA & PM -->
+        <div class="grid-2">
+            <div class="card">
+                <h3>✅ QA Validation (qa profile)</h3>
+                <div class="agent-node">
+                    <div class="agent-icon qa">✅</div>
+                    <div class="agent-info">
+                        <h5>qa_validation_agent</h5>
+                        <p>Validates regression test sets against epic requirements — identifies coverage gaps, traceability issues, and risk areas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📊 PM / Operations (pm profile)</h3>
+                <div class="agent-node">
+                    <div class="agent-icon pm">📊</div>
+                    <div class="agent-info">
+                        <h5>dsp_bug_report_agent</h5>
+                        <p>Daily DSP release bug reports — status summaries, promotions, risks, throughput insights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Team Skills Matrix</h2>
+        <div class="grid-3">
+            <div class="skill-card">
+                <h4>🔧 Implementation</h4>
+                <p>Full-stack implementation across Kotlin, PHP, Go, and React/TypeScript</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">android_dev_agent</span>
+                    <span class="tool-tag">pos_php_agent</span>
+                    <span class="tool-tag">pos_go_agent</span>
+                    <span class="tool-tag">pos_react_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🧪 Testing</h4>
+                <p>MockK, PHPUnit, go test, Jest — with coverage tracking and flaky test prevention</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">android_test_agent</span>
+                    <span class="tool-tag">pos_test_runner_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🏛️ Architecture</h4>
+                <p>System design, ADRs, service boundaries, gRPC contracts, impact analysis</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">android_arch_agent</span>
+                    <span class="tool-tag">pos_architecture_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🔎 Code Review</h4>
+                <p>Quality gates, golden rules, style checks, correctness analysis</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">android_quality_agent</span>
+                    <span class="tool-tag">pos_code_review_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🛡️ Security</h4>
+                <p>OWASP compliance, secrets detection, dependency vulnerability scanning</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">pos_security_scanner_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>📋 Planning</h4>
+                <p>Task breakdown, dependency mapping, test strategy, story analysis</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">pos_planner_agent</span>
+                    <span class="tool-tag">pos_story_analyzer_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>📝 Documentation</h4>
+                <p>PR descriptions, commit messages, work summaries, MR content</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">pos_work_documenter_agent</span>
+                    <span class="tool-tag">android_pr_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🔧 Refactoring</h4>
+                <p>Bug pattern analysis, feature-flagged solutions, regression chain detection</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">android_refactor_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>📊 Reporting</h4>
+                <p>DSP release reports, QA coverage validation, bug status tracking</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">dsp_bug_report_agent</span>
+                    <span class="tool-tag">qa_validation_agent</span>
+                </div>
+            </div>
+            <div class="skill-card">
+                <h4>🗺️ Exploration</h4>
+                <p>Codebase discovery, file search, pattern matching, impact surface analysis</p>
+                <div class="skill-agents">
+                    <span class="tool-tag">pos_codebase_explorer_agent</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Full Agent Inventory</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Profile</th>
+                        <th>Role</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>pos_team_orchestrator_agent</code></td><td>orchestrator</td><td>Top-level router to domain agents</td><td>Orchestrator</td></tr>
+                    <tr><td><code>android_arch_agent</code></td><td>dev-mobile</td><td>Android Architect — orchestrates mobile SDLC</td><td>Orchestrator</td></tr>
+                    <tr><td><code>android_dev_agent</code></td><td>dev-mobile</td><td>Kotlin implementation and Jira management</td><td>Specialist</td></tr>
+                    <tr><td><code>android_test_agent</code></td><td>dev-mobile</td><td>MockK-based unit test generation</td><td>Specialist</td></tr>
+                    <tr><td><code>android_quality_agent</code></td><td>dev-mobile</td><td>Mandatory code/test quality review gate</td><td>Specialist</td></tr>
+                    <tr><td><code>android_pr_agent</code></td><td>dev-mobile</td><td>GitLab MR description generation</td><td>Specialist</td></tr>
+                    <tr><td><code>android_refactor_agent</code></td><td>dev-mobile</td><td>Feature-flagged refactoring orchestrator</td><td>Orchestrator</td></tr>
+                    <tr><td><code>pos_backoffice_orchestrator</code></td><td>dev-backoffice</td><td>Backoffice SDLC orchestrator (7 stages + 2 gates)</td><td>Orchestrator</td></tr>
+                    <tr><td><code>pos_architecture_agent</code></td><td>dev-backoffice</td><td>Architecture specialist — design decisions, ADRs, impact analysis</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_php_agent</code></td><td>dev-backoffice</td><td>PHP specialist (CodeIgniter + Laravel/Lumen)</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_go_agent</code></td><td>dev-backoffice</td><td>Go specialist (gRPC microservices)</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_react_agent</code></td><td>dev-backoffice</td><td>React/TypeScript specialist (connect-frontend)</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_planner_agent</code></td><td>dev-backoffice</td><td>Task breakdown and dependency planning</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_test_runner_agent</code></td><td>dev-backoffice</td><td>PHPUnit, go test, Jest execution</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_work_documenter_agent</code></td><td>dev-backoffice</td><td>Commit messages and PR descriptions</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_story_analyzer_agent</code></td><td>dev-backoffice</td><td>Jira ticket fetching and analysis</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_codebase_explorer_agent</code></td><td>dev-backoffice</td><td>Codebase file and pattern discovery</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_code_review_agent</code></td><td>dev-backoffice</td><td>Code quality and golden rules compliance</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_security_scanner_agent</code></td><td>dev-backoffice</td><td>OWASP, secrets, dependency vulnerabilities</td><td>Specialist</td></tr>
+                    <tr><td><code>qa_validation_agent</code></td><td>qa</td><td>Test set vs epic coverage validation</td><td>Specialist</td></tr>
+                    <tr><td><code>dsp_bug_report_agent</code></td><td>pm</td><td>Daily DSP release bug reports</td><td>Specialist</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Task Creation -->
+    <div class="page" id="page-tasks">
+        <div class="hero">
+            <h1>Task Creation Guide</h1>
+            <p>How to trigger different workflows in the POS Team agent ecosystem</p>
+            <div class="hero-badges">
+                <span class="badge">🎫 Jira Tickets</span>
+                <span class="badge">⚡ Quick Actions</span>
+                <span class="badge">🔄 Full Pipeline</span>
+                <span class="badge">🎯 Direct Entry</span>
+            </div>
+        </div>
+
+        <h2 class="section-title">Entry Points</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>🎯 Top-Level Orchestrator</h3>
+                <p>Use <code>pos_team_orchestrator_agent</code> when you're unsure which domain your request targets. It routes automatically.</p>
+                <div class="prompt-example">kiro-cli chat --agent pos_team_orchestrator_agent</div>
+            </div>
+            <div class="card">
+                <h3>📱 Android Direct</h3>
+                <p>Use <code>android_arch_agent</code> for mobile features, or <code>android_refactor_agent</code> for refactoring tasks with JIRA tickets.</p>
+                <div class="prompt-example">kiro-cli chat --agent android_arch_agent
+kiro-cli chat --agent android_refactor_agent</div>
+            </div>
+            <div class="card">
+                <h3>🏗️ Backoffice Direct</h3>
+                <p>Use <code>pos_backoffice_orchestrator</code> for backend/frontend work on Connect services.</p>
+                <div class="prompt-example">kiro-cli chat --agent pos_backoffice_orchestrator</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Triggering Full SDLC Pipelines</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3>🏗️ Backoffice Pipeline (7 Stages)</h3>
+                <p>Say "implement" + a Jira ticket to trigger the full pipeline:</p>
+                <div class="prompt-example">implement POS-19542
+build this story: POS-20100
+work on CONFE-1234</div>
+                <p style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">Pipeline: Analyze → Explore → Plan → 🚦 Gate 1 → Implement → Test → Review → 🚦 Gate 2 → Document</p>
+            </div>
+            <div class="card">
+                <h3>📱 Mobile Pipeline (Spec-First)</h3>
+                <p>Describe the feature or provide a Jira ticket. The architect will present a spec for approval before any code is written.</p>
+                <div class="prompt-example">Implement POS-20012 — fix the gratuity 
+display on combined check receipts for 
+Table Service.
+
+Must be feature-flagged.</div>
+                <p style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">Pipeline: Understand → Plan → Spec → 🚦 Approve → Implement → Test → Quality Review → Deliver</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">Quick Actions (No Full Pipeline)</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>What You Say</th>
+                        <th>What Happens</th>
+                        <th>Agent Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>"POS-19542" (ticket only, no "implement")</td><td>Fetches and summarizes the Jira ticket</td><td>pos_story_analyzer_agent</td></tr>
+                    <tr><td>"review code" / "code review"</td><td>Reviews changed files for quality</td><td>pos_code_review_agent</td></tr>
+                    <tr><td>"run tests" / "fix test"</td><td>Executes tests and reports results</td><td>pos_test_runner_agent</td></tr>
+                    <tr><td>"security scan"</td><td>OWASP + secrets + dependency scan</td><td>pos_security_scanner_agent</td></tr>
+                    <tr><td>"explore" / "find where X is"</td><td>Searches codebase for patterns/files</td><td>pos_codebase_explorer_agent</td></tr>
+                    <tr><td>"create PR" / "document work"</td><td>Generates commit msg + PR description</td><td>pos_work_documenter_agent</td></tr>
+                    <tr><td>"plan" / "break down"</td><td>Creates implementation task list</td><td>pos_planner_agent</td></tr>
+                    <tr><td>"architecture" / "design decision"</td><td>Architecture guidance and ADRs</td><td>pos_architecture_agent</td></tr>
+                    <tr><td>"generate daily DSP report"</td><td>Bug report for DSP releases</td><td>dsp_bug_report_agent</td></tr>
+                    <tr><td>"validate test coverage for epic"</td><td>Regression coverage analysis</td><td>qa_validation_agent</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">Refactoring Workflow</h2>
+        <div class="card">
+            <h3>🔧 android_refactor_agent — Bug-Driven Refactoring</h3>
+            <p>Provide one or more JIRA ticket numbers. The agent will:</p>
+            <div class="workflow">
+                <span class="workflow-step">Fetch Tickets</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Identify Bug Patterns</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Assess Architecture</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Design Solution</span>
+                <span class="workflow-arrow">→</span>
+                <span class="workflow-step">Delegate Execution</span>
+            </div>
+            <div class="prompt-example" style="margin-top:1rem;">POS-20100 POS-20101 POS-20102
+
+These three tickets are all related to receipt 
+duplication. Analyze the pattern and propose a 
+feature-flagged refactoring solution.</div>
+        </div>
+
+        <h2 class="section-title">Tips for Best Results</h2>
+        <div class="grid-2">
+            <div class="card">
+                <h3>✅ Do</h3>
+                <ul style="padding-left:1.5rem; font-size:0.9rem; color:var(--text-light);">
+                    <li>Include Jira ticket IDs (agents auto-fetch details)</li>
+                    <li>Specify the business model (Merchandise, QSR, Table Service)</li>
+                    <li>State restrictions upfront (don't modify X, keep backward compat)</li>
+                    <li>Wait for gate approvals — review the plan before implementation</li>
+                    <li>Provide feedback at gates to revise the approach</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>❌ Don't</h3>
+                <ul style="padding-left:1.5rem; font-size:0.9rem; color:var(--text-light);">
+                    <li>Don't paste Jira content manually — let agents fetch it</li>
+                    <li>Don't skip the spec/plan approval step</li>
+                    <li>Don't specify which sub-agent to use — let the orchestrator route</li>
+                    <li>Don't give multi-domain requests without clarifying priority</li>
+                    <li>Don't use "fix/" or "feat/" branch prefixes (backoffice uses TICKET-ID-description)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('nav-' + pageId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
