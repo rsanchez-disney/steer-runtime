@@ -98,6 +98,12 @@ search index=wdpr_booking_service "{SWID}" earliest=-7d
 search index=wdpr_booking_service "{SWID}" earliest=-90d | head 30 | table _time, _raw
 ```
 
+### eGalaxy SoCal MK Zip Validation (for renewal eligibility)
+```spl
+search index=wdpr_egalaxy_dlr "QueryTicketResponse" "{VID}" earliest=-7d | search "ZipCode"
+```
+> For SoCal MK eligibility, verify the zip code in `QueryTicketResponse` is in range **90000???93599**. If outside this range ??? guest is not eligible for SoCal MK renewal. Route to `app-cadlr-galaxy`.
+
 ### OrderAnalyticsLogger by ConvoId
 ```spl
 search index=wdpr_booking_service "{CONVO_ID}" OrderAnalyticsLogger earliest=-7d

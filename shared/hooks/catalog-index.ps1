@@ -1,4 +1,4 @@
-# agentSpawn hook: generate managed services catalog index for the current workspace scope
+﻿# agentSpawn hook: generate managed services catalog index for the current workspace scope
 # Stdout: full index with BAPP IDs, paths, and instructions (injected into agent context)
 # Also writes backup to _dynamic/catalog-index.md
 
@@ -88,9 +88,9 @@ foreach ($studio in $Studios) {
         $ci = if ($content -match '(?m)\s+configuration_items:\s*"([^"]*)"') { $Matches[1] } else { "" }
         # Extract ServiceNow assignment group for incident routing
         $assignGroup = if ($content -match '(?m)\s+assignment_group:\s*"([^"]*)"') { $Matches[1] } else { "" }
-        # Extract full app description (collapsed to single line for table format)
+        # Extract description — stop before support_studio key
         $desc = ""
-        if ($content -match '(?ms)^description:\s*[>|]-?\s*\n((?:\s+.+\n?)+)') {
+        if ($content -match '(?ms)^description:\s*[>|]-?\s*\n(.+?)(?=\nsupport_studio:)') {
             $desc = ($Matches[1] -replace '\r?\n\s*', ' ').Trim()
         } elseif ($content -match '(?m)^description:\s*"([^"]*)"') {
             $desc = $Matches[1]
