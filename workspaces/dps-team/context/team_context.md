@@ -63,7 +63,7 @@ Part of the **Yield Management Platform (YMP)** initiative.
 │  RIS (Room Inventory Service) — room inventory freeze (→ TravelBox)  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
-- From [DPS Context Diagram](https://mywiki.disney.com/spaces/DisneyPackageService/pages/1050286326/Context+Diagram+%E2%80%94+Disney+Package+Service)
+- From [DPS Context Diagram](https://disneyexperiences.atlassian.net/wiki/spaces/DisneyPackageService/pages/1050286326/Context+Diagram+%E2%80%94+Disney+Package+Service)
 
 ## Repos & Tech Stack
 
@@ -178,5 +178,5 @@ docker build -t dps-core-offer .
 - **Static Analysis**: SonarQube + Checkstyle
 
 # Wiki
-- [DPS Wiki Home](https://mywiki.disney.com/pages/viewpage.action?pageId=1021186767&spaceKey=DisneyPackageService)
+- [DPS Wiki Home](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1021186767&spaceKey=DisneyPackageService)
 

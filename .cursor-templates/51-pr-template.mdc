@@ -25,7 +25,7 @@ Coverage: <percentage>%
 ## PR Description Format
 ```markdown
 ## Story
-[DPAY-XXXX](https://myjira.disney.com/browse/DPAY-XXXX): <title>
+[DPAY-XXXX](https://disneyexperiences.atlassian.net/browse/DPAY-XXXX): <title>
 
 ## Type
 Feature | Bugfix | Tech Debt

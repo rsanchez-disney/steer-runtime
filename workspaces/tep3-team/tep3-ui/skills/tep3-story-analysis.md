@@ -11,7 +11,7 @@ Analyzes a TEP3 Jira ticket and produces a codebase map focused on UI repositori
 
 ## Step 1 — Fetch Jira Ticket
 
-Query `myjira.disney.com` for the ticket:
+Query `disneyexperiences.atlassian.net` for the ticket:
 - Summary, description, acceptance criteria
 - Story points, sprint, status, assignee
 - Parent story / epic links

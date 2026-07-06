@@ -145,8 +145,8 @@ All services monitored via Splunk dashboards:
 
 ## Conventions
 
-- **Jira**: FNB- (food & beverage), MERCH- (merchandise) on myjira.disney.com
-- **Wiki**: FBT space on mywiki.disney.com
+- **Jira**: FNB- (food & beverage), MERCH- (merchandise) on disneyexperiences.atlassian.net
+- **Wiki**: FBT space on disneyexperiences.atlassian.net/wiki
 - **Commit style**: Conventional commits
 - **Branch naming**: `{type}/{ticket-id}/description`
 - **PR scope**: One story = one PR

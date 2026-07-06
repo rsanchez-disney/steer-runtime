@@ -53,7 +53,7 @@ Key CTAs managed by Facilities Publisher:
 | standByPass | wdw, hkdl | Facet `stand-by-pass` |
 | playDisneyParks | wdw, dlr | Data rules (deepLinks) + facet + LaunchDarkly |
 
-Full CTA rules reference: [MyWiki — CTA Rules](https://mywiki.disney.com/spaces/DSI/pages/910729902/CTA+Rules)
+Full CTA rules reference: [Confluence Cloud — CTA Rules](https://disneyexperiences.atlassian.net/wiki/spaces/DSI/pages/910729902/CTA+Rules)
 
 ## Idempotency
 

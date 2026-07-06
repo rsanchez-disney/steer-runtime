@@ -14,7 +14,7 @@
   "default_agent": "orchestrator",
   "jira_prefix": "SEAS-",
   "jira_custom_fields": {
-    "myjira": "customfield_10003"
+    "cloud": "customfield_10003"
   },
   "rules": [
     "conventional_commit",

@@ -41,9 +41,9 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090149/DLP+DGE+API.DigitalKey+BAPP0220148"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/980389053/KI+DLP+Digital+Key+BAPP0220148"
-  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/898076543/BF+Digital+Key"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090149/DLP+DGE+API.DigitalKey+BAPP0220148"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/980389053/KI+DLP+Digital+Key+BAPP0220148"
+  business_flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/898076543/BF+Digital+Key"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -63,7 +63,7 @@ known_issues:
     category: "incident-based"
     severity: "critical"
     affected_component: "digital-key-provider"
-    source_link: "https://mywiki.disney.com/spaces/SBH/pages/980389053"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/980389053"
     description: "When CISA e-servers (DCR, NY, DL) are down, Digital Key Provider cannot retrieve eligible rooms. Guests unable to use Digital Key for room access. Documented in app.yaml notes and corroborated by multiple ServiceNow incidents."
 
   - id: "KI-DK-002"

@@ -5,7 +5,7 @@
   "tools": [
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@jira/*",
     "@jira-cloud/*",
     "fs_read",
@@ -20,7 +20,7 @@
   "allowedTools": [
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@jira/*",
     "@jira-cloud/*",
     "@mermaid/*",

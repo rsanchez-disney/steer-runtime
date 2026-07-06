@@ -93,6 +93,6 @@ See `context/repo-fnb-shared.md` for what the library provides.
 ## Jira
 
 - **Project**: FNB (Food & Beverage)
-- **Instance**: myjira.disney.com
+- **Instance**: disneyexperiences.atlassian.net
 - **Components**: MOO, Mobile Order, Dine Check-in
 - **Sprint board**: FBT board

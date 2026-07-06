@@ -178,7 +178,7 @@ What are the active PI risks across the vertical? Group by severity.
 ### Publish
 
 ```
-Publish the quarterly report to MyWiki under the "Payments Reports" page
+Publish the quarterly report to Confluence Cloud under the "Payments Reports" page
 ```
 
 ---

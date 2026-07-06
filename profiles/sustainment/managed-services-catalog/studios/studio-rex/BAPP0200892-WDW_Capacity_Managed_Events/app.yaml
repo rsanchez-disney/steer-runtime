@@ -36,7 +36,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/studiorex/pages/724511941/CME+Runbook"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/studiorex/pages/724511941/CME+Runbook"
   wiki: "https://confluence.disney.com/spaces/WDPROS/pages/1937270326/WDPRD+Entitlement-View-Assembly-Service+-+CTASK+Management"
   architecture_diagram: ""
 

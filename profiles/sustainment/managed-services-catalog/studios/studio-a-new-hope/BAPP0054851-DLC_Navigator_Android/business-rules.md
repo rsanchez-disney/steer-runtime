@@ -21,11 +21,11 @@
 
 - The app operates in 2 modes: **At Home** (pre-cruise) and **Onboard** (during the cruise)
 - Content is ship-specific and voyage-specific
-- Full feature documentation: https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks
+- Full feature documentation: https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks
 
 ## Dependencies
 
-- Full list of backend services: https://mywiki.disney.com/spaces/DCLMGET/pages/1325305850/Onboard+Environments
+- Full list of backend services: https://disneyexperiences.atlassian.net/wiki/spaces/DCLMGET/pages/1325305850/Onboard+Environments
 
 ## Impact Classification
 

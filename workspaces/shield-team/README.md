@@ -94,8 +94,8 @@ Press `[t]` in Koda (or `[m]` for the full MCP screen) to configure:
 
 | Token | For |
 |-------|-----|
-| **Jira PAT** | myjira.disney.com or jira.disney.com |
-| **Confluence PAT** | mywiki.disney.com or confluence.disney.com |
+| **Jira PAT** | disneyexperiences.atlassian.net or jira.disney.com |
+| **Confluence PAT** | disneyexperiences.atlassian.net/wiki or confluence.disney.com |
 | **GitHub PAT** | github.disney.com |
 | **Compass Token** | compass.wdprapps.disney.com (optional) |
 

@@ -330,7 +330,7 @@ function Install-McpServers {
     $mcpConfig.mcpServers["github"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\github-mcp\dist\index.cjs"); env = [ordered]@{ GITHUB_HOST = "github.disney.com"; GITHUB_TOKEN = ""; GITHUB_API_PATH = "/api/v3" } }
     $mcpConfig.mcpServers["jira"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\jira-mcp\dist\index.cjs"); env = [ordered]@{ JIRA_PAT = "" } }
     $mcpConfig.mcpServers["mermaid"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\mermaid-diagram-mcp\dist\index.cjs") }
-    $mcpConfig.mcpServers["confluence-mywiki"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "mywiki_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://mywiki.disney.com" } }
+    $mcpConfig.mcpServers["confluence-cloud"] = [ordered]@{ command = $nodePath; args = @("$mcpBundleDir\confluence-mcp\dist\index.cjs"); env = [ordered]@{ CONFLUENCE_INSTANCE_PREFIX = "cloud_"; CONFLUENCE_PAT = ""; CONFLUENCE_URL = "https://disneyexperiences.atlassian.net/wiki" } }
 
     $mcpJsonPath = Join-Path $KiroHome "settings\mcp.json"
     New-Item -ItemType Directory -Force -Path (Split-Path $mcpJsonPath) | Out-Null
@@ -338,9 +338,9 @@ function Install-McpServers {
     Write-Host "  OK $mcpJsonPath" -ForegroundColor Green
 
     Write-Host "`nAdd your tokens to: $mcpJsonPath" -ForegroundColor Yellow
-    Write-Host "  Jira:       https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens"
+    Write-Host "  Jira:       https://id.atlassian.com/manage-profile/security/api-tokens"
     Write-Host "  Confluence: https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action"
-    Write-Host "  MyWiki:     https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action"
+    Write-Host "  Confluence Cloud:     https://disneyexperiences.atlassian.net/wiki/plugins/personalaccesstokens/usertokens.action"
     Write-Host "  GitHub:     https://github.disney.com/settings/tokens"
     return $bundleCount
 }

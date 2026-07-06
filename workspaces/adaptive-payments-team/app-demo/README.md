@@ -109,4 +109,4 @@ iOS:     Demo UI → Demo API → Payment Sheet API → Session Service
 ## Jira
 
 - **Prefix:** DPAY-
-- **Board:** https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=4498
+- **Board:** https://disneyexperiences.atlassian.net/jira/software/boards/4498

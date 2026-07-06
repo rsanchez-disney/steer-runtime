@@ -39,9 +39,9 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/484024469/Korvac+Lambda"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting"
-  troubleshooting_tools: "https://mywiki.disney.com/pages/viewpage.action?pageId=650185839&spaceKey=GIT&title=ANT-MAN%2BApps%2BTroubleshooting%2Btools"
-  tactical_monitoring: "https://mywiki.disney.com/spaces/GIT/pages/1162547087/Tactical+Monitoring+Alerting+%E2%80%93+Frontline+Sustainment"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting"
+  troubleshooting_tools: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=650185839&spaceKey=GIT&title=ANT-MAN%2BApps%2BTroubleshooting%2Btools"
+  tactical_monitoring: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1162547087/Tactical+Monitoring+Alerting+%E2%80%93+Frontline+Sustainment"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 
 # --- Companion Docs (Markdown) ---

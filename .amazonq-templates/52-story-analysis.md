@@ -2,7 +2,7 @@
 
 ## Fetching Stories
 Use Jira MCP tools with the issue key extracted from URLs:
-- `https://myjira.disney.com/browse/DPAY-14337` → key: `DPAY-14337`
+- `https://disneyexperiences.atlassian.net/browse/DPAY-14337` → key: `DPAY-14337`
 - Map prefix to project: DPAY → Config Studio, GCP → Gift Card, TIMON → CAP, SPR → Smart Payment Routing
 
 ## Analysis Checklist
@@ -24,9 +24,9 @@ Flag as incomplete if:
 ## MCP Tool Routing
 | URL Pattern | MCP Tools |
 |---|---|
-| `myjira.disney.com` | Jira MCP tools |
+| `disneyexperiences.atlassian.net` | Jira MCP tools |
 | `confluence.disney.com` | Confluence MCP tools |
-| `mywiki.disney.com` | MyWiki MCP tools |
+| `disneyexperiences.atlassian.net/wiki` | Confluence Cloud MCP tools |
 | `github.disney.com` | GitHub MCP tools |
 
-If the user provides a Confluence/MyWiki URL, use the matching MCP tools to fetch page content, extract requirements, and cross-reference with Jira stories.
+If the user provides a Confluence/Confluence Cloud URL, use the matching MCP tools to fetch page content, extract requirements, and cross-reference with Jira stories.

@@ -158,7 +158,7 @@ graph TD
     runtime --> confluence["Confluence MCP<br/>(node)"]
     runtime --> github["GitHub MCP<br/>(node)"]
     runtime --> mermaid["Mermaid MCP<br/>(node)"]
-    runtime --> mywiki["MyWiki MCP<br/>(node)"]
+    runtime --> cloud-wiki["Confluence Cloud MCP<br/>(node)"]
 
     style terminal fill:#1a1a2e,stroke:#e94560,color:#eee
     style runtime fill:#0f3460,stroke:#e94560,color:#eee
@@ -166,7 +166,7 @@ graph TD
     style confluence fill:#16213e,stroke:#0f3460,color:#eee
     style github fill:#16213e,stroke:#0f3460,color:#eee
     style mermaid fill:#16213e,stroke:#0f3460,color:#eee
-    style mywiki fill:#16213e,stroke:#0f3460,color:#eee
+    style cloud-wiki fill:#16213e,stroke:#0f3460,color:#eee
 ```
 
 ### Profile Layout
@@ -200,7 +200,7 @@ Shared resources live in `.kiro/`:
 |-----------------------------|-----------------------------------------------|
 | Total agents                | 41                                            |
 | Profiles                    | 5 (dev, ba, qa, ops, pm)                      |
-| MCP servers                 | 5 (jira, confluence, mywiki, github, mermaid) |
+| MCP servers                 | 5 (jira, confluence, cloud-wiki, github, mermaid) |
 | Agents with MCP integration | 22                                            |
 | Agents with hooks           | 11                                            |
 | Agents with advanced tools  | 11                                            |

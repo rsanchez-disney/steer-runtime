@@ -38,5 +38,5 @@
 ## Known Quirks
 
 - Internal tool only — no guest-facing impact (LOW severity)
-- Minimal documentation available on MyWiki for this service
+- Minimal documentation available on Confluence Cloud for this service
 - Backend entirely dependent on Preference Service (BAPP0170520)

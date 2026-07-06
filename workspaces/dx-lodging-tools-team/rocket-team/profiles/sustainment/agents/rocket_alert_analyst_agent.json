@@ -4,7 +4,7 @@
   "prompt": "prompts/rocket_alert_analyst_agent.md",
   "tools": [
     "@chrome-devtools/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@jira/*",
     "@compass/*",
     "fs_read",
@@ -19,7 +19,7 @@
   ],
   "allowedTools": [
     "@chrome-devtools/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@jira/*",
     "@compass/*"
   ],

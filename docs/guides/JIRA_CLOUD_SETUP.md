@@ -185,17 +185,15 @@ Koda generates separate MCP server entries for each instance, using `INSTANCE_PR
 |------------|---------------------|-----------|----------------------------|
 | Jira Cloud | `jira-cloud`        | `cloud_`  | `cloud_get_issue`          |
 | Confluence Cloud | `confluence-cloud` | `cloud_` | `cloud_get_page`          |
-| Jira On-Prem | `jira-myjira`     | `jira_`   | `jira_get_issue`           |
+| Jira On-Prem | `jira-jira`       | `jira_`   | `jira_get_issue`           |
 | Confluence On-Prem | `confluence-confluence` | `confluence_` | `confluence_get_page` |
-| MyWiki On-Prem | `confluence-mywiki` | `mywiki_` | `mywiki_get_page`       |
 
 The orchestrator context maps URLs to prefixes:
 
 | URL                                        | Service    | Prefix        |
 |--------------------------------------------|------------|---------------|
-| `myjira.disney.com`                        | Jira       | `jira_`       |
+| `disneyexperiences.atlassian.net`          | Jira Cloud | `cloud_`      |
 | `jira.disney.com`                          | Jira       | `jira_`       |
-| `disneyexperiences.atlassian.net`          | Jira       | `cloud_`      |
 | `disneyexperiences.atlassian.net/wiki`     | Confluence | `cloud_`      |
 | `confluence.disney.com`                    | Confluence | `confluence_` |
-| `mywiki.disney.com`                        | Confluence | `mywiki_`     |
+| `disneyexperiences.atlassian.net/wiki`                        | Confluence | `cloud_`     |

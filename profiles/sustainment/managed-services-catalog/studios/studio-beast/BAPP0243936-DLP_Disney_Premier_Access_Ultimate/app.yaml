@@ -40,9 +40,9 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/989201429/DLP+Disney+Premier+Access+Ultimate+BAPP0243936"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/995525493/KI+DLP+Disney+Premier+Access+Ultimate+BAPP0243936"
-  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/862192975/BF+DPA+Ultimate"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/989201429/DLP+Disney+Premier+Access+Ultimate+BAPP0243936"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/995525493/KI+DLP+Disney+Premier+Access+Ultimate+BAPP0243936"
+  business_flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/862192975/BF+DPA+Ultimate"
   architecture_diagram: "https://confluence.disney.com/pages/viewpage.action?spaceKey=SRBK&title=BAPP0243936+-+DLP+ORION+-+DPA+Ultimate"
 
 # --- Companion Docs (Markdown) ---

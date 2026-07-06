@@ -47,7 +47,7 @@
 - [Any caveats, things left unchanged, or context] (Suggest and prompt for additional comments)
 
 ## Jira ticket
-- https://myjira.disney.com/browse/TEP3-XXXXX
+- https://disneyexperiences.atlassian.net/browse/TEP3-XXXXX
 
 ## Evidence
 [Screenshots showing the fix/feature working — before/after if applicable]

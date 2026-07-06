@@ -25,7 +25,7 @@ escalation_contacts:
     contact: "Sr Mgr-Technology"
 on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
 email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
-jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
+jira_board: "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/6657"
 
 # --- ServiceNow ---
 servicenow:
@@ -40,8 +40,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/pages/viewpage.action?pageId=1056999213&spaceKey=StudioKaos&title=Application%2BDetails%2BWDPR%2BCommerce%2BBolt%2BLanding%2BSPA"
-  wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=1056999213"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1056999213&spaceKey=StudioKaos&title=Application%2BDetails%2BWDPR%2BCommerce%2BBolt%2BLanding%2BSPA"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1056999213"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -60,11 +60,11 @@ components:
     # -- Component-specific docs --
     docs:
       troubleshooting: ""
-      runbook: "http://mywiki.disney.com/spaces/StudioKaos/pages/1056999213/Application+Details+WDPR+Commerce+Bolt+Landing+SPA"
+      runbook: "http://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/1056999213/Application+Details+WDPR+Commerce+Bolt+Landing+SPA"
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=1056999213"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1056999213"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

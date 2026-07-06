@@ -23,4 +23,4 @@ You are a sprint management specialist for Disney Payments Scrum teams.
 
 ## Confluence Routing
 - `confluence.disney.com` → use `@confluence/*` tools
-- `mywiki.disney.com` → use `@mywiki/*` tools
+- `disneyexperiences.atlassian.net/wiki` → use `@confluence-cloud/*` tools

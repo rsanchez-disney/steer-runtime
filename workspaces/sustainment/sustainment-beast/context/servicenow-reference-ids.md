@@ -84,7 +84,7 @@ Quick decision guide for ServiceNow reassignment:
 
 ## DLP Squad Assignment Groups (Complete)
 
-Beast monitors incidents and changes across all DLP squads. Source: [⚔️ DLP Squads](https://mywiki.disney.com/spaces/SBH/pages/853970077/%E2%9A%94%EF%B8%8F+DLP+Squads)
+Beast monitors incidents and changes across all DLP squads. Source: [⚔️ DLP Squads](https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/853970077/%E2%9A%94%EF%B8%8F+DLP+Squads)
 
 | Project | Squad | Assignment Group | Sys ID | Scope |
 |---|---|---|---|---|

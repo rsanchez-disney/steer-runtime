@@ -204,7 +204,7 @@ Extract shared content into 3 reusable files + 1 auto-generated hook output. Eac
 1. Delegation mandate (~15 lines) — always delegate via `subagent`, never do specialist work
 2. Yax persistent memory (~45 lines) — session lifecycle, auto-save triggers, retrieve-first, no secrets/PII
 3. Protected files (~10 lines) — require user approval for modifications
-4. Instance routing (~10 lines) — Confluence vs MyWiki, email confirmation
+4. Instance routing (~10 lines) — Confluence vs Confluence Cloud, email confirmation
 
 **`shared/context/sdlc-workflow.md`** (~60 lines, conditional: `agent_is:orchestrator|steer_orchestrator*|qa_orchestrator*`):
 

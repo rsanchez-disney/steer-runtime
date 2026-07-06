@@ -90,7 +90,7 @@ Show quality gate status for wdpr-config-services
 
 | Agent              | MCP Server                       |
 |--------------------|----------------------------------|
-| ai_metrics_agent   | jira, confluence, mywiki, github |
+| ai_metrics_agent   | jira, confluence, cloud-wiki, github |
 | deployment_agent   | harness (Docker)                 |
 | code_quality_agent | sonarqube (Docker)               |
 | infra_check_agent  | AWS CLI (local)                  |

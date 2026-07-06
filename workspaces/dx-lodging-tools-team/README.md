@@ -78,9 +78,9 @@ koda workspace apply yondu-tep3
 
 | Team | Jira Prefix | Board | Wiki |
 |------|-------------|-------|------|
-| Rocket | ROS- | [10320](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10320) | [Studio ROCKET](https://mywiki.disney.com/spaces/ROS/pages/451024499/Studio+ROCKET) |
-| Star Lord | ROS- | [10955](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10955) | [Star-Lord LSWM](https://mywiki.disney.com/spaces/ROS/pages/925995234) |
-| Yondu | TEP3- | [12887](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12887) | [Yondu YMP](https://mywiki.disney.com/spaces/ROS/pages/1222089118) |
+| Rocket | ROS- | [10320](https://disneyexperiences.atlassian.net/jira/software/boards/10320) | [Studio ROCKET](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/451024499/Studio+ROCKET) |
+| Star Lord | ROS- | [10955](https://disneyexperiences.atlassian.net/jira/software/boards/10955) | [Star-Lord LSWM](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/925995234) |
+| Yondu | TEP3- | [12887](https://disneyexperiences.atlassian.net/jira/software/boards/12887) | [Yondu YMP](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/1222089118) |
 
 ### GitHub Organizations
 

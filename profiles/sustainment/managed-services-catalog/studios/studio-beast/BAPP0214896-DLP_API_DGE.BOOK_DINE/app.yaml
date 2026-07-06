@@ -40,10 +40,10 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235669/DLP+API.DGE+Book+Dine+BAPP0214896"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235669/DLP+API.DGE+Book+Dine+BAPP0214896"
   architecture_diagram: "https://confluence.disney.com/x/epJbIQ"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/962561428/KI+DLP+API.DGE+Book+Dine+BAPP0214896"
-  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/974691168/BF+Book+Dine"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/962561428/KI+DLP+API.DGE+Book+Dine+BAPP0214896"
+  business_flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/974691168/BF+Book+Dine"
 
 # --- Companion Docs (Markdown) ---
 docs:
@@ -97,7 +97,7 @@ known_issues:
     category: "alert-based"
     severity: "low"
     affected_component: "drs-book-dine-provider"
-    source_link: "https://mywiki.disney.com/spaces/SBH/pages/962561428"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/962561428"
     description: "Object reference not set to an instance of an object errors appear when there is no restaurant availability. This is EXPECTED behavior — can be safely ignored. Documented to prevent false escalations."
 
 # --- Components ---

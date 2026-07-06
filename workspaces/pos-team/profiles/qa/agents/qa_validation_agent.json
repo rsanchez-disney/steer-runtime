@@ -7,7 +7,7 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@gitlab/*",
     "@github/*",
     "fs_read",

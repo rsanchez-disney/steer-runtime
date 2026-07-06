@@ -39,7 +39,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/1212734938/Collector+Lambda"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1242600424/BAPP0249631+-+WDPR+Ant-Man+Lambda+Collector"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1242600424/BAPP0249631+-+WDPR+Ant-Man+Lambda+Collector"
   gcx_tools_api: "https://confluence.disney.com/display/ECM/GCX+Tools+API+Gateway"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 

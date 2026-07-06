@@ -7,7 +7,7 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "execute_bash",
     "fs_read",
     "grep",
@@ -21,7 +21,7 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*"
+    "@confluence-cloud/*"
   ],
   "includeMcpJson": true
 }

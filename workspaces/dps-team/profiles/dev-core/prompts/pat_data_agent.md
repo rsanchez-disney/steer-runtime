@@ -95,7 +95,7 @@ Rules:
 1. `jira: get ISOPP-{ticket}` — summary, description, ACs, linked issues
 2. `jira: read comments` — QA feedback, test scenarios
 3. `jira: check linked test cases` — sub-tasks, "is tested by" links
-4. `confluence/mywiki` — follow wiki links for design docs
+4. `confluence/cloud-wiki` — follow wiki links for design docs
 5. `github` — check linked PRs for code changes
 6. Synthesize impacted flows, then generate requests with traceability table
 

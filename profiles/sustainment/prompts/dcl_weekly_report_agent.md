@@ -257,7 +257,7 @@ curl http://127.0.0.1:3848/tabs
 ```
 If Jira open → switch to it. Otherwise:
 ```bash
-curl 'http://127.0.0.1:3848/navigate?url=https://myjira.disney.com/secure/Dashboard.jspa?selectPageId=30424'
+curl 'http://127.0.0.1:3848/navigate?url=https://disneyexperiences.atlassian.net/jira/dashboards/30424'
 sleep 5
 ```
 If SSO redirect → navigate again (second attempt works).

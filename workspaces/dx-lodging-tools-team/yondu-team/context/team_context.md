@@ -11,11 +11,11 @@ Studio Yondu is a project team working on enhancements to existing Rocket applic
 
 ## Wiki
 
-- [Studio Yondu YMP Project](https://mywiki.disney.com/spaces/ROS/pages/1222089118/Studio+Yondu+YMP+Project+for+Lodging+Tools)
+- [Studio Yondu YMP Project](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/1222089118/Studio+Yondu+YMP+Project+for+Lodging+Tools)
 
 ## Workflow
 
 - Scrum with separate dailies and ceremonies
 - Tickets resolved → QA/Tech validation → PR review → merge → release
-- Jira instance: myjira.disney.com
+- Jira instance: disneyexperiences.atlassian.net
 - Works on existing repos owned by Studio Rocket

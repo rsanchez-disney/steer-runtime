@@ -50,7 +50,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235671/DLP+DGE+API.Guest+Activity+Block+BAPP0247844"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235671/DLP+DGE+API.Guest+Activity+Block+BAPP0247844"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -71,7 +71,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235671/DLP+DGE+API.Guest+Activity+Block+BAPP0247844"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235671/DLP+DGE+API.Guest+Activity+Block+BAPP0247844"
 
     repository:
       url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-activity-block-provider"
@@ -167,7 +167,7 @@ components:
       path: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/981337848/Guest+Activity+Block+Client+Library"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/981337848/Guest+Activity+Block+Client+Library"
 
     consumers:
       - name: "Ticket Linking Provider"

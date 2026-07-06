@@ -98,7 +98,7 @@ workspaces/{parent-team}/
 | `enable_tools` | boolean | Enable thinking, todo, knowledge tools |
 | `jira_prefix` | string \| string[] | Jira project prefix(es) (e.g., `"DPAY-"` or `["FNB-", "MERCH-"]`) |
 | `jira_host` | string | Jira instance URL (default: `jira.disney.com`) |
-| `jira_instance` | string | Named Jira instance (e.g., `"myjira"`) — alternative to jira_host |
+| `jira_instance` | string | Named Jira instance (e.g., `"cloud"`) — alternative to jira_host |
 | `jira_board_id` | number | Default Jira board ID for sprint queries |
 | `jira_board_url` | string | Direct URL to the team's Jira board |
 | `jira_components` | string[] | Jira component names for filtering |
@@ -366,7 +366,7 @@ Koda reads this on sync and auto-migrates users' `activeWorkspace` setting.
   "rules": ["conventional_commit"],
   "enable_tools": true,
   "jira_prefix": ["FNB-", "MERCH-"],
-  "jira_host": "myjira.disney.com",
+  "jira_host": "disneyexperiences.atlassian.net",
   "workspace_path": "${WORKSPACE_ROOT}/Disney"
 }
 ```

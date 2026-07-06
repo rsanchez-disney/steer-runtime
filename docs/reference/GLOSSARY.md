@@ -85,11 +85,11 @@ Definitions of key concepts, terms, and components used across steer-runtime.
 | **MCP Server** | An integration bridge — a child process (stdio) or remote endpoint (SSE) translating between agent tool calls and external APIs. |
 | **Bundle** | A single `.cjs` file produced by esbuild from MCP server TypeScript source — eliminates npm install. |
 | **mcp.json** | Generated config at `~/.kiro/settings/mcp.json` declaring active MCP servers with connection details. |
-| **Multi-Instance** | Same MCP server type running multiple times with different tokens/URLs (e.g., `confluence-confluence` and `confluence-mywiki`). |
-| **Tool Prefix** | MCP tools are namespaced by server name (e.g., `@confluence-mywiki/*`, `@jira-myjira/*`). |
+| **Multi-Instance** | Same MCP server type running multiple times with different tokens/URLs (e.g., `confluence-confluence` and `confluence-cloud`). |
+| **Tool Prefix** | MCP tools are namespaced by server name (e.g., `@confluence-confluence/*`, `@jira-cloud/*`). |
 | **tokens.env** | Centralized token file at `~/.kiro/tokens.env` storing PATs and API keys. |
 | **Token Injection** | During install, Koda reads tokens and injects them into agent JSON `env` blocks. |
-| **Tool Expansion** | Koda expands alias patterns (`@confluence/*`) to actual server names (`@confluence-confluence/*`, `@confluence-mywiki/*`) during install. |
+| **Tool Expansion** | Koda expands alias patterns (`@confluence/*`) to actual server names (`@confluence-confluence/*`, `@confluence-cloud/*`) during install. |
 
 ---
 

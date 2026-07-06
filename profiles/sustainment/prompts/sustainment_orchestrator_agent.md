@@ -174,8 +174,8 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 |---|---|
 | `profiles/sustainment/agents/sustainment_orchestrator_agent.json` | Sustainment orchestrator tool permissions |
 | `profiles/sustainment/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
-| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
-| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/Confluence Cloud/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (cloud_* vs confluence_*) |
 
 ## Additional Delegation Rules
 

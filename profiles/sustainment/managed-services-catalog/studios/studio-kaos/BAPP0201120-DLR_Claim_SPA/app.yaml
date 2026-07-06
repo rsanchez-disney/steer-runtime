@@ -25,7 +25,7 @@ escalation_contacts:
     contact: "Sr Mgr-Technology"
 on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
 email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
-jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
+jira_board: "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/6657"
 
 # --- ServiceNow ---
 servicenow:
@@ -40,8 +40,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888036/DLR+Claim+SPA+BAPP0201120"
-  wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=534888036"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888036/DLR+Claim+SPA+BAPP0201120"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=534888036"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,11 +61,11 @@ components:
     # -- Component-specific docs --
     docs:
       troubleshooting: ""
-      runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888036/DLR+Claim+SPA+BAPP0201120"
+      runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888036/DLR+Claim+SPA+BAPP0201120"
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=534888036"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=534888036"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

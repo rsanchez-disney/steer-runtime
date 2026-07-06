@@ -40,10 +40,10 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235686/DLP+DGE+API.BIO+Services+BAPP0215510"
   architecture_diagram: "https://confluence.disney.com/x/NjFrRQ"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/990319193/KI+DLP+DGE+API.BIO+Services+BAPP0215510"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/990319193/KI+DLP+DGE+API.BIO+Services+BAPP0215510"
   healthcheck_manager: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-devops-mobileapp-healthcheck-manager/health-ui"
 
 # --- Companion Docs (Markdown) ---

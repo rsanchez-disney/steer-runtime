@@ -7,10 +7,10 @@ Studio Kaos manages DLR ticketing, availability calendars, entitlement sales, pa
 ## Jira
 
 - **Project:** COM
-- **Board:** [COM - Kaos | Nair](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657)
+- **Board:** [COM - Kaos | Nair](https://disneyexperiences.atlassian.net/jira/software/boards/6657)
 - **Board ID:** 6657
 - **View:** Planning (backlog + sprint)
-- **Instance:** myjira.disney.com
+- **Instance:** disneyexperiences.atlassian.net
 
 ## Applications (from Managed Services Catalog)
 
@@ -35,4 +35,4 @@ Studio Kaos manages DLR ticketing, availability calendars, entitlement sales, pa
 
 ## Wiki
 
-- [Studio Kaos Space](https://mywiki.disney.com/spaces/StudioKaos)
+- [Studio Kaos Space](https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos)

@@ -41,7 +41,7 @@ Pattern: `https://grafana.disney.com/...` or `https://grafana-*.disney.com/...`
 - **You MUST access this link** to get the actual NRQL query
 
 ### Runbook Links
-Pattern: `https://confluence.disney.com/...` or `https://mywiki.disney.com/...`
+Pattern: `https://confluence.disney.com/...` or `https://disneyexperiences.atlassian.net/wiki/...`
 - Extract for reference and known resolution steps
 
 ### Identifying Environment from Description

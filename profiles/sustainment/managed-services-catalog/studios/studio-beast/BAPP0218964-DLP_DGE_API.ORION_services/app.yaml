@@ -41,9 +41,9 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235682/DLP+DGE+API.ORION+services+BAPP0218964"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/1020008251/KI+DLP+DGE+API.ORION+services+BAPP0218964"
-  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/1000703320/BF+DPA+Orion"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235682/DLP+DGE+API.ORION+services+BAPP0218964"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1020008251/KI+DLP+DGE+API.ORION+services+BAPP0218964"
+  business_flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1000703320/BF+DPA+Orion"
 
 # --- Companion Docs (Markdown) ---
 docs:

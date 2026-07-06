@@ -26,7 +26,7 @@ Produces audience-tailored summaries — directors, colleagues, partners.
 ## Capabilities
 
 - ✅ **Jira** — cross-project queries across all teams in the vertical
-- ✅ **Confluence / MyWiki** — publish reports
+- ✅ **Confluence / Confluence Cloud** — publish reports
 - ✅ **Thinking** — complex analysis and reasoning
 
 ---

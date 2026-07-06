@@ -4,9 +4,9 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in MyWiki | Not documented in MyWiki |
-| Response time (p95) | Not documented in MyWiki | Not documented in MyWiki |
-| Error rate | Not documented in MyWiki | Not documented in MyWiki |
+| Uptime | Not documented in Confluence Cloud | Not documented in Confluence Cloud |
+| Response time (p95) | Not documented in Confluence Cloud | Not documented in Confluence Cloud |
+| Error rate | Not documented in Confluence Cloud | Not documented in Confluence Cloud |
 
 ## Peak Periods
 
