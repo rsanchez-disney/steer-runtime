@@ -1,7 +1,7 @@
 {
   "name": "android_refactor_agent",
   "description": "Android Refactor Engineer — takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
-  "prompt": "prompts/android_refactor_agent.md",
+  "prompt": "file://../prompts/android_refactor_agent.md",
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",

@@ -11,13 +11,13 @@
     "subagent": {
       "availableAgents": [
         "android_arch_agent",
-        "pos_architecture_agent",
+        "pos_backoffice_orchestrator",
         "qa_validation_agent",
         "dsp_bug_report_agent"
       ],
       "trustedAgents": [
         "android_arch_agent",
-        "pos_architecture_agent",
+        "pos_backoffice_orchestrator",
         "qa_validation_agent",
         "dsp_bug_report_agent"
       ]
@@ -42,6 +42,6 @@
       }
     ]
   },
-  "welcomeMessage": "👋 POS Team Orchestrator ready!\n\nI route your requests to the right specialist:\n  📱 Android mobile → android_arch_agent\n  🏗️ Backend architecture → pos_architecture_agent\n  ✅ QA validation → qa_validation_agent\n  🐛 DSP bug reports → dsp_bug_report_agent\n\nJust describe what you need and I'll delegate to the right agent.",
+  "welcomeMessage": "👋 POS Team Orchestrator ready!\n\nI route your requests to the right specialist:\n  📱 Android mobile → android_arch_agent\n  🏗️ Backend architecture → pos_backoffice_orchestrator\n  ✅ QA validation → qa_validation_agent\n  🐛 DSP bug reports → dsp_bug_report_agent\n\nJust describe what you need and I'll delegate to the right agent.",
   "includeMcpJson": true
 }

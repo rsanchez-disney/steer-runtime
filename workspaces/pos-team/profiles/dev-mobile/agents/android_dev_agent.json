@@ -1,7 +1,7 @@
 {
   "name": "android_dev_agent",
   "description": "Android Developer \u2014 implements features and fixes following project conventions. Manages Jira tickets for POS project.",
-  "prompt": "prompts/android_dev_agent.md",
+  "prompt": "file://../prompts/android_dev_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

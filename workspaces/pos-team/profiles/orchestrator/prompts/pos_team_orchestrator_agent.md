@@ -33,7 +33,7 @@ On every user message, evaluate in this order:
    → Delegate to `android_arch_agent`
 
 2. Is it about backend architecture, CodeIgniter, Go services, React frontend, design decisions, or system design?
-   → Delegate to `pos_architecture_agent`
+   → Delegate to `pos_backoffice_orchestrator`
 
 3. Is it about QA, test validation, regression coverage, test sets, or quality assurance?
    → Delegate to `qa_validation_agent`
@@ -52,7 +52,7 @@ On every user message, evaluate in this order:
 | Domain / Keywords                                          | Agent                     |
 |------------------------------------------------------------|---------------------------|
 | Android, Kotlin, mobile, Hilt, Compose, ViewModel, Gradle  | `android_arch_agent`      |
-| Architecture, backend, PHP, Go, React, gRPC, microservices, design decision, ADR | `pos_architecture_agent` |
+| Architecture, backend, PHP, Go, React, gRPC, microservices, design decision, ADR | `pos_backoffice_orchestrator` |
 | QA, test validation, regression, coverage, test set, epic validation | `qa_validation_agent` |
 | DSP, bug report, release status, promotion, 2.1.x, throughput | `dsp_bug_report_agent` |
 
@@ -63,8 +63,8 @@ On every user message, evaluate in this order:
 ### android_arch_agent
 Android Architect — primary orchestrator for mobile development. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents. Handles Kotlin/Android feature implementation, architecture decisions for mobile, and mobile SDLC workflows.
 
-### pos_architecture_agent
-POS Backoffice Architect & Orchestrator — provides architecture guidance directly AND orchestrates the full dev-backoffice SDLC by delegating to specialist agents: pos_php_agent, pos_go_agent, pos_react_agent, pos_codebase_explorer_agent, pos_test_runner_agent, pos_planner_agent, pos_security_scanner_agent, pos_work_documenter_agent, pos_code_review_agent, pos_story_analyzer_agent.
+### pos_backoffice_orchestrator
+POS Backoffice Orchestrator — provides architecture guidance directly AND orchestrates the full dev-backoffice SDLC by delegating to specialist agents: pos_php_agent, pos_go_agent, pos_react_agent, pos_codebase_explorer_agent, pos_test_runner_agent, pos_planner_agent, pos_security_scanner_agent, pos_work_documenter_agent, pos_code_review_agent, pos_story_analyzer_agent.
 
 ### qa_validation_agent
 Validates regression test sets against epic requirements, identifying coverage gaps, traceability issues, and risk areas before test execution begins. Works with Jira epics and test sets.
