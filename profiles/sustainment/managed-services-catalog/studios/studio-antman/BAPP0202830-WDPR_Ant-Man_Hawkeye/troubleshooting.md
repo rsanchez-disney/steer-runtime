@@ -57,4 +57,4 @@
 - Shares `wdpr_d-scribe` Splunk index — filter by `source="*hawkeye-prod/*"` for production
 - ECS cluster pattern: wdpr-content-B0202830-usw2-{env}-shuri-hawkeye
 - Grafana dashboard: https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard
-- General troubleshooting: https://mywiki.disney.com/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting
+- General troubleshooting: https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting

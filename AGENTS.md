@@ -12,10 +12,10 @@ graph TD
     classDef tool fill:#fff3e0,stroke:#ffa726,color:#e65100,font-size:11px
 
     %% ─── dev-core ──────────────────────────────────
-    subgraph DEV_CORE["dev-core · 21 agents"]
+    subgraph DEV_CORE["dev-core · 23 agents"]
         ORCH["🎯 orchestrator<br/><i>thinking · todo · delegate</i>"]:::orch
-        ORCH --> PLAN["planner<br/><i>jira · confluence · mywiki</i>"]:::agent
-        ORCH --> STORY["story_analyzer<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
+        ORCH --> PLAN["planner<br/><i>jira · confluence · cloud-wiki</i>"]:::agent
+        ORCH --> STORY["story_analyzer<br/><i>jira · confluence · cloud-wiki · github · knowledge</i>"]:::agent
         ORCH --> ARCH["architecture<br/><i>thinking · knowledge</i>"]:::agent
         ORCH --> BCTX["bounded_context"]:::agent
         ORCH --> ADR["adr_writer"]:::agent
@@ -26,9 +26,9 @@ graph TD
         ORCH --> COMPLY["compliance"]:::agent
         ORCH --> TEST["test_runner"]:::agent
         ORCH --> PERF["performance"]:::agent
-        ORCH --> PR["pr_creator<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        ORCH --> PR["pr_creator<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
         ORCH --> DISC["discussion"]:::agent
-        ORCH --> WRITER["technical_writer<br/><i>confluence · mywiki · github</i>"]:::agent
+        ORCH --> WRITER["technical_writer<br/><i>confluence · cloud-wiki · github</i>"]:::agent
     end
 
     %% ─── dev-web ───────────────────────────────────
@@ -85,36 +85,36 @@ graph TD
 
     %% ─── dev-ui ────────────────────────────────────
     subgraph DEV_UI["dev-ui · 3 agents"]
-        UI_LEGACY["ui_legacy<br/><i>Angular v12–v18+ · confluence · mywiki</i>"]:::agent
-        POLYMER["polymer<br/><i>Polymer 2/3 · confluence · mywiki</i>"]:::agent
+        UI_LEGACY["ui_legacy<br/><i>Angular v12–v18+ · confluence · cloud-wiki</i>"]:::agent
+        POLYMER["polymer<br/><i>Polymer 2/3 · confluence · cloud-wiki</i>"]:::agent
         LAMBDA["lambda<br/><i>AWS Lambda Node.js</i>"]:::agent
     end
 
     %% ─── ba ────────────────────────────────────────
     subgraph BA["ba · 8 agents"]
-        BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
-        BA_ORCH --> SCOPE["scope_definer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
-        BA_ORCH --> FEAT["feature_writer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        BA_ORCH["🎯 ba_orchestrator<br/><i>jira · confluence · cloud-wiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        BA_ORCH --> SCOPE["scope_definer<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
+        BA_ORCH --> FEAT["feature_writer<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
         BA_ORCH --> PRD["prd_generator<br/><i>jira · confluence</i>"]:::agent
         BA_ORCH --> BLOG["backlog_generator<br/><i>jira</i>"]:::agent
         BA_ORCH --> QGATE["quality_gate"]:::agent
         BA_ORCH --> ESTIM["estimation<br/><i>jira · confluence</i>"]:::agent
-        BA_ORCH --> REQS["requirements_analyst<br/><i>jira · confluence · mywiki · github · knowledge</i>"]:::agent
+        BA_ORCH --> REQS["requirements_analyst<br/><i>jira · confluence · cloud-wiki · github · knowledge</i>"]:::agent
     end
 
     %% ─── qa ────────────────────────────────────────
     subgraph QA["qa · 16 agents"]
-        QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · mywiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
-        QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · mywiki · github · bruno · knowledge</i>"]:::agent
+        QA_ORCH["🎯 qa_orchestrator<br/><i>jira · confluence · cloud-wiki · github · bruno<br/>thinking · todo · delegate</i>"]:::orch
+        QA_ORCH --> TPLAN["test_planner<br/><i>jira · confluence · cloud-wiki · github · bruno · knowledge</i>"]:::agent
         QA_ORCH --> TAUTO["test_automation<br/><i>bruno</i>"]:::agent
-        QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        QA_ORCH --> DEFECT["defect_analyst<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
         QA_ORCH --> APITEST["api_tester<br/><i>bruno</i>"]:::agent
         QA_ORCH --> PERFTEST["performance_tester"]:::agent
         QA_ORCH --> QESTRAT["qe_strategy<br/><i>jira · confluence</i>"]:::agent
         QA_ORCH --> E2EGEN["e2e_test_generator<br/><i>jira</i>"]:::agent
         QA_ORCH --> WEBDISC["web_discovery"]:::agent
         QA_ORCH --> TESTFW["test_framework"]:::agent
-        QA_ORCH --> TCOV["test_coverage_analyzer<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        QA_ORCH --> TCOV["test_coverage_analyzer<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
         QA_ORCH --> FLAKY["flaky_test_fixer"]:::agent
         QA_ORCH --> TREC["test_recorder<br/><i>chrome</i>"]:::agent
         QA_ORCH --> BRUNO["bruno_collection<br/><i>bruno</i>"]:::agent
@@ -122,8 +122,8 @@ graph TD
 
     %% ─── ops ───────────────────────────────────────
     subgraph OPS["ops · 9 agents"]
-        OPS_ORCH["🎯 ops_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
-        OPS_ORCH --> METRICS["ai_metrics<br/><i>jira · confluence · mywiki · github</i>"]:::agent
+        OPS_ORCH["🎯 ops_orchestrator<br/><i>jira · confluence · cloud-wiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        OPS_ORCH --> METRICS["ai_metrics<br/><i>jira · confluence · cloud-wiki · github</i>"]:::agent
         OPS_ORCH --> INFRA["infra_check"]:::agent
         OPS_ORCH --> DEPLOY["deployment<br/><i>harness</i>"]:::agent
         OPS_ORCH --> QUALITY["code_quality<br/><i>sonarqube</i>"]:::agent
@@ -133,12 +133,12 @@ graph TD
 
     %% ─── pm ────────────────────────────────────────
     subgraph PM["pm · 6 agents"]
-        PM_ORCH["🎯 pm_orchestrator<br/><i>jira · confluence · mywiki · github<br/>thinking · todo · delegate</i>"]:::orch
-        PM_ORCH --> SPRINT["sprint_manager<br/><i>jira · confluence · mywiki · todo</i>"]:::agent
+        PM_ORCH["🎯 pm_orchestrator<br/><i>jira · confluence · cloud-wiki · github<br/>thinking · todo · delegate</i>"]:::orch
+        PM_ORCH --> SPRINT["sprint_manager<br/><i>jira · confluence · cloud-wiki · todo</i>"]:::agent
         PM_ORCH --> STANDUP["standup<br/><i>jira</i>"]:::agent
-        PM_ORCH --> RETRO["retro<br/><i>jira · confluence · mywiki</i>"]:::agent
-        PM_ORCH --> RISK["risk_tracker<br/><i>jira · confluence · mywiki</i>"]:::agent
-        PM_ORCH --> DELIVER["delivery_reporter<br/><i>jira · confluence · mywiki</i>"]:::agent
+        PM_ORCH --> RETRO["retro<br/><i>jira · confluence · cloud-wiki</i>"]:::agent
+        PM_ORCH --> RISK["risk_tracker<br/><i>jira · confluence · cloud-wiki</i>"]:::agent
+        PM_ORCH --> DELIVER["delivery_reporter<br/><i>jira · confluence · cloud-wiki</i>"]:::agent
     end
 
     %% ─── inspector ─────────────────────────────────
@@ -214,21 +214,21 @@ graph TD
 Development agents split into composable sub-profiles. Use `dev` as a shorthand to install all three.
 
 ```bash
-koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
-koda install dev-core dev-web       # Fullstack web developer (21 agents)
-koda install dev-core dev-python    # Python developer (17 agents)
-koda install dev-core dev-ai        # AI/ML engineer (21 agents)
-koda install dev-core dev-infra     # Infra/Terraform developer (17 agents)
-koda install dev-core dev-dotnet    # .NET developer (19 agents)
-koda install dev-core dev-php       # PHP/Zend developer (17 agents)
-koda install dev-core dev-mobile    # Mobile developer (19 agents)
-koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
-koda install dev-core               # Core only — orchestrator + quality (17 agents)
+koda install dev                    # All 44 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev-core dev-web       # Fullstack web developer (23 agents)
+koda install dev-core dev-python    # Python developer (19 agents)
+koda install dev-core dev-ai        # AI/ML engineer (23 agents)
+koda install dev-core dev-infra     # Infra/Terraform developer (19 agents)
+koda install dev-core dev-dotnet    # .NET developer (21 agents)
+koda install dev-core dev-php       # PHP/Zend developer (19 agents)
+koda install dev-core dev-mobile    # Mobile developer (21 agents)
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (11 agents)
+koda install dev-core               # Core only — orchestrator + quality (19 agents)
 ```
 
 ---
 
-### Profile: dev-core (17 agents)
+### Profile: dev-core (19 agents)
 
 Orchestrator, planning, quality, security, workflow, and documentation agents. Required base for all dev work.
 
@@ -258,14 +258,14 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Task planning and breakdown  
 **Use for:** Breaking down complex tasks, creating implementation plans  
 **Tools:** `thinking`  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 #### story_analyzer_agent
 **File:** `profiles/dev-core/agents/story_analyzer_agent.json`  
 **Purpose:** Jira story analysis and requirements extraction  
 **Use for:** Analyzing Jira stories, extracting requirements  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### architecture_agent
 **File:** `profiles/dev-core/agents/architecture_agent.json`  
@@ -329,7 +329,7 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **File:** `profiles/dev-core/agents/pr_creator_agent.json`  
 **Purpose:** Pull request creation and management  
 **Use for:** Creating PRs, formatting descriptions  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### discussion_agent
 **File:** `profiles/dev-core/agents/discussion_agent.json`  
@@ -340,7 +340,7 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **File:** `profiles/dev-core/agents/technical_writer_agent.json`  
 **Purpose:** Creates and maintains technical documentation  
 **Use for:** READMEs, API docs, architecture guides, runbooks, onboarding materials  
-**MCP Servers:** confluence, mywiki, github
+**MCP Servers:** confluence, cloud-wiki, github
 
 #### ai_metrics_tracker_agent
 **File:** `profiles/dev-core/agents/ai_metrics_tracker_agent.json`  
@@ -357,6 +357,18 @@ Orchestrator, planning, quality, security, workflow, and documentation agents. R
 **Purpose:** Queries Splunk logs via Chrome MCP browser automation with SSO  
 **Use for:** Searching service logs, executing SPL queries, incident investigation  
 **MCP Servers:** Chrome MCP
+
+#### propose_agent
+**File:** `profiles/dev-core/agents/propose_agent.json`  
+**Purpose:** Generates multiple implementation alternatives, evaluates trade-offs, and recommends the best approach  
+**Use for:** Exploring solution space before committing to an approach, comparing architectures, choosing patterns  
+**Tools:** `thinking`, `knowledge`
+
+#### judge_agent
+**File:** `profiles/dev-core/agents/judge_agent.json`  
+**Purpose:** Evaluates code quality with structured dimensional scoring and quantified verdicts  
+**Use for:** Code quality assessment, tech debt measurement, validating agent output, post-implementation evaluation  
+**Tools:** `thinking`
 
 ---
 
@@ -525,7 +537,7 @@ Legacy UI specialists for Angular 15, Polymer 2/3, and lightweight Lambda develo
 **Purpose:** Angular legacy & uplift specialist (v12–v18+) for Config Studio pre-sales applications  
 **Use for:** Angular v12–v15 maintenance, incremental uplift to v16/v17/v18+, Vista design system integration  
 **Tools:** `fs_read`, `fs_write`, `execute_bash`  
-**MCP Servers:** confluence, mywiki  
+**MCP Servers:** confluence, cloud-wiki  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 #### polymer
@@ -533,7 +545,7 @@ Legacy UI specialists for Angular 15, Polymer 2/3, and lightweight Lambda develo
 **Purpose:** Polymer 2/3 web component specialist for legacy uplift  
 **Use for:** Polymer 2/3 web components, uplift from Polymer 2→3→Lit, Vista component integration  
 **Tools:** `fs_read`, `fs_write`, `execute_bash`  
-**MCP Servers:** confluence, mywiki  
+**MCP Servers:** confluence, cloud-wiki  
 **Hooks:** preToolUse (guard writes, secret scan), postToolUse (lint on write)
 
 #### lambda
@@ -557,7 +569,7 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **Use for:** Complex BA workflows requiring multiple steps  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 **Delegates to:** scope_definer_agent, feature_writer_agent, requirements_analyst_agent, estimation_agent
 
@@ -569,26 +581,26 @@ Business Analyst and Product Owner agents for requirements, scope, and feature d
 **File:** `profiles/ba/agents/scope_definer_agent.json`  
 **Purpose:** Defines project and feature scope, boundaries, and constraints  
 **Use for:** Starting new projects, clarifying scope, documenting assumptions  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### feature_writer_agent
 **File:** `profiles/ba/agents/feature_writer_agent.json`  
 **Purpose:** Creates user stories, acceptance criteria, and feature specifications  
 **Use for:** Writing user stories, breaking down epics, refining backlog  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### requirements_analyst_agent
 **File:** `profiles/ba/agents/requirements_analyst_agent.json`  
 **Purpose:** Analyzes requirements, identifies gaps, validates completeness  
 **Use for:** Reviewing requirements, gap analysis, sprint planning prep  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### prd_generator_agent
 **File:** `profiles/ba/agents/prd_generator_agent.json`  
 **Purpose:** Generates Product Requirements Documents from Jira epics  
 **Use for:** Creating PRDs, stakeholder analysis, requirements gathering  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### backlog_generator_agent
 **File:** `profiles/ba/agents/backlog_generator_agent.json`  
@@ -628,7 +640,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Use for:** Complex QA workflows requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github, qtest
+**MCP Servers:** jira, confluence, cloud-wiki, github, qtest
 
 **Delegates to:** test_planner_agent, test_automation_agent, defect_analyst_agent, api_tester_agent, performance_tester_agent, test_coverage_analyzer_agent, mobile_test_executor_agent, api_test_executor_agent
 
@@ -641,7 +653,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **Purpose:** Creates test plans, test cases, and test scenarios from requirements  
 **Use for:** Test planning, test case design, coverage analysis  
 **Tools:** `knowledge`  
-**MCP Servers:** jira, confluence, mywiki, github, qtest
+**MCP Servers:** jira, confluence, cloud-wiki, github, qtest
 
 #### test_automation_agent
 **File:** `profiles/qa/agents/test_automation_agent.json`  
@@ -654,7 +666,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/defect_analyst_agent.json`  
 **Purpose:** Analyzes defects, performs root cause analysis  
 **Use for:** Bug triage, root cause analysis, detailed bug reports  
-**MCP Servers:** jira, confluence, mywiki, github, qtest
+**MCP Servers:** jira, confluence, cloud-wiki, github, qtest
 
 #### api_tester_agent
 **File:** `profiles/qa/agents/api_tester_agent.json`  
@@ -699,7 +711,7 @@ Quality Assurance and Test Automation agents for comprehensive testing.
 **File:** `profiles/qa/agents/test_coverage_analyzer_agent.json`  
 **Purpose:** Analyzes test coverage for epics against Jira/Xray and discovers reusable tests  
 **Use for:** Coverage gap analysis, reuse discovery across projects, coverage matrix reports  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 
 #### flaky_test_fixer_agent
@@ -747,7 +759,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 **Use for:** Complex ops tasks requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 **Delegates to:** ai_metrics_agent, infra_check_agent, deployment_agent, code_quality_agent, release_manager_agent, release_documenter_agent
 
@@ -759,7 +771,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 **File:** `profiles/ops/agents/ai_metrics_agent.json`  
 **Purpose:** Tracks AI-assisted development metrics and updates Jira  
 **Use for:** AI productivity reports, updating Jira AI custom fields  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 #### infra_check_agent
 **File:** `profiles/ops/agents/infra_check_agent.json`  
@@ -788,7 +800,7 @@ Operations agents for AI metrics, infrastructure, deployments, and code quality.
 **File:** `profiles/ops/agents/release_documenter_agent.json`  
 **Purpose:** Documents releases in Confluence with changes, rollback plan, dependencies  
 **Use for:** Confluence release pages, change documentation, rollback procedures  
-**MCP Servers:** confluence, mywiki, github, jira
+**MCP Servers:** confluence, cloud-wiki, github, jira
 
 ---
 
@@ -804,7 +816,7 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 **Use for:** Complex PM tasks requiring multiple agents  
 **Tools:** `thinking`, `todo`, `delegate`, `use_subagent`  
 **Hooks:** agentSpawn (git context)  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 **Delegates to:** sprint_manager_agent, standup_agent, retro_agent, risk_tracker_agent, delivery_reporter_agent
 
@@ -817,7 +829,7 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 **Purpose:** Manages sprint planning, capacity, backlog grooming, and sprint health  
 **Use for:** Sprint planning, capacity analysis, backlog review  
 **Tools:** `todo`  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 #### standup_agent
 **File:** `profiles/pm/agents/standup_agent.json`  
@@ -829,19 +841,19 @@ Project Manager / Scrum Master agents for sprint execution, ceremonies, risk tra
 **File:** `profiles/pm/agents/retro_agent.json`  
 **Purpose:** Facilitates retrospectives with data-driven insights and action item tracking  
 **Use for:** Sprint retros, trend analysis, action item follow-up  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 #### risk_tracker_agent
 **File:** `profiles/pm/agents/risk_tracker_agent.json`  
 **Purpose:** Identifies blockers, dependencies, and risks across sprints and epics  
 **Use for:** Risk assessment, blocker tracking, dependency mapping  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 #### delivery_reporter_agent
 **File:** `profiles/pm/agents/delivery_reporter_agent.json`  
 **Purpose:** Generates velocity reports, burndown analysis, and release readiness assessments  
 **Use for:** Sprint reports, velocity trends, release readiness  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 ---
 
@@ -856,7 +868,7 @@ Cross-team analytics, quarterly reporting, and executive briefings for Tech Dire
 **Purpose:** Coordinates cross-team queries, quarterly reports, and executive briefings  
 **Use for:** Multi-team analysis, report coordination, delegation to specialists  
 **Tools:** thinking, todo, delegate, use_subagent  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 **Delegates to:** portfolio_analyst_agent, quarterly_reporter_agent, cross_team_coordinator_agent, executive_briefing_agent
 
@@ -874,7 +886,7 @@ Cross-team analytics, quarterly reporting, and executive briefings for Tech Dire
 **File:** `profiles/leadership/agents/quarterly_reporter_agent.json`  
 **Purpose:** Generates 10-section quarterly business reports for Disney directors  
 **Use for:** Quarterly reviews, business impact reporting, achievement summaries  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 #### cross_team_coordinator_agent
 **File:** `profiles/leadership/agents/cross_team_coordinator_agent.json`  
@@ -886,7 +898,7 @@ Cross-team analytics, quarterly reporting, and executive briefings for Tech Dire
 **File:** `profiles/leadership/agents/executive_briefing_agent.json`  
 **Purpose:** Produces audience-tailored executive summaries for directors, colleagues, and partners  
 **Use for:** Executive briefings, stakeholder updates, partner communications  
-**MCP Servers:** jira, confluence, mywiki
+**MCP Servers:** jira, confluence, cloud-wiki
 
 ---
 
@@ -1007,28 +1019,28 @@ Shared utility agents available across all profiles.
 **File:** `profiles/core/agents/story_analyzer_agent.json`  
 **Purpose:** Fetches and analyzes Jira stories, Confluence pages, and GitHub repos  
 **Use for:** Story analysis, requirements extraction, cross-system context gathering  
-**MCP Servers:** jira, confluence, mywiki, github
+**MCP Servers:** jira, confluence, cloud-wiki, github
 
 
 #### document_analyzer_agent
 **File:** `profiles/core/agents/document_analyzer_agent.json`  
 **Purpose:** Parses and analyzes PDFs, DOCX, XLSX, and other document formats. Supports OCR for scanned documents, extracts text, summarizes content, and outputs markdown  
 **Use for:** Document parsing, text extraction, OCR, content summarization, document comparison  
-**MCP Servers:** confluence, mywiki
+**MCP Servers:** confluence, cloud-wiki
 
 
 #### deck_builder_agent
 **File:** `profiles/core/agents/deck_builder_agent.json`  
 **Purpose:** Generates PPTX presentations from markdown or context. Supports audience-level adaptation, custom styling, diagrams, charts, and images  
 **Use for:** Presentation generation, slide decks, executive summaries, technical talks, workshop materials  
-**MCP Servers:** mermaid, confluence, mywiki
+**MCP Servers:** mermaid, confluence, cloud-wiki
 
 
 #### ai_adoption_stats_agent
 **File:** `profiles/core/agents/ai_adoption_stats_agent.json`  
 **Purpose:** Measures AI adoption across teams using GitHub commit patterns and Jira historical data. Identifies trends, compares teams, and produces statistical summaries  
 **Use for:** AI adoption measurement, team comparison, trend analysis, adoption scoring, velocity correlation  
-**MCP Servers:** github, jira, confluence, mywiki
+**MCP Servers:** github, jira, confluence, cloud-wiki
 
 ---
 
@@ -1187,7 +1199,7 @@ Full reference: [Hooks & Powers](docs/reference/HOOKS_AND_POWERS.md)
 
 Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralized in `~/.kiro/tokens.env` (configured via `koda mcp-install` or `koda configure`).
 
-| Profile | Agent | Jira | Confluence | MyWiki | GitHub | qTest | Other |
+| Profile | Agent | Jira | Confluence | Confluence Cloud | GitHub | qTest | Other |
 |---------|-------|:----:|:----------:|:------:|:------:|:-----:|:-----:|
 | **dev-core** | story_analyzer_agent | ✅ | ✅ | ✅ | ✅ | | |
 | **dev-core** | pr_creator_agent | ✅ | ✅ | ✅ | ✅ | | |
@@ -1293,6 +1305,8 @@ Shared context loaded via agent `resources`:
 kiro-cli chat --agent orchestrator              # Dev orchestrator
 kiro-cli chat --agent code_review_agent         # Code review
 kiro-cli chat --agent technical_writer_agent    # Technical docs
+kiro-cli chat --agent propose_agent              # Propose alternatives
+kiro-cli chat --agent judge_agent                # Code quality judgment
 
 # Dev Web
 kiro-cli chat --agent backend                   # Java backend
@@ -1415,11 +1429,11 @@ kiro-cli chat --agent gsm_analyst_agent               # GSM analysis
 ## Installation
 
 ```bash
-koda install dev                    # All 42 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
+koda install dev                    # All 44 dev agents (alias → dev-core + dev-web + dev-mobile + dev-python + dev-ai + dev-infra + dev-dotnet + dev-php + dev-ui)
 koda install dev-core dev-web       # Fullstack web developer
 koda install dev-core dev-mobile    # Mobile developer
 koda install dev-core dev-ai        # AI/ML engineer (5 agents)
-koda install dev-core dev-ui        # L2 Studio legacy UI developer (9 agents)
+koda install dev-core dev-ui        # L2 Studio legacy UI developer (11 agents)
 koda install dev ba qa ops pm       # Install all profiles
 koda install design                 # Design discovery & UX research (6 agents)
 koda install cloudops               # Infrastructure strategy & SRE (4 agents)
@@ -1430,5 +1444,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 124 (dev-core: 21, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Total Agents:** 126 (dev-core: 23, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
 **Last Updated:** May 8, 2026

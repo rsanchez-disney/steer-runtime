@@ -40,9 +40,9 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/514608267/Composite+SDM?src=contextnavpagetreemode"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting"
-  troubleshooting_tools: "https://mywiki.disney.com/pages/viewpage.action?pageId=650185839&spaceKey=GIT&title=ANT-MAN%2BApps%2BTroubleshooting%2Btools"
-  tactical_monitoring: "https://mywiki.disney.com/spaces/GIT/pages/1162547087/Tactical+Monitoring+Alerting+%E2%80%93+Frontline+Sustainment"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting"
+  troubleshooting_tools: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=650185839&spaceKey=GIT&title=ANT-MAN%2BApps%2BTroubleshooting%2Btools"
+  tactical_monitoring: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1162547087/Tactical+Monitoring+Alerting+%E2%80%93+Frontline+Sustainment"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
   sonarqube: "https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.ecm.sdm%3Acomposite-sdm-build"
 

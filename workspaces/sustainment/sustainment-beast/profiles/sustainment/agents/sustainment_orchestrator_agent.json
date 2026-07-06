@@ -1,0 +1,12 @@
+{
+  "name": "sustainment_orchestrator_agent",
+  "tools": ["@teams/*"],
+  "allowedTools": ["@teams/*"],
+  "resources": [
+    "file://../../../context/monitoring-guide.md",
+    "file://../../../context/servicenow-reference-ids.md",
+    "file://../../../context/teams-channel-map.md",
+    "file://../../../context/alert-runbooks.md",
+    "file://../../../context/jira-config.md"
+  ]
+}

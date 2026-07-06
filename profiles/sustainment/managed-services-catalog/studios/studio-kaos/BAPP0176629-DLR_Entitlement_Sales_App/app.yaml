@@ -25,7 +25,7 @@ escalation_contacts:
     contact: "Sr Mgr-Technology"
 on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
 email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
-jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
+jira_board: "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/6657"
 
 # --- ServiceNow ---
 servicenow:
@@ -40,8 +40,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888023/DLR+Entitlement+Sales+App+BAPP0176629"
-  wiki: "https://mywiki.disney.com/spaces/WAKE/pages/451026696/DLR+Sales+Integration"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888023/DLR+Entitlement+Sales+App+BAPP0176629"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/WAKE/pages/451026696/DLR+Sales+Integration"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -59,13 +59,13 @@ components:
 
     # -- Component-specific docs --
     docs:
-      troubleshooting: "https://mywiki.disney.com/spaces/WAKE/pages/466477631/UI+Troubleshooting"
-      runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888023/DLR+Entitlement+Sales+App+BAPP0176629"
+      troubleshooting: "https://disneyexperiences.atlassian.net/wiki/spaces/WAKE/pages/466477631/UI+Troubleshooting"
+      runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888023/DLR+Entitlement+Sales+App+BAPP0176629"
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/pages/viewpage.action?pageId=534888023"
-      architecture_diagram: "https://mywiki.disney.com/spaces/WAKE/pages/451026868/Sequence+Diagrams"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=534888023"
+      architecture_diagram: "https://disneyexperiences.atlassian.net/wiki/spaces/WAKE/pages/451026868/Sequence+Diagrams"
 
     # -- Source Code & CI/CD --
     repository:

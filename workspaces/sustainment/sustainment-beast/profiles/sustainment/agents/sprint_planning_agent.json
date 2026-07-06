@@ -1,0 +1,23 @@
+{
+  "name": "sprint_planning_agent",
+  "description": "Handles sprint planning for DLP Beast — sprint analysis, capacity calculation, ticket creation, and workload evaluation",
+  "prompt": "sprint_planning_agent.md",
+  "tools": [
+    "@jira/*",
+    "@confluence/*",
+    "fs_read",
+    "fs_write",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@confluence/*"
+  ],
+  "includeMcpJson": true,
+  "resources": [
+    "file://../../../context/jira-config.md",
+    "file://../../../context/capacity-params.md",
+    "file://../../../context/sprint-analysis-guide.md",
+    "file://../../../context/team_context.md"
+  ]
+}

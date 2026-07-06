@@ -8,7 +8,7 @@
     "execute_bash",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@compass/*",
     "code",
     "grep"
@@ -16,7 +16,7 @@
   "allowedTools": [
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@compass/*"
   ],
   "resources": [

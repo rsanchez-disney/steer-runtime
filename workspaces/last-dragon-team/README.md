@@ -35,8 +35,8 @@ koda chat
 
 ## Key Resources
 
-- [Team Wiki](https://mywiki.disney.com/spaces/DPEPSD/pages/445256067/DX+Studio+Raya)
-- [Jira Board (Kanban)](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12243)
+- [Team Wiki](https://disneyexperiences.atlassian.net/wiki/spaces/DPEPSD/pages/445256067/DX+Studio+Raya)
+- [Jira Board (Kanban)](https://disneyexperiences.atlassian.net/jira/software/boards/12243)
 - ServiceNow Assignment Group: `app-global-finder-search`
 
 See [Team Workspaces Guide](../../docs/reference/TEAM_WORKSPACES.md) for workspace details.

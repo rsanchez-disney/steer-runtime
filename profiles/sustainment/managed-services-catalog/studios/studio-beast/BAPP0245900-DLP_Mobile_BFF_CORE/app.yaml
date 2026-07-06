@@ -43,7 +43,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/1165364223/DLP+Mobile+BFF+CORE+BAPP0245900"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1165364223/DLP+Mobile+BFF+CORE+BAPP0245900"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -64,7 +64,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/1165364223/DLP+Mobile+BFF+CORE+BAPP0245900"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1165364223/DLP+Mobile+BFF+CORE+BAPP0245900"
       architecture_diagram: ""
 
     repository:

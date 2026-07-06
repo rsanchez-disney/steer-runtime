@@ -33,7 +33,7 @@ Complete reference for all MCP servers: tools, capabilities, prompt examples, an
 ## jira-mcp
 
 **Purpose:** Full Jira integration — issues, sprints, boards, XRay test management.
-**Auth:** `JIRA_PAT_{instance}` (multi-instance: `jira`, `myjira`)
+**Auth:** `JIRA_PAT_{instance}` (multi-instance: `jira`, `cloud`)
 **Multi-instance:** `JIRA_INSTANCE_PREFIX` env var for tool name prefixing.
 
 ### Tools (25)
@@ -93,8 +93,8 @@ What are the test execution results for test plan DPAY-TP-50?
 ## confluence-mcp
 
 **Purpose:** Read and write Confluence pages, spaces, and attachments.
-**Auth:** `CONFLUENCE_PAT_{instance}` — serves both `confluence.disney.com` and `mywiki.disney.com`.
-**Multi-instance:** `CONFLUENCE_INSTANCE_PREFIX` env var. Tool prefix: `@confluence/*` for confluence.disney.com, `@mywiki/*` for mywiki.disney.com.
+**Auth:** `CONFLUENCE_PAT_{instance}` — serves both `confluence.disney.com` and `disneyexperiences.atlassian.net/wiki`.
+**Multi-instance:** `CONFLUENCE_INSTANCE_PREFIX` env var. Tool prefix: `@confluence/*` for confluence.disney.com, `@confluence-cloud/*` for disneyexperiences.atlassian.net/wiki.
 
 ### Tools (8)
 
@@ -112,7 +112,7 @@ What are the test execution results for test plan DPAY-TP-50?
 ### Prompt Examples
 
 ```
-Search MyWiki for "sprint report" in the DPE space
+Search Confluence Cloud for "sprint report" in the DPE space
 Get the content of Confluence page 1293418985
 Create a new page in the DPE space titled "Sprint 425 Report"
 Update the architecture page with the new diagram
@@ -122,7 +122,7 @@ Upload the test results CSV to the QA documentation page
 ### Routing Rule
 
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, ask the user which instance.
 
 ### Agents with Access
@@ -739,8 +739,8 @@ Compare crash rates today vs yesterday using COMPARE WITH
 Always prefer dedicated MCP servers over Compass:
 
 ```
-Jira tasks       → @jira/* or @myjira/*     (NOT Compass)
-Confluence pages → @confluence/* or @mywiki/* (NOT Compass)
+Jira tasks       → @jira/* or @jira-cloud/*     (NOT Compass)
+Confluence pages → @confluence/* or @confluence-cloud/* (NOT Compass)
 GitHub PRs       → @github/*                 (Compass has no GitHub)
 Email            → Compass only              (no dedicated MCP)
 Splunk logs      → Compass or @splunk-mcp/*

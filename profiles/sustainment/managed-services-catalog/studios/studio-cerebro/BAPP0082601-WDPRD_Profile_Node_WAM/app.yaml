@@ -42,7 +42,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1337066411"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1337066411"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -65,7 +65,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1337066411"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1337066411"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

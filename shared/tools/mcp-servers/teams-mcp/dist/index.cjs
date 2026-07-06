@@ -37750,6 +37750,7 @@ async function authenticateViaBrowser() {
 // src/client.ts
 var TOKEN_CACHE_DIR = path2.join(os2.homedir(), ".mcp-teams");
 var TOKEN_CACHE_FILE = path2.join(TOKEN_CACHE_DIR, "token-cache.json");
+var BROWSER_STATE_DIR = path2.join(TOKEN_CACHE_DIR, "browser-state");
 var TeamsClient = class _TeamsClient {
   http;
   nativeHttp;
@@ -37856,6 +37857,43 @@ var TeamsClient = class _TeamsClient {
   }
   isAuthenticated() {
     return this.accessToken !== null && Date.now() < this.tokenExpiry;
+  }
+  /**
+   * Resets all authentication state by deleting cached tokens and browser state.
+   * Use this when auth is in a broken/stale state and a clean re-auth is needed.
+   */
+  resetAuth() {
+    const result = { tokenCacheDeleted: false, browserStateDeleted: false, memoryCleared: false };
+    try {
+      if (fs2.existsSync(TOKEN_CACHE_FILE)) {
+        fs2.unlinkSync(TOKEN_CACHE_FILE);
+        result.tokenCacheDeleted = true;
+      }
+    } catch (err) {
+      process.stderr.write(`[mcp-teams] Warning: could not delete token cache: ${err}
+`);
+    }
+    try {
+      if (fs2.existsSync(BROWSER_STATE_DIR)) {
+        fs2.rmSync(BROWSER_STATE_DIR, { recursive: true, force: true });
+        result.browserStateDeleted = true;
+      }
+    } catch (err) {
+      process.stderr.write(`[mcp-teams] Warning: could not delete browser state: ${err}
+`);
+    }
+    this.accessToken = null;
+    this.chatToken = null;
+    this.refreshToken = null;
+    this.skypeToken = null;
+    this.tokenExpiry = 0;
+    this.chatTokenExpiry = 0;
+    result.memoryCleared = true;
+    process.stderr.write(
+      `[mcp-teams] Auth reset complete \u2014 cache: ${result.tokenCacheDeleted}, browser: ${result.browserStateDeleted}, memory: ${result.memoryCleared}
+`
+    );
+    return result;
   }
   hasChatToken() {
     return this.chatToken !== null && Date.now() < this.chatTokenExpiry;
@@ -38028,6 +38066,34 @@ var TeamsClient = class _TeamsClient {
         if (tokens.chatToken) {
           this.setChatTokenFromEnv(tokens.chatToken);
           process.stderr.write("[mcp-teams] Chat token refreshed via browser\n");
+        }
+      } catch (err) {
+        const errMsg = err.message || String(err);
+        const isStaleStateError = errMsg.includes("auth") || errMsg.includes("login") || errMsg.includes("session") || errMsg.includes("401") || errMsg.includes("403") || errMsg.includes("timeout") || errMsg.includes("navigation") || errMsg.includes("Target closed") || errMsg.includes("browser") || errMsg.includes("context");
+        if (isStaleStateError) {
+          process.stderr.write(
+            `[mcp-teams] Browser auth failed (likely stale state): ${errMsg}
+[mcp-teams] Resetting auth and retrying with clean state...
+`
+          );
+          this.resetAuth();
+          try {
+            const tokens = await authenticateViaBrowser();
+            if (tokens.nativeToken) {
+              await this.setManualToken(tokens.nativeToken);
+              process.stderr.write("[mcp-teams] Native token refreshed via browser (retry succeeded)\n");
+            }
+            if (tokens.chatToken) {
+              this.setChatTokenFromEnv(tokens.chatToken);
+              process.stderr.write("[mcp-teams] Chat token refreshed via browser (retry succeeded)\n");
+            }
+          } catch (retryErr) {
+            process.stderr.write(`[mcp-teams] Browser auth retry also failed: ${retryErr.message}
+`);
+            throw retryErr;
+          }
+        } else {
+          throw err;
         }
       } finally {
         this.reauthInProgress = null;
@@ -38582,6 +38648,62 @@ server.tool(
         content: [{
           type: "text",
           text: `\u274C Token error: ${err.response?.data?.error?.message || err.message}. Try copying a fresh token from DevTools.`
+        }]
+      };
+    }
+  }
+);
+server.tool(
+  "auth_reset",
+  "Reset Teams authentication by clearing all cached tokens and browser state. Use this when authentication is broken or tokens have expired beyond recovery.",
+  {},
+  async () => {
+    try {
+      await client.resetAuth();
+      process.stderr.write("[mcp-teams] Auth reset: all cached tokens cleared\n");
+      const tokens = await authenticateViaBrowser();
+      if (tokens.nativeToken || tokens.chatToken) {
+        if (tokens.nativeToken) {
+          await client.setManualToken(tokens.nativeToken);
+          process.stderr.write("[mcp-teams] Auth reset: native token reloaded via browser\n");
+        }
+        if (tokens.chatToken) {
+          client.setChatTokenFromEnv(tokens.chatToken);
+          process.stderr.write("[mcp-teams] Auth reset: chat token reloaded via browser\n");
+        }
+        return {
+          content: [{
+            type: "text",
+            text: [
+              "\u2705 Authentication reset complete. Fresh tokens loaded via browser.",
+              "",
+              "You can now use all Teams tools. If you encounter issues again:",
+              "1. Check auth_status to verify connectivity",
+              "2. If still failing, try auth_token with a manually copied token from DevTools"
+            ].join("\n")
+          }]
+        };
+      } else {
+        return {
+          content: [{
+            type: "text",
+            text: [
+              "\u26A0\uFE0F Tokens cleared but browser authentication did not return new tokens.",
+              "",
+              "Use 'auth_login' to authenticate via device code flow, or 'auth_token' to paste a token manually."
+            ].join("\n")
+          }]
+        };
+      }
+    } catch (err) {
+      return {
+        content: [{
+          type: "text",
+          text: [
+            "\u26A0\uFE0F Tokens were cleared but browser authentication failed: " + err.message,
+            "",
+            "Use 'auth_login' to authenticate via device code flow, or 'auth_token' to paste a token manually."
+          ].join("\n")
         }]
       };
     }

@@ -78,4 +78,4 @@
 - Manual republish available via GCX Tools API Gateway (not directly on Composite SDM)
 - Latest environment service name differs: `antman-composite-sdm-latest-live` (vs `composite-sdm-{env}-live` for others)
 - Shares `wdpr_d-scribe` Splunk index — filter by `source="*composite-sdm-prod/*"` for production
-- Troubleshooting tools: https://mywiki.disney.com/pages/viewpage.action?pageId=650185839
+- Troubleshooting tools: https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=650185839

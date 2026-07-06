@@ -78,9 +78,9 @@ How much time saved or lost using AI tools:
 3. Post report as Jira comment, not just in chat
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance.

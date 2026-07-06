@@ -4,7 +4,7 @@
   "description": "TEP3 project \u2014 DLR Pre-Arrival / Post Booking enhancements on Resort Reservation VA, Guest RR SPA/API, and Package Entitlement Service",
   "team": "Studio Yondu \u2014 TEP3",
   "jira_prefix": "TEP3-",
-  "jira_board_url": "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12887",
+  "jira_board_url": "https://disneyexperiences.atlassian.net/jira/software/c/projects/TEP3/boards/12887",
   "default_agent": "orchestrator",
   "enable_tools": true,
   "projects": [

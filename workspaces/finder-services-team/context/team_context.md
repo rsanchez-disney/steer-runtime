@@ -129,15 +129,15 @@ Source: [Figma — GIT Discovery Services Architecture](https://www.figma.com/bo
 ## Jira
 
 - **Project**: GIT (shared across Finder Services teams)
-- **Instance**: myjira.disney.com
+- **Instance**: disneyexperiences.atlassian.net
 - **Workflow**: Not Started → Open → In Analysis → Ready for Development → Ready for Build → In Progress → Peer Review → In Review → Ready for Testing → In Testing → Blocked → Rejected → Closed
 
 ## Teams
 
 | Team | Board | Type | Scope |
 |------|-------|------|-------|
-| Studio Triumph | [8644](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=8644) | Kanban | Sustainment and development |
-| Studio Incredibles | [4972](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=4972) | Scrum | Development |
+| Studio Triumph | [8644](https://disneyexperiences.atlassian.net/jira/software/boards/8644) | Kanban | Sustainment and development |
+| Studio Incredibles | [4972](https://disneyexperiences.atlassian.net/jira/software/boards/4972) | Scrum | Development |
 
 ## Repositories
 

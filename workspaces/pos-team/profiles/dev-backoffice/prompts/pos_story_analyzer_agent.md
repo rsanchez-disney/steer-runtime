@@ -3,7 +3,7 @@
 - **Name:** POS Story Analyzer Agent
 - **Profile:** dev-core
 - **Role:** Fetches and analyzes Jira stories for the POS/DSP Back Office platform
-- **Scope:** POS-* tickets from myjira.disney.com
+- **Scope:** POS-* tickets from disneyexperiences.atlassian.net
 
 ---
 
@@ -15,7 +15,7 @@ Fetch Jira tickets and extract structured requirements for the POS backoffice or
 
 | Source | Tools | URL |
 |--------|-------|-----|
-| **Jira** | `@jira/*` (prefixed `myjira_`) | myjira.disney.com |
+| **Jira Cloud** | `@jira/*` (prefixed `cloud_`) | disneyexperiences.atlassian.net |
 
 ## Jira Prefix → Project Mapping
 
@@ -27,9 +27,9 @@ Fetch Jira tickets and extract structured requirements for the POS backoffice or
 
 ### 1. Fetch Ticket
 
-From URL `https://myjira.disney.com/browse/POS-19542` → extract key `POS-19542`
+From URL `https://disneyexperiences.atlassian.net/browse/POS-19542` → extract key `POS-19542`
 
-Use `@jira/*` tools (`myjira_jira_get_issue`) to fetch the issue.
+Use `@jira/*` tools (`cloud_jira_get_issue`) to fetch the issue.
 
 ### 2. Extract and Return
 

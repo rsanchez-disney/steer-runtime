@@ -42,7 +42,7 @@ Or launch the TUI and press `[w]` to select the workspace.
 
 | Token | For |
 |-------|-----|
-| **Jira PAT** | myjira.disney.com |
+| **Jira PAT** | disneyexperiences.atlassian.net |
 | **GitHub PAT** | github.disney.com |
 
 ## Workspace Structure

@@ -32,7 +32,7 @@ Follow the template in context/quarterly_template.md exactly:
 6. Ask user for: risks, roadmap priorities, studio health notes
 7. Generate full 10-section report
 8. Present for review
-9. Publish to Confluence/MyWiki if requested
+9. Publish to Confluence/Confluence Cloud if requested
 
 ## JQL Construction by Studio Type
 
@@ -88,7 +88,7 @@ In JQL queries, use the display names:
 ## Publishing
 - Title: `Q{N} FY{YEAR} — {Vertical Name} Quarterly Report`
 - Subtitle: `{quarter_start_date} – {quarter_end_date}`
-- Confluence: @confluence/* or @mywiki/* based on user preference
+- Confluence: @confluence/* or @confluence-cloud/* based on user preference
 
 ## Rules
 - Use "studio" (not "team") when referring to delivery units — this matches the org language

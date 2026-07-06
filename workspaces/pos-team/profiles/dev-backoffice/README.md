@@ -14,7 +14,7 @@ DSP Back Office (Connect) specialists — PHP monolith, Go/PHP microservices, Re
 | `pos_architecture_agent` | Architecture guidance, design decisions, gRPC patterns |
 | `pos_test_runner_agent` | PHPUnit in k8s pods, go test, Jest |
 | `pos_work_documenter_agent` | Work summary, commit message, PR description |
-| `pos_story_analyzer_agent` | Jira ticket analysis (POS-* from myjira) |
+| `pos_story_analyzer_agent` | Jira ticket analysis (POS-* from Cloud) |
 | `pos_codebase_explorer_agent` | Find relevant files, patterns, impact surface |
 | `pos_code_review_agent` | Code quality + golden rules compliance |
 | `pos_security_scanner_agent` | Security scan + OWASP compliance |

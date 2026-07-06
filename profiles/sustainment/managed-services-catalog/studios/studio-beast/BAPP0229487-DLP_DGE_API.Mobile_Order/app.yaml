@@ -40,11 +40,11 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/SBH/pages/943235659/DLP+DGE+API.Mobile+Order+BAPP0229487"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235659/DLP+DGE+API.Mobile+Order+BAPP0229487"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235659/DLP+DGE+API.Mobile+Order+BAPP0229487"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235659/DLP+DGE+API.Mobile+Order+BAPP0229487"
   architecture_diagram: "https://confluence.disney.com/x/Fz0qIw"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/962561425/KI+DLP+DGE+API.Mobile+Order+BAPP0229487"
-  flows: "https://mywiki.disney.com/spaces/SBH/pages/1022364237/BF+Mobile+Order+Click+Collect"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/962561425/KI+DLP+DGE+API.Mobile+Order+BAPP0229487"
+  flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1022364237/BF+Mobile+Order+Click+Collect"
   swagger: "https://stage.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-iod-food-order-provider/swagger-ui.html"
 
 # --- Companion Docs (Markdown) ---
@@ -66,7 +66,7 @@ known_issues:
     category: "alert-based"
     severity: "high"
     affected_component: "iod-food-order-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=1348458637"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1348458637"
     description: >-
       The /iamhere endpoint at Hyperion restaurant returns HTTP 409 errors (too early or too late)
       from Agilysys OnPrem POS. Caused by recurring connectivity loss between web layer and Agilysys
@@ -78,7 +78,7 @@ known_issues:
     category: "incident-based"
     severity: "critical"
     affected_component: "iod-food-order-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=968789101"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=968789101"
     description: >-
       Multiple guests do not receive the email notification after payment is processed by WorldPay.
       RCA: Agilysys failed to attach payment to order or close the order. Guests cannot request
@@ -90,7 +90,7 @@ known_issues:
     category: "alert-based"
     severity: "medium"
     affected_component: "iod-food-order-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=1052935220"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1052935220"
     description: >-
       After MPG releases or downtime, the notification queue backs up. Payment-notification arrives
       after Redis cache TTL (20 min) expires, causing "Data not find in cache" errors. Payment-confirmation
@@ -102,7 +102,7 @@ known_issues:
     category: "incident-based"
     severity: "low"
     affected_component: "iod-food-order-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=995528727"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=995528727"
     description: >-
       For restaurants without timeslot selection (e.g., Casa de Coco), clicking "I'm here" CTA
       after 4-hour window shows "Order Rejected". Agilysys purges orders past the 4-hour pickup

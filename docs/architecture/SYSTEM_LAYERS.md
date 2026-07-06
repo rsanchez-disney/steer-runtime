@@ -344,7 +344,7 @@ Available servers:
 | Server              | External system                      | Token                   |
 |---------------------|--------------------------------------|-------------------------|
 | jira-mcp            | Jira (multi-instance)                | `JIRA_PAT_{name}`       |
-| confluence-mcp      | Confluence / MyWiki (multi-instance) | `CONFLUENCE_PAT_{name}` |
+| confluence-mcp      | Confluence / Confluence Cloud (multi-instance) | `CONFLUENCE_PAT_{name}` |
 | github-mcp          | GitHub Enterprise (multi-instance)   | `GITHUB_TOKEN_{name}`   |
 | bruno-mcp           | API testing via Bruno collections    | None                    |
 | mermaid-diagram-mcp | Diagram generation                   | None                    |
@@ -353,8 +353,8 @@ Available servers:
 
 Key design decisions:
 - Bundled as single `.cjs` files — no `npm install` needed at the consumer side, eliminating enterprise registry friction
-- MyWiki reuses the confluence-mcp binary with a different `CONFLUENCE_URL` env var — no code duplication
-- Multi-instance support — the same server type can run multiple times with different tokens (e.g., myjira.disney.com and jira.disney.com)
+- Confluence Cloud reuses the confluence-mcp binary with a different `CONFLUENCE_URL` env var — no code duplication
+- Multi-instance support — the same server type can run multiple times with different tokens (e.g., disneyexperiences.atlassian.net and jira.disney.com)
 - Token priority: agent JSON `env` block > MCP server `.env` file (dotenv doesn't override existing env vars)
 
 ```mermaid

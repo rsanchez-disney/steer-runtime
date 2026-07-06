@@ -1,17 +1,20 @@
-# Organization-wide baseline — all projects and profiles — Team Context
+# Default workspace — team context
 
-## Team
-- **Name**: Disney Payments & Commerce
-- **Jira**: N/A
+## Overview
 
-## Projects
-- **wdpr-config-services** (DisneyPaymentsOrg/wdpr-config-services)
-- **wdpr-payment-controls-api** (DisneyPaymentsOrg/wdpr-payment-controls-api)
-- **wdpr-payment-controls-client** (DisneyPaymentsOrg/wdpr-payment-controls-client)
-- **wdpr-gcp-admin-api** (DisneyPaymentsOrg/wdpr-gcp-admin-api)
-- **wdpr-cap-rev-rec-svc** (DisneyPaymentsOrg/wdpr-cap-rev-rec-svc)
-- **wdpr-payment-svc** (DisneyPaymentsOrg/wdpr-payment-svc)
-- **cart-service-java8** (WDPR-Commerce/cart-service-java8)
-- **spr-router** (DisneyPaymentsOrg/spr-router)
-- **spr-ai-adapter** (DisneyPaymentsOrg/spr-ai-adapter)
+This is the default workspace. It provides a minimal baseline with the `dev-core` profile (orchestrator, code review, testing, security, and PR agents).
 
+## Getting started
+
+To get the most out of your setup:
+
+1. Run `koda workspace list` to see available team workspaces
+1. Activate one with `koda workspace activate <name>`
+1. Or create your own with `koda workspace create`
+
+A team workspace adds:
+
+- Project-specific memory banks and context
+- Jira prefix mapping for ticket auto-detection
+- Repository paths for code navigation
+- Additional profiles matched to your role

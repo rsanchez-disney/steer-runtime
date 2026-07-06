@@ -10,7 +10,7 @@
     "code",
     "thinking",
     "@confluence-confluence/*",
-    "@confluence-mywiki/*"
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -18,7 +18,7 @@
   ],
   "allowedTools": [
     "@confluence-confluence/*",
-    "@confluence-mywiki/*"
+    "@confluence-cloud/*"
   ],
   "includeMcpJson": true,
   "hooks": {

@@ -25,7 +25,7 @@ escalation_contacts:
     contact: "Sr Mgr-Technology"
 on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
 email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
-jira_board: "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=6657"
+jira_board: "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/6657"
 
 # --- ServiceNow ---
 servicenow:
@@ -40,7 +40,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888025/DLR+Park+Access+Hub+BAPP0218688"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888025/DLR+Park+Access+Hub+BAPP0218688"
   wiki: "https://confluence.disney.com/pages/viewpage.action?pageId=613311178"
   architecture_diagram: ""
 
@@ -61,7 +61,7 @@ components:
     # -- Component-specific docs --
     docs:
       troubleshooting: ""
-      runbook: "https://mywiki.disney.com/spaces/StudioKaos/pages/534888025/DLR+Park+Access+Hub+BAPP0218688"
+      runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos/pages/534888025/DLR+Park+Access+Hub+BAPP0218688"
 
     # -- Component-specific documentation links --
     documentation:

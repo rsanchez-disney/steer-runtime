@@ -19,15 +19,15 @@ export async function handleXrayCloudGetTestRuns(args: any): Promise<any> {
         validateIssueKey(testKey, "testKey");
 
         const query = `
-            query($testIssueIds: [String!]!, $limit: Int) {
+            query($testIssueIds: [String!]!, $limit: Int!) {
                 getTestRuns(testIssueIds: $testIssueIds, limit: $limit) {
                     results {
                         id
                         status { name color }
-                        testExecution { issueId jira(fields: ["key", "summary"]) { key } }
+                        testExecution { issueId jira(fields: ["key", "summary"]) }
                         startedOn
                         finishedOn
-                        executedBy { accountId }
+                        executedById
                         steps {
                             id
                             status { name }

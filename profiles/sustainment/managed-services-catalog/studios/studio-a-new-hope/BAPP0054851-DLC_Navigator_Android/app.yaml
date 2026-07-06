@@ -35,9 +35,9 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks"
-  wiki: "https://mywiki.disney.com/spaces/DCLMGET/pages/447487455/DCL+Mobile+Navigator+Technical+Documents"
-  architecture_diagram: "https://mywiki.disney.com/spaces/DCLMGET/pages/504037574/High+Level+Application+Architecture"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/DCLMGET/pages/447487455/DCL+Mobile+Navigator+Technical+Documents"
+  architecture_diagram: "https://disneyexperiences.atlassian.net/wiki/spaces/DCLMGET/pages/504037574/High+Level+Application+Architecture"
 
 # --- Companion Docs (Markdown) ---
 docs:

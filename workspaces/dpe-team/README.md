@@ -88,7 +88,7 @@ All repos resolved from `workspace_path` in `workspace.json`. Set this to your l
 ## Jira & Confluence
 
 - **Jira cloud**: `PPODPE-` — https://disneyexperiences.atlassian.net/jira/software/c/projects/PPODPE/summary
-- **Confluence**: Confluence space `DPE` — use `@confluence/*` tools, not `@mywiki/*`
+- **Confluence**: Confluence space `DPE` — use `@confluence/*` tools, not `@confluence-cloud/*`
 - **GitHub**: `WDPR-SPS` on github.disney.com
 
 ## Environment Setup (Data Agent)

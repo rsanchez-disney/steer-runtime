@@ -7,7 +7,7 @@
     "@servicenow-mcp/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "fs_read",
     "fs_write",
     "thinking"
@@ -17,7 +17,7 @@
     "@servicenow-mcp/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*"
+    "@confluence-cloud/*"
   ],
   "includeMcpJson": true,
   "hooks": {

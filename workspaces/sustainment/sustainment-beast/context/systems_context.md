@@ -120,7 +120,7 @@ This team supports 50+ applications across guest services, operations, and sales
 
 ## Confluence Documentation
 
-Primary documentation: https://mywiki.disney.com/spaces/SBH/pages/926000285/1.+Applications
+Primary documentation: https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/926000285/1.+Applications
 
 When Confluence MCP is available, reference this wiki and underlying pages for detailed system documentation.
 

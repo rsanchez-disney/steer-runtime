@@ -1,4 +1,5 @@
-import { xrayCloudGraphQL, validateIssueKey } from "../utils/xrayCloudApi.js";
+import { JiraApiClient } from "../utils/jiraApi.js";
+import { validateIssueKey } from "../utils/xrayCloudApi.js";
 
 export const xrayCloudLinkTestToStorySchema = {
     name: "xray_cloud_link_test_to_story",
@@ -19,24 +20,12 @@ export async function handleXrayCloudLinkTestToStory(args: any): Promise<any> {
         validateIssueKey(testKey, "testKey");
         validateIssueKey(storyKey, "storyKey");
 
-        const mutation = `
-            mutation($testKeys: [String!]!, $issueKey: String!) {
-                addTestToIssue(
-                    testIssueIds: $testKeys
-                    issueId: $issueKey
-                ) {
-                    addedTests
-                    warning
-                }
-            }
-        `;
+        const apiClient = new JiraApiClient();
+        // XRay test-to-story link type is "Test"
+        // inward: "is tested by" (story), outward: "tests" (test)
+        await apiClient.linkJiraIssues(storyKey, testKey, "Test");
 
-        const result = await xrayCloudGraphQL(mutation, { testKeys: [testKey], issueKey: storyKey });
-        const added = result?.addTestToIssue?.addedTests ?? 0;
-        const warning = result?.addTestToIssue?.warning || "";
-
-        let text = `**Linked:** ${testKey} → ${storyKey}\n\n**Tests linked:** ${added}`;
-        if (warning) text += `\n**Warning:** ${warning}`;
+        const text = `**Linked:** ${testKey} → ${storyKey}\n\n**Link Type:** Test\n**Test (outward):** ${testKey} — tests\n**Story (inward):** ${storyKey} — is tested by`;
 
         return { content: [{ type: "text", text }] };
     } catch (error: any) {

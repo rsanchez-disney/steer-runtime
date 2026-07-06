@@ -16,9 +16,9 @@ TEP3 (Travel Experience Phase 3) enhances the DLR pre-arrival and post-booking g
 ## Jira
 
 - **Project:** TEP3
-- **Board:** [Yondu TEP3 Board](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12887)
+- **Board:** [Yondu TEP3 Board](https://disneyexperiences.atlassian.net/jira/software/boards/12887)
 - **Board ID:** 12887
-- **Instance:** myjira.disney.com
+- **Instance:** disneyexperiences.atlassian.net
 
 ## Notes
 

@@ -7,6 +7,7 @@ Parent workspace for all Reference Architecture sub-teams. Provides shared profi
 | Workspace | Description | Extends |
 |-----------|-------------|---------|
 | [phoenix](phoenix/) | Phoenix sub-team | ra-team |
+| [stark](stark/) | Stark sub-team | ra-team |
 
 ## Quick Start
 

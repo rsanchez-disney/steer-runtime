@@ -60,7 +60,7 @@ Generates velocity reports, burndown analysis, and release readiness assessments
 Agents have access to:
 - ✅ **Jira** - Read sprints, stories, velocity, blockers
 - ✅ **Confluence** - Read/write ceremony docs, reports
-- ✅ **MyWiki** - Read/write internal documentation
+- ✅ **Confluence Cloud** - Read/write internal documentation
 - ✅ **File Operations** - Read/write local files
 
 ---

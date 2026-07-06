@@ -11,9 +11,10 @@
 - **Koda** (SANCR225/Koda) — Go CLI/TUI for managing the steer ecosystem
 - **Kite** (SANCR225/Kite) — Electron desktop GUI over kiro-cli
 - **Mouseketool** (SANCR225/mouseketool) — Config Studio desktop app
-- **prompt-score** (SANCR225/prompt-score) — prompt quality scoring API
+- **prompt-scorer** (SANCR225/prompt-scorer) — prompt quality scoring API
 - **steer-autopilot** (SANCR225/steer-autopilot) — distributed multi-agent pipeline orchestration
 - **steer-plugins** (SANCR225/steer-plugins) — VS Code + IntelliJ IDE plugins
 - **KodaSDK** (SANCR225/KodaSDK) — TypeScript SDK for building apps with Koda
 - **delivery-command-center** (ZAPAJ024/delivery-command-center) — sprint health dashboard
+- **yax** (SANCR225/yax) — persistent memory server for cross-session context
 

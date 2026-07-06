@@ -64,7 +64,7 @@
   ],
   "enable_tools": true,
   "jira_prefix": "ISOPP-",
-  "wiki_url": "https://mywiki.disney.com/pages/viewpage.action?spaceKey=DisneyPackageService&title=Disney+Package+Service+Home",
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?spaceKey=DisneyPackageService&title=Disney+Package+Service+Home",
   "services": [
     "dps-core-offer",
     "dps-core-quote",

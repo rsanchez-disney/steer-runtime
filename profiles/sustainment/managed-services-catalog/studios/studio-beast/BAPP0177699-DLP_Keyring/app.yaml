@@ -43,7 +43,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090159/DLP+Keyring+BAPP0177699"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090159/DLP+Keyring+BAPP0177699"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -67,7 +67,7 @@ components:
       runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring+-+Runbook"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871071762/Keyring+Main"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871071762/Keyring+Main"
       architecture_diagram: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0177699-+Guest+Profile+-+DLP+Keyring&preview=/559649363/562814436/image2020-4-1_11-1-6.png"
 
     repository:
@@ -171,7 +171,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871071768/Keyring+CNS+PRC+Listener"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871071768/Keyring+CNS+PRC+Listener"
       architecture_diagram: ""
 
     repository:
@@ -270,7 +270,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074124/Guest+Ticket+Provider"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871074124/Guest+Ticket+Provider"
       architecture_diagram: ""
 
     repository:
@@ -366,7 +366,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074108/Package+Digital+Provider"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871074108/Package+Digital+Provider"
       architecture_diagram: ""
 
     repository:
@@ -460,7 +460,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074113/Lambda+Guest+BMACS+Portfolio+Reconciliation"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871074113/Lambda+Guest+BMACS+Portfolio+Reconciliation"
       architecture_diagram: ""
 
     repository:
@@ -502,7 +502,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871074121/Lambda+Ticket+Provider"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871074121/Lambda+Ticket+Provider"
       architecture_diagram: ""
 
     repository:

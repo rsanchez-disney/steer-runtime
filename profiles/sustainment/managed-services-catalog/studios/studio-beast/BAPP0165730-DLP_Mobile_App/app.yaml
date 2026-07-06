@@ -38,8 +38,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  runbook: "https://mywiki.disney.com/spaces/SBH/pages/843090186/DLP+Mobile+App+BAPP0165730"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090186/DLP+Mobile+App+BAPP0165730"
+  runbook: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090186/DLP+Mobile+App+BAPP0165730"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090186/DLP+Mobile+App+BAPP0165730"
   architecture_diagram: ""
   olci: "https://confluence.disney.com/display/DLPDT/Online+Checkin?src=contextnavpagetreemode"
   digital_key: "https://confluence.disney.com/display/DLPDT/Digital+keys?src=contextnavpagetreemode"

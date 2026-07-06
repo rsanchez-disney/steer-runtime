@@ -81,7 +81,7 @@ Coverage: <percentage>%
 
 ```markdown
 ## Story
-[DPAY-14337](https://myjira.disney.com/browse/DPAY-14337): Add export progress indicator
+[DPAY-14337](https://disneyexperiences.atlassian.net/browse/DPAY-14337): Add export progress indicator
 
 ## Type
 Feature
@@ -186,9 +186,9 @@ Assign based on components:
 ```
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance.

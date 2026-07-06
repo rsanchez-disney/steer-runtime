@@ -23,7 +23,7 @@ steer-runtime uses MCP (Model Context Protocol) servers to give agents access to
 |---------|------|-----------------|-----------------------------------------------------|
 | compass | SSE  | `COMPASS_TOKEN` | Compass service catalog — custom discoverable tools |
 
-> `mywiki` and `confluence` are separate Confluence instances with separate binaries and unique tool names.
+> `cloud` and `confluence` are separate Confluence instances with separate binaries and unique tool names.
 
 ### Docker Servers
 
@@ -40,9 +40,9 @@ koda install dev ba qa ops pm       # Install agents with tokens injected
 ```
 
 Or use the Koda TUI:
-- `[t]` Tokens — set Jira, Confluence, MyWiki, SonarQube, Harness, Figma, Compass tokens
+- `[t]` Tokens — set Jira, Confluence, Cloud (Atlassian), SonarQube, Harness, Figma, Compass tokens
 - `[g]` GitHub — opens MCP screen at GitHub section (multi-instance)
-- `[e]` Env Vars — configure URLs (Confluence, MyWiki, Compass endpoint)
+- `[e]` Env Vars — configure URLs (Confluence, Cloud, Compass endpoint)
 
 ## Command Modes
 
@@ -103,16 +103,16 @@ GITHUB_TOKEN_public=ghp_yyyyyyyyyyyyyyyyyyyy
 GITHUB_HOST_public=github.com
 
 # Jira instances (suffixed — one pair per host)
-JIRA_PAT_myjira=your-myjira-pat
-JIRA_URL_myjira=https://myjira.disney.com
+JIRA_PAT_cloud=your-cloud-api-token
+JIRA_URL_cloud=https://disneyexperiences.atlassian.net
 JIRA_PAT_jira=your-jira-pat
 JIRA_URL_jira=https://jira.disney.com
 
 # Confluence instances (suffixed — one pair per host)
 CONFLUENCE_PAT_confluence=your-confluence-pat
 CONFLUENCE_URL_confluence=https://confluence.disney.com
-CONFLUENCE_PAT_mywiki=your-mywiki-pat
-CONFLUENCE_URL_mywiki=https://mywiki.disney.com
+CONFLUENCE_PAT_cloud=your-cloud-api-token
+CONFLUENCE_URL_cloud=https://disneyexperiences.atlassian.net/wiki
 
 # Simple tokens (one per service)
 FIGMA_TOKEN=your-figma-token
@@ -123,8 +123,8 @@ COMPASS_TOKEN=your-compass-token
 
 Default instances (URLs pre-populated by Koda — just set the token):
 - GitHub: `disney` (github.disney.com), `public` (github.com)
-- Jira: `myjira` (myjira.disney.com), `jira` (jira.disney.com)
-- Confluence: `confluence` (confluence.disney.com), `mywiki` (mywiki.disney.com)
+- Jira: `cloud` (disneyexperiences.atlassian.net), `jira` (jira.disney.com)
+- Confluence: `confluence` (confluence.disney.com), `cloud` (disneyexperiences.atlassian.net/wiki)
 
 Only instances with tokens set get MCP server entries in `mcp.json`.
 
@@ -145,7 +145,7 @@ Configurable URLs and endpoints in `~/.kiro/env.vars`:
 |---------------|-------------------------------------------------------|------------------------------------------|
 | `COMPASS_URL` | `https://compass.wdprapps.disney.com/api/mcp/mcp-...` | Compass MCP endpoint (user-configurable) |
 
-> **Note:** Jira, Confluence, and GitHub URLs are now managed as suffixed keys in `tokens.env` (e.g., `JIRA_URL_myjira`), not in `env.vars`.
+> **Note:** Jira, Confluence, and GitHub URLs are now managed as suffixed keys in `tokens.env` (e.g., `JIRA_URL_cloud`), not in `env.vars`.
 
 Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 
@@ -162,9 +162,9 @@ Configure via TUI `[e]` Env Vars or edit `~/.kiro/env.vars` directly.
 
 | Service    | URL                                                                          |
 |------------|------------------------------------------------------------------------------|
-| Jira       | https://myjira.disney.com/secure/ViewProfile.jspa → Personal Access Tokens |
+| Jira       | https://id.atlassian.com/manage-profile/security/api-tokens → Create API Token |
 | Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action |
-| MyWiki     | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action     |
+| Confluence Cloud | https://id.atlassian.com/manage-profile/security/api-tokens |
 | GitHub     | `https://{host}/settings/tokens` (one per remote)                            |
 | Figma      | https://www.figma.com/developers/api#access-tokens                           |
 | Compass    | Contact your team lead                                                       |
@@ -278,7 +278,7 @@ grep -rl 'YOUR_TOKEN' ~/.kiro/agents/*.json | wc -l   # should be 0
 | Bundle missing for a server         | Server shows `(bundle missing)` in the selector — run `koda sync --update` to re-download bundles                  |
 | Compass not in config               | Compass only appears if `COMPASS_TOKEN` is set — enter it during the token prompt                                  |
 | Tokens showing `YOUR_TOKEN`         | `koda install <profiles>` to re-inject                                                                             |
-| MyWiki tools rejected as duplicates | mywiki uses confluence-mcp binary — ensure mcp.json "mywiki" server has `CONFLUENCE_URL=https://mywiki.disney.com` |
+| Confluence Cloud tools rejected as duplicates | cloud-wiki uses confluence-mcp binary — ensure mcp.json "cloud-wiki" server has `CONFLUENCE_URL=https://disneyexperiences.atlassian.net/wiki` |
 | Mermaid init failure                | Rebuild: `cd ~/.kiro/tools/mcp-servers/mermaid-diagram-mcp && npm run build`                                       |
 | Delegation timeout                  | Check agent JSON has real tokens — global mcp.json only applies to direct sessions                                 |
 | Compass connection failed           | Verify `COMPASS_URL` in env.vars and `COMPASS_TOKEN` in tokens.env                                                 |

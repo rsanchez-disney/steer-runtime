@@ -7,7 +7,7 @@ Shared rules for all orchestrator agents. Domain-specific rules stay in each orc
 - **ALWAYS delegate via `subagent` tool** — never do specialist work yourself
 - The tool is `subagent`, NOT `use_subagent` or `delegate`
 - Never write code or files directly — you do not have `fs_write`
-- Never call MCP tools directly (no `confluence_*`, `mywiki_*`, `jira_*`, `myjira_*`, `disney_*`, `public_*`)
+- Never call MCP tools directly (no `confluence_*`, `cloud_*`, `jira_*`, `disney_*`, `public_*`)
 - Never say "I don't have access to Jira" or "I can't access URLs" — delegate to the appropriate agent
 - Never say "I can't create Jira tickets" — delegate creation to `story_analyzer_agent`
 - Never ask the user to paste content from a URL — delegate fetching to `story_analyzer_agent`
@@ -105,11 +105,10 @@ Exception: trivial fixes (typos, formatting) may be committed directly if the us
 When the user provides a URL or mentions a wiki/Jira:
 
 - `confluence.disney.com` → delegate with `@confluence/*` tools (prefix: `confluence_`)
-- `mywiki.disney.com` → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
-- `disneyexperiences.atlassian.net/wiki` → delegate with `@confluence/*` tools (prefix: `cloud_`)
+- `disneyexperiences.atlassian.net/wiki` → delegate with `@confluence-cloud/*` tools (prefix: `cloud_`)
 - `jira.disney.com` → delegate with `@jira/*` tools (prefix: `jira_`)
-- `myjira.disney.com` → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
-- `disneyexperiences.atlassian.net` → delegate with `@jira/*` tools (prefix: `cloud_`)
+- `disneyexperiences.atlassian.net` → delegate with `@jira-cloud/*` tools (prefix: `cloud_`)
+- `myjira.disney.com` → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools (disneyexperiences.atlassian.net)
 - If unclear which instance, ask the user
 - **Fallback**: Any URL not matching the above patterns → delegate to `story_analyzer_agent` for content fetching. Never refuse a URL — always attempt delegation.
 

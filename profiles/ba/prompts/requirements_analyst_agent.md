@@ -51,11 +51,11 @@ Provide analysis in structured format:
 Create Jira comments or new issues to track findings.
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance.
 
 ## Preventive Quality Scoring Mode

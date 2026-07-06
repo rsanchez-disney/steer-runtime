@@ -19,22 +19,22 @@ You have four MCP servers. Each has its own **prefix**. Both Confluence instance
 
 | Source | Prefix | URL | Available tools |
 |--------|--------|-----|----------------|
-| **Jira** | `jira_` | myjira.disney.com | `jira_get_issue`, `jira_search_issues`, etc. |
+| **Jira Cloud** | `cloud_` | disneyexperiences.atlassian.net | `cloud_get_issue`, `cloud_search_issues`, etc. |
 | **Confluence** | `confluence_` | confluence.disney.com | `confluence_get_confluence_page`, `confluence_search_confluence_pages`, `confluence_get_confluence_space` |
-| **MyWiki** | `mywiki_` | mywiki.disney.com | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages`, `mywiki_get_confluence_space` |
+| **Confluence Cloud** | `cloud_` | disneyexperiences.atlassian.net/wiki | `cloud_get_confluence_page`, `cloud_search_confluence_pages`, `cloud_get_confluence_space` |
 | **GitHub** | `@github/` | github.disney.com | `@github/github_get_pr`, `@github/github_list_repos`, etc. |
 
-### ⚠️ CRITICAL: Confluence vs MyWiki — DIFFERENT SERVERS, DIFFERENT TOOL NAMES
+### ⚠️ CRITICAL: Confluence vs Confluence Cloud — DIFFERENT SERVERS, DIFFERENT TOOL NAMES
 
 These are **two separate Confluence instances**. Each has its own prefixed tool names:
 
 | URL in user's request | Tool names to use |
 |-----------------------|-------------------|
 | `confluence.disney.com` | `confluence_get_confluence_page`, `confluence_search_confluence_pages` |
-| `mywiki.disney.com` | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages` |
+| `disneyexperiences.atlassian.net/wiki` | `cloud_get_confluence_page`, `cloud_search_confluence_pages` |
 
-**WRONG:** Calling `confluence_get_confluence_page` for a `mywiki.disney.com` URL — that hits the wrong server.
-**RIGHT:** Call `mywiki_get_confluence_page` for mywiki URLs, `confluence_get_confluence_page` for confluence URLs.
+**WRONG:** Calling `confluence_get_confluence_page` for a `disneyexperiences.atlassian.net/wiki` URL — that hits the wrong server.
+**RIGHT:** Call `cloud_get_confluence_page` for Cloud wiki URLs, `confluence_get_confluence_page` for confluence URLs.
 
 If the user doesn't specify which instance, **ask them**.
 
@@ -46,10 +46,10 @@ If the user doesn't specify which instance, **ask them**.
 
 ### Fetching a Jira Story
 
-From URL `https://myjira.disney.com/browse/DPAY-14337`, extract key: `DPAY-14337`
+From URL `https://disneyexperiences.atlassian.net/browse/DPAY-14337`, extract key: `DPAY-14337`
 
-Use `@jira/*` tools to fetch the issue. Look for tools like:
-- `jira_get_issue` or similar with the issue key
+Use `cloud_*` tools to fetch the issue. Look for tools like:
+- `cloud_get_issue` or similar with the issue key
 
 ### Analysis Output
 
@@ -83,14 +83,14 @@ Flag as incomplete if:
 
 ---
 
-## Confluence / MyWiki Workflows
+## Confluence / Confluence Cloud Workflows
 
 ### Routing: Which Instance?
 
 | URL contains | Tool names to use |
 |-------------|-------------------|
 | `confluence.disney.com` | `confluence_get_confluence_page`, `confluence_search_confluence_pages` |
-| `mywiki.disney.com` | `mywiki_get_confluence_page`, `mywiki_search_confluence_pages` |
+| `disneyexperiences.atlassian.net/wiki` | `cloud_get_confluence_page`, `cloud_search_confluence_pages` |
 | Neither specified | **Ask the user** |
 
 ### Fetching a Page
@@ -99,12 +99,12 @@ Flag as incomplete if:
 **Step 2:** Extract the page ID from the URL path (e.g., `/pages/1318291784/` → pageId `1318291784`).
 **Step 3:** Call the tool with the CORRECT instance prefix.
 
-**Example — MyWiki URL** `https://mywiki.disney.com/spaces/SR/pages/1318291784/BOLT+Admin+Migration`:
+**Example — Confluence Cloud URL** `https://disneyexperiences.atlassian.net/wiki/spaces/SR/pages/1318291784/BOLT+Admin+Migration`:
 ```
-# CORRECT — uses mywiki_ prefix because the URL is mywiki.disney.com
-mywiki_get_confluence_page(pageId="1318291784", expand="body.storage,version,space")
+# CORRECT — uses cloud_ prefix because the URL is disneyexperiences.atlassian.net/wiki
+cloud_get_confluence_page(pageId="1318291784", expand="body.storage,version,space")
 
-# WRONG — this hits confluence.disney.com, not mywiki.disney.com!
+# WRONG — this hits confluence.disney.com, not disneyexperiences.atlassian.net/wiki!
 confluence_get_confluence_page(pageId="1318291784", expand="body.storage,version,space")
 get_confluence_page(pageId="1318291784")  # Also WRONG — unprefixed tool doesn't exist
 ```
@@ -115,10 +115,10 @@ get_confluence_page(pageId="1318291784")  # Also WRONG — unprefixed tool doesn
 confluence_search_confluence_pages(cql='title = "My Page" AND space = "TEAM"', expand="body.storage,version,space")
 ```
 
-**Example — Searching MyWiki**:
+**Example — Searching Confluence Cloud**:
 ```
-# CORRECT — searching mywiki.disney.com
-mywiki_search_confluence_pages(cql='title ~ "BOLT Admin" AND space = "SR"', expand="body.storage,version,space")
+# CORRECT — searching disneyexperiences.atlassian.net/wiki
+cloud_search_confluence_pages(cql='title ~ "BOLT Admin" AND space = "SR"', expand="body.storage,version,space")
 ```
 
 ### What You Can Do with Confluence
@@ -167,13 +167,12 @@ Automatically detect the source from the URL or query:
 
 | Pattern | Source | Action |
 |---------|--------|--------|
-| `myjira.disney.com/browse/` | Jira | Fetch and analyze story |
+| `disneyexperiences.atlassian.net/browse/` | Jira Cloud | Fetch and analyze story |
 | `confluence.disney.com/` | Confluence | Use `@confluence/*` tools |
-| `mywiki.disney.com/` | MyWiki | Use `@mywiki/*` tools |
+| `disneyexperiences.atlassian.net/wiki/` | Confluence Cloud | Use `cloud_` prefix tools |
 | `github.disney.com/` | GitHub | Browse repo/PR |
-| Jira key like `DPAY-1234` | Jira | Fetch issue by key |
+| Jira key like `DPAY-1234` | Jira Cloud | Fetch issue by key |
 | "search confluence for..." | Confluence | Use `@confluence/*` tools |
-| "search mywiki for..." | MyWiki | Use `@mywiki/*` tools |
 | "review PR #123 in..." | GitHub | Fetch PR details |
 
 ## Error Handling
@@ -187,7 +186,7 @@ If a tool is unavailable or fails:
 
 1. **Use MCP tools** — don't guess or assume content
 2. **Detect the source** from URL patterns automatically
-3. **ALWAYS use the correct instance-prefixed tool name** — `mywiki_get_confluence_page` for mywiki.disney.com, `confluence_get_confluence_page` for confluence.disney.com. NEVER call an unprefixed tool like `get_confluence_page`. NEVER use `confluence_` tools for a mywiki URL or vice versa.
-4. **NEVER use web_fetch for URLs that match an MCP server** — mywiki/confluence/jira/github.disney.com URLs must be fetched via MCP tools, not web_fetch
+3. **ALWAYS use the correct instance-prefixed tool name** — `cloud_get_confluence_page` for disneyexperiences.atlassian.net/wiki, `confluence_get_confluence_page` for confluence.disney.com. NEVER call an unprefixed tool like `get_confluence_page`. NEVER use `confluence_` tools for a Cloud wiki URL or vice versa.
+4. **NEVER use web_fetch for URLs that match an MCP server** — Cloud wiki/confluence/jira/github.disney.com URLs must be fetched via MCP tools, not web_fetch
 5. **Be thorough** — extract all relevant information
 6. **Handle errors gracefully** — report what failed and why

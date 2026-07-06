@@ -40,7 +40,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090176/DLP+Entitlement+Product+Service+BAPP0203002"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090176/DLP+Entitlement+Product+Service+BAPP0203002"
   architecture_diagram: "https://confluence.disney.com/pages/viewpage.action?pageId=1356008915"
   tridion: "https://confluence.disney.com/display/DLPFORKY/CME+-+Surqual"
 

@@ -44,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/x/ROuwIg"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235677/DLP+DGE+API.MeetAndGreet+BAPP0220648"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235677/DLP+DGE+API.MeetAndGreet+BAPP0220648"
   architecture_diagram: "https://confluence.disney.com/download/attachments/582019908/image2021-4-20_14-55-26.png?version=1&modificationDate=1618923327405&api=v2"
   confluence: "https://confluence.disney.com/x/o3dUT"
   swagger: "https://latest.dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-sales-srv-meet-and-greet-provider/swagger-ui/index.html"
@@ -68,7 +68,7 @@ known_issues:
     category: "incident-based"
     severity: "high"
     affected_component: "srv-meet-and-greet-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=981337383"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=981337383"
     description: >-
       Lineberty (external third-party queue management) experiences periodic outages affecting
       the entire Meet & Greet booking section in the mobile app. When Lineberty is down, guests
@@ -81,7 +81,7 @@ known_issues:
     category: "alert-based"
     severity: "high"
     affected_component: "srv-meet-and-greet-provider"
-    source_link: "https://mywiki.disney.com/pages/viewpage.action?pageId=943235677"
+    source_link: "https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=943235677"
     description: >-
       The Meet & Greet microservice fails to generate JWT tokens needed for Lineberty API
       authentication. Caused by Vault secret misconfiguration or expiry. Symptoms include
@@ -128,7 +128,7 @@ components:
       runbook: "https://confluence.disney.com/x/ROuwIg"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235677/DLP+DGE+API.MeetAndGreet+BAPP0220648"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235677/DLP+DGE+API.MeetAndGreet+BAPP0220648"
       architecture_diagram: "https://confluence.disney.com/download/attachments/582019908/image2021-4-20_14-55-26.png?version=1&modificationDate=1618923327405&api=v2"
 
     repository:

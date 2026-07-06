@@ -90,6 +90,6 @@ Guest → Non-Disney Addons SPA (Angular) → Non-Disney Addons API (Node.js) �
 ## Jira
 
 - **Project:** ROS
-- **Board:** [Star Lord Board](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10955)
+- **Board:** [Star Lord Board](https://disneyexperiences.atlassian.net/jira/software/boards/10955)
 - **Board ID:** 10955
-- **Instance:** myjira.disney.com
+- **Instance:** disneyexperiences.atlassian.net

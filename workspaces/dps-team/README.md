@@ -48,6 +48,6 @@ koda workspace apply dps-team
 ## Jira & Wiki
 
 - **Jira**: `ISOPP-`
-- **Wiki**: MyWiki space `DisneyPackageService` — use `@mywiki/*` tools
+- **Wiki**: Confluence Cloud space `DisneyPackageService` — use `@confluence-cloud/*` tools
 - **GitHub**: `WDPR-Resort-Sales` on github.disney.com
 

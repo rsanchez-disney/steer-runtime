@@ -1,6 +1,6 @@
 {
   "name": "pos_story_analyzer_agent",
-  "description": "Fetches and analyzes Jira stories for POS platform (POS-*, CONFE-* tickets) from myjira.disney.com",
+  "description": "Fetches and analyzes Jira stories for POS platform (POS-*, CONFE-* tickets) from disneyexperiences.atlassian.net",
   "prompt": "file://../prompts/pos_story_analyzer_agent.md",
   "tools": [
     "@jira/*",
