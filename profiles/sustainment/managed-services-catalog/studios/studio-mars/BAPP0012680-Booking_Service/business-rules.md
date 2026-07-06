@@ -162,6 +162,7 @@ Commerce UI (Presales) → COM Shared API → Booking Service → DTI → eGalax
 - **MK Renewed:** ACS returns current + next pass.
 - **MK Renewal PLUs:** Managed in CME Admin.
 - **MK Upgrade (not renewal):** Previous MK remains available until expiration.
+- **SoCal MK Zip Validation:** For SoCal Magic Key eligibility, verify in eGalaxy `QueryTicketResponse` that the VID has a zip code in range 90000???93599. If zip is outside this range ??? guest is not eligible for SoCal MK renewal.
 
 #### Troubleshooting Scenarios
 
