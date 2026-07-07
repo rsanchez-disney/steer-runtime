@@ -4,7 +4,7 @@
   "prompt": "prompts/demo_generator_agent.md",
   "tools": [
     "@confluence/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@github/*",
     "fs_read",
     "fs_write",
@@ -13,7 +13,7 @@
   ],
   "allowedTools": [
     "@confluence/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@github/*",
     "@jira/*"
   ],

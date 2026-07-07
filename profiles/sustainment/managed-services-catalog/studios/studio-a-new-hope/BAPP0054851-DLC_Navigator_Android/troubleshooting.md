@@ -3,7 +3,7 @@
 ## Common Issues
 
 Documented in the tech runbooks wiki:
-https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks
+https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks
 
 ## Escalation Decision Tree
 
@@ -13,4 +13,4 @@ https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGE
 ## Known Quirks
 
 Documented in the tech runbooks wiki:
-https://mywiki.disney.com/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks
+https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=481990113&spaceKey=DCLMGET&title=DCLM%2BTech%2BRunbooks

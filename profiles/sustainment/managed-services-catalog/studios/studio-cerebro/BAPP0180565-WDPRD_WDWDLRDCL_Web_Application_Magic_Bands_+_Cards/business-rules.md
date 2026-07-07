@@ -4,7 +4,7 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in MyWiki | |
+| Uptime | Not documented in Confluence Cloud | |
 | Response time (p95) | ART East < 5s, West < 6s | AppDynamics |
 | Error rate | < 3% (East/West) | Splunk / CloudWatch |
 | CPU | < 30% | CloudWatch |
@@ -12,7 +12,7 @@
 
 ## Peak Periods
 
-- Not documented in MyWiki
+- Not documented in Confluence Cloud
 
 ## Business Logic
 

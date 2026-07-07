@@ -25,7 +25,7 @@ When documenting changes, check for and maintain project specs:
 5. Save new specs as `YYYYMMDD_title.md` in the specs directory
 
 ## Process
-1. **Analyze** — Read the codebase, existing docs, and Confluence/MyWiki pages to understand context
+1. **Analyze** — Read the codebase, existing docs, and Confluence/Confluence Cloud pages to understand context
 2. **Outline** — Propose a structure before writing
 3. **Write** — Use clear, concise language with code examples where helpful
 4. **Review** — Check for accuracy against the actual code
@@ -42,5 +42,5 @@ When documenting changes, check for and maintain project specs:
 
 ## Confluence Routing
 - `confluence.disney.com` → use `@confluence/*` tools
-- `mywiki.disney.com` → use `@mywiki/*` tools
+- `disneyexperiences.atlassian.net/wiki` → use `@confluence-cloud/*` tools
 - If the target wiki instance is unclear, ask the user before proceeding

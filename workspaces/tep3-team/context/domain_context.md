@@ -170,4 +170,4 @@ When prices change between cart and checkout:
 - [DTCC space][dtcc-wiki]
 
 <!-- Links -->
-[dtcc-wiki]: https://mywiki.disney.com/display/DTCC
+[dtcc-wiki]: https://disneyexperiences.atlassian.net/wiki/display/DTCC

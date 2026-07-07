@@ -60,7 +60,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/WSRS/pages/996544725/BAPP0246752+WDW+Show+Ready+cast+ops"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/WSRS/pages/996544725/BAPP0246752+WDW+Show+Ready+cast+ops"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -148,7 +148,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/WSRS/pages/943234381/BAPP0246752+WDW+Show+Ready+admin"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/WSRS/pages/943234381/BAPP0246752+WDW+Show+Ready+admin"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -231,7 +231,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/WSRS/pages/943234362/BAPP0246752+WDW+Show+Ready+Front-End"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/WSRS/pages/943234362/BAPP0246752+WDW+Show+Ready+Front-End"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

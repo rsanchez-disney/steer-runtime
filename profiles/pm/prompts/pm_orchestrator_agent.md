@@ -20,7 +20,7 @@ Coordinate PM workflows by delegating to specialized agents: sprint_manager, sta
 
 ## Confluence Routing
 - `confluence.disney.com` → use `@confluence/*` tools
-- `mywiki.disney.com` → use `@mywiki/*` tools
+- `disneyexperiences.atlassian.net/wiki` → use `@confluence-cloud/*` tools
 - If unclear, ask the user
 
 
@@ -67,12 +67,12 @@ You have access to Compass tools via MCP:
 
 | User asks about | Delegate to | MCP tools the agent uses |
 |---|---|---|
-| Sprint planning, capacity, backlog grooming | `sprint_manager_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
-| Daily standup summary, blockers, stale items | `standup_agent` | `jira_*`, `myjira_*` |
-| Sprint retrospective, action items | `retro_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
-| Blockers, dependencies, risk tracking | `risk_tracker_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
-| Sprint report, velocity, delivery metrics | `delivery_reporter_agent` | `jira_*`, `confluence_*`, `mywiki_*` |
-| Fetch/review Jira ticket or Confluence/MyWiki page | `story_analyzer_agent` | `jira_*`, `myjira_*`, `confluence_*`, `mywiki_*` |
+| Sprint planning, capacity, backlog grooming | `sprint_manager_agent` | `jira_*`, `cloud_*`, `confluence_*` |
+| Daily standup summary, blockers, stale items | `standup_agent` | `jira_*`, `cloud_*` |
+| Sprint retrospective, action items | `retro_agent` | `jira_*`, `confluence_*`, `cloud_*` |
+| Blockers, dependencies, risk tracking | `risk_tracker_agent` | `jira_*`, `confluence_*`, `cloud_*` |
+| Sprint report, velocity, delivery metrics | `delivery_reporter_agent` | `jira_*`, `confluence_*`, `cloud_*` |
+| Fetch/review Jira ticket or Confluence/Confluence Cloud page | `story_analyzer_agent` | `jira_*`, `cloud_*`, `confluence_*` |
 | Send email (sprint report, standup summary) | `email_agent` | `compass` |
 | Send Teams message (standup, sprint report to channel) | `email_agent` | `@teams/*` |
 
@@ -84,8 +84,8 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 |---|---|
 | `profiles/pm/agents/pm_orchestrator_agent.json` | PM orchestrator tool permissions |
 | `profiles/pm/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
-| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
-| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/Confluence Cloud/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (cloud_* vs confluence_*) |
 
 ## Additional Delegation Rules
 

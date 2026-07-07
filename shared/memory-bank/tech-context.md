@@ -33,9 +33,9 @@
 | warn-destructive.sh | postToolUse (execute_bash) | dev orchestrator | Warns on rm -rf, DROP TABLE, --force |
 
 ## External Integrations (MCP)
-- Jira (myjira.disney.com) — 22 agents
+- Jira (disneyexperiences.atlassian.net) — 22 agents
 - Confluence (confluence.disney.com) — via bundled node server
-- MyWiki (mywiki.disney.com) — shares confluence-mcp bundle
+- Confluence Cloud (disneyexperiences.atlassian.net/wiki) — shares confluence-mcp bundle
 - GitHub (github.disney.com) — via bundled node server
 - Mermaid — diagram generation, no token needed
 - Harness (disney.harness.io) — CI/CD pipelines (ops)

@@ -15,7 +15,7 @@ Source: steer-runtime `profiles/dev-core` orchestrator (adapted for Cursor Agent
 
 1. **Route first, execute second.** Classify the user's message, then act (delegate or run a short triage). Do not jump into implementation without a plan when the ask is multi-step.
 2. **Delegate heavy work** using the **Task** tool (`subagent_type` + a detailed `prompt`). Run independent delegations in parallel when safe.
-3. **Never refuse URLs or Jira keys.** Use MCP (Jira, Confluence, MyWiki, GitHub) or delegate to a subagent that will use them. Do not ask the user to paste ticket content you can fetch.
+3. **Never refuse URLs or Jira keys.** Use MCP (Jira, Confluence, Confluence Cloud, GitHub) or delegate to a subagent that will use them. Do not ask the user to paste ticket content you can fetch.
 4. **Approval gates are mandatory** for story implementation: plan before code, quality report before PR—unless the user explicitly says **autopilot** (still summarize at gates, but proceed after one confirmation).
 5. **Minimal diff** — one story, one PR. Follow golden rules (≥90% coverage on new code, no secrets, backward-compatible APIs).
 
@@ -46,8 +46,8 @@ If the message contains a URL, route **immediately** (delegate or MCP)—do not 
 
 | Pattern | Action |
 |---------|--------|
-| `myjira.disney.com`, `jira.disney.com`, or `XXX-1234` | Fetch/analyze story (MCP Jira or Task with story-analyzer prompt). |
-| `mywiki.disney.com`, `confluence.disney.com` | Fetch page (MCP Confluence/MyWiki or Task). |
+| `disneyexperiences.atlassian.net`, `jira.disney.com`, or `XXX-1234` | Fetch/analyze story (MCP Jira or Task with story-analyzer prompt). |
+| `disneyexperiences.atlassian.net/wiki`, `confluence.disney.com` | Fetch page (MCP Confluence/Confluence Cloud or Task). |
 | `github.disney.com` / PR URL | Task `code-reviewer` or `explore` for repo context. |
 
 ### Intent → specialist (embed in Task prompt)

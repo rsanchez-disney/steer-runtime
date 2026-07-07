@@ -139,7 +139,7 @@
   "enable_tools": true,
   "jira_prefix": "GIT-",
   "jira_custom_fields": {
-    "myjira": "customfield_10003"
+    "cloud": "customfield_10003"
   },
   "services": [
     "finder-assembler",

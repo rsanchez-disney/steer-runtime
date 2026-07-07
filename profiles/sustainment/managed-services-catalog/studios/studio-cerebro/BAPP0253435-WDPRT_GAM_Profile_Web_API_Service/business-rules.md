@@ -4,8 +4,8 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in MyWiki | |
-| Response time (p95) | Not documented in MyWiki | |
+| Uptime | Not documented in Confluence Cloud | |
+| Response time (p95) | Not documented in Confluence Cloud | |
 | Error rate (per endpoint) | See endpoint thresholds below | Splunk error rate query |
 
 ### Endpoint Error Thresholds
@@ -28,7 +28,7 @@
 
 ## Peak Periods
 
-- Not documented in MyWiki
+- Not documented in Confluence Cloud
 
 ## Business Logic
 

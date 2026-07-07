@@ -54,5 +54,5 @@
 - Part of the Shuri platform family (uses shuri-hulkling naming)
 - Uses Java 17.0.15 with Spring Boot
 - Shares `wdpr_d-scribe` Splunk index — filter by `source="*hulkling-prod*"` for production
-- General troubleshooting: https://mywiki.disney.com/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting
+- General troubleshooting: https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting
 - Grafana dashboard: https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard

@@ -29,7 +29,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090178/DLP+DGE+API.Magic+Mobile+Ticket+Meal+Plan+BAPP0247141"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090178/DLP+DGE+API.Magic+Mobile+Ticket+Meal+Plan+BAPP0247141"
   swagger: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-bma-magic-mobile-provider/swagger-ui.html"
 
 # --- Companion Docs (Markdown) ---

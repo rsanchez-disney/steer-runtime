@@ -4,13 +4,13 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in MyWiki | |
-| Response time (p95) | Not documented in MyWiki | |
+| Uptime | Not documented in Confluence Cloud | |
+| Response time (p95) | Not documented in Confluence Cloud | |
 | Error rate | CPU > 30% or Memory > 50% triggers alert | CloudWatch / gac-profile-prod-alerts |
 
 ## Peak Periods
 
-- Not documented in MyWiki
+- Not documented in Confluence Cloud
 
 ## Business Logic
 

@@ -40,7 +40,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/1246366618/Shuri+-+Aulani+Integration"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1242600505/BAPP0250002+-+WDPR+Shuri+Aulani+SNS+Messenger"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1242600505/BAPP0250002+-+WDPR+Shuri+Aulani+SNS+Messenger"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 
 # --- Companion Docs (Markdown) ---

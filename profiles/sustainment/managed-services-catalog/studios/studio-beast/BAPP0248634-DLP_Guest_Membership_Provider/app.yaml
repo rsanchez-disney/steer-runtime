@@ -50,7 +50,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235675/DLP+Guest+Membership+Provider+BAPP0248634"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235675/DLP+Guest+Membership+Provider+BAPP0248634"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -71,7 +71,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235675/DLP+Guest+Membership+Provider+BAPP0248634"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235675/DLP+Guest+Membership+Provider+BAPP0248634"
 
     repository:
       url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-guest-membership-provider"

@@ -144,6 +144,6 @@ For each of the top 3 crashes per segment:
 - Report the **affectsVersion** as the version where the crash was first found
 - If the Jira MCP does not return these fields, ask the user to confirm the fixVersion and affectsVersion for each crash
 - Search **both Jira instances** when cross-referencing crashes:
-  - `myjira.disney.com` — DCLMSUST project (DCL sustainment tickets)
+  - `disneyexperiences.atlassian.net` — DCLMSUST project (DCL sustainment tickets)
   - `jira.disney.com` — IDY project (OneID/external SDK tickets) and other external projects
 - Never reuse ticket links from previous reports without verifying they still exist

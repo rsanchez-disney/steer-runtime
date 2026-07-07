@@ -42,7 +42,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090183/DLP+Mobile+API+Gateway+BAPP0177763"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090183/DLP+Mobile+API+Gateway+BAPP0177763"
 
 # --- Companion Docs (Markdown) ---
 docs:

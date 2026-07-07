@@ -14,14 +14,14 @@
 |--------|--------|-------|
 | jira | `jira-mcp/dist/index.cjs` | |
 | confluence | `confluence-mcp/dist/index.cjs` | confluence.disney.com |
-| mywiki | `confluence-mcp/dist/index.cjs` | mywiki.disney.com — reuses confluence-mcp binary with CONFLUENCE_URL env |
+| cloud-wiki | `confluence-mcp/dist/index.cjs` | disneyexperiences.atlassian.net/wiki — reuses confluence-mcp binary with CONFLUENCE_URL env |
 | github | `github-mcp/dist/index.cjs` | github.disney.com |
 | mermaid | `mermaid-diagram-mcp/dist/index.cjs` | SDK 0.6.0, two-arg Server constructor |
 | sonarqube | `docker mcp/sonarqube` | disabled by default |
 | harness | `docker harness/mcp-server` | disabled by default |
 
 ### Key Design Decisions
-- **mywiki has its own binary** — cannot share `confluence-mcp` because kiro-cli rejects duplicate tool names. Tool names prefixed with `mywiki_` (e.g., `get_mywiki_page`).
+- **cloud-wiki has its own binary** — cannot share `confluence-mcp` because kiro-cli rejects duplicate tool names. Tool names prefixed with `cloud_` (e.g., `get_cloud_page`).
 - **mermaid uses SDK 0.6.0** — two-argument `Server()` constructor. Source has no shebang (esbuild banner adds it). No `import.meta.url` (CJS provides `__dirname`).
 - **Tokens must be in agent JSONs** — global `mcp.json` only applies to direct sessions. Delegated sessions (orchestrator → specialist) use the agent's own `mcpServers.env` block.
 - **All MCP bundles built with esbuild** — `--platform=node --format=cjs --outfile=dist/index.cjs`

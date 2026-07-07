@@ -45,9 +45,9 @@ Provide scope definitions in a structured format:
 Use Confluence to document comprehensive scope and Jira to track scope-related decisions.
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance.

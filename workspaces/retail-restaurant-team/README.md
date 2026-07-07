@@ -100,5 +100,5 @@ kiro-cli chat --agent orchestrator
 
 ## Wiki
 
-- [Studios Overview](https://mywiki.disney.com/spaces/FBT/pages/793976187/Studios)
+- [Studios Overview](https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/793976187/Studios)
 - Space: DXT - Mobile Retail & Restaurant Engineering (FBT)

@@ -4,6 +4,17 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.151] — 2026-07-04
+
+### Added
+
+- **propose_agent** (dev-core): Generates 2-4 implementation alternatives with dimensional scoring and clear recommendation. Activates on "propose", "alternatives", "best approach" intents (#545)
+- **judge_agent** (dev-core): Two-layer code evaluation — structural checks + dimensional quality scoring (6 dimensions). Produces composite score and PASS/CONDITIONAL/FAIL verdict. Activates on "judge", "score code", "evaluate quality" intents (#545)
+- **propose-judge strategy** (sdlc): Alternative orchestration flow — Analyze → Propose → Plan → Implement → Judge → Ship. Auto-detection rules, Gate 0 proposal approval, and judge-driven quality loop with retry limits (#549)
+- **propose-judge quick start guide** (docs/experimental): Full flow walkthrough, trigger phrases, output format examples, standalone usage, and relationship to autopilot/planning/code review (#550)
+- **pos-team orchestration** — QA Validation Agent, receipts refactor learnings bank, android refactor agent, PM Agent profile improvements (#543)
+- Orchestrator routing for propose_agent and judge_agent intents
+
 ## [0.2.149] — 2026-07-03
 
 ### Added

@@ -7,9 +7,9 @@ Studio Rocket manages DLR resort reservations (cast & guest), resort sales check
 ## Jira
 
 - **Project:** ROS
-- **Board:** [ROS Board](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10320)
+- **Board:** [ROS Board](https://disneyexperiences.atlassian.net/jira/software/boards/10320)
 - **Board ID:** 10320
-- **Instance:** myjira.disney.com
+- **Instance:** disneyexperiences.atlassian.net
 
 ## Escalation
 
@@ -19,7 +19,7 @@ Studio Rocket manages DLR resort reservations (cast & guest), resort sales check
 
 ## Wiki
 
-- [Studio ROCKET Space](https://mywiki.disney.com/spaces/ROS/pages/451024499/Studio+ROCKET)
+- [Studio ROCKET Space](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/451024499/Studio+ROCKET)
 
 ## Applications (20)
 

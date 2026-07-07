@@ -35,7 +35,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/1248891878/SDM+Content+Lambda"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1301776063/BAPP0251275+-+WDPR+Ant-Man+Lambda+SDM+Content"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1301776063/BAPP0251275+-+WDPR+Ant-Man+Lambda+SDM+Content"
   gcx_tools_api: "https://confluence.disney.com/display/ECM/GCX+Tools+API+Gateway"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 

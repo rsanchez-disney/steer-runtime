@@ -37,11 +37,11 @@ koda mcp-install
 
 ## MCP Tool Name Collisions
 
-If you see "tools rejected because they conflict in names" for mywiki:
+If you see "tools rejected because they conflict in names" for cloud wiki:
 
 ```bash
-# mywiki uses confluence-mcp binary — no separate build needed
-# Configure via mcp.json: "mywiki" server with CONFLUENCE_URL=https://mywiki.disney.com
+# cloud wiki uses confluence-mcp binary — no separate build needed
+# Configure via mcp.json: "confluence-cloud" server with CONFLUENCE_URL=https://disneyexperiences.atlassian.net/wiki
 ```
 
 ## Mermaid MCP Init Failure
@@ -86,9 +86,9 @@ Regenerate tokens and reconfigure:
 
 | Service    | Token URL                                                                                                                     |
 |------------|-------------------------------------------------------------------------------------------------------------------------------|
-| Jira       | https://myjira.disney.com/secure/ViewProfile.jspa?selectedTab=com.atlassian.pats.pats-plugin:jira-user-personal-access-tokens |
+| Jira       | https://id.atlassian.com/manage-profile/security/api-tokens |
 | Confluence | https://confluence.disney.com/plugins/personalaccesstokens/usertokens.action                                                  |
-| MyWiki     | https://mywiki.disney.com/plugins/personalaccesstokens/usertokens.action                                                      |
+| Confluence Cloud | https://id.atlassian.com/manage-profile/security/api-tokens                                                      |
 | GitHub     | https://github.disney.com/settings/tokens                                                                                     |
 
 Then run:

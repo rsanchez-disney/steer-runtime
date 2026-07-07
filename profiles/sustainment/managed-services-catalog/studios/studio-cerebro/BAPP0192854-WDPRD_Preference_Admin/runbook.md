@@ -2,25 +2,25 @@
 
 ## Restart Procedures
 
-1. Not documented in MyWiki — likely ECS Fargate force new deployment
+1. Not documented in Confluence Cloud — likely ECS Fargate force new deployment
 2. Check ECS cluster health in AWS Console
 
-**Validation:** Not documented in MyWiki
+**Validation:** Not documented in Confluence Cloud
 
 ---
 
 ## Scaling
 
-- **Scale up:** Not documented in MyWiki
-- **Scale down:** Not documented in MyWiki
+- **Scale up:** Not documented in Confluence Cloud
+- **Scale down:** Not documented in Confluence Cloud
 
 ## Failover
 
-- Not documented in MyWiki
+- Not documented in Confluence Cloud
 
 ## Rollback
 
-- Not documented in MyWiki
+- Not documented in Confluence Cloud
 
 ## Contacts for External Dependencies
 

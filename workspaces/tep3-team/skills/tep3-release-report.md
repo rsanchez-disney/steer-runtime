@@ -23,7 +23,7 @@ Ask the user (or infer from context):
 | Parameter | Required | Example |
 |---|---|---|
 | `confluence_page_id` | Yes | `2188817537` |
-| `confluence_instance` | Default: `confluence.disney.com` | `confluence.disney.com` or `mywiki.disney.com` |
+| `confluence_instance` | Default: `confluence.disney.com` | `confluence.disney.com` or `disneyexperiences.atlassian.net/wiki` |
 | `release_version` | Yes (infer from page title) | `2.54.0` |
 | `output_path` | Default: `~/Desktop/` | Any writable path |
 | `previous_release_globant_count` | Optional (for comparison table) | `9` |
@@ -36,7 +36,7 @@ Ask the user (or infer from context):
 Fetch the release page and extract ALL Jira ticket references.
 
 ```
-Use @confluence/* tools (or @mywiki/* if mywiki.disney.com instance)
+Use @confluence/* tools (or @confluence-cloud/* if disneyexperiences.atlassian.net/wiki instance)
 Get page by pageId → extract ticket patterns: COM-\d+, UCM-\d+, TEP3-\d+, TXPE-\d+
 ```
 
@@ -55,10 +55,10 @@ Produce a **deduplicated master list** of all ticket keys, noting which applicat
 
 ## Step 2 — Query Jira for Status and Assignees
 
-Query `myjira.disney.com` for all tickets using JQL batches (max 25 keys per query due to URL limits):
+Query `disneyexperiences.atlassian.net` for all tickets using JQL batches (max 25 keys per query due to URL limits):
 
 ```
-Use @jira/* tools with prefix myjira_
+Use @jira/* tools with prefix cloud_
 JQL: key in (KEY-1, KEY-2, ..., KEY-25)
 Fields needed: key, summary, status.name, assignee.displayName
 ```

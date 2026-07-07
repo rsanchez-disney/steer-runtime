@@ -4,8 +4,8 @@
 
 | Prefix | Project | Instance |
 |--------|---------|----------|
-| FNB- | Food & Beverage | myjira.disney.com |
-| MERCH- | Merchandise | myjira.disney.com |
+| FNB- | Food & Beverage | disneyexperiences.atlassian.net |
+| MERCH- | Merchandise | disneyexperiences.atlassian.net |
 
 ## Common JQL Patterns
 

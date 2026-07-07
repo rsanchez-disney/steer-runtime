@@ -30,4 +30,4 @@ Transaction research, search, and timeline visualization for payment operations.
 ## Key Notes
 - `wdpr-payment-controls-client` is the consolidated UI replacing both `wdpr-gcp-admin` and `dpay-admin-inquiry-ui-client`
 - GCP and Inquiry bugs often touch the shared UI + their respective WebAPIs and backends
-- Jira projects: DPAY (myjira.disney.com), GCP (myjira.disney.com)
+- Jira projects: DPAY (disneyexperiences.atlassian.net), GCP (disneyexperiences.atlassian.net)

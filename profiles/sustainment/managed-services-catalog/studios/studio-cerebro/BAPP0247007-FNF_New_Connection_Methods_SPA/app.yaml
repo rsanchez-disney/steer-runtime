@@ -38,7 +38,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331176585"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176585"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,7 +61,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331176585"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176585"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -173,7 +173,7 @@ components:
 
       latest:
         health_check:
-          url: "Not documented in MyWiki"
+          url: "Not documented in Confluence Cloud"
         splunk:
           index: "wdpr-profile-ui"
           base_spl: >-
@@ -304,7 +304,7 @@ components:
 
       latest:
         health_check:
-          url: "Not documented in MyWiki"
+          url: "Not documented in Confluence Cloud"
         splunk:
           index: "wdpr-profile-ui"
           base_spl: >-

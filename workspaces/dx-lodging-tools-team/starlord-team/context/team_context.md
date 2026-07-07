@@ -11,10 +11,10 @@ Studio Star Lord is a project team focused on building new lodging web applicati
 
 ## Wiki
 
-- [Studio Star-Lord LSWM](https://mywiki.disney.com/spaces/ROS/pages/925995234/Studio+Star-Lord+Lodging+Sales+Web+Modernization+LSWM+Non-Disney+Add+Ons)
+- [Studio Star-Lord LSWM](https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/925995234/Studio+Star-Lord+Lodging+Sales+Web+Modernization+LSWM+Non-Disney+Add+Ons)
 
 ## Workflow
 
 - Scrum with separate dailies and ceremonies
 - Tickets resolved → QA/Tech validation → PR review → merge → release
-- Jira instance: myjira.disney.com
+- Jira instance: disneyexperiences.atlassian.net

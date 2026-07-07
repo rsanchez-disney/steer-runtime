@@ -57,5 +57,5 @@
 - Uses Node 20.19.5 runtime
 - Shares `wdpr_d-scribe` Splunk index — filter by `source="*wiccan-prod/*"` for production
 - CloudWatch dashboards use PACE-DLR naming pattern
-- General troubleshooting: https://mywiki.disney.com/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting
+- General troubleshooting: https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/462603981/Ant-Man+General+Troubleshooting
 - Grafana dashboard: https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard

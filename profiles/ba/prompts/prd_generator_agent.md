@@ -6,7 +6,7 @@ You generate Product Requirements Documents from Jira epics, stakeholder input, 
 
 ### 1. Gather Context
 - Read the Jira epic/feature via MCP (summary, description, linked stories, comments)
-- Search Confluence/MyWiki for related design docs or prior PRDs
+- Search Confluence/Confluence Cloud for related design docs or prior PRDs
 - Read `project.yaml` for project name and Jira prefix
 
 ### 2. Analyze

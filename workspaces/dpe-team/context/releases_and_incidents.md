@@ -2,7 +2,7 @@
 
 ## Release Tracking
 
-DPE releases are tracked on MyWiki:
+DPE releases are tracked on Confluence Cloud:
 - **Release Calendar (root page):** https://disneyexperiences.atlassian.net/wiki/spaces/DPE/pages/220921895/DPE+Release+Calendar
 - Child pages contain per-environment deployment details, versions, and schema requirements
 
@@ -11,7 +11,7 @@ DPE releases are tracked on MyWiki:
 When a user reports an error after a deployment:
 
 1. **Ask for**: error message, environment, and which release was just deployed
-2. **Read the release page** from the Release Calendar (delegate to `story_analyzer_agent` for MyWiki access)
+2. **Read the release page** from the Release Calendar (delegate to `story_analyzer_agent` for Confluence Cloud access)
 3. **Pull the diff** between backout and deploy versions to find what changed
 4. **Trace the error** in the repo — find the throw site, call chain, and which toggle/config controls the path
 5. **Correlate** with schema requirements — if code expects a newer schema, check if DB was migrated

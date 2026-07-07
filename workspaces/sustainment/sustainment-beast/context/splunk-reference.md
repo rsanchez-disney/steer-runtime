@@ -213,7 +213,7 @@ eu-west-1:dlp-apps-{KINESIS_STREAM_ID}-euw1-prd-applogs:{service-alias}/{contain
 
 These are the foundational query patterns used across ALL DGE apps. They work for any service because all apps use the DLP IS Foundation framework. Swap `{APP_NAME}` with the target app's `Identifiers.App-Name` value.
 
-> **Source:** [🚑 Monitoring PROD Links — Splunk useful queries](https://mywiki.disney.com/spaces/SBH/pages/842928480)
+> **Source:** [🚑 Monitoring PROD Links — Splunk useful queries](https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/842928480)
 
 ### Inbound Requests (What calls YOUR app)
 

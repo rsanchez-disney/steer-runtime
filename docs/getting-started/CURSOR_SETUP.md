@@ -23,7 +23,7 @@ cd ~/steer-runtime
 This creates:
 ```
 ~/my-project/.cursor/
-├── mcp.json                    # MCP server configs (Jira, Confluence, MyWiki, GitHub, Mermaid)
+├── mcp.json                    # MCP server configs (Jira, Confluence, Confluence Cloud, GitHub, Mermaid)
 ├── commands/
 │   ├── orchestrator.md         # /orchestrator — route & delegate (SDLC orchestrator)
 │   ├── implement-story.md      # /implement-story — Jira → PR workflow
@@ -108,7 +108,7 @@ The `cursor install` command generates `.cursor/mcp.json` pointing to the same M
 Available MCP tools in Cursor:
 - **Jira** — fetch stories, create issues, manage sprints
 - **Confluence** — search/read wiki pages
-- **MyWiki** — alternate Confluence instance
+- **Confluence Cloud** — alternate Confluence instance
 - **GitHub** — browse repos, create PRs, review code
 - **Mermaid** — generate diagrams
 

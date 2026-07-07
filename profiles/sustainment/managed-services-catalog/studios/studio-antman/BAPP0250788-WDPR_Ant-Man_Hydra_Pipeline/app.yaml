@@ -39,7 +39,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/1310866252/Hydra+Pipeline"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1242600456/BAPP0250788+-+WDPR+Ant-Man+Hydra+Pipeline"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1242600456/BAPP0250788+-+WDPR+Ant-Man+Hydra+Pipeline"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 
 # --- Companion Docs (Markdown) ---

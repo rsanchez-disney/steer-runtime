@@ -40,9 +40,9 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235684/DLP+Virtual+Queue+BAPP0243155"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/984223070/KI+DLP+Virtual+Queue+BAPP0243155"
-  business_flows: "https://mywiki.disney.com/spaces/SBH/pages/974693861/BF+Virtual+Queue"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235684/DLP+Virtual+Queue+BAPP0243155"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/984223070/KI+DLP+Virtual+Queue+BAPP0243155"
+  business_flows: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/974693861/BF+Virtual+Queue"
   architecture_diagram: "https://confluence.disney.com/x/z8bBLQ"
 
 # --- Companion Docs (Markdown) ---

@@ -14,7 +14,7 @@
     "studio-rocket"
   ],
   "jira_prefix": "ROS-",
-  "wiki_url": "https://mywiki.disney.com/spaces/ROS/pages/451024499/Studio+ROCKET",
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki/spaces/ROS/pages/451024499/Studio+ROCKET",
   "enable_tools": true,
   "projects": [
     {

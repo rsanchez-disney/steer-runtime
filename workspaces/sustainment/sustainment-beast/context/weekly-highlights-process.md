@@ -23,7 +23,7 @@ Routine alert data from shift posts and automated alert feeds.
 - **🔔 Monitoring Alerts (Production)**: channel `19:VxOdz0FL0eglF9n-_ijLV5-hRQIaWgRCJR0NxpLo3Z41@thread.tacv2` (team: `19:59Kpldwk9yGKD7JLJ9NOXWhPWD8XVcuwvgyW5ezbCA41@thread.tacv2`)
 
 ### Priority 4: Confluence & ServiceNow
-- **Postmortem Reports page**: List child pages of [☠️ Postmortem Reports](https://mywiki.disney.com/spaces/SBH/pages/1001885404) (page ID: `1001885404`). Any postmortem with a date in the week's range is a highlight — regardless of whether the root cause app is in Beast scope. If the INC was assigned to Beast AG or the postmortem is in the Beast wiki, it must be included.
+- **Postmortem Reports page**: List child pages of [☠️ Postmortem Reports](https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1001885404) (page ID: `1001885404`). Any postmortem with a date in the week's range is a highlight — regardless of whether the root cause app is in Beast scope. If the INC was assigned to Beast AG or the postmortem is in the Beast wiki, it must be included.
 - **Confluence incident pages**: Search `space = "SBH" AND title ~ "P1" OR title ~ "P2"` for the date range
 
 ## Date Range
@@ -152,7 +152,7 @@ On <Month Day>, an <Incident number> was resolved for <Application> caused by <R
 
 6. **Fetch shift summary posts** from the ADM Beast Team channel. Use `top=50` and **paginate until the oldest message ID is before the start of the date range**. Message IDs are Unix epoch in milliseconds — compare them against the Sunday 00:00 Paris Time epoch to know when to stop. If the first batch doesn't cover the full week, fetch the next batch (older messages) until the entire Sunday-to-Saturday window is covered.
 7. **Fetch monitoring alerts** from the Monitoring Alerts (Production) channel. Same pagination strategy: keep fetching batches of 50 until the oldest message is before the start of the date range.
-8. **Check Confluence** for any P1/P2 incident pages created during the week (space: SBH). Also list child pages of the [☠️ Postmortem Reports](https://mywiki.disney.com/spaces/SBH/pages/1001885404) page (ID: `1001885404`) and include any postmortem whose title date falls within the week's range — regardless of whether the root cause app is in Beast scope.
+8. **Check Confluence** for any P1/P2 incident pages created during the week (space: SBH). Also list child pages of the [☠️ Postmortem Reports](https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1001885404) page (ID: `1001885404`) and include any postmortem whose title date falls within the week's range — regardless of whether the root cause app is in Beast scope.
 9. **Extract alert data** from shift posts: look for posts containing "Alert/s:", "Alerts:", or "Alert/s" headers.
 10. **For each alert**, extract:
     - Application name

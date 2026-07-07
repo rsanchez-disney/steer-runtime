@@ -46,7 +46,7 @@ Reusable development patterns and conventions:
 ## MCP Integrations
 
 - GitHub (github.disney.com)
-- Jira (myjira.disney.com, prefix: RSDLP-)
+- Jira (disneyexperiences.atlassian.net, prefix: RSDLP-)
 - Confluence (confluence.disney.com)
 - Maven (build)
 - Docker (local dev)

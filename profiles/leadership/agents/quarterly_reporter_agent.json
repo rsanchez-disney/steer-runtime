@@ -7,7 +7,7 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "thinking",
     "fs_read",
     "fs_write"
@@ -17,7 +17,7 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*"
+    "@confluence-cloud/*"
   ],
   "includeMcpJson": true,
   "resources": [

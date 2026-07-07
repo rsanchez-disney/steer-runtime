@@ -110,5 +110,5 @@ WDPR.DL-Technology.Studio.Lumiere@disney.com
 - Escalation via `#fnb-oncall`
 
 ### Wiki
-- Space: [DXT - Mobile Retail & Restaurant Engineering (FBT)](https://mywiki.disney.com/spaces/FBT)
-- Studios page: https://mywiki.disney.com/spaces/FBT/pages/793976187/Studios
+- Space: [DXT - Mobile Retail & Restaurant Engineering (FBT)](https://disneyexperiences.atlassian.net/wiki/spaces/FBT)
+- Studios page: https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/793976187/Studios

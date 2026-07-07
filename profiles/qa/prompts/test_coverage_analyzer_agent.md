@@ -39,9 +39,9 @@ When searching for reusable candidates:
 Use the coverage matrix template from your context resources. Always include: summary, per-story matrix, reuse candidate detail, uncovered ACs with actions, orphan tests, and prioritized recommendations.
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance.

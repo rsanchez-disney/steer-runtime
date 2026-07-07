@@ -758,7 +758,7 @@ Acceptance criteria:
   1. **Delegation mandate** (~15 lines) — always delegate via `subagent`, never do specialist work, tool is `subagent` NOT `use_subagent` or `delegate`, flag sub-agent errors, present consolidated results
   2. **Yax persistent memory** (~45 lines) — full block: retrieve context first, session lifecycle (start → save → summary), auto-save triggers (task done, decision, bug, pattern, preference, config), do NOT save secrets/PII/routine lookups, save decisions not raw conversation, keep concise, include project
   3. **Protected files** (~10 lines) — any modification requires explicit user approval with isolated diff review
-  4. **Instance routing** (~10 lines) — Confluence vs MyWiki routing (`confluence.disney.com → @confluence/*`, `mywiki.disney.com → @mywiki/*`), email confirmation rule
+  4. **Instance routing** (~10 lines) — Confluence vs Confluence Cloud routing (`confluence.disney.com → @confluence/*`, `disneyexperiences.atlassian.net/wiki → @confluence-cloud/*`), email confirmation rule
 - Each of the 8 standard orchestrators removes its inline copy of these rules (inspector keeps its own simpler yax variant but references sections 1, 3, 4)
 - File loaded as `priority: critical` resource on all 9 orchestrators
 - Domain-specific rules (dev-core intent classification, QA qTest rules, ops ServiceNow routing, etc.) stay in each prompt

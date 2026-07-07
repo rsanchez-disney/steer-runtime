@@ -17,7 +17,7 @@ This migration affected Angular SPAs, a Polymer 3 SPA, and a Lambda function. Ea
 
 **Search via MCP tools if links become stale:**
 
-- **Authenticator Universal JS wiki:** search MyWiki (space: `gamprofile`) for "Authenticator Universal JS"
+- **Authenticator Universal JS wiki:** search Confluence Cloud (space: `gamprofile`) for "Authenticator Universal JS"
 - **Library README:** search GitHub Enterprise for `profile-vertical/authenticator-universal-js`
 
 ## What Changed
@@ -150,7 +150,7 @@ The OneID migration (this effort) only affects `entry-reservation`. The ACME mig
 
 ### For Angular SPAs (standard path)
 
-Follow the Authenticator Universal JS wiki (search MyWiki, space: `gamprofile`). Reference PR: dlr-tix-sales-spa MR #1239.
+Follow the Authenticator Universal JS wiki (search Confluence Cloud, space: `gamprofile`). Reference PR: dlr-tix-sales-spa MR #1239.
 
 1. Install the library
 2. Remove nav-ui authentication dependency (nav-ui may still be used for navigation UI)

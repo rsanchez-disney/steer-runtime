@@ -15,7 +15,7 @@ When reviewing or implementing code tied to a Jira ticket, validate that every A
 Extract ACs from the Jira ticket (via MCP tools or provided by the developer). ACs may be found in:
 
 1. **Jira ticket description** — inline ACs in the ticket body
-2. **Linked wiki pages** — Confluence/MyWiki pages linked from the Jira ticket (use `@confluence/*` MCP tools to fetch linked page content)
+2. **Linked wiki pages** — Confluence/Confluence Cloud pages linked from the Jira ticket (use `@confluence/*` MCP tools to fetch linked page content)
 3. **PR description or user input** — provided directly by the developer
 
 If the ticket contains links to wiki pages (e.g., `disneyexperiences.atlassian.net/wiki/...`), fetch those pages and extract ACs from them. Wiki pages often contain detailed requirements, acceptance criteria tables, or BDD scenarios that are not duplicated in the ticket itself.

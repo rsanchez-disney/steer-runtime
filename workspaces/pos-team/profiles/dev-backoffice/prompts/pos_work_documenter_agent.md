@@ -54,7 +54,7 @@ One line, under 72 characters. If a body is needed, add a blank line then a shor
 Brief description of what changed and why.
 
 ## Ticket
-[<TICKET-ID>](https://myjira.disney.com/browse/<TICKET-ID>)
+[<TICKET-ID>](https://disneyexperiences.atlassian.net/browse/<TICKET-ID>)
 
 ## Evidence
 _Screenshot or video to be attached by developer._
@@ -103,7 +103,7 @@ POS-19542 fix: preserve external system on partial update
 Wrapped `setIntegrationsExternalId()` in a null check to prevent overwriting the stored External System value when only Max Qty Per Transaction is edited inline.
 
 ## Ticket
-[POS-19542](https://myjira.disney.com/browse/POS-19542)
+[POS-19542](https://disneyexperiences.atlassian.net/browse/POS-19542)
 
 ## Evidence
 _Screenshot or video to be attached by developer._

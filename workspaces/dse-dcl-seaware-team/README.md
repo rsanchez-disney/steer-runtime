@@ -2,7 +2,7 @@
 
 **Workspace:** `dse-dcl-seaware`  
 **Profiles:** `dev-core`, `qa`, `dev-web`, `dev-ui`, `pm`, `ba`, `sustainment`  
-**Jira:** `SEAS-*` on myjira.disney.com
+**Jira:** `SEAS-*` on disneyexperiences.atlassian.net
 
 ## Quick Start
 
@@ -98,10 +98,10 @@ dse-dcl-seaware/
 GitHub (merge) → Harness CI → AWS ECR → Harness CD → GitLab Helm → Rancher/K8s
 ```
 
-## MyWiki Reference
+## Confluence Cloud Reference
 
-- [SEAS Home](https://mywiki.disney.com/spaces/SEAS/pages/748258579)
-- [Studios at a Glance](https://mywiki.disney.com/spaces/SEAS/pages/831995511)
-- [BAPP/Repo Association](https://mywiki.disney.com/spaces/SEAS/pages/758612960)
-- [CI/CD Flow](https://mywiki.disney.com/spaces/SEAS/pages/1172341594)
-- [Zazu Architecture](https://mywiki.disney.com/spaces/SEAS/pages/1108510864)
+- [SEAS Home](https://disneyexperiences.atlassian.net/wiki/spaces/SEAS/pages/748258579)
+- [Studios at a Glance](https://disneyexperiences.atlassian.net/wiki/spaces/SEAS/pages/831995511)
+- [BAPP/Repo Association](https://disneyexperiences.atlassian.net/wiki/spaces/SEAS/pages/758612960)
+- [CI/CD Flow](https://disneyexperiences.atlassian.net/wiki/spaces/SEAS/pages/1172341594)
+- [Zazu Architecture](https://disneyexperiences.atlassian.net/wiki/spaces/SEAS/pages/1108510864)
