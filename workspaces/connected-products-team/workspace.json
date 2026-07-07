@@ -10,7 +10,8 @@
     "qa"
   ],
   "default_agent": "orchestrator",
-  "workspace_path": "", 
+  "workspace_path": "${WORKSPACE_ROOT}/", 
+  "jira_host": "disneyexperiences.atlassian.net",
   "jira_prefix": [
     "SHOWREADY-",
     "SARG-"
@@ -45,5 +46,6 @@
         "memory_bank": "big-belly"
       }
     ],
-  "rules": ["conventional_commit.md"]
+  "rules": ["conventional_commit.md"],
+   "enable_tools": true
 }
