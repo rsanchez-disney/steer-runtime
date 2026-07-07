@@ -1,5 +1,5 @@
 # ============================================================================
-# Booking Service â€” EC Checkout Orchestrator
+# Booking Service — EC Checkout Orchestrator
 # ============================================================================
 
 # --- Identity ---
@@ -23,7 +23,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "Booking Service"
+  configuration_items:
+    - "Booking Service"
   assignment_group: "web-global-salescart"
   business_service: ""
 
