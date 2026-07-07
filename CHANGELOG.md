@@ -4,6 +4,20 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.152] — 2026-07-07
+
+### Added
+
+- **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility, phased implementation plan (#553)
+
+### Fixed
+
+- **orchestrator** — add wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs (#552)
+
+### Changed
+
+- **mcp** — migrate myjira + mywiki references to Atlassian Cloud URLs (#551)
+
 ## [0.2.151] — 2026-07-04
 
 ### Added
