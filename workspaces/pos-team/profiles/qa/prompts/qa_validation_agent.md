@@ -33,7 +33,7 @@ Fetch the epic using Jira MCP tools:
 2. Extract: user story, acceptance criteria, business rules, scope exclusions
 3. Get child issues for sub-stories and sub-tasks
 4. Get linked issues for related bugs, dependencies, design tickets
-5. If the description references wiki pages, fetch them via Confluence/MyWiki MCP
+5. If the description references wiki pages, fetch them via Confluence/Confluence Cloud MCP
 6. If the description references design docs or spreadsheets, note them as external context
 
 ### Step 2: Gather test set context
@@ -196,12 +196,12 @@ When determining if a test covers a requirement:
 
 ---
 
-## Confluence vs MyWiki
+## Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → use `@mywiki/*` tools
+- **disneyexperiences.atlassian.net/wiki** → use `@confluence-cloud/*` tools
 - If unclear, **ask the user** which instance
 
 ---

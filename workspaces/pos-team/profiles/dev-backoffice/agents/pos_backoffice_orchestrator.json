@@ -1,6 +1,6 @@
 {
   "name": "pos_backoffice_orchestrator",
-  "description": "POS Backoffice Orchestrator — architecture guidance and task delegation for PHP, Go, React projects across the POS platform",
+  "description": "POS Backoffice SDLC orchestrator — 7-stage workflow for PHP, Go, and React projects",
   "prompt": "file://../prompts/pos_backoffice_orchestrator.md",
   "tools": [
     "code",
@@ -57,6 +57,20 @@
       {
         "command": "$HOME/.kiro/hooks/agent-registry.sh",
         "description": "Inject available agents registry for dynamic delegation"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/delegation-map.sh",
+        "description": "Generate delegation map for routing decisions"
+      }
+    ],
+    "stop": [
+      {
+        "command": "$HOME/.kiro/hooks/session-summary.sh",
+        "description": "Log session telemetry to JSONL"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/session-to-memory.sh",
+        "description": "Update active-context.md with session summary"
       }
     ]
   },
