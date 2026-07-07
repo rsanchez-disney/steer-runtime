@@ -14,7 +14,8 @@
   "resources": [
     "file://.kiro/context/backoffice_golden_rules.md",
     "file://.kiro/steering/**/*.md",
-    "file://../../../context/features/*"
+    "file://../../../context/features/README.md",
+    "file://../../../skills/design-architecture-decision/SKILL.md"
   ],
   "hooks": {
     "agentSpawn": [

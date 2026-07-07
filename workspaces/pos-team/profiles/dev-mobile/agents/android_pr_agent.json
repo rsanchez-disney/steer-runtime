@@ -13,7 +13,8 @@
   ],
   "resources": [
     "file://../../../context/team_context.md",
-    "file://../../../context/pr_template.md"
+    "file://../../../context/pr_template.md",
+    "file://../../../skills/implement-android-ticket/SKILL.md"
   ],
   "includeMcpJson": true
 }

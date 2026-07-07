@@ -1,6 +1,6 @@
 {
   "name": "android_arch_agent",
-  "description": "Android Architect \u2014 primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
+  "description": "Android Architect — primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
   "prompt": "file://../prompts/android_arch_agent.md",
   "tools": [
     "fs_read",
@@ -23,8 +23,7 @@
         "android_dev_agent",
         "android_test_agent",
         "android_quality_agent",
-        "android_pr_agent",
-        "dsp_bug_report_agent"
+        "android_pr_agent"
       ]
     },
     "execute_bash": {
@@ -39,7 +38,7 @@
     "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
     "file://../../../context/hilt_guidelines.md",
-    "file://../../../context/features/*"
+    "file://../../../context/features/README.md"
   ],
   "hooks": {
     "agentSpawn": [

@@ -14,6 +14,11 @@ pos_team_orchestrator_agent (orchestrator profile)
 │   ├── android_quality_agent
 │   ├── android_pr_agent
 │   └── dsp_bug_report_agent
+├── android_refactor_agent (dev-mobile) ─── independent orchestrator for refactoring
+│   ├── android_dev_agent
+│   ├── android_test_agent
+│   ├── android_quality_agent
+│   └── android_pr_agent
 ├── pos_backoffice_orchestrator (dev-backoffice) ─── orchestrates backoffice SDLC
 │   ├── pos_architecture_agent       ← specialist (no delegation)
 │   ├── pos_story_analyzer_agent
@@ -30,8 +35,6 @@ pos_team_orchestrator_agent (orchestrator profile)
 └── dsp_bug_report_agent (pm)
 ```
 
-Additionally, `android_refactor_agent` (dev-mobile) is an independent orchestrator for refactoring tasks, delegating to: android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent.
-
 ## Profiles (7)
 
 | Profile | Agents | Purpose |
@@ -46,31 +49,66 @@ Additionally, `android_refactor_agent` (dev-mobile) is an independent orchestrat
 
 ## Agent Inventory (21 workspace agents + 2 base agents)
 
-| Agent | Profile | Role | Type |
-|-------|---------|------|------|
-| `pos_team_orchestrator_agent` | orchestrator | Top-level router to domain agents | Orchestrator |
-| `android_arch_agent` | dev-mobile | Android Architect — orchestrates mobile SDLC | Orchestrator |
-| `android_dev_agent` | dev-mobile | Kotlin implementation and Jira management | Specialist |
-| `android_test_agent` | dev-mobile | MockK-based unit test generation | Specialist |
-| `android_quality_agent` | dev-mobile | Mandatory code/test quality review gate | Specialist |
-| `android_pr_agent` | dev-mobile | GitLab MR description generation | Specialist |
-| `android_refactor_agent` | dev-mobile | Feature-flagged refactoring orchestrator | Orchestrator |
-| `pos_backoffice_orchestrator` | dev-backoffice | Backoffice SDLC orchestrator (7 stages + 2 gates) | Orchestrator |
-| `pos_architecture_agent` | dev-backoffice | Architecture specialist — design decisions, ADRs, impact analysis | Specialist |
-| `pos_php_agent` | dev-backoffice | PHP specialist (CodeIgniter + Laravel/Lumen) | Specialist |
-| `pos_go_agent` | dev-backoffice | Go specialist (gRPC microservices) | Specialist |
-| `pos_react_agent` | dev-backoffice | React/TypeScript specialist (connect-frontend) | Specialist |
-| `pos_planner_agent` | dev-backoffice | Task breakdown and dependency planning | Specialist |
-| `pos_test_runner_agent` | dev-backoffice | PHPUnit, go test, Jest execution | Specialist |
-| `pos_work_documenter_agent` | dev-backoffice | Commit messages and PR descriptions | Specialist |
-| `pos_story_analyzer_agent` | dev-backoffice | Jira ticket fetching and analysis | Specialist |
-| `pos_codebase_explorer_agent` | dev-backoffice | Codebase file and pattern discovery | Specialist |
-| `pos_code_review_agent` | dev-backoffice | Code quality and golden rules compliance | Specialist |
-| `pos_security_scanner_agent` | dev-backoffice | OWASP, secrets, dependency vulnerabilities | Specialist |
-| `qa_validation_agent` | qa | Test set vs epic coverage validation | Specialist |
-| `dsp_bug_report_agent` | pm | Daily DSP release bug reports | Specialist |
+| Agent | Profile | Role | Type | Skills |
+|-------|---------|------|------|--------|
+| `pos_team_orchestrator_agent` | orchestrator | Top-level router to domain agents | Orchestrator | — (routes all skills) |
+| `android_arch_agent` | dev-mobile | Android Architect — orchestrates mobile SDLC | Orchestrator | — (routes mobile skills) |
+| `android_dev_agent` | dev-mobile | Kotlin implementation and Jira management | Specialist | implement-android-ticket |
+| `android_test_agent` | dev-mobile | MockK-based unit test generation | Specialist | implement-android-ticket |
+| `android_quality_agent` | dev-mobile | Mandatory code/test quality review gate | Specialist | implement-android-ticket, review-code-changes |
+| `android_pr_agent` | dev-mobile | GitLab MR description generation | Specialist | implement-android-ticket |
+| `android_refactor_agent` | dev-mobile | Feature-flagged refactoring orchestrator | Orchestrator | refactor-android-feature |
+| `pos_backoffice_orchestrator` | dev-backoffice | Backoffice SDLC orchestrator (7 stages + 2 gates) | Orchestrator | — (routes backoffice skills) |
+| `pos_architecture_agent` | dev-backoffice | Architecture specialist — design decisions, ADRs, impact analysis | Specialist | design-architecture-decision |
+| `pos_php_agent` | dev-backoffice | PHP specialist (CodeIgniter + Laravel/Lumen) | Specialist | — |
+| `pos_go_agent` | dev-backoffice | Go specialist (gRPC microservices) | Specialist | — |
+| `pos_react_agent` | dev-backoffice | React/TypeScript specialist (connect-frontend) | Specialist | — |
+| `pos_planner_agent` | dev-backoffice | Task breakdown and dependency planning | Specialist | plan-implementation |
+| `pos_test_runner_agent` | dev-backoffice | PHPUnit, go test, Jest execution | Specialist | — |
+| `pos_work_documenter_agent` | dev-backoffice | Commit messages and PR descriptions | Specialist | — |
+| `pos_story_analyzer_agent` | dev-backoffice | Jira ticket fetching and analysis | Specialist | sprint-health-check |
+| `pos_codebase_explorer_agent` | dev-backoffice | Codebase file and pattern discovery | Specialist | — |
+| `pos_code_review_agent` | dev-backoffice | Code quality and golden rules compliance | Specialist | review-code-changes |
+| `pos_security_scanner_agent` | dev-backoffice | OWASP, secrets, dependency vulnerabilities | Specialist | run-security-scan |
+| `qa_validation_agent` | qa | Test set vs epic coverage validation | Specialist | validate-regression-coverage |
+| `dsp_bug_report_agent` | pm | Daily DSP release bug reports | Specialist | generate-dsp-daily-report, sprint-health-check |
 
 **Base agents** (referenced by android_arch_agent): `requirements_analyst_agent`, `sprint_manager_agent`
+
+## Skills
+
+> **Principle:** Orchestrators have ZERO skill resources — they route via prompt instructions. Each specialist has only its ONE core skill. Pipeline skills (implement-backoffice-ticket, implement-android-ticket) are managed by orchestrators who delegate stages to specialists.
+
+
+| Skill | Description | Trigger | Routed To |
+|-------|-------------|---------|----------|
+| `implement-android-ticket` | Full mobile ticket implementation workflow (11 steps) | Implement a ticket for Android | `android_arch_agent` → specialists |
+| `refactor-android-feature` | Feature refactoring behind feature flags (8 steps) | Refactor Android code/feature | `android_refactor_agent` → specialists |
+| `implement-backoffice-ticket` | Full backoffice SDLC pipeline (7 stages) | Implement a backoffice ticket | `pos_backoffice_orchestrator` → pipeline |
+| `review-code-changes` | Structured code review with checklist | Review code, code review | `pos_code_review_agent` |
+| `run-security-scan` | OWASP-based security scanning | Security scan | `pos_security_scanner_agent` |
+| `sprint-health-check` | Sprint progress and risk analysis | Sprint health, sprint status | `pos_story_analyzer_agent` |
+| `design-architecture-decision` | ADR creation and architecture guidance | Architecture decision, design | `pos_architecture_agent` |
+| `plan-implementation` | Implementation planning and task breakdown | Plan, break down | `pos_planner_agent` |
+| `validate-regression-coverage` | Regression test coverage validation | Validate test coverage | `qa_validation_agent` |
+| `generate-dsp-daily-report` | Daily DSP bug/release report | Daily report, DSP status | `dsp_bug_report_agent` |
+
+### Skills Routing
+
+Skills are routed through the orchestrator hierarchy. Orchestrators have ZERO skill resources — they route entirely via prompt instructions. Pipeline skills (`implement-backoffice-ticket`, `implement-android-ticket`) are not assigned to any specialist; they are managed by orchestrators who delegate stages to the appropriate specialists.
+
+```
+User request → pos_team_orchestrator_agent (no skills — routes via prompt)
+  ├── Android pipeline → android_arch_agent (no skills — routes via prompt) → android_dev/test/quality/pr_agent
+  ├── Android refactoring → android_refactor_agent (independent orchestrator) → android_dev/test/quality/pr_agent
+  ├── Backoffice pipeline → pos_backoffice_orchestrator (no skills — routes via prompt) → specialist agents
+  ├── QA skills → qa_validation_agent
+  └── PM skills → dsp_bug_report_agent
+```
+
+### On-Demand Feature Loading
+
+Feature context files (`context/features/`) are **NOT** auto-loaded. Agents load only the lightweight index (`context/features/README.md`) and fetch specific feature files on-demand during skill execution when the ticket matches a documented feature. This saves ~188KB of token consumption per conversation.
 
 ## Quick Start
 
@@ -81,11 +119,11 @@ kiro-cli chat --agent pos_team_orchestrator_agent
 # Android development directly
 kiro-cli chat --agent android_arch_agent
 
+# Android refactoring directly
+kiro-cli chat --agent android_refactor_agent
+
 # Backoffice development directly
 kiro-cli chat --agent pos_backoffice_orchestrator
-
-# Refactoring tasks
-kiro-cli chat --agent android_refactor_agent
 ```
 
 ## Repositories (10)

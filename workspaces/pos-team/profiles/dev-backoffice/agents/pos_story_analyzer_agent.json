@@ -16,7 +16,8 @@
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://../../../skills/sprint-health-check/SKILL.md"
   ],
   "includeMcpJson": true
 }

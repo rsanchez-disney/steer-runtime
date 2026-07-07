@@ -74,12 +74,35 @@ Generates daily operational bug reports for POS DSP releases (2.1.1, 2.1.2, 2.1.
 
 ---
 
+## SKILLS ROUTING
+
+When the user's intent matches a known workflow, instruct the delegated agent to follow the corresponding skill. Include the skill name in your delegation prompt so the agent activates the correct workflow.
+
+| Intent / Keywords | Skill | Delegate To |
+|-------------------|-------|-------------|
+| "Implement POS-XXXX" (Android/Kotlin/mobile) | `implement-android-ticket` | `android_arch_agent` |
+| "Implement POS-XXXX" (PHP/Go/React/backend) | `implement-backoffice-ticket` | `pos_backoffice_orchestrator` |
+| "Refactor...", "fix bugs behind flag" | `refactor-android-feature` | `android_arch_agent` |
+| "Validate coverage", "test set vs epic" | `validate-regression-coverage` | `qa_validation_agent` |
+| "Review code", "code review" | `review-code-changes` | `pos_backoffice_orchestrator` |
+| "Security scan", "check for vulnerabilities" | `run-security-scan` | `pos_backoffice_orchestrator` |
+| "Daily report", "DSP bug report" | `generate-dsp-daily-report` | `dsp_bug_report_agent` |
+| "Sprint health", "sprint status" | `sprint-health-check` | `pos_backoffice_orchestrator` |
+| "ADR", "architecture decision" | `design-architecture-decision` | `pos_backoffice_orchestrator` |
+| "Plan", "break down", "estimate" | `plan-implementation` | `pos_backoffice_orchestrator` |
+
+**When delegating with a skill, add to your prompt:**
+> "Follow the `{skill-name}` skill workflow. The SKILL.md is in your resources."
+
+---
+
 ## DELEGATION FORMAT
 
 When delegating, provide the sub-agent with the full user context. Include:
 - The original user request (verbatim or faithfully paraphrased)
 - Any ticket IDs, file paths, or specific references mentioned
 - Relevant prior conversation context if this is a follow-up
+- **The skill name to follow** (if a matching skill exists in the routing table above)
 
 ---
 
