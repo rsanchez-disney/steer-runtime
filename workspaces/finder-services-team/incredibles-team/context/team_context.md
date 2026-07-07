@@ -4,7 +4,7 @@
 
 Studio Incredibles is a **100% development** Scrum team within Finder Services. They work on the same services as Studio Triumph (publishers, FAS, Explorer Service, Guest Context Service) with a focus on new feature development and platform modernization.
 
-**Jira Board**: [4972](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=4972) (Scrum)
+**Jira Board**: [4972](https://disneyexperiences.atlassian.net/jira/software/boards/4972) (Scrum)
 **Jira Project**: GIT
 
 ## Team Members

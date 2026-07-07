@@ -75,5 +75,5 @@ koda chat --ws finder-services-team
 ## Jira
 
 - **Project**: GIT
-- **Instance**: myjira.disney.com
+- **Instance**: disneyexperiences.atlassian.net
 - **Boards**: Triumph (8644), Incredibles (4972)

@@ -4,7 +4,7 @@
 
 Studio Triumph owns the **Dash platform** and **Underminer pipeline** — Disney's content propagation, publishing, and discovery systems. The team operates in a **Kanban** workflow handling both sustainment and development.
 
-**Jira Board**: [8644](https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=8644) (Kanban)
+**Jira Board**: [8644](https://disneyexperiences.atlassian.net/jira/software/boards/8644) (Kanban)
 **Jira Project**: GIT
 
 ## Team Members

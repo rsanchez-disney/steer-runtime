@@ -38,7 +38,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/1471746968/Helix+Loader+Lambda"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1242600440/BAPP0252180+-+WDPR+Ant-Man+Lambda+Helix+Loader"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1242600440/BAPP0252180+-+WDPR+Ant-Man+Lambda+Helix+Loader"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ae6p0xe9kritce/gcx-lambdas?orgId=1"
 
 # --- Companion Docs (Markdown) ---

@@ -5,7 +5,7 @@
 - ✅ 4 IDE targets: Kiro CLI, Cursor (19 .mdc rules), Amazon Q (19 .md rules), Kite
 - ✅ Unified setup.sh with 14 commands + 7 IDE subcommands
 - ✅ Windows support via setup.ps1
-- ✅ MCP servers: jira, confluence, mywiki, github, mermaid (pre-built bundles)
+- ✅ MCP servers: jira, confluence, cloud-wiki, github, mermaid (pre-built bundles)
 - ✅ Docker MCP: harness, sonarqube (ops profile)
 - ✅ Agent hooks: git-context, guard-writes, warn-destructive (3 scripts)
 - ✅ Advanced tools: thinking (7 agents), todo (6), delegate (5), knowledge (4)
@@ -22,7 +22,7 @@
 
 ## Known Issues
 - ⚠️ QA agents (api_tester, test_automation, performance_tester) missing Jira MCP configs
-- ✅ mywiki-mcp removed — mywiki now uses confluence-mcp binary with CONFLUENCE_URL env var
+- ✅ cloud-wiki-mcp removed — cloud-wiki now uses confluence-mcp binary with CONFLUENCE_URL env var
 - ⚠️ setup.ps1 may need updates for: enable-tools, cursor, amazonq subcommands, hooks copying
 - ⚠️ `chat.enableDelegate` not yet available in kiro-cli 1.26.2 (gracefully skipped)
 

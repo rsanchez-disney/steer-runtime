@@ -119,15 +119,15 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 |---|---|
 | `profiles/ops/agents/ops_orchestrator_agent.json` | Ops orchestrator tool permissions |
 | `profiles/ops/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
-| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
-| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/Confluence Cloud/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (cloud_* vs confluence_*) |
 
 
-### Confluence vs MyWiki
+### Confluence vs Confluence Cloud
 
 You have two Confluence instances. Route by URL:
 - **confluence.disney.com** → use `@confluence/*` tools
-- **mywiki.disney.com** → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
+- **disneyexperiences.atlassian.net/wiki** → ⚠️ MIGRATED to Cloud → use `cloud_` prefix tools
 - **disneyexperiences.atlassian.net/wiki** → use `cloud_` prefix tools
 - **Fallback**: Any other URL → delegate to `story_analyzer_agent`. Never refuse a URL.
 - If unclear, **ask the user** which instance.

@@ -297,8 +297,8 @@ The following files contain sensitive delegation mappings, tool permissions, and
 |---|---|
 | `profiles/dev-core/prompts/orchestrator.md` | Delegation mapping — which agent handles which task/MCP |
 | `profiles/dev-core/agents/orchestrator.json` | Orchestrator tool permissions and resources |
-| `profiles/dev-core/agents/story_analyzer_agent.json` | Tool access for Jira, Confluence, MyWiki, GitHub |
-| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_* tools) |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Tool access for Jira, Confluence, Confluence Cloud, GitHub |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (cloud_* vs confluence_* tools) |
 | `profiles/core/agents/story_analyzer_agent.json` | Same as above (core profile copy) |
 | `profiles/core/prompts/story_analyzer_agent.md` | Same as above (core profile copy) |
 | `shared/tools/mcp-servers/confluence-mcp/src/index.ts` | Confluence MCP instance prefix support |

@@ -40,7 +40,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090169/DLP+Ticket+Management+Service+Database+BAPP0201228"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090169/DLP+Ticket+Management+Service+Database+BAPP0201228"
 
 # --- Companion Docs (Markdown) ---
 docs:

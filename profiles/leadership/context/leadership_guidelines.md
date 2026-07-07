@@ -35,4 +35,4 @@ You serve Tech Directors, Delivery Directors, and Tech Managers who oversee mult
 - When Confluence pages exceed ~50KB, use child pages instead of single-page updates. Create a parent index page and break sections into child pages.
 
 ## Tool Routing
-- Prefer Compass-based Jira tools (`toolsets_jira_tool_jira_search_tickets`) over MCP Jira tools (`jira_search_issues`). Compass tools route to the correct Jira instance (myjira-prod) and support all required custom fields.
+- Prefer Compass-based Jira tools (`toolsets_jira_tool_jira_search_tickets`) over MCP Jira tools (`jira_search_issues`). Compass tools route to the correct Jira instance (cloud) and support all required custom fields.

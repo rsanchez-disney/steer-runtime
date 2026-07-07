@@ -9,7 +9,7 @@
     "@gitlab/*",
     "@jira/*",
     "@jira-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "fs_read",
     "fs_write",
     "grep",
@@ -23,7 +23,7 @@
     "@gitlab/*",
     "@jira/*",
     "@jira-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@bruno/*",
     "@qtest/*"
   ],

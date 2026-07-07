@@ -40,8 +40,8 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090164/DLP+Ticket+Management+Service+BAPP0201208"
-  known_issues: "https://mywiki.disney.com/spaces/SBH/pages/1014928564/KI+DLP+Ticket+Management+Service+BAPP0201208"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090164/DLP+Ticket+Management+Service+BAPP0201208"
+  known_issues: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1014928564/KI+DLP+Ticket+Management+Service+BAPP0201208"
 
 # --- Companion Docs (Markdown) ---
 docs:

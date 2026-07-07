@@ -19,7 +19,7 @@ Templates for incident documentation, ServiceNow work notes, and stakeholder com
 
 ## HTML Templates
 
-All HTML reports MUST follow the Beast Template Generator format (see [Confluence page](https://mywiki.disney.com/spaces/SBH/pages/1280869030/Beast+Template+Generator)).
+All HTML reports MUST follow the Beast Template Generator format (see [Confluence page](https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/1280869030/Beast+Template+Generator)).
 
 ### Research Working Notes (for work notes during investigation)
 

@@ -321,7 +321,7 @@ All Angular version uplifts in Config Studio follow the RA (Reusable Assets) tea
 
 ### RA Migration Wiki Discovery
 
-The RA team publishes migration guides in Confluence and MyWiki. **Do not rely on hardcoded URLs** — pages may move. Always search dynamically using MCP tools.
+The RA team publishes migration guides in Confluence and Confluence Cloud. **Do not rely on hardcoded URLs** — pages may move. Always search dynamically using MCP tools.
 
 **How to find RA migration guides:**
 
@@ -332,7 +332,7 @@ The RA team publishes migration guides in Confluence and MyWiki. **Do not rely o
    - `"RA block migration Angular"` — RA block/library compatibility guides
    - `"DPEP Reference Architecture"` — the RA space root page with links to all guides
 
-2. **Search MyWiki** (space key: `CUDR`) with queries like:
+2. **Search Confluence Cloud** (space key: `CUDR`) with queries like:
    - `"Uplifting from Angular Versions"` — general uplift overview
    - `"Angular migration"` — additional migration resources
 
@@ -341,7 +341,7 @@ The RA team publishes migration guides in Confluence and MyWiki. **Do not rely o
 Before applying any Angular migration pattern:
 1. **Detect** current Angular version from `package.json`.
 2. **Identify** the target version.
-3. **Search Confluence (DPEPRA space) and MyWiki (CUDR space)** via MCP tools for the RA migration guide matching the version jump.
+3. **Search Confluence (DPEPRA space) and Confluence Cloud (CUDR space)** via MCP tools for the RA migration guide matching the version jump.
 4. **Read and present the RA wiki steps to the user** — summarize what the guide prescribes and ask for confirmation before proceeding.
 5. **Check RA library/block compatibility** — ensure RA components support the target version.
 6. **Follow RA-prescribed steps first** — dependency updates, RA block migrations, breaking change fixes.

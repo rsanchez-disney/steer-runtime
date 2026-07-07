@@ -44,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090170/DLP+OLCI+BAPP0211386"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090170/DLP+OLCI+BAPP0211386"
   architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
   confluence: "https://confluence.disney.com/pages/viewpage.action?pageId=968734007"
   sequence_diagrams: "https://confluence.disney.com/display/DGMA/4.0-Sequence+Diagrams?src=contextnavpagetreemode"
@@ -76,7 +76,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/866749288/PMS+Registration+Form+Provider"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/866749288/PMS+Registration+Form+Provider"
       architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
       swagger: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-lodging-pms-registration-form-provider/swagger-ui.html"
 
@@ -227,7 +227,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/866749290/OLCI+Business+Event+Processor"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/866749290/OLCI+Business+Event+Processor"
       architecture_diagram: "https://confluence.disney.com/display/DGMA/4-Detailed+Architecture"
 
     repository:
@@ -347,7 +347,7 @@ components:
       runbook: ""
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871075021/DocuSign+Purge+Processor"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871075021/DocuSign+Purge+Processor"
       purge_docs: "https://confluence.disney.com/pages/viewpage.action?spaceKey=DGMA&title=4.11-Purge"
 
     repository:

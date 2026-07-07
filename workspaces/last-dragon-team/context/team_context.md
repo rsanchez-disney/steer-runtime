@@ -4,8 +4,8 @@
 
 Studio Last Dragon is the search tech sustainment team. The team owns and operates the search infrastructure that powers internal search across Disney's digital properties: WDW, DLR, HKDL, DCL, Disney Springs, DVC, and more.
 
-**MyWiki Home**: https://mywiki.disney.com/spaces/DPEPSD/pages/445256067/DX+Studio+Raya
-**Jira Board**: https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=12243 (Kanban)
+**Confluence Cloud Home**: https://disneyexperiences.atlassian.net/wiki/spaces/DPEPSD/pages/445256067/DX+Studio+Raya
+**Jira Board**: https://disneyexperiences.atlassian.net/jira/software/boards/12243 (Kanban)
 **Jira Prefix**: GIT-
 **ServiceNow Assignment Group**: app-global-finder-search
 
@@ -247,9 +247,9 @@ Maintaining Splunk dashboards and Elastic alerts for all services.
 
 | Page | Content |
 |------|---------|
-| [Team Home](https://mywiki.disney.com/spaces/DPEPSD/pages/445256067/DX+Studio+Raya) | Team overview and navigation |
-| [Monitoring Overview](https://mywiki.disney.com/pages/viewpage.action?pageId=1166840422) | Dashboards and alerts summary |
-| [Search Service Ops](https://mywiki.disney.com/pages/viewpage.action?pageId=453995544) | AWS, Jenkins, deployment process, Nexus, Sonar |
-| [Indexing Service](https://mywiki.disney.com/pages/viewpage.action?pageId=470280924) | BAPP, SNS, Jenkins, Sonar, Teams webhooks |
-| [Elasticsearch](https://mywiki.disney.com/pages/viewpage.action?pageId=473804351) | Elastic Cloud endpoints, boost/block config |
-| [PINs Load Batch](https://mywiki.disney.com/pages/viewpage.action?pageId=534891384) | AWS Batch, CloudWatch |
+| [Team Home](https://disneyexperiences.atlassian.net/wiki/spaces/DPEPSD/pages/445256067/DX+Studio+Raya) | Team overview and navigation |
+| [Monitoring Overview](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=1166840422) | Dashboards and alerts summary |
+| [Search Service Ops](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=453995544) | AWS, Jenkins, deployment process, Nexus, Sonar |
+| [Indexing Service](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=470280924) | BAPP, SNS, Jenkins, Sonar, Teams webhooks |
+| [Elasticsearch](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=473804351) | Elastic Cloud endpoints, boost/block config |
+| [PINs Load Batch](https://disneyexperiences.atlassian.net/wiki/pages/viewpage.action?pageId=534891384) | AWS Batch, CloudWatch |

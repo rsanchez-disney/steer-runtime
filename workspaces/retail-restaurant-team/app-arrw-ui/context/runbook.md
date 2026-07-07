@@ -316,8 +316,8 @@ curl https://{env}.{park}arrw-ui.wdprapps.disney.com/api/config
 
 ## References
 
-- **Runbook (MyWiki):** https://mywiki.disney.com/spaces/FBT/pages/1108509096/Arrival+Windows+UI+-+Runbook
-- **Quick Guide:** https://mywiki.disney.com/spaces/FBT/pages/1109852533
+- **Runbook (Confluence Cloud):** https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/1108509096/Arrival+Windows+UI+-+Runbook
+- **Quick Guide:** https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/1109852533
 - **Design (Figma):** https://www.figma.com/design/Pb7r21uhBUsSUrEqhEUeoT/AWUI--Latest
 - **SPA Repo:** https://gitlab.disney.com/cgs-wdw/arrwui/arrwui-spa
 - **Lambda Repo:** https://gitlab.disney.com/cgs-wdw/arrwui/arrwui-lambda

@@ -4,7 +4,7 @@
   "description": "Veggies project \u2014 Non-Disney Add Ons SPA/API/VA for Rental Car, Shuttle, Travel Protection, Area Attractions (WDW/DLR/AUL)",
   "team": "Studio Star Lord \u2014 Veggies",
   "jira_prefix": "ROS-",
-  "jira_board_url": "https://myjira.disney.com/secure/RapidBoard.jspa?rapidView=10955",
+  "jira_board_url": "https://disneyexperiences.atlassian.net/jira/software/c/projects/ROS/boards/10955",
   "default_agent": "orchestrator",
   "enable_tools": true,
   "projects": [

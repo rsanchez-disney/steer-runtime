@@ -45,7 +45,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235689/DLP+DGE+API.MAPS+Services+BAPP0247135"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235689/DLP+DGE+API.MAPS+Services+BAPP0247135"
   architecture_diagram: "https://confluence.disney.com/display/RunDigital/BAPP0247135+-+Maps+Service"
   swagger:
     prod: "https://dlpis-digital.wdprapps.disney.com/WDPR-DLP-IS/wdpr-dlp-is-common-api-maps-service/swagger-ui/index.html"
@@ -71,7 +71,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/943235689/DLP+DGE+API.MAPS+Services+BAPP0247135"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/943235689/DLP+DGE+API.MAPS+Services+BAPP0247135"
 
     repository:
       url: "https://github.disney.com/WDPR-DLP-IS/wdpr-dlp-is-common-api-maps-service"

@@ -1,0 +1,17 @@
+{
+  "name": "judge_agent",
+  "description": "Evaluates code quality with structured dimensional scoring, producing a quantified verdict with actionable feedback",
+  "prompt": "judge_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}

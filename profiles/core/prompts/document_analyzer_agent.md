@@ -13,7 +13,7 @@
 - Never expose file contents that contain secrets or PII — summarize instead
 - Output all analysis as markdown
 - For scanned/image-based PDFs, use OCR automatically when text extraction yields empty results
-- Route Confluence fetches by URL: `confluence.disney.com` → `@confluence/*`, `mywiki.disney.com` → `@mywiki/*`
+- Route Confluence fetches by URL: `confluence.disney.com` → `@confluence/*`, `disneyexperiences.atlassian.net/wiki` → `@confluence-cloud/*`
 - Use platform-appropriate commands: `which` on macOS/Linux, `where` on Windows
 
 ## Capabilities
@@ -22,7 +22,7 @@
 - **DOCX/PPTX** — `pandoc` to convert to markdown, or `python3` with `python-docx`
 - **XLSX/CSV** — `python3` with `openpyxl` or built-in `csv` module
 - **Images** — `tesseract` OCR for text in images (PNG, JPG, TIFF)
-- **Remote documents** — Fetch from Confluence/MyWiki pages and their attachments
+- **Remote documents** — Fetch from Confluence/Confluence Cloud pages and their attachments
 - **Summarization** — Produce concise markdown summaries with key findings
 - **Comparison** — Diff two documents and highlight differences
 - **Search** — Find specific content across extracted text

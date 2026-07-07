@@ -94,7 +94,7 @@ steer-runtime/
 │   │   └── mcp-servers/            #   MCP server source code
 │   │       ├── jira-mcp/           #     Jira integration (Node.js/TypeScript)
 │   │       ├── confluence-mcp/     #     Confluence integration
-│   │       ├── confluence-mcp/     #     Confluence (also used for mywiki via env)
+│   │       ├── confluence-mcp/     #     Confluence (also used for cloud-wiki via env)
 │   │       ├── github-mcp/         #     GitHub Enterprise integration
 │   │       ├── mermaid-diagram-mcp/#     Diagram generation
 │   └── memory-bank/                #   steer-runtime's own memory bank
@@ -164,9 +164,9 @@ graph LR
 graph TD
     A["koda mcp-install"] --> B["Check ~/.npmrc exists"]
     B --> C["Copy ~/.npmrc to each MCP server dir"]
-    C --> D["Interactive selection:<br/>confluence, github, jira, mermaid, mywiki, All"]
+    C --> D["Interactive selection:<br/>confluence, github, jira, mermaid, cloud-wiki, All"]
     D --> E["npm install for selected servers"]
-    E --> F["Prompt for PATs:<br/>Jira, Confluence, MyWiki, GitHub"]
+    E --> F["Prompt for PATs:<br/>Jira, Confluence, Confluence Cloud, GitHub"]
     F --> G["Save tokens to .env files"]
     G --> H["Resolve $HOME in agent JSON configs"]
     H --> I["inject_agent_tokens()"]
@@ -198,7 +198,7 @@ Each agent consists of two files:
   "name": "story_analyzer_agent",
   "description": "Fetches and analyzes Jira stories, Confluence pages, and GitHub repos",
   "prompt": "story_analyzer_agent.md",
-  "tools": ["@jira/*", "@confluence/*", "@mywiki/*", "@github/*", "fs_read", "grep"],
+  "tools": ["@jira/*", "@confluence/*", "@confluence-cloud/*", "@github/*", "fs_read", "grep"],
   "mcpServers": {
     "jira": {
       "command": "node",
@@ -207,7 +207,7 @@ Each agent consists of two files:
       "env": { "JIRA_PAT": "YOUR_TOKEN" }
     }
   },
-  "allowedTools": ["@jira/*", "@confluence/*", "@mywiki/*", "@github/*"],
+  "allowedTools": ["@jira/*", "@confluence/*", "@confluence-cloud/*", "@github/*"],
   "resources": ["file://.kiro/context/project_mappings.md"]
 }
 ```
@@ -234,9 +234,9 @@ Each agent consists of two files:
 ├── confluence-mcp/        Node.js/TypeScript
 │   ├── build/index.js
 │   ├── .env               CONFLUENCE_URL + CONFLUENCE_PAT
-│   └── .env.mywiki        MyWiki instance tokens
+│   └── .env.cloud-wiki        Confluence Cloud instance tokens
 │
-├── mywiki-mcp/            Removed — mywiki uses confluence-mcp binary with CONFLUENCE_URL=https://mywiki.disney.com
+├── cloud-wiki-mcp/            Removed — cloud-wiki uses confluence-mcp binary with CONFLUENCE_URL=https://disneyexperiences.atlassian.net/wiki
 │   └── .env.example
 │
 ├── github-mcp/            Node.js/TypeScript
@@ -253,7 +253,7 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 ## Profile × MCP Matrix
 
-| Profile | Agents | Jira | Confluence | MyWiki | GitHub | Bruno | Other              |
+| Profile | Agents | Jira | Confluence | Confluence Cloud | GitHub | Bruno | Other              |
 |---------|--------|:----:|:----------:|:------:|:------:|:-----:|--------------------|
 | **dev** | 20     |  4   |     3      |   3    |   4    |   6   | —                  |
 | **ba**  | 4      |  4   |     4      |   4    |   4    |   —   | —                  |
@@ -290,7 +290,7 @@ Token resolution priority: **Agent JSON `env` block** > **MCP server `.env` file
 
 3. **Token injection via `env` blocks** — Agent JSON `env` blocks override `.env` files (dotenv doesn't overwrite existing env vars). This makes tokens work even if `.env` loading fails.
 
-4. **MyWiki reuses confluence-mcp** — Same binary, different `env` block with `CONFLUENCE_URL=https://mywiki.disney.com`. No code duplication.
+4. **Confluence Cloud reuses confluence-mcp** — Same binary, different `env` block with `CONFLUENCE_URL=https://disneyexperiences.atlassian.net/wiki`. No code duplication.
 
 5. **MCP install is resilient** — Failed `npm install` (e.g., 403 from Nexus) skips and continues. Users select which servers to install.
 

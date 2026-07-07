@@ -5,7 +5,7 @@
   "tools": [
     "@confluence/*",
     "@confluence-cloud/*",
-    "@mywiki/*",
+    "@confluence-cloud/*",
     "@github/*",
     "@gitlab/*",
     "@jira/*",

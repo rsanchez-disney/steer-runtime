@@ -292,7 +292,7 @@ if [ -n "$CONFLUENCE_URL" ]; then
 
     run_agent "story_analyzer_agent" "00d"         "Create Jira tickets for the validated stories below using the jira_create_issue MCP tool.
 
-Reference ticket for format/style: https://myjira.disney.com/browse/DPAY-14416
+Reference ticket for format/style: https://disneyexperiences.atlassian.net/browse/DPAY-14416
 First, fetch DPAY-14416 with jira_get_issue to use as a template for description format, labels, and components.
 
 Project key: $JIRA_PROJECT

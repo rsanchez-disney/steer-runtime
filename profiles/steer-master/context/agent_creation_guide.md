@@ -171,7 +171,7 @@ If the agent needs MCP server access:
 }
 ```
 
-Available MCP patterns: `@jira/*`, `@confluence/*`, `@mywiki/*`, `@github/*`, `@compass/*`, `@qtest/*`, `@figma/*`
+Available MCP patterns: `@jira/*`, `@confluence/*`, `@confluence-cloud/*`, `@github/*`, `@compass/*`, `@qtest/*`, `@figma/*`
 
 ## Registering with an Orchestrator
 

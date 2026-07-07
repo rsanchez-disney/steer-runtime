@@ -35,8 +35,8 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 |---|---|
 | `profiles/leadership/agents/leadership_orchestrator_agent.json` | Leadership orchestrator tool permissions |
 | `profiles/leadership/agents/*.json` — `tools` / `allowedTools` arrays | Agent-to-MCP tool access |
-| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/MyWiki/GitHub tool routing |
-| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (mywiki_* vs confluence_*) |
+| `profiles/dev-core/agents/story_analyzer_agent.json` | Jira/Confluence/Confluence Cloud/GitHub tool routing |
+| `profiles/dev-core/prompts/story_analyzer_agent.md` | Instance routing logic (cloud_* vs confluence_*) |
 
 ## Additional Delegation Rules
 

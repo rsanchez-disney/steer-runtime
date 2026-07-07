@@ -38,7 +38,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "https://confluence.disney.com/spaces/ECM/pages/697485770/Sentinel"
-  wiki: "https://mywiki.disney.com/spaces/GIT/pages/1182501215/BAPP0242775+-+Sentinel"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/GIT/pages/1182501215/BAPP0242775+-+Sentinel"
   architecture_diagram: "https://confluence.disney.com/spaces/ECM/pages/1891477981/Working+with+AIDs"
   grafana_dashboard: "https://grafana.wdprapps.disney.com/d/ddsycmiacwwe8d/gcx-platform-status-dashboard?orgId=1&from=now-1h&to=now&timezone=browser&refresh=5m"
 

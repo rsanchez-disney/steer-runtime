@@ -52,7 +52,7 @@ WDPR Technology Studio Proteus <WDPR.Technology.Studio.Proteus@disney.com>
 ## Jira
 
 - Projects: `FNB-` (Food & Beverage), `MERCH-` (Merchandise)
-- Instance: myjira.disney.com
+- Instance: disneyexperiences.atlassian.net
 - Commit style: Conventional commits
 - Branch naming: `{type}/{ticket-id}/description`
 

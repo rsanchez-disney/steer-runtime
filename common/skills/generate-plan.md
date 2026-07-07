@@ -19,7 +19,7 @@ Create an implementation plan with small, testable, incremental steps.
 ### Step 1: Gather Context from MCP (if available)
 
 1. **Jira** — fetch ticket details (summary, description, ACs, subtasks, linked issues)
-2. **Confluence/MyWiki** — search for related design docs or ADRs
+2. **Confluence/Confluence Cloud** — search for related design docs or ADRs
 3. **GitHub** — check for related PRs or issues
 
 ### Step 2: Analyze Codebase

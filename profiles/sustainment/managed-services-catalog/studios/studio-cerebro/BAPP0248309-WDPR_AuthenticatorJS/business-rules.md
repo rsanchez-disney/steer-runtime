@@ -4,9 +4,9 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | 99.99% (CRITICAL - all login depends on this) | Not documented in MyWiki |
+| Uptime | 99.99% (CRITICAL - all login depends on this) | Not documented in Confluence Cloud |
 | Response time (p95) | N/A (static JS bundle served via CDN) | N/A |
-| Error rate | 0% tolerance (any failure = all logins broken) | Not documented in MyWiki |
+| Error rate | 0% tolerance (any failure = all logins broken) | Not documented in Confluence Cloud |
 
 ## Peak Periods
 

@@ -37,7 +37,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331177216"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331177216"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -60,7 +60,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/gamprofile/pages/1331177216"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331177216"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -84,11 +84,11 @@ components:
       index: ""
       source: ""
       base_spl: >-
-        Not documented in MyWiki
+        Not documented in Confluence Cloud
       error_spl: >-
-        Not documented in MyWiki
+        Not documented in Confluence Cloud
       latency_spl: >-
-        Not documented in MyWiki
+        Not documented in Confluence Cloud
 
     # -- AppDynamics --
     appdynamics:
@@ -154,7 +154,7 @@ components:
         splunk:
           index: ""
           base_spl: >-
-            Not documented in MyWiki
+            Not documented in Confluence Cloud
         cloud:
           region: ""
           service_name: ""
@@ -165,7 +165,7 @@ components:
         splunk:
           index: ""
           base_spl: >-
-            Not documented in MyWiki
+            Not documented in Confluence Cloud
         cloud:
           region: ""
           service_name: ""
@@ -176,7 +176,7 @@ components:
         splunk:
           index: ""
           base_spl: >-
-            Not documented in MyWiki
+            Not documented in Confluence Cloud
         cloud:
           region: ""
           service_name: ""

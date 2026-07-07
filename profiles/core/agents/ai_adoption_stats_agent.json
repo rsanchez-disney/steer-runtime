@@ -11,9 +11,8 @@
     "@github-disney/*",
     "@github-public/*",
     "@jira-jira/*",
-    "@jira-myjira/*",
-    "@confluence-confluence/*",
-    "@confluence-mywiki/*"
+    "@jira-cloud/*",
+    "@confluence-confluence/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
@@ -23,9 +22,8 @@
     "@github-disney/*",
     "@github-public/*",
     "@jira-jira/*",
-    "@jira-myjira/*",
-    "@confluence-confluence/*",
-    "@confluence-mywiki/*"
+    "@jira-cloud/*",
+    "@confluence-confluence/*"
   ],
   "includeMcpJson": true,
   "hooks": {

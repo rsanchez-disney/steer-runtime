@@ -4,13 +4,13 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in MyWiki | |
-| Response time (p95) | Not documented in MyWiki | |
-| Error rate | Not documented in MyWiki | |
+| Uptime | Not documented in Confluence Cloud | |
+| Response time (p95) | Not documented in Confluence Cloud | |
+| Error rate | Not documented in Confluence Cloud | |
 
 ## Peak Periods
 
-- Not documented in MyWiki. Expected high traffic during park hours and marketing campaign opt-in periods.
+- Not documented in Confluence Cloud. Expected high traffic during park hours and marketing campaign opt-in periods.
 
 ## Business Logic
 

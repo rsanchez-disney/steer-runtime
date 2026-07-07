@@ -58,7 +58,7 @@ Agents have access to:
 - ✅ **Hooks** — Guard writes, secret scanning, auto-lint on write
 - ✅ **Context** — Angular v12–v18+ patterns & uplift guides, Polymer 2/3 patterns, Lambda patterns
 
-> **Note:** The `ui_legacy` and `polymer` agents have Confluence and MyWiki MCP access to fetch RA migration guides during uplifts. The `lambda` agent has no MCP servers. Additional MCP access (Jira, GitHub, etc.) comes from the dev-core agents (orchestrator, code_review, pr_creator).
+> **Note:** The `ui_legacy` and `polymer` agents have Confluence and Confluence Cloud MCP access to fetch RA migration guides during uplifts. The `lambda` agent has no MCP servers. Additional MCP access (Jira, GitHub, etc.) comes from the dev-core agents (orchestrator, code_review, pr_creator).
 
 ---
 

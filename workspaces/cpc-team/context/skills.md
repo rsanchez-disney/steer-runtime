@@ -84,8 +84,8 @@
 | Category | Tools |
 |----------|-------|
 | Source Control | GitHub Enterprise (github.disney.com) |
-| Project Management | Jira (myjira.disney.com) |
-| Documentation | Confluence (mywiki.disney.com) |
+| Project Management | Jira (disneyexperiences.atlassian.net) |
+| Documentation | Confluence (disneyexperiences.atlassian.net/wiki) |
 | CI/CD | Jenkins |
 | Artifact Repository | Nexus3 |
 | Crash Reporting | NewRelic |

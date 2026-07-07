@@ -39,7 +39,7 @@
 **Resolution:**
 1. Call transform for entity: `/assembler/transform/Preview/Entity/{tcmId}` and check each page's urlFriendly
 2. Indicate to requester that unique UrlFriendly must be generated for each page
-3. Jira reference: https://myjira.disney.com/browse/GCX-15898
+3. Jira reference: https://disneyexperiences.atlassian.net/browse/GCX-15898
 
 ---
 

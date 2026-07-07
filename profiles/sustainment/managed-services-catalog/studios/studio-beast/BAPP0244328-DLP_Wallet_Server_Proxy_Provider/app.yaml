@@ -43,7 +43,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: "runbook.md"
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -70,7 +70,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871073048/Wallet+Server+Proxy+Provider"
       architecture_diagram: ""
 
     repository:
@@ -157,7 +157,7 @@ components:
       runbook: "runbook.md"
 
     documentation:
-      wiki: "https://mywiki.disney.com/spaces/SBH/pages/871073050/Wallet+Pass+Purge+Processor"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/871073050/Wallet+Pass+Purge+Processor"
       architecture_diagram: ""
 
     repository:

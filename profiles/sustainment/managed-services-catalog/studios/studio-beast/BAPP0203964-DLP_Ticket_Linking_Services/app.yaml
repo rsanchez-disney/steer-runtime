@@ -42,7 +42,7 @@ servicenow:
 
 # --- Documentation ---
 documentation:
-  wiki: "https://mywiki.disney.com/spaces/SBH/pages/843090166/DLP+Ticket+Linking+Services+BAPP0203964"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/SBH/pages/843090166/DLP+Ticket+Linking+Services+BAPP0203964"
   runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=RunDigital&title=BAPP0203964+-+DLP+TMS+Tickets++Linking+Provider"
 
 # --- Companion Docs (Markdown) ---
