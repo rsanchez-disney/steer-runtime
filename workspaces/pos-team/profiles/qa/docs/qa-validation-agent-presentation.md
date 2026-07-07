@@ -42,7 +42,7 @@ An AI agent that **automatically validates regression test sets against epic req
 │     - Test descriptions, Cucumber scenarios             │
 │     - Execution status, environments                    │
 │                                                         │
-│  3. Fetch Context (Confluence/MyWiki + GitLab)          │
+│  3. Fetch Context (Confluence/Confluence Cloud + GitLab)          │
 │     - Wiki documentation referenced in epic             │
 │     - Design docs, math examples                        │
 │     - Source code changes (MR diffs)                    │
@@ -67,7 +67,7 @@ An AI agent that **automatically validates regression test sets against epic req
 |------------|---------------------------------------------------|---------------------------------------------------------------------------|
 | Jira       | Epic requirements, test sets, XRay test cases     | `jira_get_issue`, `xray_get_test_set_tests`, `xray_get_test_case_full`    |
 | GitLab     | Source code changes, MR diffs for impact analysis | `gitlab_get_mr`, `gitlab_get_file`, `gitlab_search_mrs`                   |
-| MyWiki     | Design documents, business rules, math examples   | `get_confluence_page`, `search_confluence_pages`                          |
+| Confluence Cloud     | Design documents, business rules, math examples   | `get_confluence_page`, `search_confluence_pages`                          |
 
 ---
 
@@ -134,7 +134,7 @@ test sets provide adequate coverage for epic requirements.
 You have access to:
 - Jira MCP: fetch epics, stories, test sets, XRay test cases
 - GitLab MCP: fetch merge requests, code diffs, file contents
-- MyWiki/Confluence MCP: fetch design docs, business rules, wiki pages
+- Confluence Cloud/Confluence MCP: fetch design docs, business rules, wiki pages
 
 Your output must be structured, actionable, and risk-scored.
 ```
@@ -283,7 +283,7 @@ Agent executes:
   "name": "qa_validation_agent",
   "description": "Validates regression test sets against epic requirements",
   "tools": ["thinking", "knowledge"],
-  "mcpServers": ["jira", "confluence", "mywiki", "gitlab"],
+  "mcpServers": ["jira", "confluence", "confluence-cloud", "gitlab"],
   "resources": [
     "qa_guidelines.md",
     "test_templates.md",
