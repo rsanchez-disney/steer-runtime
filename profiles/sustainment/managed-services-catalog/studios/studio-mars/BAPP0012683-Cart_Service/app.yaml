@@ -21,7 +21,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "Cart Service"
+  configuration_items:
+    - "Cart Service"
   assignment_group: "web-global-salescart"
   business_service: ""
 

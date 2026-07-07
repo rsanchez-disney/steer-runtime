@@ -145,8 +145,3 @@ Wait for user instruction. Do NOT suggest actions.
 9. Search runbooks (local catalog + Compass BAPP) before proposing novel fixes.
 10. **Dependency order:** Fetch INC -> Read docs -> Query observability tools. Never parallelize dependent steps.
 11. When observability validation is impossible, state it explicitly — never infer resolution without evidence.
-
-
-
-
-

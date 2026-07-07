@@ -21,7 +21,8 @@ escalation_contacts:
 
 # --- ServiceNow ---
 servicenow:
-  configuration_item: "WDPR Notification Service"
+  configuration_items:
+    - "WDPR Notification Service"
   assignment_group: "web-global-salescart"
   business_service: ""
 

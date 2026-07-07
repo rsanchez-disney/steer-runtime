@@ -69,7 +69,7 @@ Validate:
 - `<ValidUntil>` > today
 - `<RemainingUse>Unlimited</RemainingUse>`
 
-If Status???0 ??? pass voided/exchanged/blocked. NOT a TMS issue. Route to `app-cadlr-galaxy`.
+If Status≠0 → pass voided/exchanged/blocked. NOT a TMS issue. Route to `app-cadlr-galaxy`.
 
 ### Step 2: Verify PERNR in TMS (Display Layer)
 
@@ -84,10 +84,10 @@ In the `LoggingOutInterceptor] Outbound Message:` payload, find `"visualId": "{P
 4. `"primaryGuestLinked": true` with SWID populated
 
 **Decision:**
-- eGalaxy Status=0 AND TMS ACTIVE with all 4 met ??? sync/display issue. Recommend TMS refresh via GSS.
-- eGalaxy Status=0 BUT TMS VOIDED/FILTERED ??? TMS-to-eGalaxy sync issue. Recommend data refresh.
-- eGalaxy Status???0 ??? pass voided at source. Route to `app-cadlr-galaxy`.
-- No SA record exists (only MEP) ??? provisioning gap. Route to `app-cadlr-galaxy` to issue new SA record (SKU 40341).
+- eGalaxy Status=0 AND TMS ACTIVE with all 4 met → sync/display issue. Recommend TMS refresh via GSS.
+- eGalaxy Status=0 BUT TMS VOIDED/FILTERED → TMS-to-eGalaxy sync issue. Recommend data refresh.
+- eGalaxy Status≠0 → pass voided at source. Route to `app-cadlr-galaxy`.
+- No SA record exists (only MEP) → provisioning gap. Route to `app-cadlr-galaxy` to issue new SA record (SKU 40341).
 
 **Refs:** INC28962976, INC24373658, INC24238966, INC24239604, INC29159390
 
@@ -144,7 +144,7 @@ search index=wdpr_egalaxy_dlr "{VID}" "UsageRecords" "Admission" earliest=-7d | 
 ```spl
 search index=wdpr_egalaxy_dlr "QueryTicketResponse" "{VID}" earliest=-7d | search "ZipCode"
 ```
-> For SoCal MK eligibility, verify the zip code in `QueryTicketResponse` is in range **90000???93599**. If outside this range ??? guest is not eligible for SoCal MK renewal. Route zip discrepancies to `app-cadlr-galaxy`.
+> For SoCal MK eligibility, verify the zip code in `QueryTicketResponse` is in range **90000–93599**. If outside this range → guest is not eligible for SoCal MK renewal. Route zip discrepancies to `app-cadlr-galaxy`.
 
 **Status Codes:** 0=Active, 4=Exchanged, 5=Voided, 8=Blocked
 
