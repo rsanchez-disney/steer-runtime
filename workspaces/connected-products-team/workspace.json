@@ -46,6 +46,6 @@
         "memory_bank": "big-belly"
       }
     ],
-  "rules": ["conventional_commit.md"],
+  "rules": ["conventional_commit"],
    "enable_tools": true
 }
