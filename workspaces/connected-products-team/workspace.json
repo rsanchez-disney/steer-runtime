@@ -1,0 +1,51 @@
+{
+  "name": "connected-products-team",
+  "description": "Connected Products team workspace",
+  "team": "Connected Products",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "dev-mobile",
+    "ba",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "workspace_path": "${WORKSPACE_ROOT}/", 
+  "jira_host": "disneyexperiences.atlassian.net",
+  "jira_prefix": [
+    "SHOWREADY-",
+    "SARG-"
+  ],
+  "projects": [
+      {
+        "name": "cpx-task-manager-api",
+        "path": "cpx-task-manager-api",
+        "repo": "EDT/cpx-task-manager-api",
+        "host": "github.disney.com",
+        "memory_bank": "cpx-task-manager-api"
+      },
+      {
+        "name": "show-ready-cast-operations-api",
+        "path": "show-ready-cast-operations-api",
+        "repo": "EDT/show-ready-cast-operations-api",
+        "host": "github.disney.com",
+        "memory_bank": "show-ready-cast-operations-api"
+      },
+      {
+        "name": "sarg-bigbelly-provider",
+        "path": "sarg-bigbelly-provider",
+        "repo": "EDT/sarg-bigbelly-provider",
+        "host": "github.disney.com",
+        "memory_bank": "sarg-bigbelly-provider"
+      },
+      {
+        "name": "big-belly",
+        "path": "big-belly",
+        "repo": "cpx/mobile/flutter/big-belly",
+        "host": "gitlab.disney.com",
+        "memory_bank": "big-belly"
+      }
+    ],
+  "rules": ["conventional_commit"],
+   "enable_tools": true
+}
