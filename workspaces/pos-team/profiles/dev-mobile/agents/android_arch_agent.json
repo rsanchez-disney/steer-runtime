@@ -1,7 +1,7 @@
 {
   "name": "android_arch_agent",
   "description": "Android Architect \u2014 primary orchestrator for POS team. Decomposes tasks and delegates to Dev, Test, Quality, and PR agents.",
-  "prompt": "prompts/android_arch_agent.md",
+  "prompt": "file://../prompts/android_arch_agent.md",
   "tools": [
     "fs_read",
     "thinking",

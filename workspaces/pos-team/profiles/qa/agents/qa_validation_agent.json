@@ -7,7 +7,6 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@confluence-cloud/*",
     "@gitlab/*",
     "@github/*",
     "fs_read",
@@ -15,13 +14,12 @@
     "grep",
     "thinking"
   ],
-
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 QA Validation Agent ready!\n\nI validate regression test sets against epic requirements.\n\nTry:\n  • \"Validate POS-19406 against POS-1429\"\n  • \"Check coverage for test set POS-123 vs epic POS-456\"\n  • \"Release coverage report for GLB 2.1.3 epics\"\n\nI'll fetch the epic requirements, test set details, and produce a risk-scored coverage report.",
+  "welcomeMessage": "\ud83d\udc4b QA Validation Agent ready!\n\nI validate regression test sets against epic requirements.\n\nTry:\n  \u2022 \"Validate POS-19406 against POS-1429\"\n  \u2022 \"Check coverage for test set POS-123 vs epic POS-456\"\n  \u2022 \"Release coverage report for GLB 2.1.3 epics\"\n\nI'll fetch the epic requirements, test set details, and produce a risk-scored coverage report.",
   "hooks": {
     "agentSpawn": [
       {

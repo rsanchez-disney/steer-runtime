@@ -3,15 +3,51 @@
   "description": "POS Backoffice SDLC orchestrator — 7-stage workflow for PHP, Go, and React projects",
   "prompt": "file://../prompts/pos_backoffice_orchestrator.md",
   "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "knowledge",
+    "todo_list",
     "subagent",
-    "todo_list"
+    "@mermaid/*"
   ],
+  "toolsSettings": {
+    "subagent": {
+      "availableAgents": [
+        "pos_architecture_agent",
+        "pos_codebase_explorer_agent",
+        "pos_go_agent",
+        "pos_php_agent",
+        "pos_react_agent",
+        "pos_test_runner_agent",
+        "pos_planner_agent",
+        "pos_security_scanner_agent",
+        "pos_work_documenter_agent",
+        "pos_code_review_agent",
+        "pos_story_analyzer_agent"
+      ],
+      "trustedAgents": [
+        "pos_architecture_agent",
+        "pos_codebase_explorer_agent",
+        "pos_go_agent",
+        "pos_php_agent",
+        "pos_react_agent",
+        "pos_test_runner_agent",
+        "pos_planner_agent",
+        "pos_security_scanner_agent",
+        "pos_work_documenter_agent",
+        "pos_code_review_agent",
+        "pos_story_analyzer_agent"
+      ]
+    }
+  },
   "resources": [
-    "file://AGENTS.md",
-    "file://.kiro/context/backoffice-sdlc-workflow.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/context/backoffice_golden_rules.md",
+    "file://.kiro/steering/**/*.md",
+    "file://../../../context/features/*"
   ],
-  "welcomeMessage": "👋 POS Backoffice Orchestrator ready!\n\nI drive the full SDLC for PHP, Go, and React projects:\n  Analyze → Explore → Plan → 🚦 → Implement → Test → Review → 🚦 → Document\n\n• Give me a Jira ticket: \"Implement POS-1234\"\n• Or a direct task: \"Add a new endpoint for X in the Go service\"\n\nI'll detect the language and route to the right agents.",
   "hooks": {
     "agentSpawn": [
       {
@@ -27,8 +63,6 @@
         "description": "Generate delegation map for routing decisions"
       }
     ],
-    "preToolUse": [],
-    "postToolUse": [],
     "stop": [
       {
         "command": "$HOME/.kiro/hooks/session-summary.sh",
@@ -40,5 +74,6 @@
       }
     ]
   },
+  "welcomeMessage": "🏗️ POS Backoffice Orchestrator ready!\n\nI provide architecture guidance AND orchestrate backoffice development:\n  • Architecture decisions, design reviews, system analysis\n  • Delegate implementation to PHP, Go, or React specialists\n  • Route code reviews, tests, security scans, and planning\n\nDescribe your task or give me a Jira ticket and I'll handle it.",
   "includeMcpJson": true
 }
