@@ -14,5 +14,19 @@
   "includeMcpJson": false,
   "resources": [
     "file://.kiro/context/api_testing_with_bruno.md"
-  ]
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/block-suspicious.sh",
+        "description": "Block commands that trigger EDR alerts (browser DBs, credential stores)"
+      },
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ]
+  }
 }

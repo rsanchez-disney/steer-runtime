@@ -4,14 +4,14 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.151
+## v0.2.152
 
-- **propose-judge strategy** — new dual-strategy orchestration: Analyze → Propose → Plan → Implement → Judge → Ship with auto-detection and retry loops
-- **propose_agent** (dev-core) — generates 2-4 implementation alternatives with dimensional scoring and recommendation
-- **judge_agent** (dev-core) — two-layer code evaluation with 6 weighted dimensions and PASS/CONDITIONAL/FAIL verdict
-- **docs** — propose-judge quick start guide with full flow walkthrough and standalone usage examples
-- **pos-team** — QA Validation Agent, receipts refactor learnings bank, android refactor agent, orchestration improvements
+- **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
+- **fix(orchestrator)** — wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs
+- **chore** — migrate myjira + mywiki references to Atlassian Cloud URLs
 <!-- END LATEST -->
+
+## v0.2.151
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
