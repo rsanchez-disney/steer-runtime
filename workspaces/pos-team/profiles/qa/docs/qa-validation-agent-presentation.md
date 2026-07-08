@@ -283,7 +283,7 @@ Agent executes:
   "name": "qa_validation_agent",
   "description": "Validates regression test sets against epic requirements",
   "tools": ["thinking", "knowledge"],
-  "mcpServers": ["jira", "confluence", "cloud-wiki", "gitlab"],
+  "mcpServers": ["jira", "confluence", "confluence-cloud", "gitlab"],
   "resources": [
     "qa_guidelines.md",
     "test_templates.md",

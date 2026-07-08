@@ -1,7 +1,7 @@
 {
   "name": "android_pr_agent",
   "description": "PR Content Generator \u2014 creates merge request descriptions with solution summary, changes strategy, and checklist.",
-  "prompt": "prompts/android_pr_agent.md",
+  "prompt": "file://../prompts/android_pr_agent.md",
   "tools": [
     "fs_read",
     "fs_write",
