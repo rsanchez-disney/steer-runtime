@@ -156,6 +156,9 @@ eval-dry: ## Dry-run all evaluations
 certify: ## Run full certification (delegation + evals → trust score)
 	python3 evals/certify.py
 
+validate-delegation: ## Run delegation tests only (16 scenarios across orchestrators)
+	python3 tests/orchestration/delegation_runner.py --all
+
 certify-report: ## Generate report from existing results (no re-run)
 	python3 evals/certify.py --from-results
 
