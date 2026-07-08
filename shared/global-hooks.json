@@ -1,0 +1,10 @@
+{
+  "preToolUse": [
+    {
+      "matcher": "execute_bash",
+      "command": "$HOME/.kiro/hooks/block-suspicious.sh",
+      "description": "Block commands that trigger EDR alerts (browser DBs, credential stores, credential harvesting)",
+      "condition": "has_tool:execute_bash"
+    }
+  ]
+}
