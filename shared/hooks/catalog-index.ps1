@@ -86,7 +86,9 @@ foreach ($studio in $Studios) {
         $fullName = if ($content -match '(?m)^full_name:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $supportStudio = if ($content -match '(?m)^support_studio:\s*"([^"]*)"') { $Matches[1] } else { "" }
         $ci = ""
-        if ($content -match '(?m)\s+configuration_items:\s*"([^"]*)"') {
+        if ($content -match '(?m)\s+configuration_item:\s*"([^"]*)"') {
+            $ci = $Matches[1]
+        } elseif ($content -match '(?m)\s+configuration_items:\s*"([^"]*)"') {
             $ci = $Matches[1]
         } elseif ($content -match '(?ms)\s+configuration_items:\s*\r?\n\s+- "([^"]*)"') {
             $ci = $Matches[1]

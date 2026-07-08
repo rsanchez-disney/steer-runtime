@@ -96,7 +96,7 @@ for studio_path in "${STUDIOS[@]}"; do
     bapp_id=$(yq -r '.bapp_id // ""' "$app_dir/app.yaml")
     full_name=$(yq -r '.full_name // ""' "$app_dir/app.yaml")
     support_studio=$(yq -r '.support_studio // ""' "$app_dir/app.yaml")
-    ci=$(yq -r '(.servicenow.configuration_items // []) | join(", ")' "$app_dir/app.yaml")
+    ci=$(yq -r '(.servicenow.configuration_item // (.servicenow.configuration_items // []) | if type == "array" then join(", ") else . end) // ""' "$app_dir/app.yaml")
     # Extract ServiceNow assignment group
     assign_group=$(yq -r '.servicenow.assignment_group // ""' "$app_dir/app.yaml")
     # Extract full app description (collapsed to single line for table format)
