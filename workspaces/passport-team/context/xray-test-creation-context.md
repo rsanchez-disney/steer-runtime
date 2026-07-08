@@ -89,6 +89,8 @@ All artifacts are linked to the story with `linkType: "Test"`.
 | `xray_cloud_get_test_runs`      | Get execution results for a test           |
 | `xray_cloud_link_test_to_story` | Link test → story (uses jira_link_issues)  |
 | `xray_cloud_update_test_type`   | Update test type/steps on existing test    |
+| `xray_cloud_get_test_datasets`  | Read dataset (parameterized data) from test |
+| `xray_cloud_update_test_datasets` | Create/update dataset iterations on test  |
 
 #### ⛔ Do NOT use (XRay Server tools — not supported on Cloud)
 
@@ -111,6 +113,8 @@ All artifacts are linked to the story with `linkType: "Test"`.
 7. **Tests created with `jira_create_issue` have NO XRay steps** — always use `xray_cloud_create_test`
 8. **`xray_cloud_get_test_steps` may return cached/stale data** — if in doubt, verify in UI
 9. **Cannot remove tests from a Test Execution** — must create new TE and reject old one
+10. **Label `PAS2_CQE` is REQUIRED on ALL artifacts** — Test Cases, Test Executions, and QA Tasks must all carry this label. For TEs created via `xray_cloud_create_execution`, set label via `jira_update_issue` after creation
+11. **Sprint and Team are REQUIRED on Test Executions and QA Tasks** — propagate Sprint ID from the User Story; set Team based on story type (`"PAS2 | Mobile"` or `"PAS2 | Services"`)
 
 ### XRay Cloud Configuration
 
@@ -135,21 +139,22 @@ jira_link_issues:
 
 ### Custom Fields Reference (Post-Migration)
 
-| Field                | Field ID            | Values                                                              | On Edit Screen? |
-|----------------------|---------------------|---------------------------------------------------------------------|:---------------:|
-| Story Points         | `customfield_10042` | Number                                                              | ✅ Task         |
-| Sprint               | `customfield_10020` | Sprint ID (number)                                                  | ✅ Task, Test   |
-| AI Assisted Effort   | `customfield_10173` | Number (default: `0.5`)                                             | ✅ Task         |
-| AI Usage Level       | `customfield_10221` | `{"value": "Medium"}` \| `{"value": "High"}` \| `{"value": "Low"}` | ✅ Task         |
-| AI Tools Used        | `customfield_10191` | String (default: `"kiro"`)                                          | ✅ Task         |
-| Platforms            | `customfield_10176` | `[{"value": "iOS"}, {"value": "Android"}]`                          | ✅ Test         |
-| Automation Candidate | `customfield_10154` | `{"value": "Y"}` \| `{"value": "N"}` \| `{"value": "Requires Analysis"}` | ✅ Test   |
-| Automation Status    | `customfield_10190` | `{"value": "Not Started"}` (only when Candidate = Y)               | ✅ Test         |
-| Acceptance Criteria  | `customfield_10166` | Text (on Stories)                                                   | ✅ Story        |
-| Priority             | `priority`          | `{"id": "10008"}` (3 - Medium) — **REQUIRED for Test and TE**      | ✅ All          |
-| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ not editable |
-| Epic Link            | `customfield_13912` | Epic issue key (e.g., `"PAS2-1"`)                                   | ⚠️ not editable |
-| Test Environments    | `customfield_20125` | Array of strings: `["LATEST"]`                                      | ⚠️ not editable |
+| Field                | Field ID            | Values                                                              | On Edit Screen?   |
+|----------------------|---------------------|---------------------------------------------------------------------|:-----------------:|
+| Story Points         | `customfield_10042` | Number                                                              | ✅ Task           |
+| Sprint               | `customfield_10020` | Sprint ID (number) — propagate from Story                           | ✅ Task, TE       |
+| Team                 | `customfield_10001` | `"PAS2 \| Mobile"` (FE/Flutter) or `"PAS2 \| Services"` (BE)       | ✅ Task, TE       |
+| AI Assisted Effort   | `customfield_10173` | Number (default: `0.5`)                                             | ✅ Task           |
+| AI Usage Level       | `customfield_10221` | `{"value": "Medium"}` \| `{"value": "High"}` \| `{"value": "Low"}` | ✅ Task           |
+| AI Tools Used        | `customfield_10191` | String (default: `"kiro"`)                                          | ✅ Task           |
+| Platforms            | `customfield_10176` | `[{"value": "iOS"}, {"value": "Android"}]`                          | ✅ Test           |
+| Automation Candidate | `customfield_10154` | `{"value": "Y"}` \| `{"value": "N"}` \| `{"value": "Requires Analysis"}` | ✅ Test     |
+| Automation Status    | `customfield_10190` | `{"value": "Not Started"}` (only when Candidate = Y)               | ✅ Test           |
+| Acceptance Criteria  | `customfield_10166` | Text (on Stories)                                                   | ✅ Story          |
+| Priority             | `priority`          | `{"id": "10008"}` (3 - Medium) — **REQUIRED for Test and TE**      | ✅ All            |
+| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ not editable  |
+| Epic Link            | `customfield_13912` | Epic issue key (e.g., `"PAS2-1"`)                                   | ⚠️ not editable  |
+| Test Environments    | `customfield_20125` | Array of strings: `["LATEST"]`                                      | ⚠️ not editable  |
 
 > **"⚠️ not editable"** = Cannot be set via `jira_update_issue`. Set via XRay Cloud API or manually.
 
@@ -395,6 +400,73 @@ xray_cloud_create_test:
       result: "CTA visible but disabled (greyed out)"
 ```
 
+### Datasets for Cucumber (Scenario Outline) Test Cases
+
+When a Cucumber test uses a **Scenario Outline** with `<placeholders>`, the data variations are stored as a **Dataset** in XRay — not in the Gherkin text itself.
+
+#### When to use Datasets
+
+| Scenario                                                    | Use Dataset?       |
+|-------------------------------------------------------------|--------------------|
+| Scenario Outline with `Examples:` table (2+ rows of data)   | ✅ Yes             |
+| Single scenario with fixed data                             | ❌ No              |
+| Manual test with varying data in steps                      | ❌ No (use `data` column in steps) |
+
+#### Workflow: Create Cucumber test with Dataset
+
+1. **Create the test** with Gherkin using `<placeholders>` (NO `Examples:` block — XRay manages those via Datasets):
+
+```yaml
+xray_cloud_create_test:
+  projectKey: "PAS2"
+  summary: "PAS2-200 | DLR | Mobile | Login | Validate credentials"
+  testType: "Cucumber"
+  labels: ["PAS2_CQE"]
+  gherkin: |
+    Scenario Outline: Validate user login with different credentials
+    Given the user is on the login screen
+    When the user enters "<username>" and "<password>"
+    And taps the Login button
+    Then the system displays "<expectedResult>"
+  customFields:
+    customfield_10176: [{"value": "iOS"}, {"value": "Android"}]
+    customfield_10154: {"value": "Y"}
+    customfield_10190: {"value": "Not Started"}
+```
+
+2. **Add the Dataset** with parameter values for each iteration:
+
+```yaml
+xray_cloud_update_test_datasets:
+  testKey: "{TEST_KEY}"
+  parameters: ["username", "password", "expectedResult"]
+  values:
+    - ["valid_user", "correct_pass", "Dashboard screen"]
+    - ["valid_user", "wrong_pass", "Invalid credentials error"]
+    - ["", "correct_pass", "Username required error"]
+    - ["locked_user", "correct_pass", "Account locked message"]
+  datasetName: "Login Credentials"
+```
+
+#### Reading existing Datasets
+
+To inspect what data iterations exist on a test:
+
+```yaml
+xray_cloud_get_test_datasets:
+  testKey: "{TEST_KEY}"
+```
+
+Returns a table with parameters (columns) and values (rows/iterations).
+
+#### Dataset Rules
+
+- Parameter names in the dataset must **exactly match** the `<placeholder>` names in the Gherkin
+- Each row in `values` must have the **same number of elements** as `parameters`
+- When updating a dataset, the **entire dataset is replaced** — always provide all rows
+- One test can have multiple datasets (use different `datasetName` values), but typically one is enough
+- Datasets only apply to **Cucumber** test type — Manual tests use the `data` column in steps instead
+
 ---
 
 ## Step 4: Create Test Executions
@@ -437,6 +509,23 @@ jira_link_issues:
   outwardTicketId: "{STORY_KEY}"
   linkType: "Test"
 ```
+
+#### Then set Sprint, Team, and Label:
+
+> `xray_cloud_create_execution` does not support `labels`, `Sprint`, or `Team` params — set them via `jira_update_issue` immediately after creation.
+
+```yaml
+jira_update_issue:
+  ticketId: "{TE_KEY}"
+  labels: ["PAS2_CQE"]
+  customFields:
+    customfield_10020: {SPRINT_ID}
+    customfield_10001: "{TEAM_VALUE}"
+```
+
+Where:
+- `{SPRINT_ID}` = Sprint ID number from the User Story
+- `{TEAM_VALUE}` = `"PAS2 | Mobile"` or `"PAS2 | Services"` based on story type
 
 ### ⚠️ Test Executions are NEVER assigned to anyone. Do NOT use `jira_assign_issue` on TEs.
 
@@ -532,17 +621,27 @@ jira_assign_issue:
   assignee: "{STORY_ASSIGNEE}"
 ```
 
-### Set story points and AI fields:
+### Set story points, AI fields, Sprint, and Team:
+
+> **Sprint** is propagated from the User Story (`customfield_10020`). **Team** depends on story type:
+> - Mobile/Flutter → `"PAS2 | Mobile"`
+> - Services/BE → `"PAS2 | Services"`
 
 ```yaml
 jira_update_issue:
   ticketId: "{TASK_KEY}"
   customFields:
     customfield_10042: 1
+    customfield_10020: {SPRINT_ID}
+    customfield_10001: "{TEAM_VALUE}"
     customfield_10173: 0.5
     customfield_10221: {"value": "Medium"}
     customfield_10191: "kiro"
 ```
+
+Where:
+- `{SPRINT_ID}` = Sprint ID number from the User Story (fetched in Step 1)
+- `{TEAM_VALUE}` = `"PAS2 | Mobile"` or `"PAS2 | Services"` based on story type detection
 
 ### Transition to In Progress:
 
@@ -568,9 +667,13 @@ If the task already exists but references old/rejected test keys:
 - [ ] All ACs/BRs have corresponding test cases with XRay steps
 - [ ] All test cases linked to story (appear in Test Coverage)
 - [ ] Each test has: Automation Candidate, Platforms, description with objective
+- [ ] Cucumber Scenario Outline tests have datasets with all iterations defined
 - [ ] Test Executions linked to story and contain all tests
+- [ ] Test Executions have: label `PAS2_CQE`, Sprint (from story), Team (`PAS2 | Mobile` or `PAS2 | Services`)
 - [ ] Test Executions are NOT assigned to anyone
 - [ ] QA Metrics Task created, linked, assigned to story assignee, In Progress
+- [ ] QA Metrics Task has: label `PAS2_CQE`, Sprint (from story), Team, Story Points, AI fields
+- [ ] All artifacts carry label `PAS2_CQE`
 - [ ] Old/broken tests rejected with comment explaining supersession
 - [ ] Summary: X test cases, Y executions, 1 task
 
@@ -628,10 +731,12 @@ Latest | PAS2-17 | DLR | TnP | Flutter | Photo Display | Readback of Photo | iOS
 
 ### PAS2 Project
 
-| Variant        | Label      | Repository Path  | Epic Key | Platforms      | Test Environment | Test Executions    |
-|----------------|------------|------------------|----------|:--------------:|:----------------:|:------------------:|
-| Mobile/Flutter | `PAS2_CQE` | `/Passport - UI` | `PAS2-1` | iOS, Android  | LATEST           | 2 (Android + iOS)  |
-| Services/BE    | `PAS2_CQE` | `/Passport - BE` | `PAS2-1` | N/A           | LATEST           | 1                  |
+| Variant        | Label      | Team                | Repository Path  | Epic Key | Platforms      | Test Environment | Test Executions    |
+|----------------|------------|---------------------|------------------|----------|:--------------:|:----------------:|:------------------:|
+| Mobile/Flutter | `PAS2_CQE` | `PAS2 \| Mobile`   | `/Passport - UI` | `PAS2-1` | iOS, Android  | LATEST           | 2 (Android + iOS)  |
+| Services/BE    | `PAS2_CQE` | `PAS2 \| Services` | `/Passport - BE` | `PAS2-1` | N/A           | LATEST           | 1                  |
+
+> **`{PROJECT_LABEL}`** in templates always resolves to `PAS2_CQE` for this project.
 
 ### Available Link Types
 
@@ -672,22 +777,24 @@ Latest | PAS2-17 | DLR | TnP | Flutter | Photo Display | Readback of Photo | iOS
 ## Execution Order (Summary)
 
 ```
-1.  jira_get_issue                       → Fetch story + ACs + assignee + existing links
+1.  jira_get_issue                       → Fetch story + ACs + assignee + Sprint + existing links
 2.  Analyze ACs/BRs                      → Define required test cases + classify Positive/Negative
 3.  Check existing tests                 → Search linked tests, determine reuse vs reject vs create
 4.  Reject broken tests/TEs             → Transition to "Reject" with comment
-5.  Group similar scenarios              → Identify tests that can use parameterized steps
+5.  Group similar scenarios              → Identify tests that can use parameterized steps / Scenario Outlines
 6.  xray_cloud_create_test ×N            → Create each test with Cucumber/Manual steps
-7.  jira_update_issue ×N                 → Set description (objective + expected results, NO steps, NO tables)
-8.  jira_link_issues ×N                  → Link each test to story (linkType: "Test")
-9.  xray_cloud_create_execution ×2       → Create TEs with all tests (Android + iOS for mobile)
-10. jira_link_issues ×2                  → Link TEs to story
-11. jira_create_issue (Task)             → Create QA Metrics Task (priority required)
-12. jira_link_issues                     → Link Task to story
-13. jira_assign_issue                    → Assign Task to story's assignee
-14. jira_update_issue                    → Set SP (10042) + AI fields (10173, 10221, 10191)
-15. jira_transition_issue                → Move Task to "In Progress"
-16. Verify                               → Confirm all links, coverage, and completeness
+7.  xray_cloud_update_test_datasets ×N   → Add datasets for Cucumber Scenario Outline tests (if applicable)
+8.  jira_update_issue ×N                 → Set description (objective + expected results, NO steps, NO tables)
+9.  jira_link_issues ×N                  → Link each test to story (linkType: "Test")
+10. xray_cloud_create_execution ×2       → Create TEs with all tests (Android + iOS for mobile)
+11. jira_update_issue ×2                 → Set label (PAS2_CQE), Sprint, and Team on each TE
+12. jira_link_issues ×2                  → Link TEs to story
+13. jira_create_issue (Task)             → Create QA Metrics Task (priority + label required)
+14. jira_link_issues                     → Link Task to story
+15. jira_assign_issue                    → Assign Task to story's assignee
+16. jira_update_issue                    → Set SP (10042) + Sprint (10020) + Team (10001) + AI fields (10173, 10221, 10191)
+17. jira_transition_issue                → Move Task to "In Progress"
+18. Verify                               → Confirm all links, coverage, and completeness
 ```
 
 ---
