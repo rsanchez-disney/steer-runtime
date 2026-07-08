@@ -90,6 +90,33 @@
         .skill-card h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--disney-blue); }
         .skill-card p { font-size: 0.85rem; color: var(--text-light); }
         .skill-agents { display: flex; gap: 0.3rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .agent-skills { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .skill-badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; background: rgba(99, 102, 241, 0.15); color: #818cf8; border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .skill-detail-card { background: #1e1b2e; border: 1px solid #2d2a3e; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .skill-header h3 { color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; }
+        .skill-profile-badge { font-size: 0.7rem; padding: 0.25rem 0.75rem; background: rgba(16, 185, 129, 0.15); color: #34d399; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .skill-description { color: #94a3b8; margin-bottom: 1rem; line-height: 1.6; }
+        .skill-meta { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+        .meta-item { color: #cbd5e1; font-size: 0.85rem; }
+        .meta-item strong { color: #818cf8; }
+        .skill-when-to-use { background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 8px; padding: 1rem; }
+        .skill-when-to-use h4 { color: #a5b4fc; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .skill-when-to-use ul { color: #94a3b8; padding-left: 1.2rem; }
+        .skill-when-to-use li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+        .routing-diagram { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 2rem; }
+        .route-level { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        .route-node { background: #1e1b2e; border: 1px solid #2d2a3e; border-radius: 8px; padding: 0.75rem 1.5rem; color: #e2e8f0; text-align: center; font-size: 0.85rem; }
+        .route-node.primary { background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); color: #a5b4fc; }
+        .route-node.orchestrator { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; }
+        .route-node small { display: block; color: #64748b; font-size: 0.7rem; margin-top: 0.25rem; }
+        .feature-flow { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; color: #94a3b8; }
+        .flow-step { background: rgba(99, 102, 241, 0.1); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; color: #a5b4fc; }
+        .content-section { margin-bottom: 2rem; }
+        .content-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--disney-blue); }
+        .stats-row .stat { text-align: center; }
+        .stats-row .stat-number { font-size: 2rem; font-weight: 700; display: block; }
+        .stats-row .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.5px; }
         @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .nav-links { display: none; } .hero h1 { font-size: 1.8rem; } }
     </style>
 </head>
@@ -107,6 +134,7 @@
                 <li><a href="#" onclick="showPage('prompts')" class="active" id="nav-prompts">Prompts Guide</a></li>
                 <li><a href="#" onclick="showPage('agents')" id="nav-agents">Agents & Architecture</a></li>
                 <li><a href="#" onclick="showPage('tasks')" id="nav-tasks">Task Creation</a></li>
+                <li><a href="#" onclick="showPage('skills')" id="nav-skills">Skills Reference</a></li>
             </ul>
         </div>
     </nav>
@@ -344,8 +372,14 @@ to at least one test case or be flagged as a gap.</div>
                 </div>
             </div>
             <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
-                <strong>Delegates to:</strong> android_arch_agent, pos_backoffice_orchestrator, qa_validation_agent, dsp_bug_report_agent
+                <strong>Sub-agents:</strong>
             </p>
+            <div class="sub-agents" style="margin-top:0.5rem;">
+                <div class="agent-node"><div class="agent-icon mobile">&#x1F4F1;</div><div class="agent-info"><h5>android_arch_agent</h5><p>Mobile domain orchestrator</p></div></div>
+                <div class="agent-node"><div class="agent-icon backoffice">&#x1F3D7;&#xFE0F;</div><div class="agent-info"><h5>pos_backoffice_orchestrator</h5><p>Backoffice domain orchestrator</p></div></div>
+                <div class="agent-node"><div class="agent-icon qa">&#x2705;</div><div class="agent-info"><h5>qa_validation_agent</h5><p>QA domain</p></div></div>
+                <div class="agent-node"><div class="agent-icon pm">&#x1F4CA;</div><div class="agent-info"><h5>dsp_bug_report_agent</h5><p>PM domain</p></div></div>
+            </div>
             <div class="workflow">
                 <span class="workflow-step">Receive Request</span>
                 <span class="workflow-arrow">→</span>
@@ -367,13 +401,15 @@ to at least one test case or be flagged as a gap.</div>
                         <h5>android_arch_agent</h5>
                         <p>Android Architect — primary orchestrator for mobile SDLC. Decomposes tasks and delegates to Dev, Test, Quality, PR, and Bug Report agents.</p>
                         <div class="agent-tools">
-                            <span class="tool-tag">fs_read</span>
-                            <span class="tool-tag">thinking</span>
-                            <span class="tool-tag">todo_list</span>
                             <span class="tool-tag">subagent</span>
+                            <span class="tool-tag">todo_list</span>
+                            <span class="tool-tag">thinking</span>
+                        </div>
+                        <div class="agent-tools" style="margin-top:0.3rem;">
+                            <span class="tool-tag" style="background:#fff3e0; color:#e65100;">⚠️ Pure orchestrator — routes mobile skills</span>
                         </div>
                     </div>
-                </div>
+                    </div>
                 <div class="sub-agents">
                     <div class="agent-node">
                         <div class="agent-icon mobile">⌨️</div>
@@ -389,6 +425,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">@gitlab/*</span>
                                 <span class="tool-tag">@jira/*</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">implement-android-ticket</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -403,6 +440,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">execute_bash</span>
                                 <span class="tool-tag">@jira/*</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">implement-android-ticket</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -417,6 +455,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">grep</span>
                                 <span class="tool-tag">glob</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">implement-android-ticket</span><span class="skill-badge">review-code-changes</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -431,19 +470,12 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">@gitlab/*</span>
                                 <span class="tool-tag">@jira/*</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">implement-android-ticket</span></div>
                         </div>
-                    </div>
-                    <div class="agent-node">
-                        <div class="agent-icon mobile">🐛</div>
-                        <div class="agent-info">
-                            <h5>dsp_bug_report_agent</h5>
-                            <p>DSP release bug reporting (shared with pm profile)</p>
-                        </div>
-                    </div>
                 </div>
             </div>
             <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
-                <strong>Also references (base agents):</strong> requirements_analyst_agent, sprint_manager_agent
+                <strong>Sub-agents:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent
             </p>
         </div>
 
@@ -455,7 +487,7 @@ to at least one test case or be flagged as a gap.</div>
                     <div class="agent-icon mobile">🔧</div>
                     <div class="agent-info">
                         <h5>android_refactor_agent</h5>
-                        <p>Takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.</p>
+                        <p>Independent orchestrator for feature-flagged refactoring. Owns the refactor-android-feature skill. Takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.</p>
                         <div class="agent-tools">
                             <span class="tool-tag">fs_read</span>
                             <span class="tool-tag">fs_write</span>
@@ -472,7 +504,7 @@ to at least one test case or be flagged as a gap.</div>
                 </div>
             </div>
             <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
-                <strong>Delegates to:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent
+                <strong>Sub-agents:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent
             </p>
         </div>
 
@@ -497,7 +529,7 @@ to at least one test case or be flagged as a gap.</div>
                             <span class="tool-tag">@mermaid/*</span>
                         </div>
                     </div>
-                </div>
+                    </div>
                 <div class="sub-agents">
                     <div class="agent-node">
                         <div class="agent-icon backoffice">🏛️</div>
@@ -513,6 +545,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">knowledge</span>
                                 <span class="tool-tag">@mermaid/*</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">design-architecture-decision</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -528,6 +561,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">web_fetch</span>
                                 <span class="tool-tag">knowledge</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">sprint-health-check</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -556,6 +590,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">code</span>
                                 <span class="tool-tag">grep</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">plan-implementation</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -624,6 +659,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">grep</span>
                                 <span class="tool-tag">shell</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">review-code-changes</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -637,6 +673,7 @@ to at least one test case or be flagged as a gap.</div>
                                 <span class="tool-tag">grep</span>
                                 <span class="tool-tag">code</span>
                             </div>
+                            <div class="agent-skills"><span class="skill-badge">run-security-scan</span></div>
                         </div>
                     </div>
                     <div class="agent-node">
@@ -653,6 +690,9 @@ to at least one test case or be flagged as a gap.</div>
                     </div>
                 </div>
             </div>
+            <p style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
+                <strong>Sub-agents:</strong> pos_architecture_agent, pos_planner_agent, pos_php_agent, pos_go_agent, pos_react_agent, pos_test_runner_agent, pos_code_review_agent, pos_security_scanner_agent, pos_story_analyzer_agent, pos_codebase_explorer_agent, pos_work_documenter_agent
+            </p>
             <div class="workflow" style="margin-top:1.5rem;">
                 <span class="workflow-step">Analyze</span>
                 <span class="workflow-arrow">→</span>
@@ -684,6 +724,7 @@ to at least one test case or be flagged as a gap.</div>
                         <h5>qa_validation_agent</h5>
                         <p>Validates regression test sets against epic requirements — identifies coverage gaps, traceability issues, and risk areas</p>
                     </div>
+                    <div class="agent-skills"><span class="skill-badge">validate-regression-coverage</span></div>
                 </div>
             </div>
             <div class="card">
@@ -694,6 +735,7 @@ to at least one test case or be flagged as a gap.</div>
                         <h5>dsp_bug_report_agent</h5>
                         <p>Daily DSP release bug reports — status summaries, promotions, risks, throughput insights</p>
                     </div>
+                    <div class="agent-skills"><span class="skill-badge">generate-dsp-daily-report</span></div>
                 </div>
             </div>
         </div>
@@ -789,31 +831,32 @@ to at least one test case or be flagged as a gap.</div>
                         <th>Agent</th>
                         <th>Profile</th>
                         <th>Role</th>
+                        <th>Skills</th>
                         <th>Type</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td><code>pos_team_orchestrator_agent</code></td><td>orchestrator</td><td>Top-level router to domain agents</td><td>Orchestrator</td></tr>
-                    <tr><td><code>android_arch_agent</code></td><td>dev-mobile</td><td>Android Architect — orchestrates mobile SDLC</td><td>Orchestrator</td></tr>
-                    <tr><td><code>android_dev_agent</code></td><td>dev-mobile</td><td>Kotlin implementation and Jira management</td><td>Specialist</td></tr>
-                    <tr><td><code>android_test_agent</code></td><td>dev-mobile</td><td>MockK-based unit test generation</td><td>Specialist</td></tr>
-                    <tr><td><code>android_quality_agent</code></td><td>dev-mobile</td><td>Mandatory code/test quality review gate</td><td>Specialist</td></tr>
-                    <tr><td><code>android_pr_agent</code></td><td>dev-mobile</td><td>GitLab MR description generation</td><td>Specialist</td></tr>
-                    <tr><td><code>android_refactor_agent</code></td><td>dev-mobile</td><td>Feature-flagged refactoring orchestrator</td><td>Orchestrator</td></tr>
-                    <tr><td><code>pos_backoffice_orchestrator</code></td><td>dev-backoffice</td><td>Backoffice SDLC orchestrator (7 stages + 2 gates)</td><td>Orchestrator</td></tr>
-                    <tr><td><code>pos_architecture_agent</code></td><td>dev-backoffice</td><td>Architecture specialist — design decisions, ADRs, impact analysis</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_php_agent</code></td><td>dev-backoffice</td><td>PHP specialist (CodeIgniter + Laravel/Lumen)</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_go_agent</code></td><td>dev-backoffice</td><td>Go specialist (gRPC microservices)</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_react_agent</code></td><td>dev-backoffice</td><td>React/TypeScript specialist (connect-frontend)</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_planner_agent</code></td><td>dev-backoffice</td><td>Task breakdown and dependency planning</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_test_runner_agent</code></td><td>dev-backoffice</td><td>PHPUnit, go test, Jest execution</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_work_documenter_agent</code></td><td>dev-backoffice</td><td>Commit messages and PR descriptions</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_story_analyzer_agent</code></td><td>dev-backoffice</td><td>Jira ticket fetching and analysis</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_codebase_explorer_agent</code></td><td>dev-backoffice</td><td>Codebase file and pattern discovery</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_code_review_agent</code></td><td>dev-backoffice</td><td>Code quality and golden rules compliance</td><td>Specialist</td></tr>
-                    <tr><td><code>pos_security_scanner_agent</code></td><td>dev-backoffice</td><td>OWASP, secrets, dependency vulnerabilities</td><td>Specialist</td></tr>
-                    <tr><td><code>qa_validation_agent</code></td><td>qa</td><td>Test set vs epic coverage validation</td><td>Specialist</td></tr>
-                    <tr><td><code>dsp_bug_report_agent</code></td><td>pm</td><td>Daily DSP release bug reports</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_team_orchestrator_agent</code></td><td>orchestrator</td><td>Top-level router to domain agents</td><td>&mdash; (routes all skills)</td><td>Orchestrator</td></tr>
+                    <tr><td><code>pos_backoffice_orchestrator</code></td><td>dev-backoffice</td><td>Backoffice SDLC orchestrator (7 stages + 2 gates)</td><td>&mdash; (routes backoffice skills)</td><td>Orchestrator</td></tr>
+                    <tr><td><code>android_arch_agent</code></td><td>dev-mobile</td><td>Android Architect &mdash; orchestrates mobile SDLC</td><td>&mdash; (routes mobile skills)</td><td>Orchestrator</td></tr>
+                    <tr><td><code>android_refactor_agent</code></td><td>dev-mobile</td><td>Feature-flagged refactoring orchestrator</td><td>refactor-android-feature</td><td>Orchestrator</td></tr>
+                    <tr><td><code>android_dev_agent</code></td><td>dev-mobile</td><td>Kotlin implementation and Jira management</td><td>implement-android-ticket</td><td>Specialist</td></tr>
+                    <tr><td><code>android_test_agent</code></td><td>dev-mobile</td><td>MockK-based unit test generation</td><td>implement-android-ticket</td><td>Specialist</td></tr>
+                    <tr><td><code>android_quality_agent</code></td><td>dev-mobile</td><td>Mandatory code/test quality review gate</td><td>implement-android-ticket, review-code-changes</td><td>Specialist</td></tr>
+                    <tr><td><code>android_pr_agent</code></td><td>dev-mobile</td><td>GitLab MR description generation</td><td>implement-android-ticket</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_architecture_agent</code></td><td>dev-backoffice</td><td>Architecture specialist &mdash; design decisions, ADRs, impact analysis</td><td>design-architecture-decision</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_planner_agent</code></td><td>dev-backoffice</td><td>Task breakdown and dependency planning</td><td>plan-implementation</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_code_review_agent</code></td><td>dev-backoffice</td><td>Code quality and golden rules compliance</td><td>review-code-changes</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_security_scanner_agent</code></td><td>dev-backoffice</td><td>OWASP, secrets, dependency vulnerabilities</td><td>run-security-scan</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_story_analyzer_agent</code></td><td>dev-backoffice</td><td>Jira ticket fetching and analysis</td><td>sprint-health-check</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_codebase_explorer_agent</code></td><td>dev-backoffice</td><td>Codebase file and pattern discovery</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_php_agent</code></td><td>dev-backoffice</td><td>PHP specialist (CodeIgniter + Laravel/Lumen)</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_go_agent</code></td><td>dev-backoffice</td><td>Go specialist (gRPC microservices)</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_react_agent</code></td><td>dev-backoffice</td><td>React/TypeScript specialist (connect-frontend)</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_test_runner_agent</code></td><td>dev-backoffice</td><td>PHPUnit, go test, Jest execution</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>pos_work_documenter_agent</code></td><td>dev-backoffice</td><td>Commit messages and PR descriptions</td><td>&mdash;</td><td>Specialist</td></tr>
+                    <tr><td><code>qa_validation_agent</code></td><td>qa</td><td>Test set vs epic coverage validation</td><td>validate-regression-coverage</td><td>Specialist</td></tr>
+                    <tr><td><code>dsp_bug_report_agent</code></td><td>pm</td><td>Daily DSP release bug reports</td><td>generate-dsp-daily-report, sprint-health-check</td><td>Specialist</td></tr>
                 </tbody>
             </table>
         </div>
@@ -860,7 +903,20 @@ kiro-cli chat --agent android_refactor_agent</div>
                 <div class="prompt-example">implement POS-19542
 build this story: POS-20100
 work on CONFE-1234</div>
-                <p style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">Pipeline: Analyze → Explore → Plan → 🚦 Gate 1 → Implement → Test → Review → 🚦 Gate 2 → Document</p>
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">
+                    <p><strong>Pipeline stages &amp; agents:</strong></p>
+                    <table style="font-size:0.8rem; margin-top:0.5rem;">
+                        <tr><td>1. Analyze</td><td>→ pos_story_analyzer_agent</td></tr>
+                        <tr><td>2. Explore</td><td>→ pos_codebase_explorer_agent</td></tr>
+                        <tr><td>3. Plan</td><td>→ pos_planner_agent</td></tr>
+                        <tr><td>🚦 Gate 1</td><td>→ User approval</td></tr>
+                        <tr><td>4. Implement</td><td>→ pos_php_agent / pos_go_agent / pos_react_agent</td></tr>
+                        <tr><td>5. Test</td><td>→ pos_test_runner_agent</td></tr>
+                        <tr><td>6. Review</td><td>→ pos_code_review_agent + pos_security_scanner_agent</td></tr>
+                        <tr><td>🚦 Gate 2</td><td>→ User approval</td></tr>
+                        <tr><td>7. Document</td><td>→ pos_work_documenter_agent</td></tr>
+                    </table>
+                </div>
             </div>
             <div class="card">
                 <h3>📱 Mobile Pipeline (Spec-First)</h3>
@@ -870,7 +926,19 @@ display on combined check receipts for
 Table Service.
 
 Must be feature-flagged.</div>
-                <p style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">Pipeline: Understand → Plan → Spec → 🚦 Approve → Implement → Test → Quality Review → Deliver</p>
+                <div style="margin-top:1rem; font-size:0.85rem; color:var(--text-light);">
+                    <p><strong>Pipeline stages &amp; agents:</strong></p>
+                    <table style="font-size:0.8rem; margin-top:0.5rem;">
+                        <tr><td>1. Understand</td><td>→ android_arch_agent</td></tr>
+                        <tr><td>2. Plan</td><td>→ android_arch_agent</td></tr>
+                        <tr><td>3. Spec</td><td>→ android_arch_agent</td></tr>
+                        <tr><td>🚦 Approve</td><td>→ User approval</td></tr>
+                        <tr><td>4. Implement</td><td>→ android_dev_agent</td></tr>
+                        <tr><td>5. Test</td><td>→ android_test_agent</td></tr>
+                        <tr><td>6. Quality Review</td><td>→ android_quality_agent</td></tr>
+                        <tr><td>7. Deliver</td><td>→ android_pr_agent</td></tr>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -944,6 +1012,282 @@ feature-flagged refactoring solution.</div>
                 </ul>
             </div>
         </div>
+    </div>
+
+
+    <!-- PAGE 4: Skills Reference -->
+    <div class="page" id="page-skills">
+        <section class="hero">
+            <h1>Skills Reference</h1>
+            <p>Complete catalog of workflow skills — when to use each, which agents execute them, and what they produce</p>
+            <div class="stats-row" style="margin-top:1.5rem; margin-bottom:0;">
+                <div class="stat"><span class="stat-number">10</span><span class="stat-label">Skills</span></div>
+                <div class="stat"><span class="stat-number">5</span><span class="stat-label">Profiles</span></div>
+                <div class="stat"><span class="stat-number">21</span><span class="stat-label">Agents</span></div>
+            </div>
+        </section>
+
+        <h2 class="section-title">Skill Catalog</h2>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>implement-android-ticket</h3>
+                <span class="skill-profile-badge">dev-mobile</span>
+            </div>
+            <p class="skill-description">Full mobile ticket implementation workflow with 11 steps including feature context loading, architecture decisions, spec approval gate, implementation, testing, quality review, and PR creation.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Implement ticket POS-XXXX" or any Android implementation request</div>
+                <div class="meta-item"><strong>Steps:</strong> 11</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> Step 4 — Spec approval by user</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> android_arch_agent (orchestrates)</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Implementing a new feature ticket for Android</li>
+                    <li>Fixing a bug reported in Jira for the mobile app</li>
+                    <li>Any ticket requiring code changes in the Android codebase</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>refactor-android-feature</h3>
+                <span class="skill-profile-badge">dev-mobile</span>
+            </div>
+            <p class="skill-description">Feature refactoring behind feature flags with 8 steps including analysis, architecture redesign, feature context loading, approval gate, implementation, tests, quality review, and PR.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Refactor [feature]" or refactoring request for Android</div>
+                <div class="meta-item"><strong>Steps:</strong> 8</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> Step 4 — Refactor plan approval</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> android_refactor_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> android_dev_agent, android_test_agent, android_quality_agent, android_pr_agent (delegated by refactor agent)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Refactoring existing Android code</li>
+                    <li>Migrating to new patterns</li>
+                    <li>Removing tech debt behind feature flags</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>implement-backoffice-ticket</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">Full backoffice SDLC pipeline with 7 stages — analyze, explore, plan, implement, test, review, document. Handles PHP, Go, and React codebases.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Implement POS-XXXX" for backoffice tickets</div>
+                <div class="meta-item"><strong>Steps:</strong> 7 stages</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> Stage 3 — Plan approval</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_backoffice_orchestrator (pipeline)</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> Pipeline managed by pos_backoffice_orchestrator. No individual agent owns this skill &mdash; the orchestrator delegates each stage to the appropriate specialist.</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Any backoffice ticket (PHP CodeIgniter, Go microservices, or React SPA)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>review-code-changes</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">Structured code review with checklist covering correctness, security, performance, maintainability, and testing.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Review code", "code review", provide diff or MR URL</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_code_review_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> pos_code_review_agent (backoffice), android_quality_agent (mobile)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Before merging any backoffice code</li>
+                    <li>After implementation stage</li>
+                    <li>When reviewing someone else's MR</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>run-security-scan</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">OWASP-based security scanning covering injection, auth, XSS, CSRF, and data exposure vulnerabilities.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Security scan", "check security"</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_security_scanner_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> None (standalone)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Before deploying sensitive changes</li>
+                    <li>After auth/payment code modifications</li>
+                    <li>Periodic security audits</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>sprint-health-check</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">Sprint progress analysis with risk identification, velocity tracking, and blocked item reporting using Jira data.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Sprint health", "sprint status", "how is the sprint going"</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_story_analyzer_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> pos_story_analyzer_agent, dsp_bug_report_agent</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Mid-sprint check-ins</li>
+                    <li>Standup preparation</li>
+                    <li>Identifying at-risk stories</li>
+                    <li>Sprint retrospective data</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>design-architecture-decision</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">Architecture Decision Record (ADR) creation with context analysis, options evaluation, and decision documentation.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Architecture decision", "design", "ADR", "should we use X or Y"</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_architecture_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> pos_architecture_agent (standalone)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>New microservice decisions</li>
+                    <li>Technology choices</li>
+                    <li>Integration patterns</li>
+                    <li>System design changes</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>plan-implementation</h3>
+                <span class="skill-profile-badge">dev-backoffice</span>
+            </div>
+            <p class="skill-description">Implementation planning with task breakdown, effort estimation, dependency mapping, and risk identification.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Plan", "break down", "how should we implement"</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> pos_planner_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> pos_planner_agent (standalone)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Before starting complex tickets</li>
+                    <li>When breaking epics into stories</li>
+                    <li>Estimating effort for features</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>validate-regression-coverage</h3>
+                <span class="skill-profile-badge">qa</span>
+            </div>
+            <p class="skill-description">Validates regression test sets against epic requirements, identifying coverage gaps, traceability issues, and risk areas before test execution.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Validate coverage", "check test coverage for epic", provide epic key</div>
+                <div class="meta-item"><strong>Steps:</strong> Multi-step analysis</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> qa_validation_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> None (standalone)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Before UAT/regression execution</li>
+                    <li>After adding new test cases</li>
+                    <li>Validating coverage for release candidates</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="skill-detail-card">
+            <div class="skill-header">
+                <h3>generate-dsp-daily-report</h3>
+                <span class="skill-profile-badge">pm</span>
+            </div>
+            <p class="skill-description">Daily operational report for POS DSP releases with bug status, promotion tracking, risk assessment, and throughput metrics.</p>
+            <div class="skill-meta">
+                <div class="meta-item"><strong>Trigger:</strong> "Daily report", "DSP status", "release report"</div>
+                <div class="meta-item"><strong>Steps:</strong> Single delegation</div>
+                <div class="meta-item"><strong>Blocking Gate:</strong> None</div>
+                <div class="meta-item"><strong>Primary Agent:</strong> dsp_bug_report_agent</div>
+                <div class="meta-item"><strong>Participating Agents:</strong> None (standalone)</div>
+            </div>
+            <div class="skill-when-to-use">
+                <h4>When to Use</h4>
+                <ul>
+                    <li>Daily standup reports</li>
+                    <li>Release go/no-go decisions</li>
+                    <li>Tracking DSP bug resolution progress</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="content-section">
+            <h2>Skills Routing Flow</h2>
+            <div class="routing-diagram">
+                <div class="route-level">
+                    <div class="route-node primary">User Request</div>
+                </div>
+                <div class="route-level">
+                    <div class="route-node orchestrator">pos_team_orchestrator_agent</div>
+                </div>
+                <div class="route-level">
+                    <div class="route-node">android_arch_agent<br><small>routes mobile skills</small></div>
+                    <div class="route-node">android_refactor_agent<br><small>refactoring orchestrator</small></div>
+                    <div class="route-node">pos_backoffice_orchestrator<br><small>routes backoffice skills</small></div>
+                    <div class="route-node">qa_validation_agent<br><small>1 skill</small></div>
+                    <div class="route-node">dsp_bug_report_agent<br><small>2 skills</small></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>On-Demand Feature Loading</h2>
+            <div class="card">
+                <h3>Token Optimization</h3>
+                <p>Feature context files (~188KB total) are <strong>NOT</strong> auto-loaded. Agents receive only a lightweight index and load specific feature files on-demand when the ticket matches a documented feature.</p>
+                <div class="feature-flow">
+                    <span class="flow-step">Ticket arrives</span> &rarr; <span class="flow-step">Check README index</span> &rarr; <span class="flow-step">Match found?</span> &rarr; <span class="flow-step">fs_read specific file</span>
+                </div>
+            </div>
+        </section>
     </div>
 
     <script>

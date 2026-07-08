@@ -11,6 +11,7 @@
   "resources": [
     "file://.kiro/context/backoffice_golden_rules.md",
     "file://.kiro/context/security_golden_rules.md",
-    "file://.kiro/steering/**/*.md"
+    "file://.kiro/steering/**/*.md",
+    "file://../../../skills/review-code-changes/SKILL.md"
   ]
 }

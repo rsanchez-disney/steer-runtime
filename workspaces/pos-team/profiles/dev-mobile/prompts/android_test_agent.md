@@ -314,3 +314,16 @@ git checkout -b {type}/{ticketId}/description
 - Available flavors: `disney`, `disneyHongKong`, `qa`
 - Task pattern: `test{Flavor}{BuildType}UnitTest` / `compile{Flavor}{BuildType}UnitTestKotlin`
 - Module path: `:AppetizeActivate` (NOT `:gc:AppetizeActivate`)
+
+---
+
+## Skills Awareness
+
+You participate in these skill workflows when delegated to by the orchestrator:
+
+| Skill | Your Role |
+|-------|-----------|
+| `implement-android-ticket` | Write and verify unit/integration tests for the implementation |
+| `refactor-android-feature` | Ensure test coverage is maintained during refactoring |
+
+Refer to the SKILL.md in your resources for the full workflow context and your specific responsibilities at each stage.

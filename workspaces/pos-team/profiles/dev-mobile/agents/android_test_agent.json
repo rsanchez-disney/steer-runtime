@@ -15,7 +15,8 @@
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
-    "file://../../../context/memory-bank/*"
+    "file://../../../context/memory-bank/*",
+    "file://../../../skills/implement-android-ticket/SKILL.md"
   ],
   "hooks": {
     "preToolUse": [

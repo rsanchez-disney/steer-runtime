@@ -64,3 +64,16 @@ After completing the review, update `workspaces/pos-team/context/memory-bank/lea
 - Add an entry under **Completed Work** with: date, ticket ID, files changed, test results, and verdict
 - Document any **Learnings** (bugs found, gotchas, patterns discovered)
 - Move items from **In Progress** to **Completed Work** if applicable
+
+---
+
+## Skills Awareness
+
+You participate in these skill workflows when delegated to by the orchestrator:
+
+| Skill | Your Role |
+|-------|-----------|
+| `implement-android-ticket` | Review code quality, architecture compliance, and golden rules adherence |
+| `refactor-android-feature` | Validate refactoring maintains code quality standards and patterns |
+
+Refer to the SKILL.md in your resources for the full workflow context and your specific responsibilities at each stage.

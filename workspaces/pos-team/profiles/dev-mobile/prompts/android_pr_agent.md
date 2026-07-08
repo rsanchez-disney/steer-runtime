@@ -39,3 +39,16 @@ MARK the ones than are done on the implementation with X
   Total: 48 passed
   Coverage: 94%
 ```
+
+---
+
+## Skills Awareness
+
+You participate in these skill workflows when delegated to by the orchestrator:
+
+| Skill | Your Role |
+|-------|-----------|
+| `implement-android-ticket` | Create the merge request with proper description, labels, and linked ticket |
+| `refactor-android-feature` | Create the refactoring MR with feature flag documentation |
+
+Refer to the SKILL.md in your resources for the full workflow context and your specific responsibilities at each stage.

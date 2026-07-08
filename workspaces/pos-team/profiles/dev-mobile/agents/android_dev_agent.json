@@ -18,7 +18,8 @@
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
-    "file://../../../context/hilt_guidelines.md"
+    "file://../../../context/hilt_guidelines.md",
+    "file://../../../skills/implement-android-ticket/SKILL.md"
   ],
   "hooks": {
     "preToolUse": [

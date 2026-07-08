@@ -1,6 +1,6 @@
 {
   "name": "android_quality_agent",
-  "description": "Quality Engineer — mandatory review gate for all code before delivery. Reviews code quality, test quality, and architecture compliance.",
+  "description": "Quality Engineer \u2014 mandatory review gate for all code before delivery. Reviews code quality, test quality, and architecture compliance.",
   "prompt": "file://../prompts/android_quality_agent.md",
   "tools": [
     "fs_read",
@@ -13,7 +13,9 @@
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
-    "file://../../../context/memory-bank/*"
+    "file://../../../context/memory-bank/*",
+    "file://../../../skills/implement-android-ticket/SKILL.md",
+    "file://../../../skills/review-code-changes/SKILL.md"
   ],
   "includeMcpJson": true
 }
