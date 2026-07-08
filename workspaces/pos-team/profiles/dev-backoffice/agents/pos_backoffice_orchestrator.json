@@ -3,10 +3,6 @@
   "description": "POS Backoffice SDLC orchestrator — 7-stage workflow for PHP, Go, and React projects",
   "prompt": "file://../prompts/pos_backoffice_orchestrator.md",
   "tools": [
-    "code",
-    "grep",
-    "fs_read",
-    "execute_bash",
     "thinking",
     "knowledge",
     "todo_list",
@@ -46,7 +42,7 @@
   "resources": [
     "file://.kiro/context/backoffice_golden_rules.md",
     "file://.kiro/steering/**/*.md",
-    "file://../../../context/features/*"
+    "file://../../../context/features/README.md"
   ],
   "hooks": {
     "agentSpawn": [

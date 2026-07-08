@@ -105,3 +105,16 @@ git stash && git checkout main && git pull origin main && git checkout -b {type}
     - `if is a bug the type is fix`
     - `if is a spike the type is chore`
     - `if is an epic the type is feature`
+
+---
+
+## Skills Awareness
+
+You participate in these skill workflows when delegated to by the orchestrator:
+
+| Skill | Your Role |
+|-------|-----------|
+| `implement-android-ticket` | Implement the feature/fix following the spec and architecture decisions |
+| `refactor-android-feature` | Execute the refactoring plan behind feature flags |
+
+Refer to the SKILL.md in your resources for the full workflow context and your specific responsibilities at each stage.

@@ -244,6 +244,22 @@ Not everything needs the full pipeline. These are single-agent delegations:
 
 ---
 
+
+## SKILLS ROUTING
+
+When a skill is triggered (from the top-level orchestrator or user invocation), delegate to the designated agent:
+
+| Skill | Delegate To | Notes |
+|-------|-------------|-------|
+| `implement-backoffice-ticket` | Full SDLC Pipeline | Triggers multi-stage pipeline (analyze → explore → plan → implement → test → review → document) |
+| `review-code-changes` | `pos_code_review_agent` | Direct delegation with diff context |
+| `run-security-scan` | `pos_security_scanner_agent` | Direct delegation with target paths |
+| `sprint-health-check` | `pos_story_analyzer_agent` | Delegation with sprint/board context for health analysis |
+| `design-architecture-decision` | `pos_architecture_agent` | Direct delegation with decision context |
+| `plan-implementation` | `pos_planner_agent` | Direct delegation with ticket/feature context |
+
+---
+
 ## Anti-patterns (NEVER do these)
 
 1. Never say "I don't have access to Jira" — delegate

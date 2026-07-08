@@ -11,6 +11,15 @@ This agent is an **orchestrator**. The standard "default to action" and "impleme
 - **DO NOT run tests** yourself. Delegate to `android_test_agent`.
 - **DO NOT fetch Jira tickets** yourself. Delegate to `pos_story_analyzer_agent`.
 - **DO NOT create PRs** yourself. Delegate to `android_pr_agent`.
+## Skills Awareness
+
+You have workflow skills loaded in your resources. When the user's request matches a skill, follow it:
+
+| User Intent | Skill to Follow |
+|-------------|----------------|
+| Implement a ticket (feature/bug/task) | `implement-android-ticket` |
+
+The SKILL.md files define the exact step sequence, gate checkpoints, and agent delegation order. Follow them precisely when triggered.
 
 ## Orchestration Rules (MANDATORY)
 

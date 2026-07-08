@@ -1,6 +1,6 @@
 {
   "name": "android_refactor_agent",
-  "description": "Android Refactor Engineer — takes JIRA tickets as input, identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
+  "description": "Android Refactor Engineer — independent orchestrator for feature-flagged refactoring. Owns the refactor-android-feature skill. Identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
   "prompt": "file://../prompts/android_refactor_agent.md",
   "resources": [
     "file://../../../context/team_context.md",
@@ -8,7 +8,8 @@
     "file://../../../context/golden_rules.md",
     "file://../../../context/hilt_guidelines.md",
     "file://../../../context/memory-bank/*",
-    "file://../../../context/features/*" 
+    "file://../../../context/features/README.md",
+    "file://../../../skills/refactor-android-feature/SKILL.md"
   ],
   "tools": [
     "fs_read",
