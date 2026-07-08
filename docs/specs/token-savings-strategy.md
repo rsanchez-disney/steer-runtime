@@ -43,6 +43,8 @@ Key cost drivers today:
 | S6 | Context compression             | Context   |      10–20%      |    Med     |    P2    |
 | S7 | Token budget enforcement        | Infra     |       5–10%      |    Low     |    P2    |
 | S8 | Prompt scorer / rejection gate  | Routing   |       5–10%      |    Med     |    P2    |
+| S9 | On-demand resource loading (README index) | Context | 10–15% |    Low     |    P0    |
+| S10 | Orchestrator tool surface reduction | Routing |    5–10%      |    Low     |    P1    |
 
 ---
 
@@ -1221,6 +1223,107 @@ Phase 1 (S1 + S4):           ~25% cost reduction, 0% quality risk
 Phase 2 (+ S3 + S7):         ~50% cost reduction, low quality risk (monitored)
 Phase 3 (+ S2 + S5/S6):      ~60% cost reduction, moderate complexity
 ```
+
+---
+
+## S9: On-demand resource loading via README index
+
+### Problem
+
+Agents load entire context directories via glob patterns (`context/features/*`, `context/**/*.md`). For the POS team workspace alone, this was ~188KB auto-loaded per conversation regardless of whether the content was relevant to the task.
+
+### Design
+
+Replace directory globs with a lightweight README index file. Agents load only the index and fetch specific files on-demand via `fs_read` when the task matches.
+
+```text
+Before: "resources": ["file://.kiro/context/features/*"]     → 188KB loaded always
+After:  "resources": ["file://.kiro/context/features/README.md"]  → 2KB index loaded
+        Agent reads specific feature file only when ticket matches
+```
+
+#### README index format
+
+```markdown
+# Feature Context Files
+
+Do NOT load all files — only read the specific file relevant to your current task.
+
+| File | Feature | Trigger |
+|------|---------|---------|
+| `feature-a.md` | Gift Card Reload | POS-1936 |
+| `feature-b.md` | Bundling | POS-1478 |
+```
+
+#### Adoption candidates (global)
+
+| Workspace/Profile | Current glob | Est. savings |
+|:------------------|:-------------|:-------------|
+| pos-team/features | `context/features/*` | ~188KB |
+| dev-core/context | `file://.kiro/context/**/*.md` | ~50-100KB (varies) |
+| sustainment/catalog | `managed-services-catalog/**` | Large (loaded per RCA) |
+| Any workspace with 5+ context files | Various globs | 20-100KB |
+
+#### Implementation
+
+- **steer-runtime side**: Create README.md index files for large context directories
+- **Steering rule**: Document the pattern so new workspaces adopt it by default
+- **Agent prompts**: Add "load on-demand" instruction in skill/workflow steps
+
+### Validated by
+
+POS team PR #563 — measured ~188KB savings per conversation.
+
+---
+
+## S10: Orchestrator tool surface reduction
+
+### Problem
+
+Orchestrators that have direct work tools (`code`, `grep`, `fs_read`, `execute_bash`) sometimes self-implement instead of delegating. This wastes tokens (orchestrator burns tokens reading code that a specialist will read again) and bypasses the delegation chain.
+
+### Design
+
+Remove direct work tools from pure orchestrators. Keep only delegation tools:
+
+```json
+// Pure orchestrator tool surface (target):
+"tools": ["subagent", "thinking", "todo_list", "knowledge", "@mermaid/*"]
+
+// Remove from orchestrators:
+// "code", "grep", "fs_read", "fs_write", "execute_bash"
+```
+
+#### Decision matrix
+
+| Agent role | Should have `execute_bash`? | Should have `code`/`grep`? |
+|:-----------|:--:|:--:|
+| Pure orchestrator (routes only) | ❌ | ❌ |
+| Hybrid orchestrator (routes + light analysis) | ⚠️ Optional | ✅ Read-only |
+| Specialist (does the work) | ✅ | ✅ |
+
+#### Token savings mechanism
+
+- Orchestrator can't self-implement → forces delegation → specialist handles it in one pass
+- Eliminates duplicate reads: orchestrator reads file to "understand" → then delegates to specialist who reads same file
+- Reduces orchestrator output tokens (no code in response, just delegation calls)
+
+#### Adoption candidates
+
+| Orchestrator | Current extra tools | Action |
+|:-------------|:-------------------|:-------|
+| `pos_backoffice_orchestrator` | ✅ Already cleaned (PR #563) | Done |
+| dev-core `orchestrator` | `execute_bash` (via hooks) | Evaluate — diagnostics use case |
+| `pos_team_orchestrator_agent` | None (already pure) | Already correct |
+
+#### Risk
+
+- If orchestrator occasionally needs to check git status or read a file for routing decisions, removing tools entirely may force unnecessary delegations
+- Mitigation: keep `fs_read` as optional for "hybrid" orchestrators that need light context reads, but remove `execute_bash` and `code`
+
+### Validated by
+
+POS team PR #563 — removed `code`, `grep`, `fs_read`, `execute_bash` from backoffice orchestrator with no functionality loss.
 
 ---
 
