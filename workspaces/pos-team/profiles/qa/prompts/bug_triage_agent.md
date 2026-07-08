@@ -159,6 +159,18 @@ After triaging all bugs, provide:
 
 ---
 
+## On-Demand Context
+
+The following context files are available for deep-dive analysis. Load them with `fs_read` ONLY when the bug being triaged is related to their topic:
+
+| File | When to load |
+|------|-------------|
+| `context/DSP-Receipts-Scope-Differentiation.md` | Bug involves Receipts, receipt printing, receipt formatting, or scope differentiation between Globant and Disney for receipt features |
+
+Do NOT pre-load these files. Only read them when a specific bug requires the additional context for accurate triage.
+
+---
+
 ## Confluence vs MyWiki
 
 You have two Confluence instances. Route by URL:
