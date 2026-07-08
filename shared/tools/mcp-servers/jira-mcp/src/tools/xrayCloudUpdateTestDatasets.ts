@@ -81,8 +81,8 @@ export async function handleXrayCloudUpdateTestDatasets(args: any): Promise<any>
         };
 
         const mutation = `
-            mutation($testId: String!, $datasets: [DatasetInput!]!) {
-                updateTestDatasets(issueId: $testId, datasets: $datasets) {
+            mutation($issueId: String!, $datasets: [DatasetInput!]!) {
+                updateTestDatasets(issueId: $issueId, datasets: $datasets) {
                     issueId
                     datasets {
                         name
@@ -94,12 +94,13 @@ export async function handleXrayCloudUpdateTestDatasets(args: any): Promise<any>
         `;
 
         const data = await xrayCloudGraphQL(mutation, {
-            testId: String(testId),
+            issueId: String(testId),
             datasets: [datasetInput],
         });
 
         const updated = data?.updateTestDatasets?.datasets || [];
         let text = `**Dataset updated for ${testKey}**\n\n`;
+        text += `⚠️ Note: Entire dataset was replaced (previous iterations overwritten).\n\n`;
         text += `**Dataset:** ${datasetName || "Default"}\n`;
         text += `**Parameters:** ${parameters.join(", ")}\n`;
         text += `**Iterations:** ${values.length} rows\n\n`;
