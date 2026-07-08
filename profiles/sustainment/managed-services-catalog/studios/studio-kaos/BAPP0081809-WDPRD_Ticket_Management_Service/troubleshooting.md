@@ -51,6 +51,48 @@ search index=wdpr-ecommerce ecs_cluster="dlr-ecommerce-S0001477-usw2*" ecs_task_
 
 ---
 
+## Issue: DLR Self-Admit Not Displaying
+
+**Symptoms:** CM's Self-Admit not showing on DLR side. MEP clean-up attempted but did not resolve.
+
+**Investigation Steps:**
+
+### Step 1: Verify PERNR in eGalaxy (Source of Record)
+
+```spl
+search index=wdpr_egalaxy_dlr "QueryTicketResponse" "{PERNR}" earliest=-7d | head 20
+```
+
+Validate:
+- `<Status>0</Status>` (0=Active)
+- `<ValidatedExpirationDate>` > today
+- `<ValidUntil>` > today
+- `<RemainingUse>Unlimited</RemainingUse>`
+
+If Status≠0 → pass voided/exchanged/blocked. NOT a TMS issue. Route to `app-cadlr-galaxy`.
+
+### Step 2: Verify PERNR in TMS (Display Layer)
+
+```spl
+search index=wdpr-ecommerce ecs_cluster="dlr-ecommerce-S0001477-usw2*" ecs_task_definition="tms-service-svc*" "LoggingOutInterceptor" "Outbound Message" "{PERNR}" earliest=-7d | head 20
+```
+
+In the `LoggingOutInterceptor] Outbound Message:` payload, find `"visualId": "{PERNR}"` and validate:
+1. `"status": "ACTIVE"` (NOT VOIDED/FILTERED/EXPIRED)
+2. `"endDateTime"` in the future
+3. `"remainingUse"` > 0 or 999
+4. `"primaryGuestLinked": true` with SWID populated
+
+**Decision:**
+- eGalaxy Status=0 AND TMS ACTIVE with all 4 met → sync/display issue. Recommend TMS refresh via GSS.
+- eGalaxy Status=0 BUT TMS VOIDED/FILTERED → TMS-to-eGalaxy sync issue. Recommend data refresh.
+- eGalaxy Status≠0 → pass voided at source. Route to `app-cadlr-galaxy`.
+- No SA record exists (only MEP) → provisioning gap. Route to `app-cadlr-galaxy` to issue new SA record (SKU 40341).
+
+**Refs:** INC28962976, INC24373658, INC24238966, INC24239604, INC29159390
+
+---
+
 ## Issue: 404 for parking VIDs (PLU 126834, 126850, 78366)
 
 **Symptoms:** TMS returns 404 for parking ticket VIDs.
@@ -97,6 +139,12 @@ search index=wdpr_egalaxy_dlr "QueryTicketResponse" "{VID}" earliest=-7d
 ```spl
 search index=wdpr_egalaxy_dlr "{VID}" "UsageRecords" "Admission" earliest=-7d | head 20
 ```
+
+**SoCal MK Zip Validation Query:**
+```spl
+search index=wdpr_egalaxy_dlr "QueryTicketResponse" "{VID}" earliest=-7d | search "ZipCode"
+```
+> For SoCal MK eligibility, verify the zip code in `QueryTicketResponse` is in range **90000–93599**. If outside this range → guest is not eligible for SoCal MK renewal. Route zip discrepancies to `app-cadlr-galaxy`.
 
 **Status Codes:** 0=Active, 4=Exchanged, 5=Voided, 8=Blocked
 

@@ -100,6 +100,7 @@ Guest App (Link Tickets & Passes) → TMS → Keyring → GAM/eGalaxy
 - TMS reads eGalaxy's `<Renewable>` flag (not COM Shared API's `renewable` which uses different logic)
 - Check `renewable`, `modifiable`, `skipRenewal` flags and `RenewalServiceImpl` messages
 - After renewal: TMS-to-Keyring republish needed if linking lost
+- **SoCal MK Zip Validation:** Verify in eGalaxy `QueryTicketResponse` that the VID has a zip code in range 90000–93599. If zip is outside this range → guest is not eligible for SoCal MK renewal. Route zip discrepancies to `app-cadlr-galaxy`.
 
 #### Key Scenarios
 

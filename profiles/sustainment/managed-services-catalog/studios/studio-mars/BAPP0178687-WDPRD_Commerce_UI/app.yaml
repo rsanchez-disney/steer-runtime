@@ -10,7 +10,7 @@ description: >
   Flows: ec-checkout, uc-checkout.
   Keywords: commerce UI, cart page, checkout page, confirmation page, trade ticket, consumer purchase,
   payment error, payment declined, express checkout, Duck Out, UC, EC.
-
+  
 support_studio: "Studio Mars"
 escalation_channel: "https://teams.microsoft.com/l/channel/19%3A8tRs3Dywq9mhc6Fat_p2d5Ykw0eKBpBm1Isvxh-rMRA1%40thread.tacv2/DX%20-%20Studio%20Mars?groupId=35a13470-e675-44b7-810e-f062466cffb5&tenantId=56b731a8-a2ac-4c32-bf6b-616810e913c6&ngc=true&allowXTenantAccess=true"
 escalation_contacts:
@@ -21,10 +21,6 @@ escalation_contacts:
 servicenow:
   configuration_items:
     - "WDPRD Commerce UI"
-    - "WDPRD Commerce UI - AWS Latest"
-    - "WDPRD Commerce UI - AWS Load Test"
-    - "WDPRD Commerce UI - AWS Production"
-    - "WDPRD Commerce UI - AWS Staging"
   assignment_group: "web-global-salescart"
 
 documentation:
@@ -37,9 +33,11 @@ docs:
   runbook: "runbook.md"
 
 components:
-  - component_name: "commerce-ui"
+  - component_name: "pci-apps-commerce-ui"
     component_type: "frontend"
     description: "Frontend for EC checkout path — renders cart, checkout, and confirmation pages"
+    repository:
+      url: "https://github.disney.com/commerce/pci-apps-commerce-ui"
     splunk:
       index: "wdpr_commerce_ui"
       base_spl: "index=wdpr_commerce_ui"
@@ -58,3 +56,243 @@ components:
       infra_type: "ECS"
       cluster_id: "dlr-pci-S0001593-usw2-prd"
       service_name: "commerce-ui-prod-live"
+      
+  - component_name: "mdx-php-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-php-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+  - component_name: "mdx-asset-library"
+    component_type: "frontend"
+    description: ""
+
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    repository:
+      url: "https://github.disney.com/wdprd-development/mdx-asset-library"
+      branch: ""
+      path: ""
+
+    cicd:
+      platform: ""
+      pipeline_url: ""
+      deploy_target: ""
+
+    health_check:
+      url: ""
+      expected_status: 200
+
+    splunk:
+      index: ""
+      source: ""
+      base_spl: >-
+
+      error_spl: >-
+
+      latency_spl: >-
+
+
+    appdynamics:
+      app_name: ""
+      app_id: ""
+      tier: ""
+      dashboard_url: ""
+
+    newrelic:
+      app_id: ""
+      account_id: ""
+      dashboard_url: ""
+
+    datadog:
+      service: ""
+      env: ""
+      dashboard_url: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: ""
+      datasource: ""
+
+    archer:
+      record_id: ""
+
+    cloud:
+      provider: ""
+      region: ""
+      account_id: ""
+      infra_type: ""
+      cluster_id: ""
+      service_name: ""
+
+      cloudwatch:
+        log_group: ""
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      gcp:
+        project_id: ""
+        log_filter: ""
+
+      services:
+        - type: ""
+          name: ""
+
+    other_environments:
+
+      stage:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      load:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""
+
+      latest:
+        health_check:
+          url: ""
+        splunk:
+          index: ""
+          base_spl: >-
+
+        cloud:
+          region: ""
+          service_name: ""

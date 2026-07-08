@@ -22,3 +22,7 @@ Guest-facing frontend for DLR consumer purchases, mods, Genie+/LL, AP upgrades.
 ## Routing
 - Assignment Group: web-global-salescart
 - Escalation: Studio Valhalla
+
+### Payment Failures Routing
+- Payment declines / card auth issues → AG: `app-flwdw-payment` | CI: `Adaptive Payment Platform Inquiry Service`
+- Include paymentSessionId(s) and paymentClientId(s) in work notes when routing

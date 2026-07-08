@@ -2,6 +2,7 @@
 # Booking Service — EC Checkout Orchestrator
 # ============================================================================
 
+# --- Identity ---
 bapp_id: "BAPP0012680"
 app_name: "booking-service"
 full_name: "Booking Service"
@@ -20,46 +21,85 @@ escalation_contacts:
     role: "primary"
     contact: "Tomas.Grana.-ND@disney.com"
 
+# --- ServiceNow ---
 servicenow:
   configuration_items:
     - "Booking Service"
-    - "Booking Service - AWS Latest"
-    - "Booking Service - AWS Load"
-    - "Booking Service - AWS Production"
-    - "Booking Service - AWS Stage"
-    - "Booking Service - QA"
-    - "Booking Service - Retired"
   assignment_group: "web-global-salescart"
+  business_service: ""
 
+# --- Documentation ---
 documentation:
-  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/633354892/Operational+Readiness+Review+-+Booking+ECS"
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/681704422/Booking+Service+Runbook"
   wiki: "https://confluence.disney.com/spaces/WDPROS/pages/484023178/Booking"
   architecture_diagram: "https://docs.google.com/drawings/d/1yRgS82trU0wDoCUBuVz8P3BTzz1vjVyUKfBO02FRwOg/edit"
 
+# --- Companion Docs (Markdown) ---
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
 
+# --- Components ---
 components:
+
   - component_name: "booking-service"
     component_type: "api"
-    description: "Checkout orchestrator for EC path: Cart → Booking Service → Payment Service"
+    description: "Java RESTful checkout orchestrator. Supports lodging, PhotoPass, AnnualPasses, trade tickets, VO/Packages, Room Only. Stores orders in AWS RDS, fulfills via DTI/eGalaxy."
+
+    # -- Component-specific docs --
+    docs:
+      troubleshooting: ""
+      runbook: ""
+
+    # -- Component-specific documentation links --
+    documentation:
+      wiki: ""
+      architecture_diagram: ""
+
+    # -- Source Code & CI/CD --
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-booking-svc"
+      branch: "develop"
+      path: ""
+
+    cicd:
+      platform: "jenkins"
+      pipeline_url: "https://ecommerce.cicd.wdprapps.disney.com/job/wdpr-ecommerce-booking-svc"
+      deploy_target: "ECS pci-apps us-west-2"
+
+    # -- Health Check --
     health_check:
       url: "https://bookingsvc-nap7.wdpro.starwave.com/booking-service/admin/health-report"
       expected_status: 200
+
+    # -- Splunk --
     splunk:
       index: "wdpr_booking_service"
-      base_spl: "index=wdpr_booking_service"
-      error_spl: "index=wdpr_booking_service (\"*error*\" OR \"*exception*\")"
-      latency_spl: "index=wdpr_booking_service response-millis | rex \"response-millis=(?<response_millis>\\d+)\" | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms"
+      source: ""
+      base_spl: >-
+        index=wdpr_booking_service
+      error_spl: >-
+        index=wdpr_booking_service ("*error*" OR "*exception*")
+      latency_spl: >-
+        index=wdpr_booking_service response-millis
+        | rex "response-millis=(?<response_millis>\d+)"
+        | stats avg(response_millis) as avg_ms, p95(response_millis) as p95_ms
+
+    # -- AppDynamics --
     appdynamics:
       app_name: "prod_pci_S0001663_WDPR-Ticketing-Booking_aws"
       app_id: "945"
       tier: "wdpr_bap0012680_booking-service"
       dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=945&dashboardMode=force"
+
+    # -- Grafana --
     grafana:
+      dashboard_uid: "6cRDMP8nz"
       dashboard_url: "https://sid.disney.com/grafana/d/6cRDMP8nz/atlas-observability-metrics-ecs?orgId=1&var-Environment=prod&var-Account=pci-apps-prod&var-Region=us-west-2&var-clusters=wdpr-pci-S0001663-usw2-prd&var-service=booking-svc-prod-live"
+      datasource: ""
+
+    # -- Cloud Infrastructure & Native Observability --
     cloud:
       provider: "AWS"
       region: "us-west-2"
@@ -67,5 +107,84 @@ components:
       infra_type: "ECS"
       cluster_id: "wdpr-pci-S0001663-usw2-prd"
       service_name: "booking-svc-prod-live"
+
       cloudwatch:
         log_group: "wdpr-pci-S0001663-usw2-booking-svc-prd"
+        namespace: ""
+        alarm_prefix: ""
+
+      loginsights:
+        log_group: ""
+        saved_query: ""
+
+      # Supporting infrastructure this component depends on
+      services:
+        - type: "rds"
+          name: "booking-svc-mariadb-prod.wdprapps.disney.com:4001/pepcom_booking"
+        - type: "elasticache"
+          name: "master.bookingsvc-prod.rspxz4.usw2.cache.amazonaws.com"
+        - type: "redis"
+          name: "bookingsvc-prod"
+
+    # -- Other Environments --
+    other_environments:
+
+      latest:
+        health_check:
+          url: "https://latest.booking-svc-int.wdprapps.disney.com/booking-service/healthcheck"
+        splunk:
+          index: "wdpr_booking_service"
+          base_spl: >-
+            index=wdpr_booking_service
+        appdynamics:
+          app_id: "4663"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_3_hours.BEFORE_NOW.-1.-1.180&application=4663&component=7469950&dashboardMode=force"
+        cloud:
+          region: "us-west-2"
+          cluster_id: "wdpr-pci-S0001663-usw2-lst"
+          service_name: "booking-svc-latest-live"
+          services:
+            - type: "rds"
+              name: "booking-svc-mariadb-latest.wdprapps.disney.com:4001/pepcom_booking_latest"
+            - type: "elasticache"
+              name: "master.bookingsvc-latest.i8pkwr.usw2.cache.amazonaws.com"
+
+      stage:
+        health_check:
+          url: "https://stage.booking-svc-int.wdprapps.disney.com/booking-service/healthcheck"
+        splunk:
+          index: "wdpr_booking_service"
+          base_spl: >-
+            index=wdpr_booking_service
+        appdynamics:
+          app_id: "4712"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_3_hours.BEFORE_NOW.-1.-1.180&application=4712&component=7471325&dashboardMode=force"
+        cloud:
+          region: "us-west-2"
+          cluster_id: "wdpr-pci-S0001663-usw2-stg"
+          service_name: "booking-svc-stage-live"
+          services:
+            - type: "rds"
+              name: "booking-svc-mariadb-stage.wdprapps.disney.com:4001/pepcom_booking_stage"
+            - type: "elasticache"
+              name: "master.bookingsvc-stage.i8pkwr.usw2.cache.amazonaws.com"
+
+      load:
+        health_check:
+          url: "https://load.booking-svc-int.wdprapps.disney.com/booking-service/healthcheck"
+        splunk:
+          index: "wdpr_booking_service"
+          base_spl: >-
+            index=wdpr_booking_service
+        appdynamics:
+          app_id: "4695"
+          dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_3_hours.BEFORE_NOW.-1.-1.180&application=4695&component=7470847&dashboardMode=force"
+        cloud:
+          region: "us-west-2"
+          cluster_id: "wdpr-pci-S0001663-usw2-lod"
+          service_name: "booking-svc-load-live"
+          services:
+            - type: "rds"
+              name: "dlr-bookingservice-load-master.wdatdbs.disney.com:4001/pepcom_booking_load1"
+            - type: "elasticache"
+              name: "master.bookingsvc-load.i8pkwr.usw2.cache.amazonaws.com"
