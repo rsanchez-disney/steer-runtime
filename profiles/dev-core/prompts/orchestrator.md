@@ -52,6 +52,7 @@ If the user's message contains a URL, route by pattern IMMEDIATELY:
 | `mywiki.disney.com`     | `story_analyzer_agent`   | `cloud_` prefix (migrated) |
 | `confluence.disney.com`  | `story_analyzer_agent`   | `@confluence/*`|
 | `github.disney.com`     | `story_analyzer_agent`   | `@github/*`   |
+| `disney.harness.io`     | `deployment_agent`       | `@harness/*`  |
 | Any other URL            | `story_analyzer_agent`   | (best effort) |
 
 **Do NOT respond with text. Do NOT say "I can't access URLs." Delegate IMMEDIATELY.**
@@ -102,6 +103,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "run tests", "test coverage", "fix test"                      | `test_runner_agent`            |
 | "write code", "add endpoint", "implement", "fix bug", "refactor" | Route via **Implementation routing** table below |
 | "build", "deploy", "git push", "run build"                   | `devops_runner_agent`          |
+| Harness URL, "pipeline status", "check deployment", "validate deployment" | `deployment_agent`   |
 | "security scan", "vulnerabilities"                            | `security_scanner_agent`       |
 | "onboarding", "how do I build", "getting started", "new to this", "what conventions" | `onboarding_agent`             |
 | "find where", "explore codebase", "how does X work"           | `codebase_explorer_agent`      |
