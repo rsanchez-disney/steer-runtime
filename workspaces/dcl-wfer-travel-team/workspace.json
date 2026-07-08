@@ -1,0 +1,52 @@
+{
+  "name": "dcl-wfer-travel-team",
+  "description": "EFM WFER Travel — DCL Crew Workflow/Travel system: Java backend, Node.js BFF, Angular UI, MariaDB schema across 4 coordinated repos",
+  "team": "EFM WFER Travel",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "qa"
+  ],
+  "default_agent": "orchestrator",
+  "workspace_path": "${WORKSPACE_ROOT}/dcl-wfer-travel-team",
+  "jira_host": "disneyexperiences.atlassian.net",
+  "jira_prefix": "DCLWFER-",
+  "projects": [
+    {
+      "name": "dcl-apps-travel-service",
+      "path": "dcl-apps-travel-service",
+      "repo": "dcl/dcl-apps-travel-service",
+      "host": "github.disney.com",
+      "description": "Java 21 / Spring Boot backend — layered arch (resource→service→dao), Spring JDBC, MariaDB",
+      "default_branch": "develop"
+    },
+    {
+      "name": "dcl-apps-travel-webapi",
+      "path": "dcl-apps-travel-webapi",
+      "repo": "dcl/dcl-apps-travel-webapi",
+      "host": "github.disney.com",
+      "description": "Node.js 22 / Restify BFF — Keycloak auth, feature-decider toggles, Mocha+Chai tests",
+      "default_branch": "develop"
+    },
+    {
+      "name": "dcl-apps-travel-ui",
+      "path": "dcl-apps-travel-ui",
+      "repo": "dcl/dcl-apps-travel-ui",
+      "host": "github.disney.com",
+      "description": "Angular 20 / TypeScript 5.8 frontend — AG Grid Enterprise, lazy-loaded modules, 80% coverage",
+      "default_branch": "develop"
+    },
+    {
+      "name": "dcl-crew-travel-datamodel",
+      "path": "dcl-crew-travel-datamodel",
+      "repo": "dcl/dcl-crew-travel-datamodel",
+      "host": "github.disney.com",
+      "description": "MariaDB schema & migrations — EER diagrams, main branch = prod schema",
+      "default_branch": "main"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true
+}

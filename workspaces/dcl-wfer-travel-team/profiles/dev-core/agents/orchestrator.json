@@ -1,0 +1,8 @@
+{
+  "name": "orchestrator",
+  "allowedTools": ["@jira/*", "@jira-cloud/*", "@confluence/*", "@confluence-cloud/*"],
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/service_repo_mapping.md"
+  ]
+}
