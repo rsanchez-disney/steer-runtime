@@ -4,6 +4,36 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.154] — 2026-07-08
+
+### Added
+
+- **security** — block EDR-triggering commands: prevents browser DB reads, credential store access, and other EDR-suspicious operations (#560)
+- **jira-mcp** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
+- **pos-team** — Bug Triage Agent added to workspace (#26)
+- **pos-team** — orchestration agent, architecture management, and agent-registry cleanup
+- **pos-team** — DSP bug report agent with revised report format
+- **pos-team** — receipts refactor learnings bank and android refactor agent
+- **pos-team** — QA Validation Agent
+- **pos-team** — PM Agent profile and relative path fixes across dev-mobile agents
+- **pos-team** — skills added to workspace agents
+- **sustainment** — rewrite RCA agent prompt and enrich services catalog with extended metadata
+- **workspace** — Connected Products team workspace initial setup and fixes
+- **docs(spec)** — S9 (on-demand resource loading) and S10 (orchestrator tool reduction) strategies (#564)
+- **docs** — Compass MCP setup guide (#565)
+
+### Fixed
+
+- **orchestrator** — add Harness URL routing to deployment_agent for CI/CD delegation (#568)
+- **sustainment** — catalog-index hooks support both singular and plural CI field names
+- **jira-mcp** — align GraphQL variable naming and add replacement warning for deprecated fields
+- **catalog** — resolve encoding issues from PR #554 review
+
+### Changed
+
+- **pos-team** — workspace context updates and documentation improvements
+- **workspace** — removed unused KB external reference
+
 ## [0.2.152] — 2026-07-07
 
 ### Added

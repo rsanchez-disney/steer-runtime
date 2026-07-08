@@ -4,6 +4,20 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.154
+
+- **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations
+- **feat(jira-mcp)** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
+- **feat(pos-team)** — Bug Triage Agent, orchestration agent, QA Validation Agent, architecture management, receipts refactor learnings, DSP bug report format
+- **feat(sustainment)** — rewrite RCA agent prompt & enrich services catalog with extended metadata
+- **feat(workspace)** — Connected Products team workspace initial setup
+- **docs** — S9/S10 token strategy specs, Compass MCP setup guide
+- **fix(orchestrator)** — Harness URL routing to deployment_agent for CI/CD delegation
+- **fix(sustainment)** — catalog-index hooks support singular and plural CI field names
+- **fix(jira-mcp)** — GraphQL variable naming alignment and deprecation warnings
+- **fix(catalog)** — encoding issues from PR #554 review
+<!-- END LATEST -->
+
 ## v0.2.152
 
 - **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
