@@ -4,6 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.155
+
+- **feat(dcl-wfer-travel)** — project-specific steering and sprint backlog for DCL WFER Travel team
+- **feat(dcl-wfer-travel)** — graphify code knowledge graph reports for repository analysis
+- **feat(workspace)** — DCL WFER Travel team workspace initial setup
+- **fix(delegation)** — add few-shot examples to fix 4 failing delegation tests
+- **chore** — rebuild MCP bundles
+<!-- END LATEST -->
+
 ## v0.2.154
 
 - **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations

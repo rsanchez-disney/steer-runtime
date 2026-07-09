@@ -4,6 +4,22 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.155] — 2026-07-09
+
+### Added
+
+- **dcl-wfer-travel** — project-specific steering and sprint backlog (#576)
+- **dcl-wfer-travel** — graphify code knowledge graph reports (#575)
+- **workspace** — DCL WFER Travel team workspace (#574)
+
+### Fixed
+
+- **delegation** — add few-shot examples to fix 4 failing delegation tests (#572)
+
+### Changed
+
+- **mcp** — rebuild MCP bundles
+
 ## [0.2.154] — 2026-07-08
 
 ### Added
