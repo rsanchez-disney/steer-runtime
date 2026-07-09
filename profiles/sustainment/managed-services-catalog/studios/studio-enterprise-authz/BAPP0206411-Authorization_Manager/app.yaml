@@ -1,0 +1,47 @@
+# ============================================================================
+# ADM Managed Services Catalog — Application Entry
+# ============================================================================
+# BAPP0206411 — Authorization Manager
+# ============================================================================
+
+# --- Identity ---
+bapp_id: "BAPP0206411"
+app_name: "authorization-manager"
+full_name: "Authorization Manager"
+description: "Auth Manager — Java, Wildfly, Oracle DB, GWT"
+
+# --- Ownership ---
+support_studio: "Studio Enterprise AuthZ"
+escalation_channel: ""
+escalation_contacts: []
+on_call: ""
+email: ""
+jira_board: ""
+
+# --- ServiceNow ---
+servicenow:
+  configuration_items:
+    - "Authorization Manager"
+  assignment_group: "sec-global-identity Authorization"
+  business_service: ""
+
+# --- Documentation ---
+documentation:
+  runbook: ""
+  wiki: "https://confluence.disney.com/spaces/AA/pages/1680711590/Auth+Manager+Repositories"
+  architecture_diagram: ""
+
+# --- Splunk ---
+splunk:
+  index_lower: "deetech_ese_ba_nonprd_coreapi"
+  index_prod: "deetech_ese_ba_prd_coreapi"
+  url: "https://deetech.splunk.disney.com/en-US/app/app_eseweb/search"
+
+# --- Source Code ---
+repository:
+  host: "github.disney.com"
+  org: "ese-business-apps"
+  primary_repos:
+    - "ese-business-apps/authorizationmgr"
+    - "ese-business-apps/sapmgr"
+    - "ese-business-apps/gwt-components"

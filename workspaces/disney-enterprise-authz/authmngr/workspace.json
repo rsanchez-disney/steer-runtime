@@ -1,0 +1,90 @@
+{
+  "name": "authmngr",
+  "extends": "disney-enterprise-authz",
+  "description": "Auth Manager & Person Data System — Java, Wildfly, Oracle DB, GWT",
+  "team": "Disney Enterprise AuthZ",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "dev-java",
+    "qa",
+    "pm",
+    "ba",
+    "sustainment"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "authorizationmgr",
+      "path": "authorizationmgr",
+      "repo": "ese-business-apps/authorizationmgr",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "sapmgr",
+      "path": "sapmgr",
+      "repo": "ese-business-apps/sapmgr",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "disney-person-sync",
+      "path": "disney-person-sync",
+      "repo": "ese-business-apps/disney-person-sync",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "directory",
+      "path": "directory",
+      "repo": "ese-business-apps/directory",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "activedirectory-sync",
+      "path": "activedirectory-sync",
+      "repo": "ese-business-apps/activedirectory-sync",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "non-prod-directory-sync",
+      "path": "non-prod-directory-sync",
+      "repo": "ese-business-apps/non-prod-directory-sync",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "activedirectory-manager",
+      "path": "activedirectory-manager",
+      "repo": "ese-business-apps/activedirectory-manager",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "gwt-components",
+      "path": "gwt-components",
+      "repo": "ese-business-apps/gwt-components",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "rest-oauth-util",
+      "path": "rest-oauth-util",
+      "repo": "ese-business-apps/rest-oauth-util",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "rest-common-util",
+      "path": "rest-common-util",
+      "repo": "ese-business-apps/rest-common-util",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-api-design",
+    "sql-database",
+    "git-branch-workflow",
+    "jira-commit-format",
+    "jira-safety",
+    "general-java-development"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "AUTHOR",
+  "workspace_path": "~/repos"
+}
