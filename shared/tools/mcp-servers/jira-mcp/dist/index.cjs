@@ -11523,6 +11523,202 @@ async function handleXrayCloudAddPrecondition(args) {
   }
 }
 
+// build/tools/xrayCloudGetTestDatasets.js
+var xrayCloudGetTestDatasetsSchema = {
+  name: "xray_cloud_get_test_datasets",
+  description: "Get the dataset (parameterized test data) for a test case from XRay Cloud. Returns all iteration rows with their parameter values.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., DPAY-100)" }
+    },
+    required: ["testKey"]
+  }
+};
+async function handleXrayCloudGetTestDatasets(args) {
+  try {
+    const { testKey } = args;
+    validateIssueKey(testKey, "testKey");
+    const query = `
+            query($jql: String!, $limit: Int!) {
+                getTests(jql: $jql, limit: $limit) {
+                    results {
+                        issueId
+                        testType { name }
+                        datasets {
+                            name
+                            parameters { name }
+                            values
+                        }
+                    }
+                }
+            }
+        `;
+    const data = await xrayCloudGraphQL(query, { jql: `key = ${testKey}`, limit: 1 });
+    const test = data?.getTests?.results?.[0];
+    if (!test)
+      return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
+    const datasets = test.datasets || [];
+    if (datasets.length === 0) {
+      return { content: [{ type: "text", text: `**No datasets configured for ${testKey}**
+
+This test case has no parameterized dataset defined. You can add one using the xray_cloud_update_test_datasets tool.` }] };
+    }
+    let text = `**Datasets for ${testKey}**
+**Test Type:** ${test.testType?.name || "Unknown"}
+
+`;
+    for (const dataset of datasets) {
+      const dsName = dataset.name || "Default";
+      const params = dataset.parameters?.map((p) => p.name) || [];
+      const values = dataset.values || [];
+      text += `### Dataset: ${dsName}
+`;
+      text += `**Parameters:** ${params.join(", ")}
+`;
+      text += `**Iterations:** ${values.length}
+
+`;
+      if (params.length > 0 && values.length > 0) {
+        text += `| # | ${params.join(" | ")} |
+`;
+        text += `|---|${params.map(() => "---").join("|")}|
+`;
+        values.forEach((row, i) => {
+          if (Array.isArray(row)) {
+            text += `| ${i + 1} | ${row.join(" | ")} |
+`;
+          } else if (typeof row === "object" && row !== null) {
+            const cells = params.map((p) => row[p] ?? "");
+            text += `| ${i + 1} | ${cells.join(" | ")} |
+`;
+          }
+        });
+        text += "\n";
+      }
+    }
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error getting XRay Cloud test datasets: ${error.message}` }], isError: true };
+  }
+}
+
+// build/tools/xrayCloudUpdateTestDatasets.js
+var xrayCloudUpdateTestDatasetsSchema = {
+  name: "xray_cloud_update_test_datasets",
+  description: "Create or update the dataset (parameterized test data) for a test case in XRay Cloud. Defines parameters and iteration rows.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      testKey: { type: "string", description: "Test issue key (e.g., DPAY-100)" },
+      parameters: {
+        type: "array",
+        items: { type: "string" },
+        description: "Parameter names (column headers) for the dataset (e.g., ['username', 'password', 'expectedResult'])"
+      },
+      values: {
+        type: "array",
+        items: {
+          type: "array",
+          items: { type: "string" }
+        },
+        description: "Rows of values. Each row is an array of strings matching the parameters order (e.g., [['admin', 'pass123', 'success'], ['guest', '', 'failure']])"
+      },
+      datasetName: {
+        type: "string",
+        description: "Optional dataset name (defaults to 'Default')"
+      }
+    },
+    required: ["testKey", "parameters", "values"]
+  }
+};
+async function handleXrayCloudUpdateTestDatasets(args) {
+  try {
+    const { testKey, parameters, values, datasetName } = args;
+    validateIssueKey(testKey, "testKey");
+    if (!parameters?.length) {
+      return { content: [{ type: "text", text: "Error: parameters array must have at least one entry." }], isError: true };
+    }
+    if (!values?.length) {
+      return { content: [{ type: "text", text: "Error: values array must have at least one row." }], isError: true };
+    }
+    for (let i = 0; i < values.length; i++) {
+      if (!Array.isArray(values[i]) || values[i].length !== parameters.length) {
+        return {
+          content: [{ type: "text", text: `Error: Row ${i + 1} has ${values[i]?.length ?? 0} values but expected ${parameters.length} (matching parameters: ${parameters.join(", ")})` }],
+          isError: true
+        };
+      }
+    }
+    const idQuery = `
+            query($jql: String!, $limit: Int!) {
+                getTests(jql: $jql, limit: $limit) {
+                    results {
+                        issueId
+                    }
+                }
+            }
+        `;
+    const idData = await xrayCloudGraphQL(idQuery, { jql: `key = ${testKey}`, limit: 1 });
+    const testId = idData?.getTests?.results?.[0]?.issueId;
+    if (!testId) {
+      return { content: [{ type: "text", text: `No test found for key: ${testKey}` }] };
+    }
+    const datasetInput = {
+      name: datasetName || "Default",
+      parameters: parameters.map((name) => ({ name })),
+      values: values.map((row) => {
+        const obj = {};
+        parameters.forEach((param, idx) => {
+          obj[param] = row[idx];
+        });
+        return obj;
+      })
+    };
+    const mutation = `
+            mutation($issueId: String!, $datasets: [DatasetInput!]!) {
+                updateTestDatasets(issueId: $issueId, datasets: $datasets) {
+                    issueId
+                    datasets {
+                        name
+                        parameters { name }
+                        values
+                    }
+                }
+            }
+        `;
+    const data = await xrayCloudGraphQL(mutation, {
+      issueId: String(testId),
+      datasets: [datasetInput]
+    });
+    const updated = data?.updateTestDatasets?.datasets || [];
+    let text = `**Dataset updated for ${testKey}**
+
+`;
+    text += `\u26A0\uFE0F Note: Entire dataset was replaced (previous iterations overwritten).
+
+`;
+    text += `**Dataset:** ${datasetName || "Default"}
+`;
+    text += `**Parameters:** ${parameters.join(", ")}
+`;
+    text += `**Iterations:** ${values.length} rows
+
+`;
+    text += `| # | ${parameters.join(" | ")} |
+`;
+    text += `|---|${parameters.map(() => "---").join("|")}|
+`;
+    values.forEach((row, i) => {
+      text += `| ${i + 1} | ${row.join(" | ")} |
+`;
+    });
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return { content: [{ type: "text", text: `Error updating XRay Cloud test datasets: ${error.message}` }], isError: true };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -11586,7 +11782,9 @@ var tools = [
     { schema: prefixed(xrayCloudLinkTestToStorySchema), handler: handleXrayCloudLinkTestToStory },
     { schema: prefixed(xrayCloudGetTestStepsSchema), handler: handleXrayCloudGetTestSteps },
     { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },
-    { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests }
+    { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests },
+    { schema: prefixed(xrayCloudGetTestDatasetsSchema), handler: handleXrayCloudGetTestDatasets },
+    { schema: prefixed(xrayCloudUpdateTestDatasetsSchema), handler: handleXrayCloudUpdateTestDatasets }
   ] : []
 ];
 var JiraMCPServer = class {
