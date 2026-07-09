@@ -27,33 +27,33 @@
       "host": "github.disney.com"
     },
     {
-      "name": "isney-person-sync",
-      "path": "isney-person-sync",
-      "repo": "ese-business-apps/isney-person-sync",
+      "name": "disney-person-sync",
+      "path": "disney-person-sync",
+      "repo": "ese-business-apps/disney-person-sync",
       "host": "github.disney.com"
     },
     {
-      "name": "irectory",
-      "path": "irectory",
-      "repo": "ese-business-apps/irectory",
+      "name": "directory",
+      "path": "directory",
+      "repo": "ese-business-apps/directory",
       "host": "github.disney.com"
     },
     {
-      "name": "activeirectory-sync",
-      "path": "activeirectory-sync",
-      "repo": "ese-business-apps/activeirectory-sync",
+      "name": "activedirectory-sync",
+      "path": "activedirectory-sync",
+      "repo": "ese-business-apps/activedirectory-sync",
       "host": "github.disney.com"
     },
     {
-      "name": "non-pro-irectory-sync",
-      "path": "non-pro-irectory-sync",
-      "repo": "ese-business-apps/non-pro-irectory-sync",
+      "name": "non-prod-directory-sync",
+      "path": "non-prod-directory-sync",
+      "repo": "ese-business-apps/non-prod-directory-sync",
       "host": "github.disney.com"
     },
     {
-      "name": "activeirectory-manager",
-      "path": "activeirectory-manager",
-      "repo": "ese-business-apps/activeirectory-manager",
+      "name": "activedirectory-manager",
+      "path": "activedirectory-manager",
+      "repo": "ese-business-apps/activedirectory-manager",
       "host": "github.disney.com"
     },
     {
