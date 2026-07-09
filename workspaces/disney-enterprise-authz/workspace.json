@@ -1,0 +1,25 @@
+{
+  "name": "disney-enterprise-authz",
+  "description": "Parent workspace for Disney Enterprise Authorization services — Keystone and Auth Manager",
+  "team": "Disney Enterprise AuthZ",
+  "profiles": [
+    "dev-core",
+    "qa",
+    "pm",
+    "ba",
+    "sustainment"
+  ],
+  "default_agent": "ba_orchestrator_agent",
+  "projects": [],
+  "rules": [
+    "conventional_commit",
+    "general-api-design",
+    "sql-database",
+    "git-branch-workflow",
+    "jira-commit-format",
+    "jira-safety"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "AUTHOR",
+  "workspace_path": "~/repos"
+}

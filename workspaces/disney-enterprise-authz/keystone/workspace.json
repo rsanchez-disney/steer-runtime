@@ -1,0 +1,165 @@
+{
+  "name": "keystone",
+  "extends": "disney-enterprise-authz",
+  "description": "Keystone Authorization Service — .NET Framework, AngularJS, SQL Server, Java, Docker",
+  "team": "Disney Enterprise AuthZ",
+  "profiles": [
+    "dev-core",
+    "dev-web",
+    "dev-java",
+    "qa",
+    "pm",
+    "ba",
+    "sustainment"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "adminservice",
+      "path": "adminservice",
+      "repo": "Keystone_6/api-services/adminservice",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "AuditTrailService",
+      "path": "AuditTrailService",
+      "repo": "Keystone_6/api-services/AuditTrailService",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "AuthServer",
+      "path": "AuthServer",
+      "repo": "Keystone_6/api-services/AuthServer",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "authservice",
+      "path": "authservice",
+      "repo": "Keystone_6/api-services/authservice",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "healthcheck",
+      "path": "healthcheck",
+      "repo": "Keystone_6/api-services/healthcheck",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "pdp-api",
+      "path": "pdp-api",
+      "repo": "Keystone_6/api-services/pdp-api",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "reportservice",
+      "path": "reportservice",
+      "repo": "Keystone_6/api-services/reportservice",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "core-admin",
+      "path": "core-admin",
+      "repo": "Keystone_6/core-services/core-admin",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "core-auth",
+      "path": "core-auth",
+      "repo": "Keystone_6/core-services/core-auth",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "data-conciliation-service",
+      "path": "data-conciliation-service",
+      "repo": "Keystone_6/core-services/data-conciliation-service",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "data-integration-service",
+      "path": "data-integration-service",
+      "repo": "Keystone_6/core-services/data-integration-service",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "provisioning-api",
+      "path": "provisioning-api",
+      "repo": "Keystone_6/keystone-provisioning/provisioning-api",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "keystone-provisioning-batch",
+      "path": "keystone-provisioning-batch",
+      "repo": "Keystone_6/keystone-provisioning/keystone-provisioning-batch",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "provisioning-common",
+      "path": "provisioning-common",
+      "repo": "Keystone_6/keystone-provisioning/provisioning-common",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "Keystone_5_Web",
+      "path": "Keystone_5_Web",
+      "repo": "Keystone_6/ui/Keystone_5_Web",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "audittrailtransformservice",
+      "path": "audittrailtransformservice",
+      "repo": "Keystone_6/windows-services/audittrailtransformservice",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "SelfServiceBatch",
+      "path": "SelfServiceBatch",
+      "repo": "Keystone_6/windows-services/SelfServiceBatch",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "ldapdirectorycomponent",
+      "path": "ldapdirectorycomponent",
+      "repo": "Keystone_6/dependencies/ldapdirectorycomponent",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "sqldirectorycomponent",
+      "path": "sqldirectorycomponent",
+      "repo": "Keystone_6/dependencies/sqldirectorycomponent",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "bitkoodirectorycomponent",
+      "path": "bitkoodirectorycomponent",
+      "repo": "Keystone_6/dependencies/bitkoodirectorycomponent",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "admincomponent",
+      "path": "admincomponent",
+      "repo": "Keystone_6/components/admincomponent",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "AuthComponent",
+      "path": "AuthComponent",
+      "repo": "Keystone_6/components/AuthComponent",
+      "host": "gitlab.disney.com"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-api-design",
+    "sql-database",
+    "git-branch-workflow",
+    "jira-commit-format",
+    "jira-safety",
+    "general-csharp-development",
+    "general-docker",
+    "general-angular-development",
+    "general-performance-optimization"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "AUTHOR",
+  "workspace_path": "~/repos"
+}
