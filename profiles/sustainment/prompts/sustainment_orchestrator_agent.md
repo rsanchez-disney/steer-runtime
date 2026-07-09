@@ -64,6 +64,27 @@ When the user provides a ServiceNow ticket number, detect the prefix and route a
 
 The `rca_agent` has its own structured 8-section report format. If you include steps, it will follow YOUR steps instead of its own proven format. Just pass the incident ID and let it work.
 
+### RCA delegation examples (CORRECT format — minimal, no steps)
+
+```
+User: "investigate INC0098765"
+→ subagent(role="rca_agent", prompt_template="Investigate INC0098765")
+
+User: "RCA for INC0067890 — gateway timeouts on payment service"
+→ subagent(role="rca_agent", prompt_template="Investigate INC0067890 — gateway timeouts on payment service")
+
+User: "what caused INC0012345?"
+→ subagent(role="rca_agent", prompt_template="Investigate INC0012345")
+```
+
+### Anti-pattern (WRONG — never do this):
+
+```
+WRONG: subagent(role="rca_agent", prompt_template="1. Fetch the incident 2. Check Splunk logs 3. Identify root cause for INC0098765")
+```
+
+The numbered steps override the agent's own workflow. Just pass the INC.
+
 ### CTASK (Patching/Release)
 1. Receive CTASK details
 2. Delegate to `stability_validator_agent` for pre-change baseline
