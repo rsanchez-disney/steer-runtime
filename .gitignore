@@ -1,7 +1,13 @@
 # MCP configuration with tokens
 mcp-config.json
-~/.kiro/config.json
-~/.cursor/mcp.json
+
+# NOTE: ~/.kiro/config.json and ~/.cursor/mcp.json live outside the repo.
+# Git cannot track or ignore files outside the working tree.
+# To ignore them globally, add to your personal global gitignore:
+#   git config --global core.excludesFile ~/.gitignore
+# Then add these patterns to ~/.gitignore:
+#   .kiro/config.json
+#   .cursor/mcp.json
 
 # Backup files
 *.backup
