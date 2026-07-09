@@ -1,0 +1,16 @@
+{
+  "name": "sustainment-enterprise-authz",
+  "extends": "sustainment",
+  "description": "Sustainment workspace for Enterprise AuthZ — Keystone and Auth Manager incident response",
+  "team": "Disney Enterprise AuthZ",
+  "profiles": [
+    "sustainment",
+    "ba"
+  ],
+  "default_agent": "sustainment_orchestrator_agent",
+  "managed_studios": [
+    "studio-enterprise-authz"
+  ],
+  "jira_prefix": "AUTHOR",
+  "enable_tools": true
+}
