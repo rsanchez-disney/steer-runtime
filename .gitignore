@@ -1,6 +1,7 @@
 # MCP configuration with tokens
 mcp-config.json
 ~/.kiro/config.json
+~/.cursor/mcp.json
 
 # Backup files
 *.backup
@@ -43,6 +44,14 @@ VERSION
 
 # Kiro IDE hooks (workspace-level, not committed)
 .kiro/hooks/
+
+# Cursor IDE (workspace-level)
+.cursor/mcp.json
+.cursor/.koda-meta.json
+.cursor/rules/
+.cursor/agents/
+.cursor/skills/
+
 site/
 
 # Generated reports (output of certify.py / eval runs)
