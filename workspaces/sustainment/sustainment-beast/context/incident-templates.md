@@ -89,6 +89,20 @@ Sections:
 
 Wrap all generated HTML in `[code]...[/code]` for ServiceNow work notes compatibility.
 
+Comprehensive Incident Report (for detailed analysis and executive reporting)
+
+📊 NEW: For complex, multi-day incidents requiring detailed metrics, timelines, and stakeholder communication, use the Comprehensive Incident Report Template (comprehensive-incident-report-template.md).
+
+When to use:
+
+- incidents with significant business impact.
+- Complex incidents requiring detailed forensic analysis
+- Vendor/third-party root cause incidents
+- Cases where no fix was found but impact documentation is needed
+
+See `comprehensive-incident-report-template.md` for the complete template with usage examples and Beast-specific placeholder
+mappings.
+
 ## Migration from Old Structure
 
 If you encounter incidents with `incidente.md` and `result.md`:
