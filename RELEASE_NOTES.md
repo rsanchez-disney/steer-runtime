@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.155
+## v0.2.156
 
 - **feat(dcl-wfer-travel)** — project-specific steering and sprint backlog for DCL WFER Travel team
 - **feat(dcl-wfer-travel)** — graphify code knowledge graph reports for repository analysis
@@ -13,7 +13,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **chore** — rebuild MCP bundles
 <!-- END LATEST -->
 
-## v0.2.154
+## v0.2.156
 
 - **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations
 - **feat(jira-mcp)** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
@@ -27,14 +27,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(catalog)** — encoding issues from PR #554 review
 <!-- END LATEST -->
 
-## v0.2.152
+## v0.2.156
 
 - **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
 - **fix(orchestrator)** — wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs
 - **chore** — migrate myjira + mywiki references to Atlassian Cloud URLs
 <!-- END LATEST -->
 
-## v0.2.151
+## v0.2.156
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
@@ -52,14 +52,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** delegation runner rewritten in Python with 180s timeout and subagent/list_update detection
 <!-- END LATEST -->
 
-## v0.2.144
+## v0.2.156
 
 - **Catalog-index hook fix** — both `catalog-index.sh` and `catalog-index.ps1` now correctly resolve workspace source from `~/.kiro/steer-runtime` instead of `$KIRO_HOME`, fixing `koda chat --ws` scenarios
 - **Hook validation tests** — `make validate-catalog` now tests both KIRO_HOME scenarios + PowerShell syntax check via `pwsh`
 - **DGE workspace** — DLP Digital Guest Experience team with 6 services (DPAO, DPAU, VQ, TMS, Wallet, Linking), Harness CI/CD, Jira Cloud integration
 - **Demo generator agent** — DPS team agent for generating comprehensive demo documentation from log files and context
 
-## v0.2.144
+## v0.2.156
 
 - **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
 - **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)

@@ -1,29 +1,42 @@
-sequenceDiagram
-    participant UI as Angular UI
-    participant ALB as ALB (path routing)
-    participant VS as dpay-validation-service
-    participant CS as wdpr-config-services
-    participant SNS as SNS: validation-events
-
-    UI->>ALB: POST /api/v1/validations/evaluate
-    ALB->>VS: Route to validation service
-
-    VS->>VS: Parse and validate request schema
-    VS->>CS: GET /configs/{clientId}/rules
-    CS-->>VS: Configuration rules + thresholds
-
-    VS->>CS: GET /configs/{clientId}/state (target env)
-    CS-->>VS: Current config state
-
-    VS->>VS: Evaluate rules against config state
-    VS->>VS: Generate validation report
-
-    alt All rules pass
-        VS->>SNS: Publish validation.completed
-        VS-->>ALB: 200 {valid: true, report}
-        ALB-->>UI: 200 OK
-    else Rules violated
-        VS->>SNS: Publish validation.failed
-        VS-->>ALB: 200 {valid: false, violations[]}
-        ALB-->>UI: 200 OK (with violations)
+graph TB
+    subgraph UI["UI Layer"]
+        PAP["Payment Admin Portal\n(PAP)"]
+        TRP["Transaction Research Portal\n(TRP)"]
+        GCP["Guest Control Panel\n(GCP)"]
     end
+
+    subgraph BFF["BFF / API Gateway Layer"]
+        CONFIGS_API["wdpr-payment-configs-api\n-Client CRUD\n-Config Metadata\n-Reports/Exports\n-Promotions"]
+        REFUND_API["wdpr-refund-rules-api\n-Ruleset SOR Mapping\n-Conditional Fields\n-Refund Validation\n-Refund Orchestration"]
+    end
+
+    subgraph SHARED["Shared Services"]
+        AUTH["Shared Auth Library\nwdpr-payapi-core"]
+        FEATURES["Feature Toggles"]
+    end
+
+    subgraph BACKEND["Backend Services"]
+        CONFIG_SVC["wdpr-config-services\nJava/Spring"]
+    end
+
+    subgraph EXTERNAL["External"]
+        KEYSTONE["Keystone IAM"]
+        AUTHZ["Authorization Service"]
+    end
+
+    PAP --> CONFIGS_API
+    PAP --> REFUND_API
+    TRP --> REFUND_API
+    GCP --> CONFIGS_API
+    GCP --> REFUND_API
+
+    CONFIGS_API --> AUTH
+    REFUND_API --> AUTH
+    CONFIGS_API --> FEATURES
+    REFUND_API --> FEATURES
+
+    CONFIGS_API --> CONFIG_SVC
+    REFUND_API --> CONFIG_SVC
+
+    AUTH --> KEYSTONE
+    AUTH --> AUTHZ
