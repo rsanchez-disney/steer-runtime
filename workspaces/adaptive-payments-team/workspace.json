@@ -1,6 +1,6 @@
 {
   "name": "adaptive-payments-team",
-  "description": "Adaptive Payment Platform \u2014 shared foundation for all APP sub-teams",
+  "description": "Adaptive Payment Platform — shared foundation for all APP sub-teams",
   "team": "Disney Payments & Commerce",
   "profiles": [
     "dev-core",
@@ -22,5 +22,33 @@
     "cloud": "customfield_10003",
     "jira": "customfield_10106"
   },
-  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg"
+  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
+  "projects": [
+    { "name": "wdpr-payment-controls-client", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-controls-client", "lang": "TypeScript" },
+    { "name": "wdpr-payment-controls-api", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-controls-api", "lang": "TypeScript" },
+    { "name": "wdpr-config-services", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-config-services", "lang": "Java" },
+    { "name": "wdpr-payment-sheet", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-sheet", "lang": "TypeScript" },
+    { "name": "wdpr-payment-sheet-api", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-sheet-api", "lang": "TypeScript" },
+    { "name": "wdpr-payment-demo", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-demo", "lang": "TypeScript" },
+    { "name": "wdpr-payment-demo-api", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-demo-api", "lang": "TypeScript" },
+    { "name": "wdpr-payment-services", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-services", "lang": "Java" },
+    { "name": "wdpr-payment-session", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-session", "lang": "Java" },
+    { "name": "wdpr-payments-model", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payments-model", "lang": "Java" },
+    { "name": "wdpr-payments-ref", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payments-ref", "lang": "Java" },
+    { "name": "dpay-android-ui", "path": "~/Workspace/Disney/DisneyPaymentsOrg/dpay-android-ui", "lang": "Kotlin" },
+    { "name": "dpayios", "path": "~/Workspace/Disney/DisneyPaymentsOrg/dpayios", "lang": "Swift" },
+    { "name": "gcp-admin-services", "path": "~/Workspace/Disney/DisneyPaymentsOrg/gcp-admin-services", "lang": "Java" },
+    { "name": "gcp-batch", "path": "~/Workspace/Disney/DisneyPaymentsOrg/gcp-batch", "lang": "Java" },
+    { "name": "gcp-common-components", "path": "~/Workspace/Disney/DisneyPaymentsOrg/gcp-common-components", "lang": "Java" },
+    { "name": "gcp-guest-services", "path": "~/Workspace/Disney/DisneyPaymentsOrg/gcp-guest-services", "lang": "Java" },
+    { "name": "wdpr-gcp-admin-api", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-gcp-admin-api", "lang": "TypeScript" },
+    { "name": "wdpr-gcp-dgc", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-gcp-dgc", "lang": "TypeScript" },
+    { "name": "wdpr-app-payment-event-handler", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-app-payment-event-handler", "lang": "Java" },
+    { "name": "wdpr-app-payment-stream-handler", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-app-payment-stream-handler", "lang": "Java" },
+    { "name": "wdpr-token-translator-service", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-token-translator-service", "lang": "Java" },
+    { "name": "wdpr-app-inquiry-service", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-app-inquiry-service", "lang": "Java" },
+    { "name": "dpay-admin-inquiry-webapi", "path": "~/Workspace/Disney/DisneyPaymentsOrg/dpay-admin-inquiry-webapi", "lang": "TypeScript" },
+    { "name": "app-common-keystore", "path": "~/Workspace/Disney/DisneyPaymentsOrg/app-common-keystore", "lang": "Java" },
+    { "name": "wdpr-app-crypto-key-mgmt", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-app-crypto-key-mgmt", "lang": "Java" }
+  ]
 }

@@ -1,0 +1,397 @@
+# Graph Report
+
+**Nodes:** 1403 | **Edges:** 6380 | **Communities:** 358
+
+## Communities
+
+| ID | Label | Nodes |
+|:--:|-------|:-----:|
+| 43 | src/main | 2 |
+| 102 | src/main | 5 |
+| 127 | src/main | 3 |
+| 135 | src/main | 2 |
+| 190 | src/main | 2 |
+| 272 | src/test | 2 |
+| 304 | src/test | 14 |
+| 87 | src/main | 2 |
+| 113 | src/main | 5 |
+| 341 | src/test | 2 |
+| 344 | src/test | 4 |
+| 30 | src/main | 6 |
+| 84 | src/main | 2 |
+| 123 | src/main | 3 |
+| 179 | src/main | 2 |
+| 331 | src/test | 2 |
+| 357 | src/test | 7 |
+| 222 | src/test | 2 |
+| 111 | src/main | 2 |
+| 122 | src/main | 7 |
+| 141 | src/main | 2 |
+| 307 | src/test | 2 |
+| 50 | src/main | 3 |
+| 98 | src/main | 2 |
+| 176 | src/main | 2 |
+| 335 | src/test | 4 |
+| 10 | src/main | 6 |
+| 105 | src/main | 2 |
+| 215 | src/test | 2 |
+| 226 | src/test | 2 |
+| 243 | src/test | 3 |
+| 345 | src/test | 2 |
+| 40 | src/main | 2 |
+| 134 | src/main | 2 |
+| 238 | src/test | 2 |
+| 240 | src/test | 3 |
+| 315 | src/test | 3 |
+| 354 | src/test | 3 |
+| 114 | src/main | 11 |
+| 116 | src/main | 5 |
+| 192 | src/main | 2 |
+| 224 | src/test | 2 |
+| 269 | src/test | 2 |
+| 282 | src/test | 3 |
+| 92 | src/main | 2 |
+| 197 | src/main | 8 |
+| 198 | src/main | 11 |
+| 271 | src/test | 2 |
+| 293 | src/test | 2 |
+| 303 | src/test | 2 |
+| 1 | src/main | 5 |
+| 35 | src/main | 17 |
+| 93 | src/main | 2 |
+| 158 | src/main | 2 |
+| 171 | src/main | 4 |
+| 324 | src/test | 2 |
+| 19 | src/main | 5 |
+| 144 | src/main | 2 |
+| 146 | src/main | 2 |
+| 196 | src/main | 2 |
+| 207 | src/main | 3 |
+| 285 | src/test | 2 |
+| 334 | src/test | 2 |
+| 86 | src/main | 3 |
+| 104 | src/main | 4 |
+| 177 | src/main | 2 |
+| 298 | src/test | 2 |
+| 348 | src/test | 2 |
+| 51 | src/main | 4 |
+| 62 | src/main | 5 |
+| 103 | src/main | 3 |
+| 279 | src/test | 2 |
+| 289 | src/test | 2 |
+| 311 | src/test | 2 |
+| 2 | src/main | 2 |
+| 115 | src/main | 3 |
+| 147 | src/main | 2 |
+| 212 | src/test | 2 |
+| 239 | src/test | 3 |
+| 330 | src/test | 2 |
+| 28 | src/main | 2 |
+| 53 | src/main | 51 |
+| 172 | src/main | 2 |
+| 241 | src/test | 3 |
+| 301 | src/test | 2 |
+| 329 | src/test | 3 |
+| 52 | src/main | 14 |
+| 164 | src/main | 2 |
+| 211 | src/test | 2 |
+| 235 | src/test | 2 |
+| 55 | src/main | 3 |
+| 67 | src/main | 4 |
+| 142 | src/main | 2 |
+| 232 | src/test | 2 |
+| 295 | src/test | 6 |
+| 318 | src/test | 2 |
+| 7 | src/main | 3 |
+| 118 | src/main | 4 |
+| 184 | src/main | 2 |
+| 220 | src/test | 5 |
+| 326 | src/test | 2 |
+| 85 | src/main | 2 |
+| 128 | src/main | 3 |
+| 138 | src/main | 3 |
+| 233 | src/test | 2 |
+| 23 | src/main | 5 |
+| 31 | src/main | 7 |
+| 218 | src/test | 25 |
+| 247 | src/test | 3 |
+| 257 | src/test | 2 |
+| 20 | src/main | 3 |
+| 130 | src/main | 9 |
+| 160 | src/main | 4 |
+| 167 | src/main | 2 |
+| 230 | src/test | 2 |
+| 325 | src/test | 2 |
+| 327 | src/test | 10 |
+| 74 | src/main | 2 |
+| 83 | src/main | 2 |
+| 157 | src/main | 2 |
+| 280 | src/test | 2 |
+| 346 | src/test | 2 |
+| 351 | src/test | 2 |
+| 6 | src/main | 3 |
+| 108 | src/main | 5 |
+| 156 | src/main | 2 |
+| 162 | src/main | 2 |
+| 163 | src/main | 2 |
+| 353 | src/test | 3 |
+| 174 | src/main | 3 |
+| 214 | src/test | 2 |
+| 248 | src/test | 8 |
+| 294 | src/test | 2 |
+| 317 | src/test | 2 |
+| 16 | src/main | 8 |
+| 78 | src/main | 2 |
+| 189 | src/main | 2 |
+| 237 | src/test | 10 |
+| 343 | src/test | 3 |
+| 59 | src/main | 4 |
+| 63 | src/main | 18 |
+| 217 | src/test | 2 |
+| 244 | src/test | 3 |
+| 340 | src/test | 2 |
+| 42 | src/main | 5 |
+| 69 | src/main | 3 |
+| 320 | src/test | 2 |
+| 336 | src/test | 2 |
+| 342 | src/test | 2 |
+| 349 | src/test | 2 |
+| 22 | src/main | 4 |
+| 37 | src/main | 9 |
+| 56 | src/main | 2 |
+| 117 | src/main | 3 |
+| 203 | src/main | 3 |
+| 252 | src/test | 6 |
+| 274 | src/test | 2 |
+| 276 | src/test | 3 |
+| 66 | src/main | 2 |
+| 109 | src/main | 4 |
+| 153 | src/main | 13 |
+| 180 | src/main | 2 |
+| 270 | src/test | 2 |
+| 297 | src/test | 4 |
+| 305 | src/test | 2 |
+| 350 | src/test | 2 |
+| 44 | src/main | 11 |
+| 80 | src/main | 4 |
+| 213 | src/test | 2 |
+| 216 | src/test | 2 |
+| 337 | src/test | 4 |
+| 12 | src/main | 3 |
+| 57 | src/main | 2 |
+| 61 | src/main | 17 |
+| 149 | src/main | 2 |
+| 166 | src/main | 4 |
+| 302 | src/test | 2 |
+| 316 | src/test | 2 |
+| 355 | src/test | 4 |
+| 137 | src/main | 2 |
+| 139 | src/main | 2 |
+| 219 | src/test | 2 |
+| 263 | src/test | 2 |
+| 145 | src/main | 2 |
+| 209 | src/test | 4 |
+| 332 | src/test | 2 |
+| 3 | src/main | 7 |
+| 60 | src/main | 3 |
+| 72 | src/main | 2 |
+| 199 | src/main | 6 |
+| 242 | src/test | 3 |
+| 250 | src/test | 3 |
+| 314 | src/test | 3 |
+| 319 | src/test | 2 |
+| 18 | src/main | 13 |
+| 32 | src/main | 5 |
+| 291 | src/test | 2 |
+| 312 | src/test | 3 |
+| 333 | src/test | 2 |
+| 347 | src/test | 4 |
+| 15 | src/main | 13 |
+| 88 | src/main | 4 |
+| 101 | src/main | 8 |
+| 124 | src/main | 4 |
+| 129 | src/main | 6 |
+| 249 | src/test | 2 |
+| 41 | src/main | 8 |
+| 152 | src/main | 2 |
+| 195 | src/main | 9 |
+| 281 | src/test | 5 |
+| 286 | src/test | 13 |
+| 38 | src/main | 4 |
+| 186 | src/main | 2 |
+| 194 | src/main | 2 |
+| 206 | src/main | 6 |
+| 245 | src/test | 3 |
+| 262 | src/test | 2 |
+| 17 | src/main | 2 |
+| 46 | src/main | 6 |
+| 95 | src/main | 4 |
+| 133 | src/main | 2 |
+| 193 | src/main | 2 |
+| 246 | src/test | 3 |
+| 300 | src/test | 2 |
+| 89 | src/main | 2 |
+| 94 | src/main | 2 |
+| 71 | src/main | 2 |
+| 82 | src/main | 2 |
+| 181 | src/main | 2 |
+| 310 | src/test | 2 |
+| 27 | src/main | 2 |
+| 0 | infrastructure/localstack | 5 |
+| 75 | src/main | 2 |
+| 140 | src/main | 2 |
+| 159 | src/main | 3 |
+| 287 | src/test | 2 |
+| 356 | src/test | 2 |
+| 49 | src/main | 2 |
+| 81 | src/main | 2 |
+| 175 | src/main | 3 |
+| 191 | src/main | 2 |
+| 227 | src/test | 2 |
+| 309 | src/test | 2 |
+| 34 | src/main | 2 |
+| 150 | src/main | 2 |
+| 169 | src/main | 2 |
+| 296 | src/test | 5 |
+| 322 | src/test | 5 |
+| 90 | src/main | 2 |
+| 260 | src/test | 3 |
+| 25 | src/main | 5 |
+| 13 | src/main | 8 |
+| 14 | src/main | 9 |
+| 33 | src/main | 5 |
+| 136 | src/main | 3 |
+| 205 | src/main | 3 |
+| 255 | src/test | 3 |
+| 256 | src/test | 8 |
+| 5 | src/main | 3 |
+| 47 | src/main | 11 |
+| 65 | src/main | 4 |
+| 178 | src/main | 2 |
+| 202 | src/main | 6 |
+| 204 | src/main | 9 |
+| 253 | src/test | 2 |
+| 258 | src/test | 2 |
+| 39 | src/main | 2 |
+| 261 | src/test | 3 |
+| 268 | src/test | 2 |
+| 321 | src/test | 2 |
+| 76 | src/main | 5 |
+| 208 | src/main | 8 |
+| 221 | src/test | 4 |
+| 223 | src/test | 2 |
+| 259 | src/test | 3 |
+| 284 | src/test | 5 |
+| 73 | src/main | 2 |
+| 91 | src/main | 2 |
+| 154 | src/main | 2 |
+| 168 | src/main | 2 |
+| 288 | src/test | 2 |
+| 54 | src/main | 2 |
+| 70 | src/main | 25 |
+| 352 | src/test | 2 |
+| 24 | src/main | 5 |
+| 26 | src/main | 3 |
+| 151 | src/main | 2 |
+| 155 | src/main | 2 |
+| 182 | src/main | 2 |
+| 228 | src/test | 2 |
+| 11 | src/main | 7 |
+| 45 | src/main | 5 |
+| 112 | src/main | 2 |
+| 231 | src/test | 2 |
+| 277 | src/test | 2 |
+| 8 | src/main | 4 |
+| 99 | src/main | 9 |
+| 120 | src/main | 3 |
+| 210 | src/test | 2 |
+| 308 | src/test | 2 |
+| 313 | src/test | 15 |
+| 36 | src/main | 12 |
+| 107 | src/main | 5 |
+| 110 | src/main | 4 |
+| 200 | src/main | 3 |
+| 267 | src/test | 2 |
+| 273 | src/test | 2 |
+| 148 | src/main | 2 |
+| 170 | src/main | 2 |
+| 201 | src/main | 3 |
+| 225 | src/test | 2 |
+| 264 | src/test | 4 |
+| 275 | src/test | 2 |
+| 338 | src/test | 2 |
+| 21 | src/main | 18 |
+| 29 | src/main | 2 |
+| 64 | src/main | 3 |
+| 96 | src/main | 2 |
+| 165 | src/main | 2 |
+| 185 | src/main | 2 |
+| 251 | src/test | 3 |
+| 173 | src/main | 3 |
+| 328 | src/test | 2 |
+| 106 | src/main | 2 |
+| 121 | src/main | 4 |
+| 143 | src/main | 2 |
+| 236 | src/test | 8 |
+| 266 | src/test | 8 |
+| 292 | src/test | 2 |
+| 306 | src/test | 2 |
+| 79 | src/main | 2 |
+| 125 | src/main | 3 |
+| 126 | src/main | 3 |
+| 187 | src/main | 2 |
+| 48 | src/main | 3 |
+| 132 | src/main | 2 |
+| 161 | src/main | 3 |
+| 229 | src/test | 2 |
+| 234 | src/test | 2 |
+| 265 | src/test | 3 |
+| 278 | src/test | 2 |
+| 77 | src/main | 3 |
+| 188 | src/main | 2 |
+| 254 | src/test | 3 |
+| 290 | src/test | 2 |
+| 299 | src/test | 2 |
+| 339 | src/test | 2 |
+| 4 | src/main | 12 |
+| 58 | src/main | 2 |
+| 68 | src/main | 2 |
+| 100 | src/main | 4 |
+| 97 | src/main | 15 |
+| 119 | src/main | 3 |
+| 131 | src/main | 6 |
+| 183 | src/main | 2 |
+| 283 | src/test | 2 |
+| 323 | src/test | 2 |
+| 9 | src/main | 13 |
+
+## God Nodes
+
+Highest-connected nodes — potential coupling hotspots.
+
+| Node | Degree | In | Out |
+|------|:------:|:--:|:---:|
+| src/main/java/com/wdpr/configsvcs/helper/client/ClientConfigHelperMethods.java | 139 | 0 | 139 |
+| src/test/java/com/wdpr/configsvcs/helper/client/ClientConfigHelperMethodsTest.java | 90 | 0 | 90 |
+| src/test/java/com/wdpr/configsvcs/helper/client/ClientConfigHelperTest.java | 89 | 0 | 89 |
+| src/main/java/com/wdpr/configsvcs/helper/promotion/PromotionHelper.java | 82 | 0 | 82 |
+| src/main/java/com/wdpr/configsvcs/helper/client/ClientConfigHelper.java | 80 | 0 | 80 |
+| src/test/java/com/wdpr/configsvcs/helper/promotion/PromotionHelperTest.java | 79 | 0 | 79 |
+| src/test/java/com/wdpr/configsvcs/helper/metadata/MetadataConfigHelperTest.java | 72 | 0 | 72 |
+| src/test/java/com/wdpr/configsvcs/helper/config/GeneralConfigHelperTest.java | 70 | 0 | 70 |
+| src/main/java/com/wdpr/configsvcs/helper/metadata/MetadataConfigHelper.java | 69 | 0 | 69 |
+| src/test/java/com/wdpr/configsvcs/controller/promotion/PromotionDataControllerTest.java | 65 | 0 | 65 |
+
+## Surprising Connections
+
+Cross-community edges — unexpected dependencies.
+
+No cross-community imports detected.
+
+## Suggested Questions
+
+Questions this graph can help answer:
+
+- What depends on `src/main/java/com/wdpr/configsvcs/helper/client/ClientConfigHelperMethods.java` and what breaks if it changes?
+- Which modules have the tightest coupling between communities?
+- What is the shortest path between two seemingly unrelated modules?
