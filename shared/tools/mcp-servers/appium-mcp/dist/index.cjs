@@ -15930,6 +15930,127 @@ async function handleGetSessionInfo() {
   return { content: [{ type: "text", text: JSON.stringify({ sessionId: sid, ...data.value }, null, 2) }] };
 }
 
+// build/tools/sessionPersistence.js
+var listSessionsSchema = {
+  name: "appium_list_sessions",
+  description: "List all active Appium sessions on the server. Useful for reconnecting to an existing session.",
+  inputSchema: {
+    type: "object",
+    properties: {}
+  }
+};
+async function handleListSessions() {
+  const data = await appiumRequest({ path: "/sessions" });
+  const sessions = data.value || [];
+  const currentId = getSessionId();
+  const result = sessions.map((s) => ({
+    id: s.id,
+    capabilities: {
+      platformName: s.capabilities?.platformName,
+      deviceName: s.capabilities?.deviceName,
+      bundleId: s.capabilities?.bundleId || s.capabilities?.appPackage,
+      app: s.capabilities?.app
+    },
+    isCurrent: s.id === currentId
+  }));
+  return { content: [{ type: "text", text: JSON.stringify({ sessions: result, count: result.length }) }] };
+}
+var reconnectSessionSchema = {
+  name: "appium_reconnect_session",
+  description: "Reconnect to an existing Appium session by ID. Use appium_list_sessions first to find active sessions.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      sessionId: { type: "string", description: "Session ID to reconnect to" }
+    },
+    required: ["sessionId"]
+  }
+};
+async function handleReconnectSession(args) {
+  const sessionId = args.sessionId;
+  try {
+    const data = await appiumRequest({ path: `/session/${sessionId}` });
+    setSessionId(sessionId);
+    const caps = data.value || {};
+    return {
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          success: true,
+          sessionId,
+          platform: caps.platformName,
+          device: caps.deviceName,
+          app: caps.bundleId || caps.appPackage || caps.app
+        })
+      }]
+    };
+  } catch (err) {
+    return {
+      content: [{ type: "text", text: JSON.stringify({ success: false, error: `Session ${sessionId} not found or expired: ${err.message}` }) }],
+      isError: true
+    };
+  }
+}
+
+// build/tools/sessionState.js
+var getSessionStateSchema = {
+  name: "appium_get_session_state",
+  description: "Get a lightweight summary of the current session state including platform, app, screen context, and alert presence. Useful for orienting after reconnection or between actions.",
+  inputSchema: {
+    type: "object",
+    properties: {}
+  }
+};
+async function handleGetSessionState() {
+  const sessionId = getSessionId();
+  if (!sessionId) {
+    return { content: [{ type: "text", text: JSON.stringify({ active: false, message: "No active session" }) }] };
+  }
+  const result = { active: true, sessionId };
+  try {
+    const capsData = await appiumRequest({ path: `/session/${sessionId}` });
+    const caps = capsData.value || {};
+    result.platform = caps.platformName;
+    result.device = caps.deviceName;
+    result.bundleId = caps.bundleId || caps.appPackage;
+    result.automationName = caps.automationName;
+  } catch {
+    return { content: [{ type: "text", text: JSON.stringify({ active: false, sessionId, message: "Session expired or unreachable" }) }] };
+  }
+  try {
+    const alertData = await appiumRequest({ path: sessionPath("/alert/text") });
+    result.isAlertPresent = true;
+    result.alertText = alertData.value;
+  } catch {
+    result.isAlertPresent = false;
+  }
+  try {
+    const ctxData = await appiumRequest({ path: sessionPath("/context") });
+    result.currentContext = ctxData.value;
+  } catch {
+    result.currentContext = "unknown";
+  }
+  try {
+    const orientData = await appiumRequest({ path: sessionPath("/orientation") });
+    result.orientation = orientData.value;
+  } catch {
+    result.orientation = "unknown";
+  }
+  try {
+    const source = await appiumRequest({ path: sessionPath("/source") });
+    const xml = source.value || "";
+    const navMatch = xml.match(/XCUIElementTypeNavigationBar[^>]*name="([^"]+)"/) || xml.match(/XCUIElementTypeStaticText[^>]*label="([^"]+)"[^>]*type="XCUIElementTypeNavigationBar"/);
+    result.screenTitle = navMatch ? navMatch[1] : null;
+    const tabMatches = [...xml.matchAll(/XCUIElementTypeButton[^>]*label="([^"]+)"[^/]*\/>/g)].filter((m) => xml.slice(Math.max(0, xml.indexOf(m[0]) - 200), xml.indexOf(m[0])).includes("TabBar"));
+    if (tabMatches.length > 0) {
+      result.visibleTabs = tabMatches.map((m) => m[1]);
+    }
+  } catch {
+    result.screenTitle = null;
+  }
+  return { content: [{ type: "text", text: JSON.stringify(result) }] };
+}
+
 // build/tools/discovery.js
 var getPageSourceSchema = {
   name: "appium_get_page_source",
@@ -16181,6 +16302,60 @@ async function handleSetPermission(args) {
   return { content: [{ type: "text", text: JSON.stringify({ success: true, action }) }] };
 }
 
+// build/tools/scroll.js
+var scrollSchema = {
+  name: "appium_scroll",
+  description: "Scroll the screen in a direction by a specified distance. Does not require a target element \u2014 useful for exploring content below the fold.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      direction: {
+        type: "string",
+        enum: ["up", "down", "left", "right"],
+        description: "Scroll direction"
+      },
+      distance: {
+        type: "number",
+        description: "Scroll distance as percentage of screen (1-100, default: 50)"
+      },
+      elementId: {
+        type: "string",
+        description: "Optional: scroll within a specific scrollable container element"
+      }
+    },
+    required: ["direction"]
+  }
+};
+async function handleScroll(args) {
+  const direction = args.direction;
+  const distance = (args.distance || 50) / 100;
+  const elementId = args.elementId;
+  const scrollArgs = { direction };
+  if (elementId) {
+    scrollArgs.elementId = elementId;
+  }
+  try {
+    await appiumRequest({
+      method: "POST",
+      path: sessionPath("/execute"),
+      body: {
+        script: "mobile: scroll",
+        args: [{ direction, distance, ...elementId ? { elementId } : {} }]
+      }
+    });
+  } catch {
+    const duration3 = 800;
+    await appiumRequest({
+      method: "POST",
+      path: sessionPath("/execute"),
+      body: { script: "mobile: swipe", args: [{ direction, duration: duration3 }] }
+    });
+  }
+  return {
+    content: [{ type: "text", text: JSON.stringify({ success: true, direction, distance: Math.round(distance * 100) }) }]
+  };
+}
+
 // build/tools/verification.js
 var import_node_fs = __toESM(require("node:fs"), 1);
 var import_node_path = __toESM(require("node:path"), 1);
@@ -16238,19 +16413,25 @@ async function handleGetElementAttribute(args) {
 // build/tools/waits.js
 var waitForElementSchema = {
   name: "appium_wait_for_element",
-  description: "Wait until an element appears on screen (polls every 500ms)",
+  description: "Wait until an element meets a condition (present, visible, clickable, or gone)",
   inputSchema: {
     type: "object",
     properties: {
-      strategy: { type: "string", description: "Locator strategy" },
+      strategy: { type: "string", description: "Locator strategy (accessibility_id, xpath, class_chain, ios_predicate, id)" },
       value: { type: "string", description: "Locator value" },
-      timeout: { type: "number", description: "Timeout in ms (default: 10000)" }
+      timeout: { type: "number", description: "Timeout in ms (default: 10000)" },
+      condition: {
+        type: "string",
+        enum: ["present", "visible", "clickable", "gone"],
+        description: "Wait condition: present (element exists in DOM), visible (displayed), clickable (enabled+displayed), gone (element disappears). Default: present"
+      }
     },
     required: ["strategy", "value"]
   }
 };
 async function handleWaitForElement(args) {
   const timeout = args.timeout || 1e4;
+  const condition = args.condition || "present";
   const interval = 500;
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
@@ -16262,77 +16443,237 @@ async function handleWaitForElement(args) {
       });
       const el = data.value;
       const elementId = typeof el === "object" ? Object.values(el)[0] : el;
-      return { content: [{ type: "text", text: JSON.stringify({ found: true, elementId }) }] };
+      if (condition === "gone") {
+        await new Promise((r) => setTimeout(r, interval));
+        continue;
+      }
+      if (condition === "present") {
+        return { content: [{ type: "text", text: JSON.stringify({ found: true, elementId, condition, waitedMs: Date.now() - (deadline - timeout) }) }] };
+      }
+      if (condition === "visible" || condition === "clickable") {
+        const dispData = await appiumRequest({ path: sessionPath(`/element/${elementId}/displayed`) });
+        const displayed = dispData.value === true;
+        if (condition === "visible" && displayed) {
+          return { content: [{ type: "text", text: JSON.stringify({ found: true, elementId, condition, waitedMs: Date.now() - (deadline - timeout) }) }] };
+        }
+        if (condition === "clickable") {
+          const enabledData = await appiumRequest({ path: sessionPath(`/element/${elementId}/enabled`) });
+          const enabled = enabledData.value === true;
+          if (displayed && enabled) {
+            return { content: [{ type: "text", text: JSON.stringify({ found: true, elementId, condition, waitedMs: Date.now() - (deadline - timeout) }) }] };
+          }
+        }
+      }
+      await new Promise((r) => setTimeout(r, interval));
     } catch {
+      if (condition === "gone") {
+        return { content: [{ type: "text", text: JSON.stringify({ found: false, elementId: null, condition, waitedMs: Date.now() - (deadline - timeout) }) }] };
+      }
       await new Promise((r) => setTimeout(r, interval));
     }
   }
-  return { content: [{ type: "text", text: JSON.stringify({ found: false, elementId: null }) }] };
+  if (condition === "gone") {
+    return { content: [{ type: "text", text: JSON.stringify({ found: true, elementId: null, condition, timedOut: true, message: "Element still present after timeout" }) }] };
+  }
+  return { content: [{ type: "text", text: JSON.stringify({ found: false, elementId: null, condition, timedOut: true }) }] };
+}
+
+// build/tools/interrupts.js
+var dismissIfPresentSchema = {
+  name: "appium_dismiss_if_present",
+  description: "Check if an element is present and interact with it (tap, dismiss). Short timeout \u2014 designed for handling popups and interrupts without blocking.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      strategy: { type: "string", description: "Locator strategy (accessibility_id, xpath, ios_predicate, id)" },
+      value: { type: "string", description: "Locator value" },
+      action: {
+        type: "string",
+        enum: ["tap", "dismiss_alert", "swipe_away"],
+        description: "Action to take if element is found (default: tap)"
+      },
+      timeout: { type: "number", description: "Max wait time in ms (default: 3000 \u2014 keep short for interrupts)" }
+    },
+    required: ["strategy", "value"]
+  }
+};
+async function handleDismissIfPresent(args) {
+  const timeout = args.timeout || 3e3;
+  const action = args.action || "tap";
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    try {
+      const data = await appiumRequest({
+        method: "POST",
+        path: sessionPath("/element"),
+        body: { using: args.strategy, value: args.value }
+      });
+      const el = data.value;
+      const elementId = typeof el === "object" ? Object.values(el)[0] : el;
+      if (action === "tap") {
+        await appiumRequest({ method: "POST", path: sessionPath(`/element/${elementId}/click`), body: {} });
+      } else if (action === "dismiss_alert") {
+        await appiumRequest({ method: "POST", path: sessionPath("/execute"), body: { script: "mobile: alert", args: [{ action: "dismiss" }] } });
+      } else if (action === "swipe_away") {
+        await appiumRequest({ method: "POST", path: sessionPath("/execute"), body: { script: "mobile: swipe", args: [{ direction: "down", duration: 500 }] } });
+      }
+      return { content: [{ type: "text", text: JSON.stringify({ wasPresent: true, actionTaken: action, elementId }) }] };
+    } catch {
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
+  return { content: [{ type: "text", text: JSON.stringify({ wasPresent: false, actionTaken: "none" }) }] };
+}
+var handleInterruptsSchema = {
+  name: "appium_handle_interrupts",
+  description: "Process a list of potential interrupts (popups, dialogs, onboarding screens). Checks each one with a short timeout and handles it if present. Useful at the start of a flow or before assertions.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      interrupts: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            strategy: { type: "string", description: "Locator strategy" },
+            value: { type: "string", description: "Locator value" },
+            action: { type: "string", enum: ["tap", "dismiss_alert", "swipe_away"], description: "Action to take (default: tap)" },
+            label: { type: "string", description: "Human-readable label for logging" }
+          },
+          required: ["strategy", "value"]
+        },
+        description: "Array of potential interrupts to check and handle"
+      },
+      timeout: { type: "number", description: "Timeout per interrupt check in ms (default: 2000)" }
+    },
+    required: ["interrupts"]
+  }
+};
+async function handleHandleInterrupts(args) {
+  const interrupts = args.interrupts;
+  const timeout = args.timeout || 2e3;
+  const handled = [];
+  const skipped = [];
+  for (const interrupt of interrupts) {
+    const label = interrupt.label || `${interrupt.strategy}:${interrupt.value}`;
+    const deadline = Date.now() + timeout;
+    let found = false;
+    while (Date.now() < deadline) {
+      try {
+        const data = await appiumRequest({
+          method: "POST",
+          path: sessionPath("/element"),
+          body: { using: interrupt.strategy, value: interrupt.value }
+        });
+        const el = data.value;
+        const elementId = typeof el === "object" ? Object.values(el)[0] : el;
+        const action = interrupt.action || "tap";
+        if (action === "tap") {
+          await appiumRequest({ method: "POST", path: sessionPath(`/element/${elementId}/click`), body: {} });
+        } else if (action === "dismiss_alert") {
+          await appiumRequest({ method: "POST", path: sessionPath("/execute"), body: { script: "mobile: alert", args: [{ action: "dismiss" }] } });
+        } else if (action === "swipe_away") {
+          await appiumRequest({ method: "POST", path: sessionPath("/execute"), body: { script: "mobile: swipe", args: [{ direction: "down", duration: 500 }] } });
+        }
+        handled.push(label);
+        found = true;
+        await new Promise((r) => setTimeout(r, 500));
+        break;
+      } catch {
+        await new Promise((r) => setTimeout(r, 500));
+      }
+    }
+    if (!found) {
+      skipped.push(label);
+    }
+  }
+  return { content: [{ type: "text", text: JSON.stringify({ handled, skipped, total: interrupts.length }) }] };
 }
 
 // build/index.js
 var allSchemas = [
+  // Session management
   createSessionSchema,
   endSessionSchema,
   getSessionInfoSchema,
+  listSessionsSchema,
+  reconnectSessionSchema,
+  getSessionStateSchema,
+  // Discovery
   getPageSourceSchema,
   findElementSchema,
   findElementsSchema,
+  getContextsSchema,
+  setContextSchema,
+  // Actions
   tapSchema,
   typeSchema,
   swipeSchema,
   backSchema,
   longPressSchema,
   scrollToSchema,
+  scrollSchema,
   launchAppSchema,
   setPermissionSchema,
+  // Verification
   screenshotSchema,
   isElementDisplayedSchema,
   getElementAttributeSchema,
+  // Waits
   waitForElementSchema,
-  getContextsSchema,
-  setContextSchema
+  // Interrupt handling
+  dismissIfPresentSchema,
+  handleInterruptsSchema
 ];
 var toolHandlers = {
+  // Session management
   appium_create_session: handleCreateSession,
   appium_end_session: handleEndSession,
   appium_get_session_info: handleGetSessionInfo,
+  appium_list_sessions: handleListSessions,
+  appium_reconnect_session: handleReconnectSession,
+  appium_get_session_state: handleGetSessionState,
+  // Discovery
   appium_get_page_source: handleGetPageSource,
   appium_find_element: handleFindElement,
   appium_find_elements: handleFindElements,
+  appium_get_contexts: handleGetContexts,
+  appium_set_context: handleSetContext,
+  // Actions
   appium_tap: handleTap,
   appium_type: handleType,
   appium_swipe: handleSwipe,
   appium_back: handleBack,
   appium_long_press: handleLongPress,
   appium_scroll_to: handleScrollTo,
+  appium_scroll: handleScroll,
   appium_launch_app: handleLaunchApp,
   appium_set_permission: handleSetPermission,
+  // Verification
   appium_screenshot: handleScreenshot,
   appium_is_element_displayed: handleIsElementDisplayed,
   appium_get_element_attribute: handleGetElementAttribute,
+  // Waits
   appium_wait_for_element: handleWaitForElement,
-  appium_get_contexts: handleGetContexts,
-  appium_set_context: handleSetContext
+  // Interrupt handling
+  appium_dismiss_if_present: handleDismissIfPresent,
+  appium_handle_interrupts: handleHandleInterrupts
 };
-var server = new Server({ name: "appium-mcp", version: "1.0.0" }, { capabilities: { tools: {} } });
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: allSchemas
-}));
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  const handler = toolHandlers[name];
-  if (!handler) {
-    throw new Error(`Unknown tool: ${name}`);
-  }
-  return await handler(args);
+var server = new Server({ name: "appium-mcp", version: "1.1.0" }, { capabilities: { tools: {} } });
+server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: allSchemas }));
+server.setRequestHandler(CallToolRequestSchema, async (req) => {
+  const handler = toolHandlers[req.params.name];
+  if (!handler)
+    return { content: [{ type: "text", text: `Unknown tool: ${req.params.name}` }], isError: true };
+  return handler(req.params.arguments);
 });
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Appium MCP server running on stdio");
+  process.stderr.write("Appium MCP server v1.1.0 running on stdio\n");
 }
-main().catch((error2) => {
-  console.error("Fatal error:", error2);
+main().catch((err) => {
+  process.stderr.write(`Fatal: ${err.message}
+`);
   process.exit(1);
 });
