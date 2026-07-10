@@ -1,44 +1,79 @@
 ---
-inclusion: fileMatch
-fileMatchPattern: ["**/*.go", "go.mod", "go.sum", "Makefile"]
-description: Go development rules for Koda CLI/TUI
+inclusion: auto
+description: Conventions for working in Koda (Go CLI/TUI)
 ---
 
-# Koda (Go) steering
+# Koda repo conventions
 
-## Architecture
+## Directory structure
 
-- Koda is a Go CLI/TUI built with Cobra (CLI), Bubbletea (TUI), and Lipgloss (styling)
-- Package layout: `internal/cli/` (commands), `internal/tui/` (UI), `internal/ops/` (business logic), `internal/model/` (structs), `internal/config/` (settings)
-- Business logic belongs in `internal/ops/` — CLI and TUI are thin wrappers
-- Models live in `internal/model/` with JSON tags and `omitempty` for optional fields
+```text
+cmd/koda/           → Main entry point
+internal/
+  cli/              → Cobra commands (one file per command)
+  tui/              → Bubbletea TUI (app.go, chat.go, mcp.go, etc.)
+  ops/              → Business logic (sync, upgrade, steer, fork, etc.)
+  acp/              → ACP protocol client
+  config/           → Settings read/write (~/.kiro/settings/)
+  model/            → Data models (agent, workspace, profile)
+  team/             → Multi-agent team orchestration
+  kitestream/       → KiteStream/Kite bridge
+  autopilot/        → Autopilot client
+  graphify/         → Code knowledge graph builder
+  slack/            → Slack bot integration
+bin/                → Build outputs (cross-compiled)
+Makefile            → Build, test, release targets
+```
 
-## Conventions
+## Build and test
 
-- All new model fields must use `omitempty` for backward compatibility
-- Use `cobra.Command` for new CLI commands — register in `internal/cli/commands.go`
-- TUI screens follow the Bubbletea `Init/Update/View` pattern
-- Feature gates: check `config.IsTUIEnabled("feature")` before exposing in TUI
-- Error handling: wrap with `fmt.Errorf("context: %w", err)` — never swallow errors
-- Logging: use `log.Printf` for debug, `fmt.Printf` for user-facing output
+```bash
+make build                  # Build for current platform
+make run                    # Build + launch TUI
+make test                   # All tests
+make test-ws                # Workspace-specific tests
+make cross                  # Cross-compile all platforms
+make lint                   # golangci-lint
+```
 
-## Cross-platform
+## Key Makefile targets
 
-- File paths: always use `filepath.Join`, never hardcode separators
-- Windows parity: `.sh` hooks must have matching `.ps1` equivalents
-- ANSI: check `config.IsColorEnabled()` before emitting color codes
-- Test on both macOS and Windows when changing path handling or process spawning
+```bash
+make publish TAG=v0.4.x     # Tag + build + upload Koda release
+make publish-all            # Auto-version + publish all repos with changes
+make pack-steer             # Package steer-runtime tarball
+make publish-steer TAG=...  # Upload steer-runtime to public repo
+make verify-release-steer   # Verify tarball asset exists
+make verify-release-koda    # Verify all platform binaries exist
+make verify-versions        # Check private/public/local version consistency
+```
 
-## Testing
+## Go patterns
 
-- Unit tests: `go test ./...` from repo root
-- Test files: `*_test.go` next to implementation
-- Use `t.TempDir()` for filesystem tests
-- Mock external dependencies (GitHub API, filesystem) via interfaces
+- Commands are thin — business logic lives in `internal/ops/`
+- TUI uses Bubbletea model-update-view pattern
+- Config files at `~/.kiro/settings/` (JSON)
+- MCP server registration via `internal/ops/mcp.go`
+- Agent materialization: profiles + workspace overlay merged at install time
+- Release key embedded at build time via `-ldflags`
 
-## Do not
+## ACP protocol
 
-- Do not add runtime dependencies without justification — Koda ships as a single binary
-- Do not change existing CLI command signatures (breaking for users)
-- Do not modify `internal/config/features.json` without rebuilding
-- Do not use `os.Exit` outside of `main.go` — return errors instead
+- Client in `internal/acp/client.go`
+- Events: Thinking, Content, ToolUse, ToolResult, Metadata, SubagentUpdate
+- Used by: Koda TUI, Kite, steer-plugins, Mouseketool
+
+## Testing conventions
+
+- Table-driven tests preferred
+- Test files: `*_test.go` adjacent to source
+- Use `t.Helper()` for test utilities
+- Mock external calls (GitHub API, filesystem) via interfaces
+
+## Release flow
+
+- `make publish-all SKIP_CERTIFY=1` is the standard release command
+- Builds Koda binaries + yax + prompt-scorer + steer.vsix
+- Publishes to `github.com/rsanchez-disney/Koda`
+- Then detects steer-runtime changes and publishes separately
+- Verify gates run after each publish step
