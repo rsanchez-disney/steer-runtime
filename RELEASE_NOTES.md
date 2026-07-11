@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.157
+## v0.2.156
 
 - **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
 - **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
