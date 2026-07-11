@@ -4,6 +4,24 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.157] — 2026-07-11
+
+### Added
+
+- **adaptive-payments-team** — graphify reports (25 repos, 268KB), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
+- **steer-platform** — steering (workspace identity, release workflow, PR review, quality, security, AI metrics), knowledge (release troubleshooting, MCP development, onboarding), and graphify reports for all 10 projects
+- **sustainment-beast** — new template for incident reports in beast-team context (#583)
+
+### Fixed
+
+- **release** — re-release with tarball asset
+
+### Changed
+
+- **chore** — ignore `graphify-out/` directory
+- **chore** — rebuild MCP bundles
+- **chore** — update certification report
+
 ## [0.2.155] — 2026-07-09
 
 ### Added

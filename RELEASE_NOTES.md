@@ -4,13 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.156
+## v0.2.157
 
-- **feat(dcl-wfer-travel)** — project-specific steering and sprint backlog for DCL WFER Travel team
-- **feat(dcl-wfer-travel)** — graphify code knowledge graph reports for repository analysis
-- **feat(workspace)** — DCL WFER Travel team workspace initial setup
-- **fix(delegation)** — add few-shot examples to fix 4 failing delegation tests
-- **chore** — rebuild MCP bundles
+- **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
+- **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
+- **improve(sustainment-beast)** — new template for incident reports in beast-team context (#583)
+- **fix** — re-release with tarball asset
+- **chore** — rebuild MCP bundles, update certification report, ignore graphify-out/
 <!-- END LATEST -->
 
 ## v0.2.156
