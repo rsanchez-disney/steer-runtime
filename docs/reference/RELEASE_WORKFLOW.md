@@ -240,3 +240,90 @@ make verify-versions
 make verify-release-koda TAG=v0.4.226
 make verify-release-steer TAG=v0.2.156
 ```
+
+## Download stats and adoption tracking
+
+GitHub Releases automatically tracks download counts per asset. This provides visibility into platform adoption and upgrade velocity.
+
+### Querying download stats
+
+```bash
+# Koda release downloads (all assets)
+curl -sf "https://api.github.com/repos/rsanchez-disney/Koda/releases" | \
+  python3 -c "
+import json, sys
+for r in json.load(sys.stdin):
+    total = sum(a['download_count'] for a in r.get('assets', []))
+    print(f'{r[\"tag_name\"]:12s} | {r[\"published_at\"][:10]} | {total:4d} downloads')
+"
+
+# steer-runtime tarball downloads
+curl -sf "https://api.github.com/repos/rsanchez-disney/steer-runtime/releases" | \
+  python3 -c "
+import json, sys
+for r in json.load(sys.stdin):
+    total = sum(a['download_count'] for a in r.get('assets', []))
+    print(f'{r[\"tag_name\"]:12s} | {r[\"published_at\"][:10]} | {total:4d} downloads')
+"
+
+# Per-platform breakdown for a specific release
+curl -sf "https://api.github.com/repos/rsanchez-disney/Koda/releases/latest" | \
+  python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+print(f'Release: {data[\"tag_name\"]}')
+for a in sorted(data['assets'], key=lambda x: -x['download_count']):
+    if a['download_count'] > 0:
+        print(f'  {a[\"name\"]:40s} {a[\"download_count\"]:4d}')
+"
+```
+
+### Interpreting download counts
+
+```mermaid
+graph LR
+    subgraph "What each download represents"
+        KD[koda-darwin-arm64<br/>download] -->|1 user ran| UPG[koda upgrade]
+        SD[steer-runtime.tar.gz.enc<br/>download] -->|1 user ran| SYNC[koda sync --update]
+    end
+```
+
+**Key metrics:**
+
+| Metric                              | What it tells you                                   |
+|-------------------------------------|-----------------------------------------------------|
+| `koda-darwin-arm64` downloads       | Active macOS Apple Silicon users upgrading           |
+| `koda-darwin-amd64` downloads       | Active macOS Intel users upgrading                   |
+| `koda-windows-amd64.exe` downloads  | Active Windows users upgrading                       |
+| `koda-linux-amd64` downloads        | CI/server or Linux desktop users upgrading           |
+| `steer-runtime.tar.gz.enc` downloads| Users syncing agent/workspace updates                |
+| `steer-runtime.tar.gz.enc.sha256`   | Users with checksum verification (newer koda)        |
+| `yax-*` downloads                   | Users getting yax installed/updated via koda         |
+
+**Platform distribution insights:**
+
+- macOS ARM (darwin-arm64) is typically the dominant platform (~60-70% of downloads)
+- Windows adoption tracks closely with teams onboarding to steer
+- Linux downloads spike during CI pipeline setups
+- steer-runtime downloads should roughly match the sum of all koda platform downloads (every upgrade triggers a sync)
+- If steer-runtime downloads significantly exceed koda downloads, users are running `koda sync --update` independently (common after agent/workspace PRs merge)
+
+### Tracking adoption over time
+
+Download counts are cumulative per release and reset on each new version. To track trends:
+
+1. **Upgrade velocity** — compare downloads in first 24h after publish across releases
+2. **Total active users** — sum all platform downloads for the latest release after 48h (accounts for auto-update lag)
+3. **Platform shift** — track ARM vs Intel ratio over time (migration indicator)
+4. **Sync-only users** — `steer-runtime downloads - koda downloads` = users who sync without upgrading koda
+
+### Auto-update impact
+
+Koda's auto-update mechanism (`koda auto-update enable`) runs daily:
+
+```bash
+koda upgrade && koda sync --update --skip-dirty
+```
+
+This means download counts reflect both manual upgrades and automated daily updates. After enabling auto-update across a team, expect download counts to stabilize at `N users × 1 download/day` until the next release, then spike as the new version propagates.
+
