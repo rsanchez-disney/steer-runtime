@@ -4,12 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.156
+## v0.2.157
 
 - **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
 - **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
 - **improve(sustainment-beast)** — new template for incident reports in beast-team context (#583)
-- **fix** — re-release with tarball asset
+- **docs** — release workflow reference with Mermaid diagrams, download stats, and adoption tracking
+- **fix** — align VERSION and RELEASE_NOTES with published v0.2.156
 - **chore** — rebuild MCP bundles, update certification report, ignore graphify-out/
 <!-- END LATEST -->
 
