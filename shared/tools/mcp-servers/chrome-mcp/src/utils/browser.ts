@@ -5,18 +5,35 @@ let page: Page | null = null;
 
 export async function getPage(): Promise<Page> {
     if (!browser || !browser.connected) {
-        browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-            ],
-        });
+        const wsEndpoint = process.env.BROWSER_WS_ENDPOINT;
+        const browserURL = process.env.BROWSER_URL;
+
+        if (wsEndpoint) {
+            // Connect to an existing browser (e.g., Kite's embedded browser)
+            browser = await puppeteer.connect({
+                browserWSEndpoint: wsEndpoint,
+            });
+        } else if (browserURL) {
+            // Connect via HTTP discovery endpoint (e.g., http://127.0.0.1:9223)
+            browser = await puppeteer.connect({
+                browserURL,
+            });
+        } else {
+            // Default: launch headless Chrome
+            browser = await puppeteer.launch({
+                headless: true,
+                args: [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                ],
+            });
+        }
     }
     if (!page || page.isClosed()) {
-        page = await browser.newPage();
+        const pages = await browser.pages();
+        page = pages[0] || await browser.newPage();
         await page.setViewport({ width: 1280, height: 900 });
     }
     return page;
@@ -24,7 +41,12 @@ export async function getPage(): Promise<Page> {
 
 export async function closeBrowser(): Promise<void> {
     if (browser) {
-        await browser.close();
+        // Don't close if we connected to an external browser
+        if (process.env.BROWSER_WS_ENDPOINT || process.env.BROWSER_URL) {
+            browser.disconnect();
+        } else {
+            await browser.close();
+        }
         browser = null;
         page = null;
     }
