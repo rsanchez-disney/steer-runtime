@@ -4,6 +4,14 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.158
+
+- **feat(chrome-mcp)** — support `BROWSER_URL` and `BROWSER_WS_ENDPOINT` env vars for connecting to external browser instances (e.g., Kite CDP proxy)
+- **feat(orchestrator)** — `@chrome/*` tools for embedded browser access
+- **fix(chrome-mcp)** — graceful fallback to headless launch when `BROWSER_URL` is unavailable
+- **chore** — rebuild chrome-mcp bundle
+<!-- END LATEST -->
+
 ## v0.2.157
 
 - **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering

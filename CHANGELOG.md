@@ -4,6 +4,21 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.158] — 2026-07-13
+
+### Added
+
+- **chrome-mcp** — support `BROWSER_URL` and `BROWSER_WS_ENDPOINT` env vars for connecting to external browser instances (e.g., Kite CDP proxy)
+- **orchestrator** — `@chrome/*` tools added to orchestrator agent for embedded browser access
+
+### Fixed
+
+- **chrome-mcp** — graceful fallback to headless launch when `BROWSER_URL` is unavailable (try/catch around connect)
+
+### Changed
+
+- **chore** — rebuild chrome-mcp bundle
+
 ## [0.2.157] — 2026-07-12
 
 ### Added
