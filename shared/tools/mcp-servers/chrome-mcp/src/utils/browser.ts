@@ -2,33 +2,32 @@ import puppeteer, { Browser, Page } from "puppeteer";
 
 let browser: Browser | null = null;
 let page: Page | null = null;
+let connectedToExternal = false;
 
 export async function getPage(): Promise<Page> {
     if (!browser || !browser.connected) {
+        connectedToExternal = false;
         const wsEndpoint = process.env.BROWSER_WS_ENDPOINT;
         const browserURL = process.env.BROWSER_URL;
 
         if (wsEndpoint) {
-            // Connect to an existing browser (e.g., Kite's embedded browser)
-            browser = await puppeteer.connect({
-                browserWSEndpoint: wsEndpoint,
-            });
+            try {
+                browser = await puppeteer.connect({ browserWSEndpoint: wsEndpoint });
+                connectedToExternal = true;
+            } catch {
+                // Fallback to launch if WebSocket connection fails
+                browser = await launchHeadless();
+            }
         } else if (browserURL) {
-            // Connect via HTTP discovery endpoint (e.g., http://127.0.0.1:9223)
-            browser = await puppeteer.connect({
-                browserURL,
-            });
+            try {
+                browser = await puppeteer.connect({ browserURL });
+                connectedToExternal = true;
+            } catch {
+                // Fallback to launch if HTTP discovery fails (e.g., Kite browser not open)
+                browser = await launchHeadless();
+            }
         } else {
-            // Default: launch headless Chrome
-            browser = await puppeteer.launch({
-                headless: true,
-                args: [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-gpu",
-                ],
-            });
+            browser = await launchHeadless();
         }
     }
     if (!page || page.isClosed()) {
@@ -39,15 +38,27 @@ export async function getPage(): Promise<Page> {
     return page;
 }
 
+async function launchHeadless(): Promise<Browser> {
+    return puppeteer.launch({
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+        ],
+    });
+}
+
 export async function closeBrowser(): Promise<void> {
     if (browser) {
-        // Don't close if we connected to an external browser
-        if (process.env.BROWSER_WS_ENDPOINT || process.env.BROWSER_URL) {
+        if (connectedToExternal) {
             browser.disconnect();
         } else {
             await browser.close();
         }
         browser = null;
         page = null;
+        connectedToExternal = false;
     }
 }
