@@ -9,7 +9,8 @@
     "execute_bash",
     "thinking",
     "knowledge",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@cortex/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",
