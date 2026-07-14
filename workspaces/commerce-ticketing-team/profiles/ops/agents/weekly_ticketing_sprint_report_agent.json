@@ -1,0 +1,15 @@
+{
+    "name": "weekly_ticketing_sprint_report_agent",
+    "description": "Generates weekly sprint status report for Control & Kaos studios. Auto-runs Mondays 10 AM via launchd.",
+    "prompt": "../prompts/weekly_ticketing_sprint_report_agent.md",
+    "tools": [
+        "fs_read",
+        "fs_write",
+        "execute_bash",
+        "grep",
+        "code",
+        "@jira/*"
+    ],
+    "resources": [],
+    "welcomeMessage": "Weekly Ticketing Sprint Report agent ready. Commands:\n- 'generate report' — run the report now\n- 'install schedule' — install the Monday 10 AM launchd job\n- 'uninstall schedule' — remove the scheduled job\n- 'status' — check if schedule is installed"
+}

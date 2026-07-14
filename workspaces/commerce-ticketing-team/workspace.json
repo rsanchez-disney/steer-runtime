@@ -4,7 +4,8 @@
   "team": "Commerce Ticketing & Checkout",
   "profiles": [
     "sustainment",
-    "dev-core"
+    "dev-core",
+    "ops"
   ],
   "default_agent": "sustainment_orchestrator_agent",
   "rules": [

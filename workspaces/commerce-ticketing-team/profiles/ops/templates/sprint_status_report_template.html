@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sprint Status Report - Control & Kaos - MM/DD/YYYY</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 20px auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  h1 { font-size: 18pt; color: #1a237e; border-bottom: 3px solid #1a237e; padding-bottom: 8px; }
+  h2 { font-size: 14pt; color: #283593; margin-top: 30px; border-bottom: 1px solid #c5cae9; padding-bottom: 4px; }
+  h3 { font-size: 12pt; color: #3949ab; margin-top: 20px; }
+  h4 { font-size: 11pt; color: #444; margin-top: 14px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 10pt; }
+  th { background: #1a237e; color: white; padding: 8px 10px; text-align: left; }
+  td { border: 1px solid #ddd; padding: 7px 10px; vertical-align: top; }
+  tr:nth-child(even) { background: #f5f5f5; }
+  ul { margin: 6px 0 16px 20px; padding: 0; }
+  li { margin-bottom: 5px; }
+  .important-updates li { margin-bottom: 16px; }
+  .subtitle { font-size: 11pt; color: #666; margin-top: -10px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 9pt; font-weight: 600; }
+  .badge-progress { background: #fff3e0; color: #e65100; }
+  .badge-ready { background: #e8f5e9; color: #2e7d32; }
+  .badge-review { background: #e3f2fd; color: #1565c0; }
+  .badge-open { background: #fafafa; color: #616161; }
+  .badge-closed { background: #e8f5e9; color: #2e7d32; }
+  .badge-blocked { background: #fce4ec; color: #c62828; }
+  .badge-critical { color: #c62828; font-weight: bold; }
+  a { color: #1565c0; text-decoration: none; }
+  .new-tag { background-color: #e3f2fd; color: #0d47a1; font-size: 9pt; padding: 1px 5px; border-radius: 3px; font-weight: bold; }
+  .changed-tag { background-color: #fff8e1; color: #f57f17; font-size: 9pt; padding: 1px 5px; border-radius: 3px; font-weight: bold; }
+  hr { border: none; border-top: 1px solid #e0e0e0; margin: 20px 0; }
+  .project-block { margin: 24px 0; padding: 8px 12px; border-left: 3px solid #1a237e; background: #f9fbfd; }
+  .project-title { margin: 16px 0 4px 0; }
+  footer { margin-top: 40px; font-size: 10pt; color: #999; }
+</style>
+</head>
+<body>
+
+<h1>Sprint Status Report — Kaos &amp; Control Teams</h1>
+<p class="subtitle"><strong>Report Date:</strong> MM/DD/YYYY | <strong>Sprints:</strong> Control XX (start–end) · Kaos YY (start–end) | <strong>Sprint ends:</strong> Control MM/DD · Kaos MM/DD</p>
+
+<hr>
+
+<h2>Events and Offers</h2>
+<table>
+  <tr><th>Studio</th><th>Date</th><th>Name</th><th>Status</th></tr>
+  <tr><td>Control</td><td>YYYY-MM-DD</td><td>Event Name</td><td><span class="badge badge-progress">In Progress</span></td></tr>
+</table>
+
+<hr>
+
+<h2>Releases</h2>
+<table>
+  <tr><th>Studio</th><th>Date</th><th>App</th><th>Version</th><th>Status</th><th>Highlights</th></tr>
+  <tr><td>Control</td><td>YYYY-MM-DD</td><td>WDW TMS</td><td>X.XX.0</td><td><span class="badge badge-progress">In Progress</span></td><td>Description</td></tr>
+</table>
+
+<hr>
+
+<h2>Important Updates</h2>
+
+<ul class="important-updates">
+  <li><strong>Project Name:</strong> Epic: <a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a> <span class="changed-tag">PROGRESS</span></li>
+</ul>
+<table>
+  <tr><th>Story</th><th>Status</th><th>Change vs MM/DD</th></tr>
+  <tr><td>Story description (<a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>)</td><td><span class="badge badge-progress">In Progress</span></td><td>—</td></tr>
+</table>
+
+<hr>
+
+<h2>Security Findings</h2>
+<table>
+  <tr><th>Finding ID</th><th>Rating</th><th>Summary</th><th>Status</th><th>Change</th></tr>
+  <tr><td>FIND-XXXXX</td><td>Moderate</td><td>Service — Description (<a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>)</td><td><span class="badge badge-review">Peer Review</span></td><td>—</td></tr>
+</table>
+
+<hr>
+
+<h2>Feature Deliverables</h2>
+
+<h3>Control</h3>
+
+<div class="project-block">
+  <h4 class="project-title">1. Feature Name (<a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>)</h4>
+  <ul><li><strong>Status:</strong> <span class="badge badge-progress">In Development</span></li><li>Brief description.</li></ul>
+</div>
+
+<h3>Kaos</h3>
+
+<div class="project-block">
+  <h4 class="project-title">1. Feature Name (<a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>)</h4>
+  <ul><li><strong>Status:</strong> <span class="badge badge-progress">In Development</span></li><li>Brief description.</li></ul>
+</div>
+
+<hr>
+
+<h2>Bugs</h2>
+
+<h3>Control</h3>
+<h4>Active:</h4>
+<ul>
+  <li><a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>: Bug summary — <span class="badge badge-open">Not Started</span> <span class="new-tag">NEW</span></li>
+</ul>
+
+<h3>Kaos</h3>
+<h4>Active:</h4>
+<ul>
+  <li><a href="https://disneyexperiences.atlassian.net/browse/COM-XXXXX">COM-XXXXX</a>: Bug summary — <span class="badge badge-open">Not Started</span> <span class="new-tag">NEW</span></li>
+</ul>
+
+<hr>
+
+<footer>Report generated MM/DD/YYYY from Jira boards COM - Studio Control (3411) and COM - Studio Kaos (3441) — disneyexperiences.atlassian.net</footer>
+
+</body>
+</html>
