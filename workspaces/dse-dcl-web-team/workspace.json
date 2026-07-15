@@ -1,0 +1,340 @@
+{
+  "name": "dse-dcl-web-team",
+  "description": "DSE DCL Web workspace for DCL Web development",
+  "team": "DSE DCL Web Team",
+  "profiles": [
+    "dev-core",
+    "dev-dcl-java",
+    "dev-dcl-node-nest",
+    "dev-dcl-web"
+  ],
+  "default_agent": "orchestrator",
+  "workspace_path": "${WORKSPACE_ROOT}/dse-dcl-web-team",
+  "jira_host": "disneyexperiences.atlassian.net",
+  "projects": [
+    {
+      "name": "cruise-finder-spa",
+      "repo": "github.disney.com/dcl-applications/cruise-finder-spa",
+      "path": "../cruise-finder-spa",
+      "memory_bank": "cruise-finder-spa"
+    },
+    {
+      "name": "cruise-finder-wam",
+      "repo": "github.disney.com/dcl-applications/cruise-finder-wam",
+      "path": "../cruise-finder-wam",
+      "memory_bank": "cruise-finder-wam"
+    },
+    {
+      "name": "dcl-amenities-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-amenities-spa",
+      "path": "../dcl-amenities-spa",
+      "memory_bank": "dcl-amenities-spa"
+    },
+    {
+      "name": "dcl-amenities-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-amenities-svc",
+      "path": "../dcl-amenities-svc",
+      "memory_bank": "dcl-amenities-svc"
+    },
+    {
+      "name": "dcl-amenities-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-amenities-vas",
+      "path": "../dcl-amenities-vas",
+      "memory_bank": "dcl-amenities-vas"
+    },
+    {
+      "name": "dcl-apps-activities-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-activities-spa",
+      "path": "../dcl-apps-activities-spa",
+      "memory_bank": "dcl-apps-activities-spa"
+    },
+    {
+      "name": "dcl-apps-activitybooking-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-activitybooking-svc",
+      "path": "../dcl-apps-activitybooking-svc",
+      "memory_bank": "dcl-apps-activitybooking-svc"
+    },
+    {
+      "name": "dcl-apps-admin-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-admin-spa",
+      "path": "../dcl-apps-admin-spa",
+      "memory_bank": "dcl-apps-admin-spa"
+    },
+    {
+      "name": "dcl-apps-admin-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-admin-svc",
+      "path": "../dcl-apps-admin-svc",
+      "memory_bank": "dcl-apps-admin-svc"
+    },
+    {
+      "name": "dcl-apps-admin-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-admin-vas",
+      "path": "../dcl-apps-admin-vas",
+      "memory_bank": "dcl-apps-admin-vas"
+    },
+    {
+      "name": "dcl-apps-checkout-ui",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-checkout-ui",
+      "path": "../dcl-apps-checkout-ui",
+      "memory_bank": "dcl-apps-checkout-ui"
+    },
+    {
+      "name": "dcl-apps-content-cache-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-content-cache-svc",
+      "path": "../dcl-apps-content-cache-svc",
+      "memory_bank": "dcl-apps-content-cache-svc"
+    },
+    {
+      "name": "dcl-apps-cruise-booking-mr",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-cruise-booking-mr",
+      "path": "../dcl-apps-cruise-booking-mr",
+      "memory_bank": "dcl-apps-cruise-booking-mr"
+    },
+    {
+      "name": "dcl-apps-cruise-booking-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-cruise-booking-vas",
+      "path": "../dcl-apps-cruise-booking-vas",
+      "memory_bank": "dcl-apps-cruise-booking-vas"
+    },
+    {
+      "name": "dcl-apps-content-cache-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-itinerary-spa",
+      "path": "../dcl-apps-itinerary-spa",
+      "memory_bank": "dcl-apps-itinerary-spa"
+    },
+    {
+      "name": "dcl-apps-itinerary-wam",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-itinerary-wam",
+      "path": "../dcl-apps-itinerary-wam",
+      "memory_bank": "dcl-apps-itinerary-wam"
+    },
+    {
+      "name": "dcl-apps-marketingoffers-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-marketingoffers-svc",
+      "path": "../dcl-apps-marketingoffers-svc",
+      "memory_bank": "dcl-apps-marketingoffers-svc"
+    },
+    {
+      "name": "dcl-apps-notifications-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-notifications-svc",
+      "path": "../dcl-apps-notifications-svc",
+      "memory_bank": "dcl-apps-notifications-svc"
+    },
+    {
+      "name": "dcl-apps-online-checkin-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-online-checkin-spa",
+      "path": "../dcl-apps-online-checkin-spa",
+      "memory_bank": "dcl-apps-online-checkin-spa"
+    },
+    {
+      "name": "dcl-apps-online-checkin-wam",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-online-checkin-wam",
+      "path": "../dcl-apps-online-checkin-wam",
+      "memory_bank": "dcl-apps-online-checkin-wam"
+    },
+    {
+      "name": "dcl-apps-productavail-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-productavail-spa",
+      "path": "../dcl-apps-productavail-spa",
+      "memory_bank": "dcl-apps-productavail-spa"
+    },
+    {
+      "name": "dcl-apps-productavail-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-productavail-svc",
+      "path": "../dcl-apps-productavail-svc",
+      "memory_bank": "dcl-apps-productavail-svc"
+    },
+    {
+      "name": "dcl-apps-productavail-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-productavail-vas",
+      "path": "../dcl-apps-productavail-vas",
+      "memory_bank": "dcl-apps-productavail-vas"
+    },
+    {
+      "name": "dcl-apps-resaddons-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-resaddons-spa",
+      "path": "../dcl-apps-resaddons-spa",
+      "memory_bank": "dcl-apps-resaddons-spa"
+    },
+    {
+      "name": "dcl-apps-resaddons-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-resaddons-svc",
+      "path": "../dcl-apps-resaddons-svc",
+      "memory_bank": "dcl-apps-resaddons-svc"
+    },
+    {
+      "name": "dcl-apps-resaddons-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-resaddons-vas",
+      "path": "../dcl-apps-resaddons-vas",
+      "memory_bank": "dcl-apps-resaddons-vas"
+    },
+    {
+      "name": "dcl-apps-sailingavail-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sailingavail-svc",
+      "path": "../dcl-apps-sailingavail-svc",
+      "memory_bank": "dcl-apps-sailingavail-svc"
+    },
+    {
+      "name": "dcl-apps-sailingavailability-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sailingavailability-spa",
+      "path": "../dcl-apps-sailingavailability-spa",
+      "memory_bank": "dcl-apps-sailingavailability-spa"
+    },
+    {
+      "name": "dcl-apps-sailingavailability-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sailingavailability-vas",
+      "path": "../dcl-apps-sailingavailability-vas",
+      "memory_bank": "dcl-apps-sailingavailability-vas"
+    },
+    {
+      "name": "dcl-apps-sailingcheckout-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sailingcheckout-spa",
+      "path": "../dcl-apps-sailingcheckout-spa",
+      "memory_bank": "dcl-apps-sailingcheckout-spa"
+    },
+    {
+      "name": "dcl-apps-sailingcheckout-vas",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sailingcheckout-vas",
+      "path": "../dcl-apps-sailingcheckout-vas",
+      "memory_bank": "dcl-apps-sailingcheckout-vas"
+    },
+    {
+      "name": "dcl-apps-sales-webapi",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-sales-webapi",
+      "path": "../dcl-apps-sales-webapi",
+      "memory_bank": "dcl-apps-sales-webapi"
+    },
+    {
+      "name": "dcl-apps-session-manager-library",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-session-manager-library",
+      "path": "../dcl-apps-session-manager-library",
+      "memory_bank": "dcl-apps-session-manager-library"
+    },
+    {
+      "name": "dcl-apps-ships-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-ships-svc",
+      "path": "../dcl-apps-ships-svc",
+      "memory_bank": "dcl-apps-ships-svc"
+    },
+    {
+      "name": "dcl-apps-swdbaccess-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-swdbaccess-svc",
+      "path": "../dcl-apps-swdbaccess-svc",
+      "memory_bank": "dcl-apps-swdbaccess-svc"
+    },
+    {
+      "name": "dcl-apps-voyage-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-apps-voyage-svc",
+      "path": "../dcl-apps-voyage-svc",
+      "memory_bank": "dcl-apps-voyage-svc"
+    },
+    {
+      "name": "dcl-carts-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-carts-svc",
+      "path": "../dcl-carts-svc",
+      "memory_bank": "dcl-carts-svc"
+    },
+    {
+      "name": "dcl-cruise-101-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-cruise-101-spa",
+      "path": "../dcl-cruise-101-spa",
+      "memory_bank": "dcl-cruise-101-spa"
+    },
+    {
+      "name": "dcl-cruise-101-webapi",
+      "repo": "github.disney.com/dcl-applications/dcl-cruise-101-webapi",
+      "path": "../dcl-cruise-101-webapi",
+      "memory_bank": "dcl-cruise-101-webapi"
+    },
+    {
+      "name": "dcl-keyring-entitlement-services",
+      "repo": "github.disney.com/DCL-Keyring/dcl-keyring-entitlement-services",
+      "path": "../dcl-keyring-entitlement-services",
+      "memory_bank": "dcl-keyring-entitlement-services"
+    },
+    {
+      "name": "dcl-payments-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-payments-svc",
+      "path": "../dcl-payments-svc",
+      "memory_bank": "dcl-payments-svc"
+    },
+    {
+      "name": "dcl-post-booking-mr",
+      "repo": "github.disney.com/dcl-applications/dcl-post-booking-mr",
+      "path": "../dcl-post-booking-mr",
+      "memory_bank": "dcl-post-booking-mr"
+    },
+    {
+      "name": "dcl-reservation-service",
+      "repo": "github.disney.com/dcl-applications/dcl-reservation-service",
+      "path": "../dcl-reservation-service",
+      "memory_bank": "dcl-reservation-service"
+    },
+    {
+      "name": "dcl-sailing-res-spa",
+      "repo": "github.disney.com/dcl-applications/dcl-sailing-res-spa",
+      "path": "../dcl-sailing-res-spa",
+      "memory_bank": "dcl-sailing-res-spa"
+    },
+    {
+      "name": "dcl-sailing-res-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-sailing-res-svc",
+      "path": "../dcl-sailing-res-svc",
+      "memory_bank": "dcl-sailing-res-svc"
+    },
+    {
+      "name": "dcl-sailing-res-webapi",
+      "repo": "github.disney.com/dcl-applications/dcl-sailing-res-webapi",
+      "path": "../dcl-sailing-res-webapi",
+      "memory_bank": "dcl-sailing-res-webapi"
+    },
+    {
+      "name": "dcl-session-mgr-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-session-mgr-svc",
+      "path": "../dcl-session-mgr-svc",
+      "memory_bank": "dcl-session-mgr-svc"
+    },
+    {
+      "name": "dcl-ships-svc-lambda-datasource",
+      "repo": "github.disney.com/dcl-applications/dcl-ships-svc-lambda-datasource",
+      "path": "../dcl-ships-svc-lambda-datasource",
+      "memory_bank": "dcl-ships-svc-lambda-datasource"
+    },
+    {
+      "name": "dcl-travel-party-svc",
+      "repo": "github.disney.com/dcl-applications/dcl-travel-party-svc",
+      "path": "../dcl-travel-party-svc",
+      "memory_bank": "dcl-travel-party-svc"
+    },
+    {
+      "name": "dcl-ui-components-library",
+      "repo": "github.disney.com/dcl-applications/dcl-ui-components-library",
+      "path": "../dcl-ui-components-library",
+      "memory_bank": "dcl-ui-components-library"
+    },
+    {
+      "name": "dcl-ui-global-components-library",
+      "repo": "github.disney.com/dcl-applications/dcl-ui-global-components-library",
+      "path": "../dcl-ui-global-components-library",
+      "memory_bank": "dcl-ui-global-components-library"
+    },
+    {
+      "name": "dcl-ui-global-components-library-v2",
+      "repo": "github.disney.com/dcl-applications/dcl-ui-global-components-library-v2",
+      "path": "../dcl-ui-global-components-library-v2",
+      "memory_bank": "dcl-ui-global-components-library-v2"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "jira_prefix": [
+    "DCLCOMSUST-",
+    "DCLCOMENHA-",
+    "MERLIN-",
+    "DCLCLL-",
+    "DCLDASH-",
+    "PCEWEB-"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+    "name": "dev-dcl-web",
+    "description": "Angular UI specialist for all DCL Web SPAs — Booking, PostBooking, Marketing, and shared component libraries",
+    "prompt": "file://../prompts/dev-dcl-web-ui.md",
+    "tools": [
+        "fs_read",
+        "fs_write",
+        "execute_bash",
+        "code",
+        "grep",
+        "@figma/*"
+    ],
+    "toolsSettings": {
+        "fs_write": {
+            "allowedPaths": [
+                "src/**",
+                "projects/**",
+                "package.json",
+                "angular.json",
+                "tsconfig*.json",
+                "karma.conf.js",
+                "ng-package.json",
+                "openapi/**"
+            ]
+        }
+    },
+    "resources": [
+        "file://CLAUDE.md",
+        "file://AGENTS.md",
+        "file://README.md",
+        "file://.agents/**/*.md",
+        "file://.kiro/steering/**/*.md",
+        "file://.kiro/context/*.md",
+        "file://.kiro/skills/*.md",
+        "file://.kiro/skills/**/*.md"
+    ],
+    "hooks": {
+        "preToolUse": [
+            {
+                "matcher": "fs_write",
+                "command": "$HOME/.kiro/hooks/guard-writes.sh",
+                "description": "Block writes to node_modules, dist, .git"
+            },
+            {
+                "matcher": "fs_write",
+                "command": "$HOME/.kiro/hooks/secret-scan.sh",
+                "description": "Scan for secrets"
+            }
+        ],
+        "postToolUse": [
+            {
+                "matcher": "fs_write",
+                "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+                "description": "Auto-lint after writes"
+            }
+        ]
+    },
+    "allowedTools": [
+        "@figma/*"
+    ],
+    "includeMcpJson": true
+}

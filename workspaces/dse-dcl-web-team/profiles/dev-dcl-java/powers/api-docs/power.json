@@ -1,0 +1,28 @@
+{
+  "name": "api-docs",
+  "version": "1.0.0",
+  "description": "API documentation extraction and validation",
+  "tools": [
+    {
+      "name": "extract_openapi",
+      "description": "Find and extract OpenAPI/Swagger spec from the project",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Project directory", "default": "." }
+        }
+      }
+    },
+    {
+      "name": "validate_contract",
+      "description": "Validate an OpenAPI spec file for completeness and correctness",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string", "description": "Path to OpenAPI spec file" }
+        },
+        "required": ["file"]
+      }
+    }
+  ]
+}

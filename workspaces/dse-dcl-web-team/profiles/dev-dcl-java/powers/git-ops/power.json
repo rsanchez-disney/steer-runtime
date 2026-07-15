@@ -1,0 +1,47 @@
+{
+  "name": "git-ops",
+  "version": "1.0.0",
+  "description": "Git operations for development workflows",
+  "tools": [
+    {
+      "name": "git_status",
+      "description": "Get current git status including branch, changes, and uncommitted files",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "git_diff",
+      "description": "Get diff of changes",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Specific file to diff (optional)"
+          },
+          "staged": {
+            "type": "boolean",
+            "description": "Show staged changes",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "name": "git_log",
+      "description": "Get recent commit history",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "number",
+            "description": "Number of commits to show",
+            "default": 10
+          }
+        }
+      }
+    }
+  ]
+}

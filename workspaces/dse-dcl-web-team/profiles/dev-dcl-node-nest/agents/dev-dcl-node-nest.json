@@ -1,0 +1,58 @@
+{
+  "name": "dev-dcl-node-nest",
+  "description": "NestJS specialist for DCL BFF/API applications (dcl-cruise-101-webapi, dcl-post-booking-api)",
+  "prompt": "file://../prompts/webapi.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@bruno/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "test/**",
+        "package.json",
+        "tsconfig*.json",
+        "nest-cli.json",
+        "jest.config*",
+        "eslint.config*",
+        ".prettierrc*",
+        "openapi/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://AGENTS.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git, generated"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@bruno/*"
+  ],
+  "includeMcpJson": true
+}
