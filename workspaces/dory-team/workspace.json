@@ -1,0 +1,35 @@
+{
+  "name": "dory-team",
+  "description": "Dory — QA Automation team for ADM Commerce (STUI Behave framework + Jenkins job configs)",
+  "team": "Dory (ADM Automation)",
+  "profiles": [
+    "dev-core",
+    "qa"
+  ],
+  "default_agent": "dory_code_review_agent",
+  "projects": [
+    {
+      "name": "standalone_tickets",
+      "path": "standalone_tickets",
+      "repo": "wdpro-automation/standalone_tickets",
+      "host": "github.disney.com",
+      "description": "Main STUI test framework (Behave + Selenium/Appium)"
+    },
+    {
+      "name": "jenkins-config",
+      "path": "jenkins-config",
+      "repo": "wdpro-automation/jenkins-config",
+      "host": "github.disney.com",
+      "description": "Jenkins Job DSL groovy configurations (538 files, 506 jobs)"
+    }
+  ],
+  "rules": [
+    "breaking-change-detection",
+    "step-validation",
+    "jira-update-on-pr",
+    "pre-commit-validation"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "COM-",
+  "jira_host": "disneyexperiences.atlassian.net"
+}

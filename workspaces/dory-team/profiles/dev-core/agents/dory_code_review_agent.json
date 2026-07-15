@@ -1,0 +1,29 @@
+{
+  "name": "dory_code_review_agent",
+  "description": "Reviews Dory team PRs for Python/Behave quality, step validation, Jenkins DSL patterns, and breaking changes",
+  "prompt": "prompts/dory_code_review_agent.md",
+  "tools": [
+    "@github/*",
+    "@jira/*",
+    "@jira-cloud/*",
+    "code",
+    "execute_bash",
+    "fs_read",
+    "grep"
+  ],
+  "resources": [
+    "file://context/dory_golden_rules.md",
+    "file://context/repo-standalone-tickets.md",
+    "file://context/repo-jenkins-config.md",
+    "file://rules/breaking-change-detection.md",
+    "file://rules/step-validation.md",
+    "file://rules/jira-update-on-pr.md",
+    "file://rules/pre-commit-validation.md"
+  ],
+  "allowedTools": [
+    "@github/*",
+    "@jira/*",
+    "@jira-cloud/*"
+  ],
+  "includeMcpJson": true
+}
