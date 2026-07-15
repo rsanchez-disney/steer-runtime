@@ -23,6 +23,28 @@
     "jira": "customfield_10106"
   },
   "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
+  "cortex": {
+    "enabled": true,
+    "extractor_hints": {
+      "wdpr-payment-services": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Core payment processing and orchestration service" },
+      "wdpr-payment-session": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Payment session lifecycle management" },
+      "wdpr-config-services": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Configuration management for payment instruments and rules" },
+      "wdpr-payments-model": { "type": "backend-java", "domain": "payments", "tier": "standard", "purpose": "Shared payment domain models and DTOs" },
+      "wdpr-payments-ref": { "type": "backend-java", "domain": "payments", "tier": "standard", "purpose": "Payment reference data service" },
+      "wdpr-app-payment-event-handler": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Async payment event processing (Kafka consumer)" },
+      "wdpr-app-payment-stream-handler": { "type": "backend-java", "domain": "payments", "tier": "standard", "purpose": "Payment stream processing pipeline" },
+      "wdpr-token-translator-service": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Payment token translation and encryption" },
+      "wdpr-app-inquiry-service": { "type": "backend-java", "domain": "payments", "tier": "standard", "purpose": "Payment inquiry and transaction lookup" },
+      "wdpr-app-crypto-key-mgmt": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Cryptographic key management for payment security" },
+      "app-common-keystore": { "type": "backend-java", "domain": "payments", "tier": "critical", "purpose": "Shared keystore utilities" },
+      "gcp-admin-services": { "type": "backend-java", "domain": "gift-card", "tier": "critical", "purpose": "Gift Card Platform admin services" },
+      "gcp-batch": { "type": "backend-java", "domain": "gift-card", "tier": "standard", "purpose": "Gift Card batch processing jobs" },
+      "gcp-common-components": { "type": "backend-java", "domain": "gift-card", "tier": "standard", "purpose": "Gift Card shared components library" },
+      "gcp-guest-services": { "type": "backend-java", "domain": "gift-card", "tier": "critical", "purpose": "Gift Card guest-facing services" },
+      "dpay-android-ui": { "type": "android", "domain": "payments", "tier": "critical", "purpose": "Android payment UI SDK" },
+      "dpayios": { "type": "ios", "domain": "payments", "tier": "critical", "purpose": "iOS payment UI SDK" }
+    }
+  },
   "projects": [
     { "name": "wdpr-payment-controls-client", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-controls-client", "lang": "TypeScript" },
     { "name": "wdpr-payment-controls-api", "path": "~/Workspace/Disney/DisneyPaymentsOrg/wdpr-payment-controls-api", "lang": "TypeScript" },

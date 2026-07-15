@@ -11,6 +11,7 @@ Features in this section are functional but still evolving. They may change beha
 | [Graphify](graphify.md)                      | 🧪 Experimental | v0.4.200 | Code knowledge graph for agent codebase understanding        |
 | [Per-Project Memory](per-project-memory.md)  | 🧪 Experimental | v0.4.205 | SQLite-backed persistent memory isolated per project         |
 | [Cursor Integration](cursor-integration.md)  | 🧪 Experimental | v0.4.207 | Multi-runtime support — run agents in Cursor IDE             |
+| [Cortex](cortex.md)                          | 🧪 Experimental | v0.4.225 | Platform architectural knowledge graph — cross-repo service context via MCP |
 
 ## Graduation criteria
 
