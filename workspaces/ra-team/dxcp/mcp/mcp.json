@@ -1,0 +1,72 @@
+{
+  "mcpServers": {
+    "yax": {
+      "command": "yax",
+      "args": ["mcp", "--tools=agent"]
+    },
+    "harness": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/harness-mcp/dist/index.cjs"],
+      "env": {
+        "HARNESS_API_KEY": "${DXCP_HARNESS_API_KEY}",
+        "HARNESS_ACCOUNT_ID": "${DXCP_HARNESS_ACCOUNT_ID}",
+        "HARNESS_BASE_URL": "${DXCP_HARNESS_BASE_URL}"
+      }
+    },
+    "servicenow": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/servicenow-graph-mcp/dist/index.cjs"],
+      "env": {
+        "SERVICENOW_INSTANCE_URL": "${DXCP_SERVICENOW_URL}",
+        "SERVICENOW_USERNAME": "${DXCP_SERVICENOW_USERNAME}",
+        "SERVICENOW_PASSWORD": "${DXCP_SERVICENOW_PASSWORD}"
+      }
+    },
+    "splunk": {
+      "command": "node",
+      "args": ["${KIRO_MCP_DIR}/splunk-mcp/dist/index.cjs"],
+      "env": {
+        "SPLUNK_BASE_URL": "${DXCP_SPLUNK_BASE_URL}",
+        "SPLUNK_API_USERNAME": "${DXCP_SPLUNK_USERNAME}",
+        "SPLUNK_API_PASSWORD": "${DXCP_SPLUNK_PASSWORD}"
+      }
+    }
+  },
+  "variables": {
+    "DXCP_HARNESS_API_KEY": {
+      "description": "Harness API key for DXCP pipeline management",
+      "secret": true
+    },
+    "DXCP_HARNESS_ACCOUNT_ID": {
+      "description": "Harness account ID for Disney",
+      "default": ""
+    },
+    "DXCP_HARNESS_BASE_URL": {
+      "description": "Harness base URL",
+      "default": "https://disney.harness.io"
+    },
+    "DXCP_SERVICENOW_URL": {
+      "description": "ServiceNow instance URL for change requests and incidents",
+      "default": "https://disney.service-now.com"
+    },
+    "DXCP_SERVICENOW_USERNAME": {
+      "description": "ServiceNow API username",
+      "secret": false
+    },
+    "DXCP_SERVICENOW_PASSWORD": {
+      "description": "ServiceNow API password",
+      "secret": true
+    },
+    "DXCP_SPLUNK_BASE_URL": {
+      "description": "Splunk API base URL for log queries and troubleshooting",
+      "default": "https://splunk.api.wdprapps.disney.com"
+    },
+    "DXCP_SPLUNK_USERNAME": {
+      "description": "Splunk API username"
+    },
+    "DXCP_SPLUNK_PASSWORD": {
+      "description": "Splunk API password",
+      "secret": true
+    }
+  }
+}

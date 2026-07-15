@@ -1,0 +1,10 @@
+{
+  "name": "dxcp-cluster-deployer",
+  "extends": "dxcp",
+  "description": "Cluster Deployer — bi-weekly release cycle, blueprint promotion through latest/stage/load/prod, ServiceNow changes",
+  "team": "DXCP Cluster Deployment",
+  "profiles": [],
+  "default_agent": "cloudops_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true
+}

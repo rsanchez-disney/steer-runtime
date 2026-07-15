@@ -1,0 +1,145 @@
+{
+  "name": "dxcp",
+  "extends": "ra-team",
+  "description": "DX Cloud PaaS \u2014 Kubernetes platform engineering, tooling development, and cluster lifecycle management",
+  "team": "DXCP Cloud PaaS (ipe-daredevil)",
+  "profiles": [
+    "+cloudops",
+    "+dev-infra",
+    "+ops"
+  ],
+  "default_agent": "cloudops_orchestrator_agent",
+  "projects": [
+    {
+      "name": "wdpr-cp-rafay-addons",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-addons",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-addons",
+      "host": "github.disney.com",
+      "description": "Helm-based Kubernetes addons for Rafay-managed EKS/GKE clusters"
+    },
+    {
+      "name": "wdpr-cp-rafay-sandbox-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-sandbox-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-sandbox-gitops",
+      "host": "github.disney.com",
+      "description": "Sandbox GitOps \u2014 pre-release validation"
+    },
+    {
+      "name": "wdpr-cp-rafay-platform-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-platform-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-platform-gitops",
+      "host": "github.disney.com",
+      "description": "Platform GitOps \u2014 blueprints and sharing"
+    },
+    {
+      "name": "wdpr-cp-rafay-latest-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-latest-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-latest-gitops",
+      "host": "github.disney.com",
+      "description": "Latest environment cluster specs"
+    },
+    {
+      "name": "wdpr-cp-rafay-stage-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-stage-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-stage-gitops",
+      "host": "github.disney.com",
+      "description": "Stage environment cluster specs"
+    },
+    {
+      "name": "wdpr-cp-rafay-load-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-load-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-load-gitops",
+      "host": "github.disney.com",
+      "description": "Load environment cluster specs"
+    },
+    {
+      "name": "wdpr-cp-rafay-prod-gitops",
+      "path": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-prod-gitops",
+      "repo": "wdpr-cloud-paas-rafay/wdpr-cp-rafay-prod-gitops",
+      "host": "github.disney.com",
+      "description": "Production environment cluster specs"
+    },
+    {
+      "name": "manifesto",
+      "path": "wd-cp/manifesto",
+      "repo": "wd-cp/manifesto",
+      "host": "github.disney.com",
+      "description": "Platform manifesto and configuration"
+    },
+    {
+      "name": "wdpr-ra-vpcn",
+      "path": "wdpr-cso-terraform/wdpr-ra-vpcn",
+      "repo": "wdpr-cso-terraform/wdpr-ra-vpcn",
+      "host": "github.disney.com",
+      "description": "Terraform VPC/networking"
+    },
+    {
+      "name": "cluster-configurator",
+      "path": "wd-cp/cluster_configurator",
+      "repo": "wd-cp/cluster_configurator",
+      "host": "github.disney.com",
+      "description": "Cluster configuration and provisioning tooling"
+    },
+    {
+      "name": "k8s-platform",
+      "path": "wd-cp/k8s-platform",
+      "repo": "wd-cp/k8s-platform",
+      "host": "github.disney.com",
+      "description": "K8s platform definitions and shared components"
+    },
+    {
+      "name": "eve",
+      "path": "wd-cp/eve",
+      "repo": "wd-cp/eve",
+      "host": "github.disney.com",
+      "description": "Platform automation and event-driven orchestration"
+    },
+    {
+      "name": "dxcp-spog-api",
+      "path": "wd-cp/dxcp_spog_api",
+      "repo": "wd-cp/dxcp_spog_api",
+      "host": "github.disney.com",
+      "description": "DXCP Single Pane of Glass API"
+    },
+    {
+      "name": "dxcp-spog-ui",
+      "path": "wd-cp/dxcp_spog_ui",
+      "repo": "wd-cp/dxcp_spog_ui",
+      "host": "github.disney.com",
+      "description": "DXCP Single Pane of Glass UI"
+    },
+    {
+      "name": "dxcp-rafay-scripts",
+      "path": "wdpr-cloud-paas-rafay/dxcp-rafay-scripts",
+      "repo": "wdpr-cloud-paas-rafay/dxcp-rafay-scripts",
+      "host": "github.disney.com",
+      "description": "Utility scripts (rafay-cluster-info.sh, etc.)"
+    }
+  ],
+  "rules": [
+    "+general-kubernetes",
+    "+general-terraform",
+    "+general-aws",
+    "+general-docker"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "IOET-",
+  "jira_host": "disneyexperiences.atlassian.net",
+  "workspace_path": "~/dxcp/other",
+  "services": [
+    "rafay-gitops",
+    "eks-clusters",
+    "gke-clusters",
+    "helm-addons",
+    "rundeck-jobs",
+    "terraform-infra",
+    "cluster-configurator",
+    "dxcp-spog"
+  ],
+  "exclusive_overrides": {
+    "cloudops": [
+      "skills",
+      "steering"
+    ]
+  }
+}

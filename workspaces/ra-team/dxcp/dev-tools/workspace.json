@@ -1,0 +1,16 @@
+{
+  "name": "dxcp-dev-tools",
+  "extends": "dxcp",
+  "description": "Developer — cluster_configurator, eve, SPOG API/UI, Harness CI/CD",
+  "team": "DXCP Development",
+  "profiles": [
+    "+dev-python",
+    "+dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "+general-python-development",
+    "+general-node-development"
+  ],
+  "enable_tools": true
+}

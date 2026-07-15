@@ -1,0 +1,12 @@
+{
+  "name": "dxcp-k8s-platform",
+  "extends": "dxcp",
+  "description": "K8s Platform Engineer — Helm addons, Rafay GitOps, AddonOverrides, OPA policies, Istio Gateway, observability",
+  "team": "DXCP Platform Engineering",
+  "profiles": [
+    "+dev-infra"
+  ],
+  "default_agent": "cloudops_orchestrator_agent",
+  "rules": [],
+  "enable_tools": true
+}
