@@ -1,0 +1,19 @@
+{
+  "name": "crash_analyzer_agent",
+  "description": "Analyzes pre-release mobile crashes in NewRelic — compares to in-market version, identifies new/worsened crashes, generates fix recommendations",
+  "prompt": "crash_analyzer_agent.md",
+  "tools": [
+    "@newrelic/*",
+    "fs_read",
+    "fs_write",
+    "execute_bash"
+  ],
+  "allowedTools": [
+    "@newrelic/*"
+  ],
+  "resources": [
+    "file://.kiro/context/ops_guidelines.md",
+    "file://.kiro/context/newrelic-crash-analysis.md"
+  ],
+  "includeMcpJson": true
+}
