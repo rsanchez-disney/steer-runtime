@@ -1,7 +1,7 @@
 {
-  "name": "android_test_agent",
-  "description": "Test Engineer \u2014 generates MockK-based unit tests following project conventions. Manages Jira tickets for POS project.",
-  "prompt": "file://../prompts/android_test_agent.md",
+  "name": "sdet_agent",
+  "description": "SDET agent specialized in test automation, framework analysis, and QA engineering tasks for the POS automation framework with Jira Cloud integration",
+  "prompt": "file://../prompts/sdet_agent.md",
   "tools": [
     "fs_read",
     "fs_write",
@@ -9,15 +9,18 @@
     "grep",
     "glob",
     "execute_bash",
+    "@gitlab/*",
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@confluence-cloud/*"
   ],
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
+    "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
-    "file://../../../skills/implement-android-ticket/SKILL.md",
-    "file://../../../skills/epic-qa-workflow/SKILL.md"
+    "file://../../../context/hilt_guidelines.md",
+    "file://../../../skills/automate-pos-scenarios/SKILL.md"
   ],
   "hooks": {
     "preToolUse": [

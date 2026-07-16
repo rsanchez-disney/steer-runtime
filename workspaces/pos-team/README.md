@@ -92,6 +92,7 @@ pos_team_orchestrator_agent (orchestrator profile)
 | `plan-implementation` | Implementation planning and task breakdown | Plan, break down | `pos_planner_agent` |
 | `validate-regression-coverage` | Regression test coverage validation | Validate test coverage | `qa_validation_agent` |
 | `generate-dsp-daily-report` | Daily DSP bug/release report | Daily report, DSP status | `dsp_bug_report_agent` |
+| `epic-qa-workflow` | Full QA workflow for an EPIC | Epic QA, QA validation | `android_arch_agent` → specialists |
 
 ### Skills Routing
 

@@ -38,7 +38,8 @@
     "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
     "file://../../../context/hilt_guidelines.md",
-    "file://../../../context/features/README.md"
+    "file://../../../context/features/README.md",
+    "file://../../../skills/epic-qa-workflow/SKILL.md"
   ],
   "hooks": {
     "agentSpawn": [

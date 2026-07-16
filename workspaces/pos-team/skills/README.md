@@ -29,6 +29,7 @@ skill-name/
 | Skill | Description | Agents Involved |
 |-------|-------------|-----------------|
 | [validate-regression-coverage] | Test set vs epic coverage analysis | qa_validation_agent |
+| [epic-qa-workflow] | Full QA workflow for Android EPICs | qa_validation_agent |
 | [review-code-changes] | Multi-language code review (PHP/Go/React/Kotlin) | pos_code_review, android_quality |
 | [run-security-scan] | Security assessment across POS repos | pos_security_scanner_agent |
 
@@ -71,6 +72,7 @@ Reference skill `SKILL.md` files directly in chat or via the orchestrator agent.
 <!-- Links -->
 [implement-android-ticket]: implement-android-ticket/SKILL.md
 [implement-backoffice-ticket]: implement-backoffice-ticket/SKILL.md
+[epic-qa-workflow]: epic-qa-workflow/SKILL.md
 [refactor-android-feature]: refactor-android-feature/SKILL.md
 [validate-regression-coverage]: validate-regression-coverage/SKILL.md
 [review-code-changes]: review-code-changes/SKILL.md

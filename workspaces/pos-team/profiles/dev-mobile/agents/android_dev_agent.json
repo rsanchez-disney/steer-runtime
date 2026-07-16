@@ -19,7 +19,8 @@
     "file://../../../context/golden_rules.md",
     "file://../../../context/memory-bank/*",
     "file://../../../context/hilt_guidelines.md",
-    "file://../../../skills/implement-android-ticket/SKILL.md"
+    "file://../../../skills/implement-android-ticket/SKILL.md",
+    "file://../../../skills/epic-qa-workflow/SKILL.md"
   ],
   "hooks": {
     "preToolUse": [
