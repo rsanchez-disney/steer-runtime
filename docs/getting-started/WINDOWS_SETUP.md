@@ -218,7 +218,7 @@ After installation, restart PowerShell and verify:
 
     kiro-cli --version
 
-You should see output like `kiro-cli-chat 2.0.1` (version may vary).
+You should see output like `kiro-cli 2.11.1` (version may vary).
 
 #### Quick Reference: Exit Codes
 
