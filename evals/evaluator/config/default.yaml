@@ -1,0 +1,27 @@
+# Default evaluation configuration
+evaluator:
+  timeout_seconds: 180
+  max_retries: 1
+  parallel: false
+
+scoring:
+  dimensions:
+    - delegation_accuracy
+    - phase_compliance
+    - gate_adherence
+    - output_quality
+    - context_efficiency
+    - tool_discipline
+  pass_threshold: 70
+  weights:
+    delegation_accuracy: 0.25
+    phase_compliance: 0.20
+    gate_adherence: 0.15
+    output_quality: 0.20
+    context_efficiency: 0.10
+    tool_discipline: 0.10
+
+reporting:
+  format: markdown
+  output_dir: evals/results
+  include_raw_output: false

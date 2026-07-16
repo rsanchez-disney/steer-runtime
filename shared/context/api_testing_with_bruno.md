@@ -1,3 +1,9 @@
+---
+inclusion: on-demand
+trigger: "bruno|api test|api collection|REST test|endpoint test|contract test"
+description: "Bruno API testing guidelines — loaded when task involves API testing or collections"
+---
+
 # API Testing with Bruno MCP
 
 ## When to Use Bruno (vs curl)

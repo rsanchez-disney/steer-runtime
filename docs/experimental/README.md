@@ -12,6 +12,11 @@ Features in this section are functional but still evolving. They may change beha
 | [Per-Project Memory](per-project-memory.md)  | 🧪 Experimental | v0.4.205 | SQLite-backed persistent memory isolated per project         |
 | [Cursor Integration](cursor-integration.md)  | 🧪 Experimental | v0.4.207 | Multi-runtime support — run agents in Cursor IDE             |
 | [Cortex](cortex.md)                          | 🧪 Experimental | v0.4.225 | Platform architectural knowledge graph — cross-repo service context via MCP |
+| [Context On-Demand](context-on-demand.md)    | 🧪 Experimental | v0.2.160 | Load context files only when task matches keyword triggers    |
+| [Session State](session-state.md)            | 🧪 Experimental | v0.2.160 | Lightweight session resume via .kiro/session-state.md         |
+| [Depth Calibration](depth-calibration.md)    | 🧪 Experimental | v0.2.160 | Adaptive output detail based on task complexity               |
+| [Content Validation](content-validation.md)  | 🧪 Experimental | v0.2.160 | Pre-write hook validating JSON, YAML, and Markdown            |
+| [Design Review Hook](design-review-hook.md)  | 🧪 Experimental | v0.2.160 | Pre-push plan drift detection                                |
 
 ## Graduation criteria
 

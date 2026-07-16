@@ -1,0 +1,11 @@
+{
+  "prompt": "Help me implement PROJ-1234 — add rate limiting to the gateway",
+  "expected_agent": "backend",
+  "expected_pattern": "subagent.*backend|delegate.*backend",
+  "category": "delegation_accuracy",
+  "metadata": {
+    "complexity": "standard",
+    "layers": ["backend"],
+    "description": "Single-layer implementation task should route to backend agent"
+  }
+}

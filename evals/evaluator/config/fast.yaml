@@ -1,0 +1,16 @@
+# Fast evaluation — smoke test only
+evaluator:
+  timeout_seconds: 60
+  max_retries: 0
+  parallel: true
+
+scoring:
+  dimensions:
+    - delegation_accuracy
+    - phase_compliance
+  pass_threshold: 60
+
+reporting:
+  format: markdown
+  output_dir: evals/results
+  include_raw_output: false

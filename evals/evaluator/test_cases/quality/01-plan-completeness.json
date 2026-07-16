@@ -1,0 +1,10 @@
+{
+  "prompt": "Create a plan for adding user authentication with JWT",
+  "expected_pattern": "tasks|steps|plan",
+  "required_elements": ["test strategy", "security considerations", "file list"],
+  "category": "quality",
+  "metadata": {
+    "complexity": "detailed",
+    "description": "Plan output must include test strategy, security considerations, and file list"
+  }
+}

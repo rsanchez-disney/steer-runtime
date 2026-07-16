@@ -482,3 +482,56 @@ Week 2:
 ```
 
 Total: **~9 days** for full implementation, or **5 days** for a working MVP (Phases 1-2).
+
+---
+
+## 11. Evaluator v2 (Python, uv-managed)
+
+> **Added:** v0.2.160
+
+A complementary Python evaluator at `evals/evaluator/` that adds quality scoring and SDLC compliance checks. Uses `uv` for dependency management (same as Cortex).
+
+### Why both?
+
+| Aspect | Go-based (Koda `eval`) | Python-based (`evals/evaluator/`) |
+|--------|:----------------------:|:---------------------------------:|
+| Execution | ACP protocol via kiro-cli | Stub (needs ACP integration) |
+| Structural checks | Go regex/patterns | Python patterns |
+| LLM-as-judge | Planned | Planned (Bedrock) |
+| Scoring | Per-rubric | 6 weighted dimensions |
+| Reports | Terminal + JSON | Markdown + JSON |
+| Dependencies | None (compiled into Koda) | Python 3.11+, uv |
+
+### Quick start
+
+```bash
+cd evals/evaluator
+
+# List test cases
+uv run forge-eval list-cases
+
+# Run quick evaluation
+uv run forge-eval run -c config/fast.yaml
+
+# Run full evaluation
+uv run forge-eval run
+```
+
+### Integration with `make certify-full`
+
+```
+make certify-full
+    ├── make validate-all          (structural: agents, workspaces, catalog)
+    ├── make validate-delegation   (26 delegation scenarios)
+    ├── make eval-fast             (evaluator v2: quality + compliance)
+    └── make certify               (trust score aggregation)
+```
+
+### Status
+
+Scaffold — execution runner returns stubs. Full implementation requires:
+1. ACP protocol bridge (spawn agent, send prompt, capture output)
+2. LLM-as-judge integration (Bedrock Claude for scoring)
+3. 50+ test cases across all 3 dimensions
+
+See `evals/evaluator/README.md` for details.

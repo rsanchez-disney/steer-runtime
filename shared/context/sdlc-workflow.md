@@ -127,3 +127,23 @@ Route implementation tasks by tech stack:
 | Terraform, infrastructure, IaC         | `terraform` |
 | Astro, SSR, React pages                | `astro`  |
 | Python, Django, FastAPI                 | `python` |
+
+---
+
+## Depth calibration
+
+Adjust output depth based on task complexity. Assess BEFORE planning:
+
+| Level         | Trigger                                               | Plan detail                          | Gate behavior            |
+|---------------|-------------------------------------------------------|--------------------------------------|--------------------------|
+| Minimal       | Single file, <10 lines, no tests, config/typo/bump    | 1-2 sentences, skip plan gate        | Quality gate only        |
+| Standard      | 2-5 files, clear approach, tests needed               | 3-5 bullet plan                      | Normal gates             |
+| Detailed      | 5+ files, new patterns, cross-layer changes           | Full plan with file list + test strategy | Normal gates          |
+| Comprehensive | Architecture, new service, migration, 3+ layers       | Auto-selects propose-judge strategy  | All gates + Gate 0       |
+
+### Rules
+
+- Announce depth: "Depth: standard (3 files, clear approach)"
+- User can override: "keep it short" → minimal, "be thorough" → detailed
+- Minimal depth does NOT skip quality checks — only skips the plan presentation gate
+- If uncertain, default to standard

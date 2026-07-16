@@ -164,3 +164,20 @@ certify-report: ## Generate report from existing results (no re-run)
 
 certify-dry: ## Preview certification without running tests
 	python3 evals/certify.py --dry-run
+
+eval-quality: ## Run quality evaluation (output completeness, no hallucinations)
+	cd evals/evaluator && uv run forge-eval run -c config/default.yaml -d quality
+
+eval-compliance: ## Run compliance evaluation (SDLC flow adherence)
+	cd evals/evaluator && uv run forge-eval run -c config/default.yaml -d compliance
+
+eval-fast: ## Quick smoke test (delegation + compliance only, 60s timeout)
+	cd evals/evaluator && uv run forge-eval run -c config/fast.yaml
+
+eval-report: ## Generate evaluation report from last run
+	cd evals/evaluator && uv run forge-eval run -c config/default.yaml
+
+eval-list: ## List available evaluation test cases
+	cd evals/evaluator && uv run forge-eval list-cases
+
+certify-full: validate-all validate-delegation eval-fast certify ## Full certification: validate + delegate + eval + trust score

@@ -1,3 +1,9 @@
+---
+inclusion: on-demand
+trigger: "bug|defect|RCA|root cause|incident|regression|fix.*issue"
+description: "Defect report templates — loaded when task involves bug reporting or incident analysis"
+---
+
 # Defect Report Templates
 
 ## Bug Report

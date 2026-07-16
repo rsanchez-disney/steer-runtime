@@ -178,6 +178,21 @@ The domain orchestrator will manage its own sub-agents and return consolidated r
 
 For Jira story implementation, follow the workflow in `sdlc-workflow.md` in your context.
 
+### Session state
+
+On SDLC task start, check `.kiro/session-state.md` — if it exists with `status: in-progress`, resume from the recorded phase. Update the file at every phase transition. See `session-state.md` steering rule for format.
+
+### Depth calibration
+
+Before planning, assess task complexity and adjust output depth:
+
+- **Minimal** (skip plan gate): single file, <10 lines, no tests needed → just do it
+- **Standard**: 2-5 files, clear approach, tests needed → normal SDLC flow
+- **Detailed**: 5+ files, new patterns, cross-layer → full plan with file list + test strategy
+- **Comprehensive**: architecture change, new service → auto-select propose-judge
+
+Announce: "Depth: standard (3 files, clear approach)" — user can override with "keep it short" or "be thorough".
+
 ### Strategy selection
 
 Choose the strategy BEFORE starting:

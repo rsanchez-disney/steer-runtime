@@ -1,3 +1,9 @@
+---
+inclusion: on-demand
+trigger: "email|notify|send message|teams message|send notification"
+description: "Email and notification guidelines — loaded when task involves sending communications"
+---
+
 # Email guidelines
 
 Tool: `sre_toolsets_email_send_email` (Compass)

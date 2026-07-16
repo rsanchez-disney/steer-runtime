@@ -330,9 +330,19 @@ Both propose and judge agents work independently of the full SDLC flow:
 
 ## Related files
 
-| File                                  | Purpose                                |
-|---------------------------------------|----------------------------------------|
-| `shared/context/sdlc-workflow.md`     | Runtime-injected workflow (agent sees)  |
-| `shared/steering/autopilot.md`        | Autopilot steering rules               |
-| `docs/experimental/propose-judge.md`  | User-facing propose-judge guide        |
-| `docs/experimental/autopilot.md`      | User-facing autopilot guide            |
+| File                                        | Purpose                                    |
+|---------------------------------------------|--------------------------------------------|
+| `shared/context/sdlc-workflow.md`           | Runtime-injected workflow (agent sees)      |
+| `shared/steering/autopilot.md`              | Autopilot steering rules                   |
+| `shared/steering/session-state.md`          | Session state persistence rules            |
+| `shared/hooks/validate-content.sh`          | Pre-write content validation               |
+| `shared/hooks/context-inject.sh`            | On-demand context loading                  |
+| `shared/hooks/design-review-pre-push.sh`    | Plan drift detection on push               |
+| `docs/experimental/propose-judge.md`        | User-facing propose-judge guide            |
+| `docs/experimental/autopilot.md`            | User-facing autopilot guide                |
+| `docs/experimental/context-on-demand.md`    | On-demand context loading guide            |
+| `docs/experimental/session-state.md`        | Session state persistence guide            |
+| `docs/experimental/depth-calibration.md`    | Adaptive output depth guide                |
+| `docs/experimental/content-validation.md`   | Pre-write validation guide                 |
+| `docs/experimental/design-review-hook.md`   | Design review hook guide                   |
+

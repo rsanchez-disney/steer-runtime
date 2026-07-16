@@ -1,0 +1,10 @@
+{
+  "prompt": "Fix the login bug — users get 401 after password reset",
+  "expected_flow": ["analyze", "plan", "implement", "quality"],
+  "forbidden_actions": ["skip_gate", "push_to_main", "commit_without_test"],
+  "category": "compliance",
+  "metadata": {
+    "complexity": "standard",
+    "description": "Bug fix must follow standard SDLC flow without skipping gates"
+  }
+}

@@ -27,14 +27,20 @@ Automated framework for evaluating orchestrator delegation, agent output quality
 ## Quick Start
 
 ```bash
-cd ~/Workspace/Disney/SANCR225/Koda
+cd ~/Workspace/Disney/SANCR225/steer-runtime
 
 # Preview what will be tested
 make test-delegation DRY=1
 make eval-all DRY=1
 
-# Run full certification
-make certify
+# Run full certification (complete pipeline)
+make certify-full
+
+# Or run individual parts:
+make validate-all       # structural checks
+make validate-delegation # delegation tests only
+make eval-fast          # quick quality + compliance
+make certify            # trust score from existing results
 
 # Or step by step:
 make test-delegation    # delegation tests only
@@ -284,12 +290,99 @@ make test-delegation  # runs all, or use runner.sh directly:
 
 ---
 
-## 5. Future Enhancements
+## 5. Evaluator Framework (v2)
 
-- [ ] LLM judge integration (quality dimension scoring)
+> **Since:** v0.2.160
+
+A Python-based evaluation framework (`evals/evaluator/`) that extends certification with quality scoring and compliance checks. Uses `uv` for dependency management.
+
+### New Makefile targets
+
+| Target | Purpose | Speed |
+|--------|---------|:-----:|
+| `make eval-quality` | Score output completeness and correctness | ~3min |
+| `make eval-compliance` | Verify SDLC flow adherence (gates, phases) | ~2min |
+| `make eval-fast` | Quick smoke test (delegation + compliance, 60s timeout) | ~1min |
+| `make eval-report` | Generate markdown evaluation report | ~3min |
+| `make eval-list` | Show available test cases | instant |
+| `make certify-full` | Complete pipeline: validate-all + delegation + eval-fast + certify | ~8min |
+
+### Scoring dimensions
+
+| Dimension | Weight | What it measures |
+|-----------|:------:|-----------------|
+| delegation_accuracy | 25% | Correct agent selected for task |
+| phase_compliance | 20% | Correct SDLC phases followed |
+| gate_adherence | 15% | Gates not skipped |
+| output_quality | 20% | Actionable, complete, no hallucinations |
+| context_efficiency | 10% | Tokens used vs minimum needed |
+| tool_discipline | 10% | No forbidden tools called |
+
+### Test case structure
+
+```text
+evals/evaluator/
+├── config/
+│   ├── default.yaml          # Full evaluation config
+│   └── fast.yaml             # Quick smoke test
+├── test_cases/
+│   ├── delegation/           # Agent routing correctness
+│   ├── quality/              # Output completeness
+│   └── compliance/           # SDLC workflow adherence
+└── packages/
+    ├── execution/            # Run agent sessions
+    ├── scoring/              # Score results by dimension
+    └── reporting/            # Generate reports
+```
+
+### Adding a test case
+
+```json
+{
+  "prompt": "The task to evaluate",
+  "expected_agent": "backend",
+  "expected_pattern": "regex to match in output",
+  "category": "delegation_accuracy",
+  "metadata": { "description": "What this tests" }
+}
+```
+
+### Running the full pipeline
+
+```bash
+# Quick validation before a release
+make certify-full
+
+# Equivalent to running:
+make validate-all          # structural checks
+make validate-delegation   # delegation tests
+make eval-fast             # quality + compliance (fast)
+make certify               # trust score
+```
+
+### Relationship to existing certification
+
+| Component | Existing (`certify.py`) | New (`evaluator/`) |
+|-----------|:-----------------------:|:------------------:|
+| Delegation tests | ✅ 26 scenarios | ✅ Extensible test cases |
+| Structural eval | ✅ Pattern matching | ✅ Same + JSON schema |
+| Quality scoring | ❌ Manual | ✅ LLM-as-judge (when configured) |
+| Compliance | ❌ Not checked | ✅ SDLC phase verification |
+| Context efficiency | ❌ Not measured | ✅ Token usage tracking |
+| Report format | Markdown | Markdown + JSON |
+
+The new evaluator **complements** `certify.py` — both run in `make certify-full`.
+
+---
+
+## 6. Future enhancements
+
+- [ ] LLM judge integration (quality dimension scoring via Bedrock)
 - [ ] Parallel scenario execution
 - [ ] CI/CD integration (run on PR merge to steer-runtime)
 - [ ] Historical trend tracking (score over versions)
 - [ ] Per-workspace certification (workspace-specific orchestrators)
 - [ ] Skill-specific structural checks (HTML output, chart presence, etc.)
 - [ ] Latency benchmarks (delegation should happen within N seconds)
+- [ ] Model comparison reports (eval same cases across different models)
+- [ ] Batch evaluation across all test cases with CSV export

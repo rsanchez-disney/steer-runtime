@@ -5,6 +5,19 @@
       "command": "$HOME/.kiro/hooks/block-suspicious.sh",
       "description": "Block commands that trigger EDR alerts (browser DBs, credential stores, credential harvesting)",
       "condition": "has_tool:execute_bash"
+    },
+    {
+      "matcher": "fs_write",
+      "command": "$HOME/.kiro/hooks/validate-content.sh",
+      "description": "Validate JSON, YAML, and Markdown content before writing",
+      "condition": "has_tool:fs_write"
+    }
+  ],
+  "agentSpawn": [
+    {
+      "command": "$HOME/.kiro/hooks/context-inject.sh",
+      "description": "Inject on-demand context files matching task keywords",
+      "condition": ""
     }
   ]
 }

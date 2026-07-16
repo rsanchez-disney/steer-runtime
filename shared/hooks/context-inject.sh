@@ -1,77 +1,56 @@
-#!/bin/bash
-# context-inject.sh — Dynamic context injection based on git diff
-# Trigger: agentSpawn
-# Output: JSON with recommended context files to load
+#!/usr/bin/env bash
+# context-inject.sh — agentSpawn hook
+# Scans on-demand context files and injects those matching the current task.
+# Reads task description from KIRO_PROMPT or first argument.
 
 set -euo pipefail
 
-KIRO_DIR="${KIRO_HOME:-$HOME/.kiro}"
-CONTEXT_DIR="$KIRO_DIR/context"
-MAX_INJECT=3
+KIRO_ROOT="${KIRO_HOME:-$HOME/.kiro}"
+CONTEXT_DIR="$KIRO_ROOT/context"
+TASK="${KIRO_PROMPT:-${1:-}}"
 
-# Get changed files (staged + unstaged + untracked)
-CHANGED_FILES=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only 2>/dev/null || echo "")
-STAGED_FILES=$(git diff --cached --name-only 2>/dev/null || echo "")
-ALL_FILES=$(printf "%s\n%s" "$CHANGED_FILES" "$STAGED_FILES" | sort -u | grep -v '^$' || true)
-
-[ -z "$ALL_FILES" ] && echo '{"inject_context":[],"reason":"no changes detected"}' && exit 0
-
-# Categorize files and collect context recommendations
-RECOMMENDATIONS=()
-
-has_pattern() {
-  echo "$ALL_FILES" | grep -qE "$1" 2>/dev/null
-}
-
-# Java sources
-if has_pattern '\.(java|kt)$|pom\.xml|build\.gradle'; then
-  RECOMMENDATIONS+=("api_standards.md")
-  RECOMMENDATIONS+=("performance_patterns.md")
+# If no task description available, skip
+if [ -z "$TASK" ]; then
+  exit 0
 fi
 
-# TypeScript/JavaScript (non-test)
-if echo "$ALL_FILES" | grep -E '\.(ts|js)$' | grep -vE '\.(spec|test)\.' | grep -q .; then
-  RECOMMENDATIONS+=("api_standards.md")
-fi
+# Convert task to lowercase for matching
+TASK_LOWER=$(echo "$TASK" | tr '[:upper:]' '[:lower:]')
 
-# Test files
-if has_pattern '\.(spec|test)\.(ts|js|java)$'; then
-  RECOMMENDATIONS+=("test_templates.md")
-  RECOMMENDATIONS+=("automation_patterns.md")
-fi
+INJECTED=""
 
-# Angular components
-if has_pattern '\.component\.(ts|html|scss)$|\.module\.ts$'; then
-  RECOMMENDATIONS+=("vista_web_components.md")
-fi
+# Scan all context files for on-demand inclusion
+for file in "$CONTEXT_DIR"/*.md; do
+  [ -f "$file" ] || continue
 
-# Infrastructure
-if has_pattern 'Dockerfile|docker-compose|\.yaml$|\.yml$' && has_pattern 'k8s|deploy|helm|infra'; then
-  RECOMMENDATIONS+=("ops_guidelines.md")
-fi
+  # Read frontmatter (between --- markers)
+  INCLUSION=$(sed -n '/^---$/,/^---$/p' "$file" | grep "^inclusion:" | head -1 | sed 's/inclusion: *//')
+  TRIGGER=$(sed -n '/^---$/,/^---$/p' "$file" | grep "^trigger:" | head -1 | sed 's/trigger: *"//' | sed 's/"$//')
 
-# Documentation
-if has_pattern '^docs/.*\.md$'; then
-  RECOMMENDATIONS+=("domain_glossary.md")
-fi
-
-# Deduplicate and limit
-UNIQUE_RECS=$(printf '%s\n' "${RECOMMENDATIONS[@]+"${RECOMMENDATIONS[@]}"}" 2>/dev/null | sort -u | head -n $MAX_INJECT)
-
-# Filter to only existing files
-FINAL_RECS=()
-while IFS= read -r rec; do
-  [ -z "$rec" ] && continue
-  if [ -f "$CONTEXT_DIR/$rec" ]; then
-    FINAL_RECS+=("\"$rec\"")
+  # Only process on-demand files
+  if [ "$INCLUSION" != "on-demand" ]; then
+    continue
   fi
-done <<< "$UNIQUE_RECS"
 
-# Output JSON
-if [ ${#FINAL_RECS[@]} -eq 0 ] 2>/dev/null || [ -z "${FINAL_RECS+x}" ]; then
-  echo '{"inject_context":[],"reason":"no matching context for changed files"}'
-else
-  JOINED=$(IFS=,; echo "${FINAL_RECS[*]}")
-  FILE_COUNT=$(echo "$ALL_FILES" | wc -l | tr -d ' ')
-  echo "{\"inject_context\":[$JOINED],\"reason\":\"$FILE_COUNT files changed, matched ${#FINAL_RECS[@]} context files\"}"
+  # Skip if no trigger defined
+  if [ -z "$TRIGGER" ]; then
+    continue
+  fi
+
+  # Check if task matches any trigger keyword (regex pattern)
+  if echo "$TASK_LOWER" | grep -qiE "$TRIGGER"; then
+    BASENAME=$(basename "$file")
+    INJECTED="${INJECTED:+$INJECTED, }$BASENAME"
+    # Output the file content as injected context
+    echo "<!-- on-demand: $BASENAME (matched trigger) -->"
+    cat "$file"
+    echo ""
+  fi
+done
+
+# Report what was injected
+if [ -n "$INJECTED" ]; then
+  echo "📎 On-demand context loaded: $INJECTED" >&2
 fi
+
+exit 0
