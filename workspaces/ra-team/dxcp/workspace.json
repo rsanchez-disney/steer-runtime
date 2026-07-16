@@ -125,7 +125,7 @@
   "enable_tools": true,
   "jira_prefix": "IOET-",
   "jira_host": "disneyexperiences.atlassian.net",
-  "workspace_path": "~/dxcp/other",
+  "workspace_path": "~/dxcp",
   "services": [
     "rafay-gitops",
     "eks-clusters",
