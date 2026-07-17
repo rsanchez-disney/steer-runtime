@@ -17,6 +17,7 @@ Features in this section are functional but still evolving. They may change beha
 | [Depth Calibration](depth-calibration.md)    | 🧪 Experimental | v0.2.160 | Adaptive output detail based on task complexity               |
 | [Content Validation](content-validation.md)  | 🧪 Experimental | v0.2.160 | Pre-write hook validating JSON, YAML, and Markdown            |
 | [Design Review Hook](design-review-hook.md)  | 🧪 Experimental | v0.2.160 | Pre-push plan drift detection                                |
+| [Model Routing](model-routing.md)            | 🧪 Experimental | v0.4.238 | Per-agent model selection — stronger models for complex tasks |
 
 ## Graduation criteria
 
