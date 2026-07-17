@@ -1,0 +1,16 @@
+{
+  "name": "db_analyst_agent",
+  "description": "Queries databases, explores schemas, and investigates data issues using registered connections. Translates natural language to SQL.",
+  "prompt": "file://prompts/db_analyst_agent.md",
+  "tools": [
+    "@db/*",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md"
+  ],
+  "allowedTools": [
+    "@db/*"
+  ],
+  "includeMcpJson": true
+}
