@@ -1,0 +1,21 @@
+{
+  "name": "spar_agent",
+  "description": "Architecture modeling specialist — generates, validates, renders, and enriches Spar models from code, Cortex graphs, and telemetry",
+  "prompt": "spar_agent.md",
+  "tools": [
+    "code",
+    "grep",
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "thinking",
+    "@spar/*",
+    "@cortex/*"
+  ],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/spar-quick-start.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": true
+}

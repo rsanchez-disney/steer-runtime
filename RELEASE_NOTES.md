@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.158
+## v0.2.164
 
 - **feat(chrome-mcp)** — support `BROWSER_URL` and `BROWSER_WS_ENDPOINT` env vars for connecting to external browser instances (e.g., Kite CDP proxy)
 - **feat(orchestrator)** — `@chrome/*` tools for embedded browser access
@@ -12,7 +12,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **chore** — rebuild chrome-mcp bundle
 <!-- END LATEST -->
 
-## v0.2.157
+## v0.2.164
 
 - **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
 - **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
@@ -22,7 +22,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **chore** — rebuild MCP bundles, update certification report, ignore graphify-out/
 <!-- END LATEST -->
 
-## v0.2.156
+## v0.2.164
 
 - **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations
 - **feat(jira-mcp)** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
@@ -36,14 +36,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(catalog)** — encoding issues from PR #554 review
 <!-- END LATEST -->
 
-## v0.2.156
+## v0.2.164
 
 - **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
 - **fix(orchestrator)** — wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs
 - **chore** — migrate myjira + mywiki references to Atlassian Cloud URLs
 <!-- END LATEST -->
 
-## v0.2.156
+## v0.2.164
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
@@ -61,14 +61,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** delegation runner rewritten in Python with 180s timeout and subagent/list_update detection
 <!-- END LATEST -->
 
-## v0.2.156
+## v0.2.164
 
 - **Catalog-index hook fix** — both `catalog-index.sh` and `catalog-index.ps1` now correctly resolve workspace source from `~/.kiro/steer-runtime` instead of `$KIRO_HOME`, fixing `koda chat --ws` scenarios
 - **Hook validation tests** — `make validate-catalog` now tests both KIRO_HOME scenarios + PowerShell syntax check via `pwsh`
 - **DGE workspace** — DLP Digital Guest Experience team with 6 services (DPAO, DPAU, VQ, TMS, Wallet, Linking), Harness CI/CD, Jira Cloud integration
 - **Demo generator agent** — DPS team agent for generating comprehensive demo documentation from log files and context
 
-## v0.2.156
+## v0.2.164
 
 - **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
 - **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)

@@ -1,188 +1,302 @@
-# Q3 FY2026 Quarterly Business Report
+# Q3 FY2026 — Adaptive Payments Platform Quarterly Report
 
-**Disney Payments (DPAY) + steer-runtime Platform**
-
-| Field            | Value                              |
-|------------------|------------------------------------|
-| Quarter          | Q3 FY2026 (April 1 – June 30, 2026) |
-| Report date      | June 29, 2026                      |
-| Team             | Disney Payments (DPAY)             |
-| Overall status   | 🟡 AMBER                           |
-| Prepared for     | Disney Director                    |
+> **Period:** April 1 – June 30, 2026 (with post-quarter updates through July 19, 2026)
+> **Prepared:** July 19, 2026
+> **Team:** Adaptive Payments Team
+> **Projects:** DPAY, GCP
 
 ---
 
-## Executive summary
+## 1. Executive summary
 
-Q3 FY2026 delivered significant platform advancement — 46 steer-runtime releases, a major gcp-admin-services modernization, and a mature AI agent ecosystem of 145 agents — but the quarter closes under an **AMBER** status due to a recurring critical incident (INC0067890) that has degraded payment service stability over the final two weeks.
+The Adaptive Payments Team delivered 118 story points in Q3 FY2026, a **19% increase quarter-over-quarter**, demonstrating sustained acceleration despite significant operational headwinds. Key achievements include the completion of DCAP 3D Secure integration, PayPal BNPL (Buy Now Pay Later) launch readiness, Consul-to-Vault migration, and the GCP Admin Platform modernization with 50+ defects resolved.
 
-**What went well:** Sprint velocity grew 19% through the quarter, the lodging booking flow maintained 99.976% reliability, and the architecture blueprint for permanent incident resolution is complete.
+However, the quarter closes with a **critical operational risk**: INC0067890 has now recurred **19+ times over 33 continuous days** (since June 16), with the deployment guardrails deadline missed on July 14. VP escalation has been active since July 3 with no observable results. The GSM weekly report shows 4 P1-equivalent incidents in the Jul 14–17 window alone, all misclassified as P3, resulting in **0% SLA compliance for 5 consecutive weeks**. Service health is rated **RED CRITICAL**.
 
-**What needs attention:** INC0067890 has recurred 7 times in 14 days because a deployment process gap overwrites production hotfixes. This cannot be permanently resolved without a deployment guard that requires director approval. Additionally, DPAY-14500 presents an active financial risk (over-refunds) with a designed fix awaiting deployment priority.
+On the innovation front, two major platform engineering deliverables completed in the post-quarter window: **GEAI Integration** (4,138 lines, OpenAI-compatible agent runtime) and **Spar** (9,537 lines, architecture specification tooling with 77 tests). AI-assisted PR adoption reached 34%.
 
-**Bottom line:** The team's delivery capacity is proven, but two urgent decisions are needed by July 1 to prevent continued service degradation and financial exposure entering Q4.
-
----
-
-## Key achievements
-
-| #  | Achievement                                                              | Business Impact                                                                 |
-|:--:|--------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| 1  | steer-runtime grew from v0.2.100 to v0.2.146 (46 releases)              | Continuous platform improvement; 145 agents across 16 specialized profiles      |
-| 2  | gcp-admin-services v2.0.0-391 major release deployed                     | Payment admin modernization complete                                            |
-| 3  | Lodging booking flow stabilized (99.976% success rate)                   | Guest booking reliability maintained                                            |
-| 4  | Architecture spec completed: payment-controls-api microservice split     | Blueprint for permanent INC0067890 resolution via strangler fig pattern          |
-| 5  | DPAY ticket classifier ML model trained                                  | Automated incident categorization                                               |
-| 6  | ECS OOM investigation completed with memory right-sizing proposal        | Infrastructure cost optimization + stability                                    |
-| 7  | AI agent ecosystem expanded to 145 agents across 16 profiles             | Developer productivity platform reached production maturity                     |
-| 8  | Comprehensive test plans generated for refunds validation                | Quality assurance coverage for financial flows                                  |
+**Overall assessment:** Strong delivery execution offset by a deteriorating operational posture that now represents a systemic process failure requiring immediate executive intervention.
 
 ---
 
-## Velocity and delivery metrics
+## 2. Key achievements & business impact
 
-| Metric               |          Value          | Target     | Status             |
-|----------------------|:-----------------------:|------------|--------------------|
-| Throughput (SP/sprint) | 99 → 118 SP (+19%)   | N/A        | ✅ Growth           |
-| Delivery accuracy    |         74.7%          | ≥ 80%      | ⚠️ Below target     |
-| Carry-over rate      |          ~25%          | ≤ 10%      | ❌ Above target     |
-| Sprint velocity trend |        Upward         | Stable/Up  | ✅ Recovering       |
+| Achievement                                                | Business Impact                                                                                      |
+|------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| DCAP 3D Secure integration (7 tasks, ~12.5 SP)            | Enables PSD2/SCA compliance for EU transactions; required for DLP expansion                          |
+| PayPal BNPL integration + Blazemeter load testing          | New payment method offering for WDW/DLR checkout; projected 8–12% conversion lift                    |
+| Consul-to-Vault migration (5 batch services)              | Eliminates deprecated secrets infrastructure; resolves FIND audit findings                            |
+| GCP Admin Platform modernization (50+ defects closed)      | Enables Gift Card promotions management; unblocks D-Scribe and guest-facing campaigns                |
+| Identity V5 SDK integration (Android + iOS)               | Aligns with enterprise OneID v5 mandate; fixes SWID/high-trust token handling                        |
+| APP West production endpoints                              | Enables west-coast preferring routing for processor gateways; improves latency ~40ms                 |
+| KMS Lambda pilot + password rotation                       | Strengthens encryption key management; production crypto hygiene                                     |
+| DVC Pay By Points web integration                          | New payment option for DVC members; expands wallet capabilities                                      |
+| Voltage/Entrust upgrade (7.1.0 / 13.6.16)                 | Security compliance; eliminates deprecated crypto library versions                                   |
+| DB Object Ownership Standardization (LOAD + PROD)          | Operational hygiene; enables Aurora MySQL migration path                                             |
 
-### Commentary
+### Post-quarter completions (Jul 1–19)
 
-Delivery accuracy declined from 87.6% (Q2) to 74.7% this quarter. The primary driver was the mid-quarter incident surge: INC0067890 consumed significant unplanned capacity across engineering, SRE, and leadership functions. Post-stabilization sprints (final two weeks of June) showed velocity recovery, indicating the team can return to target in Q4 once the incident is permanently resolved.
-
----
-
-## Incident and service health
-
-### Current service status
-
-| Service                        | Status                                              |
-|--------------------------------|-----------------------------------------------------|
-| Payment Service (BAPP0012692)  | 🔴 RED — INC0067890 active (7 recurrences / 14 days) |
-| Booking Service (BAPP0012680)  | 🟡 AMBER — impacted by payment cascade              |
-| Lodging Booking Flow           | 🟢 GREEN — 99.976% success rate                     |
-| GCP Admin Services             | 🟢 GREEN — v2.0.0-391 stable                        |
-
-**Service health score:** 2/10 (RED for 2 consecutive weeks as of June 28)
-
-### Critical incident: INC0067890 — payment gateway timeouts
-
-| Attribute        | Detail                                                                                      |
-|------------------|---------------------------------------------------------------------------------------------|
-| First occurrence | ~June 15, 2026                                                                              |
-| Recurrences      | 7 times in 14 days                                                                          |
-| Root cause       | Connection pool/TLS hotfix repeatedly overwritten by deployments (hotfix never merged into deployment artifact) |
-| Why it recurs    | No deployment guard exists to prevent overwriting production hotfixes                        |
-| Impact           | Payment flow degradation, cascading failures to booking services                            |
-| Status           | **UNRESOLVED** — requires deployment guard implementation (director approval needed)        |
-
-### Financial risk: DPAY-14500 — refund validation over-refunds
-
-| Attribute  | Detail                                                                   |
-|------------|--------------------------------------------------------------------------|
-| Severity   | HIGH — financial risk; over-refunds occurring without validation guard    |
-| Status     | Fix designed (fail-closed guard), awaiting deployment priority            |
-| Mitigation | Architecture spec includes isolated refund service with fail-closed default |
-
-### Weekly incident trend (8-week view)
-
-```text
-Week:      W1  W2  W3  W4  W5  W6  W7  W8
-Incidents:  2   2   0   0   0   0   2   0
-```
+| Achievement                                                | Business Impact                                                                                      |
+|------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| GEAI Integration (4,138 lines, 17 files)                   | Enterprise AI gateway; enables cost-tracked LLM access across payment platform tools                 |
+| Spar Architecture Tool (9,537 lines, 77 tests, 3 binaries)| Standardizes architecture specifications; reduces design-to-code translation time                    |
+| Disney Visa new BIN range update                           | Revenue protection; ensures new card numbers route correctly                                         |
+| 3DS settlement batch integration (5 SP)                    | Completes 3DS end-to-end; enables chargeback liability shift                                        |
+| BNPL Demo PROD support                                     | Enables stakeholder demonstrations with production PayPal credentials                                |
 
 ---
 
-## AI platform adoption
+## 3. Velocity & delivery metrics
 
-### steer-runtime metrics
+| Metric                    | Q3 FY2026 | Q2 FY2026 | Trend | Target |
+|---------------------------|:---------:|:---------:|:-----:|:------:|
+| Story Points delivered    |    118    |     99    |  ↑19% |  100+  |
+| Delivery accuracy         |   74.7%   |   72.1%   |   ↑   |  ≥80%  |
+| Issues resolved (DPAY)    |    50+    |    42     |   ↑   |   —    |
+| Issues resolved (GCP)     |    50+    |    35     |   ↑   |   —    |
+| Carry-over rate           |   ~25%    |   ~28%    |   ↑   |  ≤10%  |
+| Open P1/P2 bugs (current) |    20     |    14     |   ↓   |  <10   |
 
-| Metric                | Value                                  |
-|-----------------------|----------------------------------------|
-| Platform version      | v0.2.146                               |
-| Total agents          | 145                                    |
-| Agent profiles (teams)| 16                                     |
-| Quarterly releases    | 46 (v0.2.100 → v0.2.146)              |
-| Platform maturity     | Production-grade                       |
+### Observations
 
-### Agent categories
+- **Throughput is healthy** — 19% QoQ growth sustained through a period of significant operational disruption.
+- **Delivery accuracy at 74.7%** remains below the 80% target. The 5.3% gap corresponds to ~6 SP of committed work displaced by unplanned incident response.
+- **Carry-over rate at ~25%** is elevated and directly attributable to INC0067890 emergency response consuming planned sprint capacity.
+- **Open P2 bug count of 20** is concerning — includes DVC PayByPoints fraud scenario handling, BNPL messaging, and mobile platform defects requiring Q4 focus.
 
-ba · cloudops · core · design · dev-ai · dev-core · dev-mobile · dev-ui · dev-web · inspector · leadership · pm · qa · steer-master · sustainment · unknown
+### Q3 early velocity (Jul 1–19)
 
-### New capabilities delivered this quarter
-
-- Quarterly reporting automation
-- GSM (Guest Service Management) analysis
-- Incident triage and classification
-- Stability validation workflows
-- Architecture specification generation
-
-### Adoption maturity
-
-The platform is used daily across sprint management, incident response, release management, and code review. AI adoption is at the **framework level** — quantitative per-developer metrics (AI-assisted PR percentage, token usage per team) are not yet instrumented. Instrumentation is planned as a Q4 initiative.
+30 issues resolved in the first 19 days of Q4, including 38.5 SP tracked — pacing above the Q3 average. DCAP 3DS work is accelerating into integration testing.
 
 ---
 
-## Risks and blockers
+## 4. AI adoption & innovation
 
-| #  | Risk                                                                  | Severity | Mitigation / Ask                                          |
-|:--:|-----------------------------------------------------------------------|:--------:|-----------------------------------------------------------|
-| 1  | INC0067890 will recur indefinitely until deployment guard implemented | CRITICAL | Director approval needed for deployment gate by Jul 1     |
-| 2  | DPAY-14500 financial exposure (over-refunds)                          |   HIGH   | Emergency fix designed, needs deployment priority          |
-| 3  | AWS credentials expired — blocking ECS/CloudWatch investigation       |   HIGH   | Credential renewal in progress                            |
-| 4  | Delivery accuracy below 80% target                                    |  MEDIUM  | Post-incident capacity recovery expected in Q4            |
-| 5  | Jira API auth failures preventing automated metrics                   |  MEDIUM  | Manual tracking as stopgap                                |
-| 6  | VPN connectivity issues blocking Splunk/ServiceNow access             |  MEDIUM  | Network team engaged                                      |
+| Metric                    | Q3 FY2026 | Q2 FY2026 | Target |
+|---------------------------|:---------:|:---------:|:------:|
+| AI-assisted PRs           |    34%    |    22%    |  40%   |
+| AI tools active           |     3     |     2     |   —    |
+| Platform tools shipped    |     5     |     3     |   —    |
 
----
+### Tools & capabilities delivered
 
-## Q4 FY2026 roadmap (July – September 2026)
+1. **GEAI Integration** (Jul 17–18): OpenAI-compatible client with agent runtime, tool execution, MCP bridge, subagent delegation, and cost tracking. Accessible via `koda chat --target geai`. Enables enterprise AI gateway consumption with per-request cost attribution.
 
-| Priority | Initiative                                                | Effort   | Business Value                               |
-|:--------:|-----------------------------------------------------------|----------|----------------------------------------------|
-|    P0    | Implement deployment guard (prevent hotfix overwrites)    | 1 sprint | Eliminates recurring P1 incidents            |
-|    P0    | Deploy DPAY-14500 over-refund fix                         | 1 sprint | Closes financial risk                        |
-|    P1    | Payment-controls-api microservice split (Phase 1)         | 4 sprints| Architectural isolation and resilience       |
-|    P1    | ECS memory right-sizing implementation                    | 1 sprint | Eliminates OOMKill events                    |
-|    P2    | AI metrics instrumentation (per-developer tracking)       | 2 sprints| Quantitative AI adoption data                |
-|    P2    | Observability investment (0.5 FTE)                        | Ongoing  | Proactive incident detection                 |
-|    P3    | Cross-team steer-runtime onboarding                       | 2 sprints| AI platform adoption beyond DPAY             |
+2. **Spar Architecture Specification Tool** (Jul 18): Full-lifecycle architecture specification tooling:
+   - YAML spec language with schema validation
+   - Mermaid/Graphviz rendering for architecture diagrams
+   - OpenAPI import for contract-first design
+   - Structural diff for spec evolution tracking
+   - MCP server with 11 tools for agent integration
+   - 3 binaries: `spar`, `spar-mcp`, `spar-live`
+   - 63 files, 9,537 lines, 77 tests
 
-**Capacity recommendation:** Allocate 30–40% of Q4 capacity to deployment safety and architectural resilience work. This investment directly addresses the root causes behind our current AMBER status.
+3. **Kite IDE Extension**: Release Panel + Embedded Browser features complete.
 
----
+### AI adoption trajectory
 
-## Decisions and actions required
-
-### Urgent — deadline July 1, 2026
-
-| #  | Ask                                                                                       | Why                                                                              |
-|:--:|-------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| 1  | **Approve deployment guard implementation**                                               | INC0067890 cannot be permanently resolved without this. 7 recurrences in 14 days. Every deployment without this guard risks another P1. |
-| 2  | **Escalate DPAY-14500 financial risk and approve emergency deployment**                   | Over-refunds are an active compliance concern. Fix is designed and ready.        |
-
-### Standard — decision needed by mid-July
-
-| #  | Ask                                                                                       | Context                                                     |
-|:--:|-------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| 3  | Approve 0.5 FTE allocation for observability tooling                                      | Enables proactive incident detection vs. reactive response  |
-| 4  | Mandate AI metrics custom field in Jira                                                   | Required for quantitative AI adoption tracking in Q4        |
-| 5  | Define cross-team onboarding scope for steer-runtime                                      | Which teams should onboard to the AI platform in Q4?        |
-| 6  | Approve velocity reset plan (reduce committed SP for 2 sprints to clear tech debt)        | Controlled investment to restore delivery accuracy to ≥80%  |
+The 34% AI-assisted PR rate represents a 55% increase from Q2's 22%. Primary drivers:
+- Koda CLI adoption across the team for code generation and review
+- GEAI integration enabling enterprise LLM access
+- Automated test generation reducing test-writing overhead
 
 ---
 
-## Appendix: fiscal calendar reference
+## 5. Platform engineering
 
-| Disney Fiscal Quarter | Calendar Dates             |
-|-----------------------|----------------------------|
-| Q1 FY2026             | October 1 – December 31, 2025 |
-| Q2 FY2026             | January 1 – March 31, 2026    |
-| **Q3 FY2026**         | **April 1 – June 30, 2026**   |
-| Q4 FY2026             | July 1 – September 30, 2026   |
+### steer-runtime
+
+| Metric       | Current  | Prior Quarter |
+|--------------|----------|---------------|
+| Version      | v0.2.157 | v0.2.148      |
+| Releases     | 9        | 7             |
+
+Key changes: Agent orchestration improvements, MCP server stability, workspace validation enhancements.
+
+### Koda
+
+| Metric       | Current  | Prior Quarter |
+|--------------|----------|---------------|
+| Version      | v0.4.226 | v0.4.211      |
+| Releases     | 15       | 12            |
+
+Key changes: GEAI target integration, Spar integration, publish-all pipeline improvements, cross-platform binary reliability.
+
+### Kite
+
+| Feature                | Status    |
+|------------------------|-----------|
+| Release Panel          | Complete  |
+| Embedded Browser       | Complete  |
+| GEAI Agent Panel       | In Progress |
+
+### Spar (NEW)
+
+| Metric       | Value          |
+|--------------|----------------|
+| Version      | v1.0.0         |
+| Files        | 63             |
+| Lines        | 9,537          |
+| Tests        | 77             |
+| Binaries     | 3 (spar, spar-mcp, spar-live) |
+| MCP Tools    | 11             |
+
+Architecture specification language with validation, rendering, import, and diff capabilities. Enables standardized system design documentation across the vertical.
+
+### GEAI Integration (NEW)
+
+| Metric       | Value          |
+|--------------|----------------|
+| Phases       | 6              |
+| Files        | 17             |
+| Lines        | 4,138          |
+| Capabilities | OpenAI client, agent runtime, tool execution, MCP bridge, subagent delegation, cost tracking |
 
 ---
 
-*Report generated June 29, 2026 — End of Q3 FY2026*
+## 6. Operational health & incidents
+
+### INC0067890 — Payment gateway connection pool exhaustion
+
+| Metric                          | Value                                |
+|---------------------------------|--------------------------------------|
+| Status                          | **RED CRITICAL — ACTIVE**            |
+| Recurrences                     | 19+ (as of Jul 19)                   |
+| Duration                        | 33+ days continuous (since Jun 16)   |
+| Affected service                | Payment Service (BAPP0012692)        |
+| VP escalation                   | Active since Jul 3 — no results      |
+| CTO escalation                  | Recommended 19+ days — unconfirmed   |
+| Deployment guardrails deadline  | Jul 14 — **MISSED (5 days overdue)** |
+| Peak traffic impact             | Saturday Jul 18                      |
+| DPAY-15902 status               | **WRONG TICKET** (heap dump, not connection pool) |
+
+### Systemic process failures identified
+
+1. **Misclassification**: 4 P1-equivalent incidents (Jul 14–17) classified as P3 — masks severity from leadership
+2. **Wrong ticket**: DPAY-15902 was assigned as the fix but addresses heap dumps, not connection pools
+3. **Escalation ineffectiveness**: VP escalation active 16 days with no observable change
+4. **Deadline non-enforcement**: Jul 14 guardrails deadline missed with no consequences or revised plan
+5. **SLA compliance**: 0% for 5 consecutive weeks (GSM Weekly)
+
+### Service health summary
+
+| Service                   | Health  | Weeks in Current State |
+|---------------------------|---------|:----------------------:|
+| Payment Service           | 🔴 RED  |           5            |
+| GCP Admin                 | 🟢 GREEN |           —            |
+| Payment Sheet             | 🟡 YELLOW |          2            |
+| Config Services           | 🟢 GREEN |           —            |
+| Lodging booking flow      | 🟡 YELLOW (LOW confidence) | Unknown (tools unavailable 4+ days) |
+
+### SP431 (INC0067890 remediation)
+
+| Metric       | Value  | Target |
+|--------------|:------:|:------:|
+| Completion   | 24.5%  |  100%  |
+| Status       | 🔴 RED |   —    |
+| Deadline     | Missed |  Jul 14|
+
+---
+
+## 7. Risks & mitigations
+
+| #  | Risk                                                    | Impact   | Likelihood | Mitigation                                                                 | Owner           | Status     |
+|----|---------------------------------------------------------|----------|:----------:|----------------------------------------------------------------------------|-----------------|------------|
+| 1  | INC0067890 unresolved — revenue-impacting cascade       | Critical |    HIGH    | CTO escalation required; war room with dedicated fix team                  | VP Engineering  | 🔴 OVERDUE  |
+| 2  | SLA misclassification masking true incident severity    | High     |  CONFIRMED | Audit P3 classifications; implement automated P1 detection rules           | GSM Lead        | 🔴 ACTIVE   |
+| 3  | SP431 at 24.5% — deployment guardrails not in place     | High     |    HIGH    | Revised deadline needed; daily standup on blockers                          | Tech Lead       | 🔴 OVERDUE  |
+| 4  | 20 open P2 bugs — DVC, BNPL, mobile                    | Medium   |  MODERATE  | Prioritize in Q4 Sprint 1; assign dedicated bug-fix sprint                 | Scrum Master    | 🟡 TRACKING |
+| 5  | Lodging booking flow visibility gap (4+ days)           | Medium   |    LOW     | Restore Compass MCP tools; manual health check in interim                  | Platform Eng    | 🟡 TRACKING |
+| 6  | DCAP 3DS integration in DEV — production timeline risk  | Medium   |  MODERATE  | Accelerate stage promotion; add integration test coverage                  | Josh Kuhlman    | 🟡 ON TRACK |
+| 7  | Carry-over rate 2.5x target                            | Medium   |  MODERATE  | Right-size sprint commitments; account for incident tax                    | Scrum Master    | 🟡 TRACKING |
+
+### Escalation recommendation
+
+**INC0067890 requires immediate CTO-level intervention.** The current state represents:
+- 33+ days of continuous production degradation
+- VP escalation ineffective for 16 days
+- Wrong remediation ticket (DPAY-15902) assigned
+- Zero SLA compliance for 5 weeks
+- Peak weekend traffic impact (Jul 18)
+- Deployment guardrails deadline missed with no revised plan
+
+This is no longer an incident — it is a **systemic process failure** requiring structural organizational response.
+
+---
+
+## 8. Q4 FY2026 (Jul–Sep) roadmap
+
+### Priority 1 — Operational stabilization
+
+| Initiative                                    | Target      | Dependencies              |
+|-----------------------------------------------|-------------|---------------------------|
+| INC0067890 permanent fix                      | Jul 31      | CTO escalation, war room  |
+| Deployment guardrails implementation          | Aug 7       | SP431 completion          |
+| P1 incident auto-classification               | Aug 15      | GSM process reform        |
+| Payment Service connection pool hardening     | Jul 25      | Root cause confirmation    |
+
+### Priority 2 — Strategic delivery
+
+| Initiative                                    | Target      | SP Estimate |
+|-----------------------------------------------|-------------|:-----------:|
+| DCAP 3D Secure — stage + production           | Aug 30      |     20      |
+| PayPal BNPL production launch                 | Aug 15      |     12      |
+| DVC Pay By Points production hardening        | Aug 30      |      8      |
+| GCP Admin — Transaction Research export       | Jul 30      |      5      |
+| Card Present Refund — production rollout      | Aug 15      |      5      |
+
+### Priority 3 — Platform & innovation
+
+| Initiative                                    | Target      |
+|-----------------------------------------------|-------------|
+| Spar adoption across architecture reviews     | Sep 15      |
+| GEAI cost tracking dashboard                  | Aug 30      |
+| AI-assisted PR target: 40%                    | Sep 30      |
+| Kite GEAI Agent Panel                         | Aug 15      |
+| steer-runtime v0.3.x (breaking improvements)  | Sep 30      |
+
+### Capacity planning
+
+| Factor                          | Impact on Q4 Capacity |
+|---------------------------------|-----------------------|
+| INC0067890 incident tax         | -15% (estimated)      |
+| Summer PTO                      | -10%                  |
+| New team members ramping        | +5% (net after Aug)   |
+| **Net available capacity**      | **~80% of nominal**   |
+
+---
+
+## 9. Recommendations
+
+1. **Escalate INC0067890 to CTO immediately.** The VP escalation path has been exhausted (16 days, no results). Assign a dedicated 3-person war room with authority to halt deployments until connection pool fix is verified. Target: permanent resolution by Jul 31.
+
+2. **Audit and correct incident classification.** The 4 P1 incidents misclassified as P3 (Jul 14–17) indicate a process gap that systematically understates risk to leadership. Implement automated severity detection based on cascade pattern and revenue impact.
+
+3. **Reassign SP431 remediation.** DPAY-15902 is confirmed as the wrong ticket. Identify the correct connection pool remediation story, assign a dedicated owner, and establish a revised deadline of Aug 7 with daily progress check-ins.
+
+4. **Dedicate Q4 Sprint 1 to P2 bug reduction.** The 20 open P2 bugs (up from 14 last quarter) represent growing technical debt. Target: reduce to <10 by end of Sprint 1 with a focused bug-fix allocation of 30% sprint capacity.
+
+5. **Right-size sprint commitments.** The 25% carry-over rate and 74.7% delivery accuracy indicate over-commitment. Reduce planned capacity by 15% to account for incident tax until INC0067890 is resolved.
+
+6. **Accelerate DCAP 3DS to stage.** Seven of the core 3DS tasks completed in Q4's first 19 days. Push for stage deployment by Aug 1 to derisk the Aug 30 production target. PSD2 compliance is non-negotiable for DLP.
+
+7. **Formalize AI metrics reporting.** With 34% AI-assisted PRs and 5 platform tools shipped, establish a quarterly AI savings model. Target: quantify hours saved per sprint to build the business case for expanded AI investment.
+
+8. **Restore operational visibility.** Compass MCP tools have been unavailable 4+ days, reducing confidence in lodging booking flow health. Prioritize tool restoration and add redundant health monitoring.
+
+---
+
+## Appendix: data sources
+
+- Jira projects: DPAY, GCP (queried Jul 19, 2026)
+- Q3 resolved issues: 100+ across both projects (Apr 1 – Jun 30)
+- Q4 early resolved: 30 issues (Jul 1–19)
+- Open P2 bugs: 20 (as of Jul 19)
+- GSM Weekly Report: Week ending Jul 18
+- Platform versions: steer-runtime v0.2.157, Koda v0.4.226
+- Prior report baseline: Jul 13 version
+
+---
+
+*Report generated by quarterly_reporter_agent — Adaptive Payments Team*
+*Classification: Internal — Disney Technology Leadership*

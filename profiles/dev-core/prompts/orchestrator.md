@@ -96,6 +96,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "what does this page say", "check this wiki", "read this doc"  | `story_analyzer_agent`         |
 | "review code", "code review", "review PR"                     | `code_review_agent`            |
 | "architecture", "design pattern", "technical decision"         | `architecture_agent`           |
+| "spar", "architecture model", "render diagram", "system topology", "generate spar", "architecture diff" | `spar_agent`                   |
 | "propose", "alternatives", "options", "best approach", "how should I", "suggest implementation" | `propose_agent`                |
 | "judge", "score code", "evaluate quality", "rate this", "how good is", "code judgment" | `judge_agent`                  |
 | "write docs", "README", "runbook", "API docs"                 | `technical_writer_agent`       |

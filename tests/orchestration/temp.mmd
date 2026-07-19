@@ -1,42 +1,64 @@
 graph TB
-    subgraph UI["UI Layer"]
-        PAP["Payment Admin Portal\n(PAP)"]
-        TRP["Transaction Research Portal\n(TRP)"]
-        GCP["Guest Control Panel\n(GCP)"]
+    subgraph UI_Layer["UI Layer"]
+        UI["wdpr-payment-controls-client\n(Angular, port 3000)"]
     end
 
-    subgraph BFF["BFF / API Gateway Layer"]
-        CONFIGS_API["wdpr-payment-configs-api\n-Client CRUD\n-Config Metadata\n-Reports/Exports\n-Promotions"]
-        REFUND_API["wdpr-refund-rules-api\n-Ruleset SOR Mapping\n-Conditional Fields\n-Refund Validation\n-Refund Orchestration"]
+    subgraph ALB_Layer["ALB Layer"]
+        ALB["Application Load Balancer\n(Path-based routing)"]
     end
 
-    subgraph SHARED["Shared Services"]
-        AUTH["Shared Auth Library\nwdpr-payapi-core"]
-        FEATURES["Feature Toggles"]
+    subgraph BFF_Layer["BFF Layer - Target State"]
+        GW["dpay-gateway\n(Slim adapter, port 8625)\nNode.js 20 LTS"]
+        RS["dpay-refund-service\n(port 8630)\nNode.js 20 LTS"]
+        VS["dpay-validation-service\n(port 8631)\nNode.js 20 LTS"]
     end
 
-    subgraph BACKEND["Backend Services"]
-        CONFIG_SVC["wdpr-config-services\nJava/Spring"]
+    subgraph Event_Bus["Event Bus (SNS/SQS)"]
+        SNS_RC["SNS: dpay-refund-created"]
+        SNS_VC["SNS: dpay-validation-completed"]
+        SNS_VF["SNS: dpay-validation-failed"]
+        SQS_V1["SQS: validation-refund-created-queue"]
+        SQS_R1["SQS: refund-validation-completed-queue"]
+        SQS_R2["SQS: refund-validation-failed-queue"]
+        DLQ["DLQs (14-day retention)"]
     end
 
-    subgraph EXTERNAL["External"]
-        KEYSTONE["Keystone IAM"]
-        AUTHZ["Authorization Service"]
+    subgraph Backend["Backend Layer"]
+        CS["wdpr-config-services\n(Java/Spring, port 8080)"]
     end
 
-    PAP --> CONFIGS_API
-    PAP --> REFUND_API
-    TRP --> REFUND_API
-    GCP --> CONFIGS_API
-    GCP --> REFUND_API
+    subgraph Data["Data Layer"]
+        DDB[(DynamoDB)]
+        MDB[(MariaDB RDS)]
+        S3[(S3)]
+    end
 
-    CONFIGS_API --> AUTH
-    REFUND_API --> AUTH
-    CONFIGS_API --> FEATURES
-    REFUND_API --> FEATURES
+    UI -->|HTTPS| ALB
+    ALB -->|v1 routes| GW
+    ALB -->|v2/refunds,exports| RS
+    ALB -->|v2/validations,configs| VS
 
-    CONFIGS_API --> CONFIG_SVC
-    REFUND_API --> CONFIG_SVC
+    GW -->|HTTP circuit breaker| RS
+    GW -->|HTTP circuit breaker| VS
 
-    AUTH --> KEYSTONE
-    AUTH --> AUTHZ
+    RS -->|HTTP isolated pool 50| CS
+    VS -->|HTTP isolated pool 50| CS
+
+    CS --> DDB
+    CS --> MDB
+    CS --> S3
+
+    RS -->|publish| SNS_RC
+    VS -->|publish| SNS_VC
+    VS -->|publish| SNS_VF
+
+    SNS_RC --> SQS_V1
+    SNS_VC --> SQS_R1
+    SNS_VF --> SQS_R2
+
+    SQS_V1 -->|consume| VS
+    SQS_R1 -->|consume| RS
+    SQS_R2 -->|consume| RS
+
+    SQS_V1 -.->|max 3 retries| DLQ
+    SQS_R2 -.->|max 3 retries| DLQ
