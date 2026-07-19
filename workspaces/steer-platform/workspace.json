@@ -79,5 +79,12 @@
     "general-react-development"
   ],
   "enable_tools": true,
-  "workspace_path": "${WORKSPACE_ROOT}/Disney/SANCR225"
+  "workspace_path": "${WORKSPACE_ROOT}/Disney/SANCR225",
+  "policies": {
+    "geai": {
+      "enabled": true,
+      "allowed_models": ["*"],
+      "certify_with_geai": true
+    }
+  }
 }

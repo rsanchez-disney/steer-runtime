@@ -1,0 +1,40 @@
+# GEAI Access Policy
+# This file is signed at publish time. Modifications are detected and rejected.
+# To update: edit this file, then run `make sign-policies` during release.
+
+geai:
+  # Users who can use --target geai (by github.disney.com login / hub ID)
+  allowed_users:
+    - SANCR225
+    - TORRL202
+    - VENTA028
+
+  # Teams where any member can use GEAI (by workspace name)
+  # Any user with an active workspace matching these names gets access.
+  allowed_teams:
+    - adaptive-payments-team
+    - payments-core-team
+    - steer-platform
+
+  # Model access tiers
+  tiers:
+    full:
+      # Users with access to all models including expensive ones
+      users:
+        - SANCR225
+      models: ["*"]
+
+    standard:
+      # Default tier for all allowed users/teams
+      users: ["*"]
+      models:
+        - anthropic/claude-sonnet-4-6
+        - anthropic/claude-haiku-4.5
+        - openai/gpt-4o
+        - openai/gpt-4o-mini
+
+  # Cost tracking required for all GEAI usage
+  require_cost_tracking: true
+
+  # Daily request cap per user (0 = unlimited)
+  daily_limit: 500
