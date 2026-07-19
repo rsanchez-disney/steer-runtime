@@ -39,6 +39,11 @@ CONFIG_FILE = SCRIPT_DIR / "config.yaml"
 JUDGE_PROMPT = SCRIPT_DIR / "judge.md"
 
 KIRO_CLI = os.environ.get("KIRO_CLI", os.path.expanduser("~/.local/bin/kiro-cli"))
+KODA_CLI = os.environ.get("KODA_CLI", "koda")
+
+# Runtime target configuration (set by argparse)
+EVAL_TARGET = "kiro"
+EVAL_MODEL = ""
 
 
 @dataclass
@@ -209,9 +214,19 @@ def eval_with_acp(agent: str, prompt: str, timeout: int = 120) -> tuple[str, flo
     start = time.time()
     output_lines = []
 
+    # Build ACP command based on target
+    if EVAL_TARGET == "geai":
+        cmd = [KODA_CLI, "chat", "--target", "geai", "--agent", agent, "--trust-all"]
+        if EVAL_MODEL:
+            cmd.extend(["--model", EVAL_MODEL])
+    else:
+        cmd = [KIRO_CLI, "acp", "--agent", agent, "--trust-all-tools"]
+        if EVAL_MODEL:
+            cmd.extend(["--model", EVAL_MODEL])
+
     # Build the ACP session using subprocess with stdin/stdout pipes
     proc = subprocess.Popen(
-        [KIRO_CLI, "acp", "--agent", agent, "--trust-all-tools"],
+        cmd,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
@@ -496,6 +511,9 @@ def cmd_run_all(args):
 
 def main():
     parser = argparse.ArgumentParser(description="steer-eval: evaluate agent prompts and skills")
+    parser.add_argument("--target", default="kiro", choices=["kiro", "geai", "cursor"],
+                        help="Target runtime for evaluation (default: kiro)")
+    parser.add_argument("--model", default="", help="Model to use (e.g., claude-sonnet-4)")
     sub = parser.add_subparsers(dest="command")
 
     # scan
@@ -515,6 +533,11 @@ def main():
     all_p.add_argument("--dry-run", action="store_true", help="Preview without executing")
 
     args = parser.parse_args()
+
+    # Set global target/model
+    global EVAL_TARGET, EVAL_MODEL
+    EVAL_TARGET = args.target
+    EVAL_MODEL = args.model
 
     if args.command == "scan":
         cmd_scan(args)

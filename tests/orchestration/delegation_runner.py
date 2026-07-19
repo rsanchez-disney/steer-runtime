@@ -25,6 +25,11 @@ SCRIPT_DIR = Path(__file__).parent
 SCENARIOS_DIR = SCRIPT_DIR / "scenarios"
 RESULTS_DIR = SCRIPT_DIR / "results"
 KIRO_CLI = os.environ.get("KIRO_CLI", os.path.expanduser("~/.local/bin/kiro-cli"))
+KODA_CLI = os.environ.get("KODA_CLI", "koda")
+
+# Runtime target configuration
+TARGET = "kiro"  # kiro, geai, cursor
+MODEL = ""       # model override
 
 # Colors
 GREEN = "\033[0;32m"
@@ -38,6 +43,28 @@ def log(msg): print(f"{CYAN}[runner]{NC} {msg}")
 def pass_msg(msg): print(f"  {GREEN}✓{NC} {msg}")
 def fail_msg(msg): print(f"  {RED}✗{NC} {msg}")
 def warn_msg(msg): print(f"  {YELLOW}⚠{NC} {msg}")
+
+
+def build_acp_command(agent: str) -> list[str]:
+    """Build the ACP subprocess command based on target/model configuration."""
+    if TARGET == "geai":
+        # GEAI: use koda chat in ACP-compatible mode
+        cmd = [KODA_CLI, "chat", "--target", "geai", "--agent", agent, "--trust-all"]
+        if MODEL:
+            cmd.extend(["--model", MODEL])
+        return cmd
+    elif TARGET == "cursor":
+        # Cursor: use kiro-cli with cursor routing (when available)
+        cmd = [KIRO_CLI, "acp", "--agent", agent, "--trust-all-tools"]
+        if MODEL:
+            cmd.extend(["--model", MODEL])
+        return cmd
+    else:
+        # Default: kiro-cli ACP
+        cmd = [KIRO_CLI, "acp", "--agent", agent, "--trust-all-tools"]
+        if MODEL:
+            cmd.extend(["--model", MODEL])
+        return cmd
 
 
 def run_scenario(scenario_path: Path, dry_run=False) -> dict:
@@ -56,8 +83,9 @@ def run_scenario(scenario_path: Path, dry_run=False) -> dict:
         return {"name": name, "status": "SKIP", "subagent_calls": 0, "reason": "dry-run"}
 
     # Spawn kiro-cli ACP
+    cmd = build_acp_command(agent)
     proc = subprocess.Popen(
-        [KIRO_CLI, "acp", "--agent", agent, "--trust-all-tools"],
+        cmd,
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
@@ -300,9 +328,17 @@ def main():
     parser.add_argument("scenarios", nargs="*", help="Scenario file(s) to run")
     parser.add_argument("--all", action="store_true", help="Run all scenarios")
     parser.add_argument("--dry-run", action="store_true", help="Preview without executing")
+    parser.add_argument("--target", default="kiro", choices=["kiro", "geai", "cursor"],
+                        help="Target runtime (default: kiro)")
+    parser.add_argument("--model", default="", help="Model to use (e.g., claude-sonnet-4)")
     parser.add_argument("--workers", type=int, default=int(os.environ.get("CERT_WORKERS", "4")),
                         help="Max parallel workers (default: $CERT_WORKERS or 4)")
     args = parser.parse_args()
+
+    # Set global target/model for build_acp_command
+    global TARGET, MODEL
+    TARGET = args.target
+    MODEL = args.model
 
     RESULTS_DIR.mkdir(exist_ok=True)
 

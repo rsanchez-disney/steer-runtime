@@ -78,7 +78,7 @@ def get_version():
         return "dev"
 
 
-def run_delegation_tests(dry_run=False) -> dict:
+def run_delegation_tests(dry_run=False, target="kiro", model="") -> dict:
     """Run all delegation tests (16 scenarios across 12 orchestrators)."""
     summary_file = DELEGATION_DIR / "results" / "summary.json"
 
@@ -86,24 +86,31 @@ def run_delegation_tests(dry_run=False) -> dict:
         summary_file.unlink(missing_ok=True)
         runner = DELEGATION_DIR / "delegation_runner.py"
         print("   → Running 16 delegation scenarios (may take several minutes)...")
-        subprocess.run([sys.executable, str(runner), "--all"], cwd=DELEGATION_DIR)
+        cmd = [sys.executable, str(runner), "--all"]
+        if target != "kiro":
+            cmd.extend(["--target", target])
+        if model:
+            cmd.extend(["--model", model])
+        subprocess.run(cmd, cwd=DELEGATION_DIR)
 
     if summary_file.exists():
         return json.loads(summary_file.read_text())
     return {"total": 0, "passed": 0, "failed": 0, "results": []}
 
 
-def run_evals(dry_run=False) -> list[dict]:
+def run_evals(dry_run=False, target="kiro", model="") -> list[dict]:
     """Run structural + quality evals for all targets with rubrics."""
     results = []
     results_dir = EVALS_DIR / "results"
 
     if not dry_run:
         print("   → Running structural + quality eval suite...")
-        subprocess.run(
-            [sys.executable, str(EVALS_DIR / "runner.py"), "run-all"],
-            cwd=EVALS_DIR
-        )
+        cmd = [sys.executable, str(EVALS_DIR / "runner.py"), "run-all"]
+        if target != "kiro":
+            cmd.extend(["--target", target])
+        if model:
+            cmd.extend(["--model", model])
+        subprocess.run(cmd, cwd=EVALS_DIR)
 
     # Read all result files
     if results_dir.exists():
@@ -164,11 +171,13 @@ def compute_certification(delegation: dict, evals: list[dict]) -> CertResult:
     return cert
 
 
-def generate_report(cert: CertResult, version: str) -> str:
+def generate_report(cert: CertResult, version: str, target_label: str = "") -> str:
     """Generate CERTIFICATION.md content."""
     lines = []
     lines.append(f"# Steer Runtime {version} — Certification Report\n")
     lines.append(f"{cert.tier_badge} **Trust Score: {cert.trust_score:.0f}/100** ({cert.tier_name})\n")
+    if target_label:
+        lines.append(f"**Target:** {target_label}\n")
     lines.append(f"Generated: {time.strftime('%Y-%m-%dT%H:%M:%S')}\n")
     lines.append("---\n")
 
@@ -213,16 +222,129 @@ def generate_report(cert: CertResult, version: str) -> str:
     return "\n".join(lines)
 
 
+def load_matrix_config() -> list[dict]:
+    """Load target+model matrix from config.yaml."""
+    config_file = EVALS_DIR / "config.yaml"
+    if not config_file.exists():
+        return [{"target": "kiro", "model": ""}]
+
+    import yaml
+    config = yaml.safe_load(config_file.read_text())
+    matrix = config.get("matrix", [])
+    if not matrix:
+        return [{"target": "kiro", "model": ""}]
+    return matrix
+
+
+def run_matrix_certification():
+    """Run certification across all configured target+model combos and produce comparison."""
+    matrix = load_matrix_config()
+    version = get_version()
+
+    print(f"\n🏅 Steer Matrix Certification — {version}")
+    print(f"   Combos: {len(matrix)}")
+    print("=" * 60)
+
+    results = []
+
+    for i, combo in enumerate(matrix, 1):
+        target = combo.get("target", "kiro")
+        model = combo.get("model", "")
+        label = f"{target}/{model}" if model else target
+
+        print(f"\n{'─' * 60}")
+        print(f"  [{i}/{len(matrix)}] {label}")
+        print(f"{'─' * 60}")
+
+        # Run delegation + evals for this combo
+        delegation = run_delegation_tests(target=target, model=model)
+        evals = run_evals(target=target, model=model)
+        cert = compute_certification(delegation, evals)
+
+        results.append({
+            "target": target,
+            "model": model or "default",
+            "label": label,
+            "trust_score": round(cert.trust_score, 1),
+            "tier": cert.tier_name,
+            "tier_badge": cert.tier_badge,
+            "delegation": f"{cert.delegation_passed}/{cert.delegation_total}",
+            "structural": f"{cert.structural_passed}/{cert.structural_total}",
+            "quality_avg": round(cert.quality_avg, 1),
+        })
+
+        # Save per-combo report
+        combo_report = generate_report(cert, version, label)
+        safe_label = label.replace("/", "-")
+        (RESULTS_DIR / f"certification-{safe_label}.md").write_text(combo_report)
+
+    # Print comparison table
+    print(f"\n\n{'=' * 60}")
+    print("  MATRIX COMPARISON")
+    print(f"{'=' * 60}\n")
+    print(f"{'Target':<30} {'Score':>6} {'Tier':<15} {'Delegation':>12} {'Structural':>12}")
+    print(f"{'-'*30} {'-'*6} {'-'*15} {'-'*12} {'-'*12}")
+
+    for r in sorted(results, key=lambda x: x["trust_score"], reverse=True):
+        print(f"{r['label']:<30} {r['trust_score']:>5.0f}% {r['tier_badge']} {r['tier']:<12} {r['delegation']:>12} {r['structural']:>12}")
+
+    # Save comparison JSON
+    comparison_file = RESULTS_DIR / "matrix-comparison.json"
+    comparison_file.write_text(json.dumps({
+        "version": version,
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "results": results,
+    }, indent=2))
+
+    # Save comparison markdown
+    md_lines = [
+        f"# Matrix Certification — {version}\n",
+        f"Generated: {time.strftime('%Y-%m-%dT%H:%M:%S')}\n",
+        "",
+        "| Target | Score | Tier | Delegation | Structural | Quality |",
+        "|--------|:-----:|------|:----------:|:----------:|:-------:|",
+    ]
+    for r in sorted(results, key=lambda x: x["trust_score"], reverse=True):
+        md_lines.append(
+            f"| {r['label']} | {r['trust_score']:.0f}% | {r['tier_badge']} {r['tier']} | "
+            f"{r['delegation']} | {r['structural']} | {r['quality_avg']:.0f}% |"
+        )
+    md_lines.append("")
+    (RESULTS_DIR / "MATRIX.md").write_text("\n".join(md_lines))
+
+    print(f"\n📄 Comparison: {RESULTS_DIR / 'MATRIX.md'}")
+    print(f"📊 JSON:       {comparison_file}")
+
+    # Exit code: fail if ANY combo is uncertified
+    worst = min(r["trust_score"] for r in results) if results else 0
+    if worst < 50:
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate steer-runtime certification report")
     parser.add_argument("--from-results", action="store_true", help="Use existing results (don't re-run tests)")
     parser.add_argument("--dry-run", action="store_true", help="Preview without executing tests")
+    parser.add_argument("--target", default="kiro", choices=["kiro", "geai", "cursor"],
+                        help="Target runtime for evaluation (default: kiro)")
+    parser.add_argument("--model", default="", help="Model to use (e.g., claude-sonnet-4, gpt-4o)")
+    parser.add_argument("--matrix", action="store_true",
+                        help="Run certification across all target+model combos defined in config.yaml")
     args = parser.parse_args()
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Matrix mode: run all configured combos
+    if args.matrix:
+        run_matrix_certification()
+        return
+
     version = get_version()
-    print(f"\n🏅 Steer Certification — {version}")
+    target_label = args.target
+    if args.model:
+        target_label += f"/{args.model}"
+
+    print(f"\n🏅 Steer Certification — {version} (target: {target_label})")
     print("=" * 50)
 
     # Run or load delegation tests
@@ -244,10 +366,10 @@ def main():
             sys.exit(1)
         print("   ✅ All validations passed")
 
-        print("\n🔄 Running delegation tests + eval suite in parallel...")
+        print(f"\n🔄 Running delegation tests + eval suite (target={args.target}, model={args.model or 'default'})...")
         with ThreadPoolExecutor(max_workers=2) as pool:
-            fut_delegation = pool.submit(run_delegation_tests)
-            fut_evals = pool.submit(run_evals)
+            fut_delegation = pool.submit(run_delegation_tests, target=args.target, model=args.model)
+            fut_evals = pool.submit(run_evals, target=args.target, model=args.model)
             delegation = fut_delegation.result()
             evals = fut_evals.result()
 
@@ -258,7 +380,7 @@ def main():
     cert = compute_certification(delegation, evals)
 
     # Generate report
-    report = generate_report(cert, version)
+    report = generate_report(cert, version, target_label)
     report_file = RESULTS_DIR / "CERTIFICATION.md"
     report_file.write_text(report)
 
@@ -266,6 +388,8 @@ def main():
     json_file = RESULTS_DIR / "certification.json"
     json_file.write_text(json.dumps({
         "version": version,
+        "target": args.target,
+        "model": args.model or "default",
         "trust_score": round(cert.trust_score, 1),
         "tier": cert.tier_name,
         "delegation": {"passed": cert.delegation_passed, "total": cert.delegation_total},

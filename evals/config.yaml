@@ -7,6 +7,22 @@ judge:
   agent: ""
   prompt: judge.md
 
+# Target+model matrix for `certify.py --matrix`
+# Each combo runs the full certification pipeline independently.
+matrix:
+  - target: kiro
+    model: ""
+    label: "kiro/default (claude-opus-4.6)"
+  - target: kiro
+    model: "claude-sonnet-4"
+    label: "kiro/claude-sonnet-4"
+  - target: geai
+    model: "anthropic/claude-sonnet-4-6"
+    label: "geai/claude-sonnet-4-6"
+  - target: geai
+    model: "openai/gpt-4o"
+    label: "geai/gpt-4o"
+
 profiles:
   critical:
     - orchestrator
