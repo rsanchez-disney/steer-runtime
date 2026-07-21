@@ -4,23 +4,26 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | | |
-| Response time (p95) | | |
-| Error rate | | |
+| Uptime | 99.9% | CloudWatch |
+| Response time (p95) | < 500ms | API Gateway metrics |
 
 ## Peak Periods
 
--
+- Aligned with ROO (merchandise checkout) peak periods
 
 ## Business Logic
 
--
+- Generates barcode images for retail ordering receipts
+- Serverless: API Gateway + Lambda + S3
+- Shared by WDW and DLR retail ordering services
+- Barcodes stored in S3 and served via CDN
 
 ## Dependencies
 
--
+- API Gateway, Lambda, S3 (AWS infrastructure)
+- ROO services (consumers)
 
 ## Impact Classification
 
-- **Full outage:**
-- **Degraded:**
+- **Full outage:** Retail order receipts generated without barcodes. Orders still process but pickup validation affected.
+- **Degraded:** Slow barcode generation, timeouts. Minor impact on receipt delivery.

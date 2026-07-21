@@ -1,26 +1,34 @@
-# Business Rules — DLR Mobile Application (Dine Fulfillment)
+# Business Rules — DLR Mobile Application Dine Fulfillment
 
 ## SLAs & Availability Targets
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | | |
-| Response time (p95) | | |
-| Error rate | | |
+| Uptime | 99.9% | New Relic |
+| Crash-free rate | > 99.5% | New Relic |
+| Error rate | < 1% | New Relic alerts |
 
 ## Peak Periods
 
--
+- During all meal service hours at DLR restaurants with mobile ordering
+- Weekends and holidays have higher fulfillment volume
 
 ## Business Logic
 
--
+- Native iOS tablet app used by cast members at Xpedite stations
+- Displays incoming mobile orders for preparation and fulfillment
+- Cast members mark orders as ready/picked-up
+- Real-time updates via Pusher websocket connection
+- Backend: MOO service (BAPP0089046)
 
 ## Dependencies
 
--
+- MOO backend service
+- VenueNext/Xpedite tablet infrastructure
+- Pusher (real-time order updates)
+- QSRA (QSR Automation status: https://status.qsr.cloud/)
 
 ## Impact Classification
 
-- **Full outage:**
-- **Degraded:**
+- **Full outage:** Cast members cannot see/fulfill mobile orders on tablets. Orders pile up; guests wait indefinitely at pickup windows.
+- **Degraded:** Delayed order display, stale status. Cast members may miss orders or have incorrect fulfillment state.

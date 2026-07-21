@@ -1,28 +1,26 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0178865"
 app_name: "wdprt-mo-batch-service"
 full_name: "WDPRT MO Batch Service"
-description: ""
+description: "Batch service responsible for refunding abandoned payment authorizations tracked by MOO. Runs on AWS Batch on a scheduler for both WDW and DLR."
 
 # --- Ownership ---
 support_studio: "Studio FNB"
-escalation_channel: ""
+escalation_channel: "Live Support - Mobile Order | Mobile Retail and Restaurant"
 escalation_contacts:
-  - name: ""
+  - name: "Kevin Fittro"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "kevin.n.fittro@disney.com"
+  - name: "Roberto Patoni Beltran"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "roberto.patoni@disney.com"
+  - name: "Aidelis Calvo"
     role: "SME"
-    contact: ""
+    contact: "aidelis.x.calvo.-nd@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -36,12 +34,12 @@ servicenow:
     - "WDPRT MO Batch Service - WDW - AWS Load Test"
     - "WDPRT MO Batch Service - WDW - AWS Staging"
   assignment_group: "prd-global-fnb"
-  business_service: ""
+  business_service: "Mobile Retail & Restaurant"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "https://mywiki.disney.com/spaces/FBT/pages/790430431/Mobile+Order+-+Runbook"
+  wiki: "https://mywiki.disney.com/spaces/FBT/pages/793976222/Studio+Kronk"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -53,135 +51,96 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "mo-batch-wdw"
+    component_type: "batch"
+    description: "WDW MO Batch - refunds abandoned authorizations via AWS Batch"
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/wdpro-development/wdpr-mo-batch-svc"
+      branch: "master"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRT_MO_Batch_Service/pipelines"
+      deploy_target: "AWS Batch"
 
-    # -- Health Check --
-    health_check:
-      url: ""
-      expected_status: 200
-
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_revmgmt_prod_use1_awsbatch"
+      source: "*mo-batch*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_revmgmt_prod_use1_awsbatch source=*mo-batch*
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr_revmgmt_prod_use1_awsbatch source=*mo-batch* level=ERROR
+      latency_spl: ""
 
-    # -- AppDynamics --
-    appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
     grafana:
       dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
+      dashboard_url: "Grafana: WDW - Mobile Ordering BATCH"
+      datasource: "WDW - Mobile Ordering BATCH"
 
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "wdpr-revmgmt-prod"
+      infra_type: "Batch"
       cluster_id: ""
-      service_name: ""
+      service_name: "wdpr-mo-batch-svc-prod"
 
       cloudwatch:
-        log_group: ""
+        log_group: "/aws/batch/job"
         namespace: ""
         alarm_prefix: ""
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+      services:
+        - type: "dynamodb"
+          name: "wdw-revmgmt-nb-B0178865-mo-batch-prd-orders"
+        - type: "dynamodb"
+          name: "wdw-revmgmt-nb-B0178865-mo-batch-prd-processedorders"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
+  - component_name: "mo-batch-dlr"
+    component_type: "batch"
+    description: "DLR MO Batch - refunds abandoned authorizations via AWS Batch"
+
+    repository:
+      url: "https://github.disney.com/wdpro-development/wdpr-mo-batch-svc"
+      branch: "master"
+      path: ""
+
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRT_MO_Batch_Service/pipelines"
+      deploy_target: "AWS Batch"
+
+    splunk:
+      index: "wdpr_revmgmt_prd_usw2_awsbatch"
+      source: "*mo-batch*"
+      base_spl: >-
+        index=wdpr_revmgmt_prd_usw2_awsbatch source=*mo-batch*
+      error_spl: >-
+        index=wdpr_revmgmt_prd_usw2_awsbatch source=*mo-batch* level=ERROR
+      latency_spl: ""
+
+    grafana:
+      dashboard_uid: ""
+      dashboard_url: "Grafana: DLR - Mobile Ordering BATCH"
+      datasource: "DLR - Mobile Ordering BATCH"
+
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "wdpr-revmgmt-prod"
+      infra_type: "Batch"
+      cluster_id: ""
+      service_name: "wdpr-mo-batch-svc-prod"
+
+      cloudwatch:
+        log_group: "/aws/batch/job"
+        namespace: ""
+        alarm_prefix: ""
 
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+        - type: "dynamodb"
+          name: "dlr-revmgmt-nb-B0178865-mo-batch-prd-orders"
+        - type: "dynamodb"
+          name: "dlr-revmgmt-nb-B0178865-mo-batch-prd-processedorders"

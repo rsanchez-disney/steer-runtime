@@ -2,20 +2,24 @@
 
 ## Common Issues
 
-### Issue: {Short description}
+### Issue: Services failing to fetch config
 
-**Symptoms:**
+**Symptoms:** Consumer services logging config fetch errors
 
-**Root Cause:**
+**Root Cause:** Config server ECS task unhealthy
 
 **Resolution:**
+1. Restart config server ECS service
+2. Consumer services will retry and reconnect
+3. Cached configs continue working during outage
 
 ---
 
 ## Escalation Decision Tree
 
-- If {condition} → escalate to {team/person}
+- If config server → restart ECS
+- If bad config deployed → revert git repository changes
 
 ## Known Quirks
 
--
+- Consumer services cache configs — brief outages are tolerable

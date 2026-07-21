@@ -1,28 +1,26 @@
 # ============================================================================
 # ADM Managed Services Catalog — Application Entry
 # ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
 
 # --- Identity ---
 bapp_id: "BAPP0089587"
 app_name: "wdprd-dining-menu-service"
 full_name: "WDPRD Dining Menu Service"
-description: ""
+description: "Backend service providing dining menu data (items, prices, meal periods, allergens) for Disney parks restaurants. Serves both WDW and DLR menu data to mobile apps and web."
 
 # --- Ownership ---
 support_studio: "Studio FNB"
-escalation_channel: ""
+escalation_channel: "Live Support - Dine Menus | Mobile Retail and Restaurant"
 escalation_contacts:
-  - name: ""
+  - name: "Kevin Fittro"
     role: "primary"
-    contact: ""
-  - name: ""
+    contact: "kevin.n.fittro@disney.com"
+  - name: "Roberto Patoni Beltran"
     role: "secondary"
-    contact: ""
-  - name: ""
+    contact: "roberto.patoni@disney.com"
+  - name: "Aidelis Calvo"
     role: "SME"
-    contact: ""
+    contact: "aidelis.x.calvo.-nd@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -32,12 +30,12 @@ servicenow:
     - "DLR Dining Menu Service - AWS Production"
     - "DLR Dining Menu Service - AWS Staging"
   assignment_group: "prd-global-fnb"
-  business_service: ""
+  business_service: "Mobile Retail & Restaurant"
 
 # --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
+  runbook: "https://mywiki.disney.com/spaces/FBT/pages/790430369/Dining+Menus+-+Runbook"
+  wiki: "https://mywiki.disney.com/spaces/FBT/pages/793976222/Studio+Kronk"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -49,135 +47,98 @@ docs:
 # --- Components ---
 components:
 
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
+  - component_name: "dining-menu-svc-wdw"
+    component_type: "api"
+    description: "WDW Dining Menu Java service on ECS"
 
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
     repository:
-      url: ""
-      branch: ""
+      url: "https://github.disney.com/StudioFeast/dlr-commerce2-menu-svc"
+      branch: "master"
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Dining_Menu_Service/pipelines"
+      deploy_target: "ECS"
 
-    # -- Health Check --
     health_check:
-      url: ""
+      url: "https://dining-menu.wdw.wdprapps.disney.com/diningMenuSvc/healthcheck"
       expected_status: 200
 
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
+      index: "wdpr_diningmenu_service"
+      source: "*prod*"
       base_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_diningmenu_service source="*prod*" source="*use1*"
       error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
+        index=wdpr_diningmenu_service source="*prod*" source="*use1*" level=ERROR
       latency_spl: >-
-        index=myindex sourcetype=mysource
+        index=wdpr_diningmenu_service source="*prod*" source="*use1*"
         | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
-    # -- AppDynamics --
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
+      app_name: "wdw-revmgmt-S0016153-use1-prd_dining-menu_aws"
+      app_id: "1910"
+      tier: "dining-menu-svc"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=1910"
 
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
+      provider: "AWS"
+      region: "us-east-1"
+      account_id: "wdpr-revmgmt-prod"
+      infra_type: "ECS"
+      cluster_id: "wdw-revmgmt-S0016153-use1-prd"
+      service_name: "dining-menu-svc-prod-live"
 
       cloudwatch:
-        log_group: ""
+        log_group: "commerce2-menu-prod"
         namespace: ""
         alarm_prefix: ""
 
-      loginsights:
-        log_group: ""
-        saved_query: ""
+  - component_name: "dining-menu-svc-dlr"
+    component_type: "api"
+    description: "DLR Dining Menu Java service on ECS"
 
-      gcp:
-        project_id: ""
-        log_filter: ""
+    repository:
+      url: "https://github.disney.com/StudioFeast/dlr-commerce2-menu-svc"
+      branch: "master"
+      path: ""
 
-      services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Dining_Menu_Service/pipelines"
+      deploy_target: "ECS"
 
-    # -- Other Environments (only fields that differ from production) --
-    other_environments:
+    health_check:
+      url: "https://dining-menu.dlr.wdprapps.disney.com/diningMenuSvc/healthcheck"
+      expected_status: 200
 
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    splunk:
+      index: "wdpr_diningmenu_service"
+      source: "*prod*"
+      base_spl: >-
+        index=wdpr_diningmenu_service source="*prod*" source="*usw2*"
+      error_spl: >-
+        index=wdpr_diningmenu_service source="*prod*" source="*usw2*" level=ERROR
+      latency_spl: >-
+        index=wdpr_diningmenu_service source="*prod*" source="*usw2*"
+        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
 
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    appdynamics:
+      app_name: "dlr-revmgmt-S0015639-usw2-prd_dining-menu_aws"
+      app_id: "1911"
+      tier: "dining-menu-svc"
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&application=1911"
 
-      latest:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
+    cloud:
+      provider: "AWS"
+      region: "us-west-2"
+      account_id: "wdpr-revmgmt-prod"
+      infra_type: "ECS"
+      cluster_id: "dlr-revmgmt-S0015639-usw2-prd"
+      service_name: "dining-menu-svc-prod-live"
+
+      cloudwatch:
+        log_group: "commerce2-menu-prod"
+        namespace: ""
+        alarm_prefix: ""
