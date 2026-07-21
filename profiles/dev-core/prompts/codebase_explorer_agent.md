@@ -105,10 +105,23 @@ Explore codebase for components: backend, ui, webapi
 
 ## Tools to Use
 
+### Graphify MCP (preferred — use first)
+
+- `graphify_explore` — primary entry point. Natural language query to find relevant files, relationships, and module structure
+- `graphify_callers` — find what imports/calls a given file or symbol
+- `graphify_callees` — find what a file/symbol depends on
+- `graphify_impact` — blast radius analysis before proposing changes
+- `graphify_community` — list all files in a module/community
+- `graphify_hotspots` — find high-coupling god nodes
+
+### Traditional tools (fallback)
+
 - `code` tool for symbol search
 - `grep` for pattern matching
 - `glob` for file discovery
 - `fs_read` for examining file structure
+
+Always try `graphify_explore` first. Only fall back to grep/glob if graphify tools are unavailable or the graph doesn't cover what you need (file content, runtime config, env variables).
 
 ## Critical Rules
 

@@ -10,7 +10,8 @@
     "thinking",
     "knowledge",
     "@mermaid/*",
-    "@cortex/*"
+    "@cortex/*",
+    "@graphify/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

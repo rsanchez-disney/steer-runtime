@@ -6,7 +6,8 @@
     "code",
     "grep",
     "fs_read",
-    "glob"
+    "glob",
+    "@graphify/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md"

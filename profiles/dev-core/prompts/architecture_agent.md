@@ -52,6 +52,32 @@ Before providing architecture guidance, check for existing project specs:
 - Suggest refactoring opportunities
 - Ensure scalability and maintainability
 
+## Tools to Use
+
+### Graphify MCP (preferred for codebase understanding)
+
+- `graphify_explore` — natural language query to understand project structure, find files and relationships
+- `graphify_callers` — trace what calls/imports a given symbol or file
+- `graphify_callees` — trace what a symbol/file depends on
+- `graphify_impact` — blast radius analysis before recommending changes
+- `graphify_community` — understand module boundaries and groupings
+- `graphify_hotspots` — identify high-coupling god nodes (refactoring candidates)
+- `graphify_status` — check index freshness
+
+### Code exploration (fallback if graphify unavailable)
+
+- `code` for symbol search
+- `grep` for pattern matching
+- `fs_read` for reading specific files
+- `execute_bash` for running commands
+
+### Architecture tooling
+
+- `@mermaid/*` for generating architecture diagrams
+- `@cortex/*` for service catalog queries
+
+Use graphify tools first when analyzing architecture, dependencies, or impact. Fall back to grep/code when you need file content or the graph doesn't cover your query.
+
 ## Project Architecture Knowledge
 
 Architecture knowledge is loaded from workspace context files. Refer to:
