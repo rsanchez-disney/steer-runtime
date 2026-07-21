@@ -1,0 +1,18 @@
+{
+  "name": "test_engineer_agent",
+  "description": "Writes and maintains pytest test suites for ETL extractors, ensuring ≥90% coverage with proper mocking of external services (Snowflake, MySQL, Jira API)",
+  "prompt": "file://../prompts/test_engineer_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "glob",
+    "execute_bash"
+  ],
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../rules/python-etl-conventions.md"
+  ],
+  "includeMcpJson": true
+}

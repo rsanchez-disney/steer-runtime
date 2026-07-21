@@ -1,0 +1,32 @@
+{
+  "name": "ai-analytics-team",
+  "description": "MVP AI Analytics — Platform for tracking AI tool token consumption across the organization (Cursor, Claude Bedrock, Kiro, Claude Anthropic)",
+  "team": "DXT AI Analytics",
+  "profiles": [
+    "dev-core"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "general-python-development",
+    "general-sql-database",
+    "general-docker",
+    "general-testing-strategies",
+    "pr-description",
+    "acceptance-criteria-validation"
+  ],
+  "enable_tools": true,
+  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
+  "projects": [
+    {
+      "name": "wdpr-ai-analytics-data-etl",
+      "path": "wdpr-ai-analytics-data-etl",
+      "repo": "DXT-AI-Analytics/wdpr-ai-analytics-data-etl",
+      "memory_bank": "ai-analytics-etl",
+      "host": "github.disney.com"
+    }
+  ],
+  "jira_prefix": "PAF-",
+  "jira_instance": "disneyexperiences",
+  "jira_url": "https://disneyexperiences.atlassian.net/jira/software/projects/PAF/summary",
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "data_engineer_agent",
+  "description": "Specialized in ETL pipelines, Snowflake queries, MySQL schema design, and data transformation for the AI Analytics platform",
+  "prompt": "file://../prompts/data_engineer_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "glob",
+    "execute_bash",
+    "@db/*"
+  ],
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../rules/python-etl-conventions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "~/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to .git/, __pycache__/, .venv/"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}

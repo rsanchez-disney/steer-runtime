@@ -1,0 +1,30 @@
+{
+  "name": "orchestrator",
+  "description": "AI Analytics orchestrator — coordinates ETL development, data pipeline tasks, and Snowflake/MySQL integration work for the token consumption analytics platform",
+  "prompt": "file://../prompts/orchestrator.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "glob",
+    "execute_bash",
+    "@jira-cloud/*",
+    "@gitlab/*",
+    "@db/*"
+  ],
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../rules/python-etl-conventions.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "~/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to .git/, __pycache__/, .venv/"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}
