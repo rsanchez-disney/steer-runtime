@@ -202,6 +202,7 @@ Each profile includes an orchestrator that coordinates its specialist agents aut
 | Kiro IDE / Cursor / Amazon Q | [Cursor](docs/getting-started/CURSOR_SETUP.md) · [Amazon Q](.amazonq-templates/README.md) |
 | DX Reference | [New Features](docs/reference/DX_REFERENCE.md) |
 | Eval framework | [Evals](docs/reference/EVAL_FRAMEWORK.md) |
+| Auto-update and pre-release channels | [Auto-Update Strategy](docs/AUTO_UPDATE_STRATEGY.md) |
 | Glossary | [Glossary](docs/reference/GLOSSARY.md) |
 | Roadmap | [Waypoints](https://github.disney.com/users/SANCR225/projects/2/views/1) |
 
