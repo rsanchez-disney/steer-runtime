@@ -4,6 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.171
+
+- **fix(jira-mcp)** — infinite loop in markdown-to-ADF parser on pipe-prefixed lines (100% CPU spin)
+- **chore** — update certification report
+- **chore** — rebuild MCP bundles
+<!-- END LATEST -->
+
 ## v0.2.170
 
 - **feat(certification)** — certification history with full dimensional detail
@@ -11,7 +18,6 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(jira-mcp)** — enable `jira_get_dev_status` on Cloud + fix `applicationType` typo
 - **fix(jira-mcp)** — resolve custom fields via `renderedFields` fallback
 - **chore** — update certification report + sign GEAI policy
-<!-- END LATEST -->
 
 ## v0.2.170
 

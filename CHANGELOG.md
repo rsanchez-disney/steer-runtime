@@ -4,6 +4,17 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.171] — 2026-07-22
+
+### Fixed
+
+- **jira-mcp** — infinite loop in markdown-to-ADF parser on pipe-prefixed lines (100% CPU spin when `|`-prefixed line lacks valid table separator)
+
+### Changed
+
+- **chore** — update certification report
+- **chore** — rebuild MCP bundles
+
 ## [0.2.170] — 2026-07-22
 
 ### Added
