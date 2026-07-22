@@ -3,7 +3,7 @@ import { JiraApiClient } from "../utils/jiraApi.js";
 export const jiraGetDevStatusSchema = {
     name: "jira_get_dev_status",
     description:
-        "Get the Development Panel data for a JIRA ticket — linked pull requests, branches, and commits from GitHub. Server-only (not available on Jira Cloud).",
+        "Get the Development Panel data for a JIRA ticket — linked pull requests, branches, and commits from GitHub/Bitbucket. Use this instead of customfield_18415 (Developers field).",
     inputSchema: {
         type: "object",
         properties: {

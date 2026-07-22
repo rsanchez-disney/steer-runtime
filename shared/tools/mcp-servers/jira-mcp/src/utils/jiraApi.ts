@@ -1371,14 +1371,13 @@ export class JiraApiClient {
      * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
      */
     async getDevStatus(issueId: string): Promise<any> {
-        this.assertXRayServer();
-
+        // Dev-status API works on both Server and Cloud
         const dataTypes = ["pullrequest", "branch", "repository"];
         const results = await Promise.allSettled(
             dataTypes.map(async (dataType) => {
                 const params = new URLSearchParams({
                     issueId,
-                    applicationType: "githube",
+                    applicationType: "GitHub",
                     dataType,
                 });
                 const response = await this.fetch(

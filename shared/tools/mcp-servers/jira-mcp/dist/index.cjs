@@ -7179,12 +7179,11 @@ var JiraApiClient = class _JiraApiClient {
    * GET /rest/dev-status/1.0/issue/detail?issueId={id}&applicationType=githube&dataType={type}
    */
   async getDevStatus(issueId) {
-    this.assertXRayServer();
     const dataTypes = ["pullrequest", "branch", "repository"];
     const results = await Promise.allSettled(dataTypes.map(async (dataType) => {
       const params = new URLSearchParams({
         issueId,
-        applicationType: "githube",
+        applicationType: "GitHub",
         dataType
       });
       const response = await this.fetch(`${this.baseUrl}/rest/dev-status/1.0/issue/detail?${params}`, {
@@ -10010,7 +10009,7 @@ async function handleXrayGetPreConditionTests(args) {
 // build/tools/jiraGetDevStatus.js
 var jiraGetDevStatusSchema = {
   name: "jira_get_dev_status",
-  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub. Server-only (not available on Jira Cloud).",
+  description: "Get the Development Panel data for a JIRA ticket \u2014 linked pull requests, branches, and commits from GitHub/Bitbucket. Use this instead of customfield_18415 (Developers field).",
   inputSchema: {
     type: "object",
     properties: {
