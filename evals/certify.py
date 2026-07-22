@@ -153,6 +153,7 @@ def compute_certification(delegation: dict, evals: list[dict]) -> CertResult:
 
     # Quality score (placeholder — requires judge scoring, use structural as proxy for now)
     cert.quality_avg = structural_rate  # TODO: integrate LLM judge scores when available
+    cert.quality_scores = evals  # Store raw evals for history detail
 
     # Trust score
     cert.trust_score = (
@@ -321,6 +322,189 @@ def run_matrix_certification():
         sys.exit(1)
 
 
+def collect_structural_metadata() -> dict:
+    """Collect workspace, agent, and catalog validation metadata."""
+    metadata = {
+        "workspaces": {"scanned": 0, "valid": 0, "warnings": 0},
+        "agents": {"scanned": 0, "valid": 0, "warnings": 0},
+        "catalog": {
+            "bapps": 0, "errors": 0,
+            "fill_rate": {"identity": 0, "servicenow": 0, "components": 0, "splunk": 0, "cloud": 0}
+        },
+    }
+
+    # Parse workspace validation output
+    try:
+        out = subprocess.check_output(
+            ["make", "validate-workspaces"], cwd=STEER_ROOT,
+            stderr=subprocess.DEVNULL, text=True
+        )
+        for line in out.splitlines():
+            if "workspaces scanned" in line:
+                import re
+                m = re.search(r"(\d+) workspaces scanned", line)
+                if m:
+                    metadata["workspaces"]["scanned"] = int(m.group(1))
+            elif "Valid:" in line:
+                m = re.search(r"Valid:\s*(\d+)", line)
+                if m:
+                    metadata["workspaces"]["valid"] = int(m.group(1))
+            elif "Warnings:" in line:
+                m = re.search(r"Warnings:\s*(\d+)", line)
+                if m:
+                    metadata["workspaces"]["warnings"] = int(m.group(1))
+    except Exception:
+        pass
+
+    # Parse agent validation output
+    try:
+        out = subprocess.check_output(
+            ["make", "validate-agents"], cwd=STEER_ROOT,
+            stderr=subprocess.DEVNULL, text=True
+        )
+        for line in out.splitlines():
+            if "agents scanned" in line:
+                import re
+                m = re.search(r"(\d+) agents scanned", line)
+                if m:
+                    metadata["agents"]["scanned"] = int(m.group(1))
+            elif "Valid:" in line:
+                m = re.search(r"Valid:\s*(\d+)", line)
+                if m:
+                    metadata["agents"]["valid"] = int(m.group(1))
+            elif "Warnings:" in line:
+                m = re.search(r"Warnings:\s*(\d+)", line)
+                if m:
+                    metadata["agents"]["warnings"] = int(m.group(1))
+    except Exception:
+        pass
+
+    # Parse catalog validation output
+    try:
+        out = subprocess.check_output(
+            ["./scripts/validate-catalog.sh"], cwd=STEER_ROOT,
+            stderr=subprocess.DEVNULL, text=True
+        )
+        import re
+        for line in out.splitlines():
+            m = re.search(r"Total BAPPs:\s*(\d+)", line)
+            if m:
+                metadata["catalog"]["bapps"] = int(m.group(1))
+            m = re.search(r"Errors:\s*(\d+)", line)
+            if m:
+                metadata["catalog"]["errors"] = int(m.group(1))
+            # Fill rates: "Identity (bapp_id, app_name, studio):  295/295 (100%)"
+            m = re.search(r"Identity.*?(\d+)%", line)
+            if m:
+                metadata["catalog"]["fill_rate"]["identity"] = int(m.group(1))
+            m = re.search(r"ServiceNow.*?(\d+)%", line)
+            if m:
+                metadata["catalog"]["fill_rate"]["servicenow"] = int(m.group(1))
+            m = re.search(r"Components.*?(\d+)%", line)
+            if m:
+                metadata["catalog"]["fill_rate"]["components"] = int(m.group(1))
+            m = re.search(r"Splunk.*?(\d+)%", line)
+            if m:
+                metadata["catalog"]["fill_rate"]["splunk"] = int(m.group(1))
+            m = re.search(r"Cloud.*?(\d+)%", line)
+            if m:
+                metadata["catalog"]["fill_rate"]["cloud"] = int(m.group(1))
+    except Exception:
+        pass
+
+    return metadata
+
+
+def save_history(cert: CertResult, version: str, target: str, model: str):
+    """Save full dimensional certification to history/<version>.json."""
+    history_dir = RESULTS_DIR / "history"
+    history_dir.mkdir(parents=True, exist_ok=True)
+
+    # Compute dimension scores
+    delegation_score = (cert.delegation_passed / cert.delegation_total * 100) if cert.delegation_total > 0 else 0
+    structural_score = (cert.structural_passed / cert.structural_total * 100) if cert.structural_total > 0 else 0
+
+    # Build delegation detail
+    delegation_scenarios = []
+    for r in cert.delegation_details:
+        scenario = {
+            "name": r.get("name", "?"),
+            "status": r.get("status", "UNKNOWN"),
+            "orchestrator": (r.get("agents_invoked", [None]) or ["unknown"])[0] if r.get("status") == "PASS" else r.get("name", "").split("-")[0],
+            "subagent_calls": r.get("subagent_calls", 0),
+            "agents_invoked": r.get("agents_invoked", []),
+        }
+        if r.get("status") != "PASS":
+            # Include failure reason from details
+            details = r.get("details", [])
+            for d in details:
+                if not d.get("passed", True):
+                    scenario["reason"] = d.get("reason", "unknown")
+                    break
+        delegation_scenarios.append(scenario)
+
+    # Build quality detail
+    quality_agents = []
+    for ev in (cert.quality_scores if cert.quality_scores else []):
+        if isinstance(ev, dict) and "target" in ev:
+            agent_detail = {
+                "name": ev.get("target", "?"),
+                "passed": sum(1 for r in ev.get("results", []) if r.get("structural_pass")),
+                "total": len(ev.get("results", [])),
+                "fixtures": [],
+            }
+            for r in ev.get("results", []):
+                checks = [c["name"] for c in r.get("checks", []) if c.get("passed", True)]
+                agent_detail["fixtures"].append({
+                    "name": r.get("name", "?"),
+                    "passed": r.get("structural_pass", False),
+                    "checks": checks,
+                })
+            quality_agents.append(agent_detail)
+
+    # Collect structural metadata (workspace/agent/catalog counts)
+    structural_meta = collect_structural_metadata()
+
+    # Build full report
+    is_prerelease = "-rc." in version or "-beta." in version
+    full_report = {
+        "version": version,
+        "trust_score": round(cert.trust_score, 1),
+        "tier": cert.tier_name,
+        "is_prerelease": is_prerelease,
+        "target": target,
+        "model": model or "default",
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "dimensions": {
+            "delegation": {
+                "score": round(delegation_score, 1),
+                "passed": cert.delegation_passed,
+                "total": cert.delegation_total,
+                "scenarios": delegation_scenarios,
+            },
+            "structural": {
+                "score": round(structural_score, 1),
+                "passed": cert.structural_passed,
+                "total": cert.structural_total,
+                "workspaces": structural_meta["workspaces"],
+                "agents": structural_meta["agents"],
+                "catalog": structural_meta["catalog"],
+            },
+            "quality": {
+                "score": round(cert.quality_avg, 1),
+                "agents_evaluated": quality_agents,
+            },
+        },
+    }
+
+    # Write history file
+    # Sanitize version for filename (v0.2.169 → v0.2.169.json, v0.4.226-rc.1 → v0.4.226-rc.1.json)
+    safe_version = version.replace("/", "-")
+    history_file = history_dir / f"{safe_version}.json"
+    history_file.write_text(json.dumps(full_report, indent=2))
+    print(f"📁 History: {history_file}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate steer-runtime certification report")
     parser.add_argument("--from-results", action="store_true", help="Use existing results (don't re-run tests)")
@@ -397,6 +581,9 @@ def main():
         "quality_avg": round(cert.quality_avg, 1),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }, indent=2))
+
+    # Save full dimensional history
+    save_history(cert, version, args.target, args.model)
 
     # Print summary
     print(f"\n{'=' * 50}")
