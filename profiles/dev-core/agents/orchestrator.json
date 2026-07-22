@@ -6,8 +6,7 @@
     "subagent",
     "thinking",
     "todo_list",
-    "@yax/*",
-    "@cortex/*"
+    "@yax/*"
   ],
   "resources": [
     "file://AGENTS.md",
