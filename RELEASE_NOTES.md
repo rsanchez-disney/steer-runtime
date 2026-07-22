@@ -4,12 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.169
+
+- **fix(orchestrator)** — remove non-routing tools from orchestrators + strengthen delegation rules; targets ~24/26 certification score (#614)
+- **feat(steering)** — add `graphify_source` and `graphify_inspect` to steering priority doc and codebase_explorer agent (#606)
+<!-- END LATEST -->
+
 ## v0.2.167
 
 - **feat(catalog)** — populate studio-fnb managed services catalog with 36 FNB applications (#599)
 - **feat(agents)** — integrate graphify MCP tools into codebase_explorer and architecture agents for code-graph-aware analysis (#604)
 - **feat(workspace)** — add ai-analytics-team workspace (#605)
-<!-- END LATEST -->
 
 ## v0.2.164
 

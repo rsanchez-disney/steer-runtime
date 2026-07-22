@@ -4,6 +4,16 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.169] — 2026-07-22
+
+### Fixed
+
+- **orchestrator** — remove non-routing tools from orchestrators + strengthen delegation rules; certification delegation score targeting ~24/26 (#614)
+
+### Added
+
+- **steering** — add `graphify_source` and `graphify_inspect` to graphify priority doc and codebase_explorer agent (#606)
+
 ## [0.2.167] — 2026-07-21
 
 ### Added
