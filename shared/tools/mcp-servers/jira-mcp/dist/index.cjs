@@ -6342,38 +6342,43 @@ function markdownToADF(md) {
       i++;
       continue;
     }
-    if (line.trimStart().startsWith("|") && i + 1 < lines.length && /^\s*\|[\s\-:|]+\|/.test(lines[i + 1])) {
-      const headerCells = line.split("|").slice(1, -1).map((c) => c.trim());
-      i++;
-      i++;
-      const dataRows = [];
-      while (i < lines.length && lines[i].trimStart().startsWith("|")) {
-        const cells = lines[i].split("|").slice(1, -1).map((c) => c.trim());
-        dataRows.push(cells);
+    if (line.trimStart().startsWith("|")) {
+      if (i + 1 < lines.length && /^\s*\|[\s\-:|]+\|/.test(lines[i + 1])) {
+        const headerCells = line.split("|").slice(1, -1).map((c) => c.trim());
         i++;
-      }
-      const tableContent = [];
-      tableContent.push({
-        type: "tableRow",
-        content: headerCells.map((cell) => ({
-          type: "tableHeader",
-          content: [{ type: "paragraph", content: parseInline(cell) }]
-        }))
-      });
-      for (const row of dataRows) {
+        i++;
+        const dataRows = [];
+        while (i < lines.length && lines[i].trimStart().startsWith("|")) {
+          const cells = lines[i].split("|").slice(1, -1).map((c) => c.trim());
+          dataRows.push(cells);
+          i++;
+        }
+        const tableContent = [];
         tableContent.push({
           type: "tableRow",
-          content: row.map((cell) => ({
-            type: "tableCell",
+          content: headerCells.map((cell) => ({
+            type: "tableHeader",
             content: [{ type: "paragraph", content: parseInline(cell) }]
           }))
         });
+        for (const row of dataRows) {
+          tableContent.push({
+            type: "tableRow",
+            content: row.map((cell) => ({
+              type: "tableCell",
+              content: [{ type: "paragraph", content: parseInline(cell) }]
+            }))
+          });
+        }
+        content.push({
+          type: "table",
+          attrs: { isNumberColumnEnabled: false, layout: "default" },
+          content: tableContent
+        });
+        continue;
       }
-      content.push({
-        type: "table",
-        attrs: { isNumberColumnEnabled: false, layout: "default" },
-        content: tableContent
-      });
+      content.push({ type: "paragraph", content: parseInline(line) });
+      i++;
       continue;
     }
     const paraLines = [];
