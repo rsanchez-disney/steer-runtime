@@ -4,6 +4,19 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.168] — 2026-07-22
+
+### Fixed
+
+- **orchestrator** — remove `@cortex/*` from dev-core orchestrator tools (not yet stable for general routing)
+- **qa_orchestrator** — restrict tools to routing-only (`subagent`, `thinking`, `todo_list`, `@yax/*`); remove direct Jira/Confluence access that bypassed delegation
+- **sustainment_orchestrator** — strengthen RCA delegation rule as hard constraint with explicit FORBIDDEN list to prevent certification failures
+
+### Changed
+
+- **leadership_orchestrator** — add explicit "always delegate, never produce reports" rule to prevent direct report generation
+- **certification** — update report to v0.2.166 results: Trust Score 85/100, 16/26 delegation, 4/4 structural, 100 quality
+
 ## [0.2.167] — 2026-07-21
 
 ### Added

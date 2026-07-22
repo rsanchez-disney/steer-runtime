@@ -6,11 +6,7 @@
     "subagent",
     "thinking",
     "todo_list",
-    "@yax/*",
-    "@jira/*",
-    "@jira-cloud/*",
-    "@confluence/*",
-    "@confluence-cloud/*"
+    "@yax/*"
   ],
   "allowedTools": [
     "@yax/*",

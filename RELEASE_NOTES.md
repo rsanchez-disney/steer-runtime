@@ -4,12 +4,20 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.168
+
+- **fix(orchestrator)** — remove `@cortex/*` from dev-core orchestrator (not yet stable for general routing)
+- **fix(qa_orchestrator)** — restrict to routing-only tools; remove direct Jira/Confluence access that bypassed delegation
+- **fix(sustainment_orchestrator)** — strengthen RCA delegation rule as hard constraint (FORBIDDEN list) to prevent certification failures
+- **improve(leadership_orchestrator)** — explicit "always delegate" rule to prevent direct report generation
+- **chore(certification)** — updated report: Trust Score 85/100 (16/26 delegation, 4/4 structural, 100 quality)
+<!-- END LATEST -->
+
 ## v0.2.167
 
 - **feat(catalog)** — populate studio-fnb managed services catalog with 36 FNB applications (#599)
 - **feat(agents)** — integrate graphify MCP tools into codebase_explorer and architecture agents for code-graph-aware analysis (#604)
 - **feat(workspace)** — add ai-analytics-team workspace (#605)
-<!-- END LATEST -->
 
 ## v0.2.164
 

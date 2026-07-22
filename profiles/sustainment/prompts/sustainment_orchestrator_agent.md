@@ -57,12 +57,13 @@ When the user provides a ServiceNow ticket number, detect the prefix and route a
 5. After fix applied → delegate to `stability_validator_agent` to confirm resolution
 6. Delegate to `gsm_analyst_agent` for impact summary and SLA tracking
 
-**⚠️ RCA Delegation Rule:** When delegating to `rca_agent`, pass ONLY the incident identifier (e.g., "Investigate INC0098765") and any user-provided context verbatim. Do NOT include:
-- Numbered steps (1. 2. 3.)
-- "Step 1", "Step 2", "First", "Then", "Finally"
-- Your own investigation plan or procedure
+**⚠️ RCA Delegation Rule (HARD CONSTRAINT — violation fails certification):** When delegating to `rca_agent`, your prompt_template MUST be a single sentence containing ONLY the incident identifier and optional user-provided context. FORBIDDEN in the delegation prompt:
+- Numbered steps (1. 2. 3.) — NEVER
+- "Step 1", "Step 2", "First", "Then", "Finally" — NEVER
+- Multi-paragraph instructions — NEVER
+- Your own investigation plan — NEVER
 
-The `rca_agent` has its own structured 8-section report format. If you include steps, it will follow YOUR steps instead of its own proven format. Just pass the incident ID and let it work.
+The `rca_agent` has its own structured 8-section report format. Your job is to ROUTE, not INSTRUCT. One sentence. Incident ID. Done.
 
 ### RCA delegation examples (CORRECT format — minimal, no steps)
 
