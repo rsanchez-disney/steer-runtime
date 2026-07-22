@@ -4,6 +4,22 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.170] — 2026-07-22
+
+### Added
+
+- **certification** — certification history with full dimensional detail
+- **docs** — add auto-update strategy + pre-release channels reference
+
+### Fixed
+
+- **jira-mcp** — enable `jira_get_dev_status` on Cloud + fix `applicationType` typo
+- **jira-mcp** — resolve custom fields via `renderedFields` fallback
+
+### Changed
+
+- **chore** — update certification report + sign GEAI policy
+
 ## [0.2.169] — 2026-07-22
 
 ### Fixed
