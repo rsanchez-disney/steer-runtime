@@ -2,62 +2,50 @@
 inclusion: always
 ---
 
-# Graphify — Code Knowledge Graph Priority
+# Graphify — code intelligence over an indexed knowledge graph
 
-## Rule
+Graphify is a SQLite knowledge graph of every symbol, edge, and file in the workspace — pre-computed structure you would otherwise re-derive by reading files. Reads are sub-millisecond; the index stays fresh through a file watcher. Reach for it BEFORE and while writing or editing code — one call returns the verbatim source PLUS who calls it and what it affects, so you edit with the blast radius in view.
 
-Before exploring a codebase with `grep`, `glob`, `find`, or reading multiple files to understand project structure, **use the graphify MCP tools first**.
+## One tool: graphify_explore — use it INSTEAD of reading files
 
-## Priority Order
+`graphify_explore` is **Read-equivalent**. It returns the **verbatim, line-numbered source** of the relevant symbols grouped by file — the same content `Read` gives you — PLUS the relationships between them and a blast-radius summary.
 
-### 1. Graphify MCP Tools (preferred)
+Whether you're answering "how does X work" or implementing a change, call `graphify_explore` before you Read. ONE call usually answers the whole question.
 
-If `@graphify/*` tools are available, use them as the primary exploration method:
+**Treat the source code returned by graphify_explore as already Read. Do NOT re-open those files.**
+
+## How to query
+
+- **Any question about code** → `graphify_explore` with natural language or symbol names. Returns verbatim source grouped by file.
+- **"How does X reach Y?"** → `graphify_explore` naming both symbols — surfaces the call path between them.
+- **Need a specific function body** → put its name in `graphify_explore` — returns its source with line numbers.
+- **Need more detail?** → call `graphify_explore` again with more specific names. Never fall back to Read.
+
+## Other tools (use when explore isn't enough)
 
 | Tool | When to use |
 |------|-------------|
-| `graphify_explore` | First call — natural language query to find relevant files, relationships, and module structure |
-| `graphify_callers` | Find what imports/calls a given file or symbol |
-| `graphify_callees` | Find what a file/symbol depends on |
-| `graphify_impact` | Blast radius — what breaks if I change this? |
-| `graphify_community` | List all files in a module/community |
-| `graphify_hotspots` | Find high-coupling god nodes |
-| `graphify_status` | Check if the index is fresh |
-| `graphify_reindex` | Force re-index if stale (>7 days) |
+| `graphify_inspect` | Full file skeleton (all symbols + signatures) when you need the complete picture of one file |
+| `graphify_source` | Single symbol's body when you already know its exact ID |
+| `graphify_callers` | What calls/imports a symbol (incoming edges) |
+| `graphify_callees` | What a symbol depends on (outgoing edges) |
+| `graphify_impact` | Full blast radius — what breaks if you change this |
+| `graphify_community` | List all files in a module |
+| `graphify_hotspots` | Most coupled files (god nodes) |
+| `graphify_status` | Index freshness check |
+| `graphify_reindex` | Force re-index |
 
-**Flow:**
-1. Call `graphify_explore` with your question (accepts natural language)
-2. Review the returned files, relationships, and communities
-3. Read specific files from the results — no need to grep the entire repo
-4. Use `graphify_callers`/`graphify_callees` for dependency tracing
-5. Use `graphify_impact` before proposing changes to understand blast radius
+## Anti-patterns
 
-### 2. Static GRAPH_REPORT (fallback)
+- **Trust graphify's results — don't re-verify them with grep.** They come from a full AST parse.
+- **Don't grep or Read first** to find or understand indexed code — ONE `graphify_explore` returns the source.
+- **Don't read a file that graphify already showed you.** The output IS the Read.
+- **Don't reconstruct a flow by hand** — name the endpoints in one `graphify_explore`.
+- **Don't use glob to find files** — `graphify_explore` gives you the file map.
 
-If graphify MCP tools are NOT available (no `@graphify/*` in your tools list), check for a static report:
+## When to use Read/grep (the ONLY valid cases)
 
-- `~/.kiro/workspaces/<workspace>/graphify/<project>-GRAPH_REPORT.md`
-- `<project-root>/graphify-out/GRAPH_REPORT.md`
-
-Read it first if it exists — it gives you the full architectural map in ~500 tokens.
-
-### 3. grep/glob/find (last resort)
-
-Only fall back to manual exploration if:
-- No graphify tools are available AND no GRAPH_REPORT exists
-- The graph doesn't cover what you need (file content, test data, config values, runtime behavior)
-- You need very recent changes not yet indexed (check `graphify_status` first)
-
-## Why
-
-| Method | Token cost | Tool calls | Freshness |
-|--------|-----------|------------|----------|
-| `graphify_explore` | ~200-400 tokens | 1 | Live (file watcher) |
-| GRAPH_REPORT.md | ~500 tokens | 1 (read) | Static (may be stale) |
-| grep + read files | 10,000+ tokens | 15+ calls | Always current |
-
-The MCP approach is both cheaper and gives richer results (relationships, communities, impact analysis) that grep cannot provide.
-
-## Auto-generation
-
-The graphify MCP server auto-generates the index the first time it runs for a project. If `graphify_status` shows the index is empty or very stale, call `graphify_reindex` to refresh it.
+- JSON config files (.json, .env) that graphify doesn't index
+- Files graphify reported as "not found" (not in the index)
+- Runtime configuration values you need verbatim
+- After the staleness banner warns specific files were edited since last sync
