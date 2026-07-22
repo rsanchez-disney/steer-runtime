@@ -4,6 +4,14 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.167] — 2026-07-21
+
+### Added
+
+- **catalog** — populate studio-fnb service catalog with 36 FNB applications (#599)
+- **agents** — integrate graphify MCP tools into codebase_explorer and architecture agents (#604)
+- **workspace** — add ai-analytics-team workspace (#605)
+
 ## [0.2.158] — 2026-07-13
 
 ### Added

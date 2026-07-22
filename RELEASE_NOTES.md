@@ -4,12 +4,11 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.164
+## v0.2.167
 
-- **feat(chrome-mcp)** — support `BROWSER_URL` and `BROWSER_WS_ENDPOINT` env vars for connecting to external browser instances (e.g., Kite CDP proxy)
-- **feat(orchestrator)** — `@chrome/*` tools for embedded browser access
-- **fix(chrome-mcp)** — graceful fallback to headless launch when `BROWSER_URL` is unavailable
-- **chore** — rebuild chrome-mcp bundle
+- **feat(catalog)** — populate studio-fnb managed services catalog with 36 FNB applications (#599)
+- **feat(agents)** — integrate graphify MCP tools into codebase_explorer and architecture agents for code-graph-aware analysis (#604)
+- **feat(workspace)** — add ai-analytics-team workspace (#605)
 <!-- END LATEST -->
 
 ## v0.2.164
