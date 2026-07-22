@@ -1,64 +1,27 @@
 graph TB
-    subgraph UI_Layer["UI Layer"]
-        UI["wdpr-payment-controls-client\n(Angular, port 3000)"]
-    end
-
-    subgraph ALB_Layer["ALB Layer"]
-        ALB["Application Load Balancer\n(Path-based routing)"]
-    end
-
-    subgraph BFF_Layer["BFF Layer - Target State"]
-        GW["dpay-gateway\n(Slim adapter, port 8625)\nNode.js 20 LTS"]
-        RS["dpay-refund-service\n(port 8630)\nNode.js 20 LTS"]
-        VS["dpay-validation-service\n(port 8631)\nNode.js 20 LTS"]
-    end
-
-    subgraph Event_Bus["Event Bus (SNS/SQS)"]
-        SNS_RC["SNS: dpay-refund-created"]
-        SNS_VC["SNS: dpay-validation-completed"]
-        SNS_VF["SNS: dpay-validation-failed"]
-        SQS_V1["SQS: validation-refund-created-queue"]
-        SQS_R1["SQS: refund-validation-completed-queue"]
-        SQS_R2["SQS: refund-validation-failed-queue"]
-        DLQ["DLQs (14-day retention)"]
-    end
-
-    subgraph Backend["Backend Layer"]
-        CS["wdpr-config-services\n(Java/Spring, port 8080)"]
-    end
-
-    subgraph Data["Data Layer"]
-        DDB[(DynamoDB)]
-        MDB[(MariaDB RDS)]
-        S3[(S3)]
-    end
+    UI["wdpr-payment-controls-client<br/>(Angular UI)"]
+    ALB["AWS ALB<br/>Path-Based Routing"]
+    RS["dpay-refund-service<br/>Port 8630 | 512 CPU | 2048 MB"]
+    VS["dpay-validation-service<br/>Port 8631 | 1024 CPU | 1024 MB"]
+    SNS["AWS SNS Topics"]
+    SQS_R["SQS Queues<br/>(Refund Consumer + DLQ)"]
+    SQS_V["SQS Queues<br/>(Validation Consumer + DLQ)"]
+    CS["wdpr-config-services<br/>Java / Spring Boot 3.5"]
+    DDB[("DynamoDB")]
+    MDB[("MariaDB")]
+    S3[("S3")]
 
     UI -->|HTTPS| ALB
-    ALB -->|v1 routes| GW
-    ALB -->|v2/refunds,exports| RS
-    ALB -->|v2/validations,configs| VS
-
-    GW -->|HTTP circuit breaker| RS
-    GW -->|HTTP circuit breaker| VS
-
-    RS -->|HTTP isolated pool 50| CS
-    VS -->|HTTP isolated pool 50| CS
-
+    ALB -->|"/api/v1/refunds/*<br/>/api/v1/exports/*"| RS
+    ALB -->|"/api/v1/validations/*<br/>/api/v1/configurations/*"| VS
+    RS -->|HTTPS| CS
+    VS -->|HTTPS| CS
     CS --> DDB
     CS --> MDB
     CS --> S3
-
-    RS -->|publish| SNS_RC
-    VS -->|publish| SNS_VC
-    VS -->|publish| SNS_VF
-
-    SNS_RC --> SQS_V1
-    SNS_VC --> SQS_R1
-    SNS_VF --> SQS_R2
-
-    SQS_V1 -->|consume| VS
-    SQS_R1 -->|consume| RS
-    SQS_R2 -->|consume| RS
-
-    SQS_V1 -.->|max 3 retries| DLQ
-    SQS_R2 -.->|max 3 retries| DLQ
+    RS -->|Publish| SNS
+    VS -->|Publish| SNS
+    SNS --> SQS_R
+    SNS --> SQS_V
+    SQS_R --> RS
+    SQS_V --> VS
