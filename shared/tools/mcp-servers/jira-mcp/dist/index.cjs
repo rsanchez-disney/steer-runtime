@@ -6479,7 +6479,7 @@ var JiraApiClient = class _JiraApiClient {
       "fixVersions"
     ];
     const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
-    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`, {
+    const response = await this.fetch(`${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}&expand=renderedFields,names`, {
       headers: {
         Authorization: await this.auth.getAuthHeader(),
         "Content-Type": "application/json"
@@ -7717,7 +7717,10 @@ async function handleJiraGetIssue(args) {
       const lines = ["", "**Custom Fields:**"];
       for (const fieldId of resolvedCustomFields) {
         const label = getCustomFieldLabel(fieldId);
-        const rawValue = ticket.fields[fieldId];
+        let rawValue = ticket.fields[fieldId];
+        if (rawValue === null || rawValue === void 0) {
+          rawValue = ticket.renderedFields?.[fieldId];
+        }
         const display = formatCustomFieldValue(rawValue);
         lines.push(`**${label}:** ${display}`);
       }

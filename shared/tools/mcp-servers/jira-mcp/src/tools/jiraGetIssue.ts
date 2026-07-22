@@ -105,7 +105,12 @@ export async function handleJiraGetIssue(args: any): Promise<any> {
             const lines: string[] = ["", "**Custom Fields:**"];
             for (const fieldId of resolvedCustomFields) {
                 const label = getCustomFieldLabel(fieldId);
-                const rawValue = (ticket.fields as any)[fieldId];
+                // Try fields first, fall back to renderedFields (some custom fields
+                // only appear in rendered form, especially Connect app fields)
+                let rawValue = (ticket.fields as any)[fieldId];
+                if (rawValue === null || rawValue === undefined) {
+                    rawValue = (ticket as any).renderedFields?.[fieldId];
+                }
                 const display = formatCustomFieldValue(rawValue);
                 lines.push(`**${label}:** ${display}`);
             }

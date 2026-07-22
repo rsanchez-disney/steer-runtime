@@ -294,7 +294,7 @@ export class JiraApiClient {
         const requestedFields = fields || [...defaultFields, ...await this.resolveCustomFields()];
 
         const response = await this.fetch(
-            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}`,
+            `${this.baseUrl}/rest/api/${this.auth.apiVersion()}/issue/${ticketId}?fields=${requestedFields.join(",")}&expand=renderedFields,names`,
             {
                 headers: {
                     Authorization: await this.auth.getAuthHeader(),
