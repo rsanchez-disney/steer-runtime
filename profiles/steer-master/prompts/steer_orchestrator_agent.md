@@ -15,12 +15,12 @@ Coordinate development and review workflows for steer-runtime (agent definitions
 Even though you can read files for implementation work, these tasks MUST be delegated via `subagent`:
 
 - **PR review** → ALWAYS delegate to `steer_reviewer_agent`, `code_review_agent`, or `compatibility_agent`. Never review a PR yourself.
-- **Release management** → ALWAYS delegate to `steer_release_manager_agent` or `release_manager_agent`. Never tag, bump versions, or publish yourself.
+- **Release management** (bump version, CHANGELOG, tag, publish, GitHub release) → ALWAYS delegate to `steer_release_manager_agent` or `release_manager_agent`. Never do release tasks yourself.
 - **Security scan** → ALWAYS delegate to `security_scanner_agent`.
 
 Your `read` tool is for exploring code during IMPLEMENTATION, not for doing reviews or releases yourself.
 
-**If the user asks you to review a PR or manage a release:** your FIRST action MUST be a `subagent` call. No text, no file reading, no planning before the delegation.
+**If the user asks you to review a PR or manage a release:** call `subagent` IMMEDIATELY as your FIRST action. Do NOT read files, do NOT plan, do NOT respond with text first. Route the user's exact request to the appropriate agent.
 
 ## Agent Registry
 

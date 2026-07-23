@@ -1,27 +1,99 @@
 graph TB
-    UI["wdpr-payment-controls-client<br/>(Angular UI)"]
-    ALB["AWS ALB<br/>Path-Based Routing"]
-    RS["dpay-refund-service<br/>Port 8630 | 512 CPU | 2048 MB"]
-    VS["dpay-validation-service<br/>Port 8631 | 1024 CPU | 1024 MB"]
-    SNS["AWS SNS Topics"]
-    SQS_R["SQS Queues<br/>(Refund Consumer + DLQ)"]
-    SQS_V["SQS Queues<br/>(Validation Consumer + DLQ)"]
-    CS["wdpr-config-services<br/>Java / Spring Boot 3.5"]
-    DDB[("DynamoDB")]
-    MDB[("MariaDB")]
-    S3[("S3")]
+    subgraph vpc["AWS VPC (us-east-1)"]
+        subgraph public["Public Subnet"]
+            ALB["Application Load Balancer<br/>Path-based routing"]
+        end
 
-    UI -->|HTTPS| ALB
-    ALB -->|"/api/v1/refunds/*<br/>/api/v1/exports/*"| RS
-    ALB -->|"/api/v1/validations/*<br/>/api/v1/configurations/*"| VS
-    RS -->|HTTPS| CS
-    VS -->|HTTPS| CS
-    CS --> DDB
-    CS --> MDB
-    CS --> S3
-    RS -->|Publish| SNS
-    VS -->|Publish| SNS
-    SNS --> SQS_R
-    SNS --> SQS_V
-    SQS_R --> RS
-    SQS_V --> VS
+        subgraph private_a["Private Subnet AZ-a"]
+            R1["Refund Service<br/>Task 1<br/>1024 CPU / 2048 MB"]
+            V1["Validation Service<br/>Task 1<br/>512 CPU / 1024 MB"]
+        end
+
+        subgraph private_b["Private Subnet AZ-b"]
+            R2["Refund Service<br/>Task 2<br/>1024 CPU / 2048 MB"]
+            V2["Validation Service<br/>Task 2<br/>512 CPU / 1024 MB"]
+        end
+
+        subgraph data["Data Layer"]
+            Redis["ElastiCache Redis<br/>(Multi-AZ)"]
+            Backend["wdpr-config-services<br/>(ECS Fargate)"]
+        end
+
+        subgraph messaging["Event Messaging"]
+            SNS_Refund["SNS: refund-config-events"]
+            SNS_Validation["SNS: validation-rule-events"]
+            SNS_Export["SNS: export-events"]
+            SQS_R["SQS: refund-consumer"]
+            SQS_V["SQS: validation-consumer"]
+            DLQ["SQS: dead-letter-queues"]
+        end
+    end
+
+    subgraph storage["AWS Storage"]
+        S3["S3: dpay-exports-{env}<br/>Export files + lifecycle policy"]
+        DDB["DynamoDB Tables<br/>(via config-services)"]
+        Maria["Aurora MariaDB<br/>(via config-services)"]
+    end
+
+    subgraph cicd["CI/CD (Harness)"]
+        Pipeline_R["Pipeline: refund-controls<br/>Build → Test → Deploy"]
+        Pipeline_V["Pipeline: validation-controls<br/>Build → Test → Deploy"]
+    end
+
+    %% Traffic flow
+    ALB --> R1
+    ALB --> R2
+    ALB --> V1
+    ALB --> V2
+
+    %% Data access
+    R1 --> Redis
+    R2 --> Redis
+    V1 --> Redis
+    V2 --> Redis
+    R1 --> Backend
+    R2 --> Backend
+    V1 --> Backend
+    V2 --> Backend
+
+    %% Storage
+    R1 --> S3
+    R2 --> S3
+    Backend --> DDB
+    Backend --> Maria
+
+    %% Messaging
+    R1 --> SNS_Refund
+    R2 --> SNS_Refund
+    V1 --> SNS_Validation
+    V2 --> SNS_Validation
+    R1 --> SNS_Export
+    SNS_Refund --> SQS_V
+    SNS_Validation --> SQS_R
+    SQS_R --> R1
+    SQS_V --> V1
+    SQS_R -.-> DLQ
+    SQS_V -.-> DLQ
+
+    %% CI/CD
+    Pipeline_R -.->|Deploy| R1
+    Pipeline_R -.->|Deploy| R2
+    Pipeline_V -.->|Deploy| V1
+    Pipeline_V -.->|Deploy| V2
+
+    %% Styling
+    classDef lb fill:#ff9900,color:#000,stroke:#cc7a00
+    classDef refund fill:#1a5276,color:#fff,stroke:#154360
+    classDef valid fill:#1e8449,color:#fff,stroke:#196f3d
+    classDef data fill:#7d3c98,color:#fff,stroke:#6c3483
+    classDef msg fill:#d4ac0d,color:#000,stroke:#b7950b
+    classDef store fill:#e74c3c,color:#fff,stroke:#c0392b
+    classDef ci fill:#566573,color:#fff,stroke:#495057
+
+    class ALB lb
+    class R1,R2 refund
+    class V1,V2 valid
+    class Redis,Backend data
+    class SNS_Refund,SNS_Validation,SNS_Export,SQS_R,SQS_V,DLQ msg
+    class S3,DDB,Maria store
+    class Pipeline_R,Pipeline_V ci
