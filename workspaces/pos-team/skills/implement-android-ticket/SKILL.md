@@ -14,6 +14,53 @@ End-to-end development workflow for ActivateX (DSP Go) Android features and fixe
 - Git repository with clean working tree on `main` branch
 - Gradle build working locally (`./gradlew assembleDebug`)
 
+## Mandatory Clean Code Principles
+
+> ⚠️ **These principles are MANDATORY for all implementation work.** All agents (Dev, Test, Quality) must follow and validate adherence to these principles during Steps 6–9.
+
+### Principle 1: Meaningful Names
+
+- **Intentionality:** Choose names that reveal your intent and avoid misleading clues. A variable, function, or class name should answer: why it exists, what it does, and how it is used.
+- **Pronounceable:** Use pronounceable names and searchable constants instead of magic numbers. Replace `val d = 7` with `val DAYS_IN_WEEK = 7`.
+- **Consistency:** Use the same vocabulary for the same concept throughout the codebase. If you use `fetch` in one place, do not use `get` or `retrieve` for the same operation elsewhere.
+
+### Principle 2: Write Focused Functions
+
+- **Size:** Keep functions incredibly short. If they are longer than 20 lines, break them down into smaller, well-named helper functions.
+- **Single Responsibility:** Functions must do one thing, and do it well. If a function name requires "and" to describe it, split it.
+- **Arguments:** Keep arguments to a minimum (ideally 0 to 2). Avoid boolean flags as they indicate a function is doing multiple things. Use parameter objects or builder patterns for complex inputs.
+- **Abstraction:** Ensure all statements inside a function are at the same level of abstraction (Step-Down rule). High-level orchestration should not mix with low-level implementation details.
+
+### Principle 3: Eliminate Comments
+
+- **Self-Documenting Code:** Clean code should mostly explain itself. Code changes; comments often lie. Prefer renaming a variable or extracting a function over adding a comment.
+- **Last Resort:** Only use comments to explain complex business logic, legal requirements, or as warnings of consequences (e.g., `// WARNING: Changing this order breaks the payment flow`).
+- **No Redundancy:** Do not add obvious noise comments, closing brace comments, or commented-out code. Just delete dead code — version control preserves history.
+
+### Principle 4: Formatting and Structure
+
+- **Readability:** Maintain a structured outline from top to bottom. Public API first, then private helpers.
+- **Vertical Formatting:** Keep files short. Separate concepts vertically with blank lines and group dependent/similar functions together. Declare variables close to where they are used.
+- **Horizontal Formatting:** Keep lines short (max 100 to 120 characters). Use whitespace to associate related items and disassociate weakly related ones. Consistent indentation is non-negotiable.
+
+### Principle 5: Clean Error Handling
+
+- **Exceptions over Codes:** Throw exceptions rather than returning error codes, which clutter the caller's logic. Use Kotlin's `Result` type or sealed classes for expected failure states.
+- **Error Context:** Provide enough context with your exceptions (e.g., what operation failed, what input caused it, where it happened). Include the operation name and relevant parameters.
+
+### Principle 6: Robust Unit Testing
+
+- **Pragmatic TDD:** Prefer writing unit tests before production code when feasible. In legacy areas where TDD is impractical (no existing test infrastructure, tightly coupled code), write tests immediately after implementation instead.
+- **New Code is Testable:** All NEW classes and functions must be designed for testability (injectable dependencies, clear interfaces). Legacy code without tests does not excuse untestable new code.
+- **F.I.R.S.T. (when tests are written):** Ensure tests are:
+  - **F**ast — run quickly, no I/O or network calls
+  - **I**ndependent — no test depends on another test's state
+  - **R**epeatable — produce the same result every time, in any environment
+  - **S**elf-validating — pass or fail with no manual interpretation
+  - **T**imely — written as close to implementation time as possible
+- **Progressive Coverage:** You are not required to add tests to untouched legacy code, but any code you write or significantly modify must have test coverage.
+- **Refactor Continuously:** Clean code is not written perfectly the first time. Write it, get it to work, then refactor. When a test suite exists, use it as a safety net to refactor aggressively.
+
 ## Workflow
 
 ### Step 1: Fetch & Understand Ticket
@@ -25,7 +72,7 @@ End-to-end development workflow for ActivateX (DSP Go) Android features and fixe
 5. Identify affected business model(s): Merchandise, QSR, Table Service
 6. Check `context/features/` for related feature specs
 
-**Agent:** `android_arch_agent` (understand phase)
+**Agent:** `android_dev_agent` (understand phase)
 
 ### Step 2: Feature Context Loading
 
@@ -110,6 +157,8 @@ Delegate implementation tasks to the Dev agent:
 - Consider all three business models
 - **Extend existing solutions, don't modify** where possible
 
+> 📐 **All implementation code MUST comply with the [Mandatory Clean Code Principles](#mandatory-clean-code-principles) section above.** Pay special attention to Principles 1 (Meaningful Names), 2 (Focused Functions), 4 (Formatting), and 5 (Error Handling).
+
 **Agent:** `android_dev_agent`
 
 ### Step 7: Write Tests
@@ -123,6 +172,8 @@ After implementation is complete, delegate test creation:
 - Proper RxJava scheduler reset in tearDown
 - Target ≥90% coverage on new code
 
+> 📐 **All test code MUST comply with the [Mandatory Clean Code Principles](#mandatory-clean-code-principles) section above.** Pay special attention to Principle 6 (Robust Unit Testing) and Principle 2 (Focused Functions — each test should test one thing).
+
 **Agent:** `android_test_agent`
 
 ### Step 8: Quality Review (MANDATORY)
@@ -133,6 +184,8 @@ Delegate ALL code (implementation + tests) to the Quality agent:
 - Test quality assessment
 - Architecture compliance check
 - Pattern consistency verification
+
+> 📐 **The Quality agent MUST validate compliance with the [Mandatory Clean Code Principles](#mandatory-clean-code-principles) as part of the review.** Any violation of these principles is grounds for REJECTED or APPROVED WITH WARNINGS verdict.
 
 Verdicts:
 - **APPROVED** → proceed to delivery
@@ -182,6 +235,7 @@ Create merge request description with:
 
 - **Never write code before spec approval** (Step 4 is a blocking gate)
 - **Quality review is mandatory** — never deliver without APPROVED verdict
+- **Clean Code is mandatory** — all code must comply with the Mandatory Clean Code Principles section
 - **One pass per file** — write once, move on (no self-review loops during implementation)
 - **Extend, don't modify** — prefer extending existing solutions over modifying them
 - **All three business models** — always consider Merchandise, QSR, and Table Service impact

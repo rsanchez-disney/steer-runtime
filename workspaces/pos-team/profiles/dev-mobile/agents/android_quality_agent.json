@@ -13,9 +13,7 @@
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",
     "file://../../../context/golden_rules.md",
-    "file://../../../context/memory-bank/*",
-    "file://../../../skills/implement-android-ticket/SKILL.md",
-    "file://../../../skills/review-code-changes/SKILL.md"
+    "file://../../../context/memory-bank/*"
   ],
   "includeMcpJson": true
 }

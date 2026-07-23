@@ -78,7 +78,7 @@ assertEquals(EXPECTED_FIRST, invocations[0])
 - Use `assertTrue(value)` — never `assertEquals(true, value)`
 - Use `assertFalse(value)` — never `assertEquals(false, value)`
 
-### Constants
+### Constants IMPORTANT
 - All primitive mock return values (`String`, `Int`, `Long`, `Boolean`) must be declared as private constants at the beginning of the test class, below the imports.
 - Avoid creating constants for the expected value when asserting boolean types
 - Validate if the desired constant name and value exist in the `GeneralConstantsToTest` file for the given module before creating new ones for the test class
