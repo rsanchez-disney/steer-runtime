@@ -21,6 +21,7 @@
     {"orchestrator": "leadership_orchestrator_agent", "prompt": "cross-team dependency analysis", "expected_agent": "cross_team_coordinator_agent"},
     {"orchestrator": "leadership_orchestrator_agent", "prompt": "executive briefing for the director", "expected_agent": "executive_briefing_agent"},
     {"orchestrator": "sustainment_orchestrator_agent", "prompt": "investigate INC0098765 root cause", "expected_agent": "rca_agent"},
+    {"orchestrator": "sustainment_orchestrator_agent", "prompt": "add BAPP0099999 to the managed services catalog", "expected_agent": "catalog_ingestion_agent"},
     {"orchestrator": "sustainment_orchestrator_agent", "prompt": "validate stability after the patch", "expected_agent": "stability_validator_agent"},
     {"orchestrator": "sustainment_orchestrator_agent", "prompt": "triage this new incident alert", "expected_agent": "incident_triage_agent"},
     {"orchestrator": "steer_orchestrator_agent", "prompt": "create a new agent for the dev-java profile", "expected_agent": "codebase_explorer_agent"},

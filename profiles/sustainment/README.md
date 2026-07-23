@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (5)
+## Agents (6)
 
 | Agent | Description |
 |-------|-------------|
@@ -13,6 +13,7 @@
 | `rca_agent` | Root cause analysis using logs, metrics, and documentation via Compass |
 | `stability_validator_agent` | Validates application stability post-incident or post-release |
 | `gsm_analyst_agent` | GSM analysis — impact summaries, SLA tracking, incident trends |
+| `catalog_ingestion_agent` | Ingests new apps into the managed services catalog from wiki/Confluence/ServiceNow |
 
 ---
 
@@ -78,6 +79,14 @@ kiro-cli chat --agent gsm_analyst_agent
 > "Analyze incident trends for Q1 — top affected services and recurring issues"
 ```
 
+### Catalog Ingestion
+```
+kiro-cli chat --agent catalog_ingestion_agent
+> "Add BAPP0099999 — Park Reservation Service, owned by Studio Rex. Wiki: https://mywiki.disney.com/pages/viewpage.action?pageId=12345"
+> "Update the booking-service catalog entry with this new Confluence page: https://confluence.disney.com/..."
+> "Onboard CI 'Payment Gateway' into the catalog — search ServiceNow and MyWiki for details"
+```
+
 ### CTASK (Patching/Release)
 ```
 kiro-cli chat --agent sustainment_orchestrator_agent
@@ -124,6 +133,6 @@ make mcp-build-appdynamics-mcp        # Build one server
 
 ---
 
-**Profile Version:** 1.1
-**Agents:** 5
-**Last Updated:** April 21, 2026
+**Profile Version:** 1.2
+**Agents:** 6
+**Last Updated:** June 2, 2026

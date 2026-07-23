@@ -1251,6 +1251,7 @@ Pre-built Node.js MCP bundles in `~/.kiro/tools/mcp-servers/`. Tokens centralize
 | **sustainment** | rca_agent | | | | | | |
 | **sustainment** | stability_validator_agent | | | | | | |
 | **sustainment** | gsm_analyst_agent | | | | | | |
+| **sustainment** | catalog_ingestion_agent | | ✅ | ✅ | | | AppDynamics, Splunk |
 
 ---
 
@@ -1422,6 +1423,7 @@ kiro-cli chat --agent incident_triage_agent           # Incident triage
 kiro-cli chat --agent rca_agent                       # Root cause analysis
 kiro-cli chat --agent stability_validator_agent       # Stability validation
 kiro-cli chat --agent gsm_analyst_agent               # GSM analysis
+kiro-cli chat --agent catalog_ingestion_agent          # Catalog ingestion (BAPP onboarding)
 ```
 
 ---
@@ -1444,5 +1446,5 @@ koda enable-tools                   # Enable thinking, todo, knowledge
 
 ---
 
-**Total Agents:** 126 (dev-core: 23, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 3, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 5, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
-**Last Updated:** May 8, 2026
+**Total Agents:** 128 (dev-core: 21, dev-web: 5, dev-dotnet: 3, dev-php: 1, dev-python: 1, dev-ai: 5, dev-infra: 1, dev-mobile: 3, dev-ui: 3, core: 6, ba: 8, qa: 16, ops: 9, pm: 6, leadership: 5, sustainment: 6, design: 6, cloudops: 4, presales: 1, inspector: 10, steer-master: 8)  
+**Last Updated:** July 22, 2026

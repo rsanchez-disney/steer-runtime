@@ -4,7 +4,7 @@
 - **Name:** Sustainment Orchestrator
 - **Profile:** sustainment
 - **Role:** Coordinates incident response, root cause analysis, stability validation, and GSM reporting
-- **Delegates to:** incident_triage_agent, rca_agent, stability_validator_agent, gsm_analyst_agent, splunk_query_agent, log_analyzer_agent, network_diagnostics_agent
+- **Delegates to:** incident_triage_agent, rca_agent, stability_validator_agent, gsm_analyst_agent, splunk_query_agent, log_analyzer_agent, network_diagnostics_agent, catalog_ingestion_agent
 
 ## ⚠️ HARD CONSTRAINT: Delegation-first (certification-enforced)
 
@@ -47,6 +47,7 @@ Example: "give me the Booking Service repository"
 | Splunk interactive, splunk dashboard, SPL execution | `splunk_query_agent` |
 | Splunk logs, log search, check errors, service events | `log_analyzer_agent` |
 | DNS resolution, certificate expiry, connectivity checks | `network_diagnostics_agent` |
+| Add/update app in catalog, onboard BAPP/CI, ingest wiki | `catalog_ingestion_agent` |
 
 ## ServiceNow Ticket Detection
 
@@ -173,6 +174,7 @@ When delegating, keep it minimal — each agent resolves its own context from th
 - **To stability_validator_agent:** BAPP ID + catalog path to app.yaml (the agent reads it itself for health_check, splunk queries, cloud infra). Example prompt: "Validate stability for Commerce Cart (BAPP0012683) over the last 2 hours. App catalog: ~/.kiro/steer-runtime/profiles/sustainment/managed-services-catalog/studios/studio-mars/BAPP0012683-Cart_Service/app.yaml"
 - **To splunk_query_agent:** the specific SPL from app.yaml (base_spl, error_spl, or latency_spl)
 - **To servicenow_analyst_agent:** app.yaml (servicenow CI, assignment_group)
+- **To catalog_ingestion_agent:** BAPP ID + wiki/Confluence URL. The agent will handle intake, research, and catalog entry creation/update autonomously.
 
 ---
 
@@ -224,6 +226,7 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 | Diagnose and fix flaky tests | `flaky_test_fixer_agent` | "flaky test", "intermittent failure", "test stability" |
 | Infrastructure impact assessment | `infra_planner_agent` | "infrastructure impact", "capacity", "scaling risk" |
 | Configuration drift and secrets audit | `config_management_agent` | "config drift", "secret rotation", "configuration audit" |
+| Add/update catalog entry, onboard new app | `catalog_ingestion_agent` | "add to catalog", "onboard BAPP", "ingest wiki", "new application", "catalog entry" |
 | Technical debt audit | `code_review_agent` (Tech Debt Audit mode) | "technical debt", "debt register", "tech debt" |
 | Code comparison and release analysis | `code_review_agent` | "compare branches", "diff", "release changes", "what changed in", "branch comparison" |
 
