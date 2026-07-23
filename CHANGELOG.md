@@ -4,6 +4,15 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.173] — 2026-07-23
+
+### Changed
+
+- **orchestrators** — add delegation-first hard constraints to ba, qa, steer, and sustainment orchestrators (certification-enforced rules ensuring delegation before text)
+- **evals** — update certification report (v0.2.172)
+- **evals** — expand refund validation test plan
+- **evals** — add architecture-spec test for payment-controls-split
+
 ## [0.2.172] — 2026-07-22
 
 ### Changed

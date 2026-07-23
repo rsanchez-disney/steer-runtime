@@ -4,11 +4,17 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.173
+
+- **feat(orchestrators)** — delegation-first hard constraints for ba, qa, steer, and sustainment orchestrators (certification-enforced)
+- **chore(evals)** — update certification report (v0.2.172)
+- **chore(evals)** — expand refund validation test plan + add architecture-spec test
+<!-- END LATEST -->
+
 ## v0.2.172
 
 - **chore(evals)** — update certification report (v0.2.171 qualified 89/100)
 - **chore(evals)** — refactor refund validation test plan
-<!-- END LATEST -->
 
 ## v0.2.171
 
