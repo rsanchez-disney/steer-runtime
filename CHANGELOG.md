@@ -6,12 +6,20 @@ All notable changes to steer-runtime.
 
 ## [0.2.173] — 2026-07-23
 
+### Added
+
+- **agents** — add catalog_ingestion_agent for automated BAPP onboarding (#616)
+- **skills** — add Mandatory Clean Code Principles to implement-android-ticket skill (#595)
+
+### Fixed
+
+- **agents** — correct resource paths in catalog_ingestion_agent.json (#618)
+
 ### Changed
 
 - **orchestrators** — add delegation-first hard constraints to ba, qa, steer, and sustainment orchestrators (certification-enforced rules ensuring delegation before text)
-- **evals** — update certification report (v0.2.172)
-- **evals** — expand refund validation test plan
-- **evals** — add architecture-spec test for payment-controls-split
+- **evals** — update certification report
+- **chore** — rebuild MCP bundles
 
 ## [0.2.172] — 2026-07-22
 

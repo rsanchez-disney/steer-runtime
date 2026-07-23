@@ -6,9 +6,12 @@ Format: version header followed by bullet points. Only the latest version block 
 <!-- LATEST -->
 ## v0.2.173
 
+- **feat(agents)** — catalog_ingestion_agent for automated BAPP onboarding (#616)
+- **feat(skills)** — Mandatory Clean Code Principles added to implement-android-ticket skill (#595)
+- **fix(agents)** — correct resource paths in catalog_ingestion_agent.json (#618)
 - **feat(orchestrators)** — delegation-first hard constraints for ba, qa, steer, and sustainment orchestrators (certification-enforced)
-- **chore(evals)** — update certification report (v0.2.172)
-- **chore(evals)** — expand refund validation test plan + add architecture-spec test
+- **chore(evals)** — update certification report
+- **chore** — rebuild MCP bundles
 <!-- END LATEST -->
 
 ## v0.2.172
@@ -16,7 +19,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **chore(evals)** — update certification report (v0.2.171 qualified 89/100)
 - **chore(evals)** — refactor refund validation test plan
 
-## v0.2.171
+## v0.2.172
 
 - **feat(certification)** — certification history with full dimensional detail
 - **docs** — add auto-update strategy + pre-release channels reference
@@ -24,13 +27,13 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(jira-mcp)** — resolve custom fields via `renderedFields` fallback
 - **chore** — update certification report + sign GEAI policy
 
-## v0.2.170
+## v0.2.172
 
 - **feat(catalog)** — populate studio-fnb managed services catalog with 36 FNB applications (#599)
 - **feat(agents)** — integrate graphify MCP tools into codebase_explorer and architecture agents for code-graph-aware analysis (#604)
 - **feat(workspace)** — add ai-analytics-team workspace (#605)
 
-## v0.2.170
+## v0.2.172
 
 - **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
 - **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
@@ -40,7 +43,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **chore** — rebuild MCP bundles, update certification report, ignore graphify-out/
 <!-- END LATEST -->
 
-## v0.2.170
+## v0.2.172
 
 - **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations
 - **feat(jira-mcp)** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
@@ -54,14 +57,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(catalog)** — encoding issues from PR #554 review
 <!-- END LATEST -->
 
-## v0.2.170
+## v0.2.172
 
 - **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
 - **fix(orchestrator)** — wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs
 - **chore** — migrate myjira + mywiki references to Atlassian Cloud URLs
 <!-- END LATEST -->
 
-## v0.2.170
+## v0.2.172
 
 - **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
 - **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
@@ -79,14 +82,14 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix:** delegation runner rewritten in Python with 180s timeout and subagent/list_update detection
 <!-- END LATEST -->
 
-## v0.2.170
+## v0.2.172
 
 - **Catalog-index hook fix** — both `catalog-index.sh` and `catalog-index.ps1` now correctly resolve workspace source from `~/.kiro/steer-runtime` instead of `$KIRO_HOME`, fixing `koda chat --ws` scenarios
 - **Hook validation tests** — `make validate-catalog` now tests both KIRO_HOME scenarios + PowerShell syntax check via `pwsh`
 - **DGE workspace** — DLP Digital Guest Experience team with 6 services (DPAO, DPAU, VQ, TMS, Wallet, Linking), Harness CI/CD, Jira Cloud integration
 - **Demo generator agent** — DPS team agent for generating comprehensive demo documentation from log files and context
 
-## v0.2.170
+## v0.2.172
 
 - **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
 - **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)
