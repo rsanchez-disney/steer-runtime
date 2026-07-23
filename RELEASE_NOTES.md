@@ -4,14 +4,13 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.171
+## v0.2.172
 
-- **fix(jira-mcp)** — infinite loop in markdown-to-ADF parser on pipe-prefixed lines (100% CPU spin)
-- **chore** — update certification report
-- **chore** — rebuild MCP bundles
+- **chore(evals)** — update certification report (v0.2.171 qualified 89/100)
+- **chore(evals)** — refactor refund validation test plan
 <!-- END LATEST -->
 
-## v0.2.170
+## v0.2.171
 
 - **feat(certification)** — certification history with full dimensional detail
 - **docs** — add auto-update strategy + pre-release channels reference

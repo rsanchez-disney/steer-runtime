@@ -4,6 +4,13 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.172] — 2026-07-22
+
+### Changed
+
+- **evals** — update certification report (v0.2.171 qualified 89/100)
+- **evals** — refactor refund validation test plan
+
 ## [0.2.171] — 2026-07-22
 
 ### Fixed
