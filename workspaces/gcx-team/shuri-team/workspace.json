@@ -1,0 +1,11 @@
+{
+    "name": "shuri-team",
+    "description": "Shuri team — AEP/AJO data pipelines and guest experience delivery",
+    "extends": "gcx-team",
+    "profiles": ["dev-core", "dev-ui", "dev-web"],
+    "team": "Shuri",
+    "default_agent": "orchestrator",
+    "rules": ["aep-schema-governance", "journey-design-standards", "spark-sql-conventions"],
+    "enable_tools": true,
+    "jira_prefix": "GCX-"
+}
