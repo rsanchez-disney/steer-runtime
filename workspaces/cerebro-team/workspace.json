@@ -1,0 +1,40 @@
+{
+  "name": "cerebro-team",
+  "extends": "sustainment-cerebro",
+  "description": "Development workspace for Studio Cerebro \u2014 Angular elements (RAC), Node BFF, and profile SPAs. Extends incident context with full SDLC tooling.",
+  "team": "Studio Cerebro",
+  "profiles": [
+    "dev-core",
+    "dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "jira_prefix": "GCXPWS-",
+  "workspace_path": "/Users/gerson.barrera/Development/Disney/GitHub",
+  "projects": [
+    {
+      "name": "profile-rac",
+      "path": "profile-rac",
+      "repo": "profile-vertical/profile-rac",
+      "host": "github.disney.com",
+      "stack": "angular",
+      "description": "Reusable Angular Custom Elements \u2014 friend search, party management, invitations"
+    },
+    {
+      "name": "profile-webapi",
+      "path": "profile-webapi",
+      "repo": "profile-vertical/profile-webapi",
+      "host": "github.disney.com",
+      "stack": "node",
+      "description": "Node BFF \u2014 orchestrates calls to backend profile services"
+    },
+    {
+      "name": "profile-spa",
+      "path": "profile-spa",
+      "repo": "profile-vertical/profile-spa",
+      "host": "github.disney.com",
+      "stack": "angular",
+      "description": "Profile SPAs \u2014 FnF NCM, My Profile, MagicBand"
+    }
+  ],
+  "enable_tools": true
+}

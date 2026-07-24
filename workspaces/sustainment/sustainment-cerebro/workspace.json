@@ -1,7 +1,7 @@
 {
   "name": "sustainment-cerebro",
   "extends": "sustainment",
-  "description": "Sustainment workspace for Studio Cerebro \u2014 incident response, profile services, and catalog operations",
+  "description": "Sustainment workspace for Studio Cerebro — incident response, profile services, and catalog operations",
   "team": "Studio Cerebro",
   "profiles": [
     "sustainment"
@@ -11,11 +11,13 @@
     "studio-cerebro"
   ],
   "rules": [
-    "cerebro-incident-response"
+    "cerebro-incident-response",
+    "cerebro-development-workflow",
+    "cerebro-context-maintenance"
   ],
   "enable_tools": true,
   "jira_prefix": "ADMPROFILE-",
-  "workspace_path": "${WORKSPACE_ROOT}/cerebro",
+  "workspace_path": "~/Development/Disney/GitHub",
   "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-cerebro",
   "projects": [
     {
@@ -29,6 +31,13 @@
       "path": "profile-spa",
       "repo": "profile-vertical/profile-spa",
       "host": "github.disney.com"
+    },
+    {
+      "name": "profile-rac",
+      "path": "profile-rac",
+      "repo": "profile-vertical/profile-rac",
+      "host": "github.disney.com",
+      "stack": "angular"
     },
     {
       "name": "sustainment-toolkit",
