@@ -415,6 +415,35 @@ def collect_structural_metadata() -> dict:
     return metadata
 
 
+def collect_component_versions() -> dict:
+    """Collect current versions of all platform components at certification time."""
+    components = {}
+    repos = {
+        "koda": Path.home() / "Workspace" / "Disney" / "SANCR225" / "Koda",
+        "steer-runtime": STEER_ROOT,
+        "kite": Path.home() / "Workspace" / "Disney" / "SANCR225" / "Kite",
+        "mouseketool": Path.home() / "Workspace" / "Disney" / "SANCR225" / "mouseketool",
+        "yax": Path.home() / "Workspace" / "Disney" / "SANCR225" / "yax",
+        "steer-autopilot": Path.home() / "Workspace" / "Disney" / "SANCR225" / "steer-autopilot",
+        "delivery-command-center": Path.home() / "Workspace" / "Disney" / "SANCR225" / "delivery-command-center",
+    }
+
+    for name, repo_path in repos.items():
+        if repo_path.exists():
+            try:
+                tag = subprocess.check_output(
+                    ["git", "describe", "--tags", "--always"],
+                    cwd=repo_path, stderr=subprocess.DEVNULL, text=True
+                ).strip()
+                components[name] = tag
+            except Exception:
+                components[name] = "unknown"
+        else:
+            components[name] = "not found"
+
+    return components
+
+
 def save_history(cert: CertResult, version: str, target: str, model: str):
     """Save full dimensional certification to history/<version>.json."""
     history_dir = RESULTS_DIR / "history"
@@ -467,6 +496,10 @@ def save_history(cert: CertResult, version: str, target: str, model: str):
 
     # Build full report
     is_prerelease = "-rc." in version or "-beta." in version
+
+    # Collect component versions at certification time
+    component_versions = collect_component_versions()
+
     full_report = {
         "version": version,
         "trust_score": round(cert.trust_score, 1),
@@ -475,6 +508,7 @@ def save_history(cert: CertResult, version: str, target: str, model: str):
         "target": target,
         "model": model or "default",
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "components": component_versions,
         "dimensions": {
             "delegation": {
                 "score": round(delegation_score, 1),
