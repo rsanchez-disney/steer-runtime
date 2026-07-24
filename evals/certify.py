@@ -504,6 +504,24 @@ def save_history(cert: CertResult, version: str, target: str, model: str):
     history_file.write_text(json.dumps(full_report, indent=2))
     print(f"📁 History: {history_file}")
 
+    # Also save under Koda RC tag if one exists (enables 'make promote TAG=v0.4.X-rc.N')
+    try:
+        koda_root = Path.home() / "Workspace" / "Disney" / "SANCR225" / "Koda"
+        if koda_root.exists():
+            koda_tag = subprocess.check_output(
+                ["git", "describe", "--tags", "--abbrev=0"],
+                cwd=koda_root, stderr=subprocess.DEVNULL, text=True
+            ).strip()
+            if "-rc." in koda_tag and koda_tag != version:
+                rc_report = dict(full_report)
+                rc_report["version"] = koda_tag
+                rc_report["is_prerelease"] = True
+                rc_file = history_dir / f"{koda_tag}.json"
+                rc_file.write_text(json.dumps(rc_report, indent=2))
+                print(f"📁 History (Koda RC): {rc_file}")
+    except Exception:
+        pass  # Non-fatal — Koda RC symlink is a convenience
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate steer-runtime certification report")
