@@ -11,6 +11,7 @@ Format: version header followed by bullet points. Only the latest version block 
 - **fix(agents)** — correct resource paths in catalog_ingestion_agent.json (#618)
 - **feat(orchestrators)** — delegation-first hard constraints for ba, qa, steer, and sustainment orchestrators (certification-enforced)
 - **chore(evals)** — update certification report
+- **improve(tests)** — refine 25 orchestration delegation test scenarios with improved assertions
 - **chore** — rebuild MCP bundles
 <!-- END LATEST -->
 

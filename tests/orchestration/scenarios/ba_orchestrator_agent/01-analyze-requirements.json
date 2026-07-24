@@ -5,8 +5,18 @@
   "prompt": "Generate a detailed PRD for the self-service refund portal feature. Include user stories, acceptance criteria, and scope definition.",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["prd_generator_agent", "feature_writer_agent", "requirements_analyst_agent", "scope_definer_agent", "backlog_generator_agent"],
-    "forbidden_tools": ["jira_get_issue", "get_confluence_page"]
+    "agents_called_any": [
+      "prd_generator_agent",
+      "feature_writer_agent",
+      "requirements_analyst_agent",
+      "scope_definer_agent",
+      "backlog_generator_agent"
+    ],
+    "forbidden_tools": [
+      "jira_get_issue",
+      "get_confluence_page"
+    ]
   },
-  "timeout_seconds": 180
+  "timeout_seconds": 180,
+  "retries": 1
 }

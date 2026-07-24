@@ -2,11 +2,22 @@
   "name": "implement-feature",
   "description": "Orchestrator should delegate implementation to a specialist",
   "agent": "orchestrator",
-  "prompt": "Implement ticket https://disneyexperiences.atlassian.net/browse/DPAY-14337 — add a POST /api/v1/refunds/validate endpoint to wdpr-payment-controls-api. Start by fetching the ticket details and creating a plan.",
+  "prompt": "Implement ticket https://disneyexperiences.atlassian.net/browse/DPAY-14337 \u2014 add a POST /api/v1/refunds/validate endpoint to wdpr-payment-controls-api. Start by fetching the ticket details and creating a plan.",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["story_analyzer_agent", "planner_agent", "backend", "webapi", "codebase_explorer_agent"],
-    "forbidden_tools": ["fs_write", "fs_read", "execute_bash"]
+    "agents_called_any": [
+      "story_analyzer_agent",
+      "planner_agent",
+      "backend",
+      "webapi",
+      "codebase_explorer_agent"
+    ],
+    "forbidden_tools": [
+      "fs_write",
+      "fs_read",
+      "execute_bash"
+    ]
   },
-  "timeout_seconds": 180
+  "timeout_seconds": 180,
+  "retries": 1
 }

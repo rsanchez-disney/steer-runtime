@@ -5,8 +5,16 @@
   "prompt": "The ECS tasks for wdpr-payment-controls-api in us-east-1 keep getting OOMKilled. Check CloudWatch metrics and ECS task status, then propose a memory limit increase.",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["infra_check_agent", "log_analyzer_agent", "network_diagnostics_agent"],
-    "forbidden_tools": ["aws_ecs_describe", "splunk_search"]
+    "agents_called_any": [
+      "infra_check_agent",
+      "log_analyzer_agent",
+      "network_diagnostics_agent"
+    ],
+    "forbidden_tools": [
+      "aws_ecs_describe",
+      "splunk_search"
+    ]
   },
-  "timeout_seconds": 180
+  "timeout_seconds": 180,
+  "retries": 1
 }

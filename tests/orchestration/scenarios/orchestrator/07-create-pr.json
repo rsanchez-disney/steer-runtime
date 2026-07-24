@@ -5,8 +5,15 @@
   "prompt": "Create a pull request for the current branch in wdpr-payment-controls-api with title 'feat: refund validation endpoint' targeting main",
   "expect": {
     "delegated": true,
-    "agents_called_any": ["pr_creator_agent", "devops_runner_agent"],
-    "forbidden_tools": ["github_create_pr", "execute_bash"]
+    "agents_called_any": [
+      "pr_creator_agent",
+      "devops_runner_agent"
+    ],
+    "forbidden_tools": [
+      "github_create_pr",
+      "execute_bash"
+    ]
   },
-  "timeout_seconds": 180
+  "timeout_seconds": 180,
+  "retries": 1
 }

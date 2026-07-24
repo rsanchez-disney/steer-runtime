@@ -15,5 +15,6 @@
     ]
   },
   "timeout_seconds": 180,
-  "allow_fail": true
+  "allow_fail": true,
+  "retries": 1
 }

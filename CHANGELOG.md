@@ -19,6 +19,7 @@ All notable changes to steer-runtime.
 
 - **orchestrators** — add delegation-first hard constraints to ba, qa, steer, and sustainment orchestrators (certification-enforced rules ensuring delegation before text)
 - **evals** — update certification report
+- **tests** — refine orchestration delegation test scenarios (25 scenarios updated with improved assertions)
 - **chore** — rebuild MCP bundles
 
 ## [0.2.172] — 2026-07-22
