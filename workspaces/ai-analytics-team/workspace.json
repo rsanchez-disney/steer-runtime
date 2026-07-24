@@ -1,6 +1,6 @@
 {
   "name": "ai-analytics-team",
-  "description": "MVP AI Analytics — Platform for tracking AI tool token consumption across the organization (Cursor, Claude Bedrock, Kiro, Claude Anthropic)",
+  "description": "MVP AI Analytics \u2014 Platform for tracking AI tool token consumption across the organization (Cursor, Claude Bedrock, Kiro, Claude Anthropic)",
   "team": "DXT AI Analytics",
   "profiles": [
     "dev-core"
@@ -15,14 +15,39 @@
     "acceptance-criteria-validation"
   ],
   "enable_tools": true,
-  "workspace_path": "~/Workspace/Disney/DisneyPaymentsOrg",
+  "workspace_path": "~/Workspace/Disney/DXT-AI-Analytics",
   "projects": [
     {
       "name": "wdpr-ai-analytics-data-etl",
       "path": "wdpr-ai-analytics-data-etl",
       "repo": "DXT-AI-Analytics/wdpr-ai-analytics-data-etl",
       "memory_bank": "ai-analytics-etl",
-      "host": "github.disney.com"
+      "host": "github.disney.com",
+      "stack": "python"
+    },
+    {
+      "name": "wdpr-ai-analytics-ui",
+      "path": "wdpr-ai-analytics-ui",
+      "repo": "DXT-AI-Analytics/wdpr-ai-analytics-ui",
+      "host": "github.disney.com",
+      "stack": "angular",
+      "description": "AI Analytics UI \u2014 Angular dashboard for token consumption tracking"
+    },
+    {
+      "name": "wdpr-ai-analytics-backend",
+      "path": "wdpr-ai-analytics-backend",
+      "repo": "DXT-AI-Analytics/wdpr-ai-analytics-backend",
+      "host": "github.disney.com",
+      "stack": "python",
+      "description": "AI Analytics Backend \u2014 Python/FastAPI service for data processing and aggregation"
+    },
+    {
+      "name": "wdpr-ai-analytics-webapi",
+      "path": "wdpr-ai-analytics-webapi",
+      "repo": "DXT-AI-Analytics/wdpr-ai-analytics-webapi",
+      "host": "github.disney.com",
+      "stack": "node",
+      "description": "AI Analytics WebAPI \u2014 NestJS BFF for the analytics dashboard"
     }
   ],
   "jira_prefix": "PAF-",
