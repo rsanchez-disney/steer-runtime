@@ -4,6 +4,15 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
+## v0.2.174
+
+- **feat(workspace)** — add cerebro-team workspace with lean SDD conventions (#621)
+  - cerebro-team workspace extending sustainment-cerebro
+  - steering/00-cerebro-foundation.md with cross-repo conventions
+  - sdd-conventions.md updated for `.kiro/specs/` pattern
+  - cerebro-development-workflow and context-maintenance rules
+<!-- END LATEST -->
+
 ## v0.2.173
 
 - **feat(agents)** — catalog_ingestion_agent for automated BAPP onboarding (#616)

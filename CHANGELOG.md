@@ -4,6 +4,16 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.174] — 2026-07-24
+
+### Added
+
+- **workspace** — add cerebro-team workspace with lean SDD conventions (#621)
+  - Create cerebro-team workspace extending sustainment-cerebro
+  - Add steering/00-cerebro-foundation.md (cross-repo conventions)
+  - Update sdd-conventions.md for `.kiro/specs/` pattern
+  - Add cerebro-development-workflow and context-maintenance rules
+
 ## [0.2.173] — 2026-07-23
 
 ### Added
