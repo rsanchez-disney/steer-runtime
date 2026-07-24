@@ -1,43 +1,43 @@
-# Steer Runtime v0.2.172-1-g99092c0a — Certification Report
+# Steer Runtime v0.2.173 — Certification Report
 
-🟢 **Trust Score: 94/100** (Certified)
+🟢 **Trust Score: 97/100** (Certified)
 
 **Target:** kiro
 
-Generated: 2026-07-23T22:06:36
+Generated: 2026-07-24T09:22:05
 
 ---
 
-## Delegation (40%) — 22/26 passed (85%)
+## Delegation (40%) — 24/26 passed (92%)
 
 | Scenario | Status | Subagent Calls |
 |----------|--------|----------------|
 | ba-delegate-figma-design | ✓ | 0 |
-| cloudops-infra-issue | ✓ | 20 |
-| ai-route-ml-task | ✓ | 5 |
-| ba-analyze-requirements | ✓ | 59 |
+| ai-route-ml-task | ✓ | 8 |
+| cloudops-infra-issue | ✓ | 8 |
+| ba-analyze-requirements | ✓ | 15 |
 | design-architecture-review | ✓ | 5 |
-| ops-check-deployment | ✓ | 8 |
-| analyze-story | ✓ | 8 |
 | inspector-inspect-app | ✓ | 6 |
 | leadership-quarterly-report | ✓ | 8 |
+| analyze-story | ✓ | 8 |
+| ops-check-deployment | ✓ | 8 |
+| write-code | ✓ | 8 |
+| fetch-jira | ✓ | 8 |
 | run-tests | ✓ | 8 |
 | implement-feature | ✓ | 25 |
-| write-code | ✓ | 16 |
 | code-review | ✓ | 29 |
-| fetch-jira | ✓ | 8 |
-| pm-sprint-status | ✓ | 8 |
 | create-pr | ✓ | 8 |
+| pm-sprint-status | ✓ | 8 |
 | steer-review-pr | ✗ | 0 |
-| qa-plan-testing | ✗ | 0 |
 | pm-run-retro | ✓ | 8 |
-| steer-release | ✓ | 8 |
 | qa-analyze-defect | ✗ | 0 |
-| gsm-report | ✗ | 0 |
-| triage-incident | ✓ | 30 |
-| rca-minimal-delegation | ✓ | 0 |
+| triage-incident | ✓ | 57 |
+| qa-plan-testing | ✓ | 5 |
+| steer-release | ✓ | 8 |
 | rca-investigation | ✓ | 5 |
-| stability-validation | ✓ | 5 |
+| gsm-report | ✓ | 8 |
+| stability-validation | ✓ | 8 |
+| rca-minimal-delegation | ✓ | 0 |
 
 ## Structural (30%) — 4/4 passed (100%)
 
