@@ -4,6 +4,14 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.177] — 2026-07-25
+
+### Changed
+
+- **evals** — update certification report (v0.2.175 qualified 88/100, add rca-minimal-delegation scenario)
+- **tests** — refactor DPAY refund validation test plan (expanded with background, motivation, structured metadata table, and detailed test scenarios)
+- **tests** — refactor architecture diagram (temp.mmd) to reflect client-service topology
+
 ## [0.2.176] — 2026-07-25
 
 ### Changed

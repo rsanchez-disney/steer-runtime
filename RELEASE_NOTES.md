@@ -4,12 +4,11 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.176
+## v0.2.177
 
-- **chore(evals)** — finalize certification report (v0.2.174 from rc.1, reorder scenarios)
-- **improve(tests)** — refactor refund validation test plan (913 → 363 lines, simplified)
-- **feat(tests)** — Q2 FY2026 quarterly report orchestration eval result
-- **feat(tests)** — GSM report orchestration eval result (payment-service 2026-07-24)
+- **chore(evals)** — update certification report (v0.2.175 qualified 88/100, add rca-minimal-delegation scenario)
+- **improve(tests)** — refactor DPAY refund validation test plan (expanded with structured metadata, background, and detailed scenarios)
+- **improve(tests)** — refactor architecture diagram to client-service topology
 <!-- END LATEST -->
 
 ## v0.2.174-rc.1
