@@ -1,64 +1,36 @@
-graph TB
-    subgraph "Clients"
-        UI[wdpr-payment-controls-client<br/>Angular SPA]
-        Downstream[Downstream Payment Systems]
+graph LR
+    subgraph "Phase 0 — Preparation (Weeks 1-2)"
+        P0A["Instrument monolith\nroute-level metrics"]
+        P0B["Provision ECS services\nALB target groups, SQS"]
+        P0C["Create @dpay/controls-common\nshared library"]
+        P0D["Set up Harness pipelines\nfor both new services"]
     end
 
-    subgraph "Traffic Layer"
-        ALB[Application Load Balancer<br/>Path-Based Routing]
+    subgraph "Phase 1 — Validation Extraction (Weeks 3-5)"
+        P1A["Deploy wdpr-validation-controls-api"]
+        P1B["ALB canary: 10% → 50% → 100%\n/api/validations/*, /api/rules/*"]
+        P1C["Monitor: latency, errors, memory"]
+        P1D["Monolith fallback active"]
     end
 
-    subgraph "Microservices Layer"
-        subgraph "wdpr-refund-controls-api"
-            RC_API[REST API<br/>Express/Fastify]
-            RC_Export[Export Engine<br/>Async Job Worker]
-            RC_Biz[Refund Business Logic]
-            RC_Events[Event Publisher]
-        end
-
-        subgraph "wdpr-validation-controls-api"
-            VC_API[REST API<br/>Express/Fastify]
-            VC_Engine[Rules Engine]
-            VC_Biz[Validation Business Logic]
-            VC_Events[Event Publisher]
-        end
+    subgraph "Phase 2 — Refund Extraction (Weeks 6-8)"
+        P2A["Deploy wdpr-refund-controls-api\nwith async export engine"]
+        P2B["ALB canary: 10% → 50% → 100%\n/api/refunds/*, /api/exports/*"]
+        P2C["OOM RESOLVED:\n2048 MB + async S3 streaming"]
+        P2D["UI ships export polling component"]
     end
 
-    subgraph "Event Bus"
-        SNS[AWS SNS Topics]
-        SQS_R[SQS: Refund Events Queue]
-        SQS_V[SQS: Validation Events Queue]
-        DLQ[Dead Letter Queues]
+    subgraph "Phase 3 — Decommission (Weeks 9-10)"
+        P3A["Confirm zero monolith traffic\nfor 7 days"]
+        P3B["Remove monolith ECS service"]
+        P3C["Update runbooks &\ndocumentation"]
+        P3D["Optional: DNS cutover to\nnew service URLs"]
     end
 
-    subgraph "Persistence Layer"
-        Backend[wdpr-config-services<br/>Java - DynamoDB/MariaDB]
-        S3[AWS S3<br/>Export Files]
-        Redis[ElastiCache Redis<br/>Rules + Config Cache]
-    end
-
-    UI --> ALB
-    Downstream --> ALB
-    ALB -->|"/api/refunds/*, /api/exports/*, /api/configs/*"| RC_API
-    ALB -->|"/api/validations/*, /api/rules/*"| VC_API
-
-    RC_API --> RC_Biz
-    RC_Biz --> RC_Export
-    RC_Biz --> Backend
-    RC_Export --> S3
-    RC_Export --> Backend
-    RC_Events --> SNS
-    RC_Biz --> Redis
-
-    VC_API --> VC_Biz
-    VC_Biz --> VC_Engine
-    VC_Biz --> Backend
-    VC_Engine --> Redis
-    VC_Events --> SNS
-
-    SNS --> SQS_R
-    SNS --> SQS_V
-    SQS_R --> RC_Biz
-    SQS_V --> VC_Biz
-    SQS_R -.-> DLQ
-    SQS_V -.-> DLQ
+    P0A --> P0B --> P0C --> P0D
+    P0D --> P1A
+    P1A --> P1B --> P1C --> P1D
+    P1D --> P2A
+    P2A --> P2B --> P2C --> P2D
+    P2D --> P3A
+    P3A --> P3B --> P3C --> P3D

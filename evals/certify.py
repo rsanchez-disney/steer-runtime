@@ -36,7 +36,7 @@ W_QUALITY = 0.30
 
 # Tiers
 TIERS = [
-    (90, "🟢", "Certified"),
+    (85, "🟢", "Certified"),
     (70, "🟡", "Qualified"),
     (50, "🟠", "Conditional"),
     (0, "🔴", "Uncertified"),

@@ -4,6 +4,18 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.178] — 2026-07-25
+
+### Changed
+
+- **evals** — update certification report (trust score 88 → 89/100, rca-investigation scenario now passes)
+- **tests** — refactor DPAY refund validation test plan (simplified structure, reduced from 391 to ~80 lines)
+- **tests** — refactor architecture diagram (temp.mmd) to streamlined client-service topology
+
+### Added
+
+- **tests** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
+
 ## [0.2.177] — 2026-07-25
 
 ### Changed
