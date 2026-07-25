@@ -8,11 +8,16 @@ All notable changes to steer-runtime.
 
 ### Added
 
+- **workspace** — add shuri-team workspace with AEP schema governance, Spark SQL conventions, and journey design standards (#619)
 - **workspace** — add cerebro-team workspace with lean SDD conventions (#621)
-  - Create cerebro-team workspace extending sustainment-cerebro
-  - Add steering/00-cerebro-foundation.md (cross-repo conventions)
-  - Update sdd-conventions.md for `.kiro/specs/` pattern
-  - Add cerebro-development-workflow and context-maintenance rules
+- **workspace** — add UI, Backend, and WebAPI repos to ai-analytics-team workspace
+- **evals** — certify saves history under Koda RC tag for promote compatibility
+- **evals** — store component versions in certification history
+
+### Changed
+
+- **evals** — update certification report
+- **chore** — rebuild MCP bundles
 
 ## [0.2.173] — 2026-07-23
 
