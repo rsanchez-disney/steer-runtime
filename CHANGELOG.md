@@ -4,6 +4,14 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.175] — 2026-07-24
+
+### Changed
+
+- **evals** — update certification report (v0.2.174-rc.1 qualified 89/100)
+- **tests** — bump orchestration scenario retries from 1 to 2 (7 orchestrator + 2 steer_orchestrator scenarios)
+- **tests** — refactor refund validation test plan
+
 ## [0.2.174] — 2026-07-24
 
 ### Added

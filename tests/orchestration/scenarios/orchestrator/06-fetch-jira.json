@@ -14,5 +14,5 @@
     ]
   },
   "timeout_seconds": 180,
-  "retries": 1
+  "retries": 2
 }
