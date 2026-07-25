@@ -4,6 +4,18 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.176] — 2026-07-25
+
+### Changed
+
+- **evals** — update certification report (finalize v0.2.174 from rc.1, reorder scenarios)
+- **tests** — refactor refund validation test plan (913 → 363 lines, simplified structure)
+
+### Added
+
+- **tests** — Q2 FY2026 quarterly report result (orchestration eval)
+- **tests** — GSM report result for payment-service 2026-07-24 (orchestration eval)
+
 ## [0.2.175] — 2026-07-24
 
 ### Changed

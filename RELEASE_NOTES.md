@@ -4,14 +4,12 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.174
+## v0.2.176
 
-- **feat(workspace)** — add shuri-team workspace with AEP schema governance, Spark SQL conventions, and journey design standards (#619)
-- **feat(workspace)** — add cerebro-team workspace with lean SDD conventions (#621)
-- **feat(workspace)** — add UI, Backend, and WebAPI repos to ai-analytics-team workspace
-- **feat(evals)** — certify saves history under Koda RC tag for promote compatibility
-- **feat(evals)** — store component versions in certification history
-- **chore** — update certification report, rebuild MCP bundles
+- **chore(evals)** — finalize certification report (v0.2.174 from rc.1, reorder scenarios)
+- **improve(tests)** — refactor refund validation test plan (913 → 363 lines, simplified)
+- **feat(tests)** — Q2 FY2026 quarterly report orchestration eval result
+- **feat(tests)** — GSM report orchestration eval result (payment-service 2026-07-24)
 <!-- END LATEST -->
 
 ## v0.2.174-rc.1
