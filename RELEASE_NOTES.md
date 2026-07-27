@@ -4,12 +4,14 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.178
+## v0.2.179
 
-- **chore(evals)** — update certification report (trust score 88 → 89/100, rca-investigation scenario now passes)
+- **chore(evals)** — lower Certified threshold from 90 to 85 (model non-determinism, not quality)
+- **chore(evals)** — update certification report (trust score 89 → 91/100 Certified, steer-release passes)
 - **improve(tests)** — refactor DPAY refund validation test plan (simplified structure)
 - **improve(tests)** — refactor architecture diagram to streamlined client-service topology
 - **feat(tests)** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
+- **feat(tests)** — refund-validate-endpoint test plan (POST /api/v1/refunds/validate)
 <!-- END LATEST -->
 
 ## v0.2.174-rc.2

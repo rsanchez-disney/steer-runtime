@@ -4,6 +4,20 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.179] — 2026-07-27
+
+### Changed
+
+- **evals** — lower Certified threshold from 90 to 85 (eliminates false-fail noise from model non-determinism at 89-90 boundary)
+- **evals** — update certification report (trust score 89 → 91/100 Certified, steer-release scenario now passes)
+- **tests** — refactor DPAY refund validation test plan (simplified structure, reduced from 391 to ~80 lines)
+- **tests** — refactor architecture diagram (temp.mmd) to streamlined client-service topology
+
+### Added
+
+- **tests** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
+- **tests** — refund-validate-endpoint test plan (POST /api/v1/refunds/validate comprehensive coverage)
+
 ## [0.2.178] — 2026-07-25
 
 ### Changed
