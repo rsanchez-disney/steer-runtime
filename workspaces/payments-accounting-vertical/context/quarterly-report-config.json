@@ -1,0 +1,103 @@
+{
+  "$schema": "quarterly-report-skill/vertical-config",
+  "vertical": {
+    "name": "Payments & Accounting",
+    "quarter": "Q3",
+    "fiscalYear": "FY2026",
+    "period": {
+      "start": "2026-04-01",
+      "end": "2026-06-30"
+    },
+    "confluenceSpace": "TODO: set Confluence space key before first report generation",
+    "confluenceHost": "disneyexperiences.atlassian.net"
+  },
+  "studios": [
+    {
+      "name": "TEP3 - Cart & Checkout",
+      "project": "TEP3",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": 11731,
+      "sprintPrefix": "TEP3-CC-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "DLR"],
+      "notes": "C&C team within TEP3"
+    },
+    {
+      "name": "TEP3 - Cart & Checkout - Package",
+      "project": "TEP3",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": 12702,
+      "sprintPrefix": "TEP3-PKG-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "DLR"],
+      "notes": "C&C Package team within TEP3"
+    },
+    {
+      "name": "UCM",
+      "project": "UCM",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": 10017,
+      "sprintPrefix": "UCM-SP",
+      "impactClassification": "COST REDUCTION",
+      "guestReach": ["DLR", "WDW"],
+      "notes": "Unified Checkout Mods - DLR Checkout, BOLT Bulk"
+    },
+    {
+      "name": "Centralized Accounting Platform",
+      "project": "TIMON",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": null,
+      "dashboardId": 57215,
+      "sprintPrefix": "TIMON-SP",
+      "impactClassification": "COMPLIANCE",
+      "guestReach": ["ALL"],
+      "notes": "Revenue recognition, DLR TEP3 CAP, LaunchDarkly"
+    },
+    {
+      "name": "Wallet",
+      "project": "WALLET",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": null,
+      "dashboardId": 57219,
+      "sprintPrefix": "WALLET-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "DLR"],
+      "notes": "DVC Points Parcel, CMS, Dscribe"
+    },
+    {
+      "name": "APP Payments",
+      "project": "DPAY",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "board": 4962,
+      "sprintPrefix": "DPAY-SP",
+      "impactClassification": "INFRASTRUCTURE",
+      "guestReach": ["WDW", "DLR", "HKDL", "DLP"],
+      "notes": "DPI, GC_Wallet, Payment Sheet"
+    }
+  ],
+  "freezeWindows": [
+    {
+      "name": "DX Domestic Financial Freeze",
+      "start": "2026-06-28",
+      "end": "2026-10-06"
+    },
+    {
+      "name": "SOX Freeze",
+      "start": "2026-08-13",
+      "end": "2026-10-06",
+      "severity": "no-deploys"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "$schema": "quarterly-report-skill/vertical-config",
+  "vertical": {
+    "name": "Lodging Sales & Distribution",
+    "quarter": "Q3",
+    "fiscalYear": "FY2026",
+    "period": {
+      "start": "2026-04-01",
+      "end": "2026-06-30"
+    },
+    "confluenceSpace": "~712020698b3185368f4058b8cb8d8201408eb4",
+    "confluenceHost": "disneyexperiences.atlassian.net"
+  },
+  "studios": [
+    {
+      "name": "Nebula",
+      "project": "ROS",
+      "studioField": "ROS - Nebula | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": true,
+      "board": 2718,
+      "sprintPrefix": "ROS-NEB-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "VB", "HH"]
+    },
+    {
+      "name": "Bang",
+      "project": "ROS",
+      "studioField": "ROS - BANG | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": true,
+      "board": 2730,
+      "sprintPrefix": "ROS-BAN-SP",
+      "impactClassification": "INFRASTRUCTURE",
+      "guestReach": ["WDW", "DLR", "HKDL", "AUL"]
+    },
+    {
+      "name": "Rocket",
+      "project": "ROS",
+      "studioField": "ROS - Rocket | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": true,
+      "board": 2752,
+      "sprintPrefix": "Rocket SP",
+      "impactClassification": "COMPLIANCE",
+      "guestReach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Star-Lord",
+      "project": "ROS",
+      "studioField": "ROS - Star-Lord | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": true,
+      "board": 2714,
+      "sprintPrefix": "ROS-STA-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "DLR", "AUL"]
+    },
+    {
+      "name": "Terror",
+      "project": "ROS",
+      "studioField": ["ROS - Terror | Ruth", "ROS - Terror Project | Ruth"],
+      "queryMethod": "studio-dropdown-multi",
+      "excludeSubtasks": true,
+      "boards": [2753, 5497],
+      "sprintPrefix": ["Terror Sprint ", "ROS-TER-SP"],
+      "impactClassification": "MARKET EXPANSION",
+      "guestReach": ["HKDL", "LACD", "ORO", "AUL", "WDW", "DLR"]
+    },
+    {
+      "name": "Mantis",
+      "project": "ROS",
+      "studioField": "ROS - Mantis | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": false,
+      "board": 5011,
+      "sprintPrefix": "Mantis Sprint ",
+      "impactClassification": "INFRASTRUCTURE",
+      "guestReach": ["ALL"]
+    },
+    {
+      "name": "Gamora",
+      "project": "ROS",
+      "studioField": "ROS - Gamora | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": false,
+      "board": 4726,
+      "sprintPrefix": "Gamora Sprint ",
+      "impactClassification": "COST REDUCTION",
+      "guestReach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Vision",
+      "project": "ROS",
+      "studioField": "ROS - Vision | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": false,
+      "board": 2738,
+      "sprintPrefix": "Vision Sprint ",
+      "impactClassification": "PLATFORM STABILITY",
+      "guestReach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Tadashi",
+      "project": "ROS",
+      "studioField": "ROS - Tadashi | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": false,
+      "board": null,
+      "sprintPrefix": "ROS-META-SP",
+      "impactClassification": "REVENUE GENERATING",
+      "guestReach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Cosmo",
+      "project": "ROS",
+      "studioField": "ROS - Cosmo | Ruth",
+      "queryMethod": "studio-dropdown",
+      "excludeSubtasks": true,
+      "board": 5292,
+      "sprintPrefix": "ROS-COS-SP",
+      "impactClassification": "QA INVESTMENT",
+      "guestReach": ["DLR"]
+    },
+    {
+      "name": "Yondu",
+      "project": "TEP3",
+      "studioField": null,
+      "queryMethod": "sprint-name",
+      "sprintPattern": "Yondu-SP{N}",
+      "excludeSubtasks": true,
+      "board": 2901,
+      "impactClassification": "PLATFORM INTEGRATION",
+      "guestReach": ["DLR"]
+    },
+    {
+      "name": "Bolt",
+      "project": "GRPS",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "boards": [3157, 3155],
+      "sprintPrefix": ["BOLT Uplift-SP", "BOLT/GRPS-SP"],
+      "impactClassification": "COST REDUCTION + COMPLIANCE",
+      "guestReach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Forky",
+      "project": "CCS",
+      "studioField": null,
+      "queryMethod": "project-level",
+      "excludeSubtasks": true,
+      "excludeAssignees": ["Jaime Gonzalez Pacheco", "Nana Bin"],
+      "board": 3593,
+      "sprintPrefix": "CCS-SP",
+      "impactClassification": "REVENUE OPTIMIZATION",
+      "guestReach": ["WDW", "DLR", "DLP", "DDSI"]
+    }
+  ],
+  "freezeWindows": [
+    {
+      "name": "DX Domestic Financial Freeze",
+      "start": "2026-06-28",
+      "end": "2026-10-06"
+    },
+    {
+      "name": "SOX Freeze",
+      "start": "2026-08-13",
+      "end": "2026-10-06",
+      "severity": "no-deploys"
+    }
+  ],
+  "releaseData": {
+    "source": "IR_PCS Production Release Tracker (Excel)",
+    "totalReleases": 161,
+    "successRate": 0.988
+  }
+}
