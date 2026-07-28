@@ -74,6 +74,7 @@
   },
   "includeMcpJson": true,
   "allowedTools": [
-    "@yax/*"
+    "@yax/*",
+    "@graphify/*"
   ]
 }

@@ -210,6 +210,18 @@ Gates are mandatory — never skip them. If Judge returns FAIL, loop back to Imp
 
 ---
 
+## Agent-Specific Delegation Protocols
+
+### codebase_explorer_agent
+
+This agent uses `graphify` for code exploration and `fs_read` for known files. Always prefix your `prompt_template` with:
+
+> For EXPLORATION (finding symbols, understanding flows, discovering dependencies): use graphify tools.
+> For KNOWN files (specific path already identified, reading configs, checking current content): use fs_read directly.
+> Never route a simple "read this file" task through graphify — use fs_read.
+
+---
+
 ## Critical anti-patterns (NEVER do these)
 
 1. **NEVER say "I don't have access to Jira"** — delegate to `story_analyzer_agent`
