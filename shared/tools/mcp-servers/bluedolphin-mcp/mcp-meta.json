@@ -1,0 +1,21 @@
+{
+  "name": "bluedolphin",
+  "description": "BlueDolphin Enterprise Architecture MCP — search applications, view relationships, browse workspaces and object schemas (read-only)",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "BD_API_KEY": "BlueDolphin user API key (REST API auth)",
+    "BD_TENANT": "BlueDolphin tenant name (e.g., twdc)",
+    "BD_REGION": "API region: eu or us (default: eu)",
+    "BD_USE_ODATA": "Set to 'true' to use OData instead of REST API",
+    "BD_ODATA_USERNAME": "OData username (tenant name)",
+    "BD_ODATA_PASSWORD": "OData authentication token"
+  },
+  "env_required": ["BD_TENANT"],
+  "env_secret": ["BD_API_KEY", "BD_ODATA_PASSWORD"],
+  "env_defaults": {
+    "BD_TENANT": "twdc",
+    "BD_REGION": "eu"
+  },
+  "tags": ["architecture", "enterprise", "bluedolphin", "diagrams", "applications"]
+}
