@@ -4,107 +4,20 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.179
+## v0.2.175
 
-- **chore(evals)** — lower Certified threshold from 90 to 85 (model non-determinism, not quality)
-- **chore(evals)** — update certification report (trust score 89 → 91/100 Certified, steer-release passes)
-- **improve(tests)** — refactor DPAY refund validation test plan (simplified structure)
-- **improve(tests)** — refactor architecture diagram to streamlined client-service topology
-- **feat(tests)** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
-- **feat(tests)** — refund-validate-endpoint test plan (POST /api/v1/refunds/validate)
-<!-- END LATEST -->
-
-## v0.2.174-rc.2
-
+- **feat(skills)** — quarterly-report skill for leadership vertical reports (#622)
 - **feat(agents)** — catalog_ingestion_agent for automated BAPP onboarding (#616)
-- **feat(skills)** — Mandatory Clean Code Principles added to implement-android-ticket skill (#595)
-- **fix(agents)** — correct resource paths in catalog_ingestion_agent.json (#618)
-- **feat(orchestrators)** — delegation-first hard constraints for ba, qa, steer, and sustainment orchestrators (certification-enforced)
-- **chore(evals)** — update certification report
-- **improve(tests)** — refine 25 orchestration delegation test scenarios with improved assertions
-- **chore** — rebuild MCP bundles
+- **feat(agents)** — spar_agent, db_analyst_agent, crash_analyzer_agent, propose_agent, judge_agent
+- **feat(certification)** — component versions in history, Koda RC tag compatibility, `--target`/`--model` flags
+- **feat(workspaces)** — ai-analytics-team, shuri-team, cerebro-team, DCL, DXCP, WFER Travel, enterprise-authz
+- **feat(tools)** — graphify MCP tools in codebase_explorer + architecture agents, @cortex/*, @chrome/*
+- **feat(tools)** — xray_cloud_get_test_datasets, xray_cloud_update_test_datasets
+- **feat(catalog)** — studio-fnb service catalog with 36 FNB applications
+- **feat(features)** — AI-DLC pattern adoption (6 features), appium-mcp improvements (P0-P3)
+- **feat(skills)** — EFS provisioning (DXCP), Clean Code Principles (Android)
+- **fix(jira-mcp)** — infinite loop in ADF parser, jira_get_dev_status on Cloud, renderedFields fallback
+- **fix(chrome-mcp)** — graceful fallback to headless on connection failure
+- **fix(orchestrators)** — remove non-routing tools + strengthen delegation rules
+- **improve(evals)** — lower Certified threshold from 90 to 85 (model non-determinism tolerance)
 <!-- END LATEST -->
-
-## v0.2.174-rc.2-rc.1
-
-- **chore(evals)** — update certification report (v0.2.171 qualified 89/100)
-- **chore(evals)** — refactor refund validation test plan
-
-## v0.2.174-rc.2-rc.1
-
-- **feat(certification)** — certification history with full dimensional detail
-- **docs** — add auto-update strategy + pre-release channels reference
-- **fix(jira-mcp)** — enable `jira_get_dev_status` on Cloud + fix `applicationType` typo
-- **fix(jira-mcp)** — resolve custom fields via `renderedFields` fallback
-- **chore** — update certification report + sign GEAI policy
-
-## v0.2.174-rc.2-rc.1
-
-- **feat(catalog)** — populate studio-fnb managed services catalog with 36 FNB applications (#599)
-- **feat(agents)** — integrate graphify MCP tools into codebase_explorer and architecture agents for code-graph-aware analysis (#604)
-- **feat(workspace)** — add ai-analytics-team workspace (#605)
-
-## v0.2.174-rc.2-rc.1
-
-- **feat(adaptive-payments-team)** — graphify reports (25 repos), knowledge base (incident patterns, architecture decisions, Splunk cookbook), and workspace steering
-- **feat(steer-platform)** — steering, knowledge, and graphify reports for all 10 platform projects
-- **improve(sustainment-beast)** — new template for incident reports in beast-team context (#583)
-- **docs** — release workflow reference with Mermaid diagrams, download stats, and adoption tracking
-- **fix** — align VERSION and RELEASE_NOTES with published v0.2.156
-- **chore** — rebuild MCP bundles, update certification report, ignore graphify-out/
-<!-- END LATEST -->
-
-## v0.2.174-rc.2-rc.1
-
-- **feat(security)** — block EDR-triggering commands: browser DB reads, credential store access, and other EDR-suspicious operations
-- **feat(jira-mcp)** — `xray_cloud_get_test_datasets` and `xray_cloud_update_test_datasets` tools for XRay Cloud dataset management
-- **feat(pos-team)** — Bug Triage Agent, orchestration agent, QA Validation Agent, architecture management, receipts refactor learnings, DSP bug report format
-- **feat(sustainment)** — rewrite RCA agent prompt & enrich services catalog with extended metadata
-- **feat(workspace)** — Connected Products team workspace initial setup
-- **docs** — S9/S10 token strategy specs, Compass MCP setup guide
-- **fix(orchestrator)** — Harness URL routing to deployment_agent for CI/CD delegation
-- **fix(sustainment)** — catalog-index hooks support singular and plural CI field names
-- **fix(jira-mcp)** — GraphQL variable naming alignment and deprecation warnings
-- **fix(catalog)** — encoding issues from PR #554 review
-<!-- END LATEST -->
-
-## v0.2.174-rc.2-rc.1
-
-- **docs** — token savings strategy spec: 8 strategies scored on impact/efficiency/backward compatibility with phased implementation plan
-- **fix(orchestrator)** — wiki URL delegation examples and trigger phrases to prevent misclassification of bare wiki/confluence URLs
-- **chore** — migrate myjira + mywiki references to Atlassian Cloud URLs
-<!-- END LATEST -->
-
-## v0.2.174-rc.2-rc.1
-
-- **steer-certify** — trust score and certification report combining delegation tests + evals into a single quality gate
-- **Orchestrator delegation test harness** — 24 scenarios across 12 orchestrators validating correct delegation to specialists
-- **Unified eval runner** — auto-discovers and evaluates 187 agents + skills via `make eval-all`
-- **Certification pipeline** — `make certify` runs sync + delegation tests + evals + generates CERTIFICATION.md
-- **validate-agents guardrail** — flags orchestrators with non-routing tools to prevent delegation regression
-- **Orchestrator prompt strengthening** — explicit anti-patterns for coding tasks (never write code, run tests, or explore codebase)
-- **STEER_HOME** — env var for kiro-cli isolation (Koda translates to KIRO_HOME)
-- **Skill materializer** — directory skills (SKILL.md + references/) auto-flattened for kiro-cli discovery
-- **Workspace naming** — `sustainment-uad` moved under `sustainment/`, `app-team` renamed to `adaptive-payments-team`
-- **fix:** orchestrator tools restricted to routing-only (subagent, thinking, todo_list, @yax/*)
-- **fix:** sustainment_orchestrator retains fs_read for service catalog lookups (Option C hybrid)
-- **fix:** dev specialist agents (backend, webapi, ui, etc.) now include code + grep tools
-- **fix:** ACP prompt format corrected for delegation runner + eval runner
-- **fix:** delegation runner rewritten in Python with 180s timeout and subagent/list_update detection
-<!-- END LATEST -->
-
-## v0.2.174-rc.2-rc.1
-
-- **Catalog-index hook fix** — both `catalog-index.sh` and `catalog-index.ps1` now correctly resolve workspace source from `~/.kiro/steer-runtime` instead of `$KIRO_HOME`, fixing `koda chat --ws` scenarios
-- **Hook validation tests** — `make validate-catalog` now tests both KIRO_HOME scenarios + PowerShell syntax check via `pwsh`
-- **DGE workspace** — DLP Digital Guest Experience team with 6 services (DPAO, DPAU, VQ, TMS, Wallet, Linking), Harness CI/CD, Jira Cloud integration
-- **Demo generator agent** — DPS team agent for generating comprehensive demo documentation from log files and context
-
-## v0.2.174-rc.2-rc.1
-
-- **MCP-UI widgets for jira-mcp** — tool responses now include interactive HTML (ticket cards, issue tables, sprint boards) for Kite rendering
-- **ui_inspector_agent** — new agent for Chrome DevTools UI validation (navigates, inspects DOM/CSS, executes console JS)
-- **cerebro-sustainment workspace** — DX Profile incident ops with 8-section response format
-- **Retail & Restaurant workspace** — full workspace for FNB/MERCH teams with architecture, testing conventions
-- **Sustainment catalog enrichment** — 20+ services across ticketing-checkout studios with real Splunk queries, runbooks, troubleshooting
-- **chrome-launch.sh fix** — `--user-data-dir` required for debug port binding, restored headless mode and WSL support

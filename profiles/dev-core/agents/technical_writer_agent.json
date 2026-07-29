@@ -13,7 +13,8 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

@@ -10,7 +10,8 @@
     "thinking",
     "@mermaid/*",
     "@confluence-confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

@@ -11,7 +11,8 @@
     "fs_read",
     "thinking",
     "@mermaid/*",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

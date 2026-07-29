@@ -1,0 +1,33 @@
+{
+  "name": "atlassian",
+  "description": "Atlassian Rovo MCP — Jira, Confluence, Bitbucket, and Jira Service Management via Atlassian's remote MCP server",
+  "type": "sse",
+  "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+  "auth": {
+    "type": "oauth2",
+    "fallback": "api-token",
+    "tokenEnv": "ATLASSIAN_API_TOKEN",
+    "description": "Authenticates via OAuth 2.1 (browser popup) or API token. OAuth is recommended for interactive use."
+  },
+  "env": {
+    "ATLASSIAN_API_TOKEN": "Atlassian API token (optional — OAuth 2.1 is used by default)"
+  },
+  "env_required": [],
+  "env_secret": ["ATLASSIAN_API_TOKEN"],
+  "capabilities": [
+    "jira:search",
+    "jira:get_issue",
+    "jira:create_issue",
+    "jira:update_issue",
+    "jira:transition_issue",
+    "jira:add_comment",
+    "confluence:search",
+    "confluence:get_page",
+    "confluence:create_page",
+    "confluence:update_page",
+    "bitbucket:search",
+    "bitbucket:get_pr",
+    "rovo:search"
+  ],
+  "tags": ["jira", "confluence", "bitbucket", "atlassian", "cloud", "remote"]
+}

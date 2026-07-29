@@ -14,7 +14,8 @@
     "execute_bash",
     "fs_read",
     "fs_write",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",

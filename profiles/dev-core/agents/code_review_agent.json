@@ -11,7 +11,8 @@
     "code",
     "execute_bash",
     "fs_read",
-    "grep"
+    "grep",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

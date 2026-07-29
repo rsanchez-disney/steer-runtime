@@ -12,7 +12,8 @@
     "@github-public/*",
     "@jira-jira/*",
     "@jira-cloud/*",
-    "@confluence-confluence/*"
+    "@confluence-confluence/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

@@ -4,59 +4,59 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
-## [0.2.179] — 2026-07-27
-
-### Changed
-
-- **evals** — lower Certified threshold from 90 to 85 (eliminates false-fail noise from model non-determinism at 89-90 boundary)
-- **evals** — update certification report (trust score 89 → 91/100 Certified, steer-release scenario now passes)
-- **tests** — refactor DPAY refund validation test plan (simplified structure, reduced from 391 to ~80 lines)
-- **tests** — refactor architecture diagram (temp.mmd) to streamlined client-service topology
+## [0.2.175] — 2026-07-28
 
 ### Added
 
-- **tests** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
-- **tests** — refund-validate-endpoint test plan (POST /api/v1/refunds/validate comprehensive coverage)
+- **skills** — quarterly-report skill for leadership vertical reports (#622)
+- **agents** — catalog_ingestion_agent for automated BAPP onboarding (#616)
+- **agents** — spar_agent + orchestrator delegation (#601)
+- **agents** — db_analyst_agent + orchestrator routing (dev-core)
+- **agents** — crash_analyzer_agent for pre-release NewRelic analysis (#586)
+- **agents** — propose_agent and judge_agent for propose-judge SDLC strategy (#545)
+- **certification** — store component versions in certification history
+- **certification** — certify saves history under Koda RC tag for promote compatibility
+- **certification** — full dimensional detail in certification history
+- **certification** — `--target` and `--model` flags for certify pipeline (#602)
+- **workspaces** — ai-analytics-team with UI, Backend, and WebAPI repos (#605)
+- **workspaces** — shuri-team workspace config (#619)
+- **workspaces** — cerebro-team workspace with lean SDD conventions (#621)
+- **workspaces** — DCL workspace for dse-dcl-web-team (#569)
+- **workspaces** — DXCP initial workspace config (#591)
+- **workspaces** — DCL WFER Travel team workspace
+- **workspaces** — disney-enterprise-authz workspace with keystone and authmngr children
+- **tools** — integrate graphify MCP tools into codebase_explorer and architecture agents (#604)
+- **tools** — graphify_source and graphify_inspect to steering (#606)
+- **tools** — xray_cloud_get_test_datasets and xray_cloud_update_test_datasets tools
+- **tools** — @chrome/* tools for embedded browser access in orchestrator
+- **tools** — @cortex/* tools for orchestrator and architecture agent
+- **catalog** — populate studio-fnb service catalog with 36 FNB applications (#599)
+- **security** — signed GEAI access policy file (#603)
+- **skills** — EFS provisioning skill and Atlantis workflow context for DXCP (#594)
+- **skills** — Mandatory Clean Code Principles to implement-android-ticket skill (#595)
+- **docs** — auto-update strategy + pre-release channels reference
+- **docs** — model routing reference + steery_knowledge refresh (#598)
+- **docs** — DB MCP quick start guide and database MCP server spec
+- **evals** — lower Certified threshold from 90 to 85 (model non-determinism tolerance)
+- **features** — AI-DLC pattern adoption — 6 features (#592)
+- **features** — appium-mcp improvement backlog (P0-P3)
 
-## [0.2.178] — 2026-07-25
+### Fixed
+
+- **jira-mcp** — infinite loop in markdown-to-ADF parser on pipe-prefixed lines
+- **jira-mcp** — enable jira_get_dev_status on Cloud + fix applicationType typo
+- **jira-mcp** — resolve custom fields via renderedFields fallback
+- **orchestrators** — remove non-routing tools + strengthen delegation rules (#614)
+- **chrome-mcp** — graceful fallback to headless on connection failure
+- **chrome-mcp** — graceful fallback when BROWSER_URL is unavailable
+- **agents** — correct resource paths in catalog_ingestion_agent.json (#618)
 
 ### Changed
 
-- **evals** — update certification report (trust score 88 → 89/100, rca-investigation scenario now passes)
-- **tests** — refactor DPAY refund validation test plan (simplified structure, reduced from 391 to ~80 lines)
-- **tests** — refactor architecture diagram (temp.mmd) to streamlined client-service topology
-
-### Added
-
-- **tests** — DPAY Q2 FY2026 quarterly report (orchestration eval result)
-
-## [0.2.177] — 2026-07-25
-
-### Changed
-
-- **evals** — update certification report (v0.2.175 qualified 88/100, add rca-minimal-delegation scenario)
-- **tests** — refactor DPAY refund validation test plan (expanded with background, motivation, structured metadata table, and detailed test scenarios)
-- **tests** — refactor architecture diagram (temp.mmd) to reflect client-service topology
-
-## [0.2.176] — 2026-07-25
-
-### Changed
-
-- **evals** — update certification report (finalize v0.2.174 from rc.1, reorder scenarios)
-- **tests** — refactor refund validation test plan (913 → 363 lines, simplified structure)
-
-### Added
-
-- **tests** — Q2 FY2026 quarterly report result (orchestration eval)
-- **tests** — GSM report result for payment-service 2026-07-24 (orchestration eval)
-
-## [0.2.175] — 2026-07-24
-
-### Changed
-
-- **evals** — update certification report (v0.2.174-rc.1 qualified 89/100)
-- **tests** — bump orchestration scenario retries from 1 to 2 (7 orchestrator + 2 steer_orchestrator scenarios)
-- **tests** — refactor refund validation test plan
+- **adaptive-payments-team** — add graphify, knowledge, and steering
+- **steer-platform** — add steering, knowledge, and graphify reports
+- **sustainment** — rewrite RCA agent prompt and enrich services catalog
+- **mobile_test_executor_agent** — enhanced with state machine, retry, and evidence collection
 
 ## [0.2.174] — 2026-07-24
 

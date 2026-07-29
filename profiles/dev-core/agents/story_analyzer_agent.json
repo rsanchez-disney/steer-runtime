@@ -15,7 +15,8 @@
     "grep",
     "web_fetch",
     "knowledge",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
