@@ -44,6 +44,41 @@
         "repo": "cpx/mobile/flutter/big-belly",
         "host": "gitlab.disney.com",
         "memory_bank": "big-belly"
+      },
+      {
+        "name": "sarg-config-api",
+        "path": "sarg-config-api",
+        "repo": "EDT/sarg-config-api",
+        "host": "github.disney.com",
+        "memory_bank": "sarg-config-api"
+      },
+      {
+        "name": "native-wallet-web",
+        "path": "native-wallet-web",
+        "repo": "EDT/native-wallet-web",
+        "host": "github.disney.com",
+        "memory_bank": "native-wallet-web"
+      },
+      {
+        "name": "cpx-task-lifecycle-engine",
+        "path": "cpx-task-lifecycle-engine",
+        "repo": "EDT/cpx-task-lifecycle-engine",
+        "host": "github.disney.com",
+        "memory_bank": "cpx-task-lifecycle-engine"
+      },
+      {
+        "name": "sarg-device-manager",
+        "path": "sarg-device-manager",
+        "repo": "EDT/sarg-device-manager",
+        "host": "github.disney.com",
+        "memory_bank": "sarg-device-manager"
+      },
+      {
+        "name": "sarg-plus-inventory-service",
+        "path": "sarg-plus-inventory-service",
+        "repo": "EDT/sarg-plus-inventory-service",
+        "host": "github.disney.com",
+        "memory_bank": "sarg-plus-inventory-service"
       }
     ],
   "rules": ["conventional_commit"],
