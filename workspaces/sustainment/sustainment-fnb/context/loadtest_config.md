@@ -463,8 +463,8 @@ Document load test results in Confluence (Atlassian Cloud).
 
 | App | Connection | Space | Parent Page ID | Template Page ID | Title Format | Pages |
 |-----|------------|-------|----------------|------------------|--------------|-------|
-| Arrival Windows UI/Batch | `dx-atlassian-cloud-prod` | `FBT` | WDW: `219729687` / DLR: `219728217` | WDW: `219731358` / DLR: `219731384` | `{site} Arrival Windows UI - Release - v{version}` | One per site |
-| DISCO | `dx-atlassian-cloud-prod` | `FBT` | `219730531` (0.x) / `219710952` (3.x) | WDW: `219731206` / DLR: `219731026` | `{site} DiSCO - Release {version}` | One per site |
+| Arrival Windows UI/Batch | `dx-atlassian-cloud-prod` | `FBT` | WDW: `219729687` / DLR: `219728217` | WDW: `431460035` / DLR: `429495482` | `{site} Arrival Windows UI - Release - v{version}` | One per site |
+| DISCO | `dx-atlassian-cloud-prod` | `FBT` | `219730531` (0.x) / `219710952` (3.x) | WDW: `446151665` / DLR: `446089212` | `{site} DiSCO - Release {version}` | One per site |
 | MOO | `dx-atlassian-cloud-prod` | `FBT` | `219730354` | WDW: `428277761` / DLR: `219732201` | `MOO {site} Release - v{version}` | One per site |
 | ROO | `dx-atlassian-cloud-prod` | `FBT` | `219713430` | `219730859` | `ROO Release - v{version}` | Both sites |
 | Dining Menus | `dx-atlassian-cloud-prod` | `FBT` | `219713117` | `219727704` | `Release - v{version}` | Both sites |
@@ -477,10 +477,10 @@ Document load test results in Confluence (Atlassian Cloud).
 
 | App | Site | Example Page URL |
 |-----|------|-----------------|
-| ARRW | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731358/WDW+Arrival+Windows+Batch+-+Release+-+v0.0.0-67` |
-| ARRW | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731384/DLR+Arrival+Windows+Batch+-+Release+-+v0.0.0-67` |
-| DISCO | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731206/WDW+DiSCO+-+Release+0.0.0-235` |
-| DISCO | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219731026/DiSCO+-+Release+v0.0.0-238+-+DLR` |
+| ARRW | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/431460035/WDW+Arrival+Windows+UI+-+Release+-+vv2.0.0-11+Maria+DB+Upgrade` |
+| ARRW | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/429495482/DLR+Arrival+Windows+Service+-+Release+-+v2.0.0-11+Maria+DB+Upgrade+11.8.6` |
+| DISCO | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/446151665/WDW+DiSCO+-+Release+v0.0.0-246` |
+| DISCO | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/446089212/DLR+DiSCO+-+Release+v0.0.0-246` |
 | MOO | WDW | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/428277761/MOO+WDW+Release+-+v0.0.0-241` |
 | MOO | DLR | `https://disneyexperiences.atlassian.net/wiki/spaces/FBT/pages/219732201/MOO+DLR+Release+-+v0.0.0-241` |
 ### DISCO Parent Page Selection
@@ -497,6 +497,26 @@ The template page is read from Confluence and modified:
 3. **All links** → updated with correct dates and job IDs (see URL Update Rules below)
 4. **All screenshot images** → removed, replaced with "Add screenshot here"
 5. **Jira macro serverId:** `415108e9-cd76-3949-a3b0-e0b07cea53f0` (System Jira)
+6. **Previous Results column:**
+   - If the template **already has** a "Previous Results" column → resolve the previous execution page (see Previous Results Resolution below) and update the column with cross-page image references.
+   - If the template **does NOT have** a "Previous Results" column → ask the user: "Do you want to add a Previous Results comparison column?" If yes, the user can provide the previous execution URL or delegate the search to the agent (following the Previous Results Resolution workflow). If no, proceed without the column (clone the template as-is).
+   - Images from the previous page are referenced using cross-page attachment syntax (`<ri:page ri:content-title="..." />`). If the previous page has multiple screenshot columns (excluding any existing "Previous Results" column), stack all those images into a single "Previous Results" cell in the new page.
+
+
+### Previous Results Resolution
+
+The agent must resolve which previous wiki page to reference for the "Previous Results" column.
+
+**Resolution workflow:**
+1. If the user provides a previous execution URL upfront, use it directly.
+2. Otherwise, search for the most recent previous execution page:
+   - First, list all descendant pages under the app's parent page (from Wiki Config table).
+   - If no match is found, expand the search to all descendants under the grandparent (one level above the parent).
+   - Match by title pattern: same site and app name but a different version. Select the most recent.
+   - If still not found, ask the user to provide the previous execution URL or whether to create the wiki without the "Previous Results" column.
+3. Present the resolved previous page in the wiki preview: "Previous Results from: {page_title} ({page_url})"
+4. The user must confirm or provide an alternative URL.
+
 
 ### URL Update Rules
 
@@ -529,11 +549,11 @@ When creating or updating a wiki page, detect ALL monitoring tool URLs and updat
 - Same ±5 min logic as AppDynamics
 - `%27` in storage format is correct (renders as `'` in browser)
 
-### KPI Results Table (Optional Auto-Insert)
+### KPI Results Table (Optional — Post-Creation)
 
-After updating links, ask: **"Do you want me to insert the KPI results tables in the Splunk - LTIAB Reports Screenshot cells? (13-column format with 25% KPI column)"**
+KPI tables are inserted **only after the wiki page has been created** and only if the user explicitly requests it. After creating the page, ask: **"Do you want me to insert the KPI results tables in the Splunk Screenshot cells?"**
 
-If yes, insert a table per load level (1x, 2x, 3x) in the corresponding Screenshot cell.
+If the user says yes, insert a table per load level (1x, 2x, 3x) in the corresponding Screenshot cell.
 
 #### ⛔ Rules for KPI Tables
 - **Always use `storage` format** (HTML) when creating pages with KPI results tables. Never use markdown for pages with nested tables.
@@ -622,3 +642,83 @@ If the Confluence MCP tool supports a section-replace or marker-based insert ope
 Read ticket using the Jira MCP tool (`sre_toolsets_jira_tool_jira_get_ticket`) with connection `jira-prod`:
 - **Issue key:** The ticket key provided by the user (e.g., `FNB-19625`)
 - Extract from summary: App name, Site (WDW/DLR), Version.
+
+---
+
+## 5. PE Review Ticket
+
+Request shift-left performance review from the PE team by creating a PRE ticket.
+
+### ⛔ Rules for this step
+
+- **Always present a preview before creating.** Show ALL ticket fields (project, summary, priority, labels, BAPP Name, version, description, due date, FNB link, wiki link) and ask for explicit user confirmation. Do NOT create until the user says yes.
+- **One ticket per site.** PE tickets are always per site (WDW or DLR). If the wiki covers both sites, ask the user: "Do you want to create the PE ticket for WDW, DLR, or both?" If both, create one ticket per site sequentially. Never combine WDW and DLR in a single PE ticket.
+- **Wiki URL is required.** The wiki page link is mandatory for the PE ticket description. If step 4 was completed in this session, reuse the wiki URL automatically. If step 5 is started without step 4, the user must provide the wiki URL before proceeding.
+- **FNB ticket is required.** Extract from the wiki page (read in `storage` format — the key is in `<ac:parameter ac:name="key">FNB-XXXXX</ac:parameter>` under the "Load test Jira tickets:" heading) or reuse from previous steps. Only ask the user if it cannot be found from either source.
+- **Requestor email is required.** Always ask if not available from previous steps.
+- **Reuse session context.** If wiki was created in step 4, reuse app name, version, and wiki URL — don't ask again.
+
+### PRE Ticket Config
+
+| Field              | Value / Source                                                  |
+|--------------------|-----------------------------------------------------------------|
+| Project            | `PRE`                                                           |
+| Issue Type         | `Story`                                                         |
+| Summary            | `Shift Left request / Review test results`                      |
+| Priority           | `Major` (ID: `10012`) — override if user specifies otherwise    |
+| Labels             | `PE`, `shift-left`                                              |
+| BAPP Name          | `customfield_10296` — from BAPP Mapping table below             |
+| App Version        | `customfield_10257` — e.g., `v0.0.0-241`                       |
+| Due Date           | 3 business days from creation date (YYYY-MM-DD, skip weekends)  |
+| Description        | See Description Template below                                  |
+
+### Description Template
+
+```text
+*Requestor:*
+{requestor_email}
+
+*Request Type:*
+Review test results
+
+*Summary*
+Shift-Left request / Review test results
+
+*App or Service name*
+{bapp_name}
+
+*App or Service version number*
+{version}
+
+*Link to test plan, test results or PR*
+{wiki_url}
+
+*Additional Comments*
+{additional_comments_or_empty}
+```
+
+### Post-Creation Actions
+
+| Order | Action       | Details                                                                             |
+|:-----:|--------------|--------------------------------------------------------------------------------------|
+| 1     | Issue Link   | Type: `Dependency` (ID: `10042`). PRE ticket "dependency of" FNB ticket (outward). |
+| 2     | Remote Link  | Wiki page URL. Title: wiki page title.                                              |
+
+### BAPP Name Mapping
+
+| App               | Site | BAPP Name                                          |
+|-------------------|------|----------------------------------------------------|
+| Arrival Windows   | WDW  | WDW Mobile Order Arrival Windows                   |
+| Arrival Windows   | DLR  | DLR Mobile Order Arrival Windows                   |
+| DISCO             | WDW  | WDW Dine Self Check-In Orchestration               |
+| DISCO             | DLR  | DLR Dine Self Check-In Orchestration               |
+| MOO               | WDW  | WDW Mobile Order Orchestrator Service (MOO)        |
+| MOO               | DLR  | DLR Mobile Order Orchestrator Service (MOO)        |
+| ROO               | WDW  | WDW Retail Ordering Orchestration                  |
+| ROO               | DLR  | DLR Retail Ordering Orchestration                  |
+| Dining Menus      | WDW  | WDW Dining Menu Service                            |
+| Dining Menus      | DLR  | DLR Dining Menu Service                            |
+| Admin UI Config   | WDW  | WDW Dine Admin Tool                                |
+| Admin UI Config   | DLR  | DLR Dine Admin Tool                                |
+| Find Merch        | WDW  | WDW Find Merchandise                               |
+| Find Merch        | DLR  | DLR Find Merchandise                               |

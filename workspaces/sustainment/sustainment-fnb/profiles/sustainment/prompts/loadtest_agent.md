@@ -130,14 +130,50 @@ Present all results following the **output format** in `loadtest_config.md` sect
    - Confirm with the user which executions to document before proceeding.
 3. Look up the wiki config for the app in `loadtest_config.md` (Wiki Config table).
 4. Read the template page content from Confluence (storage format).
-5. Transform the template following the Template Modifications rules in `loadtest_config.md`:
+5. **Resolve previous results** (for the "Previous Results" column):
+   - If the template already has a "Previous Results" column, resolve the previous execution automatically.
+   - If the template does NOT have it, ask the user: "Do you want to add a Previous Results comparison column?"
+     - If yes: user provides the URL or delegates the search to the agent.
+     - If no: skip this step and proceed without the column.
+   - To resolve: if the user provided a URL, use it. Otherwise, search all descendants under the app's parent page. If no match, expand to all descendants under the grandparent. Match by same site/app name with different version. If still not found, ask the user for the URL or whether to skip the column.
+   - Present the resolved previous page in the preview for user confirmation.
+
+6. Transform the template following the Template Modifications rules in `loadtest_config.md`:
    - Replace Jira ticket key
    - **Update ALL monitoring URLs** (Splunk LTIAB, VenueNext, AppDynamics, CloudWatch) with correct dates and job IDs. Follow URL Update Rules in config to calculate epochs and timestamps.
    - Remove screenshot images
-6. **Ask:** "Do you want me to insert the KPI results tables in the Screenshot cells? (13-column format as defined in `loadtest_config.md` section 4 — KPI Results Table)"
-   - If yes, run KPI Validation queries for all 3 load levels and insert tables following the structure in `loadtest_config.md`.
-   - If 3x has SLA breaches, add justification paragraph (see data formatting rules in config).
-7. Present a **preview** (title, parent page, space, Jira ticket, version, URL dates, site) and ask for confirmation.
+   - Add "Previous Results" column with cross-page image references from the resolved previous page. If multiple screenshots exist in a row, stack them in a single cell.
+7. Present a **preview** (title, parent page, space, Jira ticket, version, URL dates, site, previous results page) and ask for confirmation.
 8. Only after user confirms → create the page.
+9. **After page is created**, ask: "Do you want me to insert the KPI results tables in the Splunk Screenshot cells?"
+   - Only insert if the user explicitly says yes.
+   - If yes, run KPI Validation queries for all 3 load levels and insert tables following the structure in `loadtest_config.md` section 4 (KPI Results Table).
+   - If 3x has SLA breaches, add justification paragraph (see data formatting rules in config).
 
+### 5. Create PE Review Ticket 🎫
 
+Request shift-left performance review from the PE team by creating a PRE ticket.
+
+**Required parameters** (ask for any missing):
+- **Requestor email** — the user's email address (included in the ticket description)
+- **FNB ticket** — the load test ticket (e.g., `FNB-19991`)
+- **Wiki page URL** — mandatory. Reuse from step 4 if available; otherwise the user must provide it.
+
+**Auto-resolved parameters** (from session context or previous steps):
+- **App/BAPP Name** — from step 4 wiki creation or FNB ticket summary
+- **App Version** — from step 4 or FNB ticket summary
+
+**Workflow:**
+1. Gather parameters:
+   - If step 4 (wiki) was completed in this session, reuse app name, version, site, and wiki URL.
+   - Otherwise, ask the user for FNB ticket, wiki URL, and read the FNB ticket to extract app/version/site.
+   - Always ask for requestor email if not already known.
+2. Resolve BAPP Name from the mapping table in `loadtest_config.md` section 5.
+3. If the wiki covers both sites, ask: "Do you want to create the PE ticket for WDW, DLR, or both?"
+4. **Present preview** of ALL fields that will be set on the ticket (summary, priority, labels, BAPP, version, description, due date, FNB link, wiki link). Ask for explicit confirmation.
+5. Only after user confirms → create the ticket in project `PRE` with all fields from config.
+6. Post-creation actions (in order):
+   - Create Dependency issue link to FNB ticket.
+   - Add remote link to wiki page.
+7. If both sites requested, repeat steps 4–6 for the second site.
+8. Present the result: ticket key(s), URL(s), and summary of what was created and linked.
