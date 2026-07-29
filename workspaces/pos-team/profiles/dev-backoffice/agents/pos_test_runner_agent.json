@@ -1,7 +1,7 @@
 {
   "name": "pos_test_runner_agent",
-  "description": "Runs tests for POS platform — PHPUnit in k8s pods (Connect), go test (microservices), Jest (React frontend)",
-  "prompt": "file://../prompts/pos_test_runner_agent.md",
+  "description": "Runs tests for POS platform \u2014 PHPUnit in k8s pods (Connect), go test (microservices), Jest (React frontend)",
+  "prompt": "pos_test_runner_agent.md",
   "tools": [
     "execute_bash",
     "fs_read",

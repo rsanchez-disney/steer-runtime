@@ -1,7 +1,7 @@
 {
   "name": "bug_triage_agent",
   "description": "Analyzes new bugs in a Jira target release, classifies them as Globant or Disney, assigns tech stack components and product components. Post-filters by team field (customfield_10001) to exclude Disney teams.",
-  "prompt": "file://../prompts/bug_triage_agent.md",
+  "prompt": "bug_triage_agent.md",
   "tools": [
     "@jira/*",
     "@confluence/*",
@@ -23,5 +23,5 @@
     "file://context/team_context.md"
   ],
   "includeMcpJson": true,
-  "welcomeMessage": "👋 Bug Triage Agent ready!\n\nI analyze new bugs for DSP target releases and classify:\n  • Globant vs Disney ownership (post-filtered by team)\n  • Tech stack component (Android, PHP, React, Go, Data)\n  • Product component mapping\n  • Bugs without team assignment (informational)\n\nTry: \"Triage bugs for DSP 2.1.1\""
+  "welcomeMessage": "\ud83d\udc4b Bug Triage Agent ready!\n\nI analyze new bugs for DSP target releases and classify:\n  \u2022 Globant vs Disney ownership (post-filtered by team)\n  \u2022 Tech stack component (Android, PHP, React, Go, Data)\n  \u2022 Product component mapping\n  \u2022 Bugs without team assignment (informational)\n\nTry: \"Triage bugs for DSP 2.1.1\""
 }

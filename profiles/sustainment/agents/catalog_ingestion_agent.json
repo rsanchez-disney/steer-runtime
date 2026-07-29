@@ -1,7 +1,7 @@
 {
   "name": "catalog_ingestion_agent",
   "description": "Ingests new applications into the managed services catalog by retrieving wiki/Confluence/MyWiki documentation, mapping data to the catalog schema, and creating or updating app.yaml + companion docs automatically.",
-  "prompt": "file://../prompts/catalog_ingestion_agent.md",
+  "prompt": "catalog_ingestion_agent.md",
   "tools": [
     "fs_read",
     "fs_write",
@@ -21,5 +21,5 @@
     "file://.kiro/context/sustainment_guidelines.md",
     "file://.kiro/context/observability_tools.md"
   ],
-  "welcomeMessage": "📦 Catalog Ingestion Agent ready!\n\nI'll help you add or update an application in the managed services catalog.\n\nLet's start — What is the BAPP ID? (e.g., BAPP0012680)"
+  "welcomeMessage": "\ud83d\udce6 Catalog Ingestion Agent ready!\n\nI'll help you add or update an application in the managed services catalog.\n\nLet's start \u2014 What is the BAPP ID? (e.g., BAPP0012680)"
 }

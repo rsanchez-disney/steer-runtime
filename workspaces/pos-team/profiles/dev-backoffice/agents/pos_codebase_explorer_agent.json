@@ -1,7 +1,7 @@
 {
   "name": "pos_codebase_explorer_agent",
-  "description": "Explores POS platform codebase — Connect PHP monolith, Go/PHP microservices, React SPA",
-  "prompt": "file://../prompts/pos_codebase_explorer_agent.md",
+  "description": "Explores POS platform codebase \u2014 Connect PHP monolith, Go/PHP microservices, React SPA",
+  "prompt": "pos_codebase_explorer_agent.md",
   "tools": [
     "code",
     "grep",

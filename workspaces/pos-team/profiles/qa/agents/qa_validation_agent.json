@@ -1,7 +1,7 @@
 {
   "name": "qa_validation_agent",
   "description": "Validates regression test sets against epic requirements, identifying coverage gaps, traceability issues, and risk areas before test execution begins",
-  "prompt": "file://../prompts/qa_validation_agent.md",
+  "prompt": "qa_validation_agent.md",
   "tools": [
     "@jira/*",
     "@jira-cloud/*",

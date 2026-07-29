@@ -1,7 +1,7 @@
 {
   "name": "pos_code_review_agent",
   "description": "Reviews POS platform code for quality, security, and architectural compliance",
-  "prompt": "file://../prompts/pos_code_review_agent.md",
+  "prompt": "pos_code_review_agent.md",
   "tools": [
     "code",
     "fs_read",

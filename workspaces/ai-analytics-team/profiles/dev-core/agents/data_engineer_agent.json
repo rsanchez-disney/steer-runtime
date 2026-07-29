@@ -1,7 +1,7 @@
 {
   "name": "data_engineer_agent",
   "description": "Specialized in ETL pipelines, Snowflake queries, MySQL schema design, and data transformation for the AI Analytics platform",
-  "prompt": "file://../prompts/data_engineer_agent.md",
+  "prompt": "data_engineer_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

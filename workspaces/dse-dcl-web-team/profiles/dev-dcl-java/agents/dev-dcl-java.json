@@ -1,7 +1,7 @@
 {
   "name": "dev-dcl-java-agent",
   "description": "Java Spring Boot WebFlux specialist for DCL reactive microservices",
-  "prompt": "file://../prompts/backend.md",
+  "prompt": "backend.md",
   "tools": [
     "fs_read",
     "fs_write",

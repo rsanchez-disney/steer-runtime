@@ -1,7 +1,7 @@
 {
   "name": "pos_architecture_agent",
-  "description": "POS Architecture Specialist — provides architecture guidance, design decisions, ADRs, system design analysis, and impact assessments for the POS Backoffice platform (PHP, Go, React, gRPC, microservices)",
-  "prompt": "file://../prompts/pos_architecture_agent.md",
+  "description": "POS Architecture Specialist \u2014 provides architecture guidance, design decisions, ADRs, system design analysis, and impact assessments for the POS Backoffice platform (PHP, Go, React, gRPC, microservices)",
+  "prompt": "pos_architecture_agent.md",
   "tools": [
     "code",
     "grep",
@@ -25,6 +25,6 @@
       }
     ]
   },
-  "welcomeMessage": "🏗️ POS Architecture Agent ready!\n\nI'm a specialist for architecture guidance:\n  • Design decisions and trade-off analysis\n  • Impact assessments across monolith and microservices\n  • ADRs and system design documentation\n  • gRPC contract and service boundary guidance\n\nDescribe your architecture question and I'll provide guidance.",
+  "welcomeMessage": "\ud83c\udfd7\ufe0f POS Architecture Agent ready!\n\nI'm a specialist for architecture guidance:\n  \u2022 Design decisions and trade-off analysis\n  \u2022 Impact assessments across monolith and microservices\n  \u2022 ADRs and system design documentation\n  \u2022 gRPC contract and service boundary guidance\n\nDescribe your architecture question and I'll provide guidance.",
   "includeMcpJson": true
 }

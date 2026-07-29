@@ -1,7 +1,7 @@
 {
   "name": "pos_php_agent",
-  "description": "PHP specialist for POS platform — CodeIgniter monolith (Connect) and Laravel/Lumen microservices (reduction, audit, corporate-hierarchy)",
-  "prompt": "file://../prompts/pos_php_agent.md",
+  "description": "PHP specialist for POS platform \u2014 CodeIgniter monolith (Connect) and Laravel/Lumen microservices (reduction, audit, corporate-hierarchy)",
+  "prompt": "pos_php_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

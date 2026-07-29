@@ -1,7 +1,7 @@
 {
   "name": "pos_team_orchestrator_agent",
-  "description": "POS Team orchestrator — routes requests to the appropriate domain agent: Android mobile, Backoffice architecture, QA validation, or DSP bug reporting",
-  "prompt": "file://../prompts/pos_team_orchestrator_agent.md",
+  "description": "POS Team orchestrator \u2014 routes requests to the appropriate domain agent: Android mobile, Backoffice architecture, QA validation, or DSP bug reporting",
+  "prompt": "pos_team_orchestrator_agent.md",
   "tools": [
     "subagent",
     "todo_list",
@@ -42,6 +42,6 @@
       }
     ]
   },
-  "welcomeMessage": "👋 POS Team Orchestrator ready!\n\nI route your requests to the right specialist:\n  📱 Android mobile → android_arch_agent\n  🏗️ Backend architecture → pos_backoffice_orchestrator\n  ✅ QA validation → qa_validation_agent\n  🐛 DSP bug reports → dsp_bug_report_agent\n\nJust describe what you need and I'll delegate to the right agent.",
+  "welcomeMessage": "\ud83d\udc4b POS Team Orchestrator ready!\n\nI route your requests to the right specialist:\n  \ud83d\udcf1 Android mobile \u2192 android_arch_agent\n  \ud83c\udfd7\ufe0f Backend architecture \u2192 pos_backoffice_orchestrator\n  \u2705 QA validation \u2192 qa_validation_agent\n  \ud83d\udc1b DSP bug reports \u2192 dsp_bug_report_agent\n\nJust describe what you need and I'll delegate to the right agent.",
   "includeMcpJson": true
 }

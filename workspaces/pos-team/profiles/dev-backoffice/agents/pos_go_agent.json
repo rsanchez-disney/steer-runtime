@@ -1,7 +1,7 @@
 {
   "name": "pos_go_agent",
   "description": "Go specialist for POS gRPC microservices, REST APIs, and idiomatic Go development",
-  "prompt": "file://../prompts/pos_go_agent.md",
+  "prompt": "pos_go_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

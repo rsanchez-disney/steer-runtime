@@ -1,7 +1,7 @@
 {
   "name": "pos_react_agent",
-  "description": "React/TypeScript frontend specialist for the Connect SPA — React 17, Redux/RTK, MUI 5, Jest",
-  "prompt": "file://../prompts/pos_react_agent.md",
+  "description": "React/TypeScript frontend specialist for the Connect SPA \u2014 React 17, Redux/RTK, MUI 5, Jest",
+  "prompt": "pos_react_agent.md",
   "tools": [
     "fs_read",
     "fs_write",

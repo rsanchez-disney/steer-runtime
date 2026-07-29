@@ -1,7 +1,7 @@
 {
   "name": "dev-dcl-node-nest",
   "description": "NestJS specialist for DCL BFF/API applications (dcl-cruise-101-webapi, dcl-post-booking-api)",
-  "prompt": "file://../prompts/webapi.md",
+  "prompt": "webapi.md",
   "tools": [
     "fs_read",
     "fs_write",

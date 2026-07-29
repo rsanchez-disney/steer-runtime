@@ -1,7 +1,7 @@
 {
   "name": "pos_security_scanner_agent",
-  "description": "Security scanner for POS platform — secrets detection, dependency vulnerabilities, OWASP compliance",
-  "prompt": "file://../prompts/pos_security_scanner_agent.md",
+  "description": "Security scanner for POS platform \u2014 secrets detection, dependency vulnerabilities, OWASP compliance",
+  "prompt": "pos_security_scanner_agent.md",
   "tools": [
     "shell",
     "fs_read",

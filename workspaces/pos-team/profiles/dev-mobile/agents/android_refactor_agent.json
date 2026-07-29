@@ -1,7 +1,7 @@
 {
   "name": "android_refactor_agent",
-  "description": "Android Refactor Engineer — independent orchestrator for feature-flagged refactoring. Owns the refactor-android-feature skill. Identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
-  "prompt": "file://../prompts/android_refactor_agent.md",
+  "description": "Android Refactor Engineer \u2014 independent orchestrator for feature-flagged refactoring. Owns the refactor-android-feature skill. Identifies bugs and architectural weaknesses, designs feature-flagged solutions, and delegates execution to Dev/Test/Quality/PR agents.",
+  "prompt": "android_refactor_agent.md",
   "resources": [
     "file://../../../context/team_context.md",
     "file://../../../context/testing_conventions.md",

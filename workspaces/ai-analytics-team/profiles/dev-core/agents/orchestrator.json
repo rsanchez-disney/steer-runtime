@@ -1,7 +1,7 @@
 {
   "name": "orchestrator",
-  "description": "AI Analytics orchestrator — coordinates ETL development, data pipeline tasks, and Snowflake/MySQL integration work for the token consumption analytics platform",
-  "prompt": "file://../prompts/orchestrator.md",
+  "description": "AI Analytics orchestrator \u2014 coordinates ETL development, data pipeline tasks, and Snowflake/MySQL integration work for the token consumption analytics platform",
+  "prompt": "orchestrator.md",
   "tools": [
     "fs_read",
     "fs_write",
