@@ -1,0 +1,33 @@
+{
+  "name": "infra_orchestrator_agent",
+  "description": "Infrastructure sustainment orchestrator — routes cloud, Akamai, architecture, and change management requests to specialized agents",
+  "prompt": "infra_orchestrator_agent.md",
+  "tools": [
+    "fs_read",
+    "grep",
+    "thinking",
+    "subagent"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@atlassian/*",
+    "@bluedolphin/*",
+    "@jira-cloud/*",
+    "@confluence-cloud/*"
+  ],
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/cloud_accounts.md",
+    "file://.kiro/context/_dynamic/catalog-index.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/catalog-index.sh",
+        "description": "Load managed services catalog index"
+      }
+    ]
+  },
+  "welcomeMessage": "Infrastructure Sustainment Orchestrator ready.\n\nI can help with:\n • Cloud diagnostics (AWS, GCP, Azure)\n • Akamai CDN operations\n • Architecture lookups (BlueDolphin)\n • CHG verification and deployment validation\n • Incident investigation and RCA\n • BEAN ticket management\n\nWhat do you need?"
+}

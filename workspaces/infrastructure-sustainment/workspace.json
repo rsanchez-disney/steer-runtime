@@ -1,0 +1,19 @@
+{
+  "name": "infrastructure-sustainment",
+  "description": "Infrastructure sustainment team — cloud operations (AWS, GCP, Azure), Akamai CDN, architecture (BlueDolphin), and change management for application teams",
+  "jira_prefix": ["BEAN-"],
+  "jira_custom_fields": {},
+  "profiles": ["sustainment", "dev-core"],
+  "projects": [],
+  "workspace_path": "${WORKSPACE_ROOT}/",
+  "rules": ["conventional_commit"],
+  "mcp": {
+    "tools": [
+      "@compass/*",
+      "@atlassian/*",
+      "@bluedolphin/*",
+      "@jira-cloud/*",
+      "@confluence-cloud/*"
+    ]
+  }
+}

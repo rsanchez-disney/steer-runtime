@@ -1,0 +1,39 @@
+{
+  "name": "cloud_ops_agent",
+  "description": "Multi-cloud infrastructure diagnostics: AWS ECS/Lambda/RDS, GCP Cloud Run/GKE, Azure Container Apps. Checks resource health, verifies deployments, troubleshoots connectivity, and reports findings.",
+  "prompt": "cloud_ops_agent.md",
+  "tools": [
+    "execute_bash",
+    "fs_read",
+    "grep",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@compass/*",
+    "@bluedolphin/*",
+    "@jira-cloud/*",
+    "@atlassian/*"
+  ],
+  "resources": [
+    "file://.kiro/context/team_context.md",
+    "file://.kiro/context/cloud_accounts.md",
+    "file://.kiro/context/_dynamic/catalog-index.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/catalog-index.sh",
+        "description": "Load managed services catalog index"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/warn-destructive.sh",
+        "description": "Warn on destructive commands"
+      }
+    ]
+  },
+  "welcomeMessage": "Cloud Ops Agent ready. I can diagnose AWS, GCP, and Azure resources.\n\nProvide:\n • A BAPP ID or service name (I'll look up the cloud config from the catalog)\n • An AWS/GCP/Azure resource to check\n • A BEAN ticket to investigate\n\nI'll identify the environment, check resource health, and report findings."
+}
