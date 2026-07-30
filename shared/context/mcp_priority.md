@@ -11,6 +11,7 @@ When multiple MCP servers can handle the same task, follow this priority:
 | Confluence pages (confluence.disney.com) | `@confluence/*` | confluence_get_confluence_page, etc. |
 | Confluence Cloud pages (disneyexperiences.atlassian.net/wiki) | `@confluence-cloud/*` | cloud_get_confluence_page, etc. |
 | GitHub PRs, repos | `@github/*` | github_get_pr, github_list_repos, etc. |
+| Elasticsearch (indices, queries, mappings, shards) | `@elasticsearch/*` | list_indices, search, esql, get_mappings, get_shards |
 
 ## Server-to-Prefix Mapping
 

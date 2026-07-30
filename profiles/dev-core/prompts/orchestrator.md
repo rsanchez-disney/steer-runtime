@@ -127,7 +127,8 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "record test", "playwright codegen"                           | `test_recorder_agent`          |
 | "Bruno collection", "OpenAPI to Bruno"                        | `bruno_collection_agent`       |
 | "client intake", "project brief", "pre-sales"                 | `presales_agent`               |
-| "query database", "SQL", "db query", "check the table", "database connection", "JDBC", "select from" | `db_analyst_agent` |
+| "query database", "SQL", "db query", "check the table", "database connection", "JDBC", "select from" | `db_analyst_agent`             |
+| "elasticsearch", "indices", "mappings", "cluster health", "shards", "ES\|QL", "list indices", "search template", "boost block", "reindex" | `elasticsearch_agent` |
 
 ### Implementation routing (no ticket)
 
