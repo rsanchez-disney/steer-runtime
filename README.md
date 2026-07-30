@@ -6,7 +6,43 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
 
 📖 **[Full Documentation](https://github.disney.com/pages/SANCR225/steer-runtime/)** · 🏪 **[Disney AI Catalog](https://marketplace.wdprapps.disney.com/ai-catalog/item/2269)**
 
-> Requires [Kiro CLI](https://kiro.dev) (Amazon Q Developer license) or [Cursor](https://cursor.com) (Pro/Business plan).
+> Works with [Kiro CLI](https://kiro.dev), [Cursor](https://cursor.com), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), and [GEAI](https://api.clients.globant.com).
+
+---
+
+## Supported runtimes
+
+The steer platform provides the same agentic experience across multiple AI runtimes. Your agents, MCP tools, context, steering rules, and memory work identically regardless of which runtime you choose.
+
+| Runtime | Type | Multi-agent | Setup |
+|---------|------|:-----------:|-------|
+| **Kiro** | CLI (ACP protocol) | ✅ Full orchestration | `koda setup` → auto-installed |
+| **Cursor** | IDE agent | ✅ Via workspace rules | `koda setup runtime` → select cursor |
+| **Claude Code** | CLI (Anthropic) | ✅ Via `--agents` flag | `koda setup runtime` → select claude |
+| **GEAI** | API (Globant) | ✅ Full orchestration | `koda tokens set GEAI_API_KEY` |
+
+### Quick start per runtime
+
+```bash
+# Kiro (default)
+koda chat --target kiro
+
+# Cursor (IDE-based, generates .cursor/ rules)
+koda cursor --ws my-team
+
+# Claude Code (uses Claude Pro subscription, no API key needed)
+koda chat --target claude
+
+# GEAI (Globant API, supports all Claude/GPT models)
+koda chat --target geai --model anthropic/claude-sonnet-4-6
+```
+
+All runtimes share:
+- 55+ agents across 9 profiles
+- 20+ MCP servers (Jira, Confluence, Compass, SonarQube, Elasticsearch, BlueDolphin, etc.)
+- Persistent memory (yax)
+- Steering rules and context files
+- Workspace isolation per team
 
 ---
 
@@ -14,7 +50,7 @@ AI agents for your entire team — devs, BAs, QA, ops, and PMs — running in an
   <img src="docs/demos/koda-setup-demo.gif" alt="Koda Setup Demo" width="800" />
 </p>
 
-## New Users — Quick Start
+## New Users — Quick start
 
 ### 1. Install Koda
 
