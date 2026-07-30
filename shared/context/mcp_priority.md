@@ -45,6 +45,21 @@ The MCP config uses multi-instance naming. Here's how server names map to tool p
 
 **Always prefer dedicated MCP servers over Compass for Jira and Confluence.** Dedicated servers have instance-specific auth, richer schemas, and multi-instance support. Use Compass for email, logs, and ServiceNow.
 
+## Atlassian Rovo (`@atlassian/*`) — highest priority for Cloud
+
+If `@atlassian/*` tools are available in your session, **prefer them over `@jira-cloud/*` and `@confluence-cloud/*`** for all Atlassian Cloud operations. Rovo provides unified access to Jira, Confluence, Bitbucket, and JSM via a single authenticated connection (OAuth 2.1).
+
+| Scenario                                    | Use                                  |
+|---------------------------------------------|--------------------------------------|
+| `@atlassian/*` available + Cloud target     | `@atlassian/*` (preferred)           |
+| `@atlassian/*` NOT available + Cloud target | `cloud_` prefix (`@jira-cloud/*`, `@confluence-cloud/*`) |
+| On-prem target (jira.disney.com)            | `jira_` prefix (Rovo doesn't cover on-prem) |
+| On-prem target (confluence.disney.com)      | `confluence_` prefix                 |
+
+**Fallback rule:** If your first `@atlassian/*` call fails with a connection or auth error, fall back to `cloud_` prefix tools for the rest of the session. Do not retry Rovo after a failure.
+
+**Priority chain:** `@atlassian/*` > `@jira-cloud/*` / `@confluence-cloud/*` > `@compass/*` (Jira/Confluence tools)
+
 **Fallback**: If `@jira/*`, `@confluence/*`, or `@github/*` tools are unavailable (no dedicated MCP configured), use `@compass/*` tools instead. Key agents (`story_analyzer_agent`, `planner_agent`, `pr_creator_agent`) have `@compass/*` in their allowed tools for this purpose.
 
 ## Workspace-Level and Fork-Level MCPs

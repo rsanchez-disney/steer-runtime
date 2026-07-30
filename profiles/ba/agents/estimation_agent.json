@@ -9,13 +9,15 @@
     "@confluence-cloud/*",
     "fs_read",
     "fs_write",
-    "thinking"
+    "thinking",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/ccv-estimation.md",

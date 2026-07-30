@@ -10,7 +10,8 @@
     "@confluence-cloud/*",
     "execute_bash",
     "fs_read",
-    "grep"
+    "grep",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md"
@@ -20,7 +21,8 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true
 }

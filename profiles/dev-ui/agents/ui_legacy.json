@@ -11,13 +11,15 @@
     "@confluence-cloud/*",
     "@compass/*",
     "code",
-    "grep"
+    "grep",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
     "@confluence-cloud/*",
     "@confluence-cloud/*",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md",

@@ -2,12 +2,23 @@
   "name": "mobile_test_executor_agent",
   "description": "Executes XRay Gherkin test cases on real mobile devices via Appium MCP",
   "prompt": "mobile_test_executor_agent.md",
-  "tools": ["fs_read", "execute_bash", "thinking"],
-  "resources": ["file://.kiro/context/qa_guidelines.md"],
-  "allowedTools": ["@appium-mcp/*", "@jira/*",
-    "@jira-cloud/*"],
+  "tools": [
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "@atlassian/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md"
+  ],
+  "allowedTools": [
+    "@appium-mcp/*",
+    "@jira/*",
+    "@jira-cloud/*",
+    "@atlassian/*"
+  ],
   "includeMcpJson": true,
-  "welcomeMessage": "📱 Mobile Test Executor ready!...",
+  "welcomeMessage": "\ud83d\udcf1 Mobile Test Executor ready!...",
   "hooks": {
     "preToolUse": [
       {

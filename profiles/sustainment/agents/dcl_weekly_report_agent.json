@@ -1,6 +1,6 @@
 {
   "name": "dcl_weekly_report_agent",
-  "description": "Generates DCL Mobile Navigator weekly performance report — incidents CSV, defect trend chart, NR data, and PDF generation",
+  "description": "Generates DCL Mobile Navigator weekly performance report \u2014 incidents CSV, defect trend chart, NR data, and PDF generation",
   "prompt": "dcl_weekly_report_agent.md",
   "tools": [
     "@jira/*",
@@ -10,13 +10,15 @@
     "fs_read",
     "fs_write",
     "execute_bash",
-    "thinking"
+    "thinking",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
     "@compass/*",
-    "@newrelic-mobile-mcp/*"
+    "@newrelic-mobile-mcp/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

@@ -11,7 +11,8 @@
     "@jira/*",
     "@jira-cloud/*",
     "execute_bash",
-    "fs_read"
+    "fs_read",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -20,7 +21,8 @@
     "@github/*",
     "@gitlab/*",
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

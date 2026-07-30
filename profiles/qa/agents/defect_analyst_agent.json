@@ -14,7 +14,8 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "@qtest/*"
+    "@qtest/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -24,7 +25,8 @@
     "@gitlab/*",
     "@jira/*",
     "@jira-cloud/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

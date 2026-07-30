@@ -6,11 +6,13 @@
     "@jira/*",
     "@jira-cloud/*",
     "fs_read",
-    "fs_write"
+    "fs_write",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",

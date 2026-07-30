@@ -13,7 +13,8 @@
     "fs_read",
     "fs_write",
     "@sharepoint/*",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -23,7 +24,8 @@
     "@jira/*",
     "@jira-cloud/*",
     "@sharepoint/*",
-    "@mermaid/*"
+    "@mermaid/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md"

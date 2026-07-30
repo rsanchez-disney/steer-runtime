@@ -14,7 +14,8 @@
     "fs_write",
     "grep",
     "@bruno/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -25,7 +26,8 @@
     "@jira-cloud/*",
     "@confluence-cloud/*",
     "@bruno/*",
-    "@qtest/*"
+    "@qtest/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

@@ -7,14 +7,16 @@
     "@jira-cloud/*",
     "execute_bash",
     "fs_read",
-    "@teams/*"
+    "@teams/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md"
   ],
   "allowedTools": [
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true
 }

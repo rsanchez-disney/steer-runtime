@@ -1,6 +1,6 @@
 {
   "name": "release_followup_agent",
-  "description": "Post-release follow-up reports — crash rates (Total, At Home, Onboard), adoption rates, and crash analysis for iOS and Android from New Relic",
+  "description": "Post-release follow-up reports \u2014 crash rates (Total, At Home, Onboard), adoption rates, and crash analysis for iOS and Android from New Relic",
   "prompt": "release_followup_agent.md",
   "tools": [
     "@newrelic-mcp/*",
@@ -9,12 +9,14 @@
     "fs_read",
     "fs_write",
     "execute_bash",
-    "thinking"
+    "thinking",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@newrelic-mcp/*",
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

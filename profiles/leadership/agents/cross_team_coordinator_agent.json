@@ -6,11 +6,13 @@
     "@jira/*",
     "@jira-cloud/*",
     "thinking",
-    "fs_read"
+    "fs_read",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

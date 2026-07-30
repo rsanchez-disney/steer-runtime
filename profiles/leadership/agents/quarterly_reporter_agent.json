@@ -10,14 +10,16 @@
     "@confluence-cloud/*",
     "thinking",
     "fs_read",
-    "fs_write"
+    "fs_write",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

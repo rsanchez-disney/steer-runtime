@@ -2,12 +2,24 @@
   "name": "api_test_executor_agent",
   "description": "Executes XRay Gherkin test cases against service APIs via Bruno MCP",
   "prompt": "api_test_executor_agent.md",
-  "tools": ["fs_read", "execute_bash", "thinking", "grep"],
-  "resources": ["file://.kiro/context/qa_guidelines.md"],
-  "allowedTools": ["@bruno-mcp/*", "@jira/*",
-    "@jira-cloud/*"],
+  "tools": [
+    "fs_read",
+    "execute_bash",
+    "thinking",
+    "grep",
+    "@atlassian/*"
+  ],
+  "resources": [
+    "file://.kiro/context/qa_guidelines.md"
+  ],
+  "allowedTools": [
+    "@bruno-mcp/*",
+    "@jira/*",
+    "@jira-cloud/*",
+    "@atlassian/*"
+  ],
   "includeMcpJson": true,
-  "welcomeMessage": "🔌 API Test Executor ready!...",
+  "welcomeMessage": "\ud83d\udd0c API Test Executor ready!...",
   "hooks": {
     "preToolUse": [
       {

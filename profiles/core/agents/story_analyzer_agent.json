@@ -25,7 +25,8 @@
     "@gitlab/*",
     "@jira/*",
     "@jira-cloud/*",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/project_mappings.md",

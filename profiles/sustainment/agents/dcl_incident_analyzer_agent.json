@@ -10,13 +10,15 @@
     "fs_read",
     "thinking",
     "@charles-mcp/*",
-    "@logcat-mcp/*"
+    "@logcat-mcp/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
     "@compass/*",
-    "@newrelic-mobile-mcp/*"
+    "@newrelic-mobile-mcp/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "resources": [

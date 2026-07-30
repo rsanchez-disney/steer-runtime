@@ -13,7 +13,8 @@
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",
@@ -47,7 +48,8 @@
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true
 }

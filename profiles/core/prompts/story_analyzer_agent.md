@@ -40,6 +40,18 @@ If the user doesn't specify which instance, **ask them**.
 
 **ALWAYS use MCP tools first.** Do NOT use web_fetch when MCP tools are available.
 
+### Atlassian Rovo (`@atlassian/*`) — preferred for Cloud
+
+If `@atlassian/*` tools are available in your session, **prefer them** over `@jira-cloud/*` and `@confluence-cloud/*` for all Cloud operations. Rovo provides unified access to Jira, Confluence, and Bitbucket via a single authenticated connection.
+
+| Scenario | Use |
+|----------|-----|
+| `@atlassian/*` available + Cloud target | `@atlassian/*` (preferred) |
+| `@atlassian/*` NOT available + Cloud target | `cloud_` prefix tools (`@jira-cloud/*`, `@confluence-cloud/*`) |
+| On-prem target (jira.disney.com, confluence.disney.com) | `jira_` or `confluence_` prefix (Rovo doesn't cover on-prem) |
+
+To check availability: if your first `@atlassian/*` call succeeds, continue using it. If it fails with a connection or auth error, fall back to `cloud_` prefix tools for the rest of the session.
+
 ---
 
 ## Jira Workflows

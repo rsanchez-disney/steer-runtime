@@ -1,6 +1,6 @@
 {
   "name": "gsm_analyst_agent",
-  "description": "GSM analysis — impact summaries, SLA tracking, incident trends, and service health reporting",
+  "description": "GSM analysis \u2014 impact summaries, SLA tracking, incident trends, and service health reporting",
   "prompt": "gsm_analyst_agent.md",
   "tools": [
     "@jira/*",
@@ -11,7 +11,8 @@
     "@compass/*",
     "fs_read",
     "fs_write",
-    "thinking"
+    "thinking",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
@@ -19,7 +20,8 @@
     "@confluence/*",
     "@confluence-cloud/*",
     "@confluence-cloud/*",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "hooks": {

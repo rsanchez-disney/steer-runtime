@@ -8,13 +8,15 @@
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md"

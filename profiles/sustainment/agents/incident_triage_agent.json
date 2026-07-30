@@ -8,12 +8,14 @@
     "@compass/*",
     "fs_read",
     "thinking",
-    "@teams/*"
+    "@teams/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@jira/*",
     "@jira-cloud/*",
-    "@compass/*"
+    "@compass/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "hooks": {

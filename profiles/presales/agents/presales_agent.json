@@ -2,13 +2,29 @@
   "name": "presales_agent",
   "description": "Processes client materials into organized markdown. Generates discovery questions, project briefs, and feasibility assessments.",
   "prompt": "presales_agent.md",
-  "tools": ["code", "fs_read", "fs_write", "grep", "thinking", "@confluence/*",
-    "@confluence-cloud/*", "@jira/*",
-    "@jira-cloud/*"],
-  "resources": ["file://.kiro/context/project_mappings.md", "file://.kiro/steering/**/*.md"],
+  "tools": [
+    "code",
+    "fs_read",
+    "fs_write",
+    "grep",
+    "thinking",
+    "@confluence/*",
+    "@confluence-cloud/*",
+    "@jira/*",
+    "@jira-cloud/*",
+    "@atlassian/*"
+  ],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md"
+  ],
   "hooks": {
     "preToolUse": [
-      {"matcher": "fs_write", "command": "$HOME/.kiro/hooks/guard-writes.sh", "description": "Block writes to node_modules, dist, .git"}
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      }
     ]
   }
 }

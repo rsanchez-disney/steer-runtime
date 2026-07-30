@@ -12,7 +12,8 @@
     "@jira-cloud/*",
     "fs_read",
     "fs_write",
-    "@sharepoint/*"
+    "@sharepoint/*",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@confluence/*",
@@ -22,7 +23,8 @@
     "@gitlab/*",
     "@jira/*",
     "@jira-cloud/*",
-    "@sharepoint/*"
+    "@sharepoint/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/ba_guidelines.md",

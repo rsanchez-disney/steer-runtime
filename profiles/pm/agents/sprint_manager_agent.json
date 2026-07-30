@@ -11,7 +11,8 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "todo_list"
+    "todo_list",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/steering/**/*.md"
@@ -21,7 +22,8 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true
 }

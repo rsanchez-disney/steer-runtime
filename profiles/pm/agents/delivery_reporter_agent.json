@@ -12,7 +12,8 @@
     "fs_read",
     "fs_write",
     "thinking",
-    "@teams/*"
+    "@teams/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md"
@@ -22,7 +23,8 @@
     "@jira-cloud/*",
     "@confluence/*",
     "@confluence-cloud/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "welcomeMessage": "\ud83d\udc4b Delivery Reporter ready!\n\nI generate sprint reports matching the DPE Confluence Cloud template.\n\nProvide me with:\n \u2022 A Jira board link or sprint name\n \u2022 The project key (e.g., PPODPE)\n\nI'll generate the full 10-section report and can publish it to Confluence Cloud."

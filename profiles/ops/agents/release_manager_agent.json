@@ -9,13 +9,15 @@
     "@jira-cloud/*",
     "fs_read",
     "fs_write",
-    "execute_bash"
+    "execute_bash",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@github/*",
     "@gitlab/*",
     "@jira/*",
-    "@jira-cloud/*"
+    "@jira-cloud/*",
+    "@atlassian/*"
   ],
   "resources": [
     "file://.kiro/context/ops_guidelines.md"

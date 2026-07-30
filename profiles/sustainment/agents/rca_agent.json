@@ -9,13 +9,15 @@
     "@confluence-cloud/*",
     "fs_read",
     "fs_write",
-    "thinking"
+    "thinking",
+    "@atlassian/*"
   ],
   "allowedTools": [
     "@compass/*",
     "@servicenow-mcp/*",
     "@confluence/*",
-    "@confluence-cloud/*"
+    "@confluence-cloud/*",
+    "@atlassian/*"
   ],
   "includeMcpJson": true,
   "hooks": {
