@@ -16,13 +16,19 @@ escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
   - name: "Andrew Southwick"
     role: "primary"
-    contact: "Tech Lead"
-  - name: "Cesar Munoz"
+    contact: "andrew.southwick@disney.com"
+  - name: "Cesar Muñoz"
     role: "secondary"
-    contact: "Sustainment Tech Lead"
-  - name: "Andrew Southwick"
-    role: "SME"
-    contact: "Tech Lead - JWT architecture"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
+  - name: "Glenn Raposo"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Krista Betts"
+    role: "director"
+    contact: "krista.l.betts@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887230"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -52,7 +58,7 @@ components:
 
   - component_name: "jwt-service-gam-ha"
     component_type: "api"
-    description: "JWT token generation and validation service. Node.js 16 on ECS Fargate with ALB and API Gateway."
+    description: "JWT token generation and validation service. Node.js 20 on ECS Fargate with ALB and API Gateway."
 
     # -- Component-specific docs --
     docs:

@@ -16,13 +16,19 @@ escalation_channel: ""
 escalation_contacts:
   - name: "Cesar Muñoz"
     role: "primary"
-    contact: "Tech Lead - Architecture, DLR mobile"
-  - name: "Mark Lewis"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Martin Uribe"
     role: "secondary"
-    contact: "Disney POC (SHIELD) - Mobile ownership, feature decisions"
+    contact: "martin.x.uribe.-nd@disney.com"
+  - name: "Mark Lewis"
+    role: "disney-poc"
+    contact: "mark.s.lewis@disney.com"
+  - name: "Eugenio Tomasino"
+    role: "director"
+    contact: "Eugenio.X.Tomasino.-ND@disney.com"
   - name: "Gino Caverzan"
     role: "SME"
-    contact: "Tech Lead (WDW counterpart)"
+    contact: "gino.x.caverzan.-nd@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -36,7 +42,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887232"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -59,7 +65,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176587"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894582"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -69,8 +75,8 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "https://disney.harness.io"
       deploy_target: "App Store (via mobile release process)"
 
     # -- Health Check --
@@ -80,10 +86,10 @@ components:
 
     # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: ""
-      error_spl: ""
+      index: "wdpr_profile_ui"
+      source: "us-west-2:dlr-*"
+      base_spl: "index=wdpr_profile_ui source=\"us-west-2:dlr-*\""
+      error_spl: "index=wdpr_profile_ui source=\"us-west-2:dlr-*\" (\"error\" OR \"warn\" OR \"504\" OR \"failed\")"
       latency_spl: ""
 
     # -- AppDynamics --
@@ -185,7 +191,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887232"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894582"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -195,8 +201,8 @@ components:
       path: ""
 
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
+      platform: "harness"                   # harness | github-actions | jenkins | spinnaker
+      pipeline_url: "https://disney.harness.io"
       deploy_target: "Google Play Store (via mobile release process)"
 
     # -- Health Check --
@@ -206,10 +212,10 @@ components:
 
     # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: ""
-      error_spl: ""
+      index: "wdpr_profile_ui"
+      source: "us-west-2:dlr-*"
+      base_spl: "index=wdpr_profile_ui source=\"us-west-2:dlr-*\""
+      error_spl: "index=wdpr_profile_ui source=\"us-west-2:dlr-*\" (\"error\" OR \"warn\" OR \"504\" OR \"failed\")"
       latency_spl: ""
 
     # -- AppDynamics --

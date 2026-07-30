@@ -27,12 +27,42 @@
 
 ## Dependencies
 
-- Profile WebAPI WAM (BAPP0253435) — Cannot reach backend services if down
-- Profile VAS (BAPP0242566) — Connected guests data unavailable if down
-- AuthenticatorJS (BAPP0248309) — Login/auth fails if down
-- Akamai CDN — 502 errors, no traffic reaches origin if down
-- GAM — Friend list data source
+- Profile WebAPI WAM (BAPP0253435) — Cannot reach backend services if down. Tech Lead: andrew.southwick@disney.com
+- Profile VAS (BAPP0242566) — Connected guests data unavailable if down. Tech Lead: martin.x.uribe.-nd@disney.com
+- Profile B2C (BAPP0245892) — FnF list data. Tech Lead: andrew.southwick@disney.com
+- AuthenticatorJS (BAPP0248309) — Login/auth fails if down. Tech Lead: Cesar.A.Munoz.Acevedo.-ND@disney.com
+- Akamai CDN — 502 errors, no traffic reaches origin if down. Escalation: ops-global-parks-se-guestexp
+- GAM — Friend list data source. Escalation: GAM team
+- OneID — Authentication. Escalation: Jira IDY-*
 - Internal Libraries: Vault, Nimbus, RA Components, RA Logger, Analytics, CloudWatch, NavUI, Profile-shared
+
+## Akamai Gateway
+
+| Environment | Hostname |
+|-------------|----------|
+| PROD | profile-svcs.wdprapps.disney.com |
+| STAGE | stage.profile-svcs.wdprapps.disney.com |
+| LOAD | load.profile-svcs.wdprapps.disney.com |
+| LATEST | latest.profile-svcs.wdprapps.disney.com |
+
+## AWS Infrastructure
+
+| Service | Usage | Impact if Down | Monitoring |
+|---------|-------|----------------|------------|
+| ECS Fargate | Hosting FnF SPA (both regions) | FnF features completely down | CloudWatch: Task Count, CPU, Memory |
+| S3 | Static assets, analytics files | 404 on analytics | S3 bucket metrics |
+
+**Regions:** US-EAST-1 (Primary WDW) | US-WEST-2 (Secondary DLR)
+**Alert Thresholds:** Error >3%, Content endpoint >0.02%, CPU >30%, Memory >50%
+**Alert Channel:** gac-profile-prod-alerts
+
+## Internal Consumers (Who Uses FnF SPA)
+
+| Consumer | URL | Impact if FnF SPA Fails |
+|----------|-----|-------------------------|
+| disneyworld.disney.go.com | /family-friends/ | Cannot manage friends, invites, account consolidation |
+| disneyland.disney.go.com | /family-friends/ | Cannot manage friends |
+| disneycruise.disney.go.com | /family-friends/ | Cannot manage friends |
 
 ## Impact Classification
 

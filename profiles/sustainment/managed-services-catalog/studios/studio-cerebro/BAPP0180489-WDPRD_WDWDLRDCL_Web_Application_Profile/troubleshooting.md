@@ -120,3 +120,20 @@ Works on all environments and all brands (WDW, DLR, DCL):
 - Vault paths differ between East (gam2) and West (gam) in prod
 - Alert thresholds: CPU > 30% | Memory > 50% → triggers alert to gac-profile-prod-alerts
 - Latest environment cluster uses "S0180489" prefix instead of "B0180489"
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| Payment Methods issues | app-flwdw-payment |
+| AWS Infrastructure | ops-global-parks-se-guestexp |
+| MB+C physical shipment | Merchandise / Fulfillment |
+| MB+C DCL orders not in XBMS | app-global-magicband |
+| Nobl9 SLO Alerts | Email: Brad Williamson |
+| FnF data integrity | GAM team |

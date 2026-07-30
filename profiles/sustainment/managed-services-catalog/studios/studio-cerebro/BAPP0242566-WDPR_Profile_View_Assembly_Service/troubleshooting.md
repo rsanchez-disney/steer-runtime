@@ -77,3 +77,59 @@
 - DCL Reservation data only fetched for DCL page requests (isWdwBrandRequest=false)
 - Orders in the past are intentionally suppressed (ordersSuppressedInThePast field)
 - FnF data integrity failures are logged but may not block the response
+- Also logs to `wdpr_profile_ui` index via FluentBit (source: `*profile-vas*`)
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Splunk Dashboards
+
+- **Splunk PROD:** https://splunk.wdprapps.disney.com (index: `wdpr-gam`)
+
+## Investigation Queries
+
+### Duplicate Key Exception
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" "Duplicate key" earliest=-1h | table _time, log.exception
+```
+
+### Errors (level >= 40)
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" level>=40 earliest=-1h
+```
+
+### 5XX Errors
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" msg.code>=500 earliest=-1h | stats count by msg.code, msg.path | sort -count
+```
+
+### Downstream Service Failures
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" "requestUrlMapWithout200ResponseCount" earliest=-1h | stats count by requestUrlMap
+```
+
+### Volume Timechart (24h)
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" earliest=-24h | timechart span=1h count
+```
+
+### FluentBit Logs (alternative index)
+```spl
+index=wdpr_profile_ui source="*profile-vas*" earliest=-1h | stats count by source | sort -count
+```
+
+### Current Hour vs Previous Hour
+```spl
+index=wdpr-gam "ids.app"="*profile-view-assembly-service" level>=40 earliest=-1h | stats count as current_errors | appendcols [search index=wdpr-gam "ids.app"="*profile-view-assembly-service" level>=40 earliest=-2h latest=-1h | stats count as previous_hour_errors]
+```
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| MB+C physical shipment | Merchandise / Fulfillment |
+| MB+C DCL orders not in XBMS | app-global-magicband |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

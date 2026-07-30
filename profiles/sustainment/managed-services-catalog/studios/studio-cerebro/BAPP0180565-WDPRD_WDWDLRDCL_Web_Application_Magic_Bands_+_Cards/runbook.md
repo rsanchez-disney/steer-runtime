@@ -28,11 +28,47 @@
 
 ## Contacts for External Dependencies
 
-| System | Contact | When to Engage |
-|--------|---------|----------------|
-| Profile VAS | Martin Uribe | VAS Duplicate Key cascading, band data failures |
-| xBMS / Fulfillment | Will McKnight | Band orders/entitlements issues |
-| AuthenticatorJS | Cesar Munoz | Login/auth failures |
-| Akamai | ops-global-parks-se-guestexp | 502 errors, edge routing |
-| DCL Reservation | External team | DCL page data unavailable |
-| Product Team | Melanie Bosco | Eligibility/entitlement escalations |
+| System | Contact | Email | When to Engage |
+|--------|---------|-------|----------------|
+| Profile VAS | Martin Uribe | martin.x.uribe.-nd@disney.com | VAS Duplicate Key cascading, band data failures |
+| xBMS / Fulfillment | Will McKnight | — | Band orders/entitlements issues |
+| AuthenticatorJS | Cesar Muñoz | Cesar.A.Munoz.Acevedo.-ND@disney.com | Login/auth failures |
+| Akamai | ops-global-parks-se-guestexp | — | 502 errors, edge routing |
+| DCL Reservation | External team | — | DCL page data unavailable |
+| Product Team | Melanie Bosco | — | Eligibility/entitlement escalations |
+| Disney POC (Frontend) | Gino Caverzan | gino.x.caverzan.-nd@disney.com | SPA architecture, feature decisions |
+| Disney POC (Web/Services) | Glenn Raposo | glenn.raposo@disney.com | Web/Services ownership |
+| MB+C physical shipment | Merchandise / Fulfillment | — | Physical band shipment issues |
+| DCL orders not in XBMS | app-global-magicband | — | DCL order sync issues |
+
+## On-Call
+
+- **On-call Number:** +1 934 647 4549
+- **Incidents Channel:** DX Profile Incidents Ack
+- **Triage Channel:** MB-Triage-Latest-Stage-Load-Prod
+- **Rotation:** Weekly (every Wednesday at 12:00 AM) | Client Time Zone: EST (GMT-4)
+
+## Escalation Path
+
+| Level | Contact | Email |
+|-------|---------|-------|
+| L1 | On-Call Glober | — |
+| L2 | Cesar Muñoz | Cesar.A.Munoz.Acevedo.-ND@disney.com |
+| L3 | Martin Uribe | martin.x.uribe.-nd@disney.com |
+| L4 | Sebastian Marin / Celeste | Sebastian.Marin.-ND@disney.com |
+| L5 | Eugenio Tomasino | — |
+
+## Useful Tools
+
+| Tool | URL | Purpose |
+|------|-----|---------|
+| ServiceNow | https://disney.service-now.com | INCs, CTASKs, PRBs |
+| Splunk PROD | https://splunk.wdprapps.disney.com | index: wdpr-profile-ui |
+| AppDynamics | https://disney-prod.saas.appdynamics.com | core-profile-mb-spa-ha-east / west |
+| ContentSquare | https://app.contentsquare.com | Duck Out errors, UX drops |
+| AWS CloudWatch | https://aws.wdprapps.disney.com | ECS, CPU, Memory alarms |
+| Harness | https://disney.harness.io | CI/CD Deployments |
+| Akamai | https://control.akamai.com/apps/edge-diagnostics | Translate Error String |
+| xBMS | — | Band order verification |
+| Vincent | — | xBMS link ID verification |
+| Snowman | https://tools.toolbox.disney.com/snowman | Bulk Incident Update |

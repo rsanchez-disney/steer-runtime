@@ -57,3 +57,48 @@
 - All endpoints require GUEST tokens only — service-to-service calls should use B2B (BAPP0246132) instead
 - Revenue-critical service — System of Record for guest profile data
 - External accessibility via Akamai (profile-svcs.wdprapps.disney.com)
+- Also logs to `wdpr_profile_ui` index via FluentBit (source: `*profile-b2c*`)
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Splunk Dashboards
+
+- **Splunk PROD:** https://splunk.wdprapps.disney.com (index: `wdpr_profile_ui` for FluentBit logs)
+
+## Investigation Queries
+
+### Errors (from FluentBit logs)
+```spl
+index=wdpr_profile_ui source="*profile-b2c*" ("error" OR "warn" OR "504" OR "failed") earliest=-1h | stats count by source | sort -count
+```
+
+### 5XX Errors — B2C Service
+```spl
+index=wdpr_profile_ui source="*profile-b2c*" "504 Gateway Time-out" earliest=-1h | stats count by source | sort -count
+```
+
+### Volume Timechart (24h)
+```spl
+index=wdpr_profile_ui source="*profile-b2c*" earliest=-24h | timechart span=1h count
+```
+
+### Current Hour vs Previous Hour (Anomaly Detection)
+```spl
+index=wdpr_profile_ui source="*profile-b2c*" ("error" OR "warn" OR "504" OR "failed") earliest=-1h | stats count as current_errors | appendcols [search index=wdpr_profile_ui source="*profile-b2c*" ("error" OR "warn" OR "504" OR "failed") earliest=-2h latest=-1h | stats count as previous_hour_errors]
+```
+
+### OneID Authentication Issues
+```spl
+index=oneid {SWID}
+```
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| Payment Methods issues | app-flwdw-payment |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

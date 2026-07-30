@@ -35,6 +35,35 @@
 - AWS S3 — Storage: Bundle artifact storage
 - Consumers: Profile SPA, MB+C SPA, FnF SPA, NavUI, Commerce apps, DCL apps, PhotoPass
 
+## Akamai Gateway (S3+CDN delivery)
+
+Bundle delivered via Akamai CDN from S3 bucket. No origin server — static JS file.
+
+## Internal Consumers (Who Loads AuthenticatorJS)
+
+| Consumer | Impact if AuthenticatorJS Fails |
+|----------|----------------------------------|
+| Profile SPA (BAPP0180489) | Login/registration completely broken |
+| MB+C SPA (BAPP0180565) | Cannot authenticate for band management |
+| FnF SPA (BAPP0247007) | Cannot authenticate for friend management |
+| NAV UI (Navigation) | Login widget does not render on ANY page |
+| Commerce / Ticketing apps | Cannot authenticate for purchases |
+| DCL apps | Cannot authenticate |
+| PhotoPass | Cannot authenticate |
+| disneyworld.disney.go.com | ALL login broken |
+| disneyland.disney.go.com | ALL login broken |
+| disneycruise.disney.go.com | ALL login broken |
+| hongkongdisneyland.com | ALL login broken |
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| AWS Infrastructure | ops-global-parks-se-guestexp |
+
 ## Impact Classification
 
 - **Full outage:** ALL login and registration flows break across ALL brands (WDW, DLR, DCL). Guests cannot log in on any Disney web property. OneID Lightbox events not handled. PEPCOM session cookies not managed. Impact is SILENT until multiple guests report (no healthcheck on static bundle).

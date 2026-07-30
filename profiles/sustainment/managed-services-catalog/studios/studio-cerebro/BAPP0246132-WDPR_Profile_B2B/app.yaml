@@ -14,15 +14,21 @@ description: "Hosts only B2B (service-to-service) endpoints, primarily the aggre
 support_studio: "Cerebro"
 escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: "Andrew Southwick"
+  - name: "Martin Uribe"
     role: "primary"
-    contact: "Tech Lead"
-  - name: "Zachary Boone"
+    contact: "martin.x.uribe.-nd@disney.com"
+  - name: "Andrew Southwick"
     role: "secondary"
-    contact: "Tech Lead"
+    contact: "andrew.southwick@disney.com"
+  - name: "Cesar Muñoz"
+    role: "sustainment-lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
   - name: "Glenn Raposo"
-    role: "SME"
-    contact: "Manager"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Krista Betts"
+    role: "director"
+    contact: "krista.l.betts@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176581"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,7 +67,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176581"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

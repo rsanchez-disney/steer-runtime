@@ -14,15 +14,24 @@ description: "Magic Bands + Cards (MB+C) SPA allows guests to manage MagicBand a
 support_studio: "Cerebro"
 escalation_channel: "MB-Triage-Latest-Stage-Load-Prod"
 escalation_contacts:
-  - name: "Andrew Southwick"
+  - name: "Gino Caverzan"
     role: "primary"
-    contact: "Tech Lead"
-  - name: "Cesar Munoz"
-    role: "secondary"
-    contact: "Sustainment Tech Lead"
+    contact: "gino.x.caverzan.-nd@disney.com"
   - name: "Gerson Barrera"
-    role: "SME"
-    contact: "Sustainment Web Dev (with Tomas Aimar)"
+    role: "secondary"
+    contact: "gerson.barrera.-nd@disney.com"
+  - name: "Tomas Aimar"
+    role: "web-dev"
+    contact: "TOMAS.X.AIMAR.-ND@DISNEY.COM"
+  - name: "Cesar Muñoz"
+    role: "sustainment-lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
+  - name: "Glenn Raposo"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +47,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887272"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,7 +70,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887272"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

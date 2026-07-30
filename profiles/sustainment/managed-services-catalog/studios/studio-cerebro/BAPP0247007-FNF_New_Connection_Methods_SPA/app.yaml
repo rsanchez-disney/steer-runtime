@@ -14,15 +14,21 @@ description: "Family and Friends web application built in Angular 18 with new co
 support_studio: "Cerebro"
 escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
-  - name: "Cesar Munoz"
+  - name: "Cesar Muñoz"
     role: "primary"
-    contact: "Sustainment Tech Lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
   - name: "Gerson Barrera"
     role: "secondary"
-    contact: "Sustainment Web Dev"
+    contact: "gerson.barrera.-nd@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
   - name: "Glenn Raposo"
-    role: "SME"
-    contact: "Disney Manager and POC"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Krista Betts"
+    role: "director"
+    contact: "krista.l.betts@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176585"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,7 +67,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176585"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --

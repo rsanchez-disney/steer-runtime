@@ -4,26 +4,48 @@
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Uptime | Not documented in Confluence Cloud | |
-| Response time (p95) | Not documented in Confluence Cloud | |
-| Error rate | Not documented in Confluence Cloud | |
+| Uptime | Not documented | — |
+| Response time (p95) | Not documented | — |
+| Error rate | Not documented | — |
 
 ## Peak Periods
 
-- Not documented in Confluence Cloud
+- Business hours (Cast Members usage)
+- Marketing campaign configuration periods
 
 ## Business Logic
 
 - Internal Cast Member tool for managing guest preferences
-- Not guest-facing — no direct guest impact if service fails
+- Not guest-facing — no direct guest impact if service fails (LOW severity)
 - Angular 18 frontend application
 - Backend powered by Preference Service (BAPP0170520)
 - Cast Member authentication via OneID
+- Used by marketing and operations teams to manage communication preferences
+
+## Akamai Gateway (via Profile Services)
+
+| Environment | Hostname |
+|-------------|----------|
+| PROD | profile-svcs.wdprapps.disney.com |
+| STAGE | stage.profile-svcs.wdprapps.disney.com |
+| LOAD | load.profile-svcs.wdprapps.disney.com |
+| LATEST | latest.profile-svcs.wdprapps.disney.com |
 
 ## Dependencies
 
-- Preference Service (BAPP0170520) — backend for all preference data operations
-- OneID — Cast Member authentication
+- Preference Service (BAPP0170520) — Backend for all preference data operations. Tech Lead: andrew.southwick@disney.com
+- OneID — Cast Member authentication. Escalation: Jira IDY-* at support.twdc.technology
+- Akamai CDN/WAF — Edge routing. Escalation: ops-global-parks-se-guestexp
+
+## AWS Infrastructure
+
+| Service | Usage | Impact if Down | Monitoring |
+|---------|-------|----------------|------------|
+| ECS Fargate | Hosting Preference Admin SPA | Admin tool unavailable | CloudWatch: Task Count, CPU, Memory |
+
+**Regions:** US-EAST-1 (Primary WDW) | US-WEST-2 (Secondary DLR)
+**Alert Thresholds:** CPU >30%, Memory >50%
+**Alert Channel:** [DX Profile] Prod Alerts
 
 ## Impact Classification
 

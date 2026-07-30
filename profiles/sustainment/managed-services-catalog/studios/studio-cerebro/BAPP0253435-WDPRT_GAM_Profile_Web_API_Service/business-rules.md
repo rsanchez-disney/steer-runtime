@@ -43,8 +43,30 @@
 
 ## Dependencies
 
-- Downstream (calls to): GAM, DynamoDB, Profile B2C, VAS, OneID, D-Scribe, Preferences, Child Auth, Profile JWT, ID-Me, Facility Service, Authz, Affiliations, Explorer Service
-- Upstream (dependents): Profile SPA (BAPP0180489), MB+C SPA (BAPP0180565), FnF SPA (BAPP0247007), AuthenticatorJS (BAPP0248309)
+- **Downstream (calls to):** GAM (Enterprise Technology), DynamoDB (sessions: wdpr-gam-b0253435-prd-webapi), Profile B2C (andrew.southwick@disney.com), VAS (martin.x.uribe.-nd@disney.com), OneID (IDY Jira), D-Scribe, Preferences (andrew.southwick@disney.com), Child Auth (martin.x.uribe.-nd@disney.com), Profile JWT (andrew.southwick@disney.com), ID-Me, Facility Service, Authz, Affiliations, Explorer Service
+- **Upstream (dependents):** Profile SPA (BAPP0180489), MB+C SPA (BAPP0180565), FnF SPA (BAPP0247007), AuthenticatorJS (BAPP0248309)
+
+## Akamai Gateway
+
+| Environment | Hostname |
+|-------------|----------|
+| PROD | profile-svcs.wdprapps.disney.com |
+| STAGE | stage.profile-svcs.wdprapps.disney.com |
+| LOAD | load.profile-svcs.wdprapps.disney.com |
+| LATEST | latest.profile-svcs.wdprapps.disney.com |
+
+## AWS Infrastructure
+
+| Service | Usage | Impact if Down | Monitoring |
+|---------|-------|----------------|------------|
+| ECS Fargate | Hosting Java WAM (both regions) | ALL SPAs lose backend connectivity | CloudWatch: Task Count, CPU, Memory |
+| DynamoDB | Globally synchronized session table | Sessions lost, auth tokens invalid | CloudWatch: ThrottledRequests, ConsumedCapacity |
+| ElastiCache (Redis) | Request caching | Performance degradation | CloudWatch: CacheHitRate, Evictions |
+
+**Regions:** US-EAST-1 (Primary WDW) | US-WEST-2 (Secondary DLR)
+**DynamoDB Table (PROD):** wdpr-gam-b0253435-prd-webapi
+**Alert Thresholds:** CPU >30%, Memory >50%
+**Alert Channel:** [DX Profile] Prod Alerts
 
 ## Impact Classification
 

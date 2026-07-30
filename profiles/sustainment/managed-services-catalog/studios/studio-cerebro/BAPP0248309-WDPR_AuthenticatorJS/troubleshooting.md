@@ -58,3 +58,41 @@
 - Impact is SILENT until multiple guests report
 - V4 and V5 coexist — Universal Interface abstraction layer handles both
 - Functional user WDPR-CICD-dpep-devops needed for S3/KMS access during deploys
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Splunk Dashboards
+
+- **Splunk PROD:** https://splunk.wdprapps.disney.com (index: `wdpr-profile-ui`, App-Name: `AuthenticatorJS`)
+
+## Investigation Queries
+
+### AuthenticatorJS Errors
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" level>=40 earliest=-1h
+```
+
+### Login Loop Detection (Trust State failures)
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" "Trust" earliest=-1h | stats count by log.message | sort -count
+```
+
+### Volume Timechart (24h)
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="AuthenticatorJS" earliest=-24h | timechart span=1h count
+```
+
+### OneID Authentication Issues
+```spl
+index=oneid {SWID}
+```
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

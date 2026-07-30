@@ -70,3 +70,53 @@
 - Splunk dashboard name: "Profile GAM WEBAPI"
 - Vault paths differ between East (gam2) and West (gam) in prod
 - Migrated from Node.js (BAPP0082601) to Java 17 — some documentation may still reference old BAPP
+- ~85% of requests routed to GAM CORE APIGW
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Splunk Dashboards
+
+- **Splunk PROD:** https://splunk.wdprapps.disney.com (index: `wdpr-gam`, dashboard: "Profile GAM WEBAPI")
+
+## Investigation Queries
+
+### WebAPI Error Rate (15m buckets)
+```spl
+index=wdpr-gam ids.app=wdw-webapi msg.path!=/status environment=prod | eval statusCode='msg.code' | timechart span=15m count as calls, count(eval(not like(statusCode,"2%"))) as Errors | eval pcErrors=round((Errors/calls)*100,0)
+```
+
+### Errors (level >= 40)
+```spl
+index=wdpr-gam ids.app=wdw-webapi environment=prod level>=40 earliest=-1h
+```
+
+### 5XX by Endpoint
+```spl
+index=wdpr-gam ids.app=wdw-webapi environment=prod msg.code>=500 earliest=-1h | stats count by msg.code, msg.path | sort -count
+```
+
+### Volume Timechart (24h)
+```spl
+index=wdpr-gam ids.app=wdw-webapi environment=prod earliest=-24h | timechart span=1h count
+```
+
+### DynamoDB Session Errors
+```spl
+index=wdpr-gam ids.app=wdw-webapi environment=prod "DynamoDB" ("throttl" OR "error" OR "timeout") earliest=-1h
+```
+
+### OneID Authentication Issues
+```spl
+index=oneid {SWID}
+```
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| Payment Methods issues | app-flwdw-payment |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

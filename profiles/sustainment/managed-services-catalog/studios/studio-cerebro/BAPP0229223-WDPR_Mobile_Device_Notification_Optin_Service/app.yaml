@@ -16,13 +16,19 @@ escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
   - name: "Andrew Southwick"
     role: "primary"
-    contact: "Tech Lead"
-  - name: "Zachary Boone"
-    role: "secondary"
-    contact: "Tech Lead"
+    contact: "andrew.southwick@disney.com"
+  - name: "Cesar Muñoz"
+    role: "sustainment-lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
   - name: "Glenn Raposo"
-    role: "SME"
-    contact: "Disney Manager and POC"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Mark Lewis"
+    role: "mobile-poc"
+    contact: "mark.s.lewis@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +44,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1332547810"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---

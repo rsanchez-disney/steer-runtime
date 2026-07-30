@@ -16,13 +16,13 @@ escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
   - name: "Andrew Southwick"
     role: "primary"
-    contact: "Tech Lead"
+    contact: "andrew.southwick@disney.com"
   - name: "Glenn Raposo"
     role: "secondary"
-    contact: "Manager"
+    contact: "glenn.raposo@disney.com"
   - name: "Martin Uribe"
     role: "SME"
-    contact: "Tech Lead"
+    contact: "martin.x.uribe.-nd@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +38,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176582"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894388"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -61,7 +61,7 @@ components:
 
     # -- Component-specific documentation links --
     documentation:
-      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331176582"
+      wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894388"
       architecture_diagram: ""
 
     # -- Source Code & CI/CD --
@@ -85,19 +85,21 @@ components:
       index: "wdpr-gam"
       source: ""
       base_spl: >-
-        index=wdpr-gam "ids.app"="*child-auth*"
+        index=wdpr-gam "ids.app"="*child-auth-service"
       error_spl: >-
-        index=wdpr-gam "ids.app"="*child-auth*" level>=40
+        index=wdpr-gam "ids.app"="*child-auth-service" level=ERROR
       latency_spl: >-
-        index=wdpr-gam "ids.app"="*child-auth*"
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
+        index=wdpr-gam "ids.app"="*child-auth-service" logger=HttpTimeline
+        | spath msg.path | spath msg.code | spath msg.ms
+        | search msg.path!="/child-auth-svc/healthcheck"
+        | stats avg(msg.ms) as avg_ms p95(msg.ms) as p95_ms by msg.path, msg.code
 
     # -- AppDynamics --
     appdynamics:
       app_name: "core-child-auth-svc-ha-east"
-      app_id: ""
+      app_id: "766"
       tier: ""
-      dashboard_url: ""
+      dashboard_url: "https://disney-prod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=766&dashboardMode=force"
 
     # -- NewRelic --
     newrelic:
@@ -125,7 +127,7 @@ components:
     cloud:
       provider: "AWS"
       region: "us-east-1"
-      account_id: "wdpr-gam-prod"
+      account_id: "856092292319"
       infra_type: "ECS"
       cluster_id: "wdw-gam2-B0225663-use1-child-auth-svc-ha-svc-prd"
       service_name: "child-auth-svc-ha-prod"
@@ -154,9 +156,10 @@ components:
         splunk:
           index: "wdpr-gam"
           base_spl: >-
-            index=wdpr-gam "ids.app"="*child-auth*" environment=stage
+            index=wdpr-gam "ids.app"="*child-auth-service" environment=stage
         cloud:
           region: "us-east-1"
+          account_id: "311652355506"
           service_name: "child-auth-svc-ha-stage"
 
       load:
@@ -165,9 +168,10 @@ components:
         splunk:
           index: "wdpr-gam"
           base_spl: >-
-            index=wdpr-gam "ids.app"="*child-auth*" environment=load
+            index=wdpr-gam "ids.app"="*child-auth-service" environment=load
         cloud:
           region: "us-east-1"
+          account_id: "311652355506"
           service_name: "child-auth-svc-ha-load"
 
       latest:
@@ -176,7 +180,8 @@ components:
         splunk:
           index: "wdpr-gam"
           base_spl: >-
-            index=wdpr-gam "ids.app"="*child-auth*" environment=latest
+            index=wdpr-gam "ids.app"="*child-auth-service" environment=latest
         cloud:
           region: "us-east-1"
+          account_id: "407961999029"
           service_name: "child-auth-svc-latest"

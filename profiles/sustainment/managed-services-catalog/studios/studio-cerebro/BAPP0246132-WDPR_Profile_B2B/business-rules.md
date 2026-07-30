@@ -22,9 +22,29 @@
 
 ## Dependencies
 
-- Profile B2C (BAPP0245892) — profile data source
-- OneID — authentication/authorization for service tokens
-- GAM — guest account management
+- Profile B2C (BAPP0245892) — Profile data source. Tech Lead: andrew.southwick@disney.com
+- OneID — Authentication/authorization for service tokens. Escalation: Jira IDY-*
+- GAM — Guest account management. Escalation: Enterprise Technology
+- Akamai CDN/WAF — Not directly exposed (internal-only), but downstream consumers may route through Akamai
+
+## AWS Infrastructure
+
+| Service | Usage | Impact if Down | Monitoring |
+|---------|-------|----------------|------------|
+| ECS Fargate | Hosting B2B service (both regions) | Aggregated profile endpoint unavailable | CloudWatch: Task Count, CPU, Memory |
+
+**Regions:** US-EAST-1 (Primary WDW) | US-WEST-2 (Secondary DLR)
+**Alert Thresholds:** CPU >30%, Memory >50%
+**Alert Channel:** [DX Profile] Prod Alerts
+
+## Internal Consumers (Who Calls B2B)
+
+| Consumer | What They Consume | Impact if B2B Fails |
+|----------|-------------------|---------------------|
+| Internal B2B consumers | aggregated-profile endpoint | Internal systems lose guest data access |
+| ParkApps | Profile data | Login loops in ParkApps |
+| Shield Team (Digital Itinerary) | Profile B2C APIs (via B2B) | Itinerary features broken |
+| Commerce / Ticketing | Profile data for purchases | Cannot validate guest info |
 
 ## Impact Classification
 

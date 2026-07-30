@@ -29,9 +29,38 @@
 
 ## Contacts for External Dependencies
 
-| System | Contact | When to Engage |
-|--------|---------|----------------|
-| OneID (V4/V5) | IDY Jira | When OneID-side issue confirmed (token expiry, Trust State mismatch) |
-| Profile JWT Service | Andrew Southwick | When JWT token generation fails after login |
-| Akamai CDN | ops-global-parks-se-guestexp | When CDN is not serving bundle or returning errors |
-| S3 (digital-media bucket) | Lokesh Krishnappa (WDPR-CICD-dpep-devops) | When S3 access/KMS key issues |
+| System | Contact | Email | When to Engage |
+|--------|---------|-------|----------------|
+| OneID (V4/V5) | IDY Jira | — | When OneID-side issue confirmed (token expiry, Trust State mismatch) |
+| Profile JWT Service (BAPP0082610) | Andrew Southwick | andrew.southwick@disney.com | When JWT token generation fails after login |
+| Akamai CDN | ops-global-parks-se-guestexp | — | When CDN is not serving bundle or returning errors |
+| S3 (digital-media bucket) | Lokesh Krishnappa (WDPR-CICD-dpep-devops) | — | When S3 access/KMS key issues |
+| Glenn Raposo | Disney Manager | glenn.raposo@disney.com | Web/Services ownership |
+| Krista Betts | Tech Director | krista.l.betts@disney.com | Executive escalation |
+
+## On-Call
+
+- **On-call Number:** +1 934 647 4549
+- **Incidents Channel:** DX Profile Incidents Ack
+- **Rotation:** Weekly (every Wednesday at 12:00 AM) | Client Time Zone: EST (GMT-4)
+
+## Escalation Path
+
+| Level | Contact | Email |
+|-------|---------|-------|
+| L1 | On-Call Glober | — |
+| L2 | Cesar Muñoz | Cesar.A.Munoz.Acevedo.-ND@disney.com |
+| L3 | Martin Uribe | martin.x.uribe.-nd@disney.com |
+| L4 | Sebastian Marin / Celeste | Sebastian.Marin.-ND@disney.com |
+| L5 | Eugenio Tomasino | — |
+
+## Useful Tools
+
+| Tool | URL | Purpose |
+|------|-----|---------|
+| ServiceNow | https://disney.service-now.com | INCs, CTASKs, PRBs |
+| Splunk PROD | https://splunk.wdprapps.disney.com | index: wdpr-profile-ui, App-Name: AuthenticatorJS |
+| AWS CloudWatch | https://aws.wdprapps.disney.com | S3 metrics |
+| Harness | https://disney.harness.io | CI/CD Deployments |
+| Akamai | https://control.akamai.com/apps/edge-diagnostics | Translate Error String |
+| Snowman | https://tools.toolbox.disney.com/snowman | Bulk Incident Update |

@@ -16,13 +16,19 @@ escalation_channel: ""
 escalation_contacts:
   - name: "Gino Caverzan"
     role: "primary"
-    contact: "Tech Lead"
-  - name: "Glenn Raposo"
+    contact: "gino.x.caverzan.-nd@disney.com"
+  - name: "Gerson Barrera"
     role: "secondary"
-    contact: "Disney POC"
-  - name: ""
-    role: "SME"
-    contact: ""
+    contact: "gerson.barrera.-nd@disney.com"
+  - name: "Cesar Muñoz"
+    role: "sustainment-lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Glenn Raposo"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -37,7 +43,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1331177216"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---
@@ -70,8 +76,8 @@ components:
       path: ""
 
     cicd:
-      platform: ""
-      pipeline_url: ""
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io"
       deploy_target: "ECS Fargate"
 
     # -- Health Check --

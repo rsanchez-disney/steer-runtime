@@ -106,3 +106,49 @@
 - Fumble error on guest removal is a known bug (missing xid on request)
 - Deactivated profiles in FnF list cannot be resolved by standard triage (PRB0048497)
 - ContentSquare dashboard available for user behavior analytics
+- Splunk App-Name filter: `Identifiers.App-Name="fnf-spa"` (index: `wdpr-profile-ui`)
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Splunk Dashboards
+
+- **Splunk PROD:** https://splunk.wdprapps.disney.com (index: `wdpr-profile-ui`, App-Name: `fnf-spa`)
+
+## Investigation Queries
+
+### Errors (level >= 40)
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="fnf-spa" level>=40 earliest=-1h
+```
+
+### 5XX Errors
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="fnf-spa" statusCode>=500 earliest=-1h | timechart count span=5m
+```
+
+### Volume Timechart (24h)
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="fnf-spa" earliest=-24h | timechart span=1h count
+```
+
+### Current Hour vs Previous Hour
+```spl
+index=wdpr-profile-ui Identifiers.App-Name="fnf-spa" level>=40 earliest=-1h | stats count as current_errors | appendcols [search index=wdpr-profile-ui Identifiers.App-Name="fnf-spa" level>=40 earliest=-2h latest=-1h | stats count as previous_hour_errors]
+```
+
+### OneID Authentication Issues
+```spl
+index=oneid {SWID}
+```
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| FnF data integrity | GAM team |
+| Payment Methods issues | app-flwdw-payment |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

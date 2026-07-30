@@ -96,4 +96,19 @@ Go to Fulfillment menu → Guest Details → Enter reservation number → Select
 - Alert thresholds: Error > 3% (East/West) | ART East > 5s | West > 6s | CPU > 30% | Memory > 50%
 - Teams Group Chat for triage: MB-Triage-Latest-Stage-Load-Prod
 - Terraform var files use "B000180565" (extra zero) for ALB workspaces vs "B0180565" for Fargate
-- Disney POC: Glenn Raposo | xBMS/Fulfillment POC: Will McKnight
+- Disney POC: Glenn Raposo (glenn.raposo@disney.com) | xBMS/Fulfillment POC: Will McKnight
+
+## ⚠️ FIRST: Check Banned Guest (Axis)
+Before any investigation — search SWID in [Axis](https://axis.disney.network). If "Experience Access Restriction" → resolve as Working as Designed (NEVER inform guest).
+
+## Reassignment Groups (Routing)
+
+| Pattern | Assignment Group |
+|---------|-----------------|
+| OneID / Login / OTP | Jira IDY-* (NOT ServiceNow) |
+| Akamai / Edge / DNS / 502s | ops-global-parks-se-guestexp |
+| Disney CAST L4 escalation | app-global-cerebro |
+| Payment Methods issues | app-flwdw-payment |
+| MB+C physical shipment | Merchandise / Fulfillment |
+| MB+C DCL orders not in XBMS | app-global-magicband |
+| AWS Infrastructure | ops-global-parks-se-guestexp |

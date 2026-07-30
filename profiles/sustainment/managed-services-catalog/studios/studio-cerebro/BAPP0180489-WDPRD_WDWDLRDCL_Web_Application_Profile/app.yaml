@@ -16,13 +16,22 @@ escalation_channel: "#profile-active-active-engineers-only"
 escalation_contacts:
   - name: "Gino Caverzan"
     role: "primary"
-    contact: "Disney POC / Tech Lead (SHIELD)"
+    contact: "gino.x.caverzan.-nd@disney.com"
   - name: "Gerson Barrera"
     role: "secondary"
-    contact: "Sustainment Web Dev"
+    contact: "gerson.barrera.-nd@disney.com"
   - name: "Cesar Muñoz"
-    role: "SME"
-    contact: "Sustainment Tech Lead - AuthenticatorJS integration"
+    role: "sustainment-lead"
+    contact: "Cesar.A.Munoz.Acevedo.-ND@disney.com"
+  - name: "Martin Uribe"
+    role: "tech-manager"
+    contact: "martin.x.uribe.-nd@disney.com"
+  - name: "Glenn Raposo"
+    role: "disney-poc"
+    contact: "glenn.raposo@disney.com"
+  - name: "Krista Betts"
+    role: "director"
+    contact: "krista.l.betts@disney.com"
 
 # --- ServiceNow ---
 servicenow:
@@ -38,7 +47,7 @@ servicenow:
 # --- Documentation ---
 documentation:
   runbook: ""
-  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/1335887229"
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/gamprofile/pages/216894761/DX+Profile+Sustainment+Team"
   architecture_diagram: ""
 
 # --- Companion Docs (Markdown) ---

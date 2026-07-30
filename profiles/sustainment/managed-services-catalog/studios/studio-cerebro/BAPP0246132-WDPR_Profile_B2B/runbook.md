@@ -27,9 +27,40 @@
 
 ## Contacts for External Dependencies
 
-| System | Contact | When to Engage |
-|--------|---------|----------------|
-| Profile B2C | Andrew Southwick | If B2C data source is failing |
-| OneID | OneID Team | Service token authentication failures |
-| GAM | GAM Team | Guest account management issues |
-| Downstream consumers | Varies | If they report B2B endpoint failures |
+| System | Contact | Email | When to Engage |
+|--------|---------|-------|----------------|
+| B2B Architecture | Martin Uribe | martin.x.uribe.-nd@disney.com | Architecture decisions, service-to-service issues |
+| Profile B2C (BAPP0245892) | Andrew Southwick | andrew.southwick@disney.com | If B2C data source is failing |
+| OneID | OneID Team (IDY Jira) | — | Service token authentication failures |
+| GAM | GAM Team | — | Guest account management issues |
+| Downstream consumers | Varies | — | If they report B2B endpoint failures |
+| Glenn Raposo | Disney Manager | glenn.raposo@disney.com | Web/Services ownership |
+| Krista Betts | Tech Director | krista.l.betts@disney.com | Executive escalation |
+
+## On-Call
+
+- **On-call Number:** +1 934 647 4549
+- **Incidents Channel:** DX Profile Incidents Ack
+- **Rotation:** Weekly (every Wednesday at 12:00 AM) | Client Time Zone: EST (GMT-4)
+
+## Escalation Path
+
+| Level | Contact | Email |
+|-------|---------|-------|
+| L1 | On-Call Glober | — |
+| L2 | Cesar Muñoz | Cesar.A.Munoz.Acevedo.-ND@disney.com |
+| L3 | Martin Uribe | martin.x.uribe.-nd@disney.com |
+| L4 | Sebastian Marin / Celeste | Sebastian.Marin.-ND@disney.com |
+| L5 | Eugenio Tomasino | — |
+
+## Useful Tools
+
+| Tool | URL | Purpose |
+|------|-----|---------|
+| ServiceNow | https://disney.service-now.com | INCs, CTASKs, PRBs |
+| Splunk PROD | https://splunk.wdprapps.disney.com | index: wdpr-gam |
+| AppDynamics | https://disney-prod.saas.appdynamics.com | prod-gam-profile-svc-aws |
+| Grafana | https://grafana.wdprapps.disney.com | Profile-Prod-Active-Active-Dashboard |
+| AWS CloudWatch | https://aws.wdprapps.disney.com | ECS Clusters and Alarms |
+| Harness | https://disney.harness.io | CI/CD Deployments |
+| Snowman | https://tools.toolbox.disney.com/snowman | Bulk Incident Update |
