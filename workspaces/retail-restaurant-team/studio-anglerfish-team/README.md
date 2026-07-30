@@ -73,6 +73,23 @@ koda workspace apply studio-anglerfish-team
 kiro-cli chat --agent orchestrator
 ```
 
+## Code Knowledge Graph (Graphify)
+
+The `codebase_explorer_agent` and `architecture_agent` support Graphify for code graph exploration. Each developer must index their repos once:
+
+```bash
+koda graphify studio-anglerfish-team
+```
+
+Or press `[G]` in the Koda TUI dashboard.
+
+Re-index after major refactoring or adding new modules. Available queries:
+- `graphify_explore` — natural language code exploration
+- `graphify_callers` — what calls a symbol
+- `graphify_impact` — blast radius of a change
+- `graphify_community` — list files in a module
+- `graphify_hotspots` — most coupled files
+
 ## Inherited Context (from retail-restaurant)
 
 - `context/studios.md` — Team members, Slack channels, on-call info

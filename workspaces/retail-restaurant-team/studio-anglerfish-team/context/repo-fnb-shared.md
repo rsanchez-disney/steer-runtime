@@ -217,3 +217,5 @@ Before building the project, always run these steps on changed files:
 - Feature toggles use SwiftUI views in `FeatureToggles/CommonUI/`
 - `Multiplatform/` contains KMP interop code (experimental, not widely used)
 - Documentation catalog at `FNBShared.docc/`
+- **No `#if DEBUG`** in fnb-shared — consumers decide what to show in debug builds
+- **Example/ViewController.swift** has a manual `allCases` static array — when adding new enum cases, you must add them to this array manually

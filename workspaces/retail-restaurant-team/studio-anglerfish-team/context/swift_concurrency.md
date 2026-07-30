@@ -74,3 +74,11 @@ let (stream, continuation) = AsyncStream.makeStream(
 ## Swift 6.2
 
 14. **Use `@concurrent`** for CPU-heavy work that should leave the caller's actor (parsing, image processing, compression). Don't use it for ordinary async I/O which suspends naturally.
+
+## Learned Patterns
+
+15. **`MainActor.assumeIsolated` crashes off main thread** — always guard with `Thread.isMainThread` before calling. Prefer `@MainActor` annotation or `await MainActor.run {}` instead.
+
+16. **Store `Task` references** in multi-step async flows. Cancel on navigation/reset. Reset flags in ALL exit paths (success, error, cancellation).
+
+17. **Make debounce intervals injectable** — pass 0 in tests to avoid flaky/timing-dependent tests.

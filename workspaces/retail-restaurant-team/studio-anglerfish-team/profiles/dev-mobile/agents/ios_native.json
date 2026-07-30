@@ -4,7 +4,8 @@
   "tools": [
     "fs_read",
     "fs_write",
-    "execute_bash"
+    "execute_bash",
+    "@figma/*"
   ],
   "resources": [
     "file://AGENTS.md",

@@ -416,3 +416,9 @@ Before building the project, always run these steps on changed files:
 - Wireframes are the only objects allowed to create other modules
 - Workers are the only objects allowed to make network calls
 - Generated service code lives in `Core/Services/Generated/` (from schema definitions)
+- **Worker headers:** use `getStandardHeaders()` for new workers. `getJSONHeader()` is deprecated. `getXAppId()` is private and auto-injected by `generateServiceRequest()`
+- **`var` properties on workers** are intentional for test injection — do NOT change to `let`
+- **DI routing:** all workers must go through `ServicesProtocol` → `ServicesWrapper` — never instantiate workers directly in Wireframes
+- **Upsell items:** use endpoint response directly (not `menuItemMap`). Use `productId` (not variant's `menuItemUUID`). Base price from `categoryItem.priceInCents`
+- **`RemoteDocumentEvent` name collision:** FNBShared has one (monitoring), local renamed to `RemoteDocumentLogEvent`
+- **Do NOT run swift-format on generated files** in `Core/Services/Generated/`
