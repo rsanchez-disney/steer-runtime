@@ -1,33 +1,35 @@
 {
   "name": "chg_analyzer_agent",
   "description": "Analyzes ServiceNow production change requests end-to-end: extracts CTASKs, verifies Cloud deployments, analyzes code changes via GitHub/Gitlab, validates JIRA fix versions, and generates compliance reports",
-  "prompt": "prompts/chg_analyzer_agent.md",
+  "prompt": "chg_analyzer_agent.md",
   "tools": [
     "fs_read",
     "fs_write",
     "execute_bash",
     "grep",
-    "thinking"
+    "thinking",
+    "@compass/*",
+    "@teams/*",
+    "@jira/*",
+    "@github-public/*",
+    "@github-disney/*",
+    "@servicenow/*"
   ],
   "resources": [
-    "file://.kiro/context/sustainment_guidelines.md",
     "file://.kiro/context/servicenow_reference.md",
-    "file://.kiro/context/chg_analysis_patterns.md",
     "file://.kiro/context/_dynamic/catalog-index.md"
   ],
   "allowedTools": [
     "@jira/*",
     "@github/*",
     "@servicenow/*",
-    "@compass/*"
+    "@compass/*",
+    "@teams/*"
   ],
   "includeMcpJson": true,
+  "welcomeMessage": "🔍 CHG Analyzer ready!\n\n**IMPORTANT: I follow a guided workflow. After you provide the CHG number, I will:**\n1. Fetch the CHG summary\n2. Ask what type of analysis (1/2/3)\n3. Ask about CTASK scope\n4. THEN run the full analysis\n\nI will NOT proceed past each step until you respond.\n\nLet's start — What is the Change Request number? (e.g., CHG0012345)",
   "hooks": {
     "agentSpawn": [
-      {
-        "command": "$HOME/.kiro/hooks/git-context.sh",
-        "description": "Inject git branch and status"
-      },
       {
         "command": "$HOME/.kiro/hooks/catalog-index.sh",
         "description": "Load managed services catalog index"
@@ -40,6 +42,5 @@
         "description": "Warn on destructive commands"
       }
     ]
-  },
-  "welcomeMessage": "CHG Analyzer ready. Provide a CHG number and I'll analyze the change request, verify deployments, and generate a compliance report."
+  }
 }
