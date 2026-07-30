@@ -1,28 +1,58 @@
 {
-  "title": "Leadership Dashboard",
+  "title": "Leadership Radar",
   "sections": [
     {
       "id": "delivery",
       "title": "Delivery Health",
-      "source": "static",
-      "display": "list",
+      "source": "agent",
+      "display": "table",
+      "agent": "portfolio_analyst_agent",
+      "prompt": "Show delivery health summary for all studios in my vertical — one row per studio with velocity trend, blocked items, and backlog direction. Keep it brief.",
       "powers": [
         { "id": "velocity-trends", "label": "Velocity Trends", "prompt": "Show velocity trends for all teams in my vertical over the last 4 sprints: story points committed vs completed, trend direction, and outliers." },
-        { "id": "sprint-completion", "label": "Sprint Completion Rates", "prompt": "For each team in my vertical, show current sprint completion rate: done vs total, at-risk items, and predicted end-of-sprint outcome." },
-        { "id": "carry-over", "label": "Carry-Over Analysis", "prompt": "Identify stories carried over from previous sprints across all teams. Show: ticket, age, reason for carry-over, and impact on delivery." },
-        { "id": "epic-progress", "label": "Epic Progress", "prompt": "Show progress for all active epics across my vertical: percentage complete, remaining stories, target date, and risk level." }
+        { "id": "sprint-completion", "label": "Sprint Completion", "prompt": "For each team in my vertical, show current sprint completion rate: done vs total, at-risk items, and predicted end-of-sprint outcome." },
+        { "id": "carry-over", "label": "Carry-Over", "prompt": "Identify stories carried over from previous sprints across all teams. Show: ticket, age, reason for carry-over, and impact on delivery." },
+        { "id": "epic-progress", "label": "Epic Progress", "prompt": "Show progress for all active epics across my vertical: percentage complete, remaining stories, target date, and risk level." },
+        { "id": "deep-dive", "label": "Studio Deep Dive", "prompt": "Give me a detailed health analysis for studio {studio} including sprint trends, risks, and capacity concerns." }
+      ],
+      "maxItems": 12
+    },
+    {
+      "id": "quarterly",
+      "title": "Quarterly Reports",
+      "source": "static",
+      "display": "cards",
+      "powers": [
+        { "id": "gen-studio-report", "label": "Generate Studio Report", "prompt": "Create the quarterly report for Studio {studio_name} using the quarterly-studio-report skill. Ask me to confirm scope first." },
+        { "id": "check-studio-metrics", "label": "Studio Metrics", "prompt": "Use the build_jql power to construct the resolved issues query for {studio_name} this quarter, run it, and show me the count and issue type breakdown." },
+        { "id": "gen-vertical-report", "label": "Full Vertical Report", "prompt": "Generate the full vertical quarterly report for all studios in my vertical using the quarterly-report skill." },
+        { "id": "update-report", "label": "Update Report", "prompt": "Update the quarterly report for Studio {studio_name} — I have additional deliverables to add." }
       ]
     },
     {
       "id": "risks",
       "title": "Risks & Blockers",
-      "source": "static",
-      "display": "list",
+      "source": "agent",
+      "display": "cards",
+      "agent": "cross_team_coordinator_agent",
+      "prompt": "List all currently blocked epics across my vertical's studios. Show ticket key, studio, summary, and days blocked. Max 10.",
       "powers": [
-        { "id": "blockers", "label": "Cross-Team Blockers", "prompt": "Identify all blocked tickets across my teams. Show: ticket, blocking reason, which team is blocked, which team can unblock, and age." },
+        { "id": "blockers", "label": "All Blockers", "prompt": "Identify all blocked tickets across my teams. Show: ticket, blocking reason, which team is blocked, which team can unblock, and age." },
         { "id": "stale-items", "label": "Stale Items", "prompt": "Find tickets that haven't moved in 5+ days across all teams. Show: ticket, assignee, status, days stale, and last activity." },
-        { "id": "dependency-risks", "label": "Dependency Risks", "prompt": "Analyze cross-team dependencies for the current sprint. Identify items where one team's delivery depends on another team's incomplete work." },
-        { "id": "risk-register", "label": "Risk Register Update", "prompt": "Generate an updated risk register: new risks identified this week, existing risks with changed probability/impact, and mitigations in progress." }
+        { "id": "dependency-risks", "label": "Dependencies", "prompt": "Analyze cross-team dependencies for the current sprint. Identify items where one team's delivery depends on another team's incomplete work." },
+        { "id": "unblock", "label": "Help Unblock", "prompt": "Analyze blocker {key} and suggest escalation path, workarounds, or dependency resolution options." },
+        { "id": "escalate", "label": "Draft Escalation", "prompt": "Draft an escalation email for blocker {key} to the engineering director. Include impact, duration blocked, and ask." }
+      ],
+      "maxItems": 10
+    },
+    {
+      "id": "freeze-windows",
+      "title": "Freeze Windows & Constraints",
+      "source": "static",
+      "display": "metric",
+      "powers": [
+        { "id": "freeze-impact", "label": "Assess Impact", "prompt": "What studios have work planned during the upcoming freeze window? Show which epics are at risk of missing the cutoff." },
+        { "id": "risk-register", "label": "Risk Register", "prompt": "Generate an updated risk register: new risks identified this week, existing risks with changed probability/impact, and mitigations in progress." }
       ]
     },
     {
@@ -32,19 +62,20 @@
       "display": "list",
       "powers": [
         { "id": "capacity", "label": "Team Capacity", "prompt": "Show capacity utilization for each team: assigned story points vs available capacity, overloaded members, and unassigned work." },
-        { "id": "ai-adoption", "label": "AI Adoption Stats", "prompt": "Show AI adoption metrics across my teams: sessions per developer, AI-assisted PRs percentage, tools usage, and adoption trend." },
+        { "id": "ai-adoption", "label": "AI Adoption", "prompt": "Show AI adoption metrics across my teams: sessions per developer, AI-assisted PRs percentage, tools usage, and adoption trend." },
         { "id": "standup-all", "label": "All Teams Standup", "prompt": "Generate a consolidated standup summary across all my teams: key progress, blockers, and items needing my attention." }
       ]
     },
     {
       "id": "reporting",
-      "title": "Reporting",
+      "title": "Executive Communication",
       "source": "static",
       "display": "list",
       "powers": [
-        { "id": "quarterly", "label": "Quarterly Report Draft", "prompt": "Generate a quarterly report draft: achievements, metrics (velocity, quality, delivery), risks, roadmap progress, AI adoption, and next quarter priorities." },
-        { "id": "exec-briefing", "label": "Executive Briefing", "prompt": "Generate a concise executive briefing (1 page): delivery status, key wins, risks requiring attention, and resource needs. Director-level audience." },
-        { "id": "weekly-email", "label": "Weekly Status Email", "prompt": "Draft a weekly status email for stakeholders: sprint progress, completed items with business value, upcoming milestones, and blockers needing escalation." }
+        { "id": "vp-update", "label": "VP Update", "prompt": "Draft a VP status update summarizing delivery health, top achievements, and risks for my vertical this quarter." },
+        { "id": "director-briefing", "label": "Director Briefing", "prompt": "Prepare a director-level briefing for my next 1:1 covering studio progress, blocked items, and capacity concerns." },
+        { "id": "weekly-email", "label": "Weekly Status", "prompt": "Draft a weekly status email for stakeholders: sprint progress, completed items with business value, upcoming milestones, and blockers needing escalation." },
+        { "id": "stakeholder-update", "label": "Stakeholder Update", "prompt": "Create a stakeholder update email for my vertical — focus on what shipped, what's next, and any schedule risks." }
       ]
     }
   ]

@@ -1,0 +1,166 @@
+{
+  "vertical": "Lodging Sales & Distribution",
+  "short_name": "Lodging",
+  "confluence_space": "~712020698b3185368f4058b8cb8d8201408eb4",
+  "confluence_instance": "cloud",
+  "parent_page_id": null,
+  "_parent_page_id_note": "Set to the Confluence page ID of the vertical quarterly report parent page (e.g., 123456789). When null, the agent searches by title or asks the user on first run.",
+  "external_studios": ["Vision", "COM/TravelBox", "AntMan"],
+  "freeze_windows": [
+    {
+      "name": "DX Domestic Financial Freeze",
+      "start": "2026-06-28",
+      "end": "2026-10-06",
+      "severity": "high"
+    },
+    {
+      "name": "SOX Freeze",
+      "start": "2026-08-13",
+      "end": "2026-10-06",
+      "severity": "critical"
+    }
+  ],
+  "studios": [
+    {
+      "name": "Nebula",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Nebula | Ruth",
+      "board_ids": [2718],
+      "sprint_prefix": "ROS-NEB-SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "REVENUE GENERATING",
+      "guest_reach": ["WDW", "VB", "HH"]
+    },
+    {
+      "name": "Bang",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - BANG | Ruth",
+      "board_ids": [2730],
+      "sprint_prefix": "ROS-BAN-SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "INFRASTRUCTURE",
+      "guest_reach": ["WDW", "DLR", "HKDL", "AUL"]
+    },
+    {
+      "name": "Rocket",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Rocket | Ruth",
+      "board_ids": [2752],
+      "sprint_prefix": "Rocket SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "COMPLIANCE",
+      "guest_reach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Star-Lord",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Star-Lord | Ruth",
+      "board_ids": [2714],
+      "sprint_prefix": "ROS-STA-SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "REVENUE GENERATING",
+      "guest_reach": ["WDW", "DLR", "AUL"]
+    },
+    {
+      "name": "Terror",
+      "project": "ROS",
+      "query_method": "combined",
+      "studio_field_value": ["ROS - Terror | Ruth", "ROS - Terror Project | Ruth"],
+      "board_ids": [2753, 5497],
+      "sprint_prefix": ["Terror Sprint ", "ROS-TER-SP"],
+      "sub_tasks": "exclude",
+      "impact_classification": "MARKET EXPANSION",
+      "guest_reach": ["HKDL", "LACD/ORO", "AUL", "WDW", "DLR"],
+      "notes": "Two studio field values combined. QA board (2753) + Dev board (5497)."
+    },
+    {
+      "name": "Mantis",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Mantis | Ruth",
+      "board_ids": [5011],
+      "sprint_prefix": "Mantis Sprint ",
+      "sub_tasks": "exclude",
+      "impact_classification": "INFRASTRUCTURE",
+      "guest_reach": ["All markets"],
+      "notes": "Board 5011 shared with Nebula and Terror. Filter by Studio Field, not board."
+    },
+    {
+      "name": "Gamora",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Gamora | Ruth",
+      "board_ids": [4726],
+      "sprint_prefix": "Gamora Sprint ",
+      "sub_tasks": "include",
+      "impact_classification": "COST REDUCTION",
+      "guest_reach": ["WDW", "DLR"],
+      "notes": "Sub-tasks included — Gamora uses 7+ sub-tasks per story workflow (63% of resolved)."
+    },
+    {
+      "name": "Tadashi",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Tadashi | Ruth",
+      "board_ids": [],
+      "sprint_prefix": "ROS-META-SP",
+      "sub_tasks": "include",
+      "impact_classification": "REVENUE GENERATING",
+      "guest_reach": ["WDW", "DLR"],
+      "notes": "Sub-tasks included (42% of resolved). Small metasearch team."
+    },
+    {
+      "name": "Cosmo",
+      "project": "ROS",
+      "query_method": "studio_field",
+      "studio_field_value": "ROS - Cosmo | Ruth",
+      "board_ids": [5292],
+      "sprint_prefix": "ROS-COS-SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "QA INVESTMENT",
+      "guest_reach": ["DLR"],
+      "notes": "QA-only studio. 100% test executions resolved. Created count = test authoring."
+    },
+    {
+      "name": "Yondu",
+      "project": "TEP3",
+      "query_method": "sprint_based",
+      "studio_field_value": null,
+      "board_ids": [2901],
+      "sprint_prefix": "Yondu-SP",
+      "sub_tasks": "exclude",
+      "impact_classification": "PLATFORM INTEGRATION",
+      "guest_reach": ["DLR"],
+      "notes": "TEP3 project does not use Studio custom field. Filter by sprint name prefix."
+    },
+    {
+      "name": "Bolt",
+      "project": "GRPS",
+      "query_method": "sprint_based",
+      "studio_field_value": null,
+      "board_ids": [3157, 3155],
+      "sprint_prefix": ["BOLT Uplift-SP", "BOLT/GRPS-SP"],
+      "sub_tasks": "exclude",
+      "impact_classification": "COST REDUCTION",
+      "guest_reach": ["WDW", "DLR"],
+      "notes": "Dual boards: 3157 (Uplift new app) + 3155 (Legacy maintenance). GRPS has no Studio field."
+    },
+    {
+      "name": "Forky",
+      "project": "CCS",
+      "query_method": "sprint_based",
+      "studio_field_value": null,
+      "board_ids": [3593],
+      "sprint_prefix": "CCS-SP",
+      "sub_tasks": "exclude",
+      "assignee_exclusions": ["jaime.gonzalez.pacheco", "nana.bin"],
+      "impact_classification": "REVENUE OPTIMIZATION",
+      "guest_reach": ["WDW", "DLR", "DLP", "DDSI"],
+      "notes": "CCS project, no Studio field. Exclude 2 cross-team contributors from resolved count."
+    }
+  ]
+}

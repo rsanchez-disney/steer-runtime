@@ -1,0 +1,97 @@
+{
+  "name": "quarterly-report-utils",
+  "version": "1.0.0",
+  "description": "Utilities for quarterly studio report generation — JQL construction, studio config lookup, and Confluence XHTML formatting",
+  "tools": [
+    {
+      "name": "resolve_studio",
+      "description": "Look up a studio's full configuration by name from the vertical config. Returns query method, project, board IDs, sprint prefix, sub-task setting, and all metadata needed for Jira queries.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "studio_name": {
+            "type": "string",
+            "description": "Studio name (case-insensitive match, e.g., 'Bang', 'terror', 'Yondu')"
+          },
+          "config_path": {
+            "type": "string",
+            "description": "Path to vertical-config.json (defaults to ~/.kiro/context/vertical-config.json)"
+          }
+        },
+        "required": ["studio_name"]
+      }
+    },
+    {
+      "name": "build_jql",
+      "description": "Construct the correct JQL query for a studio's resolved issues in a given quarter. Handles studio_field, sprint_based, and combined query methods. Applies sub-task exclusions and assignee exclusions automatically.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "studio_name": {
+            "type": "string",
+            "description": "Studio name (looked up from vertical config)"
+          },
+          "quarter": {
+            "type": "string",
+            "description": "Quarter identifier (e.g., 'Q3 FY2026')"
+          },
+          "query_type": {
+            "type": "string",
+            "description": "Type of query: 'resolved' (default), 'created', or 'epics'",
+            "default": "resolved"
+          },
+          "config_path": {
+            "type": "string",
+            "description": "Path to vertical-config.json (optional)"
+          }
+        },
+        "required": ["studio_name", "quarter"]
+      }
+    },
+    {
+      "name": "format_confluence_page",
+      "description": "Convert structured report data into Confluence Cloud storage format (XHTML). Generates tables, status lozenges, info panels, and page structure matching the OUTPUT_TEMPLATE.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Page title (e.g., 'Q3 FY2026 — Studio Bang')"
+          },
+          "metrics": {
+            "type": "object",
+            "description": "Metrics table data: {resolved, created, net_backlog, issue_mix, velocity}"
+          },
+          "methodology": {
+            "type": "object",
+            "description": "Data source info: {project, filter_method, filter_value, date_filter, sub_tasks, board, sprint_range, jql}"
+          },
+          "business_impact": {
+            "type": "string",
+            "description": "Business impact narrative (2-3 paragraphs, HTML allowed)"
+          },
+          "deliverables": {
+            "type": "array",
+            "description": "Array of key deliverable strings",
+            "items": { "type": "string" }
+          },
+          "roadmap": {
+            "type": "array",
+            "description": "Array of roadmap rows: [{lane, milestone, timeline, status, status_color}]",
+            "items": { "type": "object" }
+          },
+          "risks": {
+            "type": "array",
+            "description": "Array of risk/note strings",
+            "items": { "type": "string" }
+          },
+          "director_metrics": {
+            "type": "object",
+            "description": "Director metrics: {impact_classification, guest_reach, release_success_rate, health_rating, velocity, blocked_items}"
+          }
+        },
+        "required": ["title", "metrics", "methodology", "business_impact", "deliverables", "roadmap", "director_metrics"]
+      }
+    }
+  ]
+}

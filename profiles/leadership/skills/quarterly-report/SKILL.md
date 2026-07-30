@@ -1,5 +1,5 @@
 ---
-name: quarterly-report-skill
+name: quarterly-report
 description: Reusable workflow for generating quarterly business reports for Disney directors — multi-studio data collection, Confluence page hierarchy, roadmaps, and director-level metrics across multiple Jira projects.
 ---
 
@@ -24,7 +24,7 @@ Primary outcomes:
 
 1. **Labels vs Custom Fields**: Studio assignment in ROS is tracked via `customfield_10156` ("Studio[Dropdown]"), NOT labels. Labels capture cross-team tags only.
 2. **"Updated" inflates counts**: Using `updated >= date` returns issues with mere field changes or comments. Use `resolved >= date` for actual delivery metrics.
-3. **Sub-task inflation**: Studios with granular workflow decomposition (7+ sub-tasks per story for sign-off phases) inflate resolved counts by 3-7x. Exclude sub-tasks for: Nebula, Bang, Terror, Cosmo, Star-Lord, Rocket, Yondu. Include for: Gamora, Vision, Tadashi, Mantis.
+3. **Sub-task inflation**: Studios with granular workflow decomposition (7+ sub-tasks per story for sign-off phases) inflate resolved counts by 3-7x. Exclude sub-tasks for: Nebula, Bang, Terror, Cosmo, Star-Lord, Rocket, Mantis, Yondu. Include for: Gamora, Tadashi.
 4. **Multi-project studios**: Not all studios live in the same Jira project:
    - ROS (Resort Sales): Most studios
    - TEP3 (Ticket Evolution): Yondu, Cosmo (partially)
@@ -103,7 +103,7 @@ Q{N} FY{YEAR} Quarterly Report — {Vertical Name} (parent)
 
 ## Workflow
 
-1. **Identify scope**: Determine vertical, quarter period (Q1=Jul-Sep, Q2=Oct-Dec, Q3=Jan-Mar, Q4=Apr-Jun for FY), studios/teams, and Jira projects
+1. **Identify scope**: Determine vertical, quarter period (Q1=Oct-Dec, Q2=Jan-Mar, Q3=Apr-Jun, Q4=Jul-Sep for Disney FY), studios/teams, and Jira projects
 2. **Discover studio tracking method**: For each Jira project, identify how studios are tracked (custom field, label, sprint name, board)
 3. **Query resolved issues**: Use `resolved >= start AND resolved <= end` with appropriate studio filter and `issuetype != Sub-task` where applicable
 4. **Collect issue type breakdown**: From sampled results (100 per query), extrapolate percentages to total
