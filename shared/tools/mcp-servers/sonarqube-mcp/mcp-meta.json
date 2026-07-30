@@ -1,0 +1,17 @@
+{
+  "name": "sonarqube",
+  "description": "SonarQube MCP — code quality issues, security hotspots, coverage metrics, quality gate status, and source inspection",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "SONARQUBE_URL": "SonarQube server URL (e.g., https://sonar.cicd.wdprapps.disney.com or https://sonar.company.com)",
+    "SONARQUBE_TOKEN": "SonarQube user token (generated from My Account > Security)",
+    "SONARQUBE_ORG": "Organization key (required for SonarCloud, optional for Server)"
+  },
+  "env_required": ["SONARQUBE_URL", "SONARQUBE_TOKEN"],
+  "env_secret": ["SONARQUBE_TOKEN"],
+  "env_defaults": {
+    "SONARQUBE_URL": "https://sonar.cicd.wdprapps.disney.com"
+  },
+  "tags": ["code-quality", "security", "coverage", "static-analysis", "sonarqube"]
+}

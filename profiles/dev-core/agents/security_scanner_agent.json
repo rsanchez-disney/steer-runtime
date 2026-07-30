@@ -6,7 +6,8 @@
     "execute_bash",
     "fs_read",
     "grep",
-    "code"
+    "code",
+    "@sonarqube/*"
   ],
   "resources": [
     "file://.kiro/context/golden_rules.md",

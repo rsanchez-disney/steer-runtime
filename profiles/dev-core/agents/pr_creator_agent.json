@@ -15,7 +15,8 @@
     "fs_read",
     "fs_write",
     "@compass/*",
-    "@atlassian/*"
+    "@atlassian/*",
+    "@sonarqube/*"
   ],
   "allowedTools": [
     "@confluence/*",
