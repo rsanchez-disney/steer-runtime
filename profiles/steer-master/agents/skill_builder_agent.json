@@ -1,0 +1,15 @@
+{
+  "name": "skill_builder_agent",
+  "description": "Creates, audits, and improves skills and agent configurations following the Agent Skills open standard. Produces SKILL.md + references/ folders and agent JSON configs.",
+  "prompt": "skill_builder_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "grep",
+    "code",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ]
+}

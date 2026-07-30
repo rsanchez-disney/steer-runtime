@@ -129,6 +129,7 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "client intake", "project brief", "pre-sales"                 | `presales_agent`               |
 | "query database", "SQL", "db query", "check the table", "database connection", "JDBC", "select from" | `db_analyst_agent`             |
 | "elasticsearch", "indices", "mappings", "cluster health", "shards", "ES\|QL", "list indices", "search template", "boost block", "reindex" | `elasticsearch_agent` |
+| "create skill", "new skill", "audit skill", "score skill", "design agent", "agent config", "turn into a skill" | `skill_builder_agent` |
 
 ### Implementation routing (no ticket)
 
