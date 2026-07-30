@@ -1,0 +1,17 @@
+{
+  "name": "elasticsearch",
+  "description": "Elasticsearch cluster access — list indices, search, ES|QL queries, mappings, and shard info across environments",
+  "type": "node",
+  "entry": "dist/index.cjs",
+  "env": {
+    "ES_URL_LATEST": "Elasticsearch URL for latest/dev environment",
+    "ES_URL_STAGE": "Elasticsearch URL for stage environment (optional)",
+    "ES_URL_PROD": "Elasticsearch URL for production environment (optional)",
+    "ES_LATEST_API_KEY": "API Key for latest/dev cluster",
+    "ES_STAGE_API_KEY": "API Key for stage cluster (optional)",
+    "ES_PROD_API_KEY": "API Key for production cluster (optional)"
+  },
+  "env_required": ["ES_URL_LATEST", "ES_LATEST_API_KEY"],
+  "env_secret": ["ES_LATEST_API_KEY", "ES_STAGE_API_KEY", "ES_PROD_API_KEY"],
+  "tags": ["elasticsearch", "search", "database", "observability"]
+}

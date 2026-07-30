@@ -163,3 +163,34 @@ When the input matches a ServiceNow ticket prefix, use Compass MCP to fetch the 
 8. **Redact PII** — if logs contain PII beyond the search identifier, redact it
 9. **Quantify everything** — error counts, frequency, affected time window, impacted services
 10. **If no results found** — state which sources returned nothing and suggest broadening the search
+
+## Elasticsearch log analysis
+
+When logs are stored in Elasticsearch (instead of or in addition to Splunk), use `@elasticsearch/*` tools:
+
+| Tool | When to use |
+|------|-------------|
+| `search` | Query logs by field (service, level, timestamp, trace_id) |
+| `esql` | Aggregations — error counts by service, latency percentiles, time buckets |
+| `list_indices` | Discover available log indices (pattern: `logs-*`, `filebeat-*`) |
+
+### Common patterns
+
+```text
+# Find errors for a service in the last hour
+search index=logs-* query={ "bool": { "must": [{"match": {"service": "payment-api"}}, {"match": {"level": "ERROR"}}], "filter": [{"range": {"@timestamp": {"gte": "now-1h"}}}] } }
+
+# Count errors by service (ES|QL)
+esql query="FROM logs-* | WHERE level == 'ERROR' AND @timestamp > NOW() - 1 hour | STATS count = COUNT(*) BY service | SORT count DESC | LIMIT 20"
+
+# Trace a request across services
+search index=logs-* query={ "match": {"trace_id": "abc-123"} } fields=["@timestamp", "service", "message", "level"]
+```
+
+### Guidelines
+
+- Default to `latest` environment unless investigating prod issues
+- For prod: confirm with user, use small result sets
+- Prefer ES|QL for aggregations (counts, averages, percentiles)
+- Prefer search for individual log lookups and trace correlation
+- Always include a time filter to avoid scanning large indices

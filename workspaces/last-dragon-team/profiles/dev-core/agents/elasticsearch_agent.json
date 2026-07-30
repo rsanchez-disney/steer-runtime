@@ -1,0 +1,14 @@
+{
+  "name": "elasticsearch_agent",
+  "description": "Queries Elasticsearch clusters (latest, stage, prod) for the search team. Lists indices, searches documents, inspects mappings, runs ES|QL queries, and checks shard health.",
+  "prompt": "elasticsearch_agent.md",
+  "tools": [
+    "@elasticsearch/*",
+    "thinking"
+  ],
+  "allowedTools": [
+    "@elasticsearch/*"
+  ],
+  "includeMcpJson": true,
+  "resources": ["file://.kiro/context/team_context.md"]
+}

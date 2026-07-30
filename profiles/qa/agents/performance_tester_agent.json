@@ -6,7 +6,8 @@
     "execute_bash",
     "fs_read",
     "fs_write",
-    "code"
+    "code",
+    "@elasticsearch/*"
   ],
   "resources": [
     "file://.kiro/context/qa_guidelines.md",

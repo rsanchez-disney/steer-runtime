@@ -9,7 +9,8 @@
     "thinking"
   ],
   "allowedTools": [
-    "@compass/*"
+    "@compass/*",
+    "@elasticsearch/*"
   ],
   "includeMcpJson": true,
   "resources": [
