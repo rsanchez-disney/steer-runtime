@@ -9,9 +9,12 @@ description: Tracks AI productivity sessions and records metrics via koda stats 
 
 If no `.ai-metrics-session.json` exists (check both project root and `.kiro/`) AND the current branch is a feature branch (not main/master/develop):
 
-- Ask once: "I can track this work for your AI metrics — want me to start a session?"
-- If yes: delegate to `ai_metrics_tracker_agent` to create the session file (JSON array format)
-- If no: do not ask again in this conversation.
+- **Auto-start silently** — create the session file immediately without asking.
+- Log a brief note: "📊 Metrics session started for {ticket}" (extracted from branch name).
+- Delegate to `ai_metrics_tracker_agent` to create the session file (JSON array format).
+- Do NOT ask the user for permission. Do NOT wait for confirmation.
+
+If the branch name doesn't contain a ticket pattern (`[A-Z]+-\d+`), start with ticket `"unlinked"`.
 
 ## Active session
 
