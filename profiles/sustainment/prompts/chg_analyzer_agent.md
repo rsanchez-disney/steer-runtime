@@ -159,10 +159,30 @@ Which AWS profile should I use? (e.g., dlp-apps-prod)
 2. Query JIRA for issues in release
 3. Flag any Open/In Progress blockers
 
+### Phase 4b: Risk Assessment
+
+Evaluate the change and include in the report:
+
+| Factor             | Low                    | Medium                        | High                              |
+|--------------------|------------------------|-------------------------------|-----------------------------------|
+| Commits            | <20                    | 20-100                        | >100                              |
+| DB Migrations      | None                   | Non-breaking (additive)       | Breaking (column drops, renames)  |
+| API Changes        | None                   | New endpoints only            | Breaking contract changes         |
+| Dependencies       | None                   | Minor version bumps           | Major version bumps               |
+| Services affected  | 1                      | 2-3                           | 4+                                |
+
+**Red flags** (always highlight if present):
+- Version mismatch between CTASK target and deployed
+- PRs merged without JIRA tickets
+- JIRA issues not in Done status
+- Missing rollback plan in CHG
+- Emergency change without approval chain
+
 ### Phase 5: Report & Delivery
 
-1. Display full report in chat
-2. Ask delivery options:
+1. Include risk assessment section in the report (factor table + red flags)
+2. Display full report in chat
+3. Ask delivery options:
 
 ```
 How would you like this report delivered?
