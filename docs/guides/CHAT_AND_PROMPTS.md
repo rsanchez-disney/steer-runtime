@@ -125,11 +125,14 @@ fi
 
 ## Runtime comparison for headless
 
-| Runtime | Subagent support | Speed | Cost |
-|---------|:----------------:|:-----:|:----:|
-| `--target kiro` | ⚠️ Limited | Fast | Free (Kiro license) |
-| `--target claude` | ✅ Via `--agents` | Medium | ~$0.05-0.30/turn |
-| `--target geai` | ✅ Full | Medium | Free (GEAI API key) |
+| Runtime | Headless support | Subagent support | Speed | Cost |
+|---------|:----------------:|:----------------:|:-----:|:----:|
+| `--target kiro` | ✅ | ⚠️ Limited | Fast | Free (Kiro license) |
+| `--target claude` | ✅ | ✅ Via `--agents` | Medium | ~$0.05-0.30/turn |
+| `--target geai` | ✅ | ✅ Full | Medium | Free (GEAI API key) |
+| `--target cursor` | ❌ | N/A | N/A | N/A |
+
+> **Note:** Cursor does not support headless mode. It requires the Cursor IDE running and operates interactively only. Use `koda cursor --ws <name>` to generate `.cursor/` rules for IDE-based workflows instead.
 
 ## See also
 
