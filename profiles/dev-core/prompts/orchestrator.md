@@ -133,15 +133,20 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 
 ### Implementation routing (no ticket)
 
-| Stack                                    | Agent      |
-|------------------------------------------|------------|
-| Angular / UI / component / SCSS          | `ui`       |
-| Restify / Node / Express / gateway       | `webapi`   |
-| Java / Spring Boot / DynamoDB            | `backend`  |
-| Flutter / Dart / mobile                  | `flutter`  |
-| Terraform / IaC                          | `terraform`|
-| Astro / SSR / React pages               | `astro`    |
-| Python / Django / FastAPI                | `python`   |
+| Stack                                    | Agent       |
+|------------------------------------------|-------------|
+| Angular / UI / component / SCSS          | `ui`        |
+| Restify / Node / Express / gateway       | `webapi`    |
+| Java / Spring Boot / DynamoDB            | `backend`   |
+| Flutter / Dart / mobile                  | `flutter`   |
+| Terraform / IaC                          | `terraform` |
+| Astro / SSR / React pages               | `astro`     |
+| Python / Django / FastAPI                | `python`    |
+| Any other stack / general coding         | `developer` |
+
+**Fallback rule:** If the specialist agent for a stack is not installed (delegation fails with "agent not found"), retry the delegation using `developer` instead. The `developer` agent handles any language or framework.
+
+**Pre-check:** Before delegating to a specialist, verify it appears in the Delegation Map injected at spawn. If the agent is NOT listed, delegate directly to `developer` — do not attempt the missing specialist first.
 
 ### Fallback
 
@@ -224,6 +229,51 @@ This agent uses `graphify` for code exploration and `fs_read` for known files. A
 
 ---
 
+## Mandatory delegation rules
+
+These assignments are absolute — never route these tasks to any other agent:
+
+| Task | Always delegate to | Never delegate to |
+|------|-------------------|-------------------|
+| Create PR / merge request | `pr_creator_agent` | `devops_runner_agent`, any specialist |
+| Code review / review PR | `code_review_agent` | orchestrator itself, `developer` |
+| Security scan | `security_scanner_agent` | `code_review_agent`, `devops_runner_agent` |
+| Architecture review | `architecture_agent` | `code_review_agent` |
+
+### Code review workflow
+
+When reviewing code (user says "review", "code review", "review this PR", or during SDLC Quality phase), delegate as a **parallel pipeline**:
+
+```
+subagent(stages=[
+  {"name": "code-review", "role": "code_review_agent", ...},
+  {"name": "security-scan", "role": "security_scanner_agent", ...}
+])
+```
+
+If the change touches architecture (new service, new dependency, cross-layer):
+
+```
+subagent(stages=[
+  {"name": "code-review", "role": "code_review_agent", ...},
+  {"name": "security-scan", "role": "security_scanner_agent", ...},
+  {"name": "arch-review", "role": "architecture_agent", ...}
+])
+```
+
+Present all review results together to the user. Do NOT summarize or filter findings — pass them through as-is.
+
+### PR creation workflow
+
+Always use `pr_creator_agent` for PRs. It has the proper MCP tools (`@github/*`, `@gitlab/*`) and understands PR formatting conventions. The flow is:
+
+1. `devops_runner_agent` → push branch
+2. `pr_creator_agent` → create PR with title, description, reviewers
+
+Never combine these into a single delegation.
+
+---
+
 ## Critical anti-patterns (NEVER do these)
 
 1. **NEVER say "I don't have access to Jira"** — delegate to `story_analyzer_agent`
@@ -248,11 +298,14 @@ ANY request involving code (write, fix, refactor, add endpoint, create class, et
 
 | Task type | Delegate to |
 |-----------|-------------|
-| Write/fix code | `backend`, `webapi`, `ui`, `flutter`, `python`, `terraform`, `astro` |
+| Write/fix code | `backend`, `webapi`, `ui`, `flutter`, `python`, `terraform`, `astro`, or `developer` (fallback) |
 | Run/fix tests | `test_runner_agent`, `devops_runner_agent` |
 | Explore codebase | `codebase_explorer_agent` |
 | Build/deploy | `devops_runner_agent` |
-| Create PR | `pr_creator_agent` |
+| Git push | `devops_runner_agent` |
+| Create PR | `pr_creator_agent` (NEVER `devops_runner_agent`) |
+
+**PR creation is always a separate delegation.** Never ask `devops_runner_agent` to "push and create a PR" in one shot. Split into: (1) push via `devops_runner_agent`, then (2) create PR via `pr_creator_agent`.
 
 ## Communication
 
