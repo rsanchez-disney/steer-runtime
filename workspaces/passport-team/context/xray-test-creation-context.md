@@ -13,17 +13,19 @@
 5. [Step 3: Create or Fix Test Cases](#step-3-create-or-fix-test-cases)
 6. [Step 4: Create Test Executions](#step-4-create-test-executions)
 7. [Step 5: QA Metrics Evaluation Task](#step-5-qa-metrics-evaluation-task)
-8. [Step 6: Final Verification](#step-6-final-verification)
-9. [Naming Conventions](#naming-conventions)
-10. [Field Quick Reference](#field-quick-reference)
-11. [Common Errors and Fixes](#common-errors-and-fixes)
+8. [Step 6: Story Status Update](#step-6-story-status-update)
+9. [Step 7: Final Verification](#step-7-final-verification)
+10. [Step 8: Defect Creation (when needed)](#step-8-defect-creation-when-needed)
+11. [Naming Conventions](#naming-conventions)
+12. [Field Quick Reference](#field-quick-reference)
+13. [Common Errors and Fixes](#common-errors-and-fixes)
 
 ---
 
 ## Process Overview
 
 ```
-User Story → Analyze ACs → Check Existing Tests → Create/Fix Tests → Test Executions → QA Task → Verify
+User Story → Analyze ACs → Check Existing Tests → Create/Fix Tests → Test Executions → QA Task → Story Update → Verify
 ```
 
 ### Decision Tree for Existing Stories
@@ -45,18 +47,18 @@ Story has linked tests?
 
 ### Artifacts per Story
 
-| Artifact        | Jira Type      | Mobile/Flutter         | Services/BE            |
-|-----------------|----------------|:----------------------:|:----------------------:|
-| Test Cases      | Test           | 1 per testable AC/BR   | 1 per testable AC/BR   |
-| Test Executions | Test Execution | 2 (one Android, one iOS) | 1 (no platform split) |
-| QA Metrics Task | Task           | 1 per story            | 1 per story            |
+| Artifact        | Jira Type      | Mobile/Flutter           | Services/BE              |
+|-----------------|----------------|:------------------------:|:------------------------:|
+| Test Cases      | Test           | 1 per testable AC/BR     | 1 per testable AC/BR     |
+| Test Executions | Test Execution | 2 (one Android, one iOS) | 1 (no platform split)    |
+| QA Metrics Task | Task           | 1 per story              | 1 per story              |
 
 ### Story Type Detection
 
-| Story Type         | Detection Rule                                  | Test Repository Path | Test Executions        |
-|--------------------|------------------------------------------------|---------------------|------------------------|
-| **Mobile/Flutter** | Title contains "Mobile" and/or "Flutter"       | `/Passport - UI`    | 2 (Android + iOS)      |
-| **Services (BE)**  | Title does NOT mention "Mobile" nor "Flutter"  | `/Passport - BE`    | 1 (no platform split)  |
+| Story Type         | Detection Rule                                 | Test Repository Path                            | Test Executions        |
+|--------------------|------------------------------------------------|-------------------------------------------------|------------------------|
+| **Mobile/Flutter** | Title contains "Mobile" and/or "Flutter"       | `/Passport - UI` (auto-set via folder tool)     | 2 (Android + iOS)      |
+| **Services (BE)**  | Title does NOT mention "Mobile" nor "Flutter"  | `/Passport - BE` (auto-set via folder tool)     | 1 (no platform split)  |
 
 All artifacts are linked to the story with `linkType: "Test"`.
 
@@ -76,45 +78,55 @@ All artifacts are linked to the story with `linkType: "Test"`.
 | `jira_assign_issue`     | Assign issue to a user               |
 | `jira_update_issue`     | Update fields (description, custom)  |
 | `jira_transition_issue` | Change issue status                  |
+| `jira_add_comment`      | Add comment to an issue              |
 
 #### XRay Cloud (requires `XRAY_CLOUD_CLIENT_ID` + `XRAY_CLOUD_CLIENT_SECRET`)
 
-| Tool                             | Purpose                                    |
-|----------------------------------|--------------------------------------------|
-| `xray_cloud_create_test`        | Create test with Gherkin/Manual steps      |
-| `xray_cloud_create_execution`   | Create TE with tests linked (GraphQL)      |
-| `xray_cloud_update_run`         | Associate tests to TE / report status      |
-| `xray_cloud_search_tests`       | Search tests by JQL                        |
-| `xray_cloud_get_test_steps`     | Read steps from an existing test           |
-| `xray_cloud_get_test_runs`      | Get execution results for a test           |
-| `xray_cloud_link_test_to_story` | Link test → story (uses jira_link_issues)  |
-| `xray_cloud_update_test_type`   | Update test type/steps on existing test    |
-| `xray_cloud_get_test_datasets`  | Read dataset (parameterized data) from test |
-| `xray_cloud_update_test_datasets` | Create/update dataset iterations on test  |
+| Tool                                 | Purpose                                    |
+|--------------------------------------|--------------------------------------------|
+| `xray_cloud_create_test`            | Create test with Gherkin/Manual steps      |
+| `xray_cloud_create_execution`       | Create TE with tests linked (GraphQL)      |
+| `xray_cloud_update_run`             | Associate tests to TE / report status      |
+| `xray_cloud_search_tests`           | Search tests by JQL                        |
+| `xray_cloud_get_test_steps`         | Read steps from an existing test           |
+| `xray_cloud_get_test_runs`          | Get execution results for a test           |
+| `xray_cloud_link_test_to_story`     | Link test → story (uses jira_link_issues)  |
+| `xray_cloud_update_test_type`       | Update test type/steps on existing test    |
+| `xray_cloud_get_test_datasets`      | Read dataset (parameterized data) from test |
+| `xray_cloud_update_test_datasets`   | Create/update dataset iterations on test   |
+| `xray_cloud_get_folders`            | List Test Repository folder tree           |
+| `xray_cloud_move_tests_to_folder`   | Move tests to a repository folder          |
 
 #### ⛔ Do NOT use (XRay Server tools — not supported on Cloud)
 
-| Removed Tool                    | Use Instead                                          |
-|---------------------------------|------------------------------------------------------|
-| `xray_add_tests_to_test_exec`   | `xray_cloud_create_execution` (includes testKeys)   |
-| `xray_search_test_cases`        | `xray_cloud_search_tests` (JQL via GraphQL)         |
-| `xray_get_folder_tests`         | `xray_cloud_search_tests` (filter by label)         |
-| `xray_get_test_exec_tests`      | `xray_cloud_get_test_runs` (check runs per test)    |
-| `xray_get_test_case_full`       | `xray_cloud_get_test_steps` + `jira_get_issue`      |
+| Removed Tool                    | Use Instead                                                          |
+|---------------------------------|----------------------------------------------------------------------|
+| `xray_add_tests_to_test_exec`   | `xray_cloud_create_execution` (includes testKeys)                   |
+| `xray_search_test_cases`        | `xray_cloud_search_tests` (JQL via GraphQL)                         |
+| `xray_get_folder_tests`         | `xray_cloud_move_tests_to_folder` / `xray_cloud_search_tests`       |
+| `xray_get_test_exec_tests`      | `xray_cloud_get_test_runs` (check runs per test)                    |
+| `xray_get_test_case_full`       | `xray_cloud_get_test_steps` + `jira_get_issue`                      |
+
+> **Note:** Cloud folder tools (`xray_cloud_get_folders`, `xray_cloud_move_tests_to_folder`) replace the need for Server-side folder operations.
 
 ### Critical Rules
 
 1. **Link type is "Test" (SINGULAR)** — "Tests" (plural) returns 404
-2. **Priority is REQUIRED** for Test and Test Execution creation — use `"3 - Medium"`
+2. **Priority is REQUIRED** for Test and Test Execution creation — use `{"id": "10008"}` (3 - Medium) for standard tests, `{"id": "10007"}` (2 - High) for critical path tests
 3. **DO NOT put steps in the description** — steps live ONLY in XRay Test Details
 4. **DO NOT use markdown tables in descriptions** — API v2 renders them as plain text. Use bullet/numbered lists
-5. **Test Executions are NEVER assigned to anyone** — leave unassigned
+5. **Test Executions are assigned to the QE who creates/executes them** — use `jira_assign_issue` after creation
 6. **ACs live in `customfield_10166`** — always fetch with `customFields: ["acceptanceCriteria"]`
 7. **Tests created with `jira_create_issue` have NO XRay steps** — always use `xray_cloud_create_test`
 8. **`xray_cloud_get_test_steps` may return cached/stale data** — if in doubt, verify in UI
 9. **Cannot remove tests from a Test Execution** — must create new TE and reject old one
 10. **Label `PAS2_CQE` is REQUIRED on ALL artifacts** — Test Cases, Test Executions, and QA Tasks must all carry this label. For TEs created via `xray_cloud_create_execution`, set label via `jira_update_issue` after creation
 11. **Sprint and Team are REQUIRED on Test Executions and QA Tasks** — propagate Sprint ID from the User Story; set Team based on story type (`"PAS2 | Mobile"` or `"PAS2 | Services"`)
+12. **Task Type MUST be set to "Testing" on all QA Metrics Tasks** (`customfield_10160`)
+13. **Test Cases and Test Executions MUST be assigned to the QE** (story assignee)
+14. **Team field MUST be set on ALL artifacts** — Test Cases, Test Executions, and QA Tasks
+15. **After all artifacts are created, transition the story to "In Testing"** and add QE comment
+16. **Move all new tests to the correct repository folder after creation** — use `xray_cloud_move_tests_to_folder`
 
 ### XRay Cloud Configuration
 
@@ -143,7 +155,8 @@ jira_link_issues:
 |----------------------|---------------------|---------------------------------------------------------------------|:-----------------:|
 | Story Points         | `customfield_10042` | Number                                                              | ✅ Task           |
 | Sprint               | `customfield_10020` | Sprint ID (number) — propagate from Story                           | ✅ Task, TE       |
-| Team                 | `customfield_10001` | `"PAS2 \| Mobile"` (FE/Flutter) or `"PAS2 \| Services"` (BE)       | ✅ Task, TE       |
+| Team                 | `customfield_10001` | `"PAS2 \| Mobile"` (FE/Flutter) or `"PAS2 \| Services"` (BE)       | ✅ Task, TE, Test |
+| Task Type            | `customfield_10160` | `{"value": "Testing"}`                                              | ✅ Task           |
 | AI Assisted Effort   | `customfield_10173` | Number (default: `0.5`)                                             | ✅ Task           |
 | AI Usage Level       | `customfield_10221` | `{"value": "Medium"}` \| `{"value": "High"}` \| `{"value": "Low"}` | ✅ Task           |
 | AI Tools Used        | `customfield_10191` | String (default: `"kiro"`)                                          | ✅ Task           |
@@ -151,8 +164,8 @@ jira_link_issues:
 | Automation Candidate | `customfield_10154` | `{"value": "Y"}` \| `{"value": "N"}` \| `{"value": "Requires Analysis"}` | ✅ Test     |
 | Automation Status    | `customfield_10190` | `{"value": "Not Started"}` (only when Candidate = Y)               | ✅ Test           |
 | Acceptance Criteria  | `customfield_10166` | Text (on Stories)                                                   | ✅ Story          |
-| Priority             | `priority`          | `{"id": "10008"}` (3 - Medium) — **REQUIRED for Test and TE**      | ✅ All            |
-| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ not editable  |
+| Priority             | `priority`          | `{"id": "10008"}` (3 - Medium) or `{"id": "10007"}` (2 - High)     | ✅ All            |
+| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ use xray_cloud_move_tests_to_folder |
 | Epic Link            | `customfield_13912` | Epic issue key (e.g., `"PAS2-1"`)                                   | ⚠️ not editable  |
 | Test Environments    | `customfield_20125` | Array of strings: `["LATEST"]`                                      | ⚠️ not editable  |
 
@@ -160,10 +173,11 @@ jira_link_issues:
 
 ### Priority Values (PAS2 project)
 
-| ID      | Name       | Use for              |
-|---------|------------|----------------------|
-| `10008` | 3 - Medium | Default for tests    |
-| `10007` | 2 - High   | Critical path tests  |
+| ID      | Name       | Use for                                  |
+|---------|------------|------------------------------------------|
+| `10007` | 2 - High   | Critical path / core functionality tests |
+| `10008` | 3 - Medium | Standard tests (default)                 |
+
 
 ---
 
@@ -180,17 +194,17 @@ Identify:
 - **Acceptance Criteria** (from `customfield_10166`) → positive test cases
 - **Business Rules** (from description) → validation test cases
 - **Negative scenarios** → when error handling or validations exist
-- **Story assignee** → used to assign QA Task
+- **Story assignee** → used to assign QA Task, Test Cases, and Test Executions
 - **Existing issue links** → check what artifacts already exist
 
 ### Coverage Criteria
 
-| Type                    | Include            |
-|-------------------------|--------------------|
-| Happy path per AC       | ✅ Always          |
-| Negative / error handling | ✅ When validations exist |
-| Edge cases / boundaries | ✅ When boundary conditions exist |
-| Feature toggle OFF      | ✅ If applicable   |
+| Type                      | Include                              |
+|---------------------------|--------------------------------------|
+| Happy path per AC         | ✅ Always                            |
+| Negative / error handling | ✅ When validations exist            |
+| Edge cases / boundaries   | ✅ When boundary conditions exist    |
+| Feature toggle OFF        | ✅ If applicable                     |
 
 Each test case must be **independent** (not depend on results of another).
 
@@ -215,13 +229,13 @@ xray_cloud_search_tests:
 
 ### Decision Criteria
 
-| Scenario | Action |
-|----------|--------|
-| Existing test has XRay steps AND covers the **same AC** exactly | **REUSE** — link it to the new story |
-| Existing test has XRay steps but is **similar/outdated** | **REUSE and update** — update summary, description, Gherkin, then link |
-| Existing test covers a **different story's AC** with same functionality | **REUSE** — link to both stories (a test can cover multiple stories) |
-| Test has NO XRay steps (created with `jira_create_issue`) | **REJECT** → create new with `xray_cloud_create_test` |
-| No existing test covers the AC | **CREATE new** |
+| Scenario                                                         | Action                                                         |
+|------------------------------------------------------------------|----------------------------------------------------------------|
+| Existing test has XRay steps AND covers the **same AC** exactly  | **REUSE** — link it to the new story                           |
+| Existing test has XRay steps but is **similar/outdated**         | **REUSE and update** — update summary, description, Gherkin    |
+| Existing test covers a **different story's AC** with same logic  | **REUSE** — link to both stories (test can cover multiple)     |
+| Test has NO XRay steps (created with `jira_create_issue`)        | **REJECT** → create new with `xray_cloud_create_test`          |
+| No existing test covers the AC                                   | **CREATE new**                                                 |
 
 ### When reusing an existing test
 
@@ -282,6 +296,7 @@ xray_cloud_create_test:
   summary: "{See naming conventions below}"
   testType: "Cucumber"
   labels: ["{PROJECT_LABEL}"]
+  priority: {"id": "10008"}
   gherkin: |
     Given {precondition}
     And {additional context}
@@ -302,6 +317,7 @@ xray_cloud_create_test:
   summary: "{See naming conventions below}"
   testType: "Manual"
   labels: ["{PROJECT_LABEL}"]
+  priority: {"id": "10008"}
   steps:
     - action: "{precondition or setup step}"
       data: "{test data if applicable}"
@@ -314,6 +330,11 @@ xray_cloud_create_test:
     customfield_10154: {"value": "Y"}
     customfield_10190: {"value": "Not Started"}
 ```
+
+### Priority guidance:
+
+- Use `{"id": "10007"}` (2 - High) for critical path / core functionality tests
+- Use `{"id": "10008"}` (3 - Medium) for standard tests (default)
 
 ### Then set description (context only — NO steps):
 
@@ -343,6 +364,34 @@ jira_link_issues:
   linkType: "Test"
 ```
 
+### Assign to creator (QE):
+
+```yaml
+jira_assign_issue:
+  ticketId: "{TEST_KEY}"
+  assignee: "{STORY_ASSIGNEE}"
+```
+
+### Set Team field on test cases:
+
+```yaml
+jira_update_issue:
+  ticketId: "{TEST_KEY}"
+  customFields:
+    customfield_10001: "{TEAM_VALUE}"
+```
+
+### Move tests to correct repository folder:
+
+```yaml
+xray_cloud_move_tests_to_folder:
+  projectKey: "{PROJECT}"
+  path: "{REPOSITORY_PATH}"
+  testKeys: ["{TEST-1}", "{TEST-2}", "{TEST-3}"]
+```
+
+Where `REPOSITORY_PATH` is `/Passport - UI` (mobile) or `/Passport - BE` (services).
+
 ### Test Case Classification
 
 | Type         | Description                                        |
@@ -352,11 +401,11 @@ jira_link_issues:
 
 ### Automation Evaluation (per test case)
 
-| Scenario                           | Automation Candidate    |
-|------------------------------------|-------------------------|
-| Critical flows, navigation, logic  | **Y**                   |
-| Simple visual UI validation        | **N**                   |
-| Complex integrations               | **Requires Analysis**   |
+| Scenario                           | Automation Candidate  |
+|------------------------------------|-----------------------|
+| Critical flows, navigation, logic  | **Y**                 |
+| Simple visual UI validation        | **N**                 |
+| Complex integrations               | **Requires Analysis** |
 
 Rules:
 - If Y → set Automation Status: `Not Started`
@@ -406,11 +455,11 @@ When a Cucumber test uses a **Scenario Outline** with `<placeholders>`, the data
 
 #### When to use Datasets
 
-| Scenario                                                    | Use Dataset?       |
-|-------------------------------------------------------------|--------------------|
-| Scenario Outline with `Examples:` table (2+ rows of data)   | ✅ Yes             |
-| Single scenario with fixed data                             | ❌ No              |
-| Manual test with varying data in steps                      | ❌ No (use `data` column in steps) |
+| Scenario                                                  | Use Dataset? |
+|-----------------------------------------------------------|:------------:|
+| Scenario Outline with `Examples:` table (2+ rows of data) | ✅ Yes       |
+| Single scenario with fixed data                           | ❌ No        |
+| Manual test with varying data in steps                    | ❌ No (use `data` column in steps) |
 
 #### Workflow: Create Cucumber test with Dataset
 
@@ -527,7 +576,13 @@ Where:
 - `{SPRINT_ID}` = Sprint ID number from the User Story
 - `{TEAM_VALUE}` = `"PAS2 | Mobile"` or `"PAS2 | Services"` based on story type
 
-### ⚠️ Test Executions are NEVER assigned to anyone. Do NOT use `jira_assign_issue` on TEs.
+#### Assign to QE (creator/executor):
+
+```yaml
+jira_assign_issue:
+  ticketId: "{TE_KEY}"
+  assignee: "{STORY_ASSIGNEE}"
+```
 
 ### Fallback Method (if `xray_cloud_create_execution` fails):
 
@@ -621,7 +676,7 @@ jira_assign_issue:
   assignee: "{STORY_ASSIGNEE}"
 ```
 
-### Set story points, AI fields, Sprint, and Team:
+### Set story points, AI fields, Sprint, Team, and Task Type:
 
 > **Sprint** is propagated from the User Story (`customfield_10020`). **Team** depends on story type:
 > - Mobile/Flutter → `"PAS2 | Mobile"`
@@ -634,6 +689,7 @@ jira_update_issue:
     customfield_10042: 1
     customfield_10020: {SPRINT_ID}
     customfield_10001: "{TEAM_VALUE}"
+    customfield_10160: {"value": "Testing"}
     customfield_10173: 0.5
     customfield_10221: {"value": "Medium"}
     customfield_10191: "kiro"
@@ -660,7 +716,34 @@ If the task already exists but references old/rejected test keys:
 
 ---
 
-## Step 6: Final Verification
+## Step 6: Story Status Update
+
+> After all artifacts (Test Cases, Test Executions, QA Task) are created and linked, transition the story to "In Testing" and add a summary comment.
+
+### Transition story:
+
+```yaml
+jira_transition_issue:
+  ticketId: "{STORY_KEY}"
+  status: "In Testing"
+```
+
+### Add QE coverage comment:
+
+```yaml
+jira_add_comment:
+  ticketId: "{STORY_KEY}"
+  comment: |
+    QE Coverage Complete:
+    - Test Cases: {TEST_KEYS_LIST}
+    - Test Executions: {TE_KEYS_LIST}
+    - Automation Candidates: {count_Y}/{total}
+    All artifacts linked and ready for execution.
+```
+
+---
+
+## Step 7: Final Verification
 
 ### Checklist:
 
@@ -668,13 +751,19 @@ If the task already exists but references old/rejected test keys:
 - [ ] All test cases linked to story (appear in Test Coverage)
 - [ ] Each test has: Automation Candidate, Platforms, description with objective
 - [ ] Cucumber Scenario Outline tests have datasets with all iterations defined
+- [ ] Test Cases assigned to QE (creator)
+- [ ] Test Cases have Team field set
+- [ ] Tests moved to correct repository folder (Passport - UI or Passport - BE)
 - [ ] Test Executions linked to story and contain all tests
 - [ ] Test Executions have: label `PAS2_CQE`, Sprint (from story), Team (`PAS2 | Mobile` or `PAS2 | Services`)
-- [ ] Test Executions are NOT assigned to anyone
+- [ ] Test Executions assigned to QE (creator/executor)
 - [ ] QA Metrics Task created, linked, assigned to story assignee, In Progress
 - [ ] QA Metrics Task has: label `PAS2_CQE`, Sprint (from story), Team, Story Points, AI fields
+- [ ] QA Task has Task Type = Testing
 - [ ] All artifacts carry label `PAS2_CQE`
 - [ ] Old/broken tests rejected with comment explaining supersession
+- [ ] Story transitioned to In Testing
+- [ ] QE Comment added to story
 - [ ] Summary: X test cases, Y executions, 1 task
 
 ### Verify coverage:
@@ -690,6 +779,70 @@ xray_cloud_search_tests:
 xray_cloud_get_test_runs:
   testKey: "{TEST_KEY}"
   limit: 5
+```
+
+---
+
+## Step 8: Defect Creation (when needed)
+
+> Use this template when a defect is discovered during test execution.
+
+### Create defect:
+
+```yaml
+jira_create_issue:
+  projectKey: "{PROJECT}"
+  issueType: "Bug"
+  summary: "{STORY-KEY} | {DOMAIN} | {Platform} | {Short defect description}"
+  priority: "2 - High"
+  labels: ["{PROJECT_LABEL}"]
+  description: |
+    Defect Report
+
+    Story: {STORY-KEY} - {Story Title}
+    Platform: {iOS/Android/API}
+    Build: {build version}
+    Environment: {LATEST/STAGE}
+
+    Steps to Reproduce:
+    1. {step 1}
+    2. {step 2}
+    3. {step 3}
+
+    Actual Result:
+    {what actually happened}
+
+    Expected Result:
+    {what should have happened}
+
+    Evidence:
+    {screenshots/videos attached}
+```
+
+### Set Team field:
+
+```yaml
+jira_update_issue:
+  ticketId: "{BUG_KEY}"
+  customFields:
+    customfield_10001: "{TEAM_VALUE}"
+```
+
+### Link to story:
+
+```yaml
+jira_link_issues:
+  inwardTicketId: "{BUG_KEY}"
+  outwardTicketId: "{STORY_KEY}"
+  linkType: "Defect"
+```
+
+### Assign to Angelique for review:
+
+```yaml
+jira_assign_issue:
+  ticketId: "{BUG_KEY}"
+  assignee: "angelique"
 ```
 
 ---
@@ -725,87 +878,99 @@ Latest | PAS2-17 | DLR | TnP | Flutter | Photo Display | Readback of Photo | iOS
 {STORY-KEY} | {Story Title} | QA Metrics Evaluation | Test Case Creation
 ```
 
+### Defects
+
+```
+{STORY-KEY} | {DOMAIN} | {Platform} | {Short defect description}
+```
+
 ---
 
 ## Field Quick Reference
 
 ### PAS2 Project
 
-| Variant        | Label      | Team                | Repository Path  | Epic Key | Platforms      | Test Environment | Test Executions    |
-|----------------|------------|---------------------|------------------|----------|:--------------:|:----------------:|:------------------:|
-| Mobile/Flutter | `PAS2_CQE` | `PAS2 \| Mobile`   | `/Passport - UI` | `PAS2-1` | iOS, Android  | LATEST           | 2 (Android + iOS)  |
-| Services/BE    | `PAS2_CQE` | `PAS2 \| Services` | `/Passport - BE` | `PAS2-1` | N/A           | LATEST           | 1                  |
+| Variant        | Label       | Team                | Repository Path  | Epic Key | Platforms    | Test Environment | Test Executions   |
+|----------------|-------------|---------------------|------------------|----------|:------------:|:----------------:|:-----------------:|
+| Mobile/Flutter | `PAS2_CQE`  | `PAS2 \| Mobile`   | `/Passport - UI` | `PAS2-1` | iOS, Android | LATEST           | 2 (Android + iOS) |
+| Services/BE    | `PAS2_CQE`  | `PAS2 \| Services` | `/Passport - BE` | `PAS2-1` | N/A          | LATEST           | 1                 |
 
 > **`{PROJECT_LABEL}`** in templates always resolves to `PAS2_CQE` for this project.
 
 ### Available Link Types
 
-| Link Type       | Inward             | Outward          |
-|-----------------|--------------------|------------------|
-| **Test**        | is tested by       | tests            |
-| Blocks          | is blocked by      | blocks           |
-| Defect          | created by         | created          |
-| Dependency      | is dependent upon  | dependency of    |
-| Relates         | relates to         | relates to       |
-| Implementers    | is implemented by  | implements       |
-| Duplicate       | is duplicated by   | duplicates       |
-| Cloners         | is cloned by       | clones           |
+| Link Type    | Inward             | Outward        |
+|--------------|--------------------|----------------|
+| **Test**     | is tested by       | tests          |
+| Blocks       | is blocked by      | blocks         |
+| Defect       | created by         | created        |
+| Dependency   | is dependent upon  | dependency of  |
+| Relates      | relates to         | relates to     |
+| Implementers | is implemented by  | implements     |
+| Duplicate    | is duplicated by   | duplicates     |
+| Cloners      | is cloned by       | clones         |
 
 ---
 
 ## Common Errors and Fixes
 
-| Error                                              | Cause                                      | Fix                                                        |
-|----------------------------------------------------|--------------------------------------------|------------------------------------------------------------|
-| `404 - No issue link type 'Tests' found`           | Wrong link type name                       | Use **"Test"** (singular)                                  |
-| `The priority selected is invalid`                 | Wrong priority name                        | Use `{"id": "10008"}` or `"3 - Medium"`                    |
-| `Field cannot be set`                              | Field not on edit screen for issue type    | Set during creation via XRay API, or leave for manual      |
-| `data was not an array` for Story Points           | Old field ID `customfield_10003`           | Use `customfield_10042`                                    |
-| `Number value expected as the Sprint id`           | Sprint ID passed as string                 | Use `customfield_10020: {NUMBER}`                          |
-| Test not showing in Test Coverage                  | Not linked with `jira_link_issues`         | Run link with `linkType: "Test"`                           |
-| Test Execution empty in XRay                       | Tests created with `jira_create_issue`     | Use `xray_cloud_create_execution` with testKeys            |
-| Description shows raw markdown                     | API v2 stores as plain text                | Use bullet/numbered lists, no tables, no headings          |
-| Cannot remove tests from TE                        | No API for removal                         | Create new TE with correct tests, reject old one           |
-| Cannot delete issues (403)                         | No delete permission in PAS2               | Transition to "Rejected" with comment                      |
-| AI fields not setting                              | Old field IDs (pre-migration)              | Use `10173` (effort), `10221` (level), `10191` (tools)     |
-| `xray_cloud_create_test` returns "issuetype" error | Wrong Jira instance                       | Verify XRAY_CLOUD_CLIENT_ID points to prod                 |
-| `xray_cloud_get_test_steps` returns stale data     | GraphQL cache or test not synced           | Verify steps in Jira UI directly                           |
-| Test created but no steps visible in UI            | Created with `jira_create_issue`           | Must use `xray_cloud_create_test` — reject and recreate    |
+| Error                                            | Cause                                    | Fix                                                     |
+|--------------------------------------------------|------------------------------------------|---------------------------------------------------------|
+| `404 - No issue link type 'Tests' found`         | Wrong link type name                     | Use **"Test"** (singular)                               |
+| `The priority selected is invalid`               | Wrong priority name                      | Use `{"id": "10008"}` or `"3 - Medium"`                 |
+| `Field cannot be set`                            | Field not on edit screen for issue type  | Set during creation via XRay API, or leave for manual   |
+| `data was not an array` for Story Points         | Old field ID `customfield_10003`         | Use `customfield_10042`                                 |
+| `Number value expected as the Sprint id`         | Sprint ID passed as string               | Use `customfield_10020: {NUMBER}`                       |
+| Test not showing in Test Coverage                | Not linked with `jira_link_issues`       | Run link with `linkType: "Test"`                        |
+| Test Execution empty in XRay                     | Tests created with `jira_create_issue`   | Use `xray_cloud_create_execution` with testKeys         |
+| Description shows raw markdown                   | API v2 stores as plain text              | Use bullet/numbered lists, no tables, no headings       |
+| Cannot remove tests from TE                      | No API for removal                       | Create new TE with correct tests, reject old one        |
+| Cannot delete issues (403)                       | No delete permission in PAS2             | Transition to "Rejected" with comment                   |
+| AI fields not setting                            | Old field IDs (pre-migration)            | Use `10173` (effort), `10221` (level), `10191` (tools)  |
+| `xray_cloud_create_test` returns "issuetype" error | Wrong Jira instance                   | Verify XRAY_CLOUD_CLIENT_ID points to prod              |
+| `xray_cloud_get_test_steps` returns stale data   | GraphQL cache or test not synced         | Verify steps in Jira UI directly                        |
+| Test created but no steps visible in UI          | Created with `jira_create_issue`         | Must use `xray_cloud_create_test` — reject and recreate |
 
 ---
 
 ## Execution Order (Summary)
 
 ```
-1.  jira_get_issue                       → Fetch story + ACs + assignee + Sprint + existing links
-2.  Analyze ACs/BRs                      → Define required test cases + classify Positive/Negative
-3.  Check existing tests                 → Search linked tests, determine reuse vs reject vs create
-4.  Reject broken tests/TEs             → Transition to "Reject" with comment
-5.  Group similar scenarios              → Identify tests that can use parameterized steps / Scenario Outlines
-6.  xray_cloud_create_test ×N            → Create each test with Cucumber/Manual steps
-7.  xray_cloud_update_test_datasets ×N   → Add datasets for Cucumber Scenario Outline tests (if applicable)
-8.  jira_update_issue ×N                 → Set description (objective + expected results, NO steps, NO tables)
-9.  jira_link_issues ×N                  → Link each test to story (linkType: "Test")
-10. xray_cloud_create_execution ×2       → Create TEs with all tests (Android + iOS for mobile)
-11. jira_update_issue ×2                 → Set label (PAS2_CQE), Sprint, and Team on each TE
-12. jira_link_issues ×2                  → Link TEs to story
-13. jira_create_issue (Task)             → Create QA Metrics Task (priority + label required)
-14. jira_link_issues                     → Link Task to story
-15. jira_assign_issue                    → Assign Task to story's assignee
-16. jira_update_issue                    → Set SP (10042) + Sprint (10020) + Team (10001) + AI fields (10173, 10221, 10191)
-17. jira_transition_issue                → Move Task to "In Progress"
-18. Verify                               → Confirm all links, coverage, and completeness
+1.  jira_get_issue                            → Fetch story + ACs + assignee + Sprint + existing links
+2.  Analyze ACs/BRs                           → Define required test cases + classify Positive/Negative
+3.  Check existing tests                      → Search linked tests, determine reuse vs reject vs create
+4.  Reject broken tests/TEs                   → Transition to "Reject" with comment
+5.  Group similar scenarios                   → Identify tests that can use parameterized steps / Scenario Outlines
+6.  xray_cloud_create_test ×N                 → Create each test with Cucumber/Manual steps
+7.  xray_cloud_update_test_datasets ×N        → Add datasets for Cucumber Scenario Outline tests (if applicable)
+8.  jira_update_issue ×N                      → Set description (objective + expected results, NO steps, NO tables)
+9.  jira_link_issues ×N                       → Link each test to story (linkType: "Test")
+10. jira_assign_issue ×N                      → Assign test cases to QE (story assignee)
+11. jira_update_issue ×N                      → Set Team field on test cases
+12. xray_cloud_move_tests_to_folder           → Move tests to correct repository folder
+13. xray_cloud_create_execution ×2            → Create TEs with all tests (Android + iOS for mobile)
+14. jira_update_issue ×2                      → Set label (PAS2_CQE), Sprint, and Team on each TE
+15. jira_assign_issue ×2                      → Assign TEs to QE (story assignee)
+16. jira_link_issues ×2                       → Link TEs to story
+17. jira_create_issue (Task)                  → Create QA Metrics Task (priority + label required)
+18. jira_link_issues                          → Link Task to story
+19. jira_assign_issue                         → Assign Task to story's assignee
+20. jira_update_issue                         → Set SP + Sprint + Team + Task Type + AI fields
+21. jira_transition_issue                     → Move Task to "In Progress"
+22. jira_transition_issue                     → Transition story to "In Testing"
+23. jira_add_comment                          → Add QE coverage comment to story
+24. Verify                                    → Confirm all links, coverage, and completeness
 ```
 
 ---
 
 ## Known Limitations
 
-| Limitation                                                | Workaround                                              |
-|-----------------------------------------------------------|---------------------------------------------------------|
-| Cannot remove tests from a Test Execution                 | Create new TE, reject old one                           |
-| Cannot delete issues (403 permission)                     | Transition to "Rejected" with comment                   |
-| No folder/repository browsing via API                     | Use labels and naming conventions                       |
-| Description tables render as plain text (API v2)          | Use numbered/bullet lists instead                       |
-| `xray_cloud_get_test_steps` may return cached data        | Verify in UI when uncertain                             |
-| Tests created with `jira_create_issue` have no XRay steps | Always use `xray_cloud_create_test`                     |
+| Limitation                                            | Workaround                                          |
+|-------------------------------------------------------|-----------------------------------------------------|
+| Cannot remove tests from a Test Execution             | Create new TE, reject old one                       |
+| Cannot delete issues (403 permission)                 | Transition to "Rejected" with comment               |
+| Description tables render as plain text (API v2)      | Use numbered/bullet lists instead                   |
+| `xray_cloud_get_test_steps` may return cached data    | Verify in UI when uncertain                         |
+| Tests created with `jira_create_issue` have no steps  | Always use `xray_cloud_create_test`                 |
+| Test Repository Path not directly editable via field  | Use `xray_cloud_move_tests_to_folder` to set path   |
