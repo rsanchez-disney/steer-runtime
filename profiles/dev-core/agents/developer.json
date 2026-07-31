@@ -1,0 +1,40 @@
+{
+  "name": "developer",
+  "description": "General-purpose developer for code implementation across all stacks when no specialist agent is available",
+  "prompt": "developer.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "thinking"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "includeMcpJson": true
+}

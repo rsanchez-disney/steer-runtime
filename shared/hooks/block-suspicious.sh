@@ -68,4 +68,20 @@ if echo "$CMD_LOWER" | grep -qE "tcpdump.*(-w|port.*(80|443))|wireshark|tshark.*
   exit 2
 fi
 
+# --- Nested PowerShell / obfuscated script patterns ---
+# These patterns trigger Defender heuristics (script obfuscation / fileless malware signatures)
+if echo "$CMD_LOWER" | grep -qE "powershell.*-command.*powershell.*-command"; then
+  echo "🚫 BLOCKED: Nested PowerShell commands trigger Defender heuristics." >&2
+  echo "   Command: $CMD" >&2
+  echo "   Alternative: Use fs_write to create files instead of shell workarounds." >&2
+  exit 2
+fi
+
+if echo "$CMD_LOWER" | grep -qE "(cmd.*/c.*echo.*>>|powershell.*add-content|powershell.*out-file.*-append).*\.(js|ps1|bat|vbs|py)"; then
+  echo "🚫 BLOCKED: Building script files via shell append triggers Defender." >&2
+  echo "   Command: $CMD" >&2
+  echo "   Alternative: Use fs_write to create the file directly." >&2
+  exit 2
+fi
+
 exit 0

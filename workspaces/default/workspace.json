@@ -2,7 +2,8 @@
   "name": "default",
   "description": "Generic baseline workspace — activate a team workspace or create your own for project-specific features",
   "profiles": [
-    "dev-core"
+    "dev-core",
+    "dev-web"
   ],
   "default_agent": "orchestrator",
   "projects": [],
