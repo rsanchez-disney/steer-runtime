@@ -1,0 +1,24 @@
+{
+  "name": "jedai-gateway",
+  "extends": "jedai-team",
+  "description": "JedAI Gateway — unified LiteLLM proxy routing AI requests to OpenAI, Bedrock, Ollama and other providers with cost tracking and rate limiting",
+  "team": "JedAI Platform",
+  "profiles": [
+    "dev-python",
+    "dev-ai"
+  ],
+  "default_agent": "llm_engineer",
+  "projects": [
+    {
+      "name": "gateway",
+      "repo": "jedai/gateway",
+      "path": "gateway",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": [
+    "general-python-development"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/jedai"
+}

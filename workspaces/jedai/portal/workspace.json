@@ -1,0 +1,30 @@
+{
+  "name": "portal",
+  "extends": "jedai-team",
+  "description": "JedAI Portal — official documentation site for the JedAI platform, built with Astro",
+  "team": "JedAI Platform",
+  "profiles": [
+    "dev-web",
+    "portal-developer",
+    "content-creator"
+  ],
+  "default_agent": "portal_developer",
+  "jira_prefix": "JEDAI-",
+  "projects": [
+    {
+      "name": "portal",
+      "repo": "jedai/portal",
+      "path": "portal",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": [
+    "general-node-development"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/jedai",
+  "exclusive_overrides": {
+    "portal-developer": ["agents", "prompts"],
+    "content-creator": ["agents", "prompts"]
+  }
+}

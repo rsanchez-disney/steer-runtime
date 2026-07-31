@@ -1,0 +1,48 @@
+{
+  "name": "jedai-team",
+  "description": "JedAI platform workspace — AI portal, Chat UI, and LiteLLM gateway projects",
+  "team": "JedAI Platform",
+  "profiles": [
+    "dev-core",
+    "dev-ai",
+    "dev-python",
+    "dev-web",
+    "ops",
+    "qa"
+  ],
+  "default_agent": "ai_orchestrator",
+  "projects": [
+    {
+      "name": "portal",
+      "repo": "jedai/portal",
+      "path": "portal",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "chat",
+      "repo": "jedai/chat",
+      "path": "chat",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "gateway",
+      "repo": "jedai/gateway",
+      "path": "gateway",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-python-development",
+    "general-node-development"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/jedai",
+  "policies": {
+    "geai": {
+      "enabled": true,
+      "allowed_models": ["*"],
+      "certify_with_geai": true
+    }
+  }
+}

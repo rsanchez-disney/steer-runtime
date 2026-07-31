@@ -1,0 +1,49 @@
+{
+  "name": "portal_developer",
+  "description": "Astro developer specialist for the JedAI portal — pages, layouts, React islands, and site infrastructure",
+  "prompt": "portal_developer.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@github-disney/*",
+    "@figma/*",
+    "@chrome-devtools/*"
+  ],
+  "allowedTools": [
+    "@github-disney/*",
+    "@figma/*",
+    "@chrome-devtools/*"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://../../context/portal_context.md",
+    "file://../../steering/20-portal-conventions.md",
+    "file://../../../skills/pr-review.md",
+    "file://../../skills/design-to-code.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "content_creator",
+  "description": "Documentation content specialist for the JedAI portal — writes and maintains MDX pages, guides, and the model catalog",
+  "prompt": "content_creator.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "grep"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://../../context/portal_context.md",
+    "file://../../steering/20-portal-conventions.md"
+  ],
+  "includeMcpJson": false
+}

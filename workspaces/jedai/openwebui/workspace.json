@@ -1,0 +1,23 @@
+{
+  "name": "jedai-chat",
+  "extends": "jedai-team",
+  "description": "JedAI Chat — team-facing chat UI (Open WebUI) deployed over LiteLLM with custom pipelines and SSO",
+  "team": "JedAI Platform",
+  "profiles": [
+    "dev-python"
+  ],
+  "default_agent": "python",
+  "projects": [
+    {
+      "name": "chat",
+      "repo": "jedai/chat",
+      "path": "chat",
+      "host": "github.disney.com"
+    }
+  ],
+  "rules": [
+    "general-python-development"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/jedai"
+}
