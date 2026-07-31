@@ -4,6 +4,27 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.178] — 2026-07-31
+
+### Added
+
+- **agents** — elasticsearch_agent routing to orchestrator (#642)
+- **agents** — @atlassian/* (Rovo) priority routing for Cloud operations (#640)
+- **agents** — promote skill lifecycle skills to dev-core global profile (#644)
+- **workspaces** — jedai-team workspace with portal, chat, and gateway projects (#646)
+- **workspaces** — update Studio Anglerfish workspace for iOS (#639)
+- **skills** — add high-level skills for POS team (#641)
+
+### Fixed
+
+- **skills** — align quarterly-report and quarterly-studio-report skills (#643)
+- **sustainment** — update chg_analyzer_agent to work with guided workflow (#638)
+- **sustainment** — add risk assessment to chg_analyzer_agent, fix missing newline (#645)
+
+### Documentation
+
+- **tools** — update Rovo MCP documentation for --login PKCE flow (#647)
+
 ## [0.2.175] — 2026-07-28
 
 ### Added
