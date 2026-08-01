@@ -1,0 +1,94 @@
+---
+description: Maestro E2E mobile testing — generates .yaml test flows from Figma designs or implemented screens
+globs: ["**/.maestro/**", "**/maestro/**", "**/*.yaml"]
+alwaysApply: false
+---
+
+# Maestro E2E Mobile Tests
+
+Generate and maintain Maestro test flows for React Native and Flutter apps.
+
+## Flow structure
+
+```yaml
+# .maestro/flows/<category>/<flow-name>.yaml
+appId: com.example.app
+---
+- launchApp
+- assertVisible: "Screen Title"
+- tapOn:
+    id: "testID"
+- assertVisible: "Next Screen"
+```
+
+## File organization
+
+```text
+.maestro/
+├── config.yaml          ← App ID, defaults
+├── flows/
+│   ├── auth/
+│   │   ├── login-success.yaml
+│   │   └── login-error.yaml
+│   ├── onboarding/
+│   │   └── complete-onboarding.yaml
+│   └── <feature>/
+│       └── <scenario>.yaml
+└── utils/
+    ├── login.yaml       ← Reusable sub-flows
+    └── navigate-to.yaml
+```
+
+## Command reference
+
+| Action | Maestro YAML |
+|--------|-------------|
+| Tap button | `tapOn: { id: "testID" }` or `tapOn: "Label"` |
+| Type text | `inputText: { id: "testID", text: "value" }` |
+| Assert visible | `assertVisible: "Text"` or `assertVisible: { id: "testID" }` |
+| Assert NOT visible | `assertNotVisible: "Error"` |
+| Scroll | `scroll` |
+| Swipe | `swipe: { direction: "up" }` |
+| Back button | `pressKey: "back"` |
+| Long press | `longPressOn: "Element"` |
+| Wait | `assertVisible: { text: "Ready", enabled: true }` |
+| Sub-flow | `runFlow: utils/login.yaml` |
+
+## Rules
+
+1. One flow per user journey (5-15 steps max)
+2. Prefer `testID` over text matching (stable selectors)
+3. Assert screen arrival after every navigation
+4. Reusable sequences go in `utils/` as sub-flows
+5. Name flows descriptively: `login-success.yaml`, not `test1.yaml`
+6. Include both happy path and primary error case
+7. Add YAML comments for non-obvious waits or assertions
+
+## From Figma
+
+When generating from a Figma flow:
+1. Identify each frame as a screen
+2. Identify arrows/connections as navigation actions
+3. Map button labels to `tapOn` commands
+4. Map screen titles to `assertVisible` assertions
+5. Generate one flow per connected sequence
+
+## Missing testIDs
+
+If implementation lacks testIDs, report what's needed:
+
+```
+⚠️ Missing testIDs:
+- PaymentScreen submit button → suggest: testID="payment-submit"
+- CartScreen amount input → suggest: testID="cart-amount-input"
+```
+
+Do NOT generate flows that rely on brittle text matching when testIDs should exist.
+
+## Running
+
+```bash
+maestro test .maestro/flows/auth/login-success.yaml   # Single flow
+maestro test .maestro/flows/                           # All flows
+maestro test --dry-run .maestro/flows/                 # Validate YAML only
+```
