@@ -1,0 +1,67 @@
+{
+  "name": "react_native",
+  "description": "React Native specialist — implements screens and flows from Figma designs using TypeScript, React Navigation, and native modules",
+  "prompt": "react_native.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@figma/*"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "app/**",
+        "components/**",
+        "screens/**",
+        "navigation/**",
+        "hooks/**",
+        "utils/**",
+        "theme/**",
+        "assets/**",
+        "styles/**",
+        "__tests__/**",
+        "package.json",
+        "tsconfig.json",
+        "babel.config.js",
+        "metro.config.js",
+        "app.json",
+        "index.js",
+        "App.tsx"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md",
+    "file://README.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  },
+  "allowedTools": [
+    "@figma/*"
+  ],
+  "includeMcpJson": true
+}
