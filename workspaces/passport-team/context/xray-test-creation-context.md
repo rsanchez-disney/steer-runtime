@@ -82,9 +82,9 @@ All artifacts are linked to the story with `linkType: "Test"`.
 
 #### XRay Cloud (requires `XRAY_CLOUD_CLIENT_ID` + `XRAY_CLOUD_CLIENT_SECRET`)
 
-| Tool                                 | Purpose                                    |
-|--------------------------------------|--------------------------------------------|
-| `xray_cloud_create_test`            | Create test with Gherkin/Manual steps      |
+| Tool                                 | Purpose                                                              |
+|--------------------------------------|----------------------------------------------------------------------|
+| `xray_cloud_create_test`            | Create test with Gherkin/Manual steps (+ optional `folderPath` param) |
 | `xray_cloud_create_execution`       | Create TE with tests linked (GraphQL)      |
 | `xray_cloud_update_run`             | Associate tests to TE / report status      |
 | `xray_cloud_search_tests`           | Search tests by JQL                        |
@@ -95,7 +95,7 @@ All artifacts are linked to the story with `linkType: "Test"`.
 | `xray_cloud_get_test_datasets`      | Read dataset (parameterized data) from test |
 | `xray_cloud_update_test_datasets`   | Create/update dataset iterations on test   |
 | `xray_cloud_get_folders`            | List Test Repository folder tree           |
-| `xray_cloud_move_tests_to_folder`   | Move tests to a repository folder          |
+| `xray_cloud_move_tests_to_folder`   | Batch-move tests to a repository folder (use `folderPath` on create for single tests) |
 
 #### ⛔ Do NOT use (XRay Server tools — not supported on Cloud)
 
@@ -126,7 +126,7 @@ All artifacts are linked to the story with `linkType: "Test"`.
 13. **Test Cases and Test Executions MUST be assigned to the QE** (story assignee)
 14. **Team field MUST be set on ALL artifacts** — Test Cases, Test Executions, and QA Tasks
 15. **After all artifacts are created, transition the story to "In Testing"** and add QE comment
-16. **Move all new tests to the correct repository folder after creation** — use `xray_cloud_move_tests_to_folder`
+16. **Move all new tests to the correct repository folder during creation** — use `folderPath` param on `xray_cloud_create_test` (preferred) or `xray_cloud_move_tests_to_folder` for batch moves
 
 ### XRay Cloud Configuration
 
@@ -165,7 +165,7 @@ jira_link_issues:
 | Automation Status    | `customfield_10190` | `{"value": "Not Started"}` (only when Candidate = Y)               | ✅ Test           |
 | Acceptance Criteria  | `customfield_10166` | Text (on Stories)                                                   | ✅ Story          |
 | Priority             | `priority`          | `{"id": "10008"}` (3 - Medium) or `{"id": "10007"}` (2 - High)     | ✅ All            |
-| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ use xray_cloud_move_tests_to_folder |
+| Test Repository Path | `customfield_20111` | String (e.g., `/Passport - UI`)                                     | ⚠️ use `folderPath` on create or `xray_cloud_move_tests_to_folder` |
 | Epic Link            | `customfield_13912` | Epic issue key (e.g., `"PAS2-1"`)                                   | ⚠️ not editable  |
 | Test Environments    | `customfield_20125` | Array of strings: `["LATEST"]`                                      | ⚠️ not editable  |
 
@@ -297,6 +297,7 @@ xray_cloud_create_test:
   testType: "Cucumber"
   labels: ["{PROJECT_LABEL}"]
   priority: {"id": "10008"}
+  folderPath: "{REPOSITORY_PATH}"
   gherkin: |
     Given {precondition}
     And {additional context}
@@ -318,6 +319,7 @@ xray_cloud_create_test:
   testType: "Manual"
   labels: ["{PROJECT_LABEL}"]
   priority: {"id": "10008"}
+  folderPath: "{REPOSITORY_PATH}"
   steps:
     - action: "{precondition or setup step}"
       data: "{test data if applicable}"
@@ -382,6 +384,10 @@ jira_update_issue:
 ```
 
 ### Move tests to correct repository folder:
+
+> **Preferred:** Use the `folderPath` parameter on `xray_cloud_create_test` (shown above) — folder assignment happens automatically during creation.
+>
+> **Batch fallback:** Use `xray_cloud_move_tests_to_folder` when moving multiple existing tests or tests created without `folderPath`:
 
 ```yaml
 xray_cloud_move_tests_to_folder:
@@ -471,6 +477,7 @@ xray_cloud_create_test:
   summary: "PAS2-200 | DLR | Mobile | Login | Validate credentials"
   testType: "Cucumber"
   labels: ["PAS2_CQE"]
+  folderPath: "/Passport - UI"
   gherkin: |
     Scenario Outline: Validate user login with different credentials
     Given the user is on the login screen
@@ -753,7 +760,7 @@ jira_add_comment:
 - [ ] Cucumber Scenario Outline tests have datasets with all iterations defined
 - [ ] Test Cases assigned to QE (creator)
 - [ ] Test Cases have Team field set
-- [ ] Tests moved to correct repository folder (Passport - UI or Passport - BE)
+- [ ] Tests moved to correct repository folder (Passport - UI or Passport - BE) via `folderPath` on create
 - [ ] Test Executions linked to story and contain all tests
 - [ ] Test Executions have: label `PAS2_CQE`, Sprint (from story), Team (`PAS2 | Mobile` or `PAS2 | Services`)
 - [ ] Test Executions assigned to QE (creator/executor)
@@ -941,25 +948,24 @@ Latest | PAS2-17 | DLR | TnP | Flutter | Photo Display | Readback of Photo | iOS
 3.  Check existing tests                      → Search linked tests, determine reuse vs reject vs create
 4.  Reject broken tests/TEs                   → Transition to "Reject" with comment
 5.  Group similar scenarios                   → Identify tests that can use parameterized steps / Scenario Outlines
-6.  xray_cloud_create_test ×N                 → Create each test with Cucumber/Manual steps
+6.  xray_cloud_create_test ×N                 → Create each test with Cucumber/Manual steps (+ folderPath for auto-placement)
 7.  xray_cloud_update_test_datasets ×N        → Add datasets for Cucumber Scenario Outline tests (if applicable)
 8.  jira_update_issue ×N                      → Set description (objective + expected results, NO steps, NO tables)
 9.  jira_link_issues ×N                       → Link each test to story (linkType: "Test")
 10. jira_assign_issue ×N                      → Assign test cases to QE (story assignee)
 11. jira_update_issue ×N                      → Set Team field on test cases
-12. xray_cloud_move_tests_to_folder           → Move tests to correct repository folder
-13. xray_cloud_create_execution ×2            → Create TEs with all tests (Android + iOS for mobile)
-14. jira_update_issue ×2                      → Set label (PAS2_CQE), Sprint, and Team on each TE
-15. jira_assign_issue ×2                      → Assign TEs to QE (story assignee)
-16. jira_link_issues ×2                       → Link TEs to story
-17. jira_create_issue (Task)                  → Create QA Metrics Task (priority + label required)
-18. jira_link_issues                          → Link Task to story
-19. jira_assign_issue                         → Assign Task to story's assignee
-20. jira_update_issue                         → Set SP + Sprint + Team + Task Type + AI fields
-21. jira_transition_issue                     → Move Task to "In Progress"
-22. jira_transition_issue                     → Transition story to "In Testing"
-23. jira_add_comment                          → Add QE coverage comment to story
-24. Verify                                    → Confirm all links, coverage, and completeness
+12. xray_cloud_create_execution ×2            → Create TEs with all tests (Android + iOS for mobile)
+13. jira_update_issue ×2                      → Set label (PAS2_CQE), Sprint, and Team on each TE
+14. jira_assign_issue ×2                      → Assign TEs to QE (story assignee)
+15. jira_link_issues ×2                       → Link TEs to story
+16. jira_create_issue (Task)                  → Create QA Metrics Task (priority + label required)
+17. jira_link_issues                          → Link Task to story
+18. jira_assign_issue                         → Assign Task to story's assignee
+19. jira_update_issue                         → Set SP + Sprint + Team + Task Type + AI fields
+20. jira_transition_issue                     → Move Task to "In Progress"
+21. jira_transition_issue                     → Transition story to "In Testing"
+22. jira_add_comment                          → Add QE coverage comment to story
+23. Verify                                    → Confirm all links, coverage, and completeness
 ```
 
 ---
@@ -973,4 +979,4 @@ Latest | PAS2-17 | DLR | TnP | Flutter | Photo Display | Readback of Photo | iOS
 | Description tables render as plain text (API v2)      | Use numbered/bullet lists instead                   |
 | `xray_cloud_get_test_steps` may return cached data    | Verify in UI when uncertain                         |
 | Tests created with `jira_create_issue` have no steps  | Always use `xray_cloud_create_test`                 |
-| Test Repository Path not directly editable via field  | Use `xray_cloud_move_tests_to_folder` to set path   |
+| Test Repository Path not directly editable via field  | Use `folderPath` on `xray_cloud_create_test` or `xray_cloud_move_tests_to_folder` for batch |
