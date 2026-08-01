@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.179] — 2026-08-01
+
+### Fixed
+
+- **agents** — add developer agent fallback + Windows shell safety hardening (#648)
+
 ## [0.2.178] — 2026-07-31
 
 ### Added
