@@ -4,6 +4,12 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.180] — 2026-08-02
+
+### Added
+
+- **workspaces** — add dev-mobile profile to dlp-sbc-team workspace (react_native, maestro_test_agent, flutter, android_native, ios_native, Figma-to-RN pipeline)
+
 ## [0.2.179] — 2026-08-01
 
 ### Fixed
