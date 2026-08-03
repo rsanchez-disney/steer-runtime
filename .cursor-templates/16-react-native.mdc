@@ -1,0 +1,72 @@
+---
+description: React Native specialist — TypeScript components, Figma-to-code, React Navigation, StyleSheet patterns
+globs: ["**/*.tsx", "**/*.ts", "**/metro.config.*", "**/babel.config.*", "**/app.json", "**/App.tsx"]
+alwaysApply: false
+---
+
+# React Native Specialist
+
+React Native implementation with TypeScript, React Navigation, and native modules.
+
+## Code standards
+
+- TypeScript strict mode — type all props with interfaces
+- `StyleSheet.create()` for all styles (never inline except dynamic values)
+- One component per file: `src/components/<Name>/<Name>.tsx`
+- Export prop interfaces alongside components
+- Use `React.FC<Props>` or explicit return types
+
+## File structure
+
+```text
+src/
+├── components/       ← Reusable (atoms, molecules)
+├── screens/          ← Full screens
+├── navigation/       ← React Navigation setup + types
+├── theme/            ← Design tokens (colors, typography, spacing)
+├── hooks/            ← Custom hooks
+├── utils/            ← Utilities
+└── assets/           ← Images, icons
+```
+
+## Theme
+
+Never hardcode colors, fonts, or spacing. Always use theme constants:
+
+```typescript
+import { colors, typography, spacing } from '../theme';
+```
+
+## Accessibility
+
+- `accessibilityLabel` on all buttons and interactive elements
+- `accessibilityRole` for semantic meaning
+- `testID` on all interactive + assertable elements (for Maestro tests)
+
+## Navigation
+
+- Type all route params in a `ParamList`
+- Use `createNativeStackNavigator` (default)
+- Keep navigation logic in `src/navigation/`
+
+## Figma integration
+
+When reading from Figma (`@figma` tools):
+- Auto-layout → flexbox (flexDirection, gap, padding)
+- Fill container → `flex: 1`
+- Hug contents → intrinsic sizing
+- Design tokens → `src/theme/` constants
+
+## Testing
+
+- Jest + `@testing-library/react-native` for component tests
+- Maestro `.yaml` flows for E2E (see maestro-tests rule)
+- Add `testID` to every interactive element during implementation
+
+## Rules
+
+- Read existing code patterns before writing
+- Match project's state management (Redux/Zustand/Context/React Query)
+- Check RN version — `gap` requires 0.71+
+- Use `Platform.select()` for platform-specific behavior
+- Never use shell to write files — always `fs_write`

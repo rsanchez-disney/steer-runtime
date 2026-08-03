@@ -1,0 +1,144 @@
+---
+description: Autonomous Figma-to-React Native pipeline — full implementation from design to PR
+globs: ["**/*.tsx", "**/*.ts", "**/package.json"]
+alwaysApply: false
+---
+
+# Figma-to-React Native Pipeline
+
+When given a Figma URL and asked to implement screens/flows, follow this complete pipeline sequentially.
+
+## Phase 1: Analyze the design
+
+Use `@figma` tools to understand the design:
+
+1. `get_figma_file` — understand page/frame hierarchy
+2. `get_figma_styles` — extract design tokens (colors, typography, spacing)
+3. `get_figma_node` — get specific screen details (layout, children, constraints)
+4. Identify: all screens, reusable components, navigation relationships
+
+**Output before proceeding:**
+- List of screens with descriptions
+- List of shared components
+- Navigation graph (screen A → action → screen B)
+- Design tokens (colors, fonts, spacing)
+
+## Phase 2: Plan
+
+Before writing code, produce a brief plan:
+- Theme files needed
+- Components to build (in dependency order)
+- Screens to implement (in navigation order)
+- Test strategy (which flows to cover with Maestro)
+
+**Ask for approval before proceeding.**
+
+## Phase 3: Implement
+
+Execute in this order:
+
+### 3a. Theme (from Figma tokens)
+
+```text
+src/theme/
+├── colors.ts        ← from get_figma_styles color fills
+├── typography.ts    ← from get_figma_styles text styles
+├── spacing.ts       ← from auto-layout padding/gap values
+└── index.ts         ← re-exports + useTheme hook
+```
+
+### 3b. Shared components
+
+- One file per component: `src/components/<Name>/<Name>.tsx`
+- Use theme constants (never hardcode colors/spacing)
+- Add `testID` to all interactive elements
+- Type all props with interfaces
+- Use `StyleSheet.create()` for styles
+
+### 3c. Screens
+
+- `src/screens/<ScreenName>.tsx`
+- Compose from shared components
+- Add `testID` to screen root and key assertable elements
+- Handle loading/error/empty states
+
+### 3d. Navigation
+
+- `src/navigation/` with typed navigators
+- Define `RootStackParamList` with all route params
+- Wire screens into navigators matching the Figma flow
+
+## Phase 4: Tests
+
+### Unit tests (Jest + React Testing Library)
+
+```bash
+# Run after implementation
+npx jest
+```
+
+- Test component rendering with different props
+- Test conditional rendering (loading, error, empty)
+- Test user interactions (press handlers called)
+
+### Maestro E2E flows
+
+Generate `.maestro/flows/<flow-name>.yaml` for each user journey:
+
+```yaml
+appId: com.example.app
+---
+- launchApp
+- assertVisible: "Screen Title"
+- tapOn:
+    id: "element-testID"
+- assertVisible: "Next Screen"
+```
+
+Rules for Maestro flows:
+- One flow per user journey
+- Use testIDs (not text) for tapping
+- Assert screen arrival after every navigation
+- Include happy path + primary error case
+
+## Phase 5: Verify
+
+1. `npx tsc --noEmit` — type check passes
+2. `npx eslint src/` — no lint errors
+3. `npx jest` — tests pass
+4. `maestro test --dry-run .maestro/flows/` — YAML valid (if maestro available)
+
+## Phase 6: Ship
+
+1. Stage all changes: `git add src/ .maestro/ __tests__/`
+2. Commit: `git commit -m "feat: implement <flow-name> from Figma"`
+3. Push: `git push`
+4. Create PR with:
+   - Figma link in description
+   - List of screens implemented
+   - Test coverage summary
+
+## Figma → React Native mapping reference
+
+| Figma | React Native |
+|-------|-------------|
+| Frame (vertical auto-layout) | `<View style={{ flexDirection: 'column' }}>` |
+| Frame (horizontal auto-layout) | `<View style={{ flexDirection: 'row' }}>` |
+| Auto-layout gap | `gap` or margins on children |
+| Auto-layout padding | `padding*` properties |
+| Fill container | `flex: 1` or `alignSelf: 'stretch'` |
+| Hug contents | Intrinsic sizing (no flex) |
+| Text node | `<Text style={typography.x}>` |
+| Rectangle + fill | `backgroundColor` + `borderRadius` |
+| Image fill | `<Image source={...}>` |
+| Component instance | Reusable `<Component prop={...}>` |
+
+## Rules
+
+- Never hardcode colors/fonts/spacing — use theme
+- Always add `testID` to interactive elements
+- Always add `accessibilityLabel` to buttons and inputs
+- One component per file
+- `StyleSheet.create()` over inline styles
+- Type all navigation params
+- If Figma is ambiguous, ask — don't guess

@@ -1,0 +1,26 @@
+{
+  "name": "cursor_sync_agent",
+  "description": "Syncs steer-runtime agent prompts and rules into .cursor/rules/ format for Cursor IDE compatibility",
+  "prompt": "cursor_sync_agent.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "code",
+    "grep",
+    "thinking"
+  ],
+  "resources": [
+    "file://AGENTS.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      }
+    ]
+  },
+  "includeMcpJson": false
+}

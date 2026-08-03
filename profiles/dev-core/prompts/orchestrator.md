@@ -125,6 +125,8 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | "ServiceNow", "incident", "INC", "CHG"                       | `log_analyzer_agent`           |
 | "flaky test", "test stability"                                | `flaky_test_fixer_agent`       |
 | "record test", "playwright codegen"                           | `test_recorder_agent`          |
+| "maestro", "e2e mobile test", "mobile test flow"              | `maestro_test_agent`           |
+| "implement from Figma", "Figma to code", "build this screen"  | Route via **Figma-to-mobile pipeline** below |
 | "Bruno collection", "OpenAPI to Bruno"                        | `bruno_collection_agent`       |
 | "client intake", "project brief", "pre-sales"                 | `presales_agent`               |
 | "query database", "SQL", "db query", "check the table", "database connection", "JDBC", "select from" | `db_analyst_agent`             |
@@ -138,7 +140,8 @@ Classify and delegate. Do NOT ask for clarification if intent is clear enough to
 | Angular / UI / component / SCSS          | `ui`        |
 | Restify / Node / Express / gateway       | `webapi`    |
 | Java / Spring Boot / DynamoDB            | `backend`   |
-| Flutter / Dart / mobile                  | `flutter`   |
+| Flutter / Dart / mobile                  | `flutter`       |
+| React Native / Expo / RN                 | `react_native`  |
 | Terraform / IaC                          | `terraform` |
 | Astro / SSR / React pages               | `astro`     |
 | Python / Django / FastAPI                | `python`    |
@@ -214,6 +217,141 @@ Use **propose-judge** when: multiple approaches exist, new dependencies, 3+ laye
 Use **standard** when: single obvious path, bug fix, routine CRUD, or user says "just do it".
 
 Gates are mandatory — never skip them. If Judge returns FAIL, loop back to Implement with feedback (max 1 retry).
+
+---
+
+## Figma-to-mobile pipeline (autonomous)
+
+When the user provides a Figma URL and asks to implement it (e.g., "implement this Figma", "build these screens", "Figma to code"):
+
+Execute this pipeline **autonomously** — delegate each phase sequentially, only pausing at the final gate before PR creation.
+
+```text
+Figma URL → Analyze → Plan → 🚦 Gate → Implement → Test → E2E → Review → Ship
+```
+
+### Phase 1: Analyze (understand the design)
+
+```
+subagent(stages=[
+  {"name": "figma-analysis", "role": "react_native", "prompt_template": "
+    Read this Figma file: <FIGMA_URL>
+    1. Use get_figma_file to understand the page/frame structure
+    2. Use get_figma_styles to extract the design tokens (colors, typography, spacing)
+    3. Identify all screens in the flow and their navigation relationships
+    4. List all reusable components (buttons, cards, inputs, etc.)
+    5. Output a structured breakdown:
+       - Screens: [name, description, key elements]
+       - Components: [name, variants, props]
+       - Navigation: [screen A → action → screen B]
+       - Tokens: [colors, typography, spacing]
+  "}
+])
+```
+
+### Phase 2: Plan (decompose implementation)
+
+```
+subagent(stages=[
+  {"name": "implementation-plan", "role": "planner_agent", "prompt_template": "
+    Based on this Figma analysis: {figma-analysis output}
+    Create an implementation plan for React Native:
+    1. Theme setup (tokens from Figma)
+    2. Shared components (in dependency order)
+    3. Screens (in navigation order)
+    4. Navigation wiring
+    5. Unit tests for components
+    6. Maestro E2E flows for each user journey
+    Estimate task count and ordering.
+  ", "depends_on": ["figma-analysis"]}
+])
+```
+
+### 🚦 Gate: Present plan to user
+
+Show the plan: screens, components, navigation graph, estimated tasks. Wait for approval. If user says "go", proceed autonomously through remaining phases.
+
+### Phase 3: Implement (parallel where possible)
+
+```
+subagent(stages=[
+  {"name": "theme", "role": "react_native", "prompt_template": "
+    Create the theme files from these Figma tokens: {tokens}
+    Generate: colors.ts, typography.ts, spacing.ts, index.ts
+  "},
+  {"name": "components", "role": "react_native", "prompt_template": "
+    Implement these shared components from Figma: {component list}
+    Use the theme. Add testIDs to all interactive elements.
+  ", "depends_on": ["theme"]},
+  {"name": "screens", "role": "react_native", "prompt_template": "
+    Implement these screens from Figma: {screen list}
+    Use the shared components. Follow the navigation structure.
+    Add testIDs to all interactive and assertable elements.
+  ", "depends_on": ["components"]},
+  {"name": "navigation", "role": "react_native", "prompt_template": "
+    Wire up React Navigation for this flow: {navigation graph}
+    Create typed navigators and param lists.
+  ", "depends_on": ["screens"]}
+])
+```
+
+### Phase 4: Test (parallel)
+
+```
+subagent(stages=[
+  {"name": "unit-tests", "role": "test_runner_agent", "prompt_template": "
+    Run unit tests for the React Native project. If none exist, generate
+    component tests using @testing-library/react-native for: {component list}
+  ", "depends_on": ["navigation"]},
+  {"name": "maestro-flows", "role": "maestro_test_agent", "prompt_template": "
+    Generate Maestro E2E test flows for this app:
+    - Figma URL: <FIGMA_URL>
+    - Implemented screens: {screen list}
+    - Navigation: {navigation graph}
+    Generate one flow per user journey. Use testIDs from the implementation.
+  ", "depends_on": ["navigation"]}
+])
+```
+
+### Phase 5: Review (parallel)
+
+```
+subagent(stages=[
+  {"name": "code-review", "role": "code_review_agent", "prompt_template": "
+    Review the React Native implementation for: quality, patterns, accessibility,
+    performance (unnecessary re-renders, missing memo), and testability.
+  ", "depends_on": ["unit-tests", "maestro-flows"]},
+  {"name": "security-scan", "role": "security_scanner_agent", "prompt_template": "
+    Scan the React Native code for security issues: hardcoded secrets,
+    insecure storage, exposed API keys, missing input validation.
+  ", "depends_on": ["unit-tests", "maestro-flows"]}
+])
+```
+
+### Phase 6: Ship
+
+```
+subagent(stages=[
+  {"name": "push", "role": "devops_runner_agent", "prompt_template": "
+    Stage all changes, commit with message: 'feat: implement <flow name> screens from Figma'
+    Push to the current feature branch.
+  ", "depends_on": ["code-review", "security-scan"]},
+  {"name": "create-pr", "role": "pr_creator_agent", "prompt_template": "
+    Create a PR with:
+    - Title: feat: <flow name> screens from Figma
+    - Description: list screens implemented, components created, test coverage
+    - Include before/after: Figma link + implementation summary
+  ", "depends_on": ["push"]}
+])
+```
+
+### Autonomous execution rules
+
+- **After gate approval**, run Phases 3-6 without stopping
+- If any phase fails, stop and report to the user (don't continue with broken state)
+- If `react_native` reports missing info from Figma, pause and ask the user
+- If `maestro_test_agent` reports missing testIDs, loop back to `react_native` to add them (max 1 retry)
+- If code review finds blockers, loop back to `react_native` to fix (max 1 retry)
 
 ---
 
