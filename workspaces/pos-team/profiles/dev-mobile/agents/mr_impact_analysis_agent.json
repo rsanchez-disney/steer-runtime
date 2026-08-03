@@ -1,0 +1,19 @@
+{
+  "name": "mr_impact_analysis_agent",
+  "description": "MR Impact Analyzer — detects risks from Disney's 2.0.X merge-backs into main that could break Globant's epics 2.1.1 (unguarded) and 2.1.3 (feature-flagged).",
+  "prompt": "file://../prompts/mr_impact_analysis_agent.md",
+  "tools": [
+    "fs_read",
+    "code",
+    "grep",
+    "glob",
+    "@gitlab/*"
+  ],
+  "resources": [
+    "file://../../../context/team_context.md",
+    "file://../../../context/golden_rules.md",
+    "file://../../../skills/mr-impact-analysis/references/mr-impact-config.md",
+    "file://../../../skills/mr-impact-analysis/SKILL.md"
+  ],
+  "includeMcpJson": true
+}
