@@ -10863,7 +10863,7 @@ async function xrayCloudGraphQL(query, variables) {
 // build/tools/xrayCloudCreateTest.js
 var xrayCloudCreateTestSchema = {
   name: "xray_cloud_create_test",
-  description: "Create a test case in XRay Cloud via GraphQL. Supports Manual (structured steps), Cucumber (Gherkin), and Generic types.",
+  description: "Create a test case in XRay Cloud via GraphQL. Supports Manual (structured steps), Cucumber (Gherkin), and Generic types. Optionally places the test in a repository folder.",
   inputSchema: {
     type: "object",
     properties: {
@@ -10885,14 +10885,18 @@ var xrayCloudCreateTestSchema = {
       },
       gherkin: { type: "string", description: "Gherkin definition (Given/When/Then) for Cucumber test type" },
       labels: { type: "array", items: { type: "string" }, description: "Labels to apply (optional)" },
-      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_13912": "EPIC-1"})' }
+      customFields: { type: "object", description: 'Custom Jira fields to set (e.g., {"customfield_13912": "EPIC-1"})' },
+      folderPath: {
+        type: "string",
+        description: "Optional. Repository folder path to place the test in (e.g., '/Passport - UI'). If omitted, test is created at repository root."
+      }
     },
     required: ["projectKey", "summary"]
   }
 };
 async function handleXrayCloudCreateTest(args) {
   try {
-    const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields } = args;
+    const { projectKey, summary, testType = "Manual", steps, gherkin, labels, customFields, folderPath } = args;
     const mutation = `mutation CreateTest($jira: JSON!, $testType: UpdateTestTypeInput, $steps: [CreateStepInput], $gherkin: String) {
             createTest(jira: $jira, testType: $testType, steps: $steps, gherkin: $gherkin) {
                 test { issueId jira(fields: ["key"]) testType { name } }
@@ -10913,6 +10917,7 @@ async function handleXrayCloudCreateTest(args) {
     }
     const data = await xrayCloudGraphQL(mutation, variables);
     const key = data?.createTest?.test?.jira?.key || JSON.stringify(data);
+    const issueId = data?.createTest?.test?.issueId;
     const warnings = data?.createTest?.warnings;
     let text = `**Test Created:** ${key}
 
@@ -10927,6 +10932,23 @@ async function handleXrayCloudCreateTest(args) {
     if (warnings?.length)
       text += `
 **Warnings:** ${warnings.join(", ")}`;
+    if (folderPath && issueId) {
+      try {
+        const folderMutation = `mutation AddTestsToFolder($projectId: String!, $path: String!, $testIssueIds: [String!]!) {
+                    addTestsToFolder(projectId: $projectId, path: $path, testIssueIds: $testIssueIds)
+                }`;
+        await xrayCloudGraphQL(folderMutation, {
+          projectId: projectKey,
+          path: folderPath,
+          testIssueIds: [issueId]
+        });
+        text += `
+**Folder:** moved to ${folderPath}`;
+      } catch (folderError) {
+        text += `
+\u26A0\uFE0F Test created but folder move failed: ${folderError.message}. Move manually or use xray_cloud_move_tests_to_folder.`;
+      }
+    }
     return { content: [{ type: "text", text }] };
   } catch (error) {
     return { content: [{ type: "text", text: `Error creating XRay Cloud test: ${error.message}` }], isError: true };
@@ -11726,6 +11748,188 @@ async function handleXrayCloudUpdateTestDatasets(args) {
   }
 }
 
+// build/tools/xrayCloudGetFolders.js
+var xrayCloudGetFoldersSchema = {
+  name: "xray_cloud_get_folders",
+  description: "List XRay Test Repository folders for a project. Returns folder tree with names, paths, and test counts. Use to discover folder paths before moving tests.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "Jira project key (e.g., PAS2)"
+      },
+      path: {
+        type: "string",
+        description: "Folder path to list (e.g., '/Passport - UI'). Omit or use '/' for root."
+      }
+    },
+    required: ["projectKey"]
+  }
+};
+async function handleXrayCloudGetFolders(args) {
+  try {
+    const { projectKey, path } = args;
+    const query = `
+            query GetFolder($projectId: String!, $path: String) {
+                getFolder(projectId: $projectId, path: $path) {
+                    name
+                    path
+                    testsCount
+                    folders {
+                        name
+                        path
+                        testsCount
+                        folders {
+                            name
+                            path
+                            testsCount
+                        }
+                    }
+                }
+            }
+        `;
+    const variables = { projectId: projectKey };
+    if (path)
+      variables.path = path;
+    const data = await xrayCloudGraphQL(query, variables);
+    const folder = data?.getFolder;
+    if (!folder) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No folder found for project ${projectKey} at path: ${path || "/"}`
+          }
+        ]
+      };
+    }
+    const formatFolder = (f, indent = 0) => {
+      const prefix = "  ".repeat(indent);
+      let output = `${prefix}\u{1F4C1} ${f.name} (${f.testsCount ?? 0} tests) \u2014 path: ${f.path}
+`;
+      if (f.folders) {
+        for (const sub of f.folders) {
+          output += formatFolder(sub, indent + 1);
+        }
+      }
+      return output;
+    };
+    const text = `**Test Repository for ${projectKey}** (path: ${path || "/"})
+
+${formatFolder(folder)}`;
+    return { content: [{ type: "text", text }] };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error listing XRay Cloud folders: ${error.message}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
+// build/tools/xrayCloudMoveTestsToFolder.js
+var xrayCloudMoveTestsToFolderSchema = {
+  name: "xray_cloud_move_tests_to_folder",
+  description: "Move test cases to a specific folder in the XRay Test Repository. Use xray_cloud_get_folders first to verify the folder path exists.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      projectKey: {
+        type: "string",
+        description: "Jira project key (e.g., PAS2)"
+      },
+      path: {
+        type: "string",
+        description: "Target folder path (e.g., '/Passport - UI' or '/Passport - BE')"
+      },
+      testKeys: {
+        type: "array",
+        items: { type: "string" },
+        description: "Array of test issue keys to move (e.g., ['PAS2-100', 'PAS2-101'])"
+      }
+    },
+    required: ["projectKey", "path", "testKeys"]
+  }
+};
+async function handleXrayCloudMoveTestsToFolder(args) {
+  try {
+    const { projectKey, path, testKeys } = args;
+    if (!testKeys || testKeys.length === 0) {
+      return {
+        content: [{ type: "text", text: "Error: testKeys array must not be empty." }],
+        isError: true
+      };
+    }
+    const resolveQuery = `
+            query GetTests($jql: String!, $limit: Int!) {
+                getTests(jql: $jql, limit: $limit) {
+                    results {
+                        issueId
+                        jira(fields: ["key"])
+                    }
+                }
+            }
+        `;
+    const jql = `key in (${testKeys.join(",")})`;
+    const resolveData = await xrayCloudGraphQL(resolveQuery, {
+      jql,
+      limit: testKeys.length
+    });
+    const tests = resolveData?.getTests?.results || [];
+    if (tests.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No tests found for keys: ${testKeys.join(", ")}. Verify the keys exist and are XRay test issues.`
+          }
+        ],
+        isError: true
+      };
+    }
+    const testIssueIds = tests.map((t) => t.issueId);
+    const resolvedKeys = tests.map((t) => {
+      const jiraData = typeof t.jira === "string" ? JSON.parse(t.jira) : t.jira;
+      return jiraData?.key || t.issueId;
+    });
+    const mutation = `
+            mutation AddTestsToFolder($projectId: String!, $path: String!, $testIssueIds: [String!]!) {
+                addTestsToFolder(projectId: $projectId, path: $path, testIssueIds: $testIssueIds)
+            }
+        `;
+    await xrayCloudGraphQL(mutation, {
+      projectId: projectKey,
+      path,
+      testIssueIds
+    });
+    const movedList = resolvedKeys.map((k) => `  - ${k}`).join("\n");
+    return {
+      content: [
+        {
+          type: "text",
+          text: `\u2705 Successfully moved ${resolvedKeys.length} test(s) to folder "${path}":
+${movedList}`
+        }
+      ]
+    };
+  } catch (error) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: `Error moving tests to folder: ${error.message}`
+        }
+      ],
+      isError: true
+    };
+  }
+}
+
 // build/index.js
 var INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
 function prefixed(schema) {
@@ -11791,7 +11995,9 @@ var tools = [
     { schema: prefixed(xrayCloudGetTestRunsSchema), handler: handleXrayCloudGetTestRuns },
     { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests },
     { schema: prefixed(xrayCloudGetTestDatasetsSchema), handler: handleXrayCloudGetTestDatasets },
-    { schema: prefixed(xrayCloudUpdateTestDatasetsSchema), handler: handleXrayCloudUpdateTestDatasets }
+    { schema: prefixed(xrayCloudUpdateTestDatasetsSchema), handler: handleXrayCloudUpdateTestDatasets },
+    { schema: prefixed(xrayCloudGetFoldersSchema), handler: handleXrayCloudGetFolders },
+    { schema: prefixed(xrayCloudMoveTestsToFolderSchema), handler: handleXrayCloudMoveTestsToFolder }
   ] : []
 ];
 var JiraMCPServer = class {
