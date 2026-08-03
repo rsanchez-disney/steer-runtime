@@ -1,0 +1,47 @@
+{
+  "name": "tgr-team",
+  "description": "TGR Team's— SPA/Lambda",
+  "profiles": [
+    "dev-core",
+    "dev-infra",
+    "dev-web",
+    "dev-mobile"
+  ],
+  "default_agent": "orchestrator",
+  "projects": [
+    {
+      "name": "tgrv5-spa",
+      "path": "tgrv5-spa",
+      "repo": "cgs-wdw/tgrv5/tgrv5-spa",
+      "host": "gitlab.disney.com",
+      "description": "Arrival Windows UI (Flutter/Dart SPA)"
+    },
+    {
+      "name": "tgrv5-lambda",
+      "path": "tgrv5-lambda",
+      "repo": "cgs-wdw/tgrv5/tgrv5-lambda",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "tgrv5-lambda-terraform",
+      "path": "tgrv5-lambda-terraform",
+      "repo": "cgs-wdw/tgrv5/tgrv5-lambda-terraform",
+      "host": "gitlab.disney.com"
+    }
+  ],
+  "rules": [
+    "conventional_commit",
+    "general-angular-development",
+    "general-api-design",
+    "general-aws",
+    "general-docker",
+    "general-java-development",
+    "general-kubernetes",
+    "general-node-development",
+    "general-python-development",
+    "general-terraform"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "",
+  "workspace_path": "~/workspace/disney"
+}
