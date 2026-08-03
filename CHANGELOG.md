@@ -4,6 +4,23 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.181] — 2026-08-03
+
+### Added
+
+- **agents** — add MR impact analysis agent and skill for pos-team (#648)
+- **skills** — add sprint health and QA skills for cpc-team and shield-team (#649)
+- **tools** — add xray folder tools and fix QA checklist gaps (#650)
+- **agents** — React Native + Maestro agents with autonomous Figma-to-PR pipeline (#651)
+- **agents** — add Cursor rules for Figma pipeline + cursor_sync agent
+- **tools** — integrate folderPath into xray_cloud_create_test for single-call folder placement
+- **skills** — add xray folder tools and fix QA checklist gaps in passport context
+
+### Chores
+
+- rebuild MCP bundles
+- update certification report
+
 ## [0.2.180] — 2026-08-02
 
 ### Added
