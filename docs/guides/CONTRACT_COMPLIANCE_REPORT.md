@@ -10,9 +10,11 @@ Generate HTML compliance dashboards comparing contract expected deliverables vs 
 
 ## Setup (one-time)
 
-### 1. Create your team config
+### 1. Create your team config (required)
 
-Add a file to your workspace: `workspaces/<your-team>/context/contract-compliance-config.md`
+The agent needs to know your Jira board, project key, and team members. Without this file, the skill cannot run.
+
+Create a file at `workspaces/<your-team>/context/contract-compliance-config.md` with your team's details:
 
 ```markdown
 # Contract Compliance Configuration
@@ -39,13 +41,15 @@ Add a file to your workspace: `workspaces/<your-team>/context/contract-complianc
 | GitHub Pages branch | main |
 ```
 
-### 2. Place your contract documents
+### 2. Place your contract documents locally
 
-Put the contract PDF/XLSX in the location you defined, organized by RITM:
+The agent reads the contract file directly from your machine (via `fs_read`). Place the PDF or XLSX in a folder on your local computer, organized by RITM number:
 
 ```
 ~/contracts/Dan Perrine/RITM6354060/contract.pdf
 ```
+
+This must be a local path on the PM's machine — not a shared drive or cloud URL. The agent needs filesystem access to the file during report generation.
 
 ## Usage
 
