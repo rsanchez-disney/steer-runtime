@@ -207,6 +207,8 @@ import {
 } from "./tools/xrayCloudAddPrecondition.js";
 import { xrayCloudGetTestDatasetsSchema, handleXrayCloudGetTestDatasets } from "./tools/xrayCloudGetTestDatasets.js";
 import { xrayCloudUpdateTestDatasetsSchema, handleXrayCloudUpdateTestDatasets } from "./tools/xrayCloudUpdateTestDatasets.js";
+import { xrayCloudGetFoldersSchema, handleXrayCloudGetFolders } from "./tools/xrayCloudGetFolders.js";
+import { xrayCloudMoveTestsToFolderSchema, handleXrayCloudMoveTestsToFolder } from "./tools/xrayCloudMoveTestsToFolder.js";
 
 // Instance prefix for multi-instance support (avoids tool name collisions)
 const INSTANCE_PREFIX = process.env.JIRA_INSTANCE_PREFIX || "";
@@ -276,6 +278,8 @@ const tools = [
         { schema: prefixed(xrayCloudSearchTestsSchema), handler: handleXrayCloudSearchTests },
         { schema: prefixed(xrayCloudGetTestDatasetsSchema), handler: handleXrayCloudGetTestDatasets },
         { schema: prefixed(xrayCloudUpdateTestDatasetsSchema), handler: handleXrayCloudUpdateTestDatasets },
+        { schema: prefixed(xrayCloudGetFoldersSchema), handler: handleXrayCloudGetFolders },
+        { schema: prefixed(xrayCloudMoveTestsToFolderSchema), handler: handleXrayCloudMoveTestsToFolder },
     ] : []),
 ];
 
