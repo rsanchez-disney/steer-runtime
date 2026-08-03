@@ -3,7 +3,7 @@ name: jira-ticket-creator
 description: Creates Jira tickets for Parks mobile team with proper structure, epics, and templates. Use when the user asks to create a Jira ticket, file a bug, log a story, create a defect, or requests ticket creation for Android (AEXP), iOS (IEXP), or Flutter (COREEXP) projects.
 ---
 
-# Jira Ticket Creator Skill
+# Skill: Jira Ticket Creator
 
 ## Purpose
 
@@ -57,13 +57,14 @@ When asked to create a ticket, collect the following. If not provided, **ask the
 
 These fields MUST be set on every ticket. When cloning a ticket, copy the Studio and Feature values from the source ticket.
 
-### Studio (`customfield_20001` — select)
+
+### Studio (`customfield_10156` — select)
 
 Default value: `CoreIS - Experience | Jain`
 
 Always set this unless the user explicitly provides a different Studio.
 
-### Feature (`customfield_17600` — cascading select)
+### Feature (`customfield_10256` — cascading select)
 
 | Condition | Feature Value |
 |-----------|--------------|
@@ -78,16 +79,16 @@ Logic:
 
 ```json
 {
-  "customfield_20001": {"value": "CoreIS - Experience | Jain"},
-  "customfield_17600": {"value": "Shield Tech Sustainment"}
+  "customfield_10156": {"value": "CoreIS - Experience | Jain"},
+  "customfield_10256": {"value": "Shield Tech Sustainment"}
 }
 ```
 
 For HKDL-only:
 ```json
 {
-  "customfield_20001": {"value": "CoreIS - Experience | Jain"},
-  "customfield_17600": {"value": "Shield HKDL Sustainment"}
+  "customfield_10156": {"value": "CoreIS - Experience | Jain"},
+  "customfield_10256": {"value": "Shield HKDL Sustainment"}
 }
 ```
 
@@ -173,6 +174,9 @@ Examples:
 1. Parse user request for any provided fields
 2. Ask for any missing **required** fields
 3. Confirm optional fields or skip
+
+**⏸ CHECKPOINT — Present collected fields to user for approval before creating the ticket**
+
 4. Apply the appropriate template
 5. Apply summary prefix rules
 6. Create the ticket using `jira_create_issue` with:
@@ -192,7 +196,7 @@ When cloning an existing ticket, copy the **Studio** and **Feature** values from
 
 - Ask the user for story points as an optional field
 - If not provided, default to **3**
-- Use the `story_points` or `customfield_10004` field (check project configuration)
+- Use `customfield_10042` (number field)
 - Valid values: 1, 2, 3, 5, 8, 13
 
 ## Example Interaction
