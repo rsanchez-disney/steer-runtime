@@ -1,0 +1,38 @@
+{
+  "name": "dlp-eai-team",
+  "description": "EAI DLP \u2014 Enterprise Application Integration",
+  "team": "EAI DLP",
+  "profiles": [
+    "dev-core",
+    "qa",
+    "dev-web",
+    "dev-ui",
+    "pm",
+    "ba"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-java-development",
+    "general-docker",
+    "general-performance-optimization",
+    "general-testing-strategies"
+  ],
+  "enable_tools": true,
+  "jira_prefix": "RSDLP-",
+  "workspace_path": "${EAI_DLP_WORKSPACE_PATH}",
+  "projects": [
+    {
+      "name": "dlp-sbc-ui",
+      "path": "dlp-sbc-ui",
+      "repo": "WDPR-SPS/dlp-sbc-ui",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-eai-hub-drp",
+      "path": "wdpr-eai-hub-drp",
+      "repo": "WDPR-SPS/wdpr-eai-hub-drp",
+      "host": "github.disney.com"
+    }
+  ]
+}
