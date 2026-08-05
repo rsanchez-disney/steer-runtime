@@ -4,7 +4,7 @@
 
 ---
 
-## Agents (6)
+## Agents (7)
 
 ### pm_orchestrator_agent
 Coordinates PM/Scrum Master workflows and delegates to specialists.
@@ -52,6 +52,15 @@ Generates velocity reports, burndown analysis, and release readiness assessments
 - Velocity trends
 - Release readiness
 - Burndown analysis
+
+### contracts_helper_agent
+Validates Jira tickets and organizes them into quarterly contract milestone deliverables for technical estimation spreadsheets (RITM).
+
+**Use when:**
+- Preparing RITM or contract estimation documents
+- Validating ticket eligibility (Open, unassigned, has AC)
+- Grouping tickets by feature similarity into milestones
+- Producing spreadsheet-ready deliverable output
 
 ---
 
@@ -109,6 +118,12 @@ kiro-cli chat --agent delivery_reporter_agent
 > "Generate velocity report for last 5 sprints with burndown and release readiness"
 ```
 
+### Contract Estimation
+```bash
+kiro-cli chat --agent contracts_helper_agent
+> "Validate tickets in epic DPAY-800 and organize into Q4 milestones for October/November/December"
+```
+
 ### Full PM Workflow
 ```bash
 kiro-cli chat --agent pm_orchestrator_agent
@@ -122,13 +137,14 @@ kiro-cli chat --agent pm_orchestrator_agent
 
 ```
 .kiro-pm/
-├── agents/              # 6 agent configurations
+├── agents/              # 7 agent configurations
 │   ├── pm_orchestrator_agent.json
 │   ├── sprint_manager_agent.json
 │   ├── standup_agent.json
 │   ├── retro_agent.json
 │   ├── risk_tracker_agent.json
-│   └── delivery_reporter_agent.json
+│   ├── delivery_reporter_agent.json
+│   └── contracts_helper_agent.json
 ├── prompts/             # Agent prompts
 ├── context/             # PM guidelines and templates
 │   ├── pm_guidelines.md
@@ -154,5 +170,5 @@ kiro-cli chat --agent pm_orchestrator_agent
 ---
 
 **Profile Version:** 1.0  
-**Agents:** 6  
-**Last Updated:** April 2, 2026
+**Agents:** 7  
+**Last Updated:** August 5, 2026

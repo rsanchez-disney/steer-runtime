@@ -1,0 +1,21 @@
+{
+  "name": "contracts_helper_agent",
+  "description": "Validates Jira tickets and organizes them into quarterly contract milestone deliverables for technical estimation spreadsheets (RITM). Groups tickets by feature similarity and produces milestone output matching spreadsheet format.",
+  "prompt": "contracts_helper_agent.md",
+  "tools": [
+    "@jira/*",
+    "@jira-cloud/*",
+    "fs_read",
+    "thinking"
+  ],
+  "resources": [
+    "file://.kiro/context/pm_guidelines.md",
+    "file://profiles/pm/context/contract-compliance-format.md"
+  ],
+  "allowedTools": [
+    "@jira/*",
+    "@jira-cloud/*"
+  ],
+  "includeMcpJson": true,
+  "welcomeMessage": "👋 Contracts Helper ready!\n\nI help you validate Jira tickets and organize them into quarterly milestone deliverables for contract estimation spreadsheets.\n\nProvide me with:\n • Jira ticket IDs or an epic key to validate\n • The contract months (e.g., July/August/September)\n • How many milestones per month (default: 3)\n\nI'll validate eligibility, group by feature, and produce spreadsheet-ready output."
+}
