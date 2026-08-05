@@ -1,0 +1,38 @@
+{
+  "name": "jedai_orchestrator",
+  "description": "JedAI platform orchestrator — coordinates cross-project tasks across portal, chat, and gateway by delegating to specialist agents",
+  "prompt": "jedai_orchestrator.md",
+  "tools": [
+    "subagent",
+    "thinking",
+    "todo_list"
+  ],
+  "allowedTools": [],
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://../../context/team_context.md",
+    "file://../../steering/10-workspace-identity.md",
+    "file://../../skills/pr-review.md",
+    "file://../context/agent_registry.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "$HOME/.kiro/hooks/git-context.sh",
+        "description": "Inject git branch and status"
+      },
+      {
+        "command": "$HOME/.kiro/hooks/agent-registry.sh",
+        "description": "Inject installed agent list for delegation awareness"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/master"
+      }
+    ]
+  }
+}

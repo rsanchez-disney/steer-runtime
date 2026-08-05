@@ -1,0 +1,51 @@
+{
+  "name": "owui_developer",
+  "description": "Open WebUI specialist for the JedAI Chat fork — upstream upgrades, pipeline development, SSO, accessibility overrides, and Disney customizations",
+  "prompt": "owui_developer.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "code",
+    "grep",
+    "@github-disney/*",
+    "@chrome-devtools/*"
+  ],
+  "allowedTools": [
+    "@github-disney/*",
+    "@chrome-devtools/*"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md",
+    "file://../../context/openwebui_context.md",
+    "file://../../steering/20-openwebui-conventions.md",
+    "file://../../skills/owui-upstream-upgrade.md"
+  ],
+  "includeMcpJson": true,
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/guard-writes.sh",
+        "description": "Block writes to node_modules, dist, .git"
+      },
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/secret-scan.sh",
+        "description": "Scan for potential secrets before writing"
+      },
+      {
+        "matcher": "execute_bash",
+        "command": "$HOME/.kiro/hooks/branch-guard.sh",
+        "description": "Block direct commits to main/develop"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "$HOME/.kiro/hooks/lint-on-write.sh",
+        "description": "Auto-lint after file writes"
+      }
+    ]
+  }
+}
