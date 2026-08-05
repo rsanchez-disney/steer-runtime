@@ -246,6 +246,8 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 
 | Task | Agent | Triggers |
 |------|-------|----------|
+| Create PR / merge request | `pr_creator_agent` | "create PR", "pull request", "submit for review" |
+| Git push, build, deploy commands | `devops_runner_agent` | "git push", "build", "deploy", "run tests" |
 | Stability validation, health checks, error rate checks | `stability_validator_agent` | "validate stability", "is X stable", "check health", "error rates for", "how is X doing", "stability check", "latency for" |
 | Incident post-mortems and RCAs | `rca_writer_agent` | "RCA", "post-mortem", "root cause", "incident report" |
 | Diagnose and fix flaky tests | `flaky_test_fixer_agent` | "flaky test", "intermittent failure", "test stability" |
@@ -255,6 +257,19 @@ These files control agent-to-MCP delegation and are **known working**. Any modif
 | Technical debt audit | `code_review_agent` (Tech Debt Audit mode) | "technical debt", "debt register", "tech debt" |
 | Code comparison and release analysis | `code_review_agent` | "compare branches", "diff", "release changes", "what changed in", "branch comparison" |
 | CHG analysis, deployment verification, version comparison | `chg_analyzer_agent` | "analyze CHG", "verify deployment", "compare versions", "CHG report", "change analysis", "validate release" |
+
+### Mandatory delegation rules (absolute)
+
+| Task | Always delegate to | Never delegate to |
+|------|-------------------|-------------------|
+| Create PR / merge request | `pr_creator_agent` | `devops_runner_agent`, any other agent |
+| Git push | `devops_runner_agent` | `pr_creator_agent` |
+
+**PR creation is always a separate delegation.** Never ask `devops_runner_agent` to "push and create a PR" in one shot. Split into: (1) push via `devops_runner_agent`, then (2) create PR via `pr_creator_agent`.
+
+### Delegation-map pre-check
+
+Before delegating to any agent NOT in the core sustainment routing table (incident_triage, rca, stability_validator, gsm_analyst, log_analyzer, network_diagnostics, catalog_ingestion, chg_analyzer, pr_creator, devops_runner), verify it appears in the Delegation Map injected at spawn. If the agent is NOT listed, inform the user that the workspace needs an additional profile (e.g., dev-core for code_review_agent, cloudops for infra_planner_agent).
 
 ## Shared rules
 
