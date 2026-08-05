@@ -4,7 +4,7 @@ Machine-parseable release notes displayed by `koda upgrade` after sync.
 Format: version header followed by bullet points. Only the latest version block is shown.
 
 <!-- LATEST -->
-## v0.2.181
+## v0.2.179
 
 - **feat(agents)** — MR impact analysis agent and skill for pos-team (#648)
 - **feat(skills)** — sprint health and QA skills for cpc-team and shield-team (#649)
