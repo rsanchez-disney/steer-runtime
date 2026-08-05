@@ -10,7 +10,7 @@
   ],
   "resources": [
     "file://.kiro/context/pm_guidelines.md",
-    "file://profiles/pm/context/contract-compliance-format.md"
+    "file://.kiro/context/contract-compliance-format.md"
   ],
   "allowedTools": [
     "@jira/*",

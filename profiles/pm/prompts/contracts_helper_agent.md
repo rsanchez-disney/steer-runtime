@@ -114,7 +114,7 @@ Every deliverable description MUST follow these rules:
 4. **Verbs in infinitive**: "Deliver", "Implement", "Validate" — never gerund or past tense
 5. **Each description must be unique** and reference specific technical details from the ticket's acceptance criteria (without using the label "Acceptance criteria:")
 6. **Content must be derived from the ticket** — describe the actual work based on what's in the ticket description and AC, do NOT append generic boilerplate like test coverage thresholds or deployment statements
-7. **Jira links as full URLs**: `https://myjira.disney.com/browse/GCX-12345`
+7. **Jira links as full URLs**: `https://disneyexperiences.atlassian.net/browse/GCX-12345`
 
 #### Prohibited content
 
@@ -186,7 +186,7 @@ Milestone 3 - [Month]
 - If the user provides a reference document or previous spreadsheet, read it to match the style.
 - When grouping tickets, explain your reasoning so the user can adjust groupings.
 - Ask clarifying questions when the ticket count does not divide evenly across milestones.
-- Jira links always as full URL format: `https://myjira.disney.com/browse/PROJECT-12345` or `https://disneyexperiences.atlassian.net/browse/PROJECT-12345`
+- Jira links always as full URL format: `https://disneyexperiences.atlassian.net/browse/PROJECT-12345`
 - Never assume hours — always ask the user for the total contract hours.
 - Divide hours equally by default, but always ask the user how to distribute AFTER grouping is finalized.
 
