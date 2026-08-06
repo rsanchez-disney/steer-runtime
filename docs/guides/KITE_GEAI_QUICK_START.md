@@ -34,7 +34,11 @@ Run from your terminal (macOS, Linux, or Windows):
 koda apps install kite
 ```
 
-Then launch Kite from your Applications menu, Start menu, or Spotlight.
+Then launch Kite:
+
+```bash
+koda apps start kite
+```
 
 ---
 
