@@ -1,0 +1,13 @@
+{
+  "name": "planner_agent",
+  "description": "Creates detailed implementation plans using UCM1 spec-and-design pipeline",
+  "prompt": "planner_agent.md",
+  "tools": ["@confluence/*", "@confluence-cloud/*", "@jira/*", "@jira-cloud/*", "@atlassian/*", "fs_read", "fs_write", "code", "grep", "thinking", "@mermaid/*"],
+  "resources": [
+    "file://.kiro/context/project_mappings.md",
+    "file://.kiro/steering/**/*.md",
+    "file://.kiro/skills/generating-spec-and-design-pipeline/SKILL.md"
+  ],
+  "allowedTools": ["@confluence/*", "@confluence-cloud/*", "@jira/*", "@jira-cloud/*", "@atlassian/*", "@mermaid/*"],
+  "includeMcpJson": true
+}

@@ -1,0 +1,57 @@
+{
+  "name": "ucm1",
+  "extends": "ucm-team",
+  "description": "UCM1 team — owns the Unified Checkout end-to-end: UC SPA, UC API, UI components, com-ui-api-lambda, Cart UI, and Cart API for WDW and DLR",
+  "team": "UCM Team",
+  "profiles": [
+    "core",
+    "dev-web",
+    "dev-core",
+    "dev-ui"
+  ],
+  "default_agent": "orchestrator",
+  "jira_prefix": "UCM-|COM-",
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/ucm",
+  "exclusive_overrides": {"dev-core": ["agents", "prompts"]},
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki/spaces/UC/pages/391446928/DLR+UC+Modernization",
+  "projects": [
+    {
+      "name": "wdpr-ecommerce-uc-spa",
+      "path": "wdpr-ecommerce-uc-spa",
+      "repo": "wdpr-unified-checkout/wdpr-ecommerce-uc-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-uc-api",
+      "path": "wdpr-ecommerce-uc-api",
+      "repo": "wdpr-unified-checkout/wdpr-ecommerce-uc-api",
+      "host": "github.disney.com"
+      
+    },
+    {
+      "name": "com-ui-api-lambda",
+      "path": "com-ui-api-lambda",
+      "repo": "cgs-wdw/com-ui-api/com-ui-api-lambda",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "com-uc-ui-components",
+      "path": "com-uc-ui-components",
+      "repo": "dprd-web-components-cart/com-uc-ui-components",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-wdpr-cart-api",
+      "path": "wdpr-ecommerce-wdpr-cart-api",
+      "repo": "wdprd-development/wdpr-ecommerce-wdpr-cart-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-wdpr-cart-ui",
+      "path": "wdpr-ecommerce-wdpr-cart-ui",
+      "repo": "wdprd-development/wdpr-ecommerce-wdpr-cart-ui",
+      "host": "github.disney.com"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "ucm-team",
+  "description": "UCM Team — shared foundation for UCM1 team owning the Disney eCommerce cart and checkout platform for theme park tickets, lodging, dining, annual passes, and experiences across WDW and DLR",
+  "team": "UCM Team",
+  "profiles": [
+    "core",
+    "dev-ui",
+    "dev-core",
+    "dev-web"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-node-development",
+    "general-angular-development",
+    "jira-commit-format",
+    "jira-safety",
+    "cart-checkout-conventions"
+  ],
+  "enable_tools": true
+}
