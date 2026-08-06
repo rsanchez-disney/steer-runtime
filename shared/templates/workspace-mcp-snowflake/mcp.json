@@ -1,0 +1,49 @@
+{
+  "mcpServers": {
+    "snowflake": {
+      "command": "npx",
+      "args": ["-y", "snowflake-mcp"],
+      "env": {
+        "SNOWFLAKE_ACCOUNT": "${SNOWFLAKE_ACCOUNT}",
+        "SNOWFLAKE_USERNAME": "${SNOWFLAKE_USERNAME}",
+        "SNOWFLAKE_PASSWORD": "${SNOWFLAKE_PASSWORD}",
+        "SNOWFLAKE_WAREHOUSE": "${SNOWFLAKE_WAREHOUSE}",
+        "SNOWFLAKE_DATABASE": "${SNOWFLAKE_DATABASE}",
+        "SNOWFLAKE_SCHEMA": "${SNOWFLAKE_SCHEMA}",
+        "SNOWFLAKE_ROLE": "${SNOWFLAKE_ROLE}",
+        "SNOWFLAKE_READONLY": "true"
+      }
+    }
+  },
+  "variables": {
+    "SNOWFLAKE_ACCOUNT": {
+      "description": "Snowflake account identifier (e.g., org-account)",
+      "required": true
+    },
+    "SNOWFLAKE_USERNAME": {
+      "description": "Snowflake username",
+      "required": true
+    },
+    "SNOWFLAKE_PASSWORD": {
+      "description": "Snowflake password",
+      "required": true,
+      "secret": true
+    },
+    "SNOWFLAKE_WAREHOUSE": {
+      "description": "Snowflake warehouse name",
+      "required": false
+    },
+    "SNOWFLAKE_DATABASE": {
+      "description": "Default database",
+      "required": false
+    },
+    "SNOWFLAKE_SCHEMA": {
+      "description": "Default schema",
+      "required": false
+    },
+    "SNOWFLAKE_ROLE": {
+      "description": "Snowflake role (optional)",
+      "required": false
+    }
+  }
+}
