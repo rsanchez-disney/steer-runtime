@@ -28,25 +28,13 @@ The model does not have access to internal systems, code repositories, or client
 
 ## Step 1: Install Kite
 
-### macOS
-
-Download from your team lead or run:
+Run from your terminal (macOS, Linux, or Windows):
 
 ```bash
 koda apps install kite
 ```
 
-Then launch from Applications or Spotlight: **Kite**
-
-### Windows
-
-Download the installer from your team lead. Run `Kite Setup.exe` and follow the prompts.
-
-### Linux
-
-```bash
-koda apps install kite
-```
+Then launch Kite from your Applications menu, Start menu, or Spotlight.
 
 ---
 
