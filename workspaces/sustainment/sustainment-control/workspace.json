@@ -1,7 +1,7 @@
 {
   "name": "sustainment-control",
   "extends": "sustainment",
-  "description": "Sustainment workspace for Studio Control applications",
+  "description": "Sustainment workspace for Studio Control \u2014 WDW ticketing, lexicon services, availability calendars, stop sales, and commerce UI flows",
   "team": "Studio Control",
   "profiles": [
     "sustainment"
@@ -10,5 +10,119 @@
   "managed_studios": [
     "studio-control"
   ],
-  "enable_tools": true
+  "enable_tools": true,
+  "jira_prefix": "COM-",
+  "jira_board_url": "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/3411",
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki/spaces/StudioControl",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-control",
+  "projects": [
+    {
+      "name": "wdpr-ecommerce-tms-svc",
+      "path": "wdpr-ecommerce-tms-svc",
+      "repo": "commerce/wdpr-ecommerce-tms-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-evas-svc",
+      "path": "wdpr-ecommerce-evas-svc",
+      "repo": "commerce/wdpr-ecommerce-evas-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-service",
+      "path": "wdpr-ecommerce-lexicon-service",
+      "repo": "commerce/wdpr-ecommerce-lexicon-service",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-ui",
+      "path": "wdpr-ecommerce-lexicon-ui",
+      "repo": "commerce/wdpr-ecommerce-lexicon-ui",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-admin",
+      "path": "wdpr-ecommerce-lexicon-admin",
+      "repo": "commerce/wdpr-ecommerce-lexicon-admin",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-lexvas-api",
+      "path": "wdpr-ecommerce-lexvas-api",
+      "repo": "commerce/wdpr-ecommerce-lexvas-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-ttc-lexvas",
+      "path": "wdpr-ecommerce-ttc-lexvas",
+      "repo": "commerce/wdpr-ecommerce-ttc-lexvas",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-stopsales-admin",
+      "path": "wdpr-ecommerce-stopsales-admin",
+      "repo": "commerce/wdpr-ecommerce-stopsales-admin",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "stopsales-svc",
+      "path": "stopsales-svc",
+      "repo": "commerce/stopsales-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "entlavail-lambda",
+      "path": "entlavail-lambda",
+      "repo": "commerce/entlavail-lambda",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-dtc-svc",
+      "path": "wdpr-ecommerce-dtc-svc",
+      "repo": "commerce/wdpr-ecommerce-dtc-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-tpac-svc",
+      "path": "wdpr-ecommerce-tpac-svc",
+      "repo": "commerce/wdpr-ecommerce-tpac-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dlr-commerce2-01323-pacs-svc",
+      "path": "dlr-commerce2-01323-pacs-svc",
+      "repo": "commerce/dlr-commerce2-01323-pacs-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "pci-apps-commerce-ui",
+      "path": "pci-apps-commerce-ui",
+      "repo": "commerce/pci-apps-commerce-ui",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "tickets-spa",
+      "path": "tickets-spa",
+      "repo": "dprd-web-components-tickets/tickets-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "mods-spa",
+      "path": "mods-spa",
+      "repo": "dprd-web-components-cart/mods-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "avlcal-wdw",
+      "path": "avlcal-wdw",
+      "repo": "cgs-wdw/avlcal-wdw",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "com-ui-api",
+      "path": "com-ui-api",
+      "repo": "cgs-wdw/com-ui-api",
+      "host": "gitlab.disney.com"
+    }
+  ]
 }
