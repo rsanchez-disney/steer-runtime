@@ -1,0 +1,168 @@
+{
+  "jira_prefix": "COM-",
+  "board_id": "3411",
+  "wiki_space": "StudioControl",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-control",
+  "projects": [
+    {
+      "name": "wdpr-ecommerce-tms-svc",
+      "bapp_id": "BAPP0081809",
+      "description": "Ticket Management Service (WDW)",
+      "repo": "commerce/wdpr-ecommerce-tms-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-evas-svc",
+      "bapp_id": "BAPP0061980",
+      "description": "Entitlement View Assembly Service (WDW)",
+      "repo": "commerce/wdpr-ecommerce-evas-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-service",
+      "bapp_id": "BAPP0060613",
+      "description": "Lexicon Service",
+      "repo": "commerce/wdpr-ecommerce-lexicon-service",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-ui",
+      "bapp_id": "BAPP0060616",
+      "description": "Lexicon UI",
+      "repo": "commerce/wdpr-ecommerce-lexicon-ui",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-lexicon-admin",
+      "bapp_id": "BAPP0090879",
+      "description": "Lexicon Admin App",
+      "repo": "commerce/wdpr-ecommerce-lexicon-admin",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-lexvas-api",
+      "bapp_id": "BAPP0081984",
+      "description": "Lexicon View Assembler Service (WDW)",
+      "repo": "commerce/wdpr-ecommerce-lexvas-api",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-ttc-lexvas",
+      "bapp_id": "BAPP0242760",
+      "description": "TTC LexVAS",
+      "repo": "commerce/wdpr-ecommerce-ttc-lexvas",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-stopsales-admin",
+      "bapp_id": "BAPP0243824",
+      "description": "Stop Sales Manager (Admin UI)",
+      "repo": "commerce/wdpr-ecommerce-stopsales-admin",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "stopsales-svc",
+      "bapp_id": "BAPP0244008",
+      "description": "Stop Sales Engine + Updater Lambda",
+      "repo": "commerce/stopsales-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "entlavail-lambda",
+      "bapp_id": "BAPP0244050",
+      "description": "Entitlement Availability Service (EAS)",
+      "repo": "commerce/entlavail-lambda",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-dtc-svc",
+      "bapp_id": "BAPP0105586",
+      "description": "DTI Traffic Controller",
+      "repo": "commerce/wdpr-ecommerce-dtc-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-tpac-svc",
+      "bapp_id": "BAPP0247964",
+      "description": "Tickets Price Avail Cache Service",
+      "repo": "commerce/wdpr-ecommerce-tpac-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "dlr-commerce2-01323-pacs-svc",
+      "bapp_id": "BAPP0105160",
+      "description": "Park Activity Calendar Service (PACS)",
+      "repo": "commerce/dlr-commerce2-01323-pacs-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "pci-apps-commerce-ui",
+      "bapp_id": "BAPP0178687",
+      "description": "Commerce UI Flows (Special Events, Claim, Memory Maker, Water Parks)",
+      "repo": "commerce/pci-apps-commerce-ui",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "tickets-spa",
+      "bapp_id": "BAPP0090435",
+      "description": "WDW Tickets SPA",
+      "repo": "dprd-web-components-tickets/tickets-spa",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "mods-spa",
+      "bapp_id": "BAPP0090435",
+      "description": "WDW Modifications SPA",
+      "repo": "dprd-web-components-cart/mods-spa",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "avlcal-wdw",
+      "bapp_id": "BAPP0199784",
+      "description": "WDW Availability Calendar",
+      "repo": "cgs-wdw/avlcal-wdw",
+      "host": "gitlab.disney.com",
+      "branch": "develop",
+      "notes": "Will be migrated to github.disney.com"
+    },
+    {
+      "name": "com-ui-api",
+      "bapp_id": "BAPP0218784",
+      "description": "Commerce UI Shared API",
+      "repo": "cgs-wdw/com-ui-api",
+      "host": "gitlab.disney.com",
+      "branch": "develop",
+      "notes": "Will be migrated to github.disney.com"
+    }
+  ],
+  "pending_info": [
+    {
+      "bapp_id": "BAPP0090435",
+      "name": "Ticket Web API",
+      "description": "Ticket Web API — repo information pending, request to TL"
+    }
+  ],
+  "deprecated": [
+    {
+      "bapp_id": "BAPP0179541",
+      "name": "WDPR Ticket Sales SPA",
+      "description": "To be deprecated"
+    }
+  ]
+}
