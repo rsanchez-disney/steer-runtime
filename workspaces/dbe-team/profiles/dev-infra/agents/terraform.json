@@ -1,0 +1,12 @@
+{
+  "name": "terraform",
+  "description": "Infrastructure specialist for DBE — Terraform with Atlantis automation, DXCP Manifesto deployments, Helm charts for RabbitMQ, and Score validation patterns",
+  "prompt": "terraform.md",
+  "tools": ["@github/*", "code", "execute_bash", "fs_read", "fs_write", "grep", "graphify_explore", "graphify_inspect"],
+  "resources": [
+    "file://.kiro/context/dba_general_context.md",
+    "file://.kiro/context/infrastructure_operations.md"
+  ],
+  "allowedTools": ["@github/*"],
+  "includeMcpJson": true
+}

@@ -1,0 +1,210 @@
+{
+  "name": "dbe-team",
+  "description": "Database Engineering — multi-cloud database platform, automation APIs, messaging infrastructure, and operational tooling for WDPR",
+  "team": "DBE / WDPR Database Platform Engineering",
+  "profiles": [
+    "dev-core",
+    "dev-python",
+    "dev-infra",
+    "ops",
+    "pm"
+  ],
+  "default_agent": "orchestrator",
+  "rules": [
+    "conventional_commit",
+    "general-python-development",
+    "general-sql-database",
+    "general-docker",
+    "general-aws",
+    "general-api-design",
+    "general-testing-strategies"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/Disney/DBE",
+  "services": [
+    "dpe-api",
+    "dpe-common",
+    "dpe-orchestrator",
+    "dpe-api-gcp-cloudsql",
+    "dpe-api-azure-sql-mi"
+  ],
+  "projects": [
+    {
+      "name": "dpe_common",
+      "path": "dpe_common",
+      "repo": "DBE/dpe_common",
+      "memory_bank": "dbe-common",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_api",
+      "path": "dpe_api",
+      "repo": "DBE/dpe_api",
+      "memory_bank": "dbe-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_api_gcp_cloudsql",
+      "path": "dpe_api_gcp_cloudsql",
+      "repo": "DBE/dpe_api_gcp_cloudsql",
+      "memory_bank": "dbe-api-gcp-cloudsql",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_api_neo4j",
+      "path": "dpe_api_neo4j",
+      "repo": "DBE/dpe_api_neo4j",
+      "memory_bank": "dbe-api-neo4j",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_api_gcp_vertexai",
+      "path": "dpe_api_gcp_vertexai",
+      "repo": "DBE/dpe_api_gcp_vertexai",
+      "memory_bank": "dbe-api-gcp-vertexai",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe-api-azure-sql-mi",
+      "path": "dpe-api-azure-sql-mi",
+      "repo": "DBE/dpe-api-azure-sql-mi",
+      "memory_bank": "dbe-api-azure-sql-mi",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_api_template",
+      "path": "dpe_api_template",
+      "repo": "DBE/dpe_api_template",
+      "memory_bank": "dbe-api-template",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-orchestrator",
+      "path": "wdpr-dpe-orchestrator",
+      "repo": "DBE/wdpr-dpe-orchestrator",
+      "memory_bank": "dbe-orchestrator",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-orchestrator-scripts",
+      "path": "wdpr-dpe-orchestrator-scripts",
+      "repo": "DBE/wdpr-dpe-orchestrator-scripts",
+      "memory_bank": "dbe-orchestrator-scripts",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-aws-lib",
+      "path": "wdpr-dpe-aws-lib",
+      "repo": "DBE/wdpr-dpe-aws-lib",
+      "memory_bank": "dbe-aws-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-gcp-lib",
+      "path": "wdpr-dpe-gcp-lib",
+      "repo": "DBE/wdpr-dpe-gcp-lib",
+      "memory_bank": "dbe-gcp-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-azure-lib",
+      "path": "wdpr-dpe-azure-lib",
+      "repo": "DBE/wdpr-dpe-azure-lib",
+      "memory_bank": "dbe-azure-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-email-lib",
+      "path": "wdpr-dpe-email-lib",
+      "repo": "DBE/wdpr-dpe-email-lib",
+      "memory_bank": "dbe-email-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-git-lib",
+      "path": "wdpr-dpe-git-lib",
+      "repo": "DBE/wdpr-dpe-git-lib",
+      "memory_bank": "dbe-git-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-chat-lib",
+      "path": "wdpr-dpe-chat-lib",
+      "repo": "DBE/wdpr-dpe-chat-lib",
+      "memory_bank": "dbe-chat-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-otv-lib",
+      "path": "wdpr-dpe-otv-lib",
+      "repo": "DBE/wdpr-dpe-otv-lib",
+      "memory_bank": "dbe-otv-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-dpe-snow-lib",
+      "path": "wdpr-dpe-snow-lib",
+      "repo": "DBE/wdpr-dpe-snow-lib",
+      "memory_bank": "dbe-snow-lib",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "terraform",
+      "path": "terraform",
+      "repo": "DBE/terraform",
+      "memory_bank": "dbe-terraform",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_pmm",
+      "path": "dpe_pmm",
+      "repo": "DBE/dpe_pmm",
+      "memory_bank": "dbe-pmm",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dpe_ra_liquibase",
+      "path": "dpe_ra_liquibase",
+      "repo": "DBE/dpe_ra_liquibase",
+      "memory_bank": "dbe-liquibase",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "harness",
+      "path": "harness",
+      "repo": "DBE/harness",
+      "memory_bank": "dbe-harness",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "splunk-application-logs-processor",
+      "path": "splunk-application-logs-processor",
+      "repo": "DBE/splunk-application-logs-processor",
+      "memory_bank": "dbe-splunk-logs",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "helm-rabbitmq",
+      "path": "helm-rabbitmq",
+      "repo": "DBE/helm-rabbitmq",
+      "memory_bank": "dbe-helm-rabbitmq",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "rmq-cluster-designer",
+      "path": "rmq-cluster-designer",
+      "repo": "DBE/rmq-cluster-designer",
+      "memory_bank": "dbe-rmq-designer",
+      "host": "github.disney.com"
+    }
+  ],
+  "jira_prefix": "",
+  "jira_url": "",
+  "wiki_url": "",
+  "exclusive_overrides": {
+    "dev-core": ["agents", "prompts"],
+    "dev-python": ["agents", "prompts"],
+    "dev-infra": ["agents", "prompts"],
+    "pm": ["agents", "prompts"]
+  }
+}

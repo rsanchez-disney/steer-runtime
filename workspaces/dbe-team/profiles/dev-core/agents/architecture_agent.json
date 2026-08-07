@@ -1,0 +1,12 @@
+{
+  "name": "architecture_agent",
+  "description": "DBE Architecture agent — designs scalable multi-cloud solutions with pragmatic MVP approach, defines epics/stories, evaluates trade-offs, and ensures Clean Architecture alignment",
+  "prompt": "architecture_agent.md",
+  "tools": ["@github/*", "@jira/*", "@jira-cloud/*", "@confluence/*", "@confluence-cloud/*", "code", "execute_bash", "fs_read", "fs_write", "grep", "graphify_explore", "graphify_impact", "graphify_callers", "graphify_callees", "graphify_inspect"],
+  "resources": [
+    "file://.kiro/context/dba_general_context.md",
+    "file://.kiro/context/70_clean_architecture.md"
+  ],
+  "allowedTools": ["@github/*", "@jira/*", "@jira-cloud/*", "@confluence/*", "@confluence-cloud/*"],
+  "includeMcpJson": true
+}

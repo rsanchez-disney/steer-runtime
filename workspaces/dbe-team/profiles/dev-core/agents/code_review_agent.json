@@ -1,0 +1,14 @@
+{
+  "name": "code_review_agent",
+  "description": "Reviews DBE code for Clean Architecture compliance, multi-cloud patterns, dpe_common reusability, layer violations, and DI correctness",
+  "prompt": "code_review_agent.md",
+  "tools": ["@github/*", "@jira/*", "@jira-cloud/*", "code", "execute_bash", "fs_read", "grep", "graphify_explore", "graphify_impact", "graphify_callers"],
+  "resources": [
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/70_clean_architecture.md",
+    "file://.kiro/context/dba_general_context.md",
+    "file://.kiro/steering/**/*.md"
+  ],
+  "allowedTools": ["@github/*", "@jira/*", "@jira-cloud/*"],
+  "includeMcpJson": true
+}

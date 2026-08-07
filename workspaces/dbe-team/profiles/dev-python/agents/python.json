@@ -1,0 +1,13 @@
+{
+  "name": "python",
+  "description": "Python specialist for DBE FastAPI services — enforces Clean Architecture, dpe_common usage, Poetry workflows, and multi-cloud patterns",
+  "prompt": "python.md",
+  "tools": ["@github/*", "code", "execute_bash", "fs_read", "fs_write", "grep", "graphify_explore", "graphify_inspect", "graphify_callers", "graphify_callees"],
+  "resources": [
+    "file://.kiro/context/70_clean_architecture.md",
+    "file://.kiro/context/dba_general_context.md",
+    "file://.kiro/context/python_development.md"
+  ],
+  "allowedTools": ["@github/*"],
+  "includeMcpJson": true
+}

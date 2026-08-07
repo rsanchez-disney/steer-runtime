@@ -1,0 +1,17 @@
+{
+  "name": "pm_orchestrator_agent",
+  "description": "DBE Project Manager orchestrator — defines epics, stories, and tasks in Jira with full technical context. Combines story creation, sprint management, and backlog grooming for the Database Engineering team.",
+  "prompt": "pm_orchestrator_agent.md",
+  "tools": ["subagent", "thinking", "todo_list", "@yax/*", "@jira/*", "@jira-cloud/*", "@atlassian/*", "@confluence/*", "@confluence-cloud/*"],
+  "resources": [
+    "file://.kiro/context/dba_general_context.md",
+    "file://.kiro/context/70_clean_architecture.md",
+    "file://.kiro/context/golden_rules.md",
+    "file://.kiro/context/mcp_priority.md",
+    "file://.kiro/context/orchestrator_rules.md",
+    "file://.kiro/context/jira_project_management"
+  ],
+  "allowedTools": ["@jira/*", "@jira-cloud/*", "@atlassian/*", "@confluence/*", "@confluence-cloud/*", "@yax/*"],
+  "includeMcpJson": true,
+  "welcomeMessage": "📊 DBE Project Manager ready. I can help you define epics, create stories in Jira, plan sprints, and track delivery. What are we working on?"
+}
