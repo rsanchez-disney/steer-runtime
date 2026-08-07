@@ -1,0 +1,59 @@
+bapp_id: "BAPP0193062"
+app_name: "dory-for-tickets"
+full_name: "WDPRD Dory For Tickets"
+description: >
+  Dory For Tickets API. Webhook-based service for ticket processing.
+  Shared ownership: Control (WDW) and Kaos (DLR).
+  Keywords: dory, tickets, webhook, ticket processing.
+support_studio: "Studio Control"
+shared_with: "Studio Kaos"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_items:
+    - "WDPRD Dory For Tickets - AWS Latest"
+    - "WDPRD Dory For Tickets - AWS Load Test"
+    - "WDPRD Dory For Tickets - AWS Production"
+    - "WDPRD Dory For Tickets - AWS Stage"
+  assignment_group: "web-global-salestickets"
+documentation:
+  runbook: "https://confluence.disney.com/spaces/WDPROS/pages/1872850834/Dory+For+Tickets+-+Runbook"
+  sonar: "https://sonar.cicd.wdprapps.disney.com/dashboard?branch=develop&id=com.disney.wdat.api%3Adory-for-tickets-api"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "dory-for-tickets-api"
+    component_type: "api"
+    description: "Dory For Tickets API"
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-doryfortickets-api"
+      branch: "develop"
+    cicd:
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/ci/orgs/Commerce/projects/WDPRD_Dory_For_Tickets/deployments"
+    health_check:
+      url: "https://doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+      expected_status: 200
+    splunk:
+      index: "wdpr_dory_for_tickets"
+      base_spl: "index=wdpr_dory_for_tickets"
+      dashboard: "https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/dory_for_tickets"
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "ECS"
+    other_environments:
+      latest:
+        health_check:
+          url: "https://latest.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+      stage:
+        health_check:
+          url: "https://stage.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"
+      load:
+        health_check:
+          url: "https://load.doryfortickets.wdprapps.disney.com/dory-for-tickets/healthcheck"

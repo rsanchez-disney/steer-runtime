@@ -1,183 +1,92 @@
-# ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
-
-# --- Identity ---
 bapp_id: "BAPP0244008"
-app_name: "wdpr-commerce-stopsales-engine"
+app_name: "stopsales-engine"
 full_name: "WDPR Commerce StopSales Engine"
-description: ""
-
-# --- Ownership ---
+description: >
+  Stop Sales Engine service and updater lambda. Processes stop sales rules and publishes
+  to Redis for consumption by EAS and other services.
+  Keywords: stop sales engine, stopsales updater, blackout engine, redis publish.
 support_studio: "Studio Control"
-escalation_channel: ""
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
 escalation_contacts:
-  - name: ""
+  - name: "Victor Ramirez"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
-
-# --- ServiceNow ---
+    contact: "Victor.Ramirez.-ND@disney.com"
 servicenow:
   configuration_items:
     - "WDPR Commerce StopSales Engine - AWS Latest"
     - "WDPR Commerce StopSales Engine - AWS Load Test"
     - "WDPR Commerce StopSales Engine - AWS Production"
-    - "WDPR Commerce StopSales Engine - AWS Staging"
+    - "WDPR Commerce StopSales Engine - AWS Stage"
   assignment_group: "web-global-salestickets"
-  business_service: ""
-
-# --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
-
-# --- Companion Docs (Markdown) ---
+  runbook: "https://confluence.disney.com/display/WDPROS/Stop+Sales+Service+-+Runbook"
+  sonar: "https://sonar.cicd.wdprapps.disney.com/portfolio?id=Scott-DePriest_Service_New"
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
-
-# --- Components ---
 components:
-
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+  - component_name: "stopsales-svc"
+    component_type: "api"
+    description: "Stop Sales Service (Fargate)"
     repository:
-      url: ""
-      branch: ""
-      path: ""
-
-    cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
+      url: "https://github.disney.com/commerce/stopsales-svc"
+      branch: "develop"
     health_check:
-      url: ""
+      url: "https://stopsales-wdw.wdprapps.disney.com/stopsales/actuator/info"
       expected_status: 200
-
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
+      index: "wdpr_wdw_sss"
+      base_spl: "index=wdpr_wdw_sss stream=stopsales-use1-<env>-stopsales-fargate"
+      dashboards:
+        services: "https://splunk.wdprapps.disney.com/en-US/app/launcher/pearl__stop_sales__services_dashboard"
+      alerts:
+        - "Redis replication lag alert"
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      dashboard_url: "https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_DASHBOARD"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "Fargate"
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
+        - type: "elasticache"
+          name: "stopsales-use1-prd-stopsales.xuqkma.ng.0001.use1.cache.amazonaws.com"
+          read_replica: "stopsales-use1-prd-stopsales-ro (if available)"
     other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
       latest:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
+          url: "https://latest.stopsales-wdw.wdprapps.disney.com/stopsales/actuator/info"
         cloud:
-          region: ""
-          service_name: ""
+          services:
+            - type: "elasticache"
+              name: "stopsales-use1-lst-stopsales.rvhfcl.ng.0001.use1.cache.amazonaws.com"
+              read_replica: "stopsales-use1-lst-stopsales-ro.rvhfcl.ng.0001.use1.cache.amazonaws.com"
+      stage:
+        health_check:
+          url: "https://stage.stopsales-wdw.wdprapps.disney.com/stopsales/actuator/info"
+        cloud:
+          services:
+            - type: "elasticache"
+              name: "stopsales-use1-stg-stopsales.fwkg1l.ng.0001.use1.cache.amazonaws.com"
+              read_replica: "stopsales-use1-stg-stopsales-ro.fwkg1l.ng.0001.use1.cache.amazonaws.com"
+      load:
+        health_check:
+          url: "https://load.stopsales-wdw.wdprapps.disney.com/stopsales/actuator/info"
+        cloud:
+          services:
+            - type: "elasticache"
+              name: "stopsales-use1-lod-stopsales.fwkg1l.ng.0001.use1.cache.amazonaws.com"
+
+  - component_name: "stopsales-updater"
+    component_type: "batch"
+    description: "Stop Sales Updater Lambda"
+    repository:
+      url: "https://github.disney.com/commerce/stopsales-svc"
+      branch: "develop"
+    splunk:
+      index: "wdpr_wdw_sss"
+      base_spl: "index=wdpr_wdw_sss stream IN (*ssupdater-use1-<env>-ssupdater-lambda*)"
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "Lambda"

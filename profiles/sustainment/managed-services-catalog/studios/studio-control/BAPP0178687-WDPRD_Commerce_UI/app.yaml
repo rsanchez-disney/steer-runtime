@@ -1,0 +1,39 @@
+bapp_id: "BAPP0178687"
+app_name: "commerce-ui"
+full_name: "WDPRD Commerce UI"
+description: >
+  Commerce UI Flows: WDW Special Events, WDW Claim Flow, WDW Memory Maker, WDW Water Parks.
+  Polymer-based web components SPA.
+  Keywords: commerce UI, special events, claim, memory maker, water parks.
+support_studio: "Studio Control"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_items:
+    - "WDPRD Commerce UI - AWS Latest"
+    - "WDPRD Commerce UI - AWS Load Test"
+    - "WDPRD Commerce UI - AWS Production"
+    - "WDPRD Commerce UI - AWS Stage"
+  assignment_group: "web-global-salestickets"
+documentation:
+  runbook: "https://confluence.disney.com/display/WDPROS/COM-UI+Dockerization"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "pci-apps-commerce-ui"
+    component_type: "frontend"
+    description: "Commerce UI SPA (Special Events, Claim, Memory Maker, Water Parks)"
+    repository:
+      url: "https://github.disney.com/commerce/pci-apps-commerce-ui"
+      branch: "develop"
+    splunk:
+      index: "wdpr_commerce_ui"
+      base_spl: "index=wdpr_commerce_ui"
+    cloud:
+      provider: "AWS"
+      infra_type: "ECS"

@@ -1,0 +1,39 @@
+bapp_id: "BAPP0218784"
+app_name: "com-ui-api"
+full_name: "WDPRD Commerce UI Shared API"
+description: >
+  Commerce UI Shared API layer. BFF for commerce UI applications.
+  Migrating from GitLab to GitHub (in progress).
+  Keywords: commerce shared API, BFF, com-ui-api.
+support_studio: "Studio Control"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_items:
+    - "WDPRD Commerce UI Shared API - AWS Latest"
+    - "WDPRD Commerce UI Shared API - AWS Load Test"
+    - "WDPRD Commerce UI Shared API - AWS Production"
+    - "WDPRD Commerce UI Shared API - AWS Stage"
+  assignment_group: "web-global-salestickets"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "com-ui-api"
+    component_type: "api"
+    description: "Commerce UI Shared API"
+    repository:
+      url: "https://gitlab.disney.com/cgs-wdw/com-ui-api"
+      branch: "develop"
+      notes: "Migrating to github.disney.com (in progress)"
+    splunk:
+      index: "wdpr_wdw_com_shared_api"
+      base_spl: "index=wdpr_wdw_com_shared_api"
+      alt_index: "wdpr_dlr_com_shared_api"
+    cloud:
+      provider: "AWS"
+      infra_type: "ECS"

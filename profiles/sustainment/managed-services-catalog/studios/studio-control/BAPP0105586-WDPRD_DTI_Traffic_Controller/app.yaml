@@ -1,0 +1,40 @@
+bapp_id: "BAPP0105586"
+app_name: "dtc"
+full_name: "WDPRD DTI Traffic Controller"
+description: >
+  DTI Traffic Controller. Manages DTI traffic routing.
+  Keywords: DTC, DTI, traffic controller, routing.
+support_studio: "Studio Control"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_items:
+    - "WDPRD DTI Traffic Controller - AWS Latest"
+    - "WDPRD DTI Traffic Controller - AWS Load Test"
+    - "WDPRD DTI Traffic Controller - AWS Production"
+    - "WDPRD DTI Traffic Controller - AWS Stage"
+  assignment_group: "web-global-salestickets"
+documentation:
+  runbook: "https://confluence.disney.com/pages/viewpage.action?pageId=681694957"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "dtc-svc"
+    component_type: "api"
+    description: "DTI Traffic Controller Service"
+    repository:
+      url: "https://github.disney.com/commerce/wdpr-ecommerce-dtc-svc"
+      branch: "develop"
+    splunk:
+      index: "wdpr-apps"
+      base_spl: "index=wdpr-apps ecs_cluster=\"wdpr-dtc-<env>*\" ecs_task_definition=\"dtc-wdpr*\""
+    cloud:
+      provider: "AWS"
+      infra_type: "ECS"
+      cluster_id: "wdpr-dtc-<env>"
+      service_name: "dtc-wdpr"

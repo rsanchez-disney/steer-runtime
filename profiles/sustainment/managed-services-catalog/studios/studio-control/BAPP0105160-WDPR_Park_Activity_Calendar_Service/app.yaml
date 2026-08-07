@@ -1,0 +1,41 @@
+bapp_id: "BAPP0105160"
+app_name: "pacs"
+full_name: "WDPR Park Activity Calendar Service (PACS)"
+description: >
+  Park Activity Calendar Service. Calendar availability for theme park tickets.
+  Keywords: PACS, park activity, calendar, availability.
+support_studio: "Studio Control"
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
+escalation_contacts:
+  - name: "Victor Ramirez"
+    role: "primary"
+    contact: "Victor.Ramirez.-ND@disney.com"
+servicenow:
+  configuration_items:
+    - "WDPR Park Activity Calendar Service - AWS Latest"
+    - "WDPR Park Activity Calendar Service - AWS Load Test"
+    - "WDPR Park Activity Calendar Service - AWS Production"
+    - "WDPR Park Activity Calendar Service - AWS Stage"
+  assignment_group: "web-global-salestickets"
+documentation:
+  runbook: "https://confluence.disney.com/display/WDPROS/PACS+WDW+-+Runbook"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "pacs-main"
+    component_type: "api"
+    description: "PACS Main Service (WDW)"
+    repository:
+      url: "https://github.disney.com/commerce/dlr-commerce2-01323-pacs-svc"
+      branch: "develop"
+    splunk:
+      index: "wdpr-ecommerce"
+      base_spl: "index=wdpr-ecommerce ecs_cluster=\"wdw-ecommerce-S0001479-use1-<env>*\" ecs_task_definition=\"pacs-main*\""
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "ECS"
+      cluster_id: "wdw-ecommerce-S0001479-use1-<env>"
+      service_name: "pacs-main"

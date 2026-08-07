@@ -1,183 +1,176 @@
-# ============================================================================
-# ADM Managed Services Catalog — Application Entry
-# ============================================================================
-# Remove any sections that do not apply to this application.
-# ============================================================================
-
-# --- Identity ---
 bapp_id: "BAPP0244050"
-app_name: "wdpr-commerce-entitlement-availability"
-full_name: "WDPR Commerce Entitlement Availability"
-description: ""
-
-# --- Ownership ---
+app_name: "eas"
+full_name: "Entitlement Availability Service (EAS)"
+description: >
+  Lambda built to combine information from Stop Sales Service and CME Availability into a single
+  flag to indicate salability for a particular date and sku. The Lambda is designed only for skus
+  that are date-specific (theme park tickets, water parks, special events).
+  Dependencies: StopSales Service (Redis), CME Availability Service, LexVAS, EAPI, AuthZ.
+  Keywords: entitlement availability, EAS, ticket availability, salability, stop sales, date-specific.
 support_studio: "Studio Control"
-escalation_channel: ""
+escalation_channel: "https://teams.microsoft.com/l/channel/19%3AN7ofY17C8fye-1cs5yLhUrSLaWsp4ggdGhUEBA24bIM1%40thread.tacv2/DX%20-%20Studio%20Control"
 escalation_contacts:
-  - name: ""
+  - name: "Victor Ramirez"
     role: "primary"
-    contact: ""
-  - name: ""
-    role: "secondary"
-    contact: ""
-  - name: ""
-    role: "SME"
-    contact: ""
-
-# --- ServiceNow ---
+    contact: "Victor.Ramirez.-ND@disney.com"
 servicenow:
   configuration_items:
     - "WDPR Commerce Entitlement Availability - AWS Latest"
+    - "WDPR Commerce Entitlement Availability - AWS Stage"
     - "WDPR Commerce Entitlement Availability - AWS Load Test"
     - "WDPR Commerce Entitlement Availability - AWS Production"
-    - "WDPR Commerce Entitlement Availability - AWS Staging"
   assignment_group: "web-global-salestickets"
-  business_service: ""
-
-# --- Documentation ---
 documentation:
-  runbook: ""
-  wiki: ""
-  architecture_diagram: ""
-
-# --- Companion Docs (Markdown) ---
+  runbook: "https://confluence.disney.com/pages/viewpage.action?spaceKey=WDPROS&title=EAS+-+Entitlement+Availability+Service+-+Runbook"
+  openapi: "https://github.disney.com/commerce/entlavail-lambda/blob/main/lambdas/get-documentation/documentation/openapi.json"
 docs:
   troubleshooting: "troubleshooting.md"
   business_rules: "business-rules.md"
   runbook: "runbook.md"
-
-# --- Components ---
 components:
-
-  - component_name: ""
-    component_type: ""               # api | worker | batch | frontend | database | queue | gateway | cache | mobile | sdk
-    description: ""
-
-    # -- Component-specific docs --
-    docs:
-      troubleshooting: ""
-      runbook: ""
-
-    # -- Component-specific documentation links --
-    documentation:
-      wiki: ""
-      architecture_diagram: ""
-
-    # -- Source Code & CI/CD --
+  - component_name: "entlavail-availabilities"
+    component_type: "batch"
+    description: "Main availability check lambda — returns salability flag per date/sku"
     repository:
-      url: ""
-      branch: ""
-      path: ""
-
+      url: "https://github.disney.com/commerce/entlavail-lambda"
+      branch: "main"
+    legacy_repository:
+      url: "https://gitlab.disney.com/cgs-wdw/entlavail/entlavail-lambda"
+      notes: "Legacy — use primary repo (GitHub)"
+    terraform:
+      url: "https://gitlab.disney.com/cgs-wdw/entlavail/entlavail-lambda-terraform"
+      notes: "Infrastructure-only (legacy)"
     cicd:
-      platform: ""                   # harness | github-actions | jenkins | spinnaker
-      pipeline_url: ""
-      deploy_target: ""
-
-    # -- Health Check --
+      platform: "harness"
+      pipeline_url: "https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/module/ci/orgs/Commerce/projects/WDPR_Commerce_Entitlement_Availability/overview"
     health_check:
-      url: ""
+      url: "https://entlavail-internal-wdw.wdprapps.disney.com/api/get-documentation"
       expected_status: 200
-
-    # -- Splunk --
     splunk:
-      index: ""
-      source: ""
-      base_spl: >-
-        index=myindex sourcetype=mysource
-      error_spl: >-
-        index=myindex sourcetype=mysource level=ERROR
-      latency_spl: >-
-        index=myindex sourcetype=mysource
-        | stats avg(response_time) as avg_rt p95(response_time) as p95_rt by endpoint
-
-    # -- AppDynamics --
+      index: "wdpr_wdw_eas"
+      base_spl: "index=wdpr_wdw_eas source=*B0244050-use1-prd*"
+      error_spl: "index=wdpr_wdw_eas source=*B0244050-use1-prd* (\"*error*\" OR \"*exception*\")"
+      legacy_spl: "index=wdpr_wdw_eas source=*us-east-1*"
+      dashboards:
+        performance: "https://splunk.wdprapps.disney.com/en-US/app/launcher/pearl__entitlement_availability_service__performance_review"
+        performance_history: "https://splunk.wdprapps.disney.com/en-US/app/launcher/pearl__entitlement_availability_service__performance_review__2"
+        request_analysis: "https://splunk.wdprapps.disney.com/en-US/app/launcher/pearl__entitlement_availability_service__request_analysis"
+        downstream_response: "https://splunk.wdprapps.disney.com/en-US/app/launcher/studio_control__eas_downstream_response_times"
+        retry_requests: "https://splunk.wdprapps.disney.com/en-US/app/launcher/studio_control__eas__retry_requests"
+        stop_sales: "https://splunk.wdprapps.disney.com/en-US/app/launcher/pearl__stop_sales__services_dashboard"
+      dashboards_preprod:
+        performance: "https://stage.splunk.wdprapps.disney.com/en-US/app/search/pearl__entitlement_availability_service__performance_review"
+        request_analysis: "https://stage.splunk.wdprapps.disney.com/en-US/app/search/studio_control__eas__request_analysis"
+        downstream_response: "https://stage.splunk.wdprapps.disney.com/en-US/app/search/studio_control__eas__downstream_response_times"
+        retry_requests: "https://stage.splunk.wdprapps.disney.com/en-US/app/search/studio_control__eas__retry_requests"
+      alerts:
+        - "EAS WDW Availabilities Error Alert"
+        - "EAS WDW Modification-options Error Alert"
+        - "EAS WDW Long Response Alert"
+        - "EAS Found Misconfigured Reservation Required Periods"
     appdynamics:
-      app_name: ""
-      app_id: ""
-      tier: ""
-      dashboard_url: ""
-
-    # -- NewRelic --
-    newrelic:
-      app_id: ""
-      account_id: ""
-      dashboard_url: ""
-
-    # -- Datadog --
-    datadog:
-      service: ""
-      env: ""
-      dashboard_url: ""
-
-    # -- Grafana --
-    grafana:
-      dashboard_uid: ""
-      dashboard_url: ""
-      datasource: ""
-
-    # -- Archer --
-    archer:
-      record_id: ""
-
-    # -- Cloud Infrastructure & Native Observability --
+      notes: "APPD integration exists but is DISABLED — caused significant performance impact to lambda"
     cloud:
-      provider: ""                   # AWS | GCP | Azure | on-prem
-      region: ""
-      account_id: ""
-      infra_type: ""                 # ECS | EKS | Lambda | GKE | EC2 | VM | Fargate | CloudRun | AppEngine
-      cluster_id: ""
-      service_name: ""
-
-      cloudwatch:
-        log_group: ""
-        namespace: ""
-        alarm_prefix: ""
-
-      loginsights:
-        log_group: ""
-        saved_query: ""
-
-      gcp:
-        project_id: ""
-        log_filter: ""
-
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "Lambda"
+      lambda_functions:
+        primary:
+          availabilities: "wdw-ecommerce-B0244050-use1-prd-entlavail-availabilities"
+          cache_keys: "wdw-ecommerce-B0244050-use1-prd-entlavail-cache-keys"
+          modification_options: "wdw-ecommerce-B0244050-use1-prd-entlavail-modification-options"
+          get_documentation: "wdw-ecommerce-B0244050-use1-prd-entlavail-get-documentation"
+        legacy:
+          availabilities: "entlavail-use1-prd-entlavail-availabilities"
+          modification_options: "entlavail-use1-prd-entlavail-modification-options"
       services:
-        - type: ""                   # sqs | sns | s3 | dynamodb | rds | elasticache | pubsub | firestore | bucket | cloud-sql | redis
-          name: ""
-
-    # -- Other Environments (only fields that differ from production) --
+        - type: "elasticache"
+          name: "stopsales-prod.xuqkma.ng.0001.use1.cache.amazonaws.com"
+          notes: "StopSales Redis — shared with StopSales Engine"
     other_environments:
-
-      stage:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_stage sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
-      load:
-        health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_load sourcetype=mysource
-        cloud:
-          region: ""
-          service_name: ""
-
       latest:
         health_check:
-          url: ""
-        splunk:
-          index: ""
-          base_spl: >-
-            index=myindex_latest sourcetype=mysource
+          url: "https://latest.entlavail-internal-wdw.wdprapps.disney.com/api/get-documentation"
         cloud:
-          region: ""
-          service_name: ""
+          account_id: "718439781381"
+          account_name: "wdpr-ecommerce-dev"
+          lambda_functions:
+            primary:
+              availabilities: "wdw-ecommerce-B0244050-use1-lst-entlavail-availabilities"
+              cache_keys: "wdw-ecommerce-B0244050-use1-lst-entlavail-cache-keys"
+              modification_options: "wdw-ecommerce-B0244050-use1-lst-entlavail-modification-options"
+              get_documentation: "wdw-ecommerce-B0244050-use1-lst-entlavail-get-documentation"
+            legacy:
+              availabilities: "entlavail-use1-lst-entlavail-availabilities"
+              modification_options: "entlavail-use1-lst-entlavail-modification-options"
+              get_documentation: "entlavail-use1-lst-entlavail-get-documentation"
+          services:
+            - type: "elasticache"
+              name: "stopsales-latest.rvhfcl.ng.0001.use1.cache.amazonaws.com"
+        splunk:
+          base_spl: "index=wdpr_wdw_eas source=*B0244050-use1-lst*"
+          legacy_spl: "index=wdpr_wdw_eas source=*us-east-1*lst*"
+      stage:
+        health_check:
+          url: "https://stage.entlavail-internal-wdw.wdprapps.disney.com/api/get-documentation"
+        cloud:
+          account_id: "168997411205"
+          account_name: "wdpr-ecommerce-test"
+          lambda_functions:
+            primary:
+              availabilities: "wdw-ecommerce-B0244050-use1-stg-entlavail-availabilities"
+              cache_keys: "wdw-ecommerce-B0244050-use1-stg-entlavail-cache-keys"
+              modification_options: "wdw-ecommerce-B0244050-use1-stg-entlavail-modification-options"
+              get_documentation: "wdw-ecommerce-B0244050-use1-stg-entlavail-get-documentation"
+            legacy:
+              availabilities: "entlavail-use1-stg-entlavail-availabilities"
+              modification_options: "entlavail-use1-stg-entlavail-modification-options"
+              get_documentation: "entlavail-use1-stg-entlavail-get-documentation"
+          services:
+            - type: "elasticache"
+              name: "stopsales-stage.fwkg1l.ng.0001.use1.cache.amazonaws.com"
+        splunk:
+          base_spl: "index=wdpr_wdw_eas source=*B0244050-use1-stg*"
+      load:
+        health_check:
+          url: "https://load.entlavail-internal-wdw.wdprapps.disney.com/api/get-documentation"
+        cloud:
+          account_id: "168997411205"
+          account_name: "wdpr-ecommerce-test"
+          lambda_functions:
+            primary:
+              availabilities: "wdw-ecommerce-B0244050-use1-lod-entlavail-availabilities"
+              cache_keys: "wdw-ecommerce-B0244050-use1-lod-entlavail-cache-keys"
+              modification_options: "wdw-ecommerce-B0244050-use1-lod-entlavail-modification-options"
+              get_documentation: "wdw-ecommerce-B0244050-use1-lod-entlavail-get-documentation"
+            legacy:
+              availabilities: "entlavail-use1-lod-entlavail-availabilities"
+              modification_options: "entlavail-use1-lod-entlavail-modification-options"
+              get_documentation: "entlavail-use1-lod-entlavail-get-documentation"
+          services:
+            - type: "elasticache"
+              name: "stopsales-load.fwkg1l.ng.0001.use1.cache.amazonaws.com"
+        splunk:
+          base_spl: "index=wdpr_wdw_eas source=*B0244050-use1-lod*"
+
+  - component_name: "entlavail-modification-options"
+    component_type: "batch"
+    description: "Modification options lambda — returns upgrade/modify options for entitlements"
+    repository:
+      url: "https://github.disney.com/commerce/entlavail-lambda"
+      branch: "main"
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "Lambda"
+
+  - component_name: "entlavail-cache-keys"
+    component_type: "batch"
+    description: "Cache keys lambda — manages Redis cache invalidation"
+    repository:
+      url: "https://github.disney.com/commerce/entlavail-lambda"
+      branch: "main"
+    cloud:
+      provider: "AWS"
+      region: "us-east-1"
+      infra_type: "Lambda"
