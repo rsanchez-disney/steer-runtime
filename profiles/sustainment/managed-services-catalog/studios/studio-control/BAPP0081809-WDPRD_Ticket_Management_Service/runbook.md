@@ -1,129 +1,176 @@
-# Runbook — TMS WDW
+# Runbook — WDPRD Ticket Management Service
 
-Source: [WDW TMS Runbook](https://confluence.disney.com/spaces/WDPROS/pages/681701804/WDW+TMS+Runbook)
+Source: [Confluence WDPROS](https://confluence.disney.com/display/WDPROS/WDW+TMS+Runbook)
 
-## Source Code & CI/CD
+| 
 
-| Item | URL |
-|------|-----|
-| Repository | https://github.disney.com/commerce/wdpr-ecommerce-tms-svc |
-| Harness | https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Ticket_Management_Service/deployments |
-| SonarQube | https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aticket-management-service |
-| JMeter Scripts | https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS |
+# 
 
-## Swagger / API Docs
+## Objective
 
-| Cluster | Environment | URL |
-|---------|-------------|-----|
-| Internal | Latest | https://latest.tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| Internal | Stage | https://stage.tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| Internal | Load | https://lt.tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| Internal | Production | https://tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| External | Latest | https://latest.tms.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| External | Stage | https://stage.tms.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| External | Load | https://lt.tms.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
-| External | Production | https://tms.wdw.wdpro.disney.com/ticket-management-service/docs/index.html |
+The objective of the Operations Readiness Review Checklist is to determine if the application is ready for go-live and to be successfully supported by the e-commerce Sustainment team.  
 
-## AppDynamics
+ | 
+# 1. Application Overview
 
-### Production
-- WDW TMS INT: https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=563&component=288251&dashboardMode=force
-- WDW TMS EXT: https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=563&component=288169&dashboardMode=force
+ | # | Item Description | Answer
+ | 1 | 
+**Application Description**:
+ | Ticket Management Service (TMS) is an application used for digital services to support post-purchase and some park operation flows.
+ | 2 | **Collaboration Tools**: Any links Slack channels or other methods to communicate besides email | 
+#dpeptd-studio-mars
 
-### Lower Environments (INT)
-- Latest: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2846&component=6394101&dashboardMode=force
-- Stage: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3056&component=6401643&dashboardMode=force
-- Load: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3058&component=6401747&dashboardMode=force
+ | 
+# 2. Technical Architecture
 
-### Lower Environments (EXT)
-- Latest: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2846&component=6394100&dashboardMode=force
-- Stage: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3056&component=6401644&dashboardMode=force
-- Load: https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3058&component=6401747&dashboardMode=force
+ | # | Item Description | Answer
+ | 1 | **Security Assessment**: Has an application security assessment been completed? | Yes
+ | 2 | **Security Penetration Test**: Has a Penetration test been performed?  If so, have all findings been addressed? | Yes
+ | 3 | 
+**Additional Security Questions: **
+- Has the infrastructure been “hardened” to allow for minimum required access, port restrictions, appropriate encryption, etc?
+- If any Open Source is being employed, has it been identified and appropriately reviewed?
+- Has the application source code undergone a security review (Either static or dynamic?)  If so, have all findings been addressed? 
+ | 
 
-## Health Check Endpoints
+1.- Yes
+2.- Yes
+3.- Yes
 
-| Cluster | Environment | URL |
-|---------|-------------|-----|
-| Internal | Latest | https://latest.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| Internal | Stage | https://stage.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| Internal | Load | https://lt.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| Internal | Production | https://tms.int.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| External | Latest | https://latest.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| External | Stage | https://stage.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| External | Load | https://lt.tms.wdw.wdpro.disney.com/ticket-management-service/health/deep |
-| External | Production | https://tms.wdw.wdpro.disney.com/ticket-management-service/health/deep |
+ | 4 | 
+**Interfaces/URLs**: Provide a list of interfaces or web URLs (Please see list in section 5 for explicit urls)
 
-## ECS Clusters
+ | Environment and Type | Link/Path | INTERNET-FACING * | Primary**
+ | DLR / Internal | [https://<env>.tms.int.wdw.wdpro.disney.com/ticket-management-service/health/shallow](https://tms.int.wdw.wdpro.disney.com/ticket-management-service/health/shallow) | No | No
+ | DLR / External | [https://<env>.tms.wdw.wdpro.disney.com/ticket-management-service/health/shallow](https://tms.int.wdw.wdpro.disney.com/ticket-management-service/health/shallow) | Yes | No
+* = Is the interface accessible outside the Disney network? ** = Can business users access this interface?
 
-AWS Account: commerce | Region: us-west-2
+** **
+ | Please enter your answer within the "Item Description" area
+ | 5 | **AID Links**: | 
+Load / Prod: [https://bluedolphin.app/twdc/drafts/68b054c66d7835ffc0081b8f](https://bluedolphin.app/twdc/drafts/68b054c66d7835ffc0081b8f)
 
-| Cluster | Environment | Service |
-|---------|-------------|---------|
-| INT | Latest | wdw-ecommerce-S0001479-usw2-lst / tmsint-wdw-svc-latest-live |
-| INT | Stage | wdw-ecommerce-S0001479-usw2-stg / tmsint-wdw-svc-stage-live |
-| INT | Load | wdw-ecommerce-S0001479-usw2-lod / tmsint-wdw-svc-load-live |
-| INT | Production | wdw-ecommerce-S0001479-usw2-prd / tmsint-wdw-svc-prod-live |
-| EXT | Latest | wdw-ecommerce-S0001479-usw2-lst / tms-wdw-svc-latest-live |
-| EXT | Stage | wdw-ecommerce-S0001479-usw2-stg / tms-wdw-svc-stage-live |
-| EXT | Load | wdw-ecommerce-S0001479-usw2-lod / tms-wdw-svc-load-live |
-| EXT | Production | wdw-ecommerce-S0001479-usw2-prd / tms-wdw-svc-prod-live |
+Latest / Stage: [https://bluedolphin.app/twdc/drafts/68b054c60a658c7350b84cdf](https://bluedolphin.app/twdc/drafts/68b054c60a658c7350b84cdf)
 
-## Database Access
+ | 6 | **Application Functionality**:  | Ticket Management Service (TMS) is an application used for digital services to support post-purchase flow as well as some park operation activities. It provides endpoints for the mobile and web flows to retrieve guest's entitlements. It completely relies on GAM for entitlement retrieval.
+ | 7 | **JMeter**:  | Performance JMeter scripts: [https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS](https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS)
+ | 8 | 
+**Code Quality Enabled: **Enabling PMD, Checkstyle and Findbugs and code coverage validations in the pom file.
 
-Note: DB password is encrypted in Nimbus (not Vault).
+ | 
+Yes, the application has the standard quality control plugins enabled as part of its build life cycle:
 
-### WDW Databases
+POM file: [https://github.disney.com/commerce/wdpr-ecommerce-tms-svc/blob/develop/pom.xml](https://github.disney.com/commerce/wdpr-ecommerce-tms-svc/blob/develop/pom.xml)
 
-| Environment | Host |
-|-------------|------|
-| Latest | wdw-tms-svc-1-mariadb-latest.che79lwtdc3w.us-west-2.rds.amazonaws.com:4001/wdwtms_latest |
-| Stage | wdw-tms-svc-stage-master.wdatdbs.disney.com:4001/wdwtms_stage |
-| Load | wdw-tms-svc-load-master.wdatdbs.disney.com:4001/wdwtms_lt |
-| Production | wdw-tms-prod-mysql.czadbdnytwxi.us-west-2.rds.amazonaws.com:3306/wdwtms_prod |
+ | 9 | 
+Code coverage: Unit test coverage >= 80% 
 
-## Redis (ElastiCache)
+ | 
+Yes. Current Code coverage at the moment of writing is 84.5%
 
-| Environment | Host |
-|-------------|------|
-| Latest | wdwtms-latest.7ozysg.clustercfg.usw2.cache.amazonaws.com |
-| Stage | wdw-tms-stage-ec.i8pkwr.0001.usw2.cache.amazonaws.com |
-| Load | wdw-tms-lt-ec.i8pkwr.0001.usw2.cache.amazonaws.com |
-| Production | wdw-tms-prod-ec.i8pkwr.0001.usw2.cache.amazonaws.com |
+ | 10 | 
+**Integrated with Sonar: **The services need to appear here: [https://sonar.cicd.wdprapps.disney.com/portfolio?id=Scott-DePriest_Service_New](https://sonar.cicd.wdprapps.disney.com/portfolio?id=Scott-DePriest_Service_New) and pass all sonar validations. 
 
-## Splunk Indexes
+ | 
+Yes: [https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aticket-management-service](https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aticket-management-service)
 
-Legacy index: `wdw_tms`
+ | 11 | 
+**API documentation**: It can be swagger or any other kind of documentation on the API (endpoints, requests and responses)
+ | 
+ Internal: [https://tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html](https://tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html)
 
-After Cribl migration (v2.49+):
-```
-INT: index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-usw2*" ecs_task_definition="tmsint-svc*"
-EXT: index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-usw2*" ecs_task_definition="tms-svc*"
-```
+ External: [https://tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html](https://tms.int.wdw.wdpro.disney.com/ticket-management-service/docs/index.html)
 
-## Restart Procedures
+ | 12 | 
+**Sequence Diagrams **
 
-1. Identify the ECS cluster: `wdw-ecommerce-S0001479-usw2-prd` (us-west-2)
-2. Force new deployment via ECS console or CLI:
-   ```bash
-   aws ecs update-service --cluster wdw-ecommerce-S0001479-usw2-prd --service <tmsint-wdw-svc-prod-live|tms-wdw-svc-prod-live> --force-new-deployment
-   ```
-3. Monitor task drain — wait for old tasks to stop and new tasks to reach RUNNING state
-4. Validate health check returns 200
+ 
+ | 
+TODO 
 
-## Scaling
+ | 13 | 
+**Component Diagrams **
+ | 
+TODO
 
-TMS WDW has two deployments (INT and EXT):
+ | 14 | 
+**Component Load Tested: **Nice to have but optional as the service needs to be load tested before reaching production. 
 
-| Deployment | Desired Count | PACE | Schedule | Region | Notes |
-|------------|--------------|------|----------|--------|-------|
-| TMS WDW INT | 9 | Yes | 04:00–01:00 EST | West2 | PACE-managed |
-| TMS WDW EXT | 3 | No | — | West2 | Min:3, Desire:3, Max:20 |
+ | 
+Last test at the moment of writing:
 
-- **Scale up:** Adjust desired count in ECS; INT is PACE-managed, EXT requires manual scaling
-- **Scale down:** INT scales down via PACE schedule; EXT stays at minimum (3)
+Internal: 
 
-## Rollback
+External: 
 
-- Revert task definition to previous revision via ECS console
-- Force new deployment with previous task definition
-- Validate health check and Splunk logs for errors post-rollback
+ | 
+# 3. ServiceNow Processes and Configuration
+
+ | # | Item Description | Answer
+ | 1 | **BAPPID**: Has the Business Application CI
+been created in SNOW?
+ | BAPP0081809
+
+ | 
+# 4. Build, Test, and Deployment
+
+ | # | Item Description | Answer
+ | 1 | 
+**Source Code**: Provide details on the source code's location (GIT)
+
+ | COMPONENT NAME | PATH
+ | TMS | [https://github.disney.com/commerce/wdpr-ecommerce-tms-svc](https://github.disney.com/commerce/wdpr-ecommerce-tms-svc)
+
+ | Please enter your answer within the "Item Description" area
+ | 2 | **Build and Deployment Processes**: Provide a link or other applicable location on the details. | Harness: [https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Ticket_Management_Service/deployments](https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_Ticket_Management_Service/deployments)
+ | 3 | **Credential Management: **Have all service accounts and passwords been entered in Vault? | No. The DB password is encrypted in Nimbus.
+ | 5 | **Performance Testing**: Provide links to the PE results | 
+Last test at the moment of writing:
+
+Internal: 
+
+External: 
+
+ | 
+# 5. Monitoring and Alert Configuration
+
+ | # | Item Description | Answer
+ | 1 | **Splunk Indexes** | 
+WDW: wdw_tms
+
+Cribl changes done for WDW TMS 2.49 in lowers and prod, the index to use is:
+
+index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-usw2*" ecs_task_definition="tms-svc*"
+index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-usw2*" ecs_task_definition="tmsint-svc*" 
+ | 2 | 
+**Infrastructure Monitoring**: Indicate what is being monitored (Server, Database, and Storage), who is doing the monitoring, the alert thresholds, and the destination for the alerts.
+
+ | RESOURCE TYPE | RESOURCE NAME | MONITOR | THRESHOLD | ALERT RECIPIENTS
+ | Server | No value | No value | No value | No value
+ | Database | MOSA | No value | No value | No value
+ | Storage | No value | No value | No value | No value
+
+ | Please enter your answer within the "Item Description" area
+ | 3 | 
+**Application Monitoring**: Indicate what is being monitored(APM, Synthetics, etc.), who is doing the monitoring, the alert thresholds, and the destination for the alerts.
+
+Please refer to the TMS section on 
+
+ | 
+# 6. Application URLS 
+
+Please provide in the section below the ulrs per environment and brand for the different elements needed to work with the service like:
+- AppD
+- ECS Cluster
+- Swagger documentation
+- Health Check Endpoints
+- Dependencies like MQ or Redis
+
+AWS Account: commerce
+
+ | Cluster | Application | Environment | URL
+ | Internal | AppD | Latest | [https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2846&component=6394101&dashboardMode=force](https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=2846&component=6394101&dashboardMode=force)
+ | Stage | [https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60&application=3056&component=6401643&dashboardMode=force](https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&timeRange=last_1_hour.BEFORE_NOW.-1.
+
+---
+*[Truncated — see full runbook in Confluence]*

@@ -1,97 +1,158 @@
-# Runbook — EVAS WDW
+# Runbook — WDPRD Entitlement View Assembly Service
 
-Source: [WDW EVAS Runbook](https://confluence.disney.com/spaces/WDPROS/pages/688921376/WDW+EVAS+Runbook)
+Source: [Confluence WDPROS](https://confluence.disney.com/display/WDPROS/WDW+EVAS+Runbook)
 
-## Source Code & CI/CD
+## Objective
 
-| Item | URL |
-|------|-----|
-| Repository | https://github.disney.com/commerce/wdpr-ecommerce-evas-svc |
-| Harness | https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_EntitlementViewAssemblyService/deployments |
-| Jenkins (legacy) | https://ecommerce.cicd.wdprapps.disney.com/job/wdpr-ecommerce-evas-svc/view/Deploy/job/wdpr-ecommerce-evas-svc-aws-live/ |
-| SonarQube | https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aentitlement-view-assembly-service |
-| JMeter Scripts | https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS |
+The objective of the Operations Readiness Review Checklist is to determine if the application is ready for go-live and to be successfully supported by the e-commerce Sustainment team.  
 
-## Swagger / API Docs
+ | 
+# 1. Application Overview
 
-| Cluster | Environment | URL |
-|---------|-------------|-----|
-| Internal | Latest | https://latest.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| Internal | Stage | https://stage.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| Internal | Load | https://lt.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| Internal | Production | https://evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| External | Latest | https://latest.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| External | Stage | https://stage.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| External | Load | https://lt.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
-| External | Production | https://evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html |
+ | # | Item Description | Answer
+ | 1 | 
+**Application Description**:
+ | Entitlement View Assembly Service (EVAS) is an application used on top TMS to aggregate product instance information on top of TMS responses.
+ | 2 | **Collaboration Tools**: Any links Slack channels or other methods to communicate besides email | 
+#dpeptd-studio-mars
 
-## AppDynamics
+ | 
+# 2. Technical Architecture
 
-### Production (app_id: 563)
-- INT+EXT (unified): https://disney-prod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=563&component=349815&dashboardMode=force
+ | # | Item Description | Answer
+ | 1 | **Security Assessment**: Has an application security assessment been completed? | Yes
+ | 2 | **Security Penetration Test**: Has a Penetration test been performed?  If so, have all findings been addressed? | Yes
+ | 3 | 
+**Additional Security Questions: **
+- Has the infrastructure been “hardened” to allow for the minimum required to access, port restrictions, appropriate encryption, etc?
+- If any Open Source is being employed, has it been identified and appropriately reviewed?
+- Has the application source code undergone a security review (Either static or dynamic?)  If so, have all findings been addressed? 
+ | 
 
-### Lower Environments — Internal
-- Latest (app_id: 2846): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2846&component=6402224&dashboardMode=force
-- Stage (app_id: 3056): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3056&component=6188388&dashboardMode=force
-- Load (app_id: 3058): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3058&component=6199072&dashboardMode=force
+1.- Yes
+2.- Yes
+3.- Yes
 
-### Lower Environments — External
-- Latest (app_id: 2846): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=2846&component=6402224&dashboardMode=force
-- Stage (app_id: 3056): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3056&component=7536723&dashboardMode=force
-- Load (app_id: 3058): https://disney-preprod.saas.appdynamics.com/controller/#/location=APP_COMPONENT_MANAGER&application=3058&component=6188457&dashboardMode=force
+ | 4 | 
+**Interfaces/URLs**: Provide a list of interfaces or web URLs (Please see list in section 5 for explicit urls)
 
-## Health Check Endpoints
+ | Environment and Type | Link/Path | INTERNET-FACING * | Primary**
+ | Internal | [https://<env>.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/shallow](https://evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/shallow) | No | No
+ | External | [https://<env>.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/shallow](https://evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/shallow) | Yes | No
+* = Is the interface accessible outside the Disney network? ** = Can business users access this interface?
 
-| Cluster | Environment | URL |
-|---------|-------------|-----|
-| Internal | Latest | https://latest.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| Internal | Stage | https://stage.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| Internal | Load | https://lt.evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| Internal | Production | https://evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| External | Latest | https://latest.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| External | Stage | https://stage.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| External | Load | https://lt.evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
-| External | Production | https://evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/health/deep |
+** **
+ | Please enter your answer within the "Item Description" area
+ | 5 | **AID Links**: | [https://bluedolphin.app/twdc/drafts/68b0550c0a658c7350b86fbc](https://bluedolphin.app/twdc/drafts/68b0550c0a658c7350b86fbc)
+ | 6 | **Application Functionality**:  | Entitlement View Assembly Service (EVAS) is an application used on top TMS to aggregate product instance information on top of TMS responses. It adds information like product instances or policies to the TMS response 
+ | 7 | **JMeter**:  | Performance JMeter scripts: [https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS](https://github.disney.com/PE/PE_Scripts/tree/master/DevStudios/OnlineEVAS_TMS)
+ | 8 | 
+**Code Quality Enabled: **Enabling PMD, Checkstyle, and Findbugs and code coverage validations in the pom file.
 
-## ECS Clusters
+ | 
+Yes, the application has the standard quality control plugins enabled as part of its build life cycle:
 
-Region: **us-east-1** | IAM Role: WDPR-ECOMMERCE_DEVELOPER
+POM file: [https://github.disney.com/commerce/wdpr-ecommerce-evas-svc/blob/develop/pom.xml](https://github.disney.com/commerce/wdpr-ecommerce-evas-svc/blob/develop/pom.xml)
 
-| Environment | Account ID | Cluster | Service |
-|-------------|-----------|---------|---------|
-| Latest | 718439781381 | wdw-ecommerce-S0001479-use1-lst | evas-svc-wdw-latest-live |
-| Stage | 168997411205 | wdw-ecommerce-S0001479-use1-stg | evas-svc-wdw-stage-live |
-| Load | 168997411205 | wdw-ecommerce-S0001479-use1-lod | evas-svc-wdw-load-live |
-| Production | 820987038150 | wdw-ecommerce-S0001479-use1-prd | evas-svc-wdw-prod-live |
+ | 9 | 
+Code coverage: Unit test coverage >= 80% 
 
-## Splunk
+ | 
+Yes. Current Code coverage at the moment of writing is 80.7% 
 
-```
+ | 10 | 
+**Integrated with Sonar: **The services need to appear here: [https://sonar.cicd.wdprapps.disney.com/portfolio?id=Scott-DePriest_Service_New](https://sonar.cicd.wdprapps.disney.com/portfolio?id=Scott-DePriest_Service_New) and pass all sonar validations. 
+
+ | 
+Yes: [https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aentitlement-view-assembly-service](https://sonar.cicd.wdprapps.disney.com/dashboard?id=com.disney.wdpro.service%3Aentitlement-view-assembly-service)
+
+ | 11 | 
+**API documentation**: It can be swagger or any other kind of documentation on the API (endpoints, requests and responses)
+ | 
+ Internal: [https://evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html](https://evas.int.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html)
+
+ External: [https://evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html](https://evas.wdw.wdpro.disney.com/entitlement-view-assembly-service/docs/index.html)
+
+ | 12 | 
+**Sequence Diagrams **
+
+ 
+ | 
+TODO
+
+ | 13 | 
+**Component Diagrams **
+ | 
+TODO
+
+ | 14 | 
+**Component Load Tested: **Nice to have but optional as the service needs to be load tested before reaching production. 
+
+ | 
+Last test at the moment of writing:
+
+ | 
+# 3. ServiceNow Processes and Configuration
+
+ | # | Item Description | Answer
+ | 1 | **BAPPID**: Has the Business Application CI
+been created in SNOW?
+ | BAPP0061980
+
+ | 
+# 4. Build, Test, and Deployment
+
+ | # | Item Description | Answer
+ | 1 | 
+**Source Code**: Provide details on the source code's location (GIT)
+
+ | COMPONENT NAME | PATH
+ | EVAS | [https://github.disney.com/commerce/wdpr-ecommerce-evas-svc/](https://github.disney.com/commerce/wdpr-ecommerce-evas-svc/)
+
+ | Please enter your answer within the "Item Description" area
+ | 2 | **Build and Deployment Processes**: Provide link or other applicable location on the details. | Harness: [https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_EntitlementViewAssemblyService/deployments](https://disney.harness.io/ng/account/1-wFe3qRQv2mUh1s9244Eg/all/orgs/Commerce/projects/WDPRD_EntitlementViewAssemblyService/deployments)
+
+[https://ecommerce.cicd.wdprapps.disney.com/job/wdpr-ecommerce-evas-svc/view/Deploy/job/wdpr-ecommerce-evas-svc-aws-live/](https://ecommerce.cicd.wdprapps.disney.com/job/wdpr-ecommerce-evas-svc/view/Deploy/job/wdpr-ecommerce-evas-svc-aws-live/) -> this link is used to deploy the artifacts into the different environments 
+ | 3 | **Credential Management: **Have all service accounts and passwords been entered in Vault? | N/A
+ | 5 | **Performance Testing**: Provide links to the PE results | 
+Last test at the moment of writing:
+
+ | 
+# 5. Monitoring and Alert Configuration
+
+ | # | Item Description | Answer
+ | 1 | **Splunk Indexes** | 
 index=wdpr-ecommerce ecs_cluster="wdw-ecommerce-S0001479-use1-<env>*" ecs_task_definition="evas-svc-wdw*"
-```
 
-## Splunk Alerts
+ | 2 | 
+**Infrastructure Monitoring**: Indicate what is being monitored (Server, Database, and Storage), who is doing the monitoring, the alert thresholds, and the destination for the alerts.
 
-- WDW_EVAS - Unexpected level of 4xx
-- WDW_EVAS - Unexpected level of 5xx
-- EVAS_wdw | High time responses
-- EVAS by dependencies | High time responses
-- EVAS - Dependency timeout
+ | RESOURCE TYPE | RESOURCE NAME | MONITOR | THRESHOLD | ALERT RECIPIENTS
+ | Server | No value | No value | No value | No value
+ | Database | No value | No value | No value | No value
+ | Storage | No value | No value | No value | No value
 
-Alarms reference: https://confluence.disney.com/display/WDPROS/Alarms
+ | Please enter your answer within the "Item Description" area
+ | 3 | 
+**Application Monitoring**: Indicate what is being monitored(APM, Synthetics, etc.), who is doing the monitoring, the alert thresholds, and the destination for the alerts.
 
-## Restart Procedures
+Please refer to the EVAS section on 
+ | 
+WDW 
 
-1. Identify the ECS cluster: `wdw-ecommerce-S0001479-use1-prd` (us-east-1)
-2. Force new deployment via ECS console or CLI:
-   ```bash
-   aws ecs update-service --cluster wdw-ecommerce-S0001479-use1-prd --service evas-svc-wdw-prod-live --force-new-deployment --region us-east-1
-   ```
-3. Monitor task drain — wait for old tasks to stop and new tasks to reach RUNNING state
-4. Validate health check returns 200
+[WDW_EVAS - Unexpected level of 4xx](https://splunk.wdprapps.disney.com/en-US/app/launcher/alert?s=%2FservicesNS%2Fnobody%2Flauncher%2Fsaved%2Fsearches%2FWDW_EVAS%2520-%2520Unexpected%2520level%2520of%25204xx) 
 
-## Rollback
+[WDW_EVAS - Unexpected level of 5xx](https://splunk.wdprapps.disney.com/en-US/app/launcher/alert?s=%2FservicesNS%2Fnobody%2Flauncher%2Fsaved%2Fsearches%2FWDW_EVAS%2520-%2520Unexpected%2520level%2520of%25205xx) 
 
-- Revert task definition to previous revision via ECS console
-- Force new deployment with previous task definition
-- Validate health check and Splunk logs for errors post-rollback
+[EVAS_wdw | High time responses](https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/alert?s=%2FservicesNS%2Fnobody%2Flauncher%2Fsaved%2Fsearches%2FEVAS_wdw%2520%257C%2520High%2520time%2520responses) 
+
+[EVAS by dependecies| High time responses](https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/alert?s=%2FservicesNS%2Fnobody%2Flauncher%2Fsaved%2Fsearches%2FEVAS%2520by%2520dependecies%257C%2520High%2520time%2520responses) 
+
+ 
+
+[EVAS - Dependency timeout](https://wdpr-splunk-prod.wdprapps.disney.com/en-US/app/launcher/alert?s=%2FservicesNS%2Fnobody%2Flauncher%2Fsaved%2Fsearches%2FEVAS%2520-%2520Dependency%2520timeout&dispatch_view=alert) DLR and WDW 
+
+[https://confluence.d
+
+---
+*[Truncated — see full runbook in Confluence]*
