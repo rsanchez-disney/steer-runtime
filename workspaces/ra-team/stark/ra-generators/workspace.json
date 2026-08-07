@@ -1,0 +1,37 @@
+{
+  "name": "ra-generators",
+  "extends": "stark",
+  "workspace_path": "${WORKSPACE_ROOT}/reference-architecture/stark",
+  "description": "RA Team — Angular shared libraries workspace",
+  "team": "Studio Stark",
+  "jira_prefix": "GEW-",
+  "default_agent": "orchestrator",
+  "enable_tools": true,
+  "projects": [
+    {
+      "name": "wdpr-schematics-angular-spa",
+      "repo": "WDPR-RA/wdpr-schematics-angular-spa",
+      "path": "wdpr-schematics-angular-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-wdpr-ra-ui-generator",
+      "repo": "WDPR-RA/wdpr-ra-wdpr-ra-ui-generator",
+      "path": "wdpr-ra-wdpr-ra-ui-generator",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-node-webapi-generator",
+      "repo": "WDPR-RA/wdpr-ra-node-webapi-generator",
+      "path": "wdpr-ra-node-webapi-generator",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ra-nest-webapi-generator",
+      "repo": "WDPR-RA/wdpr-ra-nest-webapi-generator",
+      "path": "wdpr-ra-nest-webapi-generator",
+      "host": "github.disney.com"
+    }
+  ],
+  "profiles": ["dev-core", "dev-ui", "dev-web"]
+}
