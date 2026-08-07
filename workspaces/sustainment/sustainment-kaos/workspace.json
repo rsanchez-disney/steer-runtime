@@ -1,7 +1,7 @@
 {
   "name": "sustainment-kaos",
   "extends": "sustainment",
-  "description": "Sustainment workspace for Studio Kaos \u2014 DLR ticketing, availability, entitlements, and commerce UI",
+  "description": "Sustainment workspace for Studio Kaos — DLR ticketing, availability, entitlements, park access, and commerce UI shared services",
   "team": "Studio Kaos",
   "profiles": [
     "sustainment",
@@ -11,6 +11,83 @@
   "managed_studios": [
     "studio-kaos"
   ],
+  "enable_tools": true,
   "jira_prefix": "COM-",
-  "enable_tools": true
+  "jira_board_url": "https://disneyexperiences.atlassian.net/jira/software/c/projects/COM/boards/6657",
+  "wiki_url": "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-kaos",
+  "projects": [
+    {
+      "name": "dlr-ecommerce-ticketsales-spa",
+      "path": "dlr-ecommerce-ticketsales-spa",
+      "repo": "commerce/dlr-ecommerce-ticketsales-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dlr-ecommerce-ticketsales-api",
+      "path": "dlr-ecommerce-ticketsales-api",
+      "repo": "commerce/dlr-ecommerce-ticketsales-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-doryfortickets-api",
+      "path": "wdpr-ecommerce-doryfortickets-api",
+      "repo": "commerce/wdpr-ecommerce-doryfortickets-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "dlr-commerce2-01323-pacs-svc",
+      "path": "dlr-commerce2-01323-pacs-svc",
+      "repo": "commerce/dlr-commerce2-01323-pacs-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-dtc-svc",
+      "path": "wdpr-ecommerce-dtc-svc",
+      "repo": "commerce/wdpr-ecommerce-dtc-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-lexvas-api",
+      "path": "wdpr-ecommerce-lexvas-api",
+      "repo": "commerce/wdpr-ecommerce-lexvas-api",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-ttc-lexvas",
+      "path": "wdpr-ecommerce-ttc-lexvas",
+      "repo": "commerce/wdpr-ecommerce-ttc-lexvas",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-evas-svc",
+      "path": "wdpr-ecommerce-evas-svc",
+      "repo": "commerce/wdpr-ecommerce-evas-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-tms-svc",
+      "path": "wdpr-ecommerce-tms-svc",
+      "repo": "commerce/wdpr-ecommerce-tms-svc",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "wdpr-ecommerce-bolt-landing-spa",
+      "path": "wdpr-ecommerce-bolt-landing-spa",
+      "repo": "commerce/wdpr-ecommerce-bolt-landing-spa",
+      "host": "github.disney.com"
+    },
+    {
+      "name": "avail-calendar-dlr",
+      "path": "avail-calendar-dlr",
+      "repo": "cgs-wdw/wdprd-availcalendar/avail-calendar",
+      "host": "gitlab.disney.com"
+    },
+    {
+      "name": "dlrtixmods-spa",
+      "path": "dlrtixmods-spa",
+      "repo": "commerce/dlrtixmods-spa",
+      "host": "github.disney.com"
+    }
+  ]
 }

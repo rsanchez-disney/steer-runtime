@@ -1,0 +1,106 @@
+{
+  "jira_prefix": "COM-",
+  "board_id": "6657",
+  "wiki_space": "StudioKaos",
+  "catalog_scope": "profiles/sustainment/managed-services-catalog/studios/studio-kaos",
+  "last_updated": "2026-08-07",
+  "projects": [
+    {
+      "name": "dlr-ecommerce-ticketsales-spa",
+      "bapp_id": "BAPP0176629",
+      "description": "DLR Entitlement Sales App — ticket purchase SPA",
+      "repo": "commerce/dlr-ecommerce-ticketsales-spa",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "dlr-ecommerce-ticketsales-api",
+      "bapp_id": "BAPP0176629",
+      "description": "DLR Entitlement Sales App — API backend",
+      "repo": "commerce/dlr-ecommerce-ticketsales-api",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-doryfortickets-api",
+      "bapp_id": "BAPP0193062",
+      "description": "Dory For Tickets API (shared Control/Kaos)",
+      "repo": "commerce/wdpr-ecommerce-doryfortickets-api",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "dlr-commerce2-01323-pacs-svc",
+      "bapp_id": "BAPP0105160",
+      "description": "DLR PACS — Park Activity Calendar Service",
+      "repo": "commerce/dlr-commerce2-01323-pacs-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-dtc-svc",
+      "bapp_id": "BAPP0105586",
+      "description": "DLR DTC — DTI Traffic Controller",
+      "repo": "commerce/wdpr-ecommerce-dtc-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-evas-svc",
+      "bapp_id": "BAPP0061980",
+      "description": "DLR EVAS — Entitlement View Assembly Service",
+      "repo": "commerce/wdpr-ecommerce-evas-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-tms-svc",
+      "bapp_id": "BAPP0081809",
+      "description": "DLR TMS — Ticket Management Service",
+      "repo": "commerce/wdpr-ecommerce-tms-svc",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-lexvas-api",
+      "bapp_id": "BAPP0081984",
+      "description": "DLR LexVAS — Lexicon View Assembler Service",
+      "repo": "commerce/wdpr-ecommerce-lexvas-api",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "wdpr-ecommerce-ttc-lexvas",
+      "bapp_id": "BAPP0242760",
+      "description": "DLR TTC LexVAS",
+      "repo": "commerce/wdpr-ecommerce-ttc-lexvas",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "avail-calendar-dlr",
+      "bapp_id": "BAPP0200020",
+      "description": "DLR Availability Calendar (Lambda + S3)",
+      "repo": "cgs-wdw/wdprd-availcalendar/avail-calendar",
+      "host": "gitlab.disney.com",
+      "branch": "develop",
+      "notes": "Shared repo with WDW avail calendar"
+    },
+    {
+      "name": "wdpr-ecommerce-bolt-landing-spa",
+      "bapp_id": "BAPP0250676",
+      "description": "Bolt Landing SPA — PIN-based promotional tickets",
+      "repo": "commerce/wdpr-ecommerce-bolt-landing-spa",
+      "host": "github.disney.com",
+      "branch": "develop"
+    },
+    {
+      "name": "dlrtixmods-spa",
+      "bapp_id": "BAPP0244434",
+      "description": "DLR Tickets Mods (Lambda + SPA)",
+      "repo": "commerce/dlrtixmods-spa",
+      "host": "github.disney.com",
+      "branch": "develop"
+    }
+  ]
+}

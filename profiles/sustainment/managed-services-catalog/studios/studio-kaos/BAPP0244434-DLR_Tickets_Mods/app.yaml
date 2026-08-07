@@ -1,0 +1,59 @@
+# Last updated: 2026-08-07
+bapp_id: "BAPP0244434"
+app_name: "dlr-tickets-mods"
+full_name: "DLR Tickets Mods"
+description: >
+  DLR Tickets & Modifications application. Lambda-based backend + SPA frontend
+  for DLR ticket purchase and modification flows.
+  Keywords: DLR tickets, DLR mods, ticket modification, DLR purchase.
+support_studio: "Studio Kaos"
+escalation_channel: "#dprd-studio-kaos"
+escalation_contacts:
+  - name: "Fernanda Roque"
+    role: "primary"
+    contact: "Lead Software Engineer"
+  - name: "Gabriela Rossi"
+    role: "secondary"
+    contact: "Tech Lead"
+on_call: "+1 (620) 557-8415 (24x7, P1/P2 only)"
+email: "WDPROPEPCOMSTUDIOKAOS@disney.com"
+servicenow:
+  configuration_items:
+    - "DLR Tickets Mods"
+    - "DLR Tickets Mods - AWS Latest"
+    - "DLR Tickets Mods - AWS Load Test"
+    - "DLR Tickets Mods - AWS Production"
+    - "DLR Tickets Mods - AWS Stage"
+  assignment_group: "web-global-salestickets"
+documentation:
+  wiki: "https://disneyexperiences.atlassian.net/wiki/spaces/StudioKaos"
+docs:
+  troubleshooting: "troubleshooting.md"
+  business_rules: "business-rules.md"
+  runbook: "runbook.md"
+components:
+  - component_name: "dlrtixmods-lambda"
+    component_type: "batch"
+    description: "DLR Tickets Mods Lambda (backend)"
+    repository:
+      url: "https://github.disney.com/commerce/dlrtixmods-spa"
+      branch: "develop"
+    splunk:
+      index: "dlr_tickets_mods"
+      base_spl: "index=dlr_tickets_mods"
+    cloud:
+      provider: "AWS"
+      infra_type: "Lambda"
+
+  - component_name: "dlrtixmods-spa"
+    component_type: "frontend"
+    description: "DLR Tickets Mods SPA (UI logs via Commerce Shared API)"
+    repository:
+      url: "https://github.disney.com/commerce/dlrtixmods-spa"
+      branch: "develop"
+    splunk:
+      index: "wdpr_dlr_com_shared_api"
+      base_spl: "index=wdpr_dlr_com_shared_api dlrtixmods-spa"
+    cloud:
+      provider: "AWS"
+      infra_type: "S3"
