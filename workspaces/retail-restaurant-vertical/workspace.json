@@ -1,0 +1,49 @@
+{
+  "name": "retail-restaurant-vertical",
+  "description": "Cross-team visibility for Tech Directors and Delivery Managers for  Mobile Order, Merchandise Checkout, Dine Check-in & Dine Walk-up, Dine Menus and Find Merchandise across WDW & DLR ",
+  "team": "Disney Payments & Commerce",
+  "profiles": [
+    "leadership","pm"
+  ],
+  "default_agent": "leadership_orchestrator_agent",
+  "teams": [
+    {
+      "name": "Studio Lumier (Service)",
+      "workspace": "studio-lumier-team",
+      "jira_projects": [
+        "FNB-","MERCH-"
+      ],
+      "board_ids": [
+        4760
+      ],
+      "studio":"FNB - Lumiere | Purdy"
+    },
+    {
+      "name": "Studio Anglerfish (IOS)",
+      "workspace": "studio-anglerfish-team",
+      "jira_projects": [
+         "FNB-","MERCH-"
+      ],
+      "board_ids": [
+        6334
+      ],
+       "studio":"FNB - Anglerfish | Purdy"
+    },
+    {
+      "name": "Studio Proteus (Android)",
+      "workspace": "studio-proteus-team",
+      "jira_projects": [
+        "FNB-","MERCH-"
+      ],
+      "board_ids": [
+        6334
+      ],
+       "studio":"FNB - Proteus | Purdy"
+    }
+  ],
+  "rules": [
+    "conventional_commit"
+  ],
+  "enable_tools": true,
+  "workspace_path": "${WORKSPACE_ROOT}/retail-restaurant-team"
+}

@@ -1,0 +1,45 @@
+{
+  "vertical": "Retail and Restaurant",
+  "short_name": "FNB",
+  "confluence_space": "FBT",
+  "confluence_instance": "cloud",
+  "parent_page_id": null,
+  "_parent_page_id_note": "Set to the Confluence page ID of the vertical quarterly report parent page (e.g., 123456789). When null, the agent searches by title or asks the user on first run.",
+  "external_studios": ["Vision", "COM/TravelBox", "AntMan"],
+  "freeze_windows": [],
+  "studios": [
+    {
+      "name": "Studio Lumier",
+      "project": "FNB, MERCH",
+      "query_method": "studio_field",
+      "studio_field_value": "FNB - Lumiere | Purdy",
+      "board_ids": [4760],
+      "sprint_prefix": "Lumiere - Sprint",
+      "sub_tasks": "exclude",
+      "impact_classification": "COMPLIANCE",
+      "guest_reach": ["WDW", "DLR"]
+    },
+    {
+     "name": "Studio Anglerfish",
+      "project": "FNB, MERCH",
+      "query_method": "studio_field",
+     "studio_field_value": "FNB - Anglerfish | Purdy",
+      "board_ids": [6334],
+      "sprint_prefix": "FNB Sprint",
+      "sub_tasks": "exclude",
+      "impact_classification": "COMPLIANCE",
+     "guest_reach": ["WDW", "DLR"]
+    },
+    {
+      "name": "Studio Proteus",
+      "project": "FNB, MERCH",
+      "query_method": "studio_field",
+      "studio_field_value": "FNB - Proteus | Purdy",
+      "board_ids": [6334],
+      "sprint_prefix": "FNB Sprint ",
+      "sub_tasks": "exclude",
+      "impact_classification": "COMPLIANCE",
+      "guest_reach": ["WDW", "DLR"]
+    }
+  ]
+}
