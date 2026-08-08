@@ -4,6 +4,36 @@ All notable changes to steer-runtime.
 
 ## [Unreleased]
 
+## [0.2.183] — 2026-08-07
+
+### Added
+
+- **workspaces** — sustainment-kaos complete workspace, team context, DLR Tickets Mods (#674)
+- **agents** — add CODA + Stepwise expertise to steer-master profile (#675)
+- **workspaces** — add retail-restaurant-vertical workspace
+- **workspaces** — add dbe-team workspace
+- **workspaces** — setup sub-workspaces for ra-team stark
+- **sustainment-control** — populate runbook.md from Confluence on-prem
+- **sustainment-control** — business-rules.md from Swagger (Lexicon + EVAS)
+- **sustainment-control** — complete all app.yaml in managed-services-catalog
+- **sustainment-control** — complete workspace.json with projects
+- **sustainment-control** — add control-config.json with project repos
+- **sustainment-control** — complete team context with apps, runbooks, splunk indexes
+
+## [0.2.182] — 2026-08-06
+
+### Added
+
+- **skills** — add coda-setup skill with full reference
+
+### Fixed
+
+- **skills** — move coda-setup skill from dev-core to steer-master
+
+### Chores
+
+- rebuild MCP bundles
+
 ## [0.2.181] — 2026-08-03
 
 ### Added
